@@ -1,0 +1,202 @@
+0) StartPhrase, "Phrase"
+1) StartPhrase, "Word Token"
+2) OnInternalPhraseAsync, 0, 3
+    # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+      IsIgnored: False
+      IterBegin: "[1, 1] (0)"
+      IterEnd: "[1, 4] (3)"
+      Token: "Word Token"
+      Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+        Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
+      Whitespace: None
+    Phrase: "Word Token"
+3) EndPhrase, "Word Token" [True]
+4) StartPhrase, "Newline+"
+5) OnInternalPhraseAsync, 3, 4
+    # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+      IsIgnored: False
+      IterBegin: "[1, 4] (3)"
+      IterEnd: "[2, 1] (4)"
+      Token: "Newline+"
+      Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+        End: 4
+        Start: 3
+      Whitespace: None
+    Phrase: "Newline+"
+6) EndPhrase, "Newline+" [True]
+7) StartPhrase, "Indent"
+8) OnPushScopeAsync, 4, 8
+    # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+      IsIgnored: False
+      IterBegin: "[2, 1] (4)"
+      IterEnd: "[2, 5] (8)"
+      Token: "Indent"
+      Value: # <class 'Original.Lexer.Components.Token.IndentToken.MatchResult'>
+        End: 8
+        Start: 4
+        Value: 4
+      Whitespace: None
+    Phrase: "Indent"
+9) EndPhrase, "Indent" [True]
+10) StartPhrase, "Word Token"
+11) OnInternalPhraseAsync, 8, 11
+    # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+      IsIgnored: False
+      IterBegin: "[2, 5] (8)"
+      IterEnd: "[2, 8] (11)"
+      Token: "Word Token"
+      Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+        Match: "<_sre.SRE_Match object; span=(8, 11), match='two'>"
+      Whitespace: None
+    Phrase: "Word Token"
+12) EndPhrase, "Word Token" [True]
+13) StartPhrase, "Newline+"
+14) OnInternalPhraseAsync, 11, 12
+    # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+      IsIgnored: False
+      IterBegin: "[2, 8] (11)"
+      IterEnd: "[3, 1] (12)"
+      Token: "Newline+"
+      Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+        End: 12
+        Start: 11
+      Whitespace: None
+    Phrase: "Newline+"
+15) EndPhrase, "Newline+" [True]
+16) StartPhrase, "Word Token"
+17) OnInternalPhraseAsync, 16, 21
+    # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+      IsIgnored: False
+      IterBegin: "[3, 5] (16)"
+      IterEnd: "[3, 10] (21)"
+      Token: "Word Token"
+      Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+        Match: "<_sre.SRE_Match object; span=(16, 21), match='three'>"
+      Whitespace: None
+    Phrase: "Word Token"
+18) EndPhrase, "Word Token" [True]
+19) StartPhrase, "Newline+"
+20) OnInternalPhraseAsync, 21, 22
+    # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+      IsIgnored: False
+      IterBegin: "[3, 10] (21)"
+      IterEnd: "[4, 1] (22)"
+      Token: "Newline+"
+      Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+        End: 22
+        Start: 21
+      Whitespace: None
+    Phrase: "Newline+"
+21) EndPhrase, "Newline+" [True]
+22) StartPhrase, "Dedent"
+23) OnPopScopeAsync, 22, 22
+    # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+      IsIgnored: False
+      IterBegin: "[4, 1] (22)"
+      IterEnd: "[4, 1] (22)"
+      Token: "Dedent"
+      Value: # <class 'Original.Lexer.Components.Token.DedentToken.MatchResult'>
+        {}
+      Whitespace: None
+    Phrase: "Dedent"
+24) EndPhrase, "Dedent" [True]
+25) OnInternalPhraseAsync, 0, 22
+    # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+      DataItems:
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[1, 1] (0)"
+            IterEnd: "[1, 4] (3)"
+            Token: "Word Token"
+            Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
+            Whitespace: None
+          Phrase: "Word Token"
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[1, 4] (3)"
+            IterEnd: "[2, 1] (4)"
+            Token: "Newline+"
+            Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+              End: 4
+              Start: 3
+            Whitespace: None
+          Phrase: "Newline+"
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[2, 1] (4)"
+            IterEnd: "[2, 5] (8)"
+            Token: "Indent"
+            Value: # <class 'Original.Lexer.Components.Token.IndentToken.MatchResult'>
+              End: 8
+              Start: 4
+              Value: 4
+            Whitespace: None
+          Phrase: "Indent"
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[2, 5] (8)"
+            IterEnd: "[2, 8] (11)"
+            Token: "Word Token"
+            Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(8, 11), match='two'>"
+            Whitespace: None
+          Phrase: "Word Token"
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[2, 8] (11)"
+            IterEnd: "[3, 1] (12)"
+            Token: "Newline+"
+            Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+              End: 12
+              Start: 11
+            Whitespace: None
+          Phrase: "Newline+"
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[3, 5] (16)"
+            IterEnd: "[3, 10] (21)"
+            Token: "Word Token"
+            Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+              Match: "<_sre.SRE_Match object; span=(16, 21), match='three'>"
+            Whitespace: None
+          Phrase: "Word Token"
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[3, 10] (21)"
+            IterEnd: "[4, 1] (22)"
+            Token: "Newline+"
+            Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+              End: 22
+              Start: 21
+            Whitespace: None
+          Phrase: "Newline+"
+        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            IsIgnored: False
+            IterBegin: "[4, 1] (22)"
+            IterEnd: "[4, 1] (22)"
+            Token: "Dedent"
+            Value: # <class 'Original.Lexer.Components.Token.DedentToken.MatchResult'>
+              {}
+            Whitespace: None
+          Phrase: "Dedent"
+      IsComplete: True
+    Phrase: "Phrase"
+26) EndPhrase, "Phrase" [True]

@@ -1,0 +1,48 @@
+# ----------------------------------------------------------------------
+# |
+# |  Error.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-10-25 13:30:59
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+Contains the Error interface.
+>>>
+
+# BugBug: __Fields__ for class members
+# BugBug: class modifier should never be applied to __Init__
+
+public immutable exception Error:
+    <<<
+    Base class for all lexer-related errors.
+    >>>
+
+    # ----------------------------------------------------------------------
+    # BugBug public UCountingInt view line
+    # BugBug public UCountingInt view column
+
+    public Int<T1> view bugbug1
+    public Int<T1>{1} view bugbug2
+    public Int{1} view bugbug3
+
+    # ----------------------------------------------------------------------
+    # BugBug public override immutable String __ToString__():
+    # BugBug     pass # BugBug return self._GetMessageTemplate().Format(self.__Fields__)
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # BugBug private override immutable None __Init__():
+    # BugBug     assert self.line >= 1
+    # BugBug     assert self.column >= 1
+
+    # ----------------------------------------------------------------------
+    # BugBug private abstract immutable String _GetMessageTemplate()

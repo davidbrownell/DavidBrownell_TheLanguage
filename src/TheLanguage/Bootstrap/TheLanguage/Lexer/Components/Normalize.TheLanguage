@@ -1,0 +1,379 @@
+# ----------------------------------------------------------------------
+# |
+# |  Normalize.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-10-25 14:42:54
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+Contains types and functions used to normalize source content prior to lexing. This code works very
+hard to remain agnostic to the syntax/grammar that ultimately relies on the normalized content.
+>>>
+
+# BugBug from HashLib import HashLib
+
+from ..Error import Error
+
+# BugBug: Need ability to use default bases visibility when creating ClassStatementDependencyParserInfo
+
+# ----------------------------------------------------------------------
+public immutable exception InvalidTabsAndSpacesError(public Error): # BugBug: Should not need last 'public'
+    private override immutable String _GetMessageTemplate():
+        return "The spaces and/or tabs used to indent this line differ from the spaces and/or table used on previous lines."
+
+
+# ----------------------------------------------------------------------
+public immutable exception NoClosingMultilineTokenError(public Error): # BugBug: Should not need last 'public'
+    private override immutable String _GetMessageTemplate():
+        return "A closing token was not found to match this multi-line opening token."
+
+
+# ----------------------------------------------------------------------
+protected immutable class LineInfo:
+    # ----------------------------------------------------------------------
+    public view IntArch offset_start
+    public view IntArch offset_end
+    public view IntArch content_start
+    public view IntArch content_end
+
+    public view (PosInt | None) num_dedents
+    public view (PosInt | None) new_indentation_value
+
+    public view Dict<UInt, UInt>{0} whitespace
+
+    # ----------------------------------------------------------------------
+    public immutable Bool HasWhitespacePrefix():
+        return self.content_start != self.offset_start
+
+    # ----------------------------------------------------------------------
+    public immutable Bool HasContent():
+        return self.content_start != self.content_end
+
+    # ----------------------------------------------------------------------
+    public immutable Bool HasWhitespaceSuffix():
+        return self.content_end != self.offset_end
+
+    # ----------------------------------------------------------------------
+    private override None __Init__():
+        assert self.offset_end >= self.offset_start
+        assert self.content_start >= self.offset_start
+        assert self.content_end >= self.content_start
+        assert self.content_end <= self.offset_end
+
+        for (white_start, white_end) in self.whitespace:
+            assert white_start < white_end
+
+
+# ----------------------------------------------------------------------
+protected immutable class NormalizedContent:
+    public using LineInfos                  = List<LineInfo>{1}
+    public using HashBytes                  = List<Int8>{32, 32}
+
+    # ----------------------------------------------------------------------
+    public view String content
+    public view PosInt content_length
+    public view LineInfos line_infos
+    public view HashBytes hash
+
+    # ----------------------------------------------------------------------
+    public static NormalizedContent Create(
+        view String content,
+        view PosInt content_length,
+        view LineInfos line_infos,
+    ):
+        hash = (
+            HashLib
+                ::Sha256()
+                ->Update(content)
+                ->Digest()
+        )
+
+        return NormalizedContent(content, content_length, line_infos, hash)
+
+
+# ----------------------------------------------------------------------
+protected NormalizedContent Normalize?(
+    view String content,
+
+    # BugBug: Describe
+    view (Set<String>{1} | None) multiline_tokens_to_ignore=None,
+
+    # BugBug: Describe
+    view (
+        (
+            Bool (                          # Return True to suppress indentation for the line, False to allow it
+                IntArch,                    #   offset_start
+                IntArch,                    #   offset_end
+                IntArch,                    #   content_start
+                IntArch,                    #   content_end
+            )
+        )
+        | None
+    ) suppress_indentation_func=None,
+):
+    <<<
+    Normalizes the provided content by organizing it into lines that have knowledge of their indentation
+    relative to the lines around them.
+    >>>
+
+    # BugBug: This comment is very python-y
+
+    # This code is intended to be a general purpose normalization algorithm, with no special
+    # knowledge of underling grammars. In most cases, it is fairly straight forward to maintain
+    # this architectural distinction. However, multi-line phrases present a problem.
+    #
+    # We track indentation change for each line, but multi-line phrases are special in that
+    # any indentation changes that happen within that phrase should not impact the subsequent
+    # phrases.
+    #
+    # Consider this python content:
+    #
+    #                                         Indentation Level   Indentation Stack
+    #                                         -----------------   -----------------
+    #     if True:                          #         0           [0]
+    #         print(                        #         4           [0, 4]
+    #             textwrap.dedent(          #         8           [0, 4, 8]
+    #                 """\                  #        12           [0, 4, 8, 12]
+    #                 Proper indentation.   #        12           [0, 4, 8, 12]
+    #               Wonky indentation.      #        10           [0, 4, 8, 10]
+    #                 Normal indentation.   #        12           [0, 4, 8, 10, 12]
+    #                 """,                  #        12           [0, 4, 8, 10, 12]
+    #             ),                        #         8           [0, 4, 8]             !!! Note that 2 dedents were introduced, rather than the 1 that was expected
+    #         )                             #         4           [0, 4]
+    #                                       #         0           [0]
+    #
+    # Since indents and dedents are meaningful, this presents a problem. To work around this, we
+    # introduce the opt-in concept that (some/most?) multi-line phrases should not make changes
+    # to the indentation stack. With this in place, the example above becomes:
+    #
+    #                                         Indentation Level   Indentation Stack
+    #                                         -----------------   -----------------
+    #     if True:                          #         0           [0]
+    #         print(                        #         4           [0, 4]
+    #             textwrap.dedent(          #         8           [0, 4, 8]
+    #                 """\                  #        12           [0, 4, 8, 12]
+    #                 Proper indentation.   #        12           ????
+    #               Wonky indentation.      #        10           ????
+    #                 Normal indentation.   #        12           ????
+    #                 """,                  #        12           [0, 4, 8, 12]
+    #             ),                        #         8           [0, 4, 8]             !!! Note that the indentation stack is the same existing the multi-line phrase as it was entering it
+    #         )                             #         4           [0, 4]
+    #                                       #         0           [0]
+    #
+    # However, this presents a new challenge - how do we recognize multi-line phrases without
+    # any knowledge of the underlying grammar? We could hard-code knowledge of python
+    # triple-quoted-strings, but that is not sufficient to support the dynamic generation of new
+    # phrases at runtime.
+    #
+    # Therefore, this compromise has been implemented. The presence of a line with one or more
+    # triplets represents the beginning and end of a multi-line phrase. Indentation tracking will
+    # pause when one of these lines is found and resume when another is encountered. Examples of
+    # these triples are:
+    #
+    #       Enter Multiline Phrase  Exit Multiline Phrase
+    #       ----------------------  ---------------------
+    #                """                    """
+    #                <<<                    >>>         !!! Note that the enter and exit triplets do not have to be the same
+    #               <<<!!!                !!!>>>        !!! Note that there can be multiple triplets as part of a phrase
+    #
+
+    content = content if content[-1] == '\n' else content + '\n'
+    multiline_tokens_to_ignore = multiline_tokens_to_ignore or Set<String>()
+    suppress_indentation_func = suppress_indentation_func or (lambda (IntArch, IntArch, IntArch, IntArch): False) # TODO: lambda ***: False
+
+    content_length = content.Length()
+
+    # ----------------------------------------------------------------------
+    struct IndentationInfo:
+        UInt num_chars
+        UInt value
+
+    # ----------------------------------------------------------------------
+    class immutable MultilineTokenInfo:
+        public immutable IntArch line_index
+        public immutable PosInt num_delimiters
+
+    # ----------------------------------------------------------------------
+
+    var line_infos = List<LineInfo>()
+    var indentation_stack = Stack<IndentationInfo>()
+    var multiline_token_info = None as (MultilineTokenInfo | None)
+
+    var offset = 0 as IntArch
+
+    # BugBug: foo once = None as Int
+
+    # ----------------------------------------------------------------------
+    LineInfo CreateLineInfo
+        [offset, indentation_stack]
+    ():
+        # BugBug: Capture whitespace
+
+
+
+        line_start_offset = offset
+        line_end_offset once = None as (Type(offset) | None) # BugBug: Type syntax
+
+        calculated_indentation_value var = 0 as (Int | None)
+        num_pending_dedentations var = 0
+        pending_indentation var = None as (IndentationInfo | None)
+
+        content_start_offset once = None as (Int | None)
+        content_end_offset once = None as (Int | None)
+
+        while offset < content_length:
+            char = content[offset]
+
+            if calculated_indentation_value is not None:
+                if char == ' ':
+                    calculated_indentation_value += 1
+
+                elif char == '\t':
+                    # Ensure that " \t" compares as different from "\t " and that "\t" compares
+                    # as different from " ".
+                    calculated_indentation_value += (offset - line_start_offset + 1) * 100
+
+                else:
+                    assert char == '\n' or not char.IsSpace(), char
+
+                    num_chars = offset - line_start_offset
+
+                    if char == '\n':
+                        # Ensure that the whitespace prefix for this line uses the same number of
+                        # tabs and spaces as the indentation associated with the previous line.
+                        if (
+                            num_chars == indentation_stack[-1].num_chars
+                            and calculated_indentation_value != indentation_stack[-1].value
+                        ):
+                            raise InvalidTabsAndSpacesError(
+                                line_infos.Length() + 1,
+                                offset - line_start_offset + 1,
+                            )
+
+                        if multiline_token_info is None:
+                            # Detect dedents
+                            while num_chars < indentation_stack[-1 + -num_pending_dedentations].num_chars:
+                                num_pending_dedentations += 1
+
+                            num_pending_dedentations = final num_pending_dedentations   # BugBug: 'final' unary expression
+
+                            # Detect indents
+                            if num_chars > indentation_stack[-1 + -num_pending_dedentations].num_chars:
+                                pending_indentation = IndentationInfo(num_chars, calculated_indentation_value)
+
+                    calculated_indentation_value = final None
+                    content_start_offset = final offset
+
+            elif char == '\n':
+                line_end_offset = final offset
+                offset += 1
+
+                # Detect trailing whitespace
+
+                # BugBug: Option 1
+                content_end_offset = line_end_offset
+
+                assert content_start_offset is not None
+                while content_end_offset > content_start_offset and content[content_end_offset - 1].IsSpace():
+                    content_end_offset -= 1
+
+                # BugBug: Option 2
+                content_end_offset = final (
+                    Int ():
+                        end_offset = line_end_offset
+
+                        assert content_start_offset is not None
+                        while content_end_offset > content_start_offset and content[content_end_offset - 1].IsSpace():
+                            end_offset -= 1
+
+                        return end_offset
+                )()
+
+            offset += 1
+
+        assert line_end_offset is not None
+        assert content_start_offset is not None
+        assert content_end_offset is not None
+
+        has_indentation var = pending_indentation is not None
+
+        if (
+            (num_pending_dedentations or has_indentation)
+            and (
+                multiline_token_info is not None
+                or suppress_indentation_func(
+                    line_start_offset,
+                    line_end_offset,
+                    content_start_offset,
+                    content_end_offset,
+                )
+            )
+        ):
+            num_pending_dedentations = 0
+            has_indentation = False
+
+        else:
+            if pending_indentation is not None:
+                indentation_stack.append(move pending_indentation)
+
+        return LineInfo(
+            line_start_offset,
+            line_end_offset,
+            content_start_offset,
+            content_end_offset,
+            num_dedents=num_pending_dedentations or None,
+            new_indentation_value=indentation_stack[-1].value if has_indentation else None,
+        )
+
+    # ----------------------------------------------------------------------
+
+    while offset < content_length:
+        line_infos.Append(CreateLineInfo())
+
+        num_multiline_delimiters = GetNumMultilineTokenDelimiters(
+            content,
+            start_index=line_infos[-1].content_start,
+            end_index=line_infos[-1].content_end,
+        )
+
+        if (
+            num_multiline_delimiters != 0
+            and content[line_infos[-1].content_start..line_infos[-1].content_end] not in multiline_tokens_to_ignore # BugBug: '..' binary expression
+        ):
+            # Toggle the current state
+            multiline_token_info = (
+                match type multiline_token_info:
+                    case type None: MultilineTokenInfo(line_infos.Length() - 1, num_multiline_delimiters)
+                    default: None
+            )
+
+    # Detect when a mutliline token has been opened but not closed
+    if multiline_token_info is not None:
+        line_info = line_infos[multiline_token_info.line_index]  # BugBug: Defaulting to other type when there is only 2
+
+        raise NoClosingMultilineTokenError(
+            multiline_token_info.line_index + 1,
+            line_info.content_start - line_info.offset_start + 1,
+        )
+
+    # Add trailing dedents if necessary
+    if indentation_stack.Length() > 1:
+        line_infos.append(
+            LineInfo(
+                offset,
+                offset,
+                offset,
+                offset,
+                NumDedents=indentation_stack.Length() - 1,
+            ),
+        )
+
+    return NormalizedContent.Create(move content, move content_length, move line_infos)
