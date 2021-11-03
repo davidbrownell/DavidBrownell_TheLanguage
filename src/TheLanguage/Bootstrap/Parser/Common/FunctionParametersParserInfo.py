@@ -23,15 +23,13 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FunctionParameterParserInfo(ParserInfo):
+class FunctionParameterTypeParserInfo(ParserInfo):
     Type: TypeParserInfo
-    Name: str
-    Default: Optional[ExpressionParserInfo]
     IsVariadic: Optional[bool]
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FunctionParameterParserInfo, self).__post_init__(regions)
+        super(FunctionParameterTypeParserInfo, self).__post_init__(regions)
         assert self.IsVariadic is None or self.IsVariadic, self
 
     # ----------------------------------------------------------------------
@@ -39,13 +37,26 @@ class FunctionParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def _AcceptImpl(self, visitor, stack, *args, **kwargs):
-        with StackHelper(stack)[self] as helper:
-            with helper["Type"]:
-                self.Type.Accept(visitor, helper.stack, *args, **kwargs)
+        with StackHelper(stack)[(self, "Type")] as helper:
+            self.Type.Accept(visitor, helper.stack, *args, **kwargs)
 
-            if self.Default is not None:
-                with helper["Default"]:
-                    self.Default.Accept(visitor, helper.stack, *args, **kwargs)
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class FunctionParameterParserInfo(FunctionParameterTypeParserInfo):
+    Name: str
+    Default: Optional[ExpressionParserInfo]
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _AcceptImpl(self, visitor, stack, *args, **kwargs):
+        super(FunctionParameterParserInfo, self)._AcceptImpl(visitor, stack, *args, **kwargs)
+
+        if self.Default is not None:
+            with StackHelper(stack)[(self, "Default")] as helper:
+                self.Default.Accept(visitor, helper.stack, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------

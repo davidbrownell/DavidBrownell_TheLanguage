@@ -41,6 +41,8 @@ with InitRelativeImports():
 class TypeParserInfo(ParserInfo):
     """Abstract base class for all type-related ParserInfo objects"""
 
+    # TODO: Modifier can be a part of this base class
+
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.extensionmethod

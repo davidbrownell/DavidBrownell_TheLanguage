@@ -69,7 +69,7 @@ def ExtractParserInfo(
     results = ArgumentsPhraseItemImpl.ExtractParserInfo(
         _ExtractFunctionArgumentInfo,
         node,
-        allow_empty=False,
+        allow_empty=True,
     )
 
     if not results:

@@ -95,6 +95,7 @@ ReservedKeywords                            = [
     # ../Expressions/UnaryExpression.py
     "await",                                # (B)
     "copy",                                 # (B)
+    "final",                                # (B)
     "move",                                 # (B)
     "not",                                  # (B)
 
@@ -197,7 +198,7 @@ def _CreateGenericNameToken(
                 initial_char=initial_char,
                 tokens_to_ignore="".join(
                     [
-                        "(?<!{})".format(re.escape(keyword))
+                        r"(?<!\b{})".format(re.escape(keyword))
                         for keyword in ReservedKeywords
                         if filter_func(keyword[0])
                     ],

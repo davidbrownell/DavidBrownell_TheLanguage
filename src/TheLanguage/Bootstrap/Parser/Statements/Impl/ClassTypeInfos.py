@@ -215,9 +215,9 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         [ClassType.Exception],
 
         # Extends
-        None,
-        [],
-        [],
+        VisibilityModifier.public,
+        [VisibilityModifier.public],
+        [ClassType.Exception],
 
         # Implements
         VisibilityModifier.public,

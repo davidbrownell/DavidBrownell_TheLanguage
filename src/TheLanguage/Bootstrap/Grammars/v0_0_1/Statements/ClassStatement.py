@@ -304,6 +304,7 @@ class ClassStatement(GrammarPhrase):
         if not CommonTokens.TypeNameRegex.match(name_info):
             raise CommonTokens.InvalidTokenError.FromNode(name_leaf, name_info, "type")
 
+        # BugBug: Template and constraint parameters need to be extracted on the 2nd pass
         # <template_parameters>?
         template_parameters_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[6])))
         if template_parameters_node is None:
@@ -406,7 +407,7 @@ class ClassStatement(GrammarPhrase):
                     )
                 )
 
-            assert dependencies_parser_infos
+            assert dependency_parser_infos
             dependencies_parser_infos[dependency_indicator] = (dependency_node, dependency_parser_infos)
 
         # <statement>+

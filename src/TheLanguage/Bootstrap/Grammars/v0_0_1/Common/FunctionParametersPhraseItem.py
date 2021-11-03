@@ -126,11 +126,11 @@ def _ExtractFunctionParserInfo(
 
     return (
         FunctionParameterParserInfo(
-            CreateParserRegions(node, type_node, name_leaf, default_node, is_variadic_node),  # type: ignore
+            CreateParserRegions(node, type_node, is_variadic_node, name_leaf, default_node),  # type: ignore
             type_info,
+            is_variadic_info,
             name_info,
             default_info,
-            is_variadic_info,
         ),
         default_info is not None,
     )

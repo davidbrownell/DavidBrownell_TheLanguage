@@ -25,13 +25,17 @@ from ..Error import Error
 # BugBug: Need ability to use default bases visibility when creating ClassStatementDependencyParserInfo
 
 # ----------------------------------------------------------------------
-public immutable exception InvalidTabsAndSpacesError(public Error): # BugBug: Should not need last 'public'
+public immutable exception InvalidTabsAndSpacesError
+    extends public Error # BugBug: Should not need last 'public'
+:
     private override immutable String _GetMessageTemplate():
         return "The spaces and/or tabs used to indent this line differ from the spaces and/or table used on previous lines."
 
 
 # ----------------------------------------------------------------------
-public immutable exception NoClosingMultilineTokenError(public Error): # BugBug: Should not need last 'public'
+public immutable exception NoClosingMultilineTokenError
+    extends public Error # BugBug: Should not need last 'public'
+:
     private override immutable String _GetMessageTemplate():
         return "A closing token was not found to match this multi-line opening token."
 
@@ -39,15 +43,15 @@ public immutable exception NoClosingMultilineTokenError(public Error): # BugBug:
 # ----------------------------------------------------------------------
 protected immutable class LineInfo:
     # ----------------------------------------------------------------------
-    public view IntArch offset_start
-    public view IntArch offset_end
-    public view IntArch content_start
-    public view IntArch content_end
+    public IntArch view offset_start
+    public IntArch view offset_end
+    public IntArch view content_start
+    public IntArch view content_end
 
-    public view (PosInt | None) num_dedents
-    public view (PosInt | None) new_indentation_value
+    public (PosInt | None) view num_dedents
+    public (PosInt | None) view new_indentation_value
 
-    public view Dict<UInt, UInt>{0} whitespace
+    public Dict<UInt, UInt>{0} view whitespaces
 
     # ----------------------------------------------------------------------
     public immutable Bool HasWhitespacePrefix():
@@ -68,8 +72,8 @@ protected immutable class LineInfo:
         assert self.content_end >= self.content_start
         assert self.content_end <= self.offset_end
 
-        for (white_start, white_end) in self.whitespace:
-            assert white_start < white_end
+        for (whitespace_start, whitespace_end) in self.whitespaces:
+            assert whitespace_start < whitespace_end
 
 
 # ----------------------------------------------------------------------
@@ -78,20 +82,19 @@ protected immutable class NormalizedContent:
     public using HashBytes                  = List<Int8>{32, 32}
 
     # ----------------------------------------------------------------------
-    public view String content
-    public view PosInt content_length
-    public view LineInfos line_infos
-    public view HashBytes hash
+    public String view content
+    public PosInt view content_length
+    public LineInfos view line_infos
+    public HashBytes view hash
 
     # ----------------------------------------------------------------------
     public static NormalizedContent Create(
-        view String content,
-        view PosInt content_length,
-        view LineInfos line_infos,
+        String view content,
+        PosInt view content_length,
+        LineInfos view line_infos,
     ):
         hash = (
-            HashLib
-                ::Sha256()
+            HashLib::Sha256()
                 ->Update(content)
                 ->Digest()
         )
@@ -101,13 +104,13 @@ protected immutable class NormalizedContent:
 
 # ----------------------------------------------------------------------
 protected NormalizedContent Normalize?(
-    view String content,
+    String var content,
 
     # BugBug: Describe
-    view (Set<String>{1} | None) multiline_tokens_to_ignore=None,
+    (Set<String>{1} | None) var multiline_tokens_to_ignore=None,
 
     # BugBug: Describe
-    view (
+    (
         (
             Bool (                          # Return True to suppress indentation for the line, False to allow it
                 IntArch,                    #   offset_start
@@ -117,7 +120,7 @@ protected NormalizedContent Normalize?(
             )
         )
         | None
-    ) suppress_indentation_func=None,
+    ) var suppress_indentation_func=None,
 ):
     <<<
     Normalizes the provided content by organizing it into lines that have knowledge of their indentation
@@ -185,21 +188,31 @@ protected NormalizedContent Normalize?(
     #               <<<!!!                !!!>>>        !!! Note that there can be multiple triplets as part of a phrase
     #
 
-    content = content if content[-1] == '\n' else content + '\n'
+    content = content if content[-1] == '\n' else (content + '\n')
     multiline_tokens_to_ignore = multiline_tokens_to_ignore or Set<String>()
-    suppress_indentation_func = suppress_indentation_func or (lambda (IntArch, IntArch, IntArch, IntArch): False) # TODO: lambda ***: False
+
+    # TODO: The parameter names in the lambda should not be required long term. Need to improve how types, parameters, and arguments interact
+    suppress_indentation_func = suppress_indentation_func or (
+        lambda (
+            IntArch offset_start,
+            IntArch offset_end,
+            IntArch content_start,
+            IntArch content_end
+        ):
+            False
+    ) # TODO: lambda ***: False
 
     content_length = content.Length()
 
     # ----------------------------------------------------------------------
     struct IndentationInfo:
-        UInt num_chars
-        UInt value
+        UInt var num_chars
+        UInt var value
 
     # ----------------------------------------------------------------------
-    class immutable MultilineTokenInfo:
-        public immutable IntArch line_index
-        public immutable PosInt num_delimiters
+    immutable class MultilineTokenInfo:
+        public IntArch view line_index
+        public PosInt view num_delimiters
 
     # ----------------------------------------------------------------------
 
@@ -213,21 +226,22 @@ protected NormalizedContent Normalize?(
 
     # ----------------------------------------------------------------------
     LineInfo CreateLineInfo
-        [offset, indentation_stack]
+        |offset, indentation_stack|
     ():
         # BugBug: Capture whitespace
 
 
 
         line_start_offset = offset
-        line_end_offset once = None as (Type(offset) | None) # BugBug: Type syntax
+        # BugBug: 'once line_end_offset = ...'
+        # BugBug: '... = None as (TypeOf(IntArch) | None)'
+        once line_end_offset = None as (IntArch | None)
+        once content_start_offset = None as (Int | None)
+        once content_end_offset = None as (Int | None)
 
-        calculated_indentation_value var = 0 as (Int | None)
-        num_pending_dedentations var = 0
-        pending_indentation var = None as (IndentationInfo | None)
-
-        content_start_offset once = None as (Int | None)
-        content_end_offset once = None as (Int | None)
+        var calculated_indentation_value = 0 as (Int | None)
+        var num_pending_dedentations = 0
+        var pending_indentation = None as (IndentationInfo | None)
 
         while offset < content_length:
             char = content[offset]
@@ -278,24 +292,11 @@ protected NormalizedContent Normalize?(
 
                 # Detect trailing whitespace
 
-                # BugBug: Option 1
                 content_end_offset = line_end_offset
 
                 assert content_start_offset is not None
                 while content_end_offset > content_start_offset and content[content_end_offset - 1].IsSpace():
                     content_end_offset -= 1
-
-                # BugBug: Option 2
-                content_end_offset = final (
-                    Int ():
-                        end_offset = line_end_offset
-
-                        assert content_start_offset is not None
-                        while content_end_offset > content_start_offset and content[content_end_offset - 1].IsSpace():
-                            end_offset -= 1
-
-                        return end_offset
-                )()
 
             offset += 1
 
@@ -303,7 +304,7 @@ protected NormalizedContent Normalize?(
         assert content_start_offset is not None
         assert content_end_offset is not None
 
-        has_indentation var = pending_indentation is not None
+        var has_indentation = pending_indentation is not None
 
         if (
             (num_pending_dedentations or has_indentation)
@@ -351,7 +352,7 @@ protected NormalizedContent Normalize?(
             # Toggle the current state
             multiline_token_info = (
                 match type multiline_token_info:
-                    case type None: MultilineTokenInfo(line_infos.Length() - 1, num_multiline_delimiters)
+                    case None: MultilineTokenInfo(line_infos.Length() - 1, num_multiline_delimiters)
                     default: None
             )
 
@@ -372,7 +373,7 @@ protected NormalizedContent Normalize?(
                 offset,
                 offset,
                 offset,
-                NumDedents=indentation_stack.Length() - 1,
+                num_dedents=indentation_stack.Length() - 1,
             ),
         )
 

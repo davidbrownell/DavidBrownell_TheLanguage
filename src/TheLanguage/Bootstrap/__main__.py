@@ -77,8 +77,6 @@ def Execute(
                     include_file_extensions=[".TheLanguage"],
                 ))
 
-                filenames = [filenames[0]] # BugBug
-
                 input_dir = input_directory_or_filename
             else:
                 assert False, input_directory_or_filename  # pragma: no cover
@@ -120,6 +118,8 @@ def Execute(
 
         # ----------------------------------------------------------------------
 
+        max_num_threads = 1 # BugBug
+
         dm.stream.write("Lexing...")
         with dm.stream.DoneManager() as lex_dm:
             result = Lex(
@@ -128,6 +128,7 @@ def Execute(
                 "Python", # BugBug target.Name,
                 filenames,
                 [_script_dir],
+                max_num_threads=max_num_threads,
             )
 
             if isinstance(result, list):
@@ -137,13 +138,17 @@ def Execute(
 
         dm.stream.write("Pruning...")
         with dm.stream.DoneManager():
-            Prune(result)
+            Prune(
+                result,
+                max_num_threads=max_num_threads,
+            )
 
         dm.stream.write("Parsing...")
         with dm.stream.DoneManager() as parse_dm:
             result = Parse(
                 cancellation_event,
                 result,
+                max_num_threads=max_num_threads,
             )
             if isinstance(result, list):
                 return ProcessExceptions(parse_dm, result)
@@ -152,7 +157,11 @@ def Execute(
 
         dm.stream.write("Validating...")
         with dm.stream.DoneManager() as validate_dm:
-            result = Validate(cancellation_event, result)
+            result = Validate(
+                cancellation_event,
+                result,
+                max_num_threads=max_num_threads,
+            )
             if isinstance(result, list):
                 return ProcessExceptions(validate_dm, result)
 

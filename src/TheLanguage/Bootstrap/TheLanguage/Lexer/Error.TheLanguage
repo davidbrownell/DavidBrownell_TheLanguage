@@ -26,23 +26,19 @@ public immutable exception Error:
     >>>
 
     # ----------------------------------------------------------------------
-    # BugBug public UCountingInt view line
-    # BugBug public UCountingInt view column
-
-    public Int<T1> view bugbug1
-    public Int<T1>{1} view bugbug2
-    public Int{1} view bugbug3
+    public UCountingInt view line
+    public UCountingInt view column
 
     # ----------------------------------------------------------------------
-    # BugBug public override immutable String __ToString__():
-    # BugBug     pass # BugBug return self._GetMessageTemplate().Format(self.__Fields__)
+    public override immutable String __ToString__():
+        return self._GetMessageTemplate().Format(self.__Fields__)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
-    # BugBug private override immutable None __Init__():
-    # BugBug     assert self.line >= 1
-    # BugBug     assert self.column >= 1
+    private override immutable None __Init__():
+        assert self.line >= 1
+        assert self.column >= 1
 
     # ----------------------------------------------------------------------
-    # BugBug private abstract immutable String _GetMessageTemplate()
+    private abstract immutable String _GetMessageTemplate()

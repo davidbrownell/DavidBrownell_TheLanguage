@@ -14,7 +14,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ClassStatement import ClassStatement
-    # BugBug from .FuncDefinitionStatement import FuncDefinitionStatement
+    from .FuncDefinitionStatement import FuncDefinitionStatement
 
     from ..Common import AttributePhraseItem
     from ..Common import Tokens as CommonTokens
@@ -176,7 +176,7 @@ class ClassMemberStatement(GrammarPhrase):
                     no_serialize_node,
                     no_compare_node,
                 ),  # type: ignore
-                ClassStatement.GetContainingClassParserInfo(node, "BugBug"), # type: ignore  # FuncDefinitionStatement.PHRASE_NAME),  # type: ignore
+                ClassStatement.GetContainingClassParserInfo(node, FuncDefinitionStatement.PHRASE_NAME),  # type: ignore
                 visibility_info,  # type: ignore
                 type_info,
                 name_info,

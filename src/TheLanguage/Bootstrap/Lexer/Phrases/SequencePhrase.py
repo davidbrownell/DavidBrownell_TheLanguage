@@ -360,6 +360,9 @@ class SequencePhrase(Phrase):
 
             success = True
 
+        if success:
+            print("BugBug", normalized_iter.Line, normalized_iter.Column)
+
         if comments_or_whitespace_data_items:
             # If the previous token was a pop, we should consider the output as part of the current
             # phrase. Otherwise, we should consider the tokens as part of the next phrase.
