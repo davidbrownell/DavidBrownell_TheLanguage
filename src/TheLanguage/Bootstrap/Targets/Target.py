@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IntegerLiteralExpression.py
+# |  Target.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-25 09:41:40
+# |      2021-10-19 08:19:18
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IntegerLiteralExpression object"""
+"""Contains the Target object"""
 
 import os
 
+from semantic_version import Version as SemVer
+
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -27,27 +30,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.Impl.IntLiteralExpressionImpl import IntLiteralExpressionImpl
-    from ...GrammarInfo import DynamicPhrasesType
+    from ..Parser.RootParserInfo import RootParserInfo
 
 
 # ----------------------------------------------------------------------
-class IntegerLiteralExpression(IntLiteralExpressionImpl):
-    """\
-    An integer value.
-
-    Examples:
-        1
-        123
-        -1
-        +45678
-    """
-
-    PHRASE_NAME                             = "Integer Literal Expression"
+class Target(Interface.Interface):
+    """Abstract base class for a target"""
 
     # ----------------------------------------------------------------------
-    def __init__(self):
-        super(IntegerLiteralExpression, self).__init__(
-            self.PHRASE_NAME,
-            DynamicPhrasesType.Expressions,
-        )
+    @Interface.abstractproperty
+    def Name(self) -> str:
+        """Name of the target"""
+        raise Exception("Abstract property")  # pragma: no cover
+
+    @Interface.abstractproperty
+    def Version(self) -> SemVer:
+        """Version of the target implementation"""
+        raise Exception("Abstract property")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def Invoke(
+        fully_qualified_name: str,
+        parser_info: RootParserInfo,
+    ) -> None:
+        """Invokes the derived Target's functionality with the provided information"""
+        raise Exception("Abstract method")  # pragma: no cover

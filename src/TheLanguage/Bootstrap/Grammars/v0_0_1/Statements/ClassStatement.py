@@ -304,26 +304,14 @@ class ClassStatement(GrammarPhrase):
         if not CommonTokens.TypeNameRegex.match(name_info):
             raise CommonTokens.InvalidTokenError.FromNode(name_leaf, name_info, "type")
 
-        # BugBug: Template and constraint parameters need to be extracted on the 2nd pass
-        # <template_parameters>?
+        # <template_parameters>? (Processed during the second phase)
         template_parameters_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[6])))
-        if template_parameters_node is None:
-            template_parameters_info = None
-        else:
-            template_parameters_info = TemplateParametersPhraseItem.ExtractParserInfo(template_parameters_node)
 
-        # <constraint_parameters>?
+        # <constraint_parameters>? (Processed during the second phase)
         constraint_parameters_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
-        if constraint_parameters_node is None:
-            constraint_parameters_info = None
-        else:
-            constraint_parameters_info = ConstraintParametersPhraseItem.ExtractParserInfo(constraint_parameters_node)
 
         # <dependencies>*
-        dependencies_parser_infos: Dict[
-            cls.DependencyIndicator,
-            Tuple[AST.Node, List[ClassStatementDependencyParserInfo]]
-        ] = {}
+        all_dependency_nodes: Dict[cls.DependencyIndicator, AST.Node] = {}
 
         dependencies_node = cast(AST.Node, nodes[8])
 
@@ -335,80 +323,10 @@ class ClassStatement(GrammarPhrase):
             dependency_indicator_node = cast(AST.Node, dependency_nodes[0])
             dependency_indicator = cls.DependencyIndicator.Extract(dependency_indicator_node)  # type: ignore
 
-            if dependency_indicator in dependencies_parser_infos:
+            if dependency_indicator in all_dependency_nodes:
                 DuplicateBaseTypeError.FromNode(dependency_indicator_node, dependency_indicator.name)
 
-            # Items
-            items_node = cast(AST.Node, ExtractOr(cast(AST.Node, dependency_nodes[1])))
-
-            assert items_node.Type is not None
-            if items_node.Type.Name == "Grouped":
-                items_nodes = ExtractSequence(items_node)
-                assert len(items_nodes) == 5
-
-                items_node = cast(AST.Node, items_nodes[2])
-
-            items_nodes = ExtractSequence(items_node)
-            assert len(items_nodes) == 3
-
-            dependency_parser_infos: List[ClassStatementDependencyParserInfo] = []
-
-            for item_node in itertools.chain(
-                [items_nodes[0]],
-                (
-                    ExtractSequence(delimited_node)[1]
-                    for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, items_nodes[1])))
-                ),
-            ):
-                item_nodes = ExtractSequence(cast(AST.Node, item_node))
-                assert len(item_nodes) == 4
-
-                # <visibility>?
-                item_visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, item_nodes[0])))
-                if item_visibility_node is None:
-                    item_visibility_info = None
-                else:
-                    item_visibility_info = VisibilityModifier.Extract(item_visibility_node)
-
-                # <generic_name>
-                item_name_leaf = cast(AST.Leaf, item_nodes[1])
-                item_name_info = cast(str, ExtractToken(item_name_leaf))
-
-                if not CommonTokens.TypeNameRegex.match(item_name_info):
-                    raise CommonTokens.InvalidTokenError.FromNode(item_name_leaf, item_name_info, "type")
-
-                # <template_arguments>?
-                item_template_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, item_nodes[2])))
-                if item_template_arguments_node is None:
-                    item_template_arguments_info = None
-                else:
-                    item_template_arguments_info = TemplateArgumentsPhraseItem.ExtractParserInfo(item_template_arguments_node)
-
-                # <constraint_arguments>?
-                item_constraints_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, item_nodes[3])))
-                if item_constraints_arguments_node is None:
-                    item_constraints_arguments_info = None
-                else:
-                    item_constraints_arguments_info = ConstraintArgumentsPhraseItem.ExtractParserInfo(item_constraints_arguments_node)
-
-                dependency_parser_infos.append(
-                    ClassStatementDependencyParserInfo(
-                        CreateParserRegions(
-                            item_node,
-                            item_visibility_node,
-                            item_name_leaf,
-                            item_template_arguments_node,
-                            item_constraints_arguments_node,
-                        ),  # type: ignore
-                        item_visibility_info,  # type: ignore
-                        item_name_info,
-                        item_template_arguments_info,
-                        item_constraints_arguments_info,
-                    )
-                )
-
-            assert dependency_parser_infos
-            dependencies_parser_infos[dependency_indicator] = (dependency_node, dependency_parser_infos)
+            all_dependency_nodes[dependency_indicator] = dependency_node
 
         # <statement>+
         statements_node = cast(AST.Node, nodes[10])
@@ -421,29 +339,114 @@ class ClassStatement(GrammarPhrase):
                 class_modifier_node,
                 class_type_node,
                 name_leaf,
-                template_parameters_node,
-                constraint_parameters_node,
-                dependencies_parser_infos.get(cls.DependencyIndicator.based, (None,))[0],
-                dependencies_parser_infos.get(cls.DependencyIndicator.extends, (None,))[0],
-                dependencies_parser_infos.get(cls.DependencyIndicator.implements, (None,))[0],
-                dependencies_parser_infos.get(cls.DependencyIndicator.uses, (None,))[0],
                 statements_node,
                 None, # Documentation
+                template_parameters_node,
+                constraint_parameters_node,
+                all_dependency_nodes.get(cls.DependencyIndicator.based, None),
+                all_dependency_nodes.get(cls.DependencyIndicator.extends, None),
+                all_dependency_nodes.get(cls.DependencyIndicator.implements, None),
+                all_dependency_nodes.get(cls.DependencyIndicator.uses, None),
             ),  # type: ignore
             visibility_info,  # type: ignore
             class_modifier_info,  # type: ignore
             class_type_info,
             name_info,
-            template_parameters_info,
-            constraint_parameters_info,
-            dependencies_parser_infos.get(cls.DependencyIndicator.based, (None, None))[1],  # type: ignore
-            dependencies_parser_infos.get(cls.DependencyIndicator.extends, (None, None))[1],
-            dependencies_parser_infos.get(cls.DependencyIndicator.implements, (None, None))[1],
-            dependencies_parser_infos.get(cls.DependencyIndicator.uses, (None, None))[1],
         )
 
         # ----------------------------------------------------------------------
         def Phase2Construct():
+            # <template_parameters>?
+            if template_parameters_node is None:
+                template_parameters_info = None
+            else:
+                template_parameters_info = TemplateParametersPhraseItem.ExtractParserInfo(template_parameters_node)
+
+            # <constraint_parameters>?
+            if constraint_parameters_node is None:
+                constraint_parameters_info = None
+            else:
+                constraint_parameters_info = ConstraintParametersPhraseItem.ExtractParserInfo(constraint_parameters_node)
+
+            # Dependencies
+            all_dependency_infos: Dict[cls.DependencyIndicator, List[ClassStatementDependencyParserInfo]] = {}
+
+            for dependency_indicator, dependency_node in all_dependency_nodes.items():
+                dependency_nodes = ExtractSequence(dependency_node)
+                assert len(dependency_nodes) == 2
+
+                dependency_parser_infos: List[ClassStatementDependencyParserInfo] = []
+
+                # Items
+                items_node = cast(AST.Node, ExtractOr(cast(AST.Node, dependency_nodes[1])))
+
+                assert items_node.Type is not None
+                if items_node.Type.Name == "Grouped":
+                    items_nodes = ExtractSequence(items_node)
+                    assert len(items_nodes) == 5
+
+                    items_node = cast(AST.Node, items_nodes[2])
+
+                items_nodes = ExtractSequence(items_node)
+                assert len(items_nodes) == 3
+
+                for item_node in itertools.chain(
+                    [items_nodes[0]],
+                    (
+                        ExtractSequence(delimited_node)[1]
+                        for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, items_nodes[1])))
+                    ),
+                ):
+                    item_nodes = ExtractSequence(cast(AST.Node, item_node))
+                    assert len(item_nodes) == 4
+
+                    # <visibility>?
+                    item_visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, item_nodes[0])))
+                    if item_visibility_node is None:
+                        item_visibility_info = None
+                    else:
+                        item_visibility_info = VisibilityModifier.Extract(item_visibility_node)
+
+                    # <generic_name>
+                    item_name_leaf = cast(AST.Leaf, item_nodes[1])
+                    item_name_info = cast(str, ExtractToken(item_name_leaf))
+
+                    if not CommonTokens.TypeNameRegex.match(item_name_info):
+                        raise CommonTokens.InvalidTokenError.FromNode(item_name_leaf, item_name_info, "type")
+
+                    # <template_arguments>?
+                    item_template_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, item_nodes[2])))
+                    if item_template_arguments_node is None:
+                        item_template_arguments_info = None
+                    else:
+                        item_template_arguments_info = TemplateArgumentsPhraseItem.ExtractParserInfo(item_template_arguments_node)
+
+                    # <constraint_arguments>?
+                    item_constraints_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, item_nodes[3])))
+                    if item_constraints_arguments_node is None:
+                        item_constraints_arguments_info = None
+                    else:
+                        item_constraints_arguments_info = ConstraintArgumentsPhraseItem.ExtractParserInfo(item_constraints_arguments_node)
+
+                    dependency_parser_infos.append(
+                        ClassStatementDependencyParserInfo(
+                            CreateParserRegions(
+                                item_node,
+                                item_visibility_node,
+                                item_name_leaf,
+                                item_template_arguments_node,
+                                item_constraints_arguments_node,
+                            ),  # type: ignore
+                            item_visibility_info,  # type: ignore
+                            item_name_info,
+                            item_template_arguments_info,
+                            item_constraints_arguments_info,
+                        )
+                    )
+
+                assert dependency_parser_infos
+                all_dependency_infos[dependency_indicator] = dependency_parser_infos
+
             # <statement>+
             (
                 statement_info,
@@ -459,7 +462,16 @@ class ClassStatement(GrammarPhrase):
                     CreateParserRegion(docstring_info[1]),
                 )
 
-            parser_info.FinalConstruct(statement_info, docstring_info)
+            parser_info.FinalConstruct(
+                statement_info,
+                docstring_info,
+                template_parameters_info,
+                constraint_parameters_info,
+                all_dependency_infos.get(cls.DependencyIndicator.based, None),
+                all_dependency_infos.get(cls.DependencyIndicator.extends, None),
+                all_dependency_infos.get(cls.DependencyIndicator.implements, None),
+                all_dependency_infos.get(cls.DependencyIndicator.uses, None),
+            )
 
             return parser_info
 

@@ -260,6 +260,13 @@ class SyntaxInvalidError(Error):
                                 num_phrases = sum(0 if child.IsIgnored else 1 for child in error_node.Children) - 1
                                 assert num_phrases < len(error_node.Type.Phrases)
 
+                                if (
+                                    isinstance(error_node.Type.Phrases[num_phrases], TokenPhrase)
+                                    and error_node.Type.Phrases[num_phrases].Token.IsControlToken
+                                    and num_phrases + 1 < len(error_node.Type.Phrases)
+                                ):
+                                    num_phrases += 1
+
                                 expected_phrase_name = error_node.Type.Phrases[num_phrases].Name
 
                             error_context = "{}{} expected in '{}'".format(

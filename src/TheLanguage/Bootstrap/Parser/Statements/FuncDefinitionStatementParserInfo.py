@@ -44,6 +44,11 @@ with InitRelativeImports():
 class OperatorType(Enum):
     # TODO: I don't think that these are complete
 
+    # Compile-time
+    EvalTemplates                           = auto()
+    EvalConstraints                         = auto()
+    IsConvertibleTo                         = auto()
+
     # Foundational
     ToBool                                  = auto()
     ToString                                = auto()
@@ -114,6 +119,13 @@ class OperatorType(Enum):
     BitAndInplace                           = auto()
     BitOrInplace                            = auto()
     BitXorInplace                           = auto()
+
+
+COMPILE_TIME_OPERATORS                      = [
+    OperatorType.EvalTemplates,
+    OperatorType.EvalConstraints,
+    OperatorType.IsConvertibleTo,
+]
 
 
 FOUNDATIONAL_OPERATORS                      = [
@@ -305,7 +317,10 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                 method_modifier = class_parser_info.TypeInfo.DefaultMethodModifier
                 object.__setattr__(self.Regions__, "MethodModifier", self.Regions__.Self__)  # type: ignore && pylint: disable=no-member
 
-            if method_modifier not in class_parser_info.TypeInfo.AllowedMethodModifiers:
+            if (
+                method_modifier not in class_parser_info.TypeInfo.AllowedMethodModifiers
+                and self.Name not in COMPILE_TIME_OPERATORS
+            ):
                 raise InvalidMethodModifierError(
                     self.Regions__.MethodModifier,  # type: ignore && pylint: disable=no-member
                     class_parser_info.ClassType.value,
@@ -330,7 +345,10 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
 
             # Statements
             if self.Statements:
-                if method_modifier == MethodModifierType.abstract:
+                if (
+                    method_modifier == MethodModifierType.abstract
+                    and self.Name not in COMPILE_TIME_OPERATORS
+                ):
                     assert not self.IsDeferred
                     raise MethodStatementsUnexpectedError(self.Regions__.Statements, method_modifier.name)  # type: ignore && pylint: disable=no-member
             else:

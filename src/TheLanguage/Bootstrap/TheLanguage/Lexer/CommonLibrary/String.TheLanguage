@@ -1,0 +1,40 @@
+# ----------------------------------------------------------------------
+# |
+# |  String.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-10-29 14:50:39
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+Contains the String object.
+>>>
+
+
+# BugBug # ----------------------------------------------------------------------
+# BugBug public mutable class String
+# BugBug     {
+# BugBug         (Int | None) min_length! =1,
+# BugBug         (Int | None) max_length! =None,
+# BugBug         (String | None) regex! =None
+# BugBug     }
+# BugBug :
+# BugBug     <<<
+# BugBug     BugBug
+# BugBug     >>>
+# BugBug
+# BugBug     static (Bool | String | None) __EvalConstraints!__():
+# BugBug         pass # BugBug
+# BugBug
+# BugBug     static Bool __IsConvertibleTo!__<OtherT>():
+# BugBug         pass # BugBug
+# BugBug
+# BugBug     # BugBug: Many deferred methods here
+# BugBug     pass

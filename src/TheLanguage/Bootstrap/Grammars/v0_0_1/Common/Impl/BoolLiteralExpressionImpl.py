@@ -14,7 +14,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Tokens import RegexToken
+    from ...Common.Tokens import RegexToken
 
     from ....GrammarInfo import AST, DynamicPhrasesType, GrammarPhrase, ParserInfo
 
@@ -26,22 +26,11 @@ with InitRelativeImports():
 
     from .....Parser.Parser import CreateParserRegions
 
-    from .....Parser.Literals.IntLiteralParserInfo import IntLiteralParserInfo
+    from .....Parser.Literals.BoolLiteralParserInfo import BoolLiteralParserInfo
 
 
 # ----------------------------------------------------------------------
-class IntLiteralExpressionImpl(GrammarPhrase):
-    """\
-    An integer value.
-
-    Examples:
-        1
-        123
-        -1
-        +45678
-    """
-
-    INTEGER_REGEX                           = r"[+-]?[0-9]+" # TODO: Enhance with optional delimiters
+class BoolLiteralExpressionImpl(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     def __init__(
@@ -49,15 +38,15 @@ class IntLiteralExpressionImpl(GrammarPhrase):
         phrase_name: str,
         dynamic_phrases_type: DynamicPhrasesType,
     ):
-        super(IntLiteralExpressionImpl, self).__init__(
+        super(BoolLiteralExpressionImpl, self).__init__(
             dynamic_phrases_type,
             CreatePhrase(
                 name=phrase_name,
                 item=[
                     # Note that this must be a sequence so that ExtractParserInfo will be called.
                     RegexToken(
-                        "<integer>",
-                        re.compile(r"(?P<value>{})".format(self.INTEGER_REGEX)),
+                        "<bool>",
+                        re.compile(r"(?P<value>True|False)\b"),
                     ),
                 ],
             ),
@@ -65,16 +54,8 @@ class IntLiteralExpressionImpl(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     @staticmethod
-    def FromString(
-        value: str,
-    ) -> int:
-        return int(value) # TODO: Enhance this when INTEGER_REGEX is updated
-
-    # ----------------------------------------------------------------------
-    @classmethod
     @Interface.override
     def ExtractParserInfo(
-        cls,
         node: AST.Node,
     ) -> Union[
         None,
@@ -85,12 +66,18 @@ class IntLiteralExpressionImpl(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
-        # <integer>
-        integer_leaf = cast(AST.Leaf, nodes[0])
-        integer_value = cast(str, ExtractToken(integer_leaf))
-        integer_info = cls.FromString(integer_value)
+        # <bool>
+        bool_leaf = cast(AST.Leaf, nodes[0])
+        bool_value = cast(str, ExtractToken(bool_leaf))
 
-        return IntLiteralParserInfo(
+        if bool_value == "True":
+            bool_info = True
+        elif bool_value == "False":
+            bool_info = False
+        else:
+            assert False, bool_value  # pragma: no cover
+
+        return BoolLiteralParserInfo(
             CreateParserRegions(node),  # type: ignore
-            integer_info,
+            bool_info,
         )

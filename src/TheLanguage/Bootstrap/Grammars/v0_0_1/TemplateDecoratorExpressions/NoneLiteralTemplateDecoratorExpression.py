@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IntegerLiteralExpression.py
+# |  NoneLiteralExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-25 09:41:40
+# |      2021-10-22 11:01:16
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IntegerLiteralExpression object"""
+"""Contains the NoneLiteralExpression object"""
 
 import os
 
@@ -27,27 +27,24 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.Impl.IntLiteralExpressionImpl import IntLiteralExpressionImpl
+    from ..Common.Impl.NoneLiteralExpressionImpl import NoneLiteralExpressionImpl
     from ...GrammarInfo import DynamicPhrasesType
 
 
 # ----------------------------------------------------------------------
-class IntegerLiteralExpression(IntLiteralExpressionImpl):
+class NoneLiteralTemplateDecoratorExpression(NoneLiteralExpressionImpl):
     """\
-    An integer value.
+    None.
 
     Examples:
-        1
-        123
-        -1
-        +45678
+        None
     """
 
-    PHRASE_NAME                             = "Integer Literal Expression"
+    PHRASE_NAME                             = "None Literal TemplateDecoratorExpression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(IntegerLiteralExpression, self).__init__(
+        super(NoneLiteralTemplateDecoratorExpression, self).__init__(
             self.PHRASE_NAME,
-            DynamicPhrasesType.Expressions,
+            DynamicPhrasesType.TemplateDecoratorExpressions,
         )

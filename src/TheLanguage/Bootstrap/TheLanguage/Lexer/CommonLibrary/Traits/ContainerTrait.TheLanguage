@@ -1,0 +1,38 @@
+# ----------------------------------------------------------------------
+# |
+# |  ContainerTrait.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-04 13:15:21
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+BugBug
+>>>
+
+
+# ----------------------------------------------------------------------
+public mutable trait ContainerTrait:
+    <<<
+    A collection/container of elements.
+    >>>
+
+    public abstract immutable Bool Empty()
+    public abstract immutable UIntArch NumElements()
+    public abstract immutable UIntArch Capacity()
+
+    public abstract mutable None Clear()
+    public abstract mutable None Reserve?(PosIntArch num_elements)
+    public abstract mutable None Resize?(PostIntArch num_elements)
+
+    # BugBug: __if IsView!<T>:
+    # BugBug:     public abstract immutable shared T Peek?()
+    # BugBug: __else:
+    # BugBug:     [Scoped] public abstract immutable shared T Peek?()

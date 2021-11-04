@@ -90,15 +90,18 @@ def Execute(
             with CallOnExit(lambda: sys.path.pop(0)):
                 from AllGrammars import Configurations, Lex, Prune, Parse, InvokeTarget, Validate
                 from Lexer.TranslationUnitLexer import SyntaxInvalidError
-                # BugBug from Targets.Python.PythonTarget import PythonTarget
+                from Targets.Python.PythonTarget import PythonTarget
 
         cancellation_event = threading.Event()
         configuration = Configurations[configuration]
-        # BugBug target = PythonTarget(input_dir, output_directory)
+        target = PythonTarget(input_dir, output_directory)
 
         # ----------------------------------------------------------------------
         def ProcessExceptions(dm, exceptions) -> int:
             for ex in exceptions:
+                if hasattr(ex, "FullyQualifiedName"):
+                    dm.stream.write("*** {} ***\n\n".format(ex.FullyQualifiedName))
+
                 dm.stream.write(str(ex))
 
                 if not isinstance(ex, SyntaxInvalidError):
@@ -118,14 +121,14 @@ def Execute(
 
         # ----------------------------------------------------------------------
 
-        max_num_threads = 1 # BugBug
+        max_num_threads = 1 # TODO: There is a problem when there are multiple threads
 
         dm.stream.write("Lexing...")
         with dm.stream.DoneManager() as lex_dm:
             result = Lex(
                 cancellation_event,
                 configuration,
-                "Python", # BugBug target.Name,
+                target.Name,
                 filenames,
                 [_script_dir],
                 max_num_threads=max_num_threads,
@@ -167,13 +170,18 @@ def Execute(
 
             assert result is not None
 
-        # BugBug dm.stream.write("Invoking Target...")
-        # BugBug with dm.stream.DoneManager() as target_dm:
-        # BugBug     result = InvokeTarget(cancellation_event, result, target)
-        # BugBug     if isinstance(result, list):
-        # BugBug         return ProcessExceptions(target_dm, result)
-        # BugBug
-        # BugBug     assert result is not None
+        dm.stream.write("Invoking Target...")
+        with dm.stream.DoneManager() as target_dm:
+            result = InvokeTarget(
+                cancellation_event,
+                result,
+                target,
+                max_num_threads=max_num_threads,
+            )
+            if isinstance(result, list):
+                return ProcessExceptions(target_dm, result)
+
+            assert result is not None
 
         return dm.result
 

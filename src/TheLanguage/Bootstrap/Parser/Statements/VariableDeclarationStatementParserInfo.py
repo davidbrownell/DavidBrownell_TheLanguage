@@ -44,10 +44,10 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class VariableDeclarationStatementParserInfo(StatementParserInfo):
+    IsOnce: Optional[bool]
     Modifier: Optional[TypeModifier]
     Name: NameParserInfo
     Expression: ExpressionParserInfo
-    IsOnce: Optional[bool]
 
     # TODO: Not all type modifiers are valid in this context
 

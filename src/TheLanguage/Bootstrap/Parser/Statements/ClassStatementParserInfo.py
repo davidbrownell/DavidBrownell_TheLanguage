@@ -303,26 +303,24 @@ class ClassStatementParserInfo(StatementParserInfo):
     ClassType: ClassType
     Name: str
 
-    Templates: Optional[TemplateParametersParserInfo]
-    Constraints: Optional[ConstraintParametersParserInfo]
-
-    bases: InitVar[Optional[List[ClassStatementDependencyParserInfo]]]
-    Base: Optional[ClassStatementDependencyParserInfo]  = field(init=False)
-
-    # TODO: Don't need both Extends and Base
-    Extends: Optional[List[ClassStatementDependencyParserInfo]]
-    Implements: Optional[List[ClassStatementDependencyParserInfo]]
-    Uses: Optional[List[ClassStatementDependencyParserInfo]]
-
     type_info: InitVar[Optional[TypeInfo]]  = None  # type: ignore
     TypeInfo: TypeInfo                      = field(init=False)
 
     # Phase 2 Values
-    Statements: List[StatementParserInfo]   = field(init=False, default_factory=list)
-    Documentation: Optional[str]            = field(init=False, default=None)
+    Statements: List[StatementParserInfo]                                   = field(init=False, default_factory=list)
+    Documentation: Optional[str]                                            = field(init=False, default=None)
+    Templates: Optional[TemplateParametersParserInfo]                       = field(init=False, default=None)
+    Constraints: Optional[ConstraintParametersParserInfo]                   = field(init=False, default=None)
+
+    Base: Optional[ClassStatementDependencyParserInfo]                      = field(init=False)
+
+    # TODO: Don't need both Extends and Base
+    Extends: Optional[List[ClassStatementDependencyParserInfo]]             = field(init=False, default=None)
+    Implements: Optional[List[ClassStatementDependencyParserInfo]]          = field(init=False, default=None)
+    Uses: Optional[List[ClassStatementDependencyParserInfo]]                = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, visibility, class_modifier, bases, type_info):
+    def __post_init__(self, regions, visibility, class_modifier, type_info):
         super(ClassStatementParserInfo, self).__post_init__(
             regions,
             regionless_attributes=["TypeInfo"],
@@ -372,90 +370,18 @@ class ClassStatementParserInfo(StatementParserInfo):
 
         object.__setattr__(self, "ClassModifier", class_modifier)
 
-        # Base
-        if bases is not None:
-            if len(bases) != 1:
-                raise TooManyBasesError(self.Regions__.Base)  # type: ignore && pylint: disable=no-member
-
-            bases = bases[0]
-
-        object.__setattr__(self, "Base", bases)
-
-        # Bases, Extends, Implements, and Uses
-        if self.Base is not None:
-            if not type_info.AllowedBaseTypes:
-                raise InvalidBaseError(
-                    self.Regions__.Base,  # type: ignore && pylint: disable=no-member
-                    self.ClassType.value,
-                )
-
-            if self.Base.Visibility not in type_info.AllowedBaseVisibilities:
-                raise InvalidBaseVisibilityError(
-                    self.Base.Regions__.Visibility,  # type: ignore && pylint: disable=no-member
-                    self.ClassType.value,
-                    self.Base.Visibility.name,
-                    ", ".join(["'{}'".format(e.name) for e in type_info.AllowedBaseVisibilities]),
-                )
-
-        if self.Extends is not None:
-            if not type_info.AllowedExtendsTypes:
-                raise InvalidExtendsError(
-                    self.Regions__.Extends,  # type: ignore && pylint: disable=no-member
-                    self.ClassType.value,
-                )
-
-            assert self.Extends
-
-            for dependency in self.Extends:
-                if dependency.Visibility not in type_info.AllowedExtendsVisibilities:
-                    raise InvalidExtendsVisibilityError(
-                        dependency.Regions__.Visibility,  # type: ignore && pylint: disable=no-member
-                        self.ClassType.value,
-                        dependency.Visibility.name,
-                        ", ".join(["'{}'".format(e.name) for e in type_info.AllowedExtendsVisibilities]),
-                    )
-
-        if self.Implements is not None:
-            if not type_info.AllowedImplementsTypes:
-                raise InvalidImplementsError(
-                    self.Regions__.Implements,  # type: ignore && pylint: disable=no-member
-                    self.ClassType.value,
-                )
-
-            assert self.Implements
-
-            for dependency in self.Implements:
-                if dependency.Visibility not in type_info.AllowedImplementsVisibilities:
-                    raise InvalidImplementsVisibilityError(
-                        dependency.Regions__.Visibility,  # type: ignore && pylint: disable=no-member
-                        self.ClassType.value,
-                        dependency.Visibility.name,
-                        ", ".join(["'{}'".format(e.name) for e in type_info.AllowedImplementsVisibilities]),
-                    )
-
-        if self.Uses is not None:
-            if not type_info.AllowedUsesTypes:
-                raise InvalidUsesError(
-                    self.Regions__.Uses,  # type: ignore && pylint: disable=no-member
-                    self.ClassType.value,
-                )
-
-            assert self.Uses
-
-            for dependency in self.Uses:
-                if dependency.Visibility not in type_info.AllowedUsesVisibilities:
-                    raise InvalidUsesVisibilityError(
-                        dependency.Regions__.Visibility,  # type: ignore && pylint: disable=no-member
-                        self.ClassType.value,
-                        dependency.Visibility.name,
-                        ", ".join(["'{}'".format(e.name) for e in type_info.AllowedUsesVisibilities]),
-                    )
 
     # ----------------------------------------------------------------------
     def FinalConstruct(
         self,
         statements: List[StatementParserInfo],
         documentation: Optional[Tuple[str, Region]],
+        template_parameters: Optional[TemplateParametersParserInfo],
+        constraint_parameters: Optional[ConstraintParametersParserInfo],
+        bases: Optional[List[ClassStatementDependencyParserInfo]],
+        extends: Optional[List[ClassStatementDependencyParserInfo]],
+        implements: Optional[List[ClassStatementDependencyParserInfo]],
+        uses: Optional[List[ClassStatementDependencyParserInfo]],
     ) -> None:
         assert not self.Statements
         assert self.Documentation is None
@@ -471,6 +397,105 @@ class ClassStatementParserInfo(StatementParserInfo):
         if documentation is not None:
             object.__setattr__(self, "Documentation", documentation[0])
             object.__setattr__(self.Regions__, "Documentation", documentation[1])
+
+        if template_parameters is not None:
+            object.__setattr__(self, "Templates", template_parameters)
+
+        if constraint_parameters is not None:
+            object.__setattr__(self, "Constraints", constraint_parameters)
+
+        # Bases, Extends, Implements, and Uses
+        if bases is None:
+            object.__setattr__(self, "Base", None)
+        else:
+            if len(bases) > 1:
+                raise Exception("BugBug: Only 1 base is allowed")
+
+            object.__setattr__(self, "Base", bases[0])
+
+            if not self.TypeInfo.AllowedBaseTypes:
+                raise InvalidBaseError(
+                    self.Regions__.Base,  # type: ignore && pylint: disable=no-member
+                    self.ClassType.value,
+                )
+
+            if self.Base.Visibility not in self.TypeInfo.AllowedBaseVisibilities:
+                raise InvalidBaseVisibilityError(
+                    self.Base.Regions__.Visibility,  # type: ignore && pylint: disable=no-member
+                    self.ClassType.value,
+                    self.Base.Visibility.name,
+                    ", ".join(["'{}'".format(e.name) for e in self.TypeInfo.AllowedBaseVisibilities]),
+                )
+
+        if extends is None:
+            object.__setattr__(self, "Extends", None)
+        else:
+            object.__setattr__(self, "Extends", extends)
+
+            if self.Extends is not None:
+                if not self.TypeInfo.AllowedExtendsTypes:
+                    raise InvalidExtendsError(
+                        self.Regions__.Extends,  # type: ignore && pylint: disable=no-member
+                        self.ClassType.value,
+                    )
+
+                assert self.Extends
+
+                for dependency in self.Extends:
+                    if dependency.Visibility not in self.TypeInfo.AllowedExtendsVisibilities:
+                        raise InvalidExtendsVisibilityError(
+                            dependency.Regions__.Visibility,  # type: ignore && pylint: disable=no-member
+                            self.ClassType.value,
+                            dependency.Visibility.name,
+                            ", ".join(["'{}'".format(e.name) for e in self.TypeInfo.AllowedExtendsVisibilities]),
+                        )
+
+
+        if implements is None:
+            object.__setattr__(self, "Implements", None)
+        else:
+            object.__setattr__(self, "Implements", implements)
+
+            if self.Implements is not None:
+                if not self.TypeInfo.AllowedImplementsTypes:
+                    raise InvalidImplementsError(
+                        self.Regions__.Implements,  # type: ignore && pylint: disable=no-member
+                        self.ClassType.value,
+                    )
+
+                assert self.Implements
+
+                for dependency in self.Implements:
+                    if dependency.Visibility not in self.TypeInfo.AllowedImplementsVisibilities:
+                        raise InvalidImplementsVisibilityError(
+                            dependency.Regions__.Visibility,  # type: ignore && pylint: disable=no-member
+                            self.ClassType.value,
+                            dependency.Visibility.name,
+                            ", ".join(["'{}'".format(e.name) for e in self.TypeInfo.AllowedImplementsVisibilities]),
+                        )
+
+        if uses is None:
+            object.__setattr__(self, "Uses", None)
+        else:
+            object.__setattr__(self, "Uses", uses)
+
+            if self.Uses is not None:
+                if not self.TypeInfo.AllowedUsesTypes:
+                    raise InvalidUsesError(
+                        self.Regions__.Uses,  # type: ignore && pylint: disable=no-member
+                        self.ClassType.value,
+                    )
+
+                assert self.Uses
+
+                for dependency in self.Uses:
+                    if dependency.Visibility not in self.TypeInfo.AllowedUsesVisibilities:
+                        raise InvalidUsesVisibilityError(
+                            dependency.Regions__.Visibility,  # type: ignore && pylint: disable=no-member
+                            self.ClassType.value,
+                            dependency.Visibility.name,
+                            ", ".join(["'{}'".format(e.name) for e in self.TypeInfo.AllowedUsesVisibilities]),
+                        )
 
         self.Validate()
 

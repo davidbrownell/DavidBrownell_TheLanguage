@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IntegerLiteralExpression.py
+# |  VariantType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-25 09:41:40
+# |      2021-10-12 11:31:04
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IntegerLiteralExpression object"""
+"""Contains the VariantType object"""
 
 import os
 
@@ -27,27 +27,27 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.Impl.IntLiteralExpressionImpl import IntLiteralExpressionImpl
+    from ..Common.Impl.VariantTypeImpl import VariantTypeImpl
     from ...GrammarInfo import DynamicPhrasesType
 
 
 # ----------------------------------------------------------------------
-class IntegerLiteralExpression(IntLiteralExpressionImpl):
+class VariantTemplateDecoratorType(VariantTypeImpl):
     """\
-    An integer value.
+    A type that can be any one of a collection of types.
+
+    '(' <type> '|' (<type> '|')* <type> ')'
 
     Examples:
-        1
-        123
-        -1
-        +45678
+        (Int | Float)
+        (Int val | Bool | Char view)
     """
 
-    PHRASE_NAME                             = "Integer Literal Expression"
+    PHRASE_NAME                             = "Variant TemplateDecoratorType"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(IntegerLiteralExpression, self).__init__(
+        super(VariantTemplateDecoratorType, self).__init__(
             self.PHRASE_NAME,
-            DynamicPhrasesType.Expressions,
+            DynamicPhrasesType.TemplateDecoratorTypes,
         )

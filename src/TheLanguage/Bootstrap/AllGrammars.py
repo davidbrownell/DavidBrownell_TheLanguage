@@ -20,6 +20,7 @@ import itertools
 import os
 import sys
 import threading
+import traceback
 
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
@@ -70,7 +71,7 @@ with InitRelativeImports():
         Verify as VerifyImpl,
     )
 
-    # BugBug from .Targets.Target import Target
+    from .Targets.Target import Target
 
 
 # ----------------------------------------------------------------------
@@ -375,7 +376,7 @@ def Validate(
 def InvokeTarget(
     cancellation_event: threading.Event,
     roots: Dict[str, RootParserInfo],
-    # BugBug target: Target,
+    target: Target,
     *,
     max_num_threads: Optional[int]=None,
 ) -> Union[
@@ -435,6 +436,9 @@ def _Execute(
         except Exception as ex:
             if not hasattr(ex, "FullyQualifiedName"):
                 object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
+
+            if not hasattr(ex, "Traceback"):
+                object.__setattr__(ex, "Traceback", traceback.format_exc())
 
             errors.append(ex)
 

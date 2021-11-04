@@ -1,0 +1,112 @@
+# ----------------------------------------------------------------------
+# |
+# |  List.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-10-31 21:20:45
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+BugBug
+>>>
+
+from .Traits import ContainerTrait
+
+
+# ----------------------------------------------------------------------
+public mutable class List
+    <
+        T,
+    >
+    {
+        (Int | None) min_length!,
+        (Int | None) max_length!,
+    }
+    implements ContainerTrait
+:
+    <<<
+    BugBug: Desc
+    >>>
+
+    # ----------------------------------------------------------------------
+    # |  Compile Time Methods
+    (Bool | String | None) __EvalConstraints!__():
+        return (
+            min_length! is None
+            or max_length! is None
+            or min_length! <= max_length!
+        )
+
+    Bool __IsConvertibleTo!__<OtherT>():
+        pass # BugBug
+
+    # ----------------------------------------------------------------------
+    # |  ContainerTrait Methods
+    [Deferred] public immutable Bool Empty()
+    [Deferred] public immutable UIntArch NumElements()
+    [Deferred] public immutable UIntArch Capacity()
+
+    [Deferred] public mutable None Clear()
+    [Deferred] public mutable None Reserve?(PosIntArch num_elements)
+    [Deferred] public mutable None Resize?(PostIntArch num_elements)
+
+    # BugBug: __if IsView!<T>:
+    # BugBug:     [Deferred] public immutable shared T Peek?()
+    # BugBug: __else:
+    # BugBug:     [Deferred, Scoped] public immutable shared T Peek?()
+
+    # ----------------------------------------------------------------------
+    # |  List Methods
+    [Deferred] public static List Create(T* value)
+
+    [Deferred] public mutable None Insert?(IntArch{0} index, T value)
+
+    [Deferred] public mutable (T | None) TryInsertFront(T value)
+    [Deferred] public mutable None InsertFront?(T value)
+
+    [Deferred] public mutable (T | None) TryInsertBack(T value)
+    [Deferred] public mutable None InsertBack?(T value)
+
+    [Deferred] public mutable (T | None) TryRemove(IntArch{0} index)
+    [Deferred] public mutable T Remove?(IntArch{0} index)
+
+    [Deferred] public mutable (T | None) TryRemoveFront()
+    [Deferred] public mutable T RemoveFront?()
+
+    [Deferred] public mutable (T | None) TryRemoveBack()
+    [Deferred] public mutable T RemoveBack?()
+
+    # ----------------------------------------------------------------------
+    # |  Operators
+    [Deferred] public immutable Bool __ToBool__()
+    [Deferred] public immutable String __ToString?__()
+    [Deferred] public immutable String __Repr?__()
+    [Deferred] public immutable List __Clone?__()
+    [Deferred] public immutable None __Serialize?__<ArchiveT>(ArchiveT ref archive)
+
+    [Deferred] public static List __Deserialize?__<ArchiveT>(ArchiveT ref archive)
+
+    # BugBug __Index__
+    # BugBug __Contains__
+    # BugBug __Length__
+    # BugBug __Iter__
+    # BugBug __AtEnd__
+
+    [Deferred] public static Int __Compare__(List shared a, List shared b)
+
+    # BugBug __Or__
+    [Deferred] public immutable Bool __Not__()
+
+    [Deferred] public static List __Add?__<L1, L2>(L1 immutable l1, L2 immutable l2)
+
+    # BugBug [Deferred] public mutable None __AddInplace?__<L where L is List>(L var other)
+    [Deferred] public mutable None __AddInplace?__(T var other)
+
+    # TODO: operators

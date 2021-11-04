@@ -1,3 +1,4 @@
+import itertools
 import os
 
 from typing import Callable, cast, List, Optional, Tuple, Union
@@ -100,13 +101,18 @@ class FuncDefinitionStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     # TODO: Decorate these values with 'Async', '...', and '?'
     OperatorNameMap                         = {
+        # Compile-Time
+        OperatorType.EvalTemplates: "__EvalTemplates!__",
+        OperatorType.EvalConstraints: "__EvalConstraints!__",
+        OperatorType.IsConvertibleTo: "__IsConvertibleTo!__",
+
         # Foundational
         OperatorType.ToBool: "__ToBool__",
-        OperatorType.ToString: "__ToString__",
-        OperatorType.Repr: "__Repr__",
-        OperatorType.Clone: "__Clone__",
-        OperatorType.Serialize: "__Serialize__",
-        OperatorType.Deserialize: "__Deserialize__",
+        OperatorType.ToString: "__ToString?__",
+        OperatorType.Repr: "__Repr?__",
+        OperatorType.Clone: "__Clone?__",
+        OperatorType.Serialize: "__Serialize?__",
+        OperatorType.Deserialize: "__Deserialize?__",
 
         # Instance Instantiation
         OperatorType.Init: "__Init__",
@@ -139,7 +145,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         OperatorType.Not: "__Not__",
 
         # Mathematical
-        OperatorType.Add: "__Add__",
+        OperatorType.Add: "__Add?__",
         OperatorType.Subtract: "__Subtract__",
         OperatorType.Multiply: "__Multiply__",
         OperatorType.Power: "__Power__",
@@ -149,7 +155,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         OperatorType.Positive: "__Positive__",
         OperatorType.Negative: "__Negative__",
 
-        OperatorType.AddInplace: "__AddInplace__",
+        OperatorType.AddInplace: "__AddInplace?__",
         OperatorType.SubtractInplace: "__SubtractInplace__",
         OperatorType.MultiplyInplace: "__MultiplyInplace__",
         OperatorType.PowerInplace: "__PowerInplace__",
@@ -276,7 +282,7 @@ class FuncDefinitionStatement(GrammarPhrase):
             for attribute_node in cast(List[AST.Node], ExtractRepeat(attributes_node)):
                 attribute_data.append(AttributePhraseItem.ExtractLexerData(cast(AST.Node, attribute_node)))
 
-            # TODO: Leverage attribute data
+            # Leverage attribute data
             is_deferred_node = None
             is_deferred_info = None
 
@@ -291,6 +297,30 @@ class FuncDefinitionStatement(GrammarPhrase):
 
             is_async_node = None
             is_async_info = None
+
+            for attribute in itertools.chain(*attribute_data):
+                if attribute.Name == "Deferred":
+                    is_deferred_node = attribute.NameLeaf
+                    is_deferred_info = True
+
+                elif attribute.Name == "Generator":
+                    is_generator_node = attribute.NameLeaf
+                    is_generator_info = True
+
+                elif attribute.Name == "Reentrant":
+                    is_reentrant_node = attribute.NameLeaf
+                    is_reentrant_info = True
+
+                elif attribute.Name == "Scoped":
+                    is_scoped_node = attribute.NameLeaf
+                    is_scoped_info = True
+
+                elif attribute.Name == "Async":
+                    is_async_node = attribute.NameLeaf
+                    is_async_info = True
+
+                else:
+                    raise Exception("BugBug: {} is not a valid attribute".format(attribute.Name))
 
             # <visibility>?
             visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -328,36 +358,23 @@ class FuncDefinitionStatement(GrammarPhrase):
             if not func_name_match:
                 raise CommonTokens.InvalidTokenError.FromNode(func_name_leaf, func_name_info, "function")
 
-            # Get the alphanumeric portion of the function name to determine if it is async
-            # BugBug alpha_region = ExtractTokenSpan(func_name_leaf, "alphanum", func_name_match)
-            # BugBug assert alpha_region is not None
-            # BugBug
-            # BugBug alpha_text = alpha_region[0].Content[alpha_region[0].Offset : alpha_region[1].Offset]
-            # BugBug if alpha_text.endswith("Async"):
-            # BugBug     alpha_region[0].Advance(len(alpha_text) - len("Async"))
-            # BugBug
-            # BugBug     is_async_info = True
-            # BugBug     is_async_region = alpha_region
-            # BugBug else:
-            # BugBug     is_async_info = None
-            # BugBug     is_async_region = None
-            # BugBug
-            # BugBug is_generator_region = ExtractTokenSpan(func_name_leaf, "generator_suffix", func_name_match)
-            # BugBug is_generator_info = None if is_generator_region is None else True
-            # BugBug
-            # BugBug is_exceptional_region = ExtractTokenSpan(func_name_leaf, "exceptional_suffix", func_name_match)
-            # BugBug is_exceptional_info = None if is_exceptional_region is None else True
-            # BugBug
-            # BugBug if func_name_info.startswith("__") or func_name_info.endswith("__"):
-            # BugBug     operator_name = cls.NameOperatorMap.get(func_name_info, None)
-            # BugBug     if operator_name is None:
-            # BugBug         raise InvalidOperatorNameError.FromNode(func_name_leaf, func_name_info)
-            # BugBug
-            # BugBug     func_name_info = operator_name
+            is_exceptional_region = ExtractTokenSpan(func_name_leaf, "exceptional_suffix", func_name_match)
+            is_exceptional_info = None if is_exceptional_region is None else True
 
-            # BugBug
-            is_exceptional_node = None
-            is_exceptional_info = None
+            is_compile_time_region = ExtractTokenSpan(func_name_leaf, "compile_time_suffix", func_name_match)
+            is_compile_time_info = None if is_compile_time_region is None else True
+
+            if is_exceptional_info and is_compile_time_info:
+                raise Exception("BugBug - invalid function name (1)")
+
+            if func_name_info.startswith("__") or func_name_info.endswith("__"):
+                operator_name = cls.NameOperatorMap.get(func_name_info, None)
+                if operator_name is None:
+                    raise InvalidOperatorNameError.FromNode(func_name_leaf, func_name_info)
+
+                func_name_info = operator_name
+            elif is_compile_time_info:
+                raise Exception("BugBug - invalid function name (2)")
 
             # <template_parameters>?
             template_parameters_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
@@ -414,7 +431,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                     is_deferred_node,
                     is_generator_node,
                     is_reentrant_node,
-                    is_exceptional_node,
+                    is_exceptional_region,
                     is_scoped_node,
                     is_async_node,
                 ), # type: ignore

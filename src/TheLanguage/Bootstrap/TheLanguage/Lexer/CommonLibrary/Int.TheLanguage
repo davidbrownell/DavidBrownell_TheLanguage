@@ -1,0 +1,198 @@
+# ----------------------------------------------------------------------
+# |
+# |  Int.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-10-29 14:28:51
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+Contains various representations for integers.
+>>>
+
+
+# ----------------------------------------------------------------------
+private mutable trait Int
+    {
+        (Int | None) min_value!,
+        (Int | None) max_value!,
+    }
+:
+    <<<
+    BugBug: Desc
+    >>>
+
+    (Bool | String | None) __EvalConstraints!__():
+        return (
+            min_value! is None
+            or max_value! is None
+            or min_value! <= max_value!
+        )
+
+    Bool __IsConvertibleTo!__<OtherIntT>():
+        pass # BugBug
+
+
+# ----------------------------------------------------------------------
+public mutable class DynamicInt
+    {
+        (Int | None) min_value! =None,
+        (Int | None) max_value! =None,
+    }
+    implements Int{min_value!, max_value!}
+:
+    pass # BugBug
+
+public using UInt { (Int | None) max_value! =None } = DynamicInt{0, max_value!}
+public using PosInt { (Int | None) max_value! =None } = DynamicInt{1, max_value!}
+
+
+# ----------------------------------------------------------------------
+public using Int8
+    {
+        (Int | None) min_value! =None,
+        (Int | None) max_value! =None,
+    }
+= FixedInt<8, True>{min_value!, max_value!}
+
+public using UInt8 { (Int | None) max_value! =None } = Int8{0, max_value!}
+public using PosInt8 { (Int | None) max_value! =None } = Int8{1, max_value!}
+
+public using UnsafeInt8
+    {
+        (Int | None) min_value! =None,
+        (Int | None) max_value! =None,
+    }
+= FixedInt<8, False>{min_value!, max_value!}
+
+public using UnsafeUInt8 { (Int | None) max_value! =None } = UnsafeInt8{0, max_value!}
+public using UnsafePosInt8 { (Int | None) max_value! =None } = UnsafeInt8{1, max_value!}
+
+
+# ----------------------------------------------------------------------
+public using Int16
+    {
+        (Int | None) min_value! =None,
+        (Int | None) max_value! =None,
+    }
+= FixedInt<16, True>{min_value!, max_value!}
+
+public using UInt16 { (Int | None) max_value! =None } = Int16{0, max_value!}
+public using PosInt16 { (Int | None) max_value! =None } = Int16{1, max_value!}
+
+public using UnsafeInt16
+    {
+        (Int | None) min_value! =None,
+        (Int | None) max_value! =None,
+    }
+= FixedInt<16, False>{min_value!, max_value!}
+
+public using UnsafeUInt16 { (Int | None) max_value! =None } = UnsafeInt16{0, max_value!}
+public using UnsafePosInt16 { (Int | None) max_value! =None } = UnsafeInt16{1, max_value!}
+
+
+# ----------------------------------------------------------------------
+public using Int32
+    {
+        (Int | None) min_value! =None,
+        (Int | None) max_value! =None,
+    }
+= FixedInt<32, True>{min_value!, max_value!}
+
+public using UInt32 { (Int | None) max_value! =None } = Int32{0, max_value!}
+public using PosInt32 { (Int | None) max_value! =None } = Int32{1, max_value!}
+
+public using UnsafeInt32
+    {
+        (Int | None) min_value! =None,
+        (Int | None) max_value! =None,
+    }
+= FixedInt<32, False>{min_value!, max_value!}
+
+public using UnsafeUInt32 { (Int | None) max_value! =None } = UnsafeInt32{0, max_value!}
+public using UnsafePosInt32 { (Int | None) max_value! =None } = UnsafeInt32{1, max_value!}
+
+
+# ----------------------------------------------------------------------
+public using Int64
+    {
+        (Int | None) min_value! =None,
+        (Int | None) max_value! =None,
+    }
+= FixedInt<64, True>{min_value!, max_value!}
+
+public using UInt64 { (Int | None) max_value! =None } = Int64{0, max_value!}
+public using PosInt64 { (Int | None) max_value! =None } = Int64{1, max_value!}
+
+public using UnsafeInt64
+    {
+        (Int | None) min_value! =None,
+        (Int | None) max_value! =None,
+    }
+= FixedInt<64, False>{min_value!, max_value!}
+
+public using UnsafeUInt64 { (Int | None) max_value! =None } = UnsafeInt64{0, max_value!}
+public using UnsafePosInt64 { (Int | None) max_value! =None } = UnsafeInt64{1, max_value!}
+
+
+# ----------------------------------------------------------------------
+public using Int128
+    {
+        (Int | None) min_value! =None,
+        (Int | None) max_value! =None,
+    }
+= FixedInt<128, True>{min_value!, max_value!}
+
+public using UInt128 { (Int | None) max_value! =None } = Int128{0, max_value!}
+public using PosInt128 { (Int | None) max_value! =None } = Int128{1, max_value!}
+
+public using UnsafeInt128
+    {
+        (Int | None) min_value! =None,
+        (Int | None) max_value! =None,
+    }
+= FixedInt<128, False>{min_value!, max_value!}
+
+public using UnsafeUInt128 { (Int | None) max_value! =None } = UnsafeInt128{0, max_value!}
+public using UnsafePosInt128 { (Int | None) max_value! =None } = UnsafeInt128{1, max_value!}
+
+# BugBug: Replace 'Counting' with 'Natural'? Maybe 'Positive'
+# BugBug IntArch
+# BugBug UIntArch
+# BugBug PosIntArch
+# BugBug UnsafeIntArch
+# BugBug UnsafeUIntArch
+# BugBug UnsafePosIntArch
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+private mutable class FixedInt
+    <
+        Int{1, 128} NumBits!,
+        Bool OverflowProtection!,
+    >
+    {
+        (Int | None) min_value!,
+        (Int | None) max_value!,
+    }
+    implements Int{min_value!, max_value!}
+:
+    (Bool | String | None) __EvalTemplates!__():
+        return NumBits! > 0 and NumBits! <= 128
+
+    (Bool | String | None) __EvalConstraints!__():
+        result = Int{min_value!, max_value!}::__EvalConstraints!__()
+        if result is False or result is String:
+            return result
+
+        # BugBug: Validate extent
+
+    pass # BugBug

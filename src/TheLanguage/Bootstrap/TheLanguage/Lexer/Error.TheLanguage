@@ -26,11 +26,11 @@ public immutable exception Error:
     >>>
 
     # ----------------------------------------------------------------------
-    public UCountingInt view line
-    public UCountingInt view column
+    public PosInt view line
+    public PosInt view column
 
     # ----------------------------------------------------------------------
-    public override immutable String __ToString__():
+    public override immutable String __ToString?__():
         return self._GetMessageTemplate().Format(self.__Fields__)
 
     # ----------------------------------------------------------------------

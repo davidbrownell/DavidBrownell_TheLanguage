@@ -136,15 +136,15 @@ def _ExtractTemplateParameterInfo(
             default_nodes = ExtractSequence(default_node)
             assert len(default_nodes) == 2
 
-            default_leaf = cast(Leaf, default_nodes[1])
-            default_info = cast(str, ExtractToken(default_leaf))
+            default_node = cast(Leaf, default_nodes[1])
+            default_info = cast(str, ExtractToken(default_node))
 
             if not CommonTokens.TemplateTypeParameterNameRegex.match(default_info):
-                raise CommonTokens.InvalidTokenError.FromNode(default_leaf, default_info, "template type")
+                raise CommonTokens.InvalidTokenError.FromNode(default_node, default_info, "template type")
 
         return (
             TemplateTypeParameterParserInfo(
-                CreateParserRegions(node, type_name_node, default_leaf, is_var_args_node),  # type: ignore
+                CreateParserRegions(node, type_name_node, default_node, is_var_args_node),  # type: ignore
                 type_name_info,
                 default_info,
                 is_var_args_info,

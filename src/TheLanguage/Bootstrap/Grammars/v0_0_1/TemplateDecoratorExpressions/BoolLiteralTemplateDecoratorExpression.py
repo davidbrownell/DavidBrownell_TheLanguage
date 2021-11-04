@@ -1,20 +1,3 @@
-# ----------------------------------------------------------------------
-# |
-# |  BoolLiteralExpression.py
-# |
-# |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-25 09:22:18
-# |
-# ----------------------------------------------------------------------
-# |
-# |  Copyright David Brownell 2021
-# |  Distributed under the Boost Software License, Version 1.0. See
-# |  accompanying file LICENSE_1_0.txt or copy at
-# |  http://www.boost.org/LICENSE_1_0.txt.
-# |
-# ----------------------------------------------------------------------
-"""Contains the BoolLiteralExpression object"""
-
 import os
 
 import CommonEnvironment
@@ -32,7 +15,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class BoolLiteralExpression(BoolLiteralExpressionImpl):
+class BoolLiteralTemplateDecoratorExpression(BoolLiteralExpressionImpl):
     """\
     A boolean value.
 
@@ -41,11 +24,11 @@ class BoolLiteralExpression(BoolLiteralExpressionImpl):
         False
     """
 
-    PHRASE_NAME                             = "Bool Literal Expression"
+    PHRASE_NAME                             = "Bool Literal TemplateDecoratorExpression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(BoolLiteralExpression, self).__init__(
+        super(BoolLiteralTemplateDecoratorExpression, self).__init__(
             self.PHRASE_NAME,
-            DynamicPhrasesType.Expressions,
+            DynamicPhrasesType.TemplateDecoratorExpressions,
         )

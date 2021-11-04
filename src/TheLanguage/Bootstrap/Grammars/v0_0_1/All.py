@@ -63,10 +63,15 @@ with InitRelativeImports():
     from .Statements.YieldStatement import YieldStatement
 
     # TemplateDecoratorExpressions
+    from .TemplateDecoratorExpressions.BoolLiteralTemplateDecoratorExpression import BoolLiteralTemplateDecoratorExpression
+    from .TemplateDecoratorExpressions.GenericNameTemplateDecoratorExpression import GenericNameTemplateDecoratorExpression
     from .TemplateDecoratorExpressions.IntLiteralTemplateDecoratorExpression import IntLiteralTemplateDecoratorExpression
+    from .TemplateDecoratorExpressions.NoneLiteralTemplateDecoratorExpression import NoneLiteralTemplateDecoratorExpression
 
     # TemplateDecoratorTypes
+    from .TemplateDecoratorTypes.NoneTemplateDecoratorType import NoneTemplateDecoratorType
     from .TemplateDecoratorTypes.StandardTemplateDecoratorType import StandardTemplateDecoratorType
+    from .TemplateDecoratorTypes.VariantTemplateDecoratorType import VariantTemplateDecoratorType
 
     # Types
     from .Types.FuncType import FuncType
@@ -131,10 +136,15 @@ GrammarPhrases                              = [
     YieldStatement(),
 
     # TemplateDecoratorExpressions
+    BoolLiteralTemplateDecoratorExpression(),
+    GenericNameTemplateDecoratorExpression(),
     IntLiteralTemplateDecoratorExpression(),
+    NoneLiteralTemplateDecoratorExpression(),
 
     # TemplateDecoratorTypes
+    NoneTemplateDecoratorType(),
     StandardTemplateDecoratorType(),
+    VariantTemplateDecoratorType(),
 
     # Types
     FuncType(),

@@ -33,6 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
+    from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
+    from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier
     from ..Common.VisitorTools import StackHelper
     from ..Types.TypeParserInfo import TypeParserInfo
@@ -45,6 +47,9 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
     Visibility: VisibilityModifier                      = field(init=False)
 
     Name: str
+    Templates: Optional[TemplateParametersParserInfo]
+    Constraints: Optional[ConstraintParametersParserInfo]
+
     Type: TypeParserInfo
 
     # ----------------------------------------------------------------------
@@ -67,5 +72,14 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def _AcceptImpl(self, visitor, stack, *args, **kwargs):
-        with StackHelper(stack)[(self, "Type")] as helper:
-            self.Type.Accept(visitor, helper.stack, *args, **kwargs)
+        with StackHelper(stack)[self] as helper:
+            with helper["Type"]:
+                self.Type.Accept(visitor, helper.stack, *args, **kwargs)
+
+            if self.Templates is not None:
+                with helper["Templates"]:
+                    self.Templates.Accept(visitor, helper.stack, *args, **kwargs)
+
+            if self.Constraints is not None:
+                with helper["Constraints"]:
+                    self.Constraints.Accept(visitor, helper.stack, *args, **kwargs)

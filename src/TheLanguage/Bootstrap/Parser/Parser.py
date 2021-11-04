@@ -16,6 +16,7 @@
 """Creates and extracts parser information from nodes"""
 
 import os
+import traceback
 
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Callable, cast, Dict, List, Optional, Tuple, Union
@@ -144,13 +145,16 @@ def Parse(
             # pylint: disable=too-many-function-args
             return RootParserInfo(
                 CreateParserRegions(root, None if doc_info is None else doc_info[0]),  # type: ignore
-                children,
+                children or None,
                 None if doc_info is None else doc_info[1],
             )
 
         except Exception as ex:
             if not hasattr(ex, "FullyQualifiedName"):
                 object.__setattr__(ex, "FullyQualifiedName", fully_qualified_name)
+
+            if not hasattr(ex, "Traceback"):
+                object.__setattr__(ex, "Traceback", traceback.format_exc())
 
             raise
 

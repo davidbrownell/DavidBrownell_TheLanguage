@@ -48,21 +48,28 @@ class StandardTemplateDecoratorType(StandardTypeImpl):
         cls,
         node: AST.Node,
     ):
-        parser_info = super(StandardTemplateDecoratorType, cls).ExtractParserInfo(node)
+        parser_info_func = super(StandardTemplateDecoratorType, cls).ExtractParserInfo(node)
 
-        if parser_info.TypeName not in [
-            "Bool",
-            "Int",
-            "Num",
-            "String",
-        ]:
-            raise Exception("BugBug0")
+        # ----------------------------------------------------------------------
+        def Impl():
+            parser_info = parser_info_func()
 
-        if parser_info.Modifier is not None:
-            raise Exception("BugBug1")
+            if parser_info.TypeName not in [
+                "Bool",
+                "Int",
+                "Num",
+                "String",
+            ]:
+                raise Exception("BugBug0")
 
-        if parser_info.Templates is not None:
-            raise Exception("BugBug2")
+            if parser_info.Modifier is not None:
+                raise Exception("BugBug1")
 
-        if parser_info.Constraints is not None:
-            raise Exception("BugBug3")
+            if parser_info.Templates is not None:
+                raise Exception("BugBug2")
+
+            return parser_info
+
+        # ----------------------------------------------------------------------
+
+        return Impl

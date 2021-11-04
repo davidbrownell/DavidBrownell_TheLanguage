@@ -39,7 +39,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class RootParserInfo(ParserInfo):
-    Statements: List[ParserInfo]
+    Statements: Optional[List[ParserInfo]]
     Documentation: Optional[str]
 
     # ----------------------------------------------------------------------
@@ -54,6 +54,7 @@ class RootParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def _AcceptImpl(self, visitor, stack, *args, **kwargs):
-        with StackHelper(stack)[(self, "Statements")] as helper:
-            for statement in self.Statements:
-                statement.Accept(visitor, helper.stack, *args, **kwargs)
+        if self.Statements:
+            with StackHelper(stack)[(self, "Statements")] as helper:
+                for statement in self.Statements:
+                    statement.Accept(visitor, helper.stack, *args, **kwargs)

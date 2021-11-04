@@ -222,8 +222,6 @@ protected NormalizedContent Normalize?(
 
     var offset = 0 as IntArch
 
-    # BugBug: foo once = None as Int
-
     # ----------------------------------------------------------------------
     LineInfo CreateLineInfo
         |offset, indentation_stack|
@@ -232,12 +230,13 @@ protected NormalizedContent Normalize?(
 
 
 
-        line_start_offset = offset
-        # BugBug: 'once line_end_offset = ...'
+        view line_start_offset = offset
+
         # BugBug: '... = None as (TypeOf(IntArch) | None)'
-        once line_end_offset = None as (IntArch | None)
-        once content_start_offset = None as (Int | None)
-        once content_end_offset = None as (Int | None)
+
+        once view line_end_offset = None as IntArch
+        once view content_start_offset = None as IntArch
+        once view content_end_offset = None as IntArch
 
         var calculated_indentation_value = 0 as (Int | None)
         var num_pending_dedentations = 0

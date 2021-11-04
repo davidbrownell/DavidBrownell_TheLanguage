@@ -1,20 +1,3 @@
-# ----------------------------------------------------------------------
-# |
-# |  FuncNameExpression.py
-# |
-# |  David Brownell <db@DavidBrownell.com>
-# |      2021-10-11 12:58:57
-# |
-# ----------------------------------------------------------------------
-# |
-# |  Copyright David Brownell 2021
-# |  Distributed under the Boost Software License, Version 1.0. See
-# |  accompanying file LICENSE_1_0.txt or copy at
-# |  http://www.boost.org/LICENSE_1_0.txt.
-# |
-# ----------------------------------------------------------------------
-"""Contains the FuncNameExpression object"""
-
 import os
 
 from typing import Callable, cast, Optional, Tuple, Union
@@ -49,17 +32,17 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class GenericNameExpression(GrammarPhrase):
+class GenericNameTemplateDecoratorExpression(GrammarPhrase):
     """\
     A generic name.
     """
 
-    PHRASE_NAME                             = "Generic Name Expression"
+    PHRASE_NAME                             = "Generic Name TemplateDecoratorExpression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(GenericNameExpression, self).__init__(
-            DynamicPhrasesType.Expressions,
+        super(GenericNameTemplateDecoratorExpression, self).__init__(
+            DynamicPhrasesType.TemplateDecoratorExpressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
@@ -101,6 +84,12 @@ class GenericNameExpression(GrammarPhrase):
             func_name_leaf = cast(AST.Leaf, nodes[0])
             func_name_info = cast(str, ExtractToken(func_name_leaf))
 
+            if (
+                not CommonTokens.TypeNameRegex.match(func_name_info)
+                and not CommonTokens.TemplateDecoratorParameterNameRegex.match(func_name_info)
+            ):
+                raise CommonTokens.InvalidTokenError.FromNode(func_name_leaf, func_name_info, "type- or decorator parameter-")
+
             # <template_arguments>?
             template_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
             if template_arguments_node is None:
@@ -129,4 +118,4 @@ class GenericNameExpression(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return Impl
+        return Impl()
