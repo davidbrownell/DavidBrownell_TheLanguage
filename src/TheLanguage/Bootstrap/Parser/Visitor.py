@@ -17,14 +17,21 @@ with InitRelativeImports():
     from .ParserInfo import ParserInfo
     from .RootParserInfo import RootParserInfo
 
+    from .Common.ClassType import ClassType
     from .Common.ConstraintArgumentParserInfo import ConstraintArgumentParserInfo
     from .Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo, ConstraintParametersParserInfo
     from .Common.FunctionArgumentParserInfo import FunctionArgumentParserInfo
     from .Common.FunctionParametersParserInfo import FunctionParameterTypeParserInfo, FunctionParameterParserInfo, FunctionParametersParserInfo
+    from .Common.MethodModifier import MethodModifier
     from .Common.TemplateArgumentParserInfo import TemplateArgumentParserInfo
     from .Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo, TemplateDecoratorParameterParserInfo, TemplateParametersParserInfo
+    from .Common.TypeModifier import TypeModifier
 
-    from .Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo
+    from .Expressions.BinaryExpressionParserInfo import (
+        BinaryExpressionParserInfo,
+        OperatorType as BinaryExpressionOperatorType,
+    )
+
     from .Expressions.CastExpressionParserInfo import CastExpressionParserInfo
     from .Expressions.FuncInvocationExpressionParserInfo import FuncInvocationExpressionParserInfo
     from .Expressions.GeneratorExpressionParserInfo import GeneratorExpressionParserInfo
@@ -36,7 +43,10 @@ with InitRelativeImports():
     from .Expressions.MatchValueExpressionParserInfo import MatchValueExpressionClauseParserInfo, MatchValueExpressionParserInfo
     from .Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo
     from .Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
-    from .Expressions.UnaryExpressionParserInfo import UnaryExpressionParserInfo
+    from .Expressions.UnaryExpressionParserInfo import (
+        UnaryExpressionParserInfo,
+        OperatorType as UnaryExpressionOperatorType,
+    )
 
     from .Literals.BoolLiteralParserInfo import BoolLiteralParserInfo
     from .Literals.CharacterLiteralParserInfo import CharacterLiteralParserInfo
@@ -49,30 +59,46 @@ with InitRelativeImports():
     from .Names.VariableNameParserInfo import VariableNameParserInfo
 
     from .Statements.AssertStatementParserInfo import AssertStatementParserInfo
-    from .Statements.BinaryStatementParserInfo import BinaryStatementParserInfo
+    from .Statements.BinaryStatementParserInfo import (
+        BinaryStatementParserInfo,
+        OperatorType as BinaryStatementOperatorType,
+    )
+
     from .Statements.BreakStatementParserInfo import BreakStatementParserInfo
     from .Statements.ClassMemberStatementParserInfo import ClassMemberStatementParserInfo
     from .Statements.ClassStatementParserInfo import ClassStatementDependencyParserInfo, ClassStatementParserInfo
     from .Statements.ContinueStatementParserInfo import ContinueStatementParserInfo
     from .Statements.DeleteStatementParserInfo import DeleteStatementParserInfo
-    from .Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+    from .Statements.FuncDefinitionStatementParserInfo import (
+        FuncDefinitionStatementParserInfo,
+        OperatorType as FuncDefinitionStatementOperatorType,
+        COMPILE_TIME_OPERATORS as FUNC_DEFINITION_COMPILE_TIME_OPERATORS,
+    )
     from .Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from .Statements.IfStatementParserInfo import IfStatementClauseParserInfo, IfStatementParserInfo
-    from .Statements.ImportStatementParserInfo import ImportStatementItemParserInfo, ImportStatementParserInfo
+    from .Statements.ImportStatementParserInfo import (
+        ImportStatementItemParserInfo,
+        ImportStatementParserInfo,
+        ImportType as ImportStatementImportType,
+    )
     from .Statements.IterateStatementParserInfo import IterateStatementParserInfo
     from .Statements.NoopStatementParserInfo import NoopStatementParserInfo
+    from .Statements.PythonHackStatementParserInfo import PythonHackStatementParserInfo
     from .Statements.RaiseStatementParserInfo import RaiseStatementParserInfo
     from .Statements.ReturnStatementParserInfo import ReturnStatementParserInfo
     from .Statements.ScopedRefStatementParserInfo import ScopedRefStatementParserInfo
+    from .Statements.ScopedStatementParserInfo import ScopedStatementParserInfo
     from .Statements.TryStatementParserInfo import TryStatementClauseParserInfo, TryStatementParserInfo
     from .Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
     from .Statements.VariableDeclarationStatementParserInfo import VariableDeclarationStatementParserInfo
+    from .Statements.VariableDeclarationOnceStatementParserInfo import VariableDeclarationOnceStatementParserInfo
     from .Statements.WhileStatementParserInfo import WhileStatementParserInfo
     from .Statements.YieldStatementParserInfo import YieldStatementParserInfo
 
     from .Types.FuncTypeParserInfo import FuncTypeParserInfo
     from .Types.NoneTypeParserInfo import NoneTypeParserInfo
     from .Types.StandardTypeParserInfo import StandardTypeParserInfo
+    from .Types.TypeOfTypeParserInfo import TypeOfTypeParserInfo
     from .Types.TupleTypeParserInfo import TupleTypeParserInfo
     from .Types.VariantTypeParserInfo import VariantTypeParserInfo
 
@@ -81,6 +107,7 @@ with InitRelativeImports():
 class Visitor(VisitorBase):
     # ----------------------------------------------------------------------
     @classmethod
+    @Interface.extensionmethod
     def Accept(
         cls,
         parser_info: ParserInfo,
@@ -654,6 +681,17 @@ class Visitor(VisitorBase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
+    def OnPythonHackStatement(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: PythonHackStatementParserInfo,
+        *args,
+        **kwargs,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
     def OnRaiseStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: RaiseStatementParserInfo,
@@ -679,6 +717,17 @@ class Visitor(VisitorBase):
     def OnScopedRefStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ScopedRefStatementParserInfo,
+        *args,
+        **kwargs,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnScopedStatement(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: ScopedStatementParserInfo,
         *args,
         **kwargs,
     ) -> Union[None, bool, Callable[[], Any]]:
@@ -723,6 +772,17 @@ class Visitor(VisitorBase):
     def OnVariableDeclarationStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: VariableDeclarationStatementParserInfo,
+        *args,
+        **kwargs,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnVariableDeclarationOnceStatement(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: VariableDeclarationOnceStatementParserInfo,
         *args,
         **kwargs,
     ) -> Union[None, bool, Callable[[], Any]]:
@@ -778,6 +838,17 @@ class Visitor(VisitorBase):
     def OnStandardType(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: StandardTypeParserInfo,
+        *args,
+        **kwargs,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnTypeOfType(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: TypeOfTypeParserInfo,
         *args,
         **kwargs,
     ) -> Union[None, bool, Callable[[], Any]]:

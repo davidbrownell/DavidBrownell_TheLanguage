@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import cast, Generator, List, Union
+from typing import cast, Optional, Generator, List, Union
 
 import CommonEnvironment
 
@@ -56,8 +56,9 @@ class TupleBase(GrammarPhrase):
         self,
         dynamic_phrases_type: DynamicPhrasesType,
         phrase_name: str,
+        tuple_element_item: Optional[DynamicPhrasesType]=None,
     ):
-        tuple_elemement_item = dynamic_phrases_type
+        tuple_elemement_item = tuple_element_item or dynamic_phrases_type
 
         super(TupleBase, self).__init__(
             dynamic_phrases_type,

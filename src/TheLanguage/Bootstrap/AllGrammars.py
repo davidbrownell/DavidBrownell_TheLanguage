@@ -393,12 +393,18 @@ def InvokeTarget(
 
     # ----------------------------------------------------------------------
 
-    return _Execute(
+    target.PreInvoke()
+
+    result = _Execute(
         Invoke,
         cancellation_event,
         roots,
         max_num_threads=max_num_threads,
     )
+
+    target.PostInvoke()
+
+    return result
 
 
 # ----------------------------------------------------------------------

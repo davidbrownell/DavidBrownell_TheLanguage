@@ -1,0 +1,305 @@
+# ----------------------------------------------------------------------
+# |
+# |  NormalizedIterator.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-08 19:02:17
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+BugBug
+>>>
+
+from .Normalize import LineInfo, NormalizedContent
+
+
+# ----------------------------------------------------------------------
+[PrivateCtor]
+public mutable class NormalizedIterator:
+    <<<
+    BugBug
+    >>>
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    public enum TokenType:
+        # TODO: Dedent
+        # TODO: Indent
+        # TODO: WhitespacePrefix
+        # TODO: Content
+        # TODO: WhitespaceSuffix
+        # TODO: EndOfLine
+        # TODO: EndOfFile
+
+        python_hack: Dedent = 1
+        python_hack: Indent = 2
+        python_hack: WhitespacePrefix = 3
+        python_hack: Content = 4
+        python_hack: WhitespaceSuffix = 5
+        python_hack: EndOfLine = 6
+        python_hack: EndOfFile = 7
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
+    public static NormalizedIterator Create(NormalizedContent val content):
+        return NormalizedIterator(
+            NormalizedContentEx(content),
+            0,
+            0,
+            None,
+            None,
+        )
+
+    # ----------------------------------------------------------------------
+    public immutable String val __Repr?__():
+        # TODO: return `[{self.Line}, {self.Column}] ({self.Offset})`
+        return "[{}, {}] ({})".Format?(self.Line, self.Column, self.Offset)
+
+    # ----------------------------------------------------------------------
+    # TODO: Convert to properties
+
+    public immutable String val Content():
+        return self._content.content
+
+    public immutable PosInt val ContentLength():
+        return self._content.content_length
+
+    public immutable LineInfos val LineInfos():
+        return self._content.line_infos
+
+    public immutable HashBytes val Hash():
+        return self._content.hash
+
+    public immutable Bool val HasEndOfFileDedents():
+        return self._content.has_end_of_file_dedents
+
+    public immutable UIntArch val Offset():
+        return self._offset
+
+    public immutable LineInfo val LineInfo():
+        return self._content.line_infos[self._line_info_index]
+
+    public immutable PosInt val Line():
+        return self._line_info_index + 1
+
+    public immutable PosInt val Column():
+        if self.AtEnd():
+            return 1
+
+        return self._offset - self.LineInfo().offset_start + 1
+
+    # ----------------------------------------------------------------------
+    public immutable (
+        HashBytes,
+        UIntArch,
+        (UIntArch | None),
+        (UIntArch | None),
+    ) ToCacheKey():
+        return (
+            self.Hash(),
+            self.Offset(),
+            self._consumed_dedent_line.Clone(),
+            self._consumed_dedent_count.Clone(),
+        )
+
+    # ----------------------------------------------------------------------
+    public immutable Bool val AtEnd():
+        val line_infos = self.LineInfos()
+
+        if self._line_info_index == len(line_infos):
+            return True
+
+        if (
+            self.HasEndOfFileDedents()
+            and self._line_info_index == len(line_infos) - 1
+            and self._consumed_dedent_line == self._line_info_index
+            and self._consumed_dedent_count == self.LineInfo().num_dedents
+        ):
+            return True
+
+        return False
+
+    # ----------------------------------------------------------------------
+    public immutable TokenType val GetNextTokenType():
+        if self.AtEnd():
+            return TokenType.EndOfFile
+
+        val line_info = self.LineInfo()
+
+        if (
+            line_info.num_dedents is not None
+            and (
+                self._consumed_dedent_line != self._line_info_index
+                or self._consumed_dedent_count != line_info.num_dedents
+            )
+        ):
+            return TokenType.Dedent
+
+        if self._offset < line_info.content_start:
+            if line_info.new_indentation_value is not None:
+                return TokenType.Indent
+
+            return TokenType.WhitespacePrefix
+
+        if self._offset < line_info.content_end:
+            return TokenType.Content
+
+        if self._offset >= line_info.content_end and self._offset < line_info.offset_end:
+            return TokenType.WhitespaceSuffix
+
+        assert self._offset == line_info.offset_end
+        return TokenType.EndOfLine
+
+    # ----------------------------------------------------------------------
+    public immutable Bool val IsBlankLine():
+        # We don't have a line when we are at the end, so it can't be a blank line by definition.
+        if self.AtEnd():
+            return False
+
+        # The trailing dedent lines should not be considered blank lines
+        if (
+            self._line_info_index == len(self.LineInfos()) - 1
+            and self.HasEndOfFileDedents()
+        ):
+            return False
+
+        val line_info = self.LineInfo()
+        return line_info.content_end == line_info.content_start
+
+    # ----------------------------------------------------------------------
+    public mutable None ConsumeDedent():
+        assert self.LineInfo().num_dedents is not None
+        assert self.Offset() == self.LineInfo().offset_start
+
+        if self._consumed_dedent_line != self._line_info_index:
+            # TODO: self._consumed_dedent_line = self._line_info_index
+            # TODO: self._consumed_dedent_count = 0
+
+            var self__consumed_dedent_line = self._line_info_index
+            var self__consumed_dedent_count = 0
+
+        assert self._consumed_dedent_count is Int
+        # TODO self._consumed_dedent_count += 1
+        self__consumed_dedent_count += 1
+
+    # ----------------------------------------------------------------------
+    public mutable None SkipLine():
+        # TODO: self._offset = self.LineInfo().offset_end
+        var self__offset = self.LineInfo().offset_end
+
+        self.Advance(1)
+
+    # ----------------------------------------------------------------------
+    public mutable None SkipWhitespacePrefix():
+        val offset = self._offset
+        val line_info = self.LineInfo()
+
+        assert offset == line_info.offset_start
+
+        val delta = line_info.content_start - offset
+
+        if delta != 0:
+            self.Advance(delta)
+
+    # ----------------------------------------------------------------------
+    public mutable None SkipWhitespaceSuffix():
+        val offset = self._offset
+        val line_info = self.LineInfo()
+
+        assert offset == line_info.content_end
+
+        val delta = line_info.offset_end - offset
+
+        if delta != 0:
+            self.Advance(delta)
+
+    # ----------------------------------------------------------------------
+    public mutable None Advance(PosIntArch val delta):
+        <<<
+        Advances the offset within a line or moves to a new line if delta == 1.
+        >>>
+
+        val offset = self._offset
+        val line_info = self.LineInfo()
+
+        if offset == line_info.offset_end:
+            assert delta == 1
+            assert self.GetNextTokenType() == TokenType.EndOfLine
+
+            # TODO: self._line_info_index += 1
+            self__line_info_index += 1
+
+        else:
+            assert offset >= line_info.offset_start and offset <= line_info.offset_end, "The offset should be within the current line"
+            assert offset + delta <= line_info.offset_end, "The delta should not move us past the current line"
+            assert (
+                offset >= line_info.content_start                                       # (A)
+                or (
+                    offset == line_info.offset_start
+                    and (
+                        offset + delta == line_info.content_start                       # (B)
+                        or delta == line_info.offset_end - line_info.offset_start       # (C)
+                    )
+                )
+            ), "We are looking at content (A), at the beginning of the line and are skipping the whitespace prefix (B) or are skipping the entire line (C)"
+
+        # TODO: self._offset += delta
+        self__offset += delta
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Types
+    # |
+    # ----------------------------------------------------------------------
+    private immutable class NormalizedContentEx
+        # TODO: extends NormalizedContent
+        based NormalizedContent
+    :
+        <<<
+        Adds end-of-file-dedent info to NormalizedContent
+        >>>
+
+        [InitOnly] public Bool val has_end_of_file_dedents
+
+        # ----------------------------------------------------------------------
+        private None __Init__():
+            last_line_info = self.line_infos[-1]
+
+            has_end_of_file_dedents = (
+                last_line_info.num_dedents is not None
+                and last_line_info.num_dedents > 0
+                and last_line_info.offset_start == last_line_info.offset_end
+                and last_line_info.content_start == last_line_info.offset_start
+                and last_line_info.content_end == last_line_info.offset_end
+            )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
+    # ----------------------------------------------------------------------
+    private NormalizedContentEx val _content
+
+    private UIntArch var _offset
+    private UIntArch var _line_info_index
+
+    private (UIntArch | None) var _consumed_dedent_line
+    private (UIntArch | None) var _consumed_dedent_count
+
+
+# TODO: Remove this
+python_hack: NormalizedContentEx = NormalizedIterator.NormalizedContentEx
+python_hack: TokenType = NormalizedIterator.TokenType

@@ -251,6 +251,14 @@ class SequencePhrase(Phrase):
         comments_or_whitespace_data_items: Optional[List[Phrase.TokenLexResultData]] = None
         prev_token_was_pop_control = False
 
+        if self.Name.endswith("Expression") and normalized_iter.Offset == 11159:
+            BugBug = 1
+
+        if self.Name == "Func Invocation Expression" and normalized_iter.Line == 249:
+            BugBug = 10
+        if self.Name == "Tuple Expression" and normalized_iter.Offset == 11159:
+            BugBug = 20
+
         for phrase_index in range(starting_phrase_index, len(self.Phrases)):
             phrase = self.Phrases[phrase_index]
 

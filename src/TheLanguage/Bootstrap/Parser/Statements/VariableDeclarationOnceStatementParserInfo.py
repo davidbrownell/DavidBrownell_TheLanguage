@@ -1,20 +1,3 @@
-# ----------------------------------------------------------------------
-# |
-# |  VariableDeclarationStatementParserInfo.py
-# |
-# |  David Brownell <db@DavidBrownell.com>
-# |      2021-09-30 13:27:25
-# |
-# ----------------------------------------------------------------------
-# |
-# |  Copyright David Brownell 2021
-# |  Distributed under the Boost Software License, Version 1.0. See
-# |  accompanying file LICENSE_1_0.txt or copy at
-# |  http://www.boost.org/LICENSE_1_0.txt.
-# |
-# ----------------------------------------------------------------------
-"""Contains the VariableDeclarationStatementParserInfo object"""
-
 import os
 
 from typing import Optional
@@ -33,26 +16,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import StatementParserInfo
-
-    from ..Common.TypeModifier import TypeModifier
     from ..Common.VisitorTools import StackHelper
-
-    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ..Names.NameParserInfo import NameParserInfo
+    from ..Types.TypeParserInfo import TypeParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableDeclarationStatementParserInfo(StatementParserInfo):
-    Modifier: Optional[TypeModifier]
-    Name: NameParserInfo
-    Expression: ExpressionParserInfo
+class VariableDeclarationOnceStatementParserInfo(StatementParserInfo):
+    Type: TypeParserInfo
+    VariableName: str
 
     # TODO: Not all type modifiers are valid in this context
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(VariableDeclarationStatementParserInfo, self).__post_init__(regions)
+        super(VariableDeclarationOnceStatementParserInfo, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -60,8 +38,5 @@ class VariableDeclarationStatementParserInfo(StatementParserInfo):
     @Interface.override
     def _AcceptImpl(self, visitor, stack, *args, **kwargs):
         with StackHelper(stack)[self] as helper:
-            with helper["Name"]:
-                self.Name.Accept(visitor, helper.stack, *args, **kwargs)
-
-            with helper["Expression"]:
-                self.Expression.Accept(visitor, helper.stack, *args, **kwargs)
+            with helper["Type"]:
+                self.Type.Accept(visitor, helper.stack, *args, **kwargs)

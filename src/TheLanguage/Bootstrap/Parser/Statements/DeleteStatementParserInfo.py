@@ -35,4 +35,4 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class DeleteStatementParserInfo(StatementParserInfo):
-    VariableName: str
+    VariableName: str # TODO: Can be list

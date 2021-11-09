@@ -194,8 +194,15 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         _all_method_types,
 
         # Members
-        AllowDataMembers=False,
+        AllowDataMembers=True,
         AllowMutablePublicDataMembers=False,
+
+        # TODO: children can only be:
+        #   - VariableDeclaration: Value = 1
+        #       - No modifier
+        #       - expr is literal int or bit manipulation
+        #       - If class has flag attribute, must be power of 2
+        #   - GenericName: Value
     ),
 
     # ----------------------------------------------------------------------

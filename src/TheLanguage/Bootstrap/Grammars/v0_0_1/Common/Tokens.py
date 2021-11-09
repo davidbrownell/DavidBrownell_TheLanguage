@@ -145,8 +145,8 @@ ParameterNameRegex                          = re.compile(r"^[a-z][a-zA-Z0-9_]*(?
 TypeNameRegex                               = re.compile(r"^_?[A-Z][a-zA-Z0-9_]*(?<!__)$")
 VariableNameRegex                           = re.compile(r"^_?[a-z][a-zA-Z0-9_]*(?<!__)$")
 TemplateTypeParameterNameRegex              = re.compile(r"^_?[A-Z][a-zA-Z0-9_]*(?<!__)$")
-TemplateDecoratorParameterNameRegex         = re.compile(r"^[a-zA-Z0-9_]+(?<!__)!$")
-ConstraintParameterNameRegex                = re.compile(r"^[a-z][a-zA-Z0-9_]*(?<!__)!$")
+TemplateDecoratorParameterNameRegex         = re.compile(r"^[a-zA-Z0-9_]+(?<!__)'$")
+ConstraintParameterNameRegex                = re.compile(r"^[a-z][a-zA-Z0-9_]*(?<!__)'$")
 
 FuncNameRegex                               = re.compile(
     textwrap.dedent(
@@ -157,7 +157,7 @@ FuncNameRegex                               = re.compile(
             Don't end with an underscore;
                 that will come later        )(?<!_)(?#
             Exceptional Suffix              )(?P<exceptional_suffix>\?)?(?#
-            Compile-time Suffix             )(?P<compile_time_suffix>!)?(?#
+            Compile-time Suffix             )(?P<compile_time_suffix>')?(?#
             Underscores                     )_{0,2}(?#
             End                             )$(?#
         )""",
@@ -191,8 +191,8 @@ def _CreateGenericNameToken(
                     Don't end with an underscore; that will come later      )(?<!_)(?#
                     Don't leave any alphanumeric                            )(?![a-zA-Z0-9])(?#
                     Tokens to ignore                                        ){tokens_to_ignore}(?#
-                    Question Mark [optional]                                )\??(?#
-                    Exclamation Mark [optional]                             )!?(?#
+                    Exceptional Mark [optional]                             )\??(?#
+                    Compile-time Mark [optional]                            )'?(?#
                     Trailing Underscores [optional]                         )_*(?#
                 ))""",
             ).format(

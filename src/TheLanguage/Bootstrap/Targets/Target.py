@@ -51,9 +51,23 @@ class Target(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
+    def PreInvoke() -> None:
+        """Called before invoking functionality for any files"""
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
     def Invoke(
         fully_qualified_name: str,
         parser_info: RootParserInfo,
     ) -> None:
         """Invokes the derived Target's functionality with the provided information"""
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def PostInvoke() -> None:
+        """Called after invoking functionality for any files"""
         raise Exception("Abstract method")  # pragma: no cover

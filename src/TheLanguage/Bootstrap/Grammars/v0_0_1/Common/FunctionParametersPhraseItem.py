@@ -46,10 +46,10 @@ def Create() -> PhraseItem:
             # <type>
             DynamicPhrasesType.Types,
 
-            # '*'?
+            # '...'?
             OptionalPhraseItem.Create(
                 name="Variadic",
-                item="*",
+                item="...",
             ),
 
             # <generic_name>

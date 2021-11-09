@@ -26,8 +26,9 @@ public mutable class List
         T,
     >
     {
-        (Int | None) min_length!,
-        (Int | None) max_length!,
+        *,
+        (Int | None) min_length',
+        (Int | None) max_length',
     }
     implements ContainerTrait
 :
@@ -37,14 +38,14 @@ public mutable class List
 
     # ----------------------------------------------------------------------
     # |  Compile Time Methods
-    (Bool | String | None) __EvalConstraints!__():
+    (Bool | String | None) __EvalConstraints'__():
         return (
-            min_length! is None
-            or max_length! is None
-            or min_length! <= max_length!
+            min_length' is None
+            or max_length' is None
+            or min_length' <= max_length'
         )
 
-    Bool __IsConvertibleTo!__<OtherT>():
+    Bool __IsConvertibleTo'__<OtherT>():
         pass # BugBug
 
     # ----------------------------------------------------------------------
@@ -57,16 +58,18 @@ public mutable class List
     [Deferred] public mutable None Reserve?(PosIntArch num_elements)
     [Deferred] public mutable None Resize?(PostIntArch num_elements)
 
-    # BugBug: __if IsView!<T>:
-    # BugBug:     [Deferred] public immutable shared T Peek?()
+    # BugBug: __if IsView'<T>:
+    # BugBug:     [Deferred] public immutable (shared T | None) TryPeek(UIntArch index)
+    # BugBug:     [Deferred] public immutable shared T Peek?(UIntArch index)
     # BugBug: __else:
-    # BugBug:     [Deferred, Scoped] public immutable shared T Peek?()
+    # BugBug      [Deferred, Scoped] public immutable (shared T | None) TryPeek(UIntArch index)
+    # BugBug:     [Deferred, Scoped] public immutable shared T Peek?(UIntArch index)
 
     # ----------------------------------------------------------------------
     # |  List Methods
-    [Deferred] public static List Create(T* value)
+    [Deferred] public static List Create(T... value)
 
-    [Deferred] public mutable None Insert?(IntArch{0} index, T value)
+    [Deferred] public mutable None Insert?(UIntArch index, T value)
 
     [Deferred] public mutable (T | None) TryInsertFront(T value)
     [Deferred] public mutable None InsertFront?(T value)
@@ -74,8 +77,8 @@ public mutable class List
     [Deferred] public mutable (T | None) TryInsertBack(T value)
     [Deferred] public mutable None InsertBack?(T value)
 
-    [Deferred] public mutable (T | None) TryRemove(IntArch{0} index)
-    [Deferred] public mutable T Remove?(IntArch{0} index)
+    [Deferred] public mutable (T | None) TryRemove(UIntArch index)
+    [Deferred] public mutable T Remove?(UIntArch index)
 
     [Deferred] public mutable (T | None) TryRemoveFront()
     [Deferred] public mutable T RemoveFront?()

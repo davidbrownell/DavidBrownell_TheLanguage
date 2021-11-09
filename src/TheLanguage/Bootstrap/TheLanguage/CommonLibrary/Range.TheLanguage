@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------
+# |
+# |  Range.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-08 15:26:44
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+BugBug
+>>>
+
+
+# ----------------------------------------------------------------------
+public Int Range(Int var begin, Int val end): # TODO generator:
+    while begin != end:
+        yield begin
+        begin += 1

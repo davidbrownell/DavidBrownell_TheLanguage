@@ -32,6 +32,7 @@ with InitRelativeImports():
     from .Expressions.NumberLiteralExpression import NumberLiteralExpression # TODO: Rename to NumLiteralExpression
     from .Expressions.StringLiteralExpression import StringLiteralExpression
     from .Expressions.TernaryExpression import TernaryExpression
+    from .Expressions.TupleExpression import TupleExpression
     from .Expressions.UnaryExpression import UnaryExpression
 
     # Names
@@ -53,12 +54,15 @@ with InitRelativeImports():
     from .Statements.IfStatement import IfStatement
     from .Statements.ImportStatement import ImportStatement
     from .Statements.PassStatement import PassStatement
+    from .Statements.PythonHackStatement import PythonHackStatement
     from .Statements.RaiseStatement import RaiseStatement
     from .Statements.ReturnStatement import ReturnStatement
     from .Statements.ScopedRefStatement import ScopedRefStatement
+    from .Statements.ScopedStatement import ScopedStatement
     from .Statements.TryStatement import TryStatement
     from .Statements.TypeAliasStatement import TypeAliasStatement
     from .Statements.VariableDeclarationStatement import VariableDeclarationStatement
+    from .Statements.VariableDeclarationOnceStatement import VariableDeclarationOnceStatement
     from .Statements.WhileStatement import WhileStatement
     from .Statements.YieldStatement import YieldStatement
 
@@ -71,12 +75,14 @@ with InitRelativeImports():
     # TemplateDecoratorTypes
     from .TemplateDecoratorTypes.NoneTemplateDecoratorType import NoneTemplateDecoratorType
     from .TemplateDecoratorTypes.StandardTemplateDecoratorType import StandardTemplateDecoratorType
+    from .TemplateDecoratorTypes.TupleTemplateDecoratorType import TupleTemplateDecoratorType
     from .TemplateDecoratorTypes.VariantTemplateDecoratorType import VariantTemplateDecoratorType
 
     # Types
     from .Types.FuncType import FuncType
     from .Types.NoneType import NoneType
     from .Types.StandardType import StandardType
+    from .Types.TypeOfType import TypeOfType
     from .Types.TupleType import TupleType
     from .Types.VariantType import VariantType
 
@@ -105,6 +111,7 @@ GrammarPhrases                              = [
     NumberLiteralExpression(),
     StringLiteralExpression(),
     TernaryExpression(),
+    TupleExpression(),
     UnaryExpression(),
 
     # Names
@@ -126,12 +133,15 @@ GrammarPhrases                              = [
     IfStatement(),
     ImportStatement(".TheLanguage"), # TODO: fix this
     PassStatement(),
+    PythonHackStatement(),
     RaiseStatement(),
     ReturnStatement(),
     ScopedRefStatement(),
+    ScopedStatement(),
     TryStatement(),
     TypeAliasStatement(),
     VariableDeclarationStatement(),
+    VariableDeclarationOnceStatement(),
     WhileStatement(),
     YieldStatement(),
 
@@ -144,12 +154,14 @@ GrammarPhrases                              = [
     # TemplateDecoratorTypes
     NoneTemplateDecoratorType(),
     StandardTemplateDecoratorType(),
+    TupleTemplateDecoratorType(),
     VariantTemplateDecoratorType(),
 
     # Types
     FuncType(),
     NoneType(),
     StandardType(),
+    TypeOfType(),
     TupleType(),
     VariantType(),
 ]

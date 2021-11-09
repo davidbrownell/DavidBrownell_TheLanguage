@@ -463,14 +463,20 @@ class DynamicPhrase(Phrase):
 
         if (
             self.IsLeftRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
-            and self.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
+            and self.__class__.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
         ):
             assert isinstance(value_data.Data, Phrase.MultipleLexResultData)
             assert isinstance(value_data.Data.DataItems[-1], Phrase.StandardLexResultData)
 
             value_data = self.SkipDynamicData(cast(Phrase.StandardLexResultData, value_data.Data.DataItems[-1]))
 
-            if self.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType):
+            if self.__class__.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType):
+                # TODO: Add tests with a combo of mathematical, logical, and func operators ('.', '->', etc.)
+                #       Not all types should support this decoration, but right now it is applied to all; tests
+                #       will illustrate the problem.
+                #
+                #             one and two.three.Four() -> (((one and two).three).Four())     <<This is not correct>>
+
                 # Splitting phrases into those that are left-recursive and those that
                 # aren't avoids infinite recursion with left-recursive phrases, but it
                 # means that we are overly greedy for those phrases that are also right-

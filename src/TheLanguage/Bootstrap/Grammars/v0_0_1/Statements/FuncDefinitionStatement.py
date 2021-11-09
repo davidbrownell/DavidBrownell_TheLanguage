@@ -102,9 +102,9 @@ class FuncDefinitionStatement(GrammarPhrase):
     # TODO: Decorate these values with 'Async', '...', and '?'
     OperatorNameMap                         = {
         # Compile-Time
-        OperatorType.EvalTemplates: "__EvalTemplates!__",
-        OperatorType.EvalConstraints: "__EvalConstraints!__",
-        OperatorType.IsConvertibleTo: "__IsConvertibleTo!__",
+        OperatorType.EvalTemplates: "__EvalTemplates'__",
+        OperatorType.EvalConstraints: "__EvalConstraints'__",
+        OperatorType.IsConvertibleTo: "__IsConvertibleTo'__",
 
         # Foundational
         OperatorType.ToBool: "__ToBool__",

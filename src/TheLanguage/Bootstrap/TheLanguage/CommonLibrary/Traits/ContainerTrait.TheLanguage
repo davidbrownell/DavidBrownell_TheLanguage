@@ -31,8 +31,3 @@ public mutable trait ContainerTrait:
     public abstract mutable None Clear()
     public abstract mutable None Reserve?(PosIntArch num_elements)
     public abstract mutable None Resize?(PostIntArch num_elements)
-
-    # BugBug: __if IsView!<T>:
-    # BugBug:     public abstract immutable shared T Peek?()
-    # BugBug: __else:
-    # BugBug:     [Scoped] public abstract immutable shared T Peek?()

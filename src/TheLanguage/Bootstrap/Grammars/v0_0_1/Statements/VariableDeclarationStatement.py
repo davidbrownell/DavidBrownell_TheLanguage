@@ -37,10 +37,9 @@ with InitRelativeImports():
 
     from ....Lexer.Phrases.DSL import (
         CreatePhrase,
-        ExtractOptional,
-        ExtractOr,
-        ExtractSequence,
         ExtractDynamic,
+        ExtractOptional,
+        ExtractSequence,
         OptionalPhraseItem,
     )
 
@@ -58,7 +57,7 @@ class VariableDeclarationStatement(GrammarPhrase):
     """\
     Declares a variable.
 
-    <modifier>? <name> '=' <expression>
+    <modifier> <name> '=' <expression>
 
     Examples:
         foo = bar
@@ -74,12 +73,7 @@ class VariableDeclarationStatement(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRSE_NAME,
                 item=[
-                    # 'once'?
-                    OptionalPhraseItem.Create(
-                        item='once',
-                    ),
-
-                    # <modifier>?
+                    # <modifier>
                     OptionalPhraseItem.Create(
                         item=TypeModifier.CreatePhraseItem(),
                     ),
@@ -111,39 +105,30 @@ class VariableDeclarationStatement(GrammarPhrase):
         # ----------------------------------------------------------------------
         def Impl():
             nodes = ExtractSequence(node)
-            assert len(nodes) == 6
-
-            # 'once'?
-            is_once_node = cast(Optional[AST.Leaf], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
-            if is_once_node is None:
-                is_once_info = None
-            else:
-                is_once_info = True
+            assert len(nodes) == 5
 
             # <modifier>?
-            modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
+            modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
             if modifier_node is None:
                 modifier_info = None
             else:
                 modifier_info = TypeModifier.Extract(modifier_node)
 
             # <name>
-            name_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
+            name_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
             name_info = cast(NameParserInfo, GetParserInfo(name_node))
 
             # <expression>
-            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[4])))
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
             expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
             return VariableDeclarationStatementParserInfo(
                 CreateParserRegions(
                     node,
-                    is_once_node,
                     modifier_node,
                     name_node,
                     expression_node,
                 ),  # type: ignore
-                is_once_info,
                 modifier_info,
                 name_info,
                 expression_info,

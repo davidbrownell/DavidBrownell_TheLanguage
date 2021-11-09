@@ -1,5 +1,8 @@
+import itertools
 import os
 import textwrap
+
+from io import StringIO
 
 from contextlib import contextmanager
 from typing import Any, Callable, List, Optional, TextIO, Tuple, Union
@@ -8,6 +11,7 @@ import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
 from CommonEnvironment.StreamDecorator import StreamDecorator
+from CommonEnvironment import StringHelpers
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -17,19 +21,66 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ...Parser.Common.VisitorTools import StackHelper
     from ...Parser.Visitor import *
 
 
 # ----------------------------------------------------------------------
 class PythonVisitor(Visitor):
     # ----------------------------------------------------------------------
-    def __init__(
+    def Pass1(
         self,
-        output_stream: TextIO,
+        common_library_import_prefix: str,
+        parser_info: ParserInfo,
         indent_level: Optional[int]=None,
+    ) -> str:
+        sink = StringIO()
+
+        self._stream_stack: List[TextIO] = [sink]
+        self._indentation = " " * (indent_level or 4)
+        self._imports = []
+        self._prev_line: Optional[int] = None
+        self._import_prefix = common_library_import_prefix
+
+        self.Accept(parser_info, [])
+
+        return sink.getvalue()
+
+    # ----------------------------------------------------------------------
+    def Pass2(
+        self,
+        content: str,
+    ) -> str:
+        if self._imports:
+            imports = StringHelpers.LeftJustify(
+                "\n".join(self._imports),
+                len(self._indentation),
+            )
+        else:
+            imports = ""
+
+        content = content.replace(self._IMPORTS_PLACEHOLDER, imports)
+
+        return content
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(
+        self,
+        parser_info: ParserInfo,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        *args,
+        **kwargs,
     ):
-        self._stream_stack: List[TextIO]    = [output_stream]
-        self._indentation                   = " " * (indent_level or 2)
+        # TODO: This code doesn't work; fix in the future
+        if self._prev_line is not None and self._prev_line != parser_info.Regions__.Self__.Begin.Line: # type: ignore && pylint: disable=no-member
+            assert parser_info.Regions__.Self__.Begin.Line > self._prev_line  # type: ignore && pylint: disable=no-member
+
+            self._stream.write("*****\n" * (parser_info.Regions__.Self__.Begin.Line - self._prev_line)) # type: ignore && pylint: disable=no-member
+
+        self._prev_line = parser_info.Regions__.Self__.End.Line # type: ignore && pylint: disable=no-member
+
+        return super(PythonVisitor, self).Accept(parser_info, stack, *args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -38,6 +89,7 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: RootParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
+
         self._stream.write(
             textwrap.dedent(
                 """\
@@ -47,18 +99,38 @@ class PythonVisitor(Visitor):
                 # |
                 # ----------------------------------------------------------------------
                 {documentation}
-                <<<<imports placeholder>>>
+
+                from enum import Enum
+
+                from CommonEnvironmentEx.Package import InitRelativeImports
+
+                with InitRelativeImports():
+                    from {import_prefix}CommonLibrary import HashLib_TheLanguage as HashLib
+                    from {import_prefix}CommonLibrary.Int_TheLanguage import *
+                    from {import_prefix}CommonLibrary.List_TheLanguage import List
+                    # from {import_prefix}CommonLibrary.Num_TheLanguage import Num
+                    # from {import_prefix}CommonLibrary.Queue_TheLanguage import Queue
+                    from {import_prefix}CommonLibrary.Range_TheLanguage import Range
+                    from {import_prefix}CommonLibrary.Set_TheLanguage import Set
+                    from {import_prefix}CommonLibrary.Stack_TheLanguage import Stack
+                    from {import_prefix}CommonLibrary.String_TheLanguage import String
+
+                    {imports_placeholder}
 
                 """,
             ).format(
                 name=_script_name,
                 documentation="" if parser_info.Documentation is None else textwrap.dedent(
-                    '''\
-                    """\\
-                    {}
-                    """
-                    '''.format(parser_info.Documentation.replace('"""', '\\"\\"\\"')),
+                    textwrap.dedent(
+                        '''\
+                        """\\
+                        {}
+                        """
+                        ''',
+                    ).format(parser_info.Documentation),
                 ),
+                imports_placeholder=self._IMPORTS_PLACEHOLDER,
+                import_prefix=self._import_prefix,
             ),
         )
 
@@ -69,7 +141,16 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ConstraintArgumentParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            if parser_info.Keyword is not None:
+                self._stream.write("{}=".format(parser_info.Keyword))
+
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            self._stream.write(", ")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -78,7 +159,20 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ConstraintParameterParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["Type"]:
+                self.Accept(parser_info.Type, helper.stack)
+
+            self._stream.write(" {}".format(parser_info.Name))
+
+            if parser_info.Default is not None:
+                with helper["Default"]:
+                    self._stream.write("=")
+                    self.Accept(parser_info.Default, helper.stack)
+
+            self._stream.write(", ")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -87,7 +181,37 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ConstraintParametersParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("# Constraint Parameters:\n")
+
+            if parser_info.Positional is not None:
+                with helper["Positional"]:
+                    self._stream.write("#   Positional:  ")
+
+                    for parameter in parser_info.Positional:
+                        self.Accept(parameter, helper.stack)
+
+                    self._stream.write("\n")
+
+            if parser_info.Any is not None:
+                with helper["Any"]:
+                    self._stream.write("#   Any:  ")
+
+                    for parameter in parser_info.Any:
+                        self.Accept(parameter, helper.stack)
+
+                    self._stream.write("\n")
+
+            if parser_info.Keyword is not None:
+                with helper["Keyword"]:
+                    self._stream.write("#   Keyword:  ")
+
+                    for parameter in parser_info.Keyword:
+                        self.Accept(parameter, helper.stack)
+
+                    self._stream.write("\n")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -96,7 +220,15 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: FunctionArgumentParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        if parser_info.Keyword is not None:
+            self._stream.write("{}=".format(parser_info.Keyword))
+
+        with StackHelper(stack)[(parser_info, "Expression")] as helper:
+            self.Accept(parser_info.Expression, helper.stack)
+
+        self._stream.write(", ")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -105,7 +237,7 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: FunctionParameterTypeParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        assert parser_info.IsVariadic is None, "Not supported yet"
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -114,7 +246,16 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: FunctionParameterParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write(parser_info.Name)
+
+        if parser_info.Default is not None:
+            with StackHelper(stack)[(parser_info, "Default")] as helper:
+                self._stream.write("=")
+                self.Accept(parser_info.Default, helper.stack)
+
+        self._stream.write(", ")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -123,7 +264,30 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: FunctionParametersParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("(")
+
+        if getattr(parser_info, "_add_self", False):
+            self._stream.write("self, ")
+
+        with StackHelper(stack)[parser_info] as helper:
+            if parser_info.Positional is not None:
+                with helper["Positional"]:
+                    for parameter in parser_info.Positional:
+                        self.Accept(parameter, helper.stack)
+
+            if parser_info.Any:
+                with helper["Any"]:
+                    for parameter in parser_info.Any:
+                        self.Accept(parameter, helper.stack)
+
+            if parser_info.Keyword:
+                with helper["Keyword"]:
+                    for parameter in parser_info.Keyword:
+                        self.Accept(parameter, helper.stack)
+
+        self._stream.write(")")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -132,7 +296,18 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: TemplateArgumentParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        if parser_info.Keyword is not None:
+            self._stream.write("{}=".format(parser_info.Keyword))
+
+        if isinstance(parser_info.TypeOrExpression, str):
+            self._stream.write(parser_info.TypeOrExpression)
+        else:
+            with StackHelper(stack)[(parser_info, "Expression")] as helper:
+                self.Accept(parser_info.TypeOrExpression, helper.stack)
+
+        self._stream.write(", ")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -141,7 +316,18 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: TemplateTypeParameterParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        assert parser_info.IsVariadic is None, "Not supported yet"
+
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write(parser_info.Name)
+
+            if parser_info.Default is not None:
+                with helper["Default"]:
+                    self._stream.write("={}".format(parser_info.Default))
+
+            self._stream.write(", ")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -150,7 +336,20 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: TemplateDecoratorParameterParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["Type"]:
+                self.Accept(parser_info.Type, helper.stack)
+
+            self._stream.write(parser_info.Name)
+
+            if parser_info.Default is not None:
+                with helper["Default"]:
+                    self._stream.write("=")
+                    self.Accept(parser_info.Default, helper.stack)
+
+            self._stream.write(", ")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -159,7 +358,37 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: TemplateParametersParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("# Template Parameters:\n")
+
+            if parser_info.Positional is not None:
+                with helper["Positional"]:
+                    self._stream.write("#   Positional:  ")
+
+                    for parameter in parser_info.Positional:
+                        self.Accept(parameter, helper.stack)
+
+                    self._stream.write("\n")
+
+            if parser_info.Any is not None:
+                with helper["Any"]:
+                    self._stream.write("#   Any:  ")
+
+                    for parameter in parser_info.Any:
+                        self.Accept(parameter, helper.stack)
+
+                    self._stream.write("\n")
+
+            if parser_info.Keyword is not None:
+                with helper["Keyword"]:
+                    self._stream.write("#   Keyword:  ")
+
+                    for parameter in parser_info.Keyword:
+                        self.Accept(parameter, helper.stack)
+
+                    self._stream.write("\n")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -168,7 +397,79 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: BinaryExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["Left"]:
+                self.Accept(parser_info.Left, helper.stack)
+
+            surrounding_spaces = True
+
+            if parser_info.Operator == BinaryExpressionOperatorType.LogicalAnd:
+                operator = "and"
+            elif parser_info.Operator == BinaryExpressionOperatorType.LogicalOr:
+                operator = "or"
+            elif parser_info.Operator == BinaryExpressionOperatorType.LogicalIn:
+                operator = "in"
+            elif parser_info.Operator == BinaryExpressionOperatorType.LogicalNotIn:
+                operator = "not in"
+            elif parser_info.Operator == BinaryExpressionOperatorType.LogicalIs:
+                operator = "is"
+            elif parser_info.Operator == BinaryExpressionOperatorType.ChainedFunc:
+                operator = "."
+                surrounding_spaces = False
+            elif parser_info.Operator == BinaryExpressionOperatorType.ChainedFuncReturnSelf:
+                operator = "TODO->"
+                surrounding_spaces = False
+            elif parser_info.Operator == BinaryExpressionOperatorType.StaticAccessor:
+                operator = "."
+                surrounding_spaces = False
+            elif parser_info.Operator == BinaryExpressionOperatorType.Less:
+                operator = "<"
+            elif parser_info.Operator == BinaryExpressionOperatorType.LessEqual:
+                operator = "<="
+            elif parser_info.Operator == BinaryExpressionOperatorType.Greater:
+                operator = ">"
+            elif parser_info.Operator == BinaryExpressionOperatorType.GreaterEqual:
+                operator = ">="
+            elif parser_info.Operator == BinaryExpressionOperatorType.Equal:
+                operator = "=="
+            elif parser_info.Operator == BinaryExpressionOperatorType.NotEqual:
+                operator = "!="
+            elif parser_info.Operator == BinaryExpressionOperatorType.Add:
+                operator = "+"
+            elif parser_info.Operator == BinaryExpressionOperatorType.Subtract:
+                operator = "-"
+            elif parser_info.Operator == BinaryExpressionOperatorType.Multiply:
+                operator = "*"
+            elif parser_info.Operator == BinaryExpressionOperatorType.Power:
+                operator = "**"
+            elif parser_info.Operator == BinaryExpressionOperatorType.Divide:
+                operator = "/"
+            elif parser_info.Operator == BinaryExpressionOperatorType.DivideFloor:
+                operator = "//"
+            elif parser_info.Operator == BinaryExpressionOperatorType.Modulo:
+                operator = "%"
+            elif parser_info.Operator == BinaryExpressionOperatorType.BitShiftLeft:
+                operator = "<<"
+            elif parser_info.Operator == BinaryExpressionOperatorType.BitShiftRight:
+                operator = ">>"
+            elif parser_info.Operator == BinaryExpressionOperatorType.BitXor:
+                operator = "^"
+            elif parser_info.Operator == BinaryExpressionOperatorType.BitAnd:
+                operator = "&"
+            elif parser_info.Operator == BinaryExpressionOperatorType.BitOr:
+                operator = "|"
+            else:
+                assert False, parser_info.Operator
+
+            if surrounding_spaces:
+                self._stream.write(" {} ".format(operator))
+            else:
+                self._stream.write(operator)
+
+            with helper["Right"]:
+                self.Accept(parser_info.Right, helper.stack)
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -177,7 +478,19 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: CastExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            self._stream.write(" # as ")
+
+            if isinstance(parser_info.Type, TypeModifier):
+                self._stream.write(str(parser_info.Type.name))
+            else:
+                with helper["Type"]:
+                    self.Accept(parser_info.Type, helper.stack)
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -186,7 +499,23 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: FuncInvocationExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            if isinstance(parser_info.Arguments, bool):
+                assert parser_info.Arguments is False
+                self._stream.write("()")
+            else:
+                with helper["Arguments"]:
+                    self._stream.write("(")
+
+                    for argument in parser_info.Arguments:
+                        self.Accept(argument, helper.stack)
+
+                    self._stream.write(")")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -195,7 +524,27 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: GeneratorExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["ResultExpression"]:
+                self.Accept(parser_info.ResultExpression, helper.stack)
+
+            self._stream.write(" for ")
+
+            with helper["Name"]:
+                self.Accept(parser_info.Name, helper.stack)
+
+            self._stream.write(" in ")
+
+            with helper["SourceExpression"]:
+                self.Accept(parser_info.SourceExpression, helper.stack)
+
+            if parser_info.ConditionExpression is not None:
+                self._stream.write(" if ")
+
+                with helper["ConditionExpression"]:
+                    self.Accept(parser_info.ConditionExpression, helper.stack)
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -204,7 +553,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: GenericNameExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write(parser_info.Name.replace("?", "_"))
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -213,7 +563,11 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: GroupExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("(")
+        self.Accept(parser_info.Expression, stack)
+        self._stream.write(")")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -222,7 +576,18 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: IndexExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            self._stream.write("[")
+
+            with helper["Index"]:
+                self.Accept(parser_info.Index, helper.stack)
+
+            self._stream.write("]")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -231,7 +596,35 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: LambdaExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("(lambda")
+
+            if isinstance(parser_info.Parameters, bool):
+                assert parser_info.Parameters is False
+            else:
+                self._stream.write(" ")
+
+                with helper["Parameters"]:
+                    sink = StringIO()
+
+                    self._stream_stack.append(sink)
+                    with CallOnExit(self._stream_stack.pop):
+                        self.Accept(parser_info.Parameters, helper.stack)
+
+                    sink = sink.getvalue()
+                    assert sink[0] == '(', sink
+                    assert sink[-1] == ')', sink
+
+                    self._stream.write(sink[1:-1])
+
+            self._stream.write(": ")
+
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            self._stream.write(")")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -240,7 +633,7 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: MatchTypeExpressionClauseParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        assert False, "TODO: Not implemented yet"
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -249,7 +642,7 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: MatchTypeExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        assert False, "TODO: Not implemented yet"
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -258,7 +651,7 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: MatchValueExpressionClauseParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        assert False, "TODO: Not implemented yet"
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -267,7 +660,7 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: MatchValueExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        assert False, "TODO: Not implemented yet"
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -276,7 +669,21 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: TernaryExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["TrueExpression"]:
+                self.Accept(parser_info.TrueExpression, helper.stack)
+
+            self._stream.write(" if ")
+
+            with helper["ConditionExpression"]:
+                self.Accept(parser_info.ConditionExpression, helper.stack)
+
+            self._stream.write(" else ")
+
+            with helper["FalseExpression"]:
+                self.Accept(parser_info.FalseExpression, helper.stack)
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -285,7 +692,17 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: TupleExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("(")
+
+            with helper["Expressions"]:
+                for expression in parser_info.Expressions:
+                    self.Accept(expression, helper.stack)
+                    self._stream.write(", ")
+
+            self._stream.write(")")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -294,7 +711,39 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: UnaryExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            prefix = ""
+            suffix = ""
+
+            if parser_info.Operator == UnaryExpressionOperatorType.Await:
+                prefix = "await "
+            elif parser_info.Operator == UnaryExpressionOperatorType.Copy:
+                pass
+            elif parser_info.Operator == UnaryExpressionOperatorType.Final:
+                pass
+            elif parser_info.Operator == UnaryExpressionOperatorType.Move:
+                pass
+            elif parser_info.Operator == UnaryExpressionOperatorType.Not:
+                prefix = "not "
+            elif parser_info.Operator == UnaryExpressionOperatorType.Positive:
+                prefix = "+"
+            elif parser_info.Operator == UnaryExpressionOperatorType.Negative:
+                prefix = "-"
+            elif parser_info.Operator == UnaryExpressionOperatorType.BitCompliment:
+                prefix = "~"
+            else:
+                assert False, parser_info.Operator
+
+            if prefix:
+                self._stream.write(prefix)
+
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            if suffix:
+                self._stream.write("suffix")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -303,7 +752,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: BoolLiteralParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write(str(parser_info.Value))
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -312,7 +762,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: CharacterLiteralParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("'{}'".format(parser_info.Value))
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -321,7 +772,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: IntLiteralParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write(str(parser_info.Value))
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -330,7 +782,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: NoneLiteralParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("None")
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -339,7 +792,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: NumberLiteralParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write(str(parser_info.Value))
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -348,7 +802,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: StringLiteralParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write('"{}"'.format(parser_info.Value.replace('"', '\\"')))
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -357,7 +812,16 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: TupleNameParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[(parser_info, "Names")] as helper:
+            self._stream.write("(")
+
+            for name in parser_info.Names:
+                self.Accept(name, helper.stack)
+                self._stream.write(", ")
+
+            self._stream.write(")")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -366,7 +830,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: VariableNameParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write(parser_info.Name.replace("self_", "self."))
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -375,7 +840,20 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: AssertStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("assert ")
+
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            if parser_info.DisplayExpression is not None:
+                with helper["DisplayExpression"]:
+                    self._stream.write(", ")
+                    self.Accept(parser_info.DisplayExpression, helper.stack)
+
+            self._stream.write("\n")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -384,7 +862,45 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: BinaryStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["Name"]:
+                self.Accept(parser_info.Name, helper.stack)
+
+            if parser_info.Operator == BinaryStatementOperatorType.AddInplace:
+                operator = "+="
+            elif parser_info.Operator == BinaryStatementOperatorType.SubtractInplace:
+                operator = "-="
+            elif parser_info.Operator == BinaryStatementOperatorType.MultiplyInplace:
+                operator = "*="
+            elif parser_info.Operator == BinaryStatementOperatorType.PowerInplace:
+                operator = "**="
+            elif parser_info.Operator == BinaryStatementOperatorType.DivideInplace:
+                operator = "/="
+            elif parser_info.Operator == BinaryStatementOperatorType.DivideFloorInplace:
+                operator = "//="
+            elif parser_info.Operator == BinaryStatementOperatorType.ModuloInplace:
+                operator = "%="
+            elif parser_info.Operator == BinaryStatementOperatorType.BitShiftLeftInplace:
+                operator = "<<="
+            elif parser_info.Operator == BinaryStatementOperatorType.BitShiftRightInplace:
+                operator = ">>="
+            elif parser_info.Operator == BinaryStatementOperatorType.BitXorInplace:
+                operator = "^="
+            elif parser_info.Operator == BinaryStatementOperatorType.BitAndInplace:
+                operator = "&="
+            elif parser_info.Operator == BinaryStatementOperatorType.BitOrInplace:
+                operator = "|="
+            else:
+                assert False, parser_info.Operator
+
+            self._stream.write(" {} ".format(operator))
+
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            self._stream.write("\n")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -393,7 +909,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: BreakStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("break\n")
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -402,7 +919,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ClassMemberStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        # Nothing to do here
+        pass
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -411,7 +929,7 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ClassStatementDependencyParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        pass # TODO: BugBug
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -420,7 +938,143 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ClassStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write(
+                textwrap.dedent(
+                    """\
+                    # Visibility: {}
+                    # ClassModifier: {}
+                    # ClassType: {}
+                    """,
+                ).format(
+                    parser_info.Visibility.name,
+                    parser_info.ClassModifier.name,
+                    parser_info.ClassType.name,
+                ),
+            )
+
+            if parser_info.Templates is not None:
+                with helper["Templates"]:
+                    self.Accept(parser_info.Templates, helper.stack)
+
+            if parser_info.Constraints is not None:
+                with helper["Constraints"]:
+                    self.Accept(parser_info.Constraints, helper.stack)
+
+            base_classes = [
+                dependency.Name for dependency in itertools.chain(
+                    ([parser_info.Base] if parser_info.Base is not None else []),
+                    (parser_info.Extends or []),
+                    (parser_info.Implements or []),
+                    (parser_info.Uses or []),
+                )
+            ]
+
+            if not base_classes:
+                if parser_info.ClassType == ClassType.Exception:
+                    base_classes.append("Exception")
+                elif parser_info.ClassType == ClassType.Enum:
+                    base_classes.append("Enum")
+
+            self._stream.write(
+                "class {}({}):\n".format(
+                    parser_info.Name,
+                    "object" if not base_classes else ", ".join(base_classes),
+                ),
+            )
+
+            # Organize the statements
+            methods = []
+            members = []
+            saw_init = False
+
+            for statement in parser_info.Statements:
+                if isinstance(statement, ClassMemberStatementParserInfo):
+                    members.append(statement)
+                else:
+                    if (
+                        isinstance(statement, FuncDefinitionStatementParserInfo)
+                        and (
+                            statement.Name == FuncDefinitionStatementOperatorType.Init
+                            or statement.Name == FuncDefinitionStatementOperatorType.PostInit
+                        )
+                    ):
+                        saw_init = True
+
+                    methods.append(statement)
+
+            with self._Indent():
+                if parser_info.Documentation is not None:
+                    self._stream.write(
+                        textwrap.dedent(
+                            '''\
+                            """\\
+                            {}
+                            """
+
+                            ''',
+                        ).format(parser_info.Documentation),
+                    )
+
+                if members:
+                    self._stream.write(
+                        textwrap.dedent(
+                            """\
+                            def __init__(self, {args}):
+                            {assignments}
+
+                            {indent}self._Init_()
+
+                            """,
+                        ).format(
+                            args=", ".join([member.Name for member in members]),
+                            assignments=StringHelpers.LeftJustify(
+                                "\n".join(
+                                    [
+                                        "self.{name} = {name}".format(name=member.Name)
+                                        for member in members
+                                    ],
+                                ),
+                                len(self._indentation),
+                                skip_first_line=False,
+                            ),
+                            indent=self._indentation,
+                        ),
+                    )
+
+                    if not saw_init:
+                        self._stream.write(
+                            textwrap.dedent(
+                                """\
+                                def _Init_(self):
+                                {indent}pass
+
+                                """,
+                            ).format(
+                                indent=self._indentation,
+                            ),
+                        )
+                elif base_classes:
+                    self._stream.write(
+                        textwrap.dedent(
+                            """\
+                            def __init__(self, *args, **kwargs):
+                            {indent}super({name}, self).__init__(*args, **kwargs)
+
+                            """,
+                        ).format(
+                            indent=self._indentation,
+                            name=parser_info.Name,
+                        ),
+                    )
+                else:
+                    self._stream.write("pass # No members\n\n")
+
+                with helper["Statements"]:
+                    for method in methods:
+                        self.Accept(method, helper.stack)
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -429,7 +1083,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ContinueStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("continue\n")
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -438,7 +1093,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: DeleteStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("del {}\n".format(parser_info.VariableName))
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -447,7 +1103,88 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: FuncDefinitionStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            if parser_info.Templates is not None:
+                with helper["Templates"]:
+                    self.Accept(parser_info.Templates, helper.stack)
+
+            with helper["ReturnType"]:
+                self._stream.write("# Return Type: ")
+                self.Accept(parser_info.ReturnType, helper.stack)
+                self._stream.write("\n")
+
+            if parser_info.Statements is None:
+                self._stream.write("# ")
+
+            new_stream = self._stream
+
+            if isinstance(parser_info.Name, str):
+                name = parser_info.Name.replace("?", "").replace("!", "")
+            else:
+                if parser_info.Name in FUNC_DEFINITION_COMPILE_TIME_OPERATORS:
+                    name = parser_info.Name.name
+
+                    new_stream = StreamDecorator(
+                        self._stream,
+                        line_prefix="# ",
+                        skip_first_line_prefix=False,
+                    )
+                else:
+                    name = self._ToOperatorName(parser_info.Name)
+
+            self._stream_stack.append(new_stream)
+            with CallOnExit(self._stream_stack.pop):
+                if parser_info.MethodModifier in [MethodModifier.static]:
+                    self._stream.write("@staticmethod\n")
+
+                self._stream.write("def {}".format(name))
+
+                if isinstance(parser_info.Parameters, bool):
+                    assert parser_info.Parameters is False
+
+                    if parser_info.ClassModifier is not None:
+                        self._stream.write("(self)")
+                    else:
+                        self._stream.write("()")
+                else:
+                    with helper["Parameters"]:
+                        if parser_info.ClassModifier is not None:
+                            object.__setattr__(parser_info.Parameters, "_add_self", True)
+
+                        self.Accept(parser_info.Parameters, helper.stack)
+
+                if parser_info.Statements is not None:
+                    self._stream.write(":\n")
+
+                    with self._Indent():
+                        if parser_info.Documentation:
+                            self._stream.write(
+                                textwrap.dedent(
+                                    '''\
+                                    """\\
+                                    {}
+                                    """
+
+                                    ''',
+                                ).format(parser_info.Documentation),
+                            )
+
+                        if parser_info.CapturedVariables is not None:
+                            with helper["CapturedVariables"]:
+                                for variable in parser_info.CapturedVariables:
+                                    self._stream.write("nonlocal ")
+                                    self.Accept(variable, helper.stack)
+                                    self._stream.write("\n")
+
+                            self._stream.write("\n")
+
+                        with helper["Statements"]:
+                            for statement in parser_info.Statements:
+                                self.Accept(statement, helper.stack)
+
+            self._stream.write("\n")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -456,7 +1193,10 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: FuncInvocationStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self.Accept(parser_info.Expression, stack)
+        self._stream.write("\n")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -465,7 +1205,18 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: IfStatementClauseParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["Condition"]:
+                self.Accept(parser_info.Condition, helper.stack)
+
+            self._stream.write(":\n")
+
+            with self._Indent():
+                with helper["Statements"]:
+                    for statement in parser_info.Statements:
+                        self.Accept(statement, helper.stack)
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -474,7 +1225,23 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: IfStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["Clauses"]:
+                for clause_index, clause in enumerate(parser_info.Clauses):
+                    self._stream.write("{}if ".format("" if clause_index == 0 else "el"))
+                    self.Accept(clause, helper.stack)
+
+            if parser_info.ElseStatements:
+                with helper["ElseStatements"]:
+                    self._stream.write("else:\n")
+
+                    with self._Indent():
+                        for statement in parser_info.ElseStatements:
+                            self.Accept(statement, helper.stack)
+
+            self._stream.write("\n")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -483,7 +1250,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ImportStatementItemParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        # Nothing to do here
+        pass
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -492,7 +1260,38 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ImportStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        if parser_info.ImportType == ImportStatementImportType.SourceIsDirectory:
+            assert len(parser_info.ImportItems) == 1
+
+            self._imports.append(
+                "from {source}{dot}{imp}_TheLanguage import {imp}{suffix}".format(
+                    source=parser_info.SourceFilename,
+                    dot="" if parser_info.SourceFilename.startswith("..") else ".",
+                    imp=parser_info.ImportItems[0].Name,
+                    suffix="" if parser_info.ImportItems[0].Alias is None else " as {}".format(parser_info.ImportItems[0].Alias),
+                ),
+            )
+
+        elif parser_info.ImportType == ImportStatementImportType.SourceIsModule:
+            self._imports.append(
+                "from {source}_TheLanguage import {imports}".format(
+                    source=parser_info.SourceFilename,
+                    imports=", ".join(
+                        [
+                            "{}{}".format(
+                                import_item.Name,
+                                " as {}".format(import_item.Alias) if import_item.Alias is not None else "",
+                            )
+                            for import_item in parser_info.ImportItems
+                        ],
+                    ),
+                ),
+            )
+
+        else:
+            assert False, parser_info.ImportType
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -501,7 +1300,25 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: IterateStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("for ")
+
+            with helper["Name"]:
+                self.Accept(parser_info.Name, helper.stack)
+
+            self._stream.write(" in ")
+
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            self._stream.write(":\n")
+
+            with self._Indent():
+                with helper["Statements"]:
+                    for statement in parser_info.Statements:
+                        self.Accept(statement, helper.stack)
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -510,7 +1327,19 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: NoopStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("pass\n")
+        return False
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnPythonHackStatement(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: PythonHackStatementParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        self._stream.write(parser_info.Content)
+        self._stream.write("\n")
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -519,7 +1348,15 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: RaiseStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("raise")
+
+        if parser_info.Expression is not None:
+            with StackHelper(stack)[parser_info] as helper:
+                self._stream.write(" ")
+                self.Accept(parser_info.Expression, helper.stack)
+
+        self._stream.write("\n")
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -528,7 +1365,15 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ReturnStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("return")
+
+        if parser_info.Expression is not None:
+            with StackHelper(stack)[parser_info] as helper:
+                self._stream.write(" ")
+                self.Accept(parser_info.Expression, helper.stack)
+
+        self._stream.write("\n")
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -537,7 +1382,43 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ScopedRefStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["Names"]:
+                self._stream.write("# Scoped refs: ")
+
+                for name in parser_info.Names:
+                    self.Accept(name, helper.stack)
+
+                self._stream.write("\n")
+
+            with helper["Statements"]:
+                for statement in parser_info.Statements:
+                    self.Accept(statement, helper.stack)
+
+        return False
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnScopedStatement(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: ScopedStatementParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        with StackHelper(stack)[self] as helper:
+            self._stream.write("# Scoped Statement: Begin\n{} = ".format(parser_info.VariableName))
+
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            self._stream.write("\n\n")
+
+            with helper["Statements"]:
+                for statement in parser_info.Statements:
+                    self.Accept(statement, helper.stack)
+
+            self._stream.write("# Scoped Statement: End\n\n")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -546,7 +1427,23 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: TryStatementClauseParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("except ")
+
+            with helper["Type"]:
+                self.Accept(parser_info.Type, helper.stack)
+
+            if parser_info.Name is not None:
+                self._stream.write(" as {}".format(parser_info.Name))
+
+            self._stream.write(":\n")
+
+            with self._Indent():
+                with helper["Statements"]:
+                    for statement in parser_info.Statements:
+                        self.Accept(statement, helper.stack)
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -555,7 +1452,27 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: TryStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("try:\n")
+
+            with helper["TryStatements"]:
+                with self._Indent():
+                    for statement in parser_info.TryStatements:
+                        self.Accept(statement, helper.stack)
+
+            if parser_info.ExceptClauses:
+                with helper["ExceptClauses"]:
+                    for clause in parser_info.ExceptClauses:
+                        self.Accept(clause, helper.stack)
+
+            if parser_info.DefaultStatements:
+                with helper["DefaultStatements"]:
+                    self._stream.write("except:\n")
+                    with self._Indent():
+                        for statement in parser_info.DefaultStatements:
+                            self.Accept(statement, helper.stack)
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -564,7 +1481,34 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: TypeAliasStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("# Type alias: {} {}".format(parser_info.Visibility.name, parser_info.Name))
+
+            if parser_info.Templates is not None or parser_info.Constraints is not None:
+                self._stream.write("\n")
+
+                with self._Indent():
+                    if parser_info.Templates is not None:
+                        with helper["Templates"]:
+                            self.Accept(parser_info.Templates, helper.stack)
+
+                    if parser_info.Constraints is not None:
+                        with helper["Constraints"]:
+                            self.Accept(parser_info.Constraints, helper.stack)
+
+                self._stream.write("#   ")
+
+            self._stream.write(" = ")
+
+            with helper["Type"]:
+                self.Accept(parser_info.Type, helper.stack)
+
+            if parser_info.Templates is not None or parser_info.Constraints is not None:
+                self._stream.write("\n")
+
+            self._stream.write("\n")
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -573,7 +1517,30 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: VariableDeclarationStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            with helper["Name"]:
+                self.Accept(parser_info.Name, helper.stack)
+
+            self._stream.write(" = ")
+
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            self._stream.write("\n")
+
+        return False
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnVariableDeclarationOnceStatement(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: VariableDeclarationOnceStatementParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        # Note that this won't be part of the final visitor, as the construct will be converted into
+        # a VariableDeclarationStatementParserInfo object (likely assigned to an anonymous function)
+        self._stream.write("{} = None\n".format(parser_info.VariableName))
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -582,7 +1549,20 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: WhileStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("while ")
+
+            with helper["Expression"]:
+                self.Accept(parser_info.Expression, helper.stack)
+
+            self._stream.write(":\n")
+
+            with self._Indent():
+                with helper["Statements"]:
+                    for statement in parser_info.Statements:
+                        self.Accept(statement, helper.stack)
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -591,7 +1571,20 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: YieldStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("yield")
+
+        if parser_info.Expression is not None:
+            with StackHelper(stack)[parser_info] as helper:
+                if parser_info.IsRecursive is not None:
+                    assert parser_info.IsRecursive is True
+                    self._stream.write(" from")
+
+                with helper["Expression"]:
+                    self._stream.write(" ")
+                    self.Accept(parser_info.Expression, helper.stack)
+
+        self._stream.write("\n")
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -600,7 +1593,7 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: FuncTypeParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        pass # TODO # BugBug
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -609,7 +1602,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: NoneTypeParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        self._stream.write("None")
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -618,7 +1612,41 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: StandardTypeParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write(parser_info.TypeName)
+
+            if parser_info.Templates:
+                with helper["Templates"]:
+                    self._stream.write("<")
+
+                    for argument in parser_info.Templates:
+                        self.Accept(argument, helper.stack)
+
+                    self._stream.write(">")
+
+            if parser_info.Constraints:
+                with helper["Constraints"]:
+                    self._stream.write("{")
+
+                    for constraint in parser_info.Constraints:
+                        self.Accept(constraint, helper.stack)
+
+                    self._stream.write("}")
+
+            if parser_info.Modifier is not None:
+                self._stream.write(" {}".format(parser_info.Modifier.name))
+
+        return False
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnTypeOfType(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: TypeOfTypeParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        self._stream.write("TypeOf({})".format(parser_info.VariableName))
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -627,7 +1655,22 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: TupleTypeParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("Tuple(")
+
+            with helper["Types"]:
+                for type_index, type_ in enumerate(parser_info.Types):
+                    self.Accept(type_, helper.stack)
+
+                    if type_index != len(parser_info.Types) - 1:
+                        self._stream.write(", ")
+
+            self._stream.write(")")
+
+            if parser_info.Modifier is not None:
+                self._stream.write(" {}".format(parser_info.Modifier.name))
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -636,10 +1679,28 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: VariantTypeParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO
+        with StackHelper(stack)[parser_info] as helper:
+            self._stream.write("<")
+
+            with helper["Types"]:
+                for type_index, type_ in enumerate(parser_info.Types):
+                    self.Accept(type_, helper.stack)
+
+                    if type_index != len(parser_info.Types) - 1:
+                        self._stream.write(" | ")
+
+            self._stream.write(">")
+
+            if parser_info.Modifier is not None:
+                self._stream.write(" {}".format(parser_info.Modifier.name))
+
+        return False
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    _IMPORTS_PLACEHOLDER                    = "<<<<imports placeholder>>>>"
+
     # ----------------------------------------------------------------------
     @property
     def _stream(self):
@@ -658,3 +1719,10 @@ class PythonVisitor(Visitor):
 
         with CallOnExit(self._stream_stack.pop):
             yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _ToOperatorName(
+        operator: FuncDefinitionStatementOperatorType,
+    ) -> str:
+        return "_{}_".format(operator.name)

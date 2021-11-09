@@ -308,12 +308,12 @@ class RegexToken(Token):
                 start_index=max(0, pattern_len - MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH),
             ) == 1, (pattern, "The closing token must be a multiline phrase token")
 
-        else:
-            assert GetNumMultilineTokenDelimiters(
-                pattern,
-                start_index=0,
-                end_index=pattern_len,
-            ) == 0, (pattern, "The regex must not match a multiline phrase token")
+        # else:
+        #     assert GetNumMultilineTokenDelimiters(
+        #         pattern,
+        #         start_index=0,
+        #         end_index=pattern_len,
+        #     ) == 0, (pattern, "The regex must not match a multiline phrase token")
 
         # Commit the data
         self._name                          = name

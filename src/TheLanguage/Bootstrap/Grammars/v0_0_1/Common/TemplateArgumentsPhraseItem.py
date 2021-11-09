@@ -53,7 +53,7 @@ def Create() -> PhraseItem:
 
             (
                 DynamicPhrasesType.TemplateDecoratorExpressions,
-                CommonTokens.GenericUpperName,
+                DynamicPhrasesType.Types,
             ),
         ],
     )

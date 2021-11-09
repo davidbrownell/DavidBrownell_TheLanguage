@@ -80,7 +80,6 @@ class CastExpressionParserInfo(ExpressionParserInfo):
             valid_modifiers = [
                 TypeModifier.ref,
                 TypeModifier.val,
-                TypeModifier.view,
             ]
 
             if self.Type not in valid_modifiers:

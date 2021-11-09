@@ -20,7 +20,7 @@ hard to remain agnostic to the syntax/grammar that ultimately relies on the norm
 
 # BugBug from HashLib import HashLib
 
-from ..Error import Error
+from .. import Error
 
 # BugBug: Need ability to use default bases visibility when creating ClassStatementDependencyParserInfo
 
@@ -43,15 +43,28 @@ public immutable exception NoClosingMultilineTokenError
 # ----------------------------------------------------------------------
 protected immutable class LineInfo:
     # ----------------------------------------------------------------------
-    public IntArch view offset_start
-    public IntArch view offset_end
-    public IntArch view content_start
-    public IntArch view content_end
+    public immutable class WhitespaceRange:
+        public IntArch val begin
+        public IntArch val end
 
-    public (PosInt | None) view num_dedents
-    public (PosInt | None) view new_indentation_value
+        # ----------------------------------------------------------------------
+        private override None __Init__():
+            assert self.begin < self.end
 
-    public Dict<UInt, UInt>{0} view whitespaces
+    # ----------------------------------------------------------------------
+
+    public using WhitespaceRanges           = List<WhitespaceRange>{ min_length'=0 }
+
+    # ----------------------------------------------------------------------
+    public IntArch val offset_start
+    public IntArch val offset_end
+    public IntArch val content_start
+    public IntArch val content_end
+
+    public WhitespaceRanges val whitespace_ranges
+
+    public (PosInt | None) val num_dedents
+    public (PosInt | None) val new_indentation_value
 
     # ----------------------------------------------------------------------
     public immutable Bool HasWhitespacePrefix():
@@ -72,42 +85,43 @@ protected immutable class LineInfo:
         assert self.content_end >= self.content_start
         assert self.content_end <= self.offset_end
 
-        for (whitespace_start, whitespace_end) in self.whitespaces:
-            assert whitespace_start < whitespace_end
-
 
 # ----------------------------------------------------------------------
-protected immutable class NormalizedContent:
-    public using LineInfos                  = List<LineInfo>{1}
-    public using HashBytes                  = List<Int8>{32, 32}
+public immutable class NormalizedContent:
+    public using LineInfos                  = List<LineInfo>{min_length'=1}
+    public using HashBytes                  = List<Int8>{min_length'=32, max_length'=32}
 
     # ----------------------------------------------------------------------
-    public String view content
-    public PosInt view content_length
-    public LineInfos view line_infos
-    public HashBytes view hash
+    public String val content
+    public PosInt val content_length
+    public LineInfos val line_infos
+    public HashBytes val hash
 
     # ----------------------------------------------------------------------
     public static NormalizedContent Create(
-        String view content,
-        PosInt view content_length,
-        LineInfos view line_infos,
+        String val content,
+        PosInt val content_length,
+        LineInfos val line_infos,
     ):
-        hash = (
-            HashLib::Sha256()
-                ->Update(content)
-                ->Digest()
-        )
+        # TODO: In the future -- hash = (
+        # TODO: In the future --     HashLib::Sha256()
+        # TODO: In the future --         ->Update(content)
+        # TODO: In the future --         ->Digest()
+        # TODO: In the future -- )
+
+        hasher = HashLib::Sha256()
+        hasher.Update(content)
+        hash = hasher.Digest()
 
         return NormalizedContent(content, content_length, line_infos, hash)
 
 
 # ----------------------------------------------------------------------
-protected NormalizedContent Normalize?(
+public NormalizedContent Normalize?(
     String var content,
 
     # BugBug: Describe
-    (Set<String>{1} | None) var multiline_tokens_to_ignore=None,
+    (Set<String>{empty'=False} | None) var multiline_tokens_to_ignore=None,
 
     # BugBug: Describe
     (
@@ -188,11 +202,11 @@ protected NormalizedContent Normalize?(
     #               <<<!!!                !!!>>>        !!! Note that there can be multiple triplets as part of a phrase
     #
 
-    content = content if content[-1] == '\n' else (content + '\n')
-    multiline_tokens_to_ignore = multiline_tokens_to_ignore or Set<String>()
+    content = (content if content[-1] == '\n' else (content + '\n')) as val
+    multiline_tokens_to_ignore = (multiline_tokens_to_ignore or Set<String>()) as val
 
     # TODO: The parameter names in the lambda should not be required long term. Need to improve how types, parameters, and arguments interact
-    suppress_indentation_func = suppress_indentation_func or (
+    suppress_indentation_func = (suppress_indentation_func or (
         lambda (
             IntArch offset_start,
             IntArch offset_end,
@@ -200,19 +214,19 @@ protected NormalizedContent Normalize?(
             IntArch content_end
         ):
             False
-    ) # TODO: lambda ***: False
+    )) as val # TODO: lambda ***: False
 
     content_length = content.Length()
 
     # ----------------------------------------------------------------------
-    struct IndentationInfo:
-        UInt var num_chars
-        UInt var value
+    immutable class IndentationInfo:
+        IntArch val num_chars
+        UInt val value
 
     # ----------------------------------------------------------------------
     immutable class MultilineTokenInfo:
-        public IntArch view line_index
-        public PosInt view num_delimiters
+        public IntArch val line_index
+        public PosInt val num_delimiters
 
     # ----------------------------------------------------------------------
 
@@ -226,112 +240,211 @@ protected NormalizedContent Normalize?(
     LineInfo CreateLineInfo
         |offset, indentation_stack|
     ():
-        # BugBug: Capture whitespace
+        offset_start = offset
 
+        # Capture whitespace regions within the line
+        val whitespace_ranges = List<WhitespaceRange>() # TODO: LineInfo::WhitespaceRanges()
+        var whitespace_start = None as (TypeOf'(offset) | None)
 
+        while True:
+            val char = content[offset]
 
-        view line_start_offset = offset
+            if char == ' ' or char == '\t':
+                if whitespace_start is None:
+                    whitespace_start = offset
 
-        # BugBug: '... = None as (TypeOf(IntArch) | None)'
+            else:
+                if whitespace_start is not None:
+                    whitespace_ranges.InsertBack?(LineInfo.WhitespaceRange(whitespace_start, offset))
+                    whitespace_start = None
 
-        once view line_end_offset = None as IntArch
-        once view content_start_offset = None as IntArch
-        once view content_end_offset = None as IntArch
-
-        var calculated_indentation_value = 0 as (Int | None)
-        var num_pending_dedentations = 0
-        var pending_indentation = None as (IndentationInfo | None)
-
-        while offset < content_length:
-            char = content[offset]
-
-            if calculated_indentation_value is not None:
-                if char == ' ':
-                    calculated_indentation_value += 1
-
-                elif char == '\t':
-                    # Ensure that " \t" compares as different from "\t " and that "\t" compares
-                    # as different from " ".
-                    calculated_indentation_value += (offset - line_start_offset + 1) * 100
-
-                else:
-                    assert char == '\n' or not char.IsSpace(), char
-
-                    num_chars = offset - line_start_offset
-
-                    if char == '\n':
-                        # Ensure that the whitespace prefix for this line uses the same number of
-                        # tabs and spaces as the indentation associated with the previous line.
-                        if (
-                            num_chars == indentation_stack[-1].num_chars
-                            and calculated_indentation_value != indentation_stack[-1].value
-                        ):
-                            raise InvalidTabsAndSpacesError(
-                                line_infos.Length() + 1,
-                                offset - line_start_offset + 1,
-                            )
-
-                        if multiline_token_info is None:
-                            # Detect dedents
-                            while num_chars < indentation_stack[-1 + -num_pending_dedentations].num_chars:
-                                num_pending_dedentations += 1
-
-                            num_pending_dedentations = final num_pending_dedentations   # BugBug: 'final' unary expression
-
-                            # Detect indents
-                            if num_chars > indentation_stack[-1 + -num_pending_dedentations].num_chars:
-                                pending_indentation = IndentationInfo(num_chars, calculated_indentation_value)
-
-                    calculated_indentation_value = final None
-                    content_start_offset = final offset
-
-            elif char == '\n':
-                line_end_offset = final offset
-                offset += 1
-
-                # Detect trailing whitespace
-
-                content_end_offset = line_end_offset
-
-                assert content_start_offset is not None
-                while content_end_offset > content_start_offset and content[content_end_offset - 1].IsSpace():
-                    content_end_offset -= 1
+                if char == '\n':
+                    break
 
             offset += 1
 
-        assert line_end_offset is not None
-        assert content_start_offset is not None
-        assert content_end_offset is not None
+        val offset_end = offset
 
-        var has_indentation = pending_indentation is not None
+        # Calculate the beginning and end of the content (taking into account leading and trailing
+        # whitespace)
+        TypeOf'(offset) once content_start
+        TypeOf'(offset) once content_end
 
-        if (
-            (num_pending_dedentations or has_indentation)
-            and (
-                multiline_token_info is not None
-                or suppress_indentation_func(
-                    line_start_offset,
-                    line_end_offset,
-                    content_start_offset,
-                    content_end_offset,
-                )
-            )
+        if not whitespace_ranges:
+            content_start = offset
+            content_end = offset
+        else:
+            with initial_range = whitespace_ranges.TryPeek(0):
+                content_start = initial_range.end if initial_range and initial_range.begin == offset_start else offset_start
+
+            with last_range = whitespace_ranges.TryPeek(-1):
+                content_end = last_range.begin if last_range and last_range.end == offset_end else offset_end
+
+        # Calculate new dedentation- and indentation-values
+        (UInt | None) once num_dedents
+        (UInt | None) once new_indentation_value
+
+        if multiline_token_info is not None or suppress_indentation_func(
+            offset_start,
+            offset_end,
+            content_start,
+            content_end,
         ):
-            num_pending_dedentations = 0
-            has_indentation = False
+            num_dedents = None
+            new_indentation_value = None
 
         else:
-            if pending_indentation is not None:
-                indentation_stack.append(move pending_indentation)
+            # Does the detected indentation for this line represent a dedent and/or indent?
+            val this_num_chars = content_start - offset_start
+            var this_indentation_value = 0
+
+            if this_num_chars != 0:
+                for index in Range(offset_start, content_start):
+                    char = content[index]
+
+                    # Ensure that " \t" compares as different from "\t " and that "\t" compares
+                    # as different from " ".
+                    if char == ' ':
+                        this_indentation_value += 1
+                    elif char == '\t':
+                        this_indentation_value += (index - offset_start + 1) * 100
+                    else:
+                        assert False, char
+
+            # Ensure that the whitespace prefix for this line uses the same configuration of tabs and
+            # spaces as the indentation associated with the previous line if the number of characters
+            # are the same.
+            if (
+                this_num_chars == indentation_stack.Peek().num_chars
+                and this_indentation_value != indentation_stack.Peek().value
+            ):
+                raise InvalidTabsAndSpacesError(
+                    line_infos.Length() + 1,
+                    content_start - offset_start + 1,
+                )
+
+            num_dedents = 0
+
+            # Detect dedents
+            while this_num_chars < indentation_stack.Peek().num_chars:
+                indentation_stack.Pop?()
+                num_dedents += 1
+
+            # Detect indents
+            if this_num_chars > indentation_stack.Peek().num_chars:
+                new_indentation_value = this_indentation_value
+                indentation_stack.Push?(IndentationInfo(this_num_chars, this_indentation_value))
 
         return LineInfo(
-            line_start_offset,
-            line_end_offset,
-            content_start_offset,
-            content_end_offset,
-            num_dedents=num_pending_dedentations or None,
-            new_indentation_value=indentation_stack[-1].value if has_indentation else None,
+            offset_start,
+            offset_end,
+            content_start,
+            content_end,
+            move whitespace_ranges,
+            move num_dedents,
+            move new_indentation_value,
         )
+
+        # BugBug view offset_start = offset
+        # BugBug
+        # BugBug once view offset_end = None as TypeOf'(offset)
+        # BugBug once view content_start = None as TypeOf'(offset)
+        # BugBug once view content_end = None as TypeOf'(offset)
+        # BugBug
+        # BugBug var calculated_indentation_value = 0 as (Int | None)
+        # BugBug var num_pending_dedentations = 0
+        # BugBug var pending_indentation = None as (IndentationInfo | None)
+        # BugBug
+        # BugBug while offset < content_length:
+        # BugBug     char = content[offset]
+        # BugBug
+        # BugBug     if calculated_indentation_value is not None:
+        # BugBug         if char == ' ':
+        # BugBug             calculated_indentation_value += 1
+        # BugBug
+        # BugBug         elif char == '\t':
+        # BugBug             # Ensure that " \t" compares as different from "\t " and that "\t" compares
+        # BugBug             # as different from " ".
+        # BugBug             calculated_indentation_value += (offset - offset_start + 1) * 100
+        # BugBug
+        # BugBug         else:
+        # BugBug             assert char == '\n' or not char.IsSpace(), char
+        # BugBug
+        # BugBug             num_chars = offset - offset_start
+        # BugBug
+        # BugBug             if char == '\n':
+        # BugBug                 # Ensure that the whitespace prefix for this line uses the same number of
+        # BugBug                 # tabs and spaces as the indentation associated with the previous line.
+        # BugBug                 if (
+        # BugBug                     num_chars == indentation_stack[-1].num_chars
+        # BugBug                     and calculated_indentation_value != indentation_stack[-1].value
+        # BugBug                 ):
+        # BugBug                     raise InvalidTabsAndSpacesError(
+        # BugBug                         line_infos.Length() + 1,
+        # BugBug                         offset - offset_start + 1,
+        # BugBug                     )
+        # BugBug
+        # BugBug                 if multiline_token_info is None:
+        # BugBug                     # Detect dedents
+        # BugBug                     while num_chars < indentation_stack[-1 + -num_pending_dedentations].num_chars:
+        # BugBug                         num_pending_dedentations += 1
+        # BugBug
+        # BugBug                     num_pending_dedentations = final num_pending_dedentations
+        # BugBug
+        # BugBug                     # Detect indents
+        # BugBug                     if num_chars > indentation_stack[-1 + -num_pending_dedentations].num_chars:
+        # BugBug                         pending_indentation = IndentationInfo(num_chars, calculated_indentation_value)
+        # BugBug
+        # BugBug             calculated_indentation_value = final None
+        # BugBug             content_start = final offset
+        # BugBug
+        # BugBug     elif char == '\n':
+        # BugBug         offset_end = final offset
+        # BugBug         offset += 1
+        # BugBug
+        # BugBug         # Detect trailing whitespace
+        # BugBug
+        # BugBug         content_end = offset_end
+        # BugBug
+        # BugBug         assert content_start is not None
+        # BugBug         while content_end > content_start and content[content_end - 1].IsSpace():
+        # BugBug             content_end -= 1
+        # BugBug
+        # BugBug     offset += 1
+        # BugBug
+        # BugBug assert offset_end is not None
+        # BugBug assert content_start is not None
+        # BugBug assert content_end is not None
+        # BugBug
+        # BugBug var has_indentation = pending_indentation is not None
+        # BugBug
+        # BugBug if (
+        # BugBug     (num_pending_dedentations or has_indentation)
+        # BugBug     and (
+        # BugBug         multiline_token_info is not None
+        # BugBug         or suppress_indentation_func(
+        # BugBug             offset_start,
+        # BugBug             offset_end,
+        # BugBug             content_start,
+        # BugBug             content_end,
+        # BugBug         )
+        # BugBug     )
+        # BugBug ):
+        # BugBug     num_pending_dedentations = 0
+        # BugBug     has_indentation = False
+        # BugBug
+        # BugBug else:
+        # BugBug     if pending_indentation is not None:
+        # BugBug         indentation_stack.append(move pending_indentation)
+        # BugBug
+        # BugBug return LineInfo(
+        # BugBug     offset_start,
+        # BugBug     offset_end,
+        # BugBug     content_start,
+        # BugBug     content_end,
+        # BugBug     num_dedents=num_pending_dedentations or None,
+        # BugBug     new_indentation_value=indentation_stack[-1].value if has_indentation else None,
+        # BugBug )
 
     # ----------------------------------------------------------------------
 
@@ -349,11 +462,10 @@ protected NormalizedContent Normalize?(
             and content[line_infos[-1].content_start..line_infos[-1].content_end] not in multiline_tokens_to_ignore # BugBug: '..' binary expression
         ):
             # Toggle the current state
-            multiline_token_info = (
-                match type multiline_token_info:
-                    case None: MultilineTokenInfo(line_infos.Length() - 1, num_multiline_delimiters)
-                    default: None
-            )
+            if multiline_token_info is None:
+                multiline_token_info = MultilineTokenInfo(line_infos.Length() - 1, num_multiline_delimiters)
+            else:
+                multiline_token_info = None
 
     # Detect when a mutliline token has been opened but not closed
     if multiline_token_info is not None:
@@ -372,8 +484,53 @@ protected NormalizedContent Normalize?(
                 offset,
                 offset,
                 offset,
-                num_dedents=indentation_stack.Length() - 1,
+                List<(IntArch, IntArch)>(),
+                indentation_stack.Length() - 1,
+                None,
             ),
         )
 
     return NormalizedContent.Create(move content, move content_length, move line_infos)
+
+
+# ----------------------------------------------------------------------
+# TODO: protected val multiline_token_delimiter_length = 3
+val multiline_token_delimiter_length = 3
+
+protected UInt GetNumMultilineTokenDelimiters(
+    String val content,
+    UIntArch val start_index,
+    UIntArch val end_index,
+):
+    <<<
+    Returns the number of valid multiline token delimiter items at the given position in the provided content.
+    See the comments in `Normalize` for more information.
+    >>>
+
+    if start_index == end_index:
+        return 0
+
+    if (end_index - start_index) % multiline_token_delimiter_length != 0:
+        return 0
+
+    var index = start_index
+
+    while index != end_index:
+        # The character must be a symbol
+        val char = content[index]
+
+        if (
+            (char >= 'A' and char <= 'Z')
+            or (char >= 'a' and char <= 'z')
+            or (char >= '0' and char <= '9')
+        ):
+            return 0
+
+        # Every item within the delimiter must be the same
+        for offset in Range(index + 1, index + multiline_token_delimiter_length):
+            if content[offset] != char:
+                return 0
+
+        index += multiline_token_delimiter_length
+
+    return (end_index - start_index) // multiline_token_delimiter_length

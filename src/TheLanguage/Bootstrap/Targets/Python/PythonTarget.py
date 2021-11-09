@@ -16,6 +16,7 @@
 """Contains the PythonTarget object"""
 
 import os
+import shutil
 
 import CommonEnvironment
 from CommonEnvironment import FileSystem
@@ -50,6 +51,12 @@ class PythonTarget(Target):
         FileSystem.MakeDirs(self._output_dir)
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def PreInvoke():
+        pass # Nothing to do
+
+    # ----------------------------------------------------------------------
     @Interface.override
     def Invoke(
         self,
@@ -59,7 +66,7 @@ class PythonTarget(Target):
         assert fully_qualified_name.startswith(self._input_dir), (fully_qualified_name, self._input_dir)
         relative_path = FileSystem.TrimPath(fully_qualified_name, self._input_dir)
 
-        output_filename = os.path.join(self._output_dir, "{}.py".format(relative_path))
+        output_filename = os.path.join(self._output_dir, "{}.py".format(relative_path.replace(".", "_")))
         output_dirname = os.path.dirname(output_filename)
 
         if not os.path.isdir(output_dirname):
@@ -67,7 +74,29 @@ class PythonTarget(Target):
             with open(os.path.join(output_dirname, "__init__.py"), "w"):
                 pass
 
-        with open(output_filename, "w") as f:
-            visitor = PythonVisitor(f)
+        visitor = PythonVisitor()
 
-            visitor.Accept(parser_info, [])
+        content = visitor.Pass1(
+            common_library_import_prefix="." * (len(os.path.split(relative_path)) + 1),
+            parser_info=parser_info,
+        )
+        content = visitor.Pass2(content)
+
+        with open(output_filename, "w") as f:
+            f.write(content)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def PostInvoke(self):
+        templates_dir = os.path.join(_script_dir, "Templates")
+        assert os.path.isdir(templates_dir), templates_dir
+
+        for item in os.listdir(templates_dir):
+            source_path = os.path.join(templates_dir, item)
+            if not os.path.isdir(source_path):
+                continue
+
+            dest_path = os.path.join(self._output_dir, item)
+
+            FileSystem.RemoveTree(dest_path)
+            shutil.copytree(source_path, dest_path)

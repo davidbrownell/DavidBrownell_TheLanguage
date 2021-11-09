@@ -26,8 +26,8 @@ public immutable exception Error:
     >>>
 
     # ----------------------------------------------------------------------
-    public PosInt view line
-    public PosInt view column
+    public PosInt val line
+    public PosInt val column
 
     # ----------------------------------------------------------------------
     public override immutable String __ToString?__():

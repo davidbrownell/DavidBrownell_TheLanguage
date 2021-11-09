@@ -1,0 +1,70 @@
+# ----------------------------------------------------------------------
+# |
+# |  Set.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-06 19:02:58
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+BugBug
+>>>
+
+from .Traits import ContainerTrait
+
+
+# ----------------------------------------------------------------------
+public mutable class Set
+    <
+        T,
+    >
+    {
+        *,
+        Bool allow_empty'=True,
+    }
+    implements ContainerTrait
+:
+    <<<
+    BugBug: Desc
+    >>>
+
+    # ----------------------------------------------------------------------
+    # |  ContainerTrait Methods
+    [Deferred] public immutable Bool Empty()
+    [Deferred] public immutable UIntArch NumElements()
+    [Deferred] public immutable UIntArch Capacity()
+
+    [Deferred] public mutable None Clear()
+    [Deferred] public mutable None Reserve?(PosIntArch num_elements)
+    [Deferred] public mutable None Resize?(PostIntArch num_elements)
+
+    # BugBug: __if IsView'<T>:
+    # BugBug:     [Deferred] public immutable shared T Peek?()
+    # BugBug: __else:
+    # BugBug:     [Deferred, Scoped] public immutable shared T Peek?()
+
+    # ----------------------------------------------------------------------
+    # |  Set Methods
+    [Deferred] public static Set Create(T... value)
+
+    [Deferred] public mutable (T | None) TryAdd(T value)
+    [Deferred] public mutable None Add?(T value)
+
+    [Deferred] public mutable (T | None) TryAddUnique(T value)
+    [Deferred] public mutable None AddUnique?(T value)
+
+    [Deferred] public mutable (T | None) TryRemove(T value)
+    [Deferred] public mutable T Remove?(T value)
+
+    # TODO: Find, UpperBound, LowerBound, etc.
+    # TODO: Difference, Intersection, IsDisjoint, IsSubset, IsSuperset, SymmetricDifference, Union
+
+    # ----------------------------------------------------------------------
+    # |  Operators

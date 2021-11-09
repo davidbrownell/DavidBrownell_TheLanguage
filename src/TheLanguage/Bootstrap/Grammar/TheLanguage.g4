@@ -6,16 +6,50 @@ tokens { INDENT, DEDENT }
 
 // BugBug:
 // - We may need to move the location for attributes, as they are likley to be included for derived methods.
-//   Make the location consistent across all phrases that use them.
+//      Make the location consistent across all phrases that use them.
+// - Function decorators (scoped, reentrant)
+// - Iterators/ranges
+// - Modifier should not be part of a type
+// - Support for something like List<Foo::Bar>; '::' is not currently supported
+// - general assignment statements (outside of variable declarations)
+
+// ----------------------------------------------------------------------
+// |
+// |  Language (BugBug)
+// |
+// ----------------------------------------------------------------------
+// - InitOnly as attribute for class members
+// - ``-style format strings
+// - PrivateCtor as attribute for classes
+// - Properties as class members; only allows single expression (like lambdas)
+// - Enum value statements:
+//        enum Foo:
+//             Value1 <<----
+// - '::' when used with types
+// - Modifier support for tuple types
+// - Dotted variable names
+// - More lieniency for parameter placement with functions (especially those with captures)
+
+// ----------------------------------------------------------------------
+// |
+// |  Parser
+// |
+// ----------------------------------------------------------------------
+// - Derived class generate ctor that either takes members of bases or base instance
+// - Generate Clone methods with operators where any value may be specified; should immediately call __Init__
+// - Convert class properties into functions
+// - Ensure that func defined as exceptional invokes exceptional functionality (or vice versa)
+// - Validate that all imports from modules are valid
+// - Enusre match types are fully complete (by invoking type-specific functionality)
 
 // ----------------------------------------------------------------------
 STANDARD_CASE_STRICT: [a-z][a-zA-Z0-9_]*;
 STANDARD_CASE: '_'* STANDARD_CASE_STRICT '_'*;
-STANDARD_CASE_WITH_EXCLAMATION: '_'* STANDARD_CASE_STRICT '!'? '_'*;
+STANDARD_CAST_COMPILE_TIME: '_'* STANDARD_CASE_STRICT '\''? '_'*;
 
 PASCAL_CASE_STRICT: [A-Z][a-zA-Z0-9_]*;
 PASCAL_CASE: '_'* PASCAL_CASE_STRICT '_'*;
-PASCAL_CASE_WITH_EXCLAMATION: '_'* PASCAL_CASE_STRICT '!'? '_'*;
+PASCAL_CASE_COMPILE_TIME: '_'* PASCAL_CASE_STRICT '\''? '_'*;
 PASCAL_CASE_WITH_QUESTION: '_'* PASCAL_CASE_STRICT '?'? '_'*;
 
 PERFECT_FORWARD: '***';
@@ -35,8 +69,8 @@ module_name: PASCAL_CASE_STRICT;
 type_name: PASCAL_CASE;
 function_name: PASCAL_CASE_WITH_QUESTION;
 parameter_name: STANDARD_CASE;
-template_decl_parameter_name: PASCAL_CASE_WITH_EXCLAMATION;
-constraint_parameter_name: STANDARD_CASE_WITH_EXCLAMATION;
+template_decl_parameter_name: PASCAL_CASE_COMPILE_TIME;
+constraint_parameter_name: STANDARD_CAST_COMPILE_TIME;
 variable_name: STANDARD_CASE;
 
 // ----------------------------------------------------------------------
@@ -44,7 +78,7 @@ variable_name: STANDARD_CASE;
 class_modifier: 'immutable' | 'mutable';
 method_modifier: 'abstract' | 'final' | 'override' | 'standard' | 'static' | 'virtual';
 parameters_indicator: 'pos' | 'any' | 'key';
-type_modifier: 'mutable' | 'immutable' | 'isolated' | 'shared' | 'var' | 'ref' | 'val' | 'view';
+type_modifier: 'mutable' | 'immutable' | 'isolated' | 'shared' | 'var' | 'ref' | 'val';
 visibility_modifier: 'public' | 'protected' | 'private';
 
 // ----------------------------------------------------------------------
@@ -89,7 +123,7 @@ function_parameters_new_list: (parameters_indicator ':' function_parameters_list
 function_parameters_traditional_list: function_parameters_traditional_list_item (',' function_parameters_traditional_list_item)* ','?;
 function_parameters_traditional_list_item: '*' | '/' | function_parameters_list_item;
 
-function_parameters_list_item: standard_type /*type_modifier is required*/ '*'? parameter_name ('=' standard_expression)?;
+function_parameters_list_item: standard_type /*type_modifier is required*/ '...'? parameter_name ('=' standard_expression)?;
 
 // ----------------------------------------------------------------------
 // |  Scoped Statements
@@ -115,7 +149,7 @@ template_parameters_traditional_list: template_parameters_traditional_list_item 
 template_parameters_traditional_list_item: '*' | '/' | template_parameters_list_item;
 
 template_parameters_list_item: (
-    (type_name '*'? ('=' standard_type /*type_modifier must be None*/)?)
+    (type_name '...'? ('=' standard_type /*type_modifier must be None*/)?)
     | (template_decl_type template_decl_parameter_name ('=' template_decl_expression)?)
 );
 
@@ -146,6 +180,7 @@ standard_type_item: (
     | standard_type_tuple
     | standard_type_variant
     | standard_type_func
+    | standard_type_typeof
 );
 
 standard_type_primitive: type_name template_arguments? constraint_arguments?;
@@ -175,6 +210,13 @@ standard_type_func: (
     ')'
 );
 
+standard_type_typeof: (
+    'TypeOf\''
+    '('
+    (variable_name | function_name) // BugBug: This feels a bit wonky
+    ')'
+);
+
 // ----------------------------------------------------------------------
 // |
 // |  Statements
@@ -200,6 +242,7 @@ standard_statement: (
     | try_statement
     | using_statement
     | variable_declaration_statement
+    | variable_declaration_once_statement
     | while_statement
     | yield_statement
 );
@@ -230,7 +273,7 @@ break_statement: 'break' NEWLINE;
 class_statement: (
     attributes?
     visibility_modifier?
-    class_modifier?
+    class_modifier? // BugBug: include 'deferred'?
     ('class' | 'enum' | 'exception' | 'interface' | 'mixin' | 'struct' | 'trait')
     type_name
     template_parameters?
@@ -368,12 +411,20 @@ using_statement: (
 );
 
 // ----------------------------------------------------------------------
-// BugBug: once?
 variable_declaration_statement: (
-    type_modifier?
+    type_modifier
     standard_name
     '='
     standard_expression
+    NEWLINE
+);
+
+// ----------------------------------------------------------------------
+variable_declaration_once_statement: (
+    // BugBug
+    standard_type /* type_modifier == '' or None */
+    'once'
+    standard_name
     NEWLINE
 );
 
@@ -542,18 +593,28 @@ constraint_type: (
     | 'Num'
     | 'String'
     | constraint_type_variant
+    | constraint_type_tuple
 );
 
 constraint_type_variant: (
     '('
-    constraint_type_variant_item
-    ('|' constraint_type_variant_item)*
+    constraint_type_item
+    ('|' constraint_type_item)*
     '|'
-    constraint_type_variant_item
+    constraint_type_item
     ')'
 );
 
-constraint_type_variant_item: constraint_type | 'None';
+constraint_type_tuple: (
+    '('
+    (constraint_type_tuple_single | constraint_type_tuple_multiple)
+    ')'
+);
+
+constraint_type_tuple_single: constraint_type_item ',';
+constraint_type_tuple_multiple: constraint_type_item (',' constraint_type_item)+ ','?;
+
+constraint_type_item: constraint_type | 'None';
 
 // ----------------------------------------------------------------------
 // |

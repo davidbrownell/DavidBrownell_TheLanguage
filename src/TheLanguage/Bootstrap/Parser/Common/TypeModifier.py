@@ -36,7 +36,7 @@ class TypeModifier(IntFlag):
     |           | isolated | shared |
     |-----------|----------|--------|
     | mutable   |    var   |   ref  |
-    | immutable |    val   |  view  |
+    | immutable |  iso_val |   val  |
     |-----------|----------|--------|
     """
 
@@ -52,5 +52,5 @@ class TypeModifier(IntFlag):
 
     var                                     = mutable | isolated
     ref                                     = mutable | shared
-    val                                     = immutable | isolated
-    view                                    = immutable | shared
+    iso_val                                 = immutable | isolated
+    val                                     = immutable | shared
