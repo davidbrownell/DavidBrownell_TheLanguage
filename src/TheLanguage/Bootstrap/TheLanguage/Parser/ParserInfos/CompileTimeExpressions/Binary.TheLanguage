@@ -1,0 +1,96 @@
+# ----------------------------------------------------------------------
+# |
+# |  Binary.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-11 14:33:17
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Expression import CompileTimeExpressionParserInfo, CompileTimeExpressionParserInfoRegions
+from ..ParserInfo import Region
+
+
+# ----------------------------------------------------------------------
+public enum OperatorType:
+    # TODO: # Logical
+    # TODO: LogicalAnd
+    # TODO: LogicalOr
+    # TODO: LogicalIn
+    # TODO: LogicalNotIn
+    # TODO: LogicalIs
+    # TODO:
+    # TODO: # Comparison
+    # TODO: Less
+    # TODO: LessEqual
+    # TODO: Greater
+    # TODO: GreaterEqual
+    # TODO: Equal
+    # TODO: NotEqual
+    # TODO:
+    # TODO: # Mathematical
+    # TODO: Add
+    # TODO: Subtract
+    # TODO: Multiply
+    # TODO: Power
+    # TODO: Divide
+    # TODO: DivideFloor
+    # TODO: Modulo
+    # TODO:
+    # TODO: # Bit Manipulation
+    # TODO: BitShiftLeft
+    # TODO: BitShiftRight
+    # TODO: BitXor
+    # TODO: BitAnd
+    # TODO: BitOr
+
+    python_hack: LogicalAnd = auto()
+    python_hack: LogicalOr = auto()
+    python_hack: LogicalIn = auto()
+    python_hack: LogicalNotIn = auto()
+    python_hack: LogicalIs = auto()
+
+    python_hack: Less = auto()
+    python_hack: LessEqual = auto()
+    python_hack: Greater = auto()
+    python_hack: GreaterEqual = auto()
+    python_hack: Equal = auto()
+    python_hack: NotEqual = auto()
+
+    python_hack: Add = auto()
+    python_hack: Subtract = auto()
+    python_hack: Multiply = auto()
+    python_hack: Power = auto()
+    python_hack: Divide = auto()
+    python_hack: DivideFloor = auto()
+    python_hack: Modulo = auto()
+
+    python_hack: BitShiftLeft = auto()
+    python_hack: BitShiftRight = auto()
+    python_hack: BitXor = auto()
+    python_hack: BitAnd = auto()
+    python_hack: BitOr = auto()
+
+
+# ----------------------------------------------------------------------
+public immutable class BinaryCompileTimeExpressionParserInfo
+    extends CompileTimeExpressionParserInfo
+:
+    public CompileTimeExpressionParserInfo val left
+    public OperatorType val operator
+    public CompileTimeExpressionParserInfo val right
+
+
+# ----------------------------------------------------------------------
+public immutable class BinaryCompileTimeExpressionParserInfoRegions
+    extends CompileTimeExpressionParserInfoRegions
+:
+    public CompileTimeExpressionParserInfoRegions val left
+    public Region val operator
+    public CompileTimeExpressionParserInfoRegions val right

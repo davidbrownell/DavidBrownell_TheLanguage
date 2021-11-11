@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Expression.TheLanguage
+# |  CharLiteral.TheLanguage
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-11-10 15:56:32
+# |      2021-11-11 14:28:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,23 +13,23 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from ..ParserInfo import ParserInfo, ParserInfoRegions
+from .Expression import CompileTimeExpressionParserInfo, CompileTimeExpressionParserInfoRegions
+from ..Common.Impl.CharLiteralMixin import CharLiteralParserInfoMixin, CharLiteralParserInfoRegionsMixin
 
 
 # ----------------------------------------------------------------------
-# TODO: protected abstract immutable class ExpressionParserInfo
-protected immutable class ExpressionParserInfo
-    extends ParserInfo
+public immutable class CharLiteralCompileTimeExpressionParserInfo
+    extends CompileTimeExpressionParserInfo,
+    uses CharLiteralParserInfoMixin,
 :
-    <<<
-    Abstract base class for all expression-related `ParserInfo` objects.
-    >>>
-
-    # No custom functionality at this time
+    # Nothing to add here
     pass
 
 
 # ----------------------------------------------------------------------
-# TODO: Shouldn't need to define this long term
-public using ExpressionParserInfoRegions    = ParserInfoRegions
-python_hack: ExpressionParserInfoRegions = ParserInfoRegions
+public immutable class CharLiteralCompileTimeExpressionParserInfoRegions
+    extends CompileTimeExpressionParserInfoRegions,
+    uses CharLiteralParserInfoRegionsMixin,
+:
+    # Nothing to add here
+    pass

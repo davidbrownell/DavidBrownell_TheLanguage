@@ -1,0 +1,86 @@
+# ----------------------------------------------------------------------
+# |
+# |  FuncParameters.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-11 14:49:27
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .TypeModifier import TypeModifierParserInfo, TypeModifierParserInfoRegions
+from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
+from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..Types.Type import TypeParserInfo, TypeParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class FuncParameterTypeParserInfo
+    extends ParserInfo
+:
+    public TypeParserInfo val type
+    public (TypeModifierParserInfo | None) val modifier
+    public (Bool | None) val is_variadic
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        # TODO: ensure self.is_variadic is None or self.is_variadic is True
+        assert self.is_variadic is None or self.is_variadic is True
+
+
+# ----------------------------------------------------------------------
+public immutable class FuncParameterTypeParserInfoRegions
+    extends ParserInfoRegions
+:
+    public TypeParserInfoRegions val type
+    public (TypeModifierParserInfoRegions | None) val modifier
+    public (Region | None) val is_variadic
+
+
+# ----------------------------------------------------------------------
+public immutable class FuncParameterParserInfo
+    extends FuncParameterTypeParserInfo
+:
+    public String val name
+    public (ExpressionParserInfo | None) val default
+
+
+# ----------------------------------------------------------------------
+public immutable class FuncParameterParserInfoRegions
+    extends FuncParameterTypeParserInfoRegions
+:
+    public Region val name
+    public (ExpressionParserInfoRegions | None) val default
+
+
+# ----------------------------------------------------------------------
+public immutable class FuncParametersParserInfo
+    extends ParserInfo
+:
+    public (List<FuncParameterParserInfo>{ min_length'=1 } | None) val positional
+    public (List<FuncParameterParserInfo>{ min_length'=1 } | None) val any
+    public (List<FuncParameterParserInfo>{ min_length'=1 } | None) val keyword
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        # TODO: ensure self.positional or self.any or self.keyword
+        assert self.positional or self.any or self.keyword
+
+
+# ----------------------------------------------------------------------
+public immutable class FuncParametersParserInfoRegions
+    extends ParserInfoRegions
+:
+    public (List<FuncParameterParserInfoRegions>{ min_length'=1 } | None) val positional
+    public (List<FuncParameterParserInfoRegions>{ min_length'=1 } | None) val any
+    public (List<FuncParameterParserInfoRegions>{ min_length'=1 } | None) val keyword
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        # TODO: ensure self.positional or self.any or self.keyword
+        assert self.positional or self.any or self.keyword

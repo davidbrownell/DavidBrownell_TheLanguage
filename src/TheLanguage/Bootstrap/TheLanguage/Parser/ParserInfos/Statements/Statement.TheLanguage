@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConstraintArgument.TheLanguage
+# |  Statement.TheLanguage
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-11-11 13:04:25
+# |      2021-11-11 15:18:18
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,20 +13,23 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
+from ..ParserInfo import ParserInfo, ParserInfoRegions
 
 
 # ----------------------------------------------------------------------
-public immutable class ConstraintArgumentParserInfo
+# TODO: protected abstract immutable class StatementParserInfo
+protected immutable class StatementParserInfo
     extends ParserInfo
 :
-    public CompileTimeExpressionParserInfo val expression
-    public (String | None) val keyword
+    <<<
+    Abstract base class for all statement-related `ParserInfo` objects.
+    >>>
+
+    # No custom functionality at this time
+    pass
 
 
 # ----------------------------------------------------------------------
-public immutable class ConstraintArgumentParserInfoRegions
-    extends ParserInfoRegions
-:
-    public CompileTimeExpressionParserInfoRegions val expression
-    public (Region | None) val keyword
+# TODO: Shouldn't need to define this long term
+public using StatementParserInfoRegions    = ParserInfoRegions
+python_hack: StatementParserInfoRegions = ParserInfoRegions

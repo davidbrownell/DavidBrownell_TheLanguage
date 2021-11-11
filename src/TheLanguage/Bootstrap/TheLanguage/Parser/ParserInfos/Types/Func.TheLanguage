@@ -16,7 +16,7 @@
 from .Type import TypeParserInfo, TypeParserInfoRegions
 from ..ParserInfo import Region
 from ..Common.FuncAttributes import FuncAttributesParserInfoMixin, FuncAttributesParserInfoRegionsMixin
-from ..Common.FuncParameters import FuncParametersParserInfo, FuncParametersParserInfoRegions
+from ..Common.FuncParameters import FuncParameterTypeParserInfo, FuncParameterTypeParserInfoRegions
 
 
 # ----------------------------------------------------------------------
@@ -29,7 +29,7 @@ public immutable class FuncTypeParserInfo
     >>>
 
     public TypeParserInfo val return_value
-    public (FuncParametersParserInfo | Bool) val parameters
+    public (List<FuncParameterTypeParserInfo>{ min_length'=1 } | Bool) val parameters
 
     # ----------------------------------------------------------------------
     private None __Init?__():
@@ -43,4 +43,4 @@ public immutable class FuncTypeParserInfoRegions
     uses FuncAttributesParserInfoRegionsMixin,
 :
     public TypeParserInfoRegions val return_value
-    public (FuncParametersParserInfoRegions | Region) val parameters
+    public (List<FuncParameterTypeParserInfoRegions>{ min_length'=1 } | Region) val parameters

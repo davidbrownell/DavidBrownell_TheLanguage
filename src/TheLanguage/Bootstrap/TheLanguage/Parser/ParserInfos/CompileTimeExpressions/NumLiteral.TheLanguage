@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConstraintArgument.TheLanguage
+# |  NumLiteral.TheLanguage
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-11-11 13:04:25
+# |      2021-11-11 14:28:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,20 +13,23 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
+from .Expression import CompileTimeExpressionParserInfo, CompileTimeExpressionParserInfoRegions
+from ..Common.Impl.NumLiteralMixin import NumLiteralParserInfoMixin, NumLiteralParserInfoRegionsMixin
 
 
 # ----------------------------------------------------------------------
-public immutable class ConstraintArgumentParserInfo
-    extends ParserInfo
+public immutable class NumLiteralCompileTimeExpressionParserInfo
+    extends CompileTimeExpressionParserInfo,
+    uses NumLiteralParserInfoMixin,
 :
-    public CompileTimeExpressionParserInfo val expression
-    public (String | None) val keyword
+    # Nothing to add here
+    pass
 
 
 # ----------------------------------------------------------------------
-public immutable class ConstraintArgumentParserInfoRegions
-    extends ParserInfoRegions
+public immutable class NumLiteralCompileTimeExpressionParserInfoRegions
+    extends CompileTimeExpressionParserInfoRegions,
+    uses NumLiteralParserInfoRegionsMixin,
 :
-    public CompileTimeExpressionParserInfoRegions val expression
-    public (Region | None) val keyword
+    # Nothing to add here
+    pass

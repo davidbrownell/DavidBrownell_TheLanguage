@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConstraintArgument.TheLanguage
+# |  List.TheLanguage
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-11-11 13:04:25
+# |      2021-11-11 14:42:39
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,20 +13,18 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
+from .Type import CompileTimeTypeParserInfo, CompileTimeTypeParserInfoRegions
 
 
 # ----------------------------------------------------------------------
-public immutable class ConstraintArgumentParserInfo
-    extends ParserInfo
+public immutable class ListCompileTimeTypeParserInfo
+    extends CompileTimeTypeParserInfo
 :
-    public CompileTimeExpressionParserInfo val expression
-    public (String | None) val keyword
+    public List<CompileTimeTypeParserInfo>{ min_length'=1 } val types
 
 
 # ----------------------------------------------------------------------
-public immutable class ConstraintArgumentParserInfoRegions
-    extends ParserInfoRegions
+public immutable class ListCompileTimeTypeParserInfoRegions
+    extends CompileTimeTypeParserInfoRegions
 :
-    public CompileTimeExpressionParserInfoRegions val expression
-    public (Region | None) val keyword
+    public List<CompileTimeTypeParserInfoRegions>{ min_length'=1 } val types

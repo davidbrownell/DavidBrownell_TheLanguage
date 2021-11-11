@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConstraintArgument.TheLanguage
+# |  StringLiteralMixin.TheLanguage
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-11-11 13:04:25
+# |      2021-11-11 14:24:58
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,20 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
 
 
 # ----------------------------------------------------------------------
-public immutable class ConstraintArgumentParserInfo
-    extends ParserInfo
-:
-    public CompileTimeExpressionParserInfo val expression
-    public (String | None) val keyword
+public immutable mixin StringLiteralParserInfoMixin:
+    public String val value
 
 
 # ----------------------------------------------------------------------
-public immutable class ConstraintArgumentParserInfoRegions
-    extends ParserInfoRegions
-:
-    public CompileTimeExpressionParserInfoRegions val expression
-    public (Region | None) val keyword
+public immutable mixin StringLiteralParserInfoRegionsMixin:
+    # Nothing to add here
+    pass
