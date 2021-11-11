@@ -1,0 +1,43 @@
+# ----------------------------------------------------------------------
+# |
+# |  FuncAttributes.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-10 16:11:14
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from ..ParserInfo import Region
+
+
+# ----------------------------------------------------------------------
+public immutable mixin FuncAttributesParserInfoMixin:   # The function...
+    [Keyword] public (Bool | None) val is_exceptional   # ...may raise exceptions
+    [Keyword] public (Bool | None) val is_generator     # ...will generate multiple results when called repeatedly
+    [Keyword] public (Bool | None) val is_reentrant     # ...will yield control to the caller during its execution
+    [Keyword] public (Bool | None) val is_scoped        # ...yields a single value to the caller
+    [Keyword] public (Bool | None) val is_async         # ...is intended to be called asynchronously
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        # TODO: change these to ensure
+        assert self.is_exceptional is None or self.is_exceptional is True
+        assert self.is_generator is None or self.is_generator is True
+        assert self.is_reentrant is None or self.is_reentrant is True
+        assert self.is_scoped is None or self.is_scoped is True
+        assert self.is_async is None or self.is_async is True
+
+
+# ----------------------------------------------------------------------
+public immutable mixin FuncAttributesParserInfoRegionsMixin:
+    [Keyword] public (Region | None) val is_exceptional
+    [Keyword] public (Region | None) val is_generator
+    [Keyword] public (Region | None) val is_reentrant
+    [Keyword] public (Region | None) val is_scoped
+    [Keyword] public (Region | None) val is_async

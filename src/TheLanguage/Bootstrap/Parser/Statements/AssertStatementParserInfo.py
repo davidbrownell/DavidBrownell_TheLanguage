@@ -40,8 +40,14 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class AssertStatementParserInfo(StatementParserInfo):
+    IsEnsure: Optional[bool]
     Expression: ExpressionParserInfo
     DisplayExpression: Optional[ExpressionParserInfo]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(AssertStatementParserInfo, self).__post_init__(regions)
+        assert self.IsEnsure is None or self.IsEnsure
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

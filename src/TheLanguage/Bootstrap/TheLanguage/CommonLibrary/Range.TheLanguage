@@ -19,7 +19,25 @@ BugBug
 
 
 # ----------------------------------------------------------------------
-public Int Range(Int var begin, Int val end): # TODO generator:
+public immutable class Range<T>:
+    public T val begin
+    public T val end
+
+    # ----------------------------------------------------------------------
+    public static Range val Create?(T val begin, T val end):
+        if end < begin:
+            raise InvalidParameterException("end")
+
+        return Range(begin, end)
+
+
+# ----------------------------------------------------------------------
+public Range<T> CreateRange(T val begin, T val end):
+    return Range<T>::Create(begin, end)
+
+
+# ----------------------------------------------------------------------
+public T IntGenerator<T>(T var begin, T val end): # TODO generator:
     while begin != end:
         yield begin
         begin += 1

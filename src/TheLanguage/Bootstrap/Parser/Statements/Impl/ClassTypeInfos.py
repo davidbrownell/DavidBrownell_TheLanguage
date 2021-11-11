@@ -43,7 +43,7 @@ with InitRelativeImports():
 @dataclass(frozen=True)
 class TypeInfo(object):
     # TODO: This needs refinement:
-    #          - Address allowed bases, implements, uses
+    #          - Address allowed extends, implements, uses
 
     # Visibility
     DefaultClassVisibility: VisibilityModifier
@@ -51,11 +51,6 @@ class TypeInfo(object):
 
     DefaultMemberVisibility: VisibilityModifier
     AllowedMemberVisibilities: List[VisibilityModifier]
-
-    # Base
-    DefaultBaseVisibility: Optional[VisibilityModifier]
-    AllowedBaseVisibilities: List[VisibilityModifier]
-    AllowedBaseTypes: List[ClassType]
 
     # Extends
     DefaultExtendsVisibility: Optional[VisibilityModifier]
@@ -88,7 +83,6 @@ class TypeInfo(object):
     def __post_init__(self):
         assert self.DefaultClassVisibility in self.AllowedClassVisibilities
         assert self.DefaultMemberVisibility in self.AllowedMemberVisibilities
-        assert self.DefaultBaseVisibility is None or self.DefaultBaseVisibility in self.AllowedBaseVisibilities
         assert self.DefaultExtendsVisibility is None or self.DefaultExtendsVisibility in self.AllowedExtendsVisibilities
         assert self.DefaultImplementsVisibility is None or self.DefaultImplementsVisibility in self.AllowedImplementsVisibilities
         assert self.DefaultUsesVisibility is None or self.DefaultUsesVisibility in self.AllowedUsesVisibilities
@@ -121,15 +115,10 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         VisibilityModifier.private,
         _all_visibilities,
 
-        # Base
+        # Extends
         VisibilityModifier.private,
         _all_visibilities,
         [ClassType.Class],
-
-        # Extends
-        None,
-        [],
-        [],
 
         # Implements
         VisibilityModifier.public,
@@ -164,11 +153,6 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         # Members
         VisibilityModifier.private,
         _all_visibilities,
-
-        # Base
-        None,
-        [],
-        [],
 
         # Extends
         None,
@@ -216,11 +200,6 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         VisibilityModifier.public,
         _all_visibilities,
 
-        # Base
-        VisibilityModifier.public,
-        [VisibilityModifier.public],
-        [ClassType.Exception],
-
         # Extends
         VisibilityModifier.public,
         [VisibilityModifier.public],
@@ -259,11 +238,6 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         # Members
         VisibilityModifier.public,
         [VisibilityModifier.public],
-
-        # Base
-        None,
-        [],
-        [],
 
         # Extends
         None,
@@ -304,15 +278,10 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         VisibilityModifier.private,
         _all_visibilities,
 
-        # Base
+        # Extends
         VisibilityModifier.private,
         _all_visibilities,
         [ClassType.Class],
-
-        # Extends
-        None,
-        [],
-        [],
 
         # Implements
         VisibilityModifier.public,
@@ -348,15 +317,10 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         VisibilityModifier.public,
         _all_visibilities,
 
-        # Base
+        # Extends
         VisibilityModifier.public,
         [VisibilityModifier.public],
         [ClassType.Struct],
-
-        # Extends
-        None,
-        [],
-        [],
 
         # Implements
         None,
@@ -391,11 +355,6 @@ TYPE_INFOS: Dict[ClassType, TypeInfo]       = {
         # Members
         VisibilityModifier.private,
         _all_visibilities,
-
-        # Base
-        None,
-        [],
-        [],
 
         # Extends
         None,
@@ -660,8 +619,8 @@ def CogCreateCompleteTable(
             [
                 ("Class Visibility", (VisibilityModifier, "DefaultClassVisibility", "AllowedClassVisibilities")),
                 ("Member Visibility", (VisibilityModifier, "DefaultMemberVisibility", "AllowedMemberVisibilities")),
-                ("Allowed Bases", (ClassType, None, "AllowedBaseTypes")),
-                ("Base Visibility", (VisibilityModifier, "DefaultBaseVisibility", "AllowedBaseVisibilities")),
+                ("Allowed Extends", (ClassType, None, "AllowedExtendsTypes")),
+                ("Extend Visibility", (VisibilityModifier, "DefaultExtendVisibility", "AllowedExtendVisibilities")),
                 ("Allowed Implements", (ClassType, None, "AllowedImplementsTypes")),
                 ("Implements Visibility", (VisibilityModifier, "DefaultImplementsVisibility", "AllowedImplementsVisibilities")),
                 ("Allowed Uses", (ClassType, None, "AllowedUsesTypes")),

@@ -12,6 +12,7 @@ tokens { INDENT, DEDENT }
 // - Modifier should not be part of a type
 // - Support for something like List<Foo::Bar>; '::' is not currently supported
 // - general assignment statements (outside of variable declarations)
+// - Keyword attribute for class members
 
 // ----------------------------------------------------------------------
 // |
@@ -26,9 +27,18 @@ tokens { INDENT, DEDENT }
 //        enum Foo:
 //             Value1 <<----
 // - '::' when used with types
-// - Modifier support for tuple types
 // - Dotted variable names
-// - More lieniency for parameter placement with functions (especially those with captures)
+// - More lieniency for parameter placement with functions (as in, open paren can start indented on its own line) (especially those with captures)
+// - Leading underscore indicates 'private'
+// - Function type should take generator/scoped/etc. into account
+// - 'immutable' variable type for functions
+// - Add 'abstract' class decorator for classes (see Name.TheLanguage)
+// - 'public override static <Type>' should be valid
+// - Need to deep-dive into the semantics of inheritance via direct base, interface, and mixin. Seems to be
+//   an opportunity to create compiler-enforced compile-tyle member layout for classes within a hierarchy.
+//   In this module, an instance of the base class could actually be a union of all possible types/derived
+//   types.
+// - class def: <visibility> <class_modifier> <class|enum|...> <mutable|immutable> <name>...
 
 // ----------------------------------------------------------------------
 // |
@@ -41,6 +51,12 @@ tokens { INDENT, DEDENT }
 // - Ensure that func defined as exceptional invokes exceptional functionality (or vice versa)
 // - Validate that all imports from modules are valid
 // - Enusre match types are fully complete (by invoking type-specific functionality)
+// - Non-keyword class members should not appear after keyword class members
+// - Function type should take generator/scoped/etc. into account
+// - Functionality that validates `<content>` in comments
+// - Customizable code generation for:
+//       * assert: Noop, Raise, FailFast
+//       * ensure: Raise, FailFast
 
 // ----------------------------------------------------------------------
 STANDARD_CASE_STRICT: [a-z][a-zA-Z0-9_]*;
@@ -249,7 +265,7 @@ standard_statement: (
 
 // ----------------------------------------------------------------------
 assert_statement: (
-    'assert'
+    ('assert' | 'ensure')
     standard_expression
     (',' standard_expression)?
     NEWLINE

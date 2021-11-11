@@ -265,8 +265,7 @@ public mutable class NormalizedIterator:
     # |
     # ----------------------------------------------------------------------
     private immutable class NormalizedContentEx
-        # TODO: extends NormalizedContent
-        based NormalizedContent
+        extends NormalizedContent
     :
         <<<
         Adds end-of-file-dedent info to NormalizedContent
@@ -275,7 +274,7 @@ public mutable class NormalizedIterator:
         [InitOnly] public Bool val has_end_of_file_dedents
 
         # ----------------------------------------------------------------------
-        private None __Init__():
+        private None __Init?__():
             last_line_info = self.line_infos[-1]
 
             has_end_of_file_dedents = (

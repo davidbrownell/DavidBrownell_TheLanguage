@@ -104,6 +104,7 @@ ReservedKeywords                            = [
 
     # ../Statements/AssertStatement.py
     "assert",                               # (B)
+    "enforce",                              # (B)
 
     # ../Statements/ForStatement.py
     "in",                                   # (B)
@@ -142,9 +143,9 @@ ReservedKeywords                            = set(ReservedKeywords)
 ArgumentNameRegex                           = re.compile(r"^[a-z][a-zA-Z0-9_]*(?<!__)$")
 AttributeNameRegex                          = re.compile(r"^[A-Z][a-zA-Z0-9_]*(?<!__)$")
 ParameterNameRegex                          = re.compile(r"^[a-z][a-zA-Z0-9_]*(?<!__)$")
-TypeNameRegex                               = re.compile(r"^_?[A-Z][a-zA-Z0-9_]*(?<!__)$")
-VariableNameRegex                           = re.compile(r"^_?[a-z][a-zA-Z0-9_]*(?<!__)$")
-TemplateTypeParameterNameRegex              = re.compile(r"^_?[A-Z][a-zA-Z0-9_]*(?<!__)$")
+TypeNameRegex                               = re.compile(r"^_?[A-Z][a-zA-Z0-9_:]*(?<!__)$")
+VariableNameRegex                           = re.compile(r"^_?[a-z][a-zA-Z0-9_\.]*(?<!__)$")
+TemplateTypeParameterNameRegex              = re.compile(r"^_?[A-Z][a-zA-Z0-9_:]*(?<!__)$")
 TemplateDecoratorParameterNameRegex         = re.compile(r"^[a-zA-Z0-9_]+(?<!__)'$")
 ConstraintParameterNameRegex                = re.compile(r"^[a-z][a-zA-Z0-9_]*(?<!__)'$")
 
@@ -187,8 +188,10 @@ def _CreateGenericNameToken(
                 r"""(?P<value>(?#
                     Initial Underscores [optional]                          )_*(?#
                     Alpha                                                   ){initial_char}(?#
-                    Alphanumeric                                            )[a-zA-Z0-9_]*(?#
+                    Alphanumeric                                            )[a-zA-Z0-9_:\.]*(?#
                     Don't end with an underscore; that will come later      )(?<!_)(?#
+                    Don't end with a :                                      )(?<!:)(?#
+                    Don't end with a .                                      )(?<!\.)(?#
                     Don't leave any alphanumeric                            )(?![a-zA-Z0-9])(?#
                     Tokens to ignore                                        ){tokens_to_ignore}(?#
                     Exceptional Mark [optional]                             )\??(?#

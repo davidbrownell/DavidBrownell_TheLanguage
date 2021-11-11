@@ -18,7 +18,7 @@ Contains the Error interface.
 >>>
 
 # BugBug: __Fields__ for class members
-# BugBug: class modifier should never be applied to __Init__
+# BugBug: class modifier should never be applied to __Init?__
 
 public immutable exception Error:
     <<<
@@ -36,7 +36,7 @@ public immutable exception Error:
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
-    private override immutable None __Init__():
+    private override immutable None __Init?__():
         assert self.line >= 1
         assert self.column >= 1
 

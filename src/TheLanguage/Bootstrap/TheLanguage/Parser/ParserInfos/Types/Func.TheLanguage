@@ -1,0 +1,46 @@
+# ----------------------------------------------------------------------
+# |
+# |  Func.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-10 15:47:43
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Type import TypeParserInfo, TypeParserInfoRegions
+from ..ParserInfo import Region
+from ..Common.FuncAttributes import FuncAttributesParserInfoMixin, FuncAttributesParserInfoRegionsMixin
+from ..Common.FuncParameters import FuncParametersParserInfo, FuncParametersParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class FuncTypeParserInfo
+    extends TypeParserInfo,
+    uses FuncAttributesParserInfoMixin,
+:
+    <<<
+    BugBug
+    >>>
+
+    public TypeParserInfo val return_value
+    public (FuncParametersParserInfo | Bool) val parameters
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        # TODO: enforce (self.parameters is FuncTypeParserInfo or self.parameters is False)
+        assert (self.parameters is FuncTypeParserInfo or self.parameters is False)
+
+
+# ----------------------------------------------------------------------
+public immutable class FuncTypeParserInfoRegions
+    extends TypeParserInfoRegions,
+    uses FuncAttributesParserInfoRegionsMixin,
+:
+    public TypeParserInfoRegions val return_value
+    public (FuncParametersParserInfoRegions | Region) val parameters

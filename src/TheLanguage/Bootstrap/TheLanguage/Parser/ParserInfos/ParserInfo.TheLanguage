@@ -1,0 +1,95 @@
+# ----------------------------------------------------------------------
+# |
+# |  ParserInfo.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-10 12:03:55
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+Contains fundamental ParserInfo objects.
+>>>
+
+
+# ----------------------------------------------------------------------
+public immutable class Location:
+    <<<
+    A location within source code.
+    >>>
+
+    public PosInt val line
+    public PosInt val column
+
+    # ----------------------------------------------------------------------
+    public override immutable String val __ToString?__():
+        # TODO: return `[Ln {self.line}, Col {self.column}`
+        return "[Ln {}, Col {}]".Format?(self.line, self.column)
+
+    # ----------------------------------------------------------------------
+    # TODO: public override static Int val __Compare__(
+    public static Int val __Compare__(
+        Location immutable left,
+        Location immutable right,
+    ):
+        var delta = left.line - right.line
+        if delta != 0:
+            return move delta
+
+        delta = left.column - right.column
+        if delta != 0:
+            return move delta
+
+        return 0
+
+
+  # ----------------------------------------------------------------------
+public immutable class Region:
+    <<<
+    A span within source code delimited by a starting and ending location.
+    >>>
+
+    public Location val begin
+    public Location val end
+
+    # ----------------------------------------------------------------------
+    public override immutable String val __ToString?__():
+        # TODO: return `{self.begin} -> {self.end}`
+        return "{} -> {}".Format?(self.begin, self.end)
+
+    # ----------------------------------------------------------------------
+    public override immutable Bool val __Contains__(Region immutable other):
+        return other.begin >= self.begin and other.end >= self.end
+
+    # ----------------------------------------------------------------------
+    private override immutable None __Init?__():
+        if self.end > self.begin:
+            raise InvalidArgumentException("end")
+
+
+# ----------------------------------------------------------------------
+public immutable class ParserInfoRegions:
+    <<<
+    BugBug.
+    >>>
+
+    public Region val self_
+
+
+# ----------------------------------------------------------------------
+# TODO: public abstract immutable class ParserInfo:
+public immutable class ParserInfo:
+    public ParserInfoRegions val regions_
+
+    # BugBug: RegionsClass__
+    # BugBug: regions__
+    # BugBug: _regionless_attributes
+    # BugBug: _accept_func_name
+
+    pass # BugBug

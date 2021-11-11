@@ -1,0 +1,50 @@
+# ----------------------------------------------------------------------
+# |
+# |  TemplateArgument.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-11 08:11:21
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .TypeModifier import TypeModifierParserInfo, TypeModifierParserInfoRegions
+
+from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
+
+from ..CompileTimeExpressions.Expression import (
+    CompileTimeExpressionParserInfo,
+    CompileTimeExpressionParserInfoRegions,
+)
+
+from ..Types.Type import TypeParserInfo, TypeParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class TemplateArgumentParserInfo
+    extends ParserInfo
+:
+    public (                                                                # If the template argument...
+        (TypeParserInfo, (TypeModifierParserInfo | None))                   # ...is a type
+        | CompileTimeExpressionParserInfo                                   # ...is an expression
+    ) val type_or_expression
+
+    public (String | None) val keyword
+
+
+# ----------------------------------------------------------------------
+# TODO: This shouldn't be necessary long term
+public immutable class TemplateArgumentParserInfoRegions
+    extends ParserInfoRegions
+:
+    public (                                                                # If the template argument...
+        (TypeParserInfoRegions, (TypeModifierParserInfoRegions | None))     # ...is a type
+        | CompileTimeExpressionParserInfoRegions                            # ...is an expression
+    ) val type_or_expression
+
+    public (Region | None) val keyword

@@ -312,9 +312,6 @@ class ClassStatementParserInfo(StatementParserInfo):
     Templates: Optional[TemplateParametersParserInfo]                       = field(init=False, default=None)
     Constraints: Optional[ConstraintParametersParserInfo]                   = field(init=False, default=None)
 
-    Base: Optional[ClassStatementDependencyParserInfo]                      = field(init=False)
-
-    # TODO: Don't need both Extends and Base
     Extends: Optional[List[ClassStatementDependencyParserInfo]]             = field(init=False, default=None)
     Implements: Optional[List[ClassStatementDependencyParserInfo]]          = field(init=False, default=None)
     Uses: Optional[List[ClassStatementDependencyParserInfo]]                = field(init=False, default=None)
@@ -378,7 +375,6 @@ class ClassStatementParserInfo(StatementParserInfo):
         documentation: Optional[Tuple[str, Region]],
         template_parameters: Optional[TemplateParametersParserInfo],
         constraint_parameters: Optional[ConstraintParametersParserInfo],
-        bases: Optional[List[ClassStatementDependencyParserInfo]],
         extends: Optional[List[ClassStatementDependencyParserInfo]],
         implements: Optional[List[ClassStatementDependencyParserInfo]],
         uses: Optional[List[ClassStatementDependencyParserInfo]],
@@ -404,32 +400,12 @@ class ClassStatementParserInfo(StatementParserInfo):
         if constraint_parameters is not None:
             object.__setattr__(self, "Constraints", constraint_parameters)
 
-        # Bases, Extends, Implements, and Uses
-        if bases is None:
-            object.__setattr__(self, "Base", None)
-        else:
-            if len(bases) > 1:
-                raise Exception("BugBug: Only 1 base is allowed")
-
-            object.__setattr__(self, "Base", bases[0])
-
-            if not self.TypeInfo.AllowedBaseTypes:
-                raise InvalidBaseError(
-                    self.Regions__.Base,  # type: ignore && pylint: disable=no-member
-                    self.ClassType.value,
-                )
-
-            if self.Base.Visibility not in self.TypeInfo.AllowedBaseVisibilities:
-                raise InvalidBaseVisibilityError(
-                    self.Base.Regions__.Visibility,  # type: ignore && pylint: disable=no-member
-                    self.ClassType.value,
-                    self.Base.Visibility.name,
-                    ", ".join(["'{}'".format(e.name) for e in self.TypeInfo.AllowedBaseVisibilities]),
-                )
-
         if extends is None:
             object.__setattr__(self, "Extends", None)
         else:
+            if len(extends) > 1 and self.ClassType != ClassType.Interface:
+                raise Exception("BugBug: Only 1 base is allowed")
+
             object.__setattr__(self, "Extends", extends)
 
             if self.Extends is not None:

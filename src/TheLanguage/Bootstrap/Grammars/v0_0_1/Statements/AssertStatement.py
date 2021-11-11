@@ -38,7 +38,9 @@ with InitRelativeImports():
         CreatePhrase,
         ExtractDynamic,
         ExtractOptional,
+        ExtractOr,
         ExtractSequence,
+        ExtractToken,
         OptionalPhraseItem,
     )
 
@@ -68,8 +70,12 @@ class AssertStatement(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # 'assert'
-                    "assert",
+                    # TODO: Should use enum
+                    # 'assert' | 'ensure'
+                    (
+                        "assert",
+                        "ensure",
+                    ),
 
                     # <expression>
                     DynamicPhrasesType.Expressions,
@@ -104,6 +110,16 @@ class AssertStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 4
 
+            # 'assert' | 'ensure'
+            is_ensure_leaf = cast(AST.Leaf, ExtractOr(cast(AST.Node, nodes[0])))
+            is_ensure_value = cast(str, ExtractToken(is_ensure_leaf))
+
+            if is_ensure_value == "ensure":
+                is_ensure_info = True
+            else:
+                is_ensure_leaf = None
+                is_ensure_info = None
+
             # <expression>
             expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
             expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
@@ -120,7 +136,13 @@ class AssertStatement(GrammarPhrase):
                 display_expression_info = cast(ExpressionParserInfo, GetParserInfo(display_expression_node))
 
             return AssertStatementParserInfo(
-                CreateParserRegions(node, expression_node, display_expression_node),  # type: ignore
+                CreateParserRegions(
+                    node,
+                    is_ensure_leaf,
+                    expression_node,
+                    display_expression_node,
+                ),  # type: ignore
+                is_ensure_info,
                 expression_info,
                 display_expression_info,
             )

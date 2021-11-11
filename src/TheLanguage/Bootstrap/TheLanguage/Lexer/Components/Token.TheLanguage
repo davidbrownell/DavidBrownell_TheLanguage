@@ -1,0 +1,271 @@
+# ----------------------------------------------------------------------
+# |
+# |  Token.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-09 12:25:56
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+Basic building blocks for token processing.
+>>>
+
+from .Normalize import GetNumMultilineTokenDelimiters, multiline_token_delimiter_length
+from .NormalizedIterator import NormalizedIterator
+
+
+# ----------------------------------------------------------------------
+private immutable class Token:
+    # ----------------------------------------------------------------------
+    # |  Public Types
+    public immutable class MatchResult:
+       public NormalizedIterator val iterator
+
+    # ----------------------------------------------------------------------
+    # |  Public Data
+    [Keyword] public String val name
+    [Keyword] public Bool val is_control_token
+    [Keyword] public Bool val is_always_ignored
+
+    # ----------------------------------------------------------------------
+    # |  Public Methods
+    public abstract immutable (MatchResult | None) val Match?(NormalizedIterator var iterator)
+
+
+# ----------------------------------------------------------------------
+public immutable class NewlineToken
+    extends Token
+:
+    <<<
+    Token that matches 1 or more newlines.
+    >>>
+
+    # ----------------------------------------------------------------------
+    # |  Public Types
+    public immutable class MatchResult
+        extends Token::MatchResult
+    :
+        public UIntArch val start
+        public PosIntArch val end
+
+        # ----------------------------------------------------------------------
+        private None __Init?__():
+            assert self.start <= self.end
+
+    # ----------------------------------------------------------------------
+    # |  Public Data
+    [Keyword] public Bool val capture_many
+
+    # ----------------------------------------------------------------------
+    # |  Public Methods
+    public static NewlineToken val Create(
+        Bool val capture_many,
+        Bool val is_always_ignored,
+    ):
+        return NewlineToken(
+            name="Newline+" if capture_many else "Newline",
+            is_control_token=False,
+            is_always_ignored=is_always_ignored,
+            capture_many=capture_many,
+        )
+
+    # ----------------------------------------------------------------------
+    public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
+        if iterator.GetNextTokenType() != NormalizedIterator::TokenType::EndOfLine:
+            return None
+
+        val newline_start = iterator.Offset()
+
+        iterator.Advance(1)
+
+        if self.capture_many:
+            while iterator.IsBlankLine():
+                iterator.SkipLine()
+
+        return MatchResult(move iterator, newline_start, iterator.Offset())
+
+
+# ----------------------------------------------------------------------
+public immutable class IndentToken
+    extends Token
+:
+    <<<
+    Token matching indentations of arbitrary length.
+    >>>
+
+    # ----------------------------------------------------------------------
+    # |  Public Types
+    public immutable class MatchResult
+        extends Token::MatchResult
+    :
+        public UIntArch val start
+        public PosIntArch val end
+        public PosInt val indent_value
+
+        # ----------------------------------------------------------------------
+        private None __Init?__():
+            assert self.start <= self.end
+
+    # ----------------------------------------------------------------------
+    # |  Public Methods
+    public static IndentToken val Create():
+        return IndentToken(
+            name="Indent",
+            is_control_token=False,
+            is_always_ignored=False,
+        )
+
+    # ----------------------------------------------------------------------
+    public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
+        if iterator.GetNextTokenType() != NormalizedIterator::TokenType::Indent:
+            return None
+
+        iterator.SkipWhitespacePrefix()
+
+        val line_info = iterator.LineInfo()
+
+        assert line_info.new_indentation_value is not None
+
+        return MatchResult(
+            move iterator,
+            line_info.offset_start,
+            line_info.offset_end,
+            line_info.new_indentation_value as PosArch
+        )
+
+
+# ----------------------------------------------------------------------
+public immutable class DedentToken
+    extends Token
+:
+    <<<
+    Token matching a single dedentation.
+    >>>
+
+    # ----------------------------------------------------------------------
+    # |  Public Types
+    public immutable class MatchResult
+        extends Token::MatchResult
+    :
+        pass
+
+    # ----------------------------------------------------------------------
+    # |  Public Methods
+    public static DedentToken val Create():
+        return DedentToken(
+            name="Dedent",
+            is_control_token=False,
+            is_always_ignored=False,
+        )
+
+    # ----------------------------------------------------------------------
+    public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
+        if iterator.GetNextTokenType() != NormalizedIterator::TokenType::Dedent:
+            return None
+
+        iterator.ConsumeDedent()
+
+        if iterator.GetNextTokenType() == NormalizedIterator::TokenType::WhitespacePrefix:
+            iterator.SkipWhitespacePrefix()
+
+        return MatchResult(move iterator)
+
+
+# ----------------------------------------------------------------------
+public immutable class RegexToken
+    extends Token
+:
+    <<<
+    Token that matches content against a regular expression.
+    >>>
+
+    # ----------------------------------------------------------------------
+    # |  Public Types
+    public immutable class MatchResult
+        extends Token::MatchResult
+    :
+        public RegexMatch val match
+
+    # ----------------------------------------------------------------------
+    # |  Public Data
+    [Keyword] public Regex val regex
+    [Keyword] public Bool val is_multiline
+
+    # ----------------------------------------------------------------------
+    # |  Public Methods
+    public static RegexToken Create(
+        String val name,
+        Regex val regex,
+        *,
+        Bool val is_multiline=False,
+        Bool val is_always_ignored=False,
+    ):
+        return RegexToken(
+            name=name,
+            is_control_token=False,
+            is_always_ignored=is_always_ignored,
+            regex=regex,
+            is_multiline=is_multiline,
+        )
+
+    # ----------------------------------------------------------------------
+    public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
+        if iterator.GetNextTokenType() != NormalizedIterator::TokenType::Content:
+            return None
+
+        val match = self.regex.Match(
+            iterator.Content(),
+            start=iterator.Offset(),
+            end=iterator.ContentLength() if self.is_multiline else iterator.LineInfo().content_end,
+        )
+
+        if match is None:
+            return None
+
+        val match_length = match.End() - match.Start()
+
+        if self.is_multiline:
+            iterator = _AdvanceMultiline(move iterator, move match_length)
+        else:
+            iterator.Advance(match_length)
+
+        return MatchResult(move iterator, match)
+
+    # ----------------------------------------------------------------------
+    # |  Private Methods
+    private static NormalizedIterator var _AdvanceMultiline(
+        NormalizedIterator var iterator,
+        PosInt var delta,
+    ):
+        while delta:
+            while iterator.GetNextTokenType() == NormalizedIterator::TokenType::Dedent:
+                iterator.ConsumeDedent()
+
+            val this_delta = Min(delta, iterator.LineInfo().offset_end - iterator.Offset())
+
+            # Delta can be 0 if we are looking at a blank line
+            if this_delta != 0:
+                iterator.Advance(this_delta)
+                delta -= this_delta
+
+            # Skip the newline (if necessary)
+            if delta:
+                iterator.Advance(1)
+                delta -= 1
+
+        return move iterator
+
+
+
+# BugBug: ControlTokenBase
+# BugBug: PushIgnoreWhitespaceControl
+# BugBug: PopIgnoreWhitespaceControl
+# BugBug: PushPreserveWhitespaceControl
+# BugBug: PopPreserveWhitespaceControl

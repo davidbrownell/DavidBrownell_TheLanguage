@@ -1,0 +1,34 @@
+# ----------------------------------------------------------------------
+# |
+# |  Variable.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-10 12:18:59
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Name import NameParserInfo, NameParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class VariableNameParserInfo
+    extends NameParserInfo
+:
+    <<<
+    A single variable name.
+    >>>
+
+    public String val name
+
+
+# ----------------------------------------------------------------------
+# TODO: Shouldn't need to define this long term
+public using VariableNameParserInfoRegions  = NameParserInfoRegions
+
+python_hack: VariableNameParserInfoRegions = NameParserInfoRegions

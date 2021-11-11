@@ -99,7 +99,6 @@ class ClassStatement(GrammarPhrase):
     # |
     # ----------------------------------------------------------------------
     class DependencyIndicator(Enum):
-        based                               = auto()
         extends                             = auto()
         implements                          = auto()
         uses                                = auto()
@@ -211,7 +210,7 @@ class ClassStatement(GrammarPhrase):
                     ZeroOrMorePhraseItem.Create(
                         name="Dependencies",
                         item=[
-                            # ('based', 'extends', 'implements', 'uses')
+                            # ('extends', 'implements', 'uses')
                             self.__class__.DependencyIndicator.CreatePhraseItem(),  # type: ignore
 
                             # Items
@@ -343,7 +342,6 @@ class ClassStatement(GrammarPhrase):
                 None, # Documentation
                 template_parameters_node,
                 constraint_parameters_node,
-                all_dependency_nodes.get(cls.DependencyIndicator.based, None),
                 all_dependency_nodes.get(cls.DependencyIndicator.extends, None),
                 all_dependency_nodes.get(cls.DependencyIndicator.implements, None),
                 all_dependency_nodes.get(cls.DependencyIndicator.uses, None),
@@ -467,7 +465,6 @@ class ClassStatement(GrammarPhrase):
                 docstring_info,
                 template_parameters_info,
                 constraint_parameters_info,
-                all_dependency_infos.get(cls.DependencyIndicator.based, None),
                 all_dependency_infos.get(cls.DependencyIndicator.extends, None),
                 all_dependency_infos.get(cls.DependencyIndicator.implements, None),
                 all_dependency_infos.get(cls.DependencyIndicator.uses, None),

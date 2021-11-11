@@ -48,7 +48,7 @@ protected immutable class LineInfo:
         public IntArch val end
 
         # ----------------------------------------------------------------------
-        private override None __Init__():
+        private override None __Init?__():
             assert self.begin < self.end
 
     # ----------------------------------------------------------------------
@@ -79,7 +79,7 @@ protected immutable class LineInfo:
         return self.content_end != self.offset_end
 
     # ----------------------------------------------------------------------
-    private override None __Init__():
+    private override None __Init?__():
         assert self.offset_end >= self.offset_start
         assert self.content_start >= self.offset_start
         assert self.content_end >= self.content_start
@@ -299,7 +299,7 @@ public NormalizedContent Normalize?(
             var this_indentation_value = 0
 
             if this_num_chars != 0:
-                for index in Range(offset_start, content_start):
+                for index in IntGenerator(offset_start, content_start):
                     char = content[index]
 
                     # Ensure that " \t" compares as different from "\t " and that "\t" compares
@@ -527,7 +527,7 @@ protected UInt GetNumMultilineTokenDelimiters(
             return 0
 
         # Every item within the delimiter must be the same
-        for offset in Range(index + 1, index + multiline_token_delimiter_length):
+        for offset in IntGenerator(index + 1, index + multiline_token_delimiter_length):
             if content[offset] != char:
                 return 0
 

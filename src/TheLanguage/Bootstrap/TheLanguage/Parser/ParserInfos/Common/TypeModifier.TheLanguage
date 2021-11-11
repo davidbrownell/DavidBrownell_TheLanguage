@@ -1,0 +1,62 @@
+# ----------------------------------------------------------------------
+# |
+# |  TypeModifier.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-11 08:33:44
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from ..ParserInfo import ParserInfo, ParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+[Flags]
+public enum TypeModifierFlag:
+    # |-----------|----------|--------|
+    # |           | Isolated | Shared |
+    # |-----------|----------|--------|
+    # | Mutable   |   Var    |  Ref   |
+    # | Immutable |  IsoVal  |  Val   |
+    # |-----------|----------|--------|
+
+    # TODO: Isolated
+    # TODO: Shared
+    # TODO: Mutable
+    # TODO: Immutable
+
+    python_hack: Isolated = 1
+    python_hack: Shared = 2
+    python_hack: Mutable = 4
+    python_hack: Immutable = 8
+
+
+# ----------------------------------------------------------------------
+public enum TypeModifier:
+    # TODO: Var                                     = TypeModifierFlag::Mutable | TypeModifierFlag::Isolated
+    # TODO: Ref                                     = TypeModifierFlag::Mutable | TypeModifierFlag::Shared
+    # TODO: IsoVal                                  = TypeModifierFlag::Immutable | TypeModifierFlag::Isolated
+    # TODO: Val                                     = TypeModifierFlag::Immutable | TypeModifierFlag::Shared
+
+    python_hack: Var = TypeModifierFlag.Mutable | TypeModifierFlag.Isolated
+    python_hack: Ref = TypeModifierFlag.Mutable | TypeModifierFlag.Shared
+    python_hack: IsoVal = TypeModifierFlag.Immutable | TypeModifierFlag.Isolated
+    python_hack: Val = TypeModifierFlag.Immutable | TypeModifierFlag.Shared
+
+
+# ----------------------------------------------------------------------
+public immutable class TypeModifierParserInfo
+    extends ParserInfo
+:
+    public TypeModifier val value
+
+
+# ----------------------------------------------------------------------
+public using TypeModifierParserInfoRegions  = ParserInfoRegions
+python_hack: TypeModifierParserInfoRegions = ParserInfoRegions

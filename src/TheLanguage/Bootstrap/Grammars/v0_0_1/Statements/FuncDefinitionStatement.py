@@ -115,8 +115,8 @@ class FuncDefinitionStatement(GrammarPhrase):
         OperatorType.Deserialize: "__Deserialize?__",
 
         # Instance Instantiation
-        OperatorType.Init: "__Init__",
-        OperatorType.PostInit: "__PostInit__",
+        OperatorType.Init: "__Init?__",
+        OperatorType.PostInit: "__PostInit?__",
 
         # Dynamic
         OperatorType.GetAttribute: "__GetAttribute__",

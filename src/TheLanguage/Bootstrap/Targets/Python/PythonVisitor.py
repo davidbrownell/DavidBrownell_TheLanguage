@@ -929,7 +929,8 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ClassStatementDependencyParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO: BugBug
+        # Nothing to do here
+        pass
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -962,8 +963,7 @@ class PythonVisitor(Visitor):
                     self.Accept(parser_info.Constraints, helper.stack)
 
             base_classes = [
-                dependency.Name for dependency in itertools.chain(
-                    ([parser_info.Base] if parser_info.Base is not None else []),
+                dependency.Name.replace("::", ".") for dependency in itertools.chain(
                     (parser_info.Extends or []),
                     (parser_info.Implements or []),
                     (parser_info.Uses or []),
@@ -1027,7 +1027,16 @@ class PythonVisitor(Visitor):
 
                             """,
                         ).format(
-                            args=", ".join([member.Name for member in members]),
+                            args=", ".join(
+                                [
+                                    member.Name for member in itertools.chain(
+                                        # TODO: GetMembers(parser_info.Extends),
+                                        # TODO: GetMembers(parser_info.Implements),
+                                        # TODO: GetMembers(parser_info.Uses),
+                                        members,
+                                    )
+                                ],
+                            ),
                             assignments=StringHelpers.LeftJustify(
                                 "\n".join(
                                     [
@@ -1613,7 +1622,7 @@ class PythonVisitor(Visitor):
         parser_info: StandardTypeParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
         with StackHelper(stack)[parser_info] as helper:
-            self._stream.write(parser_info.TypeName)
+            self._stream.write(parser_info.TypeName.replace("::", "."))
 
             if parser_info.Templates:
                 with helper["Templates"]:
