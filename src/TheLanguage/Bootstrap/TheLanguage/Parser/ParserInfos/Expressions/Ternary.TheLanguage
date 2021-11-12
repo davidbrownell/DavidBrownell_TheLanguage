@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Variable.TheLanguage
+# |  Ternary.TheLanguage
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-11-10 12:18:59
+# |      2021-11-12 11:25:40
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,22 +13,22 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from .Name import NameParserInfo, NameParserInfoRegions
+from .Expression import ExpressionParserInfo, ExpressionParserInfoRegions
 
 
 # ----------------------------------------------------------------------
-public immutable class VariableNameParserInfo
-    extends NameParserInfo
+public immutable class TernaryExpressionParserInfo
+    extends ExpressionParserInfo
 :
-    <<<
-    A single variable name.
-    >>>
-
-    public String val name
+    public ExpressionParserInfo val condition
+    public ExpressionParserInfo val true
+    public ExpressionParserInfo val false
 
 
 # ----------------------------------------------------------------------
-# TODO: Shouldn't need to define this long term
-public using VariableNameParserInfoRegions  = NameParserInfoRegions
-
-python_hack: VariableNameParserInfoRegions = NameParserInfoRegions
+public immutable class TernaryExpressionParserInfoRegions
+    extends ExpressionParserInfoRegions
+:
+    public ExpressionParserInfoRegions val condition
+    public ExpressionParserInfoRegions val true
+    public ExpressionParserInfoRegions val false

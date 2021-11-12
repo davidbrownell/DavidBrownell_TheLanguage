@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncParameters.TheLanguage
+# |  TemplateParameters.TheLanguage
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-11-11 14:49:27
+# |      2021-11-12 10:21:31
 # |
 # ----------------------------------------------------------------------
 # |
@@ -15,54 +15,64 @@
 # ----------------------------------------------------------------------
 from .TypeModifier import TypeModifierParserInfo, TypeModifierParserInfoRegions
 from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
-from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..CompileTimeExpressions.Expression import CompileTimeExpressionParserInfo, CompileTimeExpressionParserInfoRegions
+from ..CompileTimeTypes.Type import CompileTimeTypeParserInfo, CompileTimeTypeParserInfoRegions
 from ..Types.Type import TypeParserInfo, TypeParserInfoRegions
 
 
 # ----------------------------------------------------------------------
-public immutable class FuncParameterTypeParserInfo
+public immutable class TemplateTypeParameterParserInfo
     extends ParserInfo
-:
-    public TypeParserInfo val type
-    public TypeModifierParserInfo val modifier
-    public (Bool | None) val is_variadic
-
-    # ----------------------------------------------------------------------
-    private None __Init?__():
-        # TODO: ensure self.is_variadic is None or self.is_variadic is True
-        assert self.is_variadic is None or self.is_variadic is True
-
-
-# ----------------------------------------------------------------------
-public immutable class FuncParameterTypeParserInfoRegions
-    extends ParserInfoRegions
-:
-    public TypeParserInfoRegions val type
-    public TypeModifierParserInfoRegions val modifier
-    public (Region | None) val is_variadic
-
-
-# ----------------------------------------------------------------------
-public immutable class FuncParameterParserInfo
-    extends FuncParameterTypeParserInfo
 :
     public String val name
-    public (ExpressionParserInfo | None) val default
+
+    public (
+        (
+            TypeParserInfo,
+            (TypeModifierParserInfo | None),
+        )
+        | None
+    ) val default
 
 
 # ----------------------------------------------------------------------
-public immutable class FuncParameterParserInfoRegions
-    extends FuncParameterTypeParserInfoRegions
+public immutable class TemplateTypeParameterParserInfoRegions
+    extends ParserInfoRegions
 :
     public Region val name
-    public (ExpressionParserInfoRegions | None) val default
+
+    public (
+        (
+            TypeParserInfoRegions,
+            (TypeModifierParserInfoRegions | None),
+        )
+        | None
+    ) val default
 
 
 # ----------------------------------------------------------------------
-public immutable class FuncParametersParserInfo
+public immutable class TemplateExpressionParameterParserInfo
     extends ParserInfo
 :
-    public using OptionalParameters = (List<FuncParameterParserInfo>{ min_length'=1 } | None)
+    public CompileTimeTypeParserInfo val type
+    public String val name
+    public (CompileTimeExpressionParserInfo | None) val default
+
+
+# ----------------------------------------------------------------------
+public immutable class TemplateExpressionParameterParserInfoRegions
+    extends ParserInfoRegions
+:
+    public CompileTimeTypeParserInfoRegions val type
+    public Region val name
+    public (CompileTimeExpressionParserInfoRegions | None) val default
+
+
+# ----------------------------------------------------------------------
+public immutable class TemplateParametersParserInfo
+    extends ParserInfo
+:
+    public using OptionalParameters = (List<(TemplateTypeParameterParserInfo | TemplateExpressionParameterParserInfo)>{ min_length'=1} | None)
 
     # ----------------------------------------------------------------------
     public OptionalParameters val positional
@@ -76,10 +86,10 @@ public immutable class FuncParametersParserInfo
 
 
 # ----------------------------------------------------------------------
-public immutable class FuncParametersParserInfoRegions
+public immutable class TemplateParametersParserInfoRegions
     extends ParserInfoRegions
 :
-    public using OptionalParametersRegions = (List<FuncParameterParserInfoRegions>{ min_length'=1 } | None)
+    public using OptionalParametersRegions = (List<(TemplateTypeParameterParserInfoRegions | TemplateExpressionParameterParserInfoRegions)>{ min_length'=1 } | None)
 
     # ----------------------------------------------------------------------
     public OptionalParametersRegions val positional

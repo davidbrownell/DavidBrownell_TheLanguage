@@ -39,11 +39,15 @@ public enum TypeModifierFlag:
 
 # ----------------------------------------------------------------------
 public enum TypeModifier:
+    # TODO: Mutable                                 = TypeModifierFlag::Mutable
+    # TODO: Immutable                               = TypeModifierFlag::Immutable
     # TODO: Var                                     = TypeModifierFlag::Mutable | TypeModifierFlag::Isolated
     # TODO: Ref                                     = TypeModifierFlag::Mutable | TypeModifierFlag::Shared
     # TODO: IsoVal                                  = TypeModifierFlag::Immutable | TypeModifierFlag::Isolated
     # TODO: Val                                     = TypeModifierFlag::Immutable | TypeModifierFlag::Shared
 
+    python_hack: Mutable = TypeModifierFlag.Mutable
+    python_hack: Immutable = TypeModifierFlag.Immutable
     python_hack: Var = TypeModifierFlag.Mutable | TypeModifierFlag.Isolated
     python_hack: Ref = TypeModifierFlag.Mutable | TypeModifierFlag.Shared
     python_hack: IsoVal = TypeModifierFlag.Immutable | TypeModifierFlag.Isolated

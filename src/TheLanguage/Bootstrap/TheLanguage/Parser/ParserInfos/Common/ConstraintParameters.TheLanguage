@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncParameters.TheLanguage
+# |  ConstraintParameters.TheLanguage
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-11-11 14:49:27
+# |      2021-11-12 10:15:19
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,56 +13,34 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from .TypeModifier import TypeModifierParserInfo, TypeModifierParserInfoRegions
 from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
-from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
-from ..Types.Type import TypeParserInfo, TypeParserInfoRegions
+from ..CompileTimeExpressions.Expression import CompileTimeExpressionParserInfo, CompileTimeExpressionParserInfoRegions
+from ..CompileTimeTypes.Type import CompileTimeTypeParserInfo, CompileTimeTypeParserInfoRegions
 
 
 # ----------------------------------------------------------------------
-public immutable class FuncParameterTypeParserInfo
+public immutable class ConstraintParameterParserInfo
     extends ParserInfo
 :
-    public TypeParserInfo val type
-    public TypeModifierParserInfo val modifier
-    public (Bool | None) val is_variadic
-
-    # ----------------------------------------------------------------------
-    private None __Init?__():
-        # TODO: ensure self.is_variadic is None or self.is_variadic is True
-        assert self.is_variadic is None or self.is_variadic is True
+    public CompileTimeTypeParserInfo val type
+    public String val name
+    public (CompileTimeExpressionParserInfo | None) val default
 
 
 # ----------------------------------------------------------------------
-public immutable class FuncParameterTypeParserInfoRegions
+public immutable class ConstraintParameterParserInfoRegions
     extends ParserInfoRegions
 :
-    public TypeParserInfoRegions val type
-    public TypeModifierParserInfoRegions val modifier
-    public (Region | None) val is_variadic
-
-
-# ----------------------------------------------------------------------
-public immutable class FuncParameterParserInfo
-    extends FuncParameterTypeParserInfo
-:
-    public String val name
-    public (ExpressionParserInfo | None) val default
-
-
-# ----------------------------------------------------------------------
-public immutable class FuncParameterParserInfoRegions
-    extends FuncParameterTypeParserInfoRegions
-:
+    public CompileTimeTypeParserInfoRegions val type
     public Region val name
-    public (ExpressionParserInfoRegions | None) val default
+    public (CompileTimeExpressionParserInfoRegions | None) val default
 
 
 # ----------------------------------------------------------------------
-public immutable class FuncParametersParserInfo
+public immutable class ConstraintParametersParserInfo
     extends ParserInfo
 :
-    public using OptionalParameters = (List<FuncParameterParserInfo>{ min_length'=1 } | None)
+    public using OptionalParameters = (List<ConstraintParameterParserInfo>{ min_length'=1 } | None)
 
     # ----------------------------------------------------------------------
     public OptionalParameters val positional
@@ -76,10 +54,10 @@ public immutable class FuncParametersParserInfo
 
 
 # ----------------------------------------------------------------------
-public immutable class FuncParametersParserInfoRegions
+public immutable class ConstraintParametersParserInfoRegions
     extends ParserInfoRegions
 :
-    public using OptionalParametersRegions = (List<FuncParameterParserInfoRegions>{ min_length'=1 } | None)
+    public using OptionalParametersRegions = (List<ConstraintParameterParserInfoRegions>{ min_length'=1 } | None)
 
     # ----------------------------------------------------------------------
     public OptionalParametersRegions val positional

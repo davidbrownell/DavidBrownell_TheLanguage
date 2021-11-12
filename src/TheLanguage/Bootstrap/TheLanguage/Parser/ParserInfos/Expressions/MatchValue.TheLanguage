@@ -1,0 +1,51 @@
+# ----------------------------------------------------------------------
+# |
+# |  MatchValue.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 11:27:44
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..ParserInfo import ParserInfo, ParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class MatchValueExpressionClauseParserInfo
+    extends ParserInfo
+:
+    public List<ExpressionParserInfo>{ min_length'=1 } val cases
+    public ExpressionParserInfo val expression
+
+
+# ----------------------------------------------------------------------
+public immutable class MatchValueExpressionClauseParserInfoRegions
+    extends ParserInfoRegions
+:
+    public List<ExpressionParserInfoRegions>{ min_length'=1 } val cases
+    public ExpressionParserInfoRegions val expression
+
+
+# ----------------------------------------------------------------------
+public immutable class MatchValueExpressionParserInfo
+    extends ExpressionParserInfo
+:
+    public ExpressionParserInfo val expression
+    public List<MatchValueExpressionClauseParserInfo>{ min_length'=1 } val clauses
+    public (ExpressionParserInfo | None) val default
+
+
+# ----------------------------------------------------------------------
+public immutable class MatchValueExpressionParserInfoRegions
+    extends ExpressionParserInfoRegions
+:
+    public ExpressionParserInfoRegions val expression
+    public List<MatchValueExpressionClauseParserInfoRegions>{ min_length'=1 } val clauses
+    public (ExpressionParserInfoRegions | None) val default

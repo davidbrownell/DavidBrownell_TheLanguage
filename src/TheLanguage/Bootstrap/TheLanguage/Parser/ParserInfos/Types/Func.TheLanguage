@@ -22,25 +22,16 @@ from ..Common.FuncParameters import FuncParameterTypeParserInfo, FuncParameterTy
 # ----------------------------------------------------------------------
 public immutable class FuncTypeParserInfo
     extends TypeParserInfo,
-    uses FuncAttributesParserInfoMixin,
+    # TODO: uses FuncAttributesParserInfoMixin<List<FuncParameterTypeParserInfo>{ min_length'=1 }>,
+    uses FuncAttributesParserInfoMixin #<List<FuncParameterTypeParserInfo>>,
 :
-    <<<
-    BugBug
-    >>>
-
-    public TypeParserInfo val return_value
-    public (List<FuncParameterTypeParserInfo>{ min_length'=1 } | Bool) val parameters
-
-    # ----------------------------------------------------------------------
-    private None __Init?__():
-        # TODO: enforce (self.parameters is FuncTypeParserInfo or self.parameters is False)
-        assert (self.parameters is FuncTypeParserInfo or self.parameters is False)
+    [Keyword] public TypeParserInfo val return_value
 
 
 # ----------------------------------------------------------------------
 public immutable class FuncTypeParserInfoRegions
     extends TypeParserInfoRegions,
-    uses FuncAttributesParserInfoRegionsMixin,
+    # TODO: uses FuncAttributesParserInfoRegionsMixin<List<FuncParameterTypeParserInfoRegions>{ min_length'=1 }>,
+    uses FuncAttributesParserInfoRegionsMixin #<List<FuncParameterTypeParserInfoRegions>>,
 :
-    public TypeParserInfoRegions val return_value
-    public (List<FuncParameterTypeParserInfoRegions>{ min_length'=1 } | Region) val parameters
+    [Keyword] public TypeParserInfoRegions val return_value

@@ -1,0 +1,52 @@
+# ----------------------------------------------------------------------
+# |
+# |  MatchType.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 11:32:41
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..ParserInfo import ParserInfo, ParserInfoRegions
+from ..Types.Type import TypeParserInfo, TypeParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class MatchTypeExpressionClauseParserInfo
+    extends ParserInfo
+:
+    public List<TypeParserInfo>{ min_length'=1 } val cases
+    public ExpressionParserInfo val expression
+
+
+# ----------------------------------------------------------------------
+public immutable class MatchTypeExpressionClauseParserInfoRegions
+    extends ParserInfoRegions
+:
+    public List<TypeParserInfoRegions>{ min_length'=1 } val cases
+    public ExpressionParserInfoRegions val expression
+
+
+# ----------------------------------------------------------------------
+public immutable class MatchTypeExpressionParserInfo
+    extends ExpressionParserInfo
+:
+    public ExpressionParserInfo val expression
+    public List<MatchTypeExpressionClauseParserInfo>{ min_length'=1 } val clauses
+    public (ExpressionParserInfo | None) val default
+
+
+# ----------------------------------------------------------------------
+public immutable class MatchTypeExpressionParserInfoRegions
+    extends ExpressionParserInfoRegions
+:
+    public ExpressionParserInfoRegions val expression
+    public List<MatchTypeExpressionClauseParserInfoRegions>{ min_length'=1 } val clauses
+    public (ExpressionParserInfoRegions | None) val default

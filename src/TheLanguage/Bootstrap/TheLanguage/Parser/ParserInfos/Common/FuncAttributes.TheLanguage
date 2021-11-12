@@ -17,12 +17,21 @@ from ..ParserInfo import Region
 
 
 # ----------------------------------------------------------------------
-public immutable mixin FuncAttributesParserInfoMixin:   # The function...
-    [Keyword] public (Bool | None) val is_exceptional   # ...may raise exceptions
-    [Keyword] public (Bool | None) val is_generator     # ...will generate multiple results when called repeatedly
-    [Keyword] public (Bool | None) val is_reentrant     # ...will yield control to the caller during its execution
-    [Keyword] public (Bool | None) val is_scoped        # ...yields a single value to the caller
-    [Keyword] public (Bool | None) val is_async         # ...is intended to be called asynchronously
+public immutable mixin FuncAttributesParserInfoMixin
+    <ParametersT>
+:                                                                           # The function...
+    [Keyword] public (Bool | None) val is_exceptional                       # ...may raise exceptions
+    [Keyword] public (Bool | None) val is_generator                         # ...will generate multiple results when called repeatedly
+    [Keyword] public (Bool | None) val is_reentrant                         # ...will yield control to the caller during its execution
+    [Keyword] public (Bool | None) val is_scoped                            # ...yields a single value to the caller
+    [Keyword] public (Bool | None) val is_async                             # ...is intended to be called asynchronously
+    [Keyword] public (Bool | None) val is_perfect_forwarding                # ...perfectly forwards all arguments
+
+    # Note that this variant is defined with a Bool type rather than None as we always want to have
+    # a corresponding Region for this value in the Regions class. If this value were None (to signal
+    # that the function requires no parameters), it would be considered an error to provide a
+    # corresponding region.
+    [Keyword] public (ParametersT | Bool) val parameters
 
     # ----------------------------------------------------------------------
     private None __Init?__():
@@ -32,12 +41,20 @@ public immutable mixin FuncAttributesParserInfoMixin:   # The function...
         assert self.is_reentrant is None or self.is_reentrant is True
         assert self.is_scoped is None or self.is_scoped is True
         assert self.is_async is None or self.is_async is True
+        assert self.is_perfect_forwarding is None or self.is_perfect_forwarding is True
+
+        assert self.parameters is not Bool or self.parameters is False
+        assert self.is_perfect_forwarding is None or self.parameters is False
 
 
 # ----------------------------------------------------------------------
-public immutable mixin FuncAttributesParserInfoRegionsMixin:
+public immutable mixin FuncAttributesParserInfoRegionsMixin
+    <ParameterRegionsT>
+:
     [Keyword] public (Region | None) val is_exceptional
     [Keyword] public (Region | None) val is_generator
     [Keyword] public (Region | None) val is_reentrant
     [Keyword] public (Region | None) val is_scoped
     [Keyword] public (Region | None) val is_async
+    [Keyword] public (Region | None) val is_perfect_forwarding
+    [Keyword] public (ParameterRegionsT | Region) val parameters

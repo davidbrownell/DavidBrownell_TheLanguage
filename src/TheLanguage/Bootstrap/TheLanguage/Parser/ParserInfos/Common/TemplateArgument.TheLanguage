@@ -26,25 +26,39 @@ from ..Types.Type import TypeParserInfo, TypeParserInfoRegions
 
 
 # ----------------------------------------------------------------------
-public immutable class TemplateArgumentParserInfo
+public immutable class TemplateTypeArgumentParserInfo
     extends ParserInfo
 :
-    public (                                                                # If the template argument...
-        (TypeParserInfo, (TypeModifierParserInfo | None))                   # ...is a type
-        | CompileTimeExpressionParserInfo                                   # ...is an expression
-    ) val type_or_expression
-
+    public TypeParserInfo val type
+    public (TypeModifierParserInfo | None) val modifier
     public (String | None) val keyword
 
 
 # ----------------------------------------------------------------------
-# TODO: This shouldn't be necessary long term
-public immutable class TemplateArgumentParserInfoRegions
+public immutable class TemplateTypeArgumentParserInfoRegions
+    extends ParserInfo
+:
+    public TypeParserInfoRegions val type
+    public (TypeModifierParserInfoRegions | None) val modifier
+    public (Region | None) val keyword
+
+
+# ----------------------------------------------------------------------
+public immutable class TemplateExpressionArgumentParserInfo
+    extends ParserInfo
+:
+    public CompileTimeExpressionParserInfo val expression
+    public (String | None) val keyword
+
+
+# ----------------------------------------------------------------------
+public immutable class TemplateExpressionArgumentParserInfoRegions
     extends ParserInfoRegions
 :
-    public (                                                                # If the template argument...
-        (TypeParserInfoRegions, (TypeModifierParserInfoRegions | None))     # ...is a type
-        | CompileTimeExpressionParserInfoRegions                            # ...is an expression
-    ) val type_or_expression
-
+    public CompileTimeExpressionParserInfoRegions val expression
     public (Region | None) val keyword
+
+
+# ----------------------------------------------------------------------
+public using TemplateArgumentParserInfo = (TemplateTypeArgumentParserInfo | TemplateExpressionArgumentParserInfo)
+public using TemplateArgumentParserInfoRegions = (TemplateTypeArgumentParserInfoRegions | TemplateExpressionArgumentParserInfoRegions)

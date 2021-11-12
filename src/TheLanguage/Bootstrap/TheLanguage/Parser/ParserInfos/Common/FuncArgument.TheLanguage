@@ -1,0 +1,33 @@
+# ----------------------------------------------------------------------
+# |
+# |  FuncArgument.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 10:52:54
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
+from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class FuncArgumentParserInfo
+    extends ParserInfo
+:
+    public ExpressionParserInfo val expression
+    public (String | None) val keyword
+
+
+# ----------------------------------------------------------------------
+public immutable class FuncArgumentParserInfoRegions
+    extends ParserInfoRegions
+:
+    public ExpressionParserInfoRegions val expression
+    public (Region | None) val keyword

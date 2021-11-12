@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Name.TheLanguage
+# |  Standard.TheLanguage
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-11-10 12:02:44
+# |      2021-11-10 12:18:59
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,23 +13,21 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from ..ParserInfo import ParserInfo, ParserInfoRegions
+from .Variable import VariableParserInfo, VariableParserInfoRegions
 
 
 # ----------------------------------------------------------------------
-# TODO: protected abstract immutable class NameParserInfo
-protected immutable class NameParserInfo
-    extends ParserInfo
+public immutable class StandardVariableParserInfo
+    extends VariableParserInfo
 :
     <<<
-    Abstract base class for all name-related `ParserInfo` objects.
+    A single Standard variable.
     >>>
 
-    # No custom functionality at this time
-    pass
+    public String val value
 
 
 # ----------------------------------------------------------------------
 # TODO: Shouldn't need to define this long term
-public using NameParserInfoRegions          = ParserInfoRegions
-python_hack: NameParserInfoRegions = ParserInfoRegions
+public using StandardVariableParserInfoRegions  = VariableParserInfoRegions
+python_hack: StandardVariableParserInfoRegions = VariableParserInfoRegions

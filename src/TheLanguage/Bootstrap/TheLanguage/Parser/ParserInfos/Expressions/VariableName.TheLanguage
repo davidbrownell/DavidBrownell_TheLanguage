@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Tuple.TheLanguage
+# |  VariableName.TheLanguage
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2021-11-10 12:22:56
+# |      2021-11-12 12:17:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,23 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from .Name import NameParserInfo, NameParserInfoRegions, Region
+from .Expression import ExpressionParserInfo, ExpressionParserInfoRegions
 
 
 # ----------------------------------------------------------------------
-public immutable class TupleNameParserInfo
-    extends NameParserInfo
+public immutable class VariableNameExpressionParserInfo
+    extends ExpressionParserInfo
 :
-    <<<
-    A name that supports individual assignment to elements of a tuple.
-    >>>
-
-    public List<NameParserInfo val>{ min_length'=1 } val names
+    public String val name
 
 
 # ----------------------------------------------------------------------
-# TODO: Shouldn't need to define this long term
-public immutable class TupleNameParserInfoRegions
-    extends NameParserInfoRegions
-:
-    public List<NameParserInfoRegions val>{ min_length'=1 } val names
+public using VariableNameExpressionParserInfoRegions = ExpressionParserInfoRegions
+python_hack: VariableNameExpressionParserInfoRegions = ExpressionParserInfoRegions
