@@ -1,0 +1,36 @@
+# ----------------------------------------------------------------------
+# |
+# |  Scope.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 14:17:38
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Statement import StatementParserInfo, StatementParserInfoRegions
+from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..Variables.Variable import VariableParserInfo, VariableParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class ScopeStatementParserInfo
+    extends StatementParserInfo
+:
+    public VariableParserInfo val variable
+    public ExpressionParserInfo val expression
+    public List<StatementParserInfo>{ min_length'=1 } val statements
+
+
+# ----------------------------------------------------------------------
+public immutable class ScopeStatementParserInfoRegions
+    extends StatementParserInfoRegions
+:
+    public VariableParserInfoRegions val variable
+    public ExpressionParserInfoRegions val expression
+    public List<StatementParserInfoRegions>{ min_length'=1 } val statements

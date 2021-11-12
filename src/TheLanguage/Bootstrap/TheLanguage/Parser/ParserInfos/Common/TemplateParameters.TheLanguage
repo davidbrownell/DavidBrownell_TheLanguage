@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from .TypeModifier import TypeModifierParserInfo, TypeModifierParserInfoRegions
+from . import TypeModifier
 from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
 from ..CompileTimeExpressions.Expression import CompileTimeExpressionParserInfo, CompileTimeExpressionParserInfoRegions
 from ..CompileTimeTypes.Type import CompileTimeTypeParserInfo, CompileTimeTypeParserInfoRegions
@@ -29,10 +29,23 @@ public immutable class TemplateTypeParameterParserInfo
     public (
         (
             TypeParserInfo,
-            (TypeModifierParserInfo | None),
+            (TypeModifier | None),
         )
         | None
     ) val default
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        ensure (
+            self.default is None
+            or (
+                self.default[1] is None
+                or (
+                    self.default[1] == TypeModifier::Var
+                    or self.default[1] == TypeModifier::Val
+                )
+            )
+        )
 
 
 # ----------------------------------------------------------------------
@@ -44,7 +57,7 @@ public immutable class TemplateTypeParameterParserInfoRegions
     public (
         (
             TypeParserInfoRegions,
-            (TypeModifierParserInfoRegions | None),
+            (Region | None),
         )
         | None
     ) val default
@@ -81,8 +94,7 @@ public immutable class TemplateParametersParserInfo
 
     # ----------------------------------------------------------------------
     private None __Init?__():
-        # TODO: ensure self.positional or self.any or self.keyword
-        assert self.positional or self.any or self.keyword
+        ensure self.positional or self.any or self.keyword
 
 
 # ----------------------------------------------------------------------
@@ -98,5 +110,4 @@ public immutable class TemplateParametersParserInfoRegions
 
     # ----------------------------------------------------------------------
     private None __Init?__():
-        # TODO: ensure self.positional or self.any or self.keyword
-        assert self.positional or self.any or self.keyword
+        ensure self.positional or self.any or self.keyword

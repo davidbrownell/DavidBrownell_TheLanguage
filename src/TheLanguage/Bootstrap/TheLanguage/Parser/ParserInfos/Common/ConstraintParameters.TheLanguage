@@ -49,8 +49,7 @@ public immutable class ConstraintParametersParserInfo
 
     # ----------------------------------------------------------------------
     private None __Init?__():
-        # TODO: ensure self.positional or self.any or self.keyword
-        assert self.positional or self.any or self.keyword
+        ensure self.positional or self.any or self.keyword
 
 
 # ----------------------------------------------------------------------
@@ -66,5 +65,4 @@ public immutable class ConstraintParametersParserInfoRegions
 
     # ----------------------------------------------------------------------
     private None __Init?__():
-        # TODO: ensure self.positional or self.any or self.keyword
-        assert self.positional or self.any or self.keyword
+        ensure self.positional or self.any or self.keyword

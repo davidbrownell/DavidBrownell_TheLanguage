@@ -13,7 +13,6 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from ..ParserInfo import ParserInfo, ParserInfoRegions
 
 
 # ----------------------------------------------------------------------
@@ -52,15 +51,3 @@ public enum TypeModifier:
     python_hack: Ref = TypeModifierFlag.Mutable | TypeModifierFlag.Shared
     python_hack: IsoVal = TypeModifierFlag.Immutable | TypeModifierFlag.Isolated
     python_hack: Val = TypeModifierFlag.Immutable | TypeModifierFlag.Shared
-
-
-# ----------------------------------------------------------------------
-public immutable class TypeModifierParserInfo
-    extends ParserInfo
-:
-    public TypeModifier val value
-
-
-# ----------------------------------------------------------------------
-public using TypeModifierParserInfoRegions  = ParserInfoRegions
-python_hack: TypeModifierParserInfoRegions = ParserInfoRegions

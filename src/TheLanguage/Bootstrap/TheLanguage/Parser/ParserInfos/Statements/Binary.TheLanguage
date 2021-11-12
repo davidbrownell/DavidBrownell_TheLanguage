@@ -1,0 +1,69 @@
+# ----------------------------------------------------------------------
+# |
+# |  Binary.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 13:31:31
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Statement import StatementParserInfo, StatementParserInfoRegions
+from ..ParserInfo import Region
+from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..Variables.Variable import VariableParserInfo, VariableParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public enum OperatorType:
+    # TODO: # Mathematical
+    # TODO: AddInplace
+    # TODO: SubtractInplace
+    # TODO: MultiplyInplace
+    # TODO: PowerInplace
+    # TODO: DivideInplace
+    # TODO: DivideFloorInplace
+    # TODO: ModuloInplace
+    # TODO:
+    # TODO: # Bit Manipulation
+    # TODO: BitShiftLeftInplace
+    # TODO: BitShiftRightInplace
+    # TODO: BitXorInplace
+    # TODO: BitAndInplace
+    # TODO: BitOrInplace
+
+    python_hack: AddInplace                              = auto()
+    python_hack: SubtractInplace                         = auto()
+    python_hack: MultiplyInplace                         = auto()
+    python_hack: PowerInplace                            = auto()
+    python_hack: DivideInplace                           = auto()
+    python_hack: DivideFloorInplace                      = auto()
+    python_hack: ModuloInplace                           = auto()
+    python_hack: BitShiftLeftInplace                     = auto()
+    python_hack: BitShiftRightInplace                    = auto()
+    python_hack: BitXorInplace                           = auto()
+    python_hack: BitAndInplace                           = auto()
+    python_hack: BitOrInplace                            = auto()
+
+
+# ----------------------------------------------------------------------
+public immutable class BinaryStatementParserInfo
+    extends StatementParserInfo
+:
+    public VariableParserInfo val variable
+    public OperatorType val operator
+    public ExpressionParserInfo val expression
+
+
+# ----------------------------------------------------------------------
+public immutable class BinaryStatementParserInfoRegions
+    extends StatementParserInfoRegions
+:
+    public VariableParserInfoRegions val variable
+    public Region val operator
+    public ExpressionParserInfoRegions val expression

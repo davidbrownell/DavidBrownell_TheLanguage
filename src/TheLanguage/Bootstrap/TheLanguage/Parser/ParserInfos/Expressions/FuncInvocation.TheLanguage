@@ -24,13 +24,13 @@ public immutable class FuncInvocationExpressionParserInfo
 :
     public ExpressionParserInfo val expression
     public (List<FuncArgumentParserInfo>{ min_length'=1 } | Bool) val arguments
-    public (Bool | None) val is_perfect_forwarding
+    [Keyword] public (Bool | None) val is_perfect_forwarding
 
     # ----------------------------------------------------------------------
     private None __Init?__():
-        # TODO: enforce self.arguments is not Bool or self.arguments is False
-        assert self.arguments is not Bool or self.arguments is False
-        assert self.is_perfect_forwarding is None or self.is_perfect_forwarding is True
+        ensure self.arguments is not Bool or self.arguments is False
+        ensure self.is_perfect_forwarding is None or self.is_perfect_forwarding is True
+        ensure self.is_perfect_forwarding is None or self.arguments is False
 
 
 # ----------------------------------------------------------------------
@@ -39,4 +39,8 @@ public immutable class FuncInvocationExpressionParserInfoRegions
 :
     public ExpressionParserInfoRegions val expression
     public (List<FuncArgumentParserInfoRegions>{ min_length'=1 } | Region) val arguments
-    public (Region | None) val is_perfect_forwarding
+    [Keyword] public (Region | None) val is_perfect_forwarding
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        ensure self.is_perfect_forwarding is None or self.arguments is Region

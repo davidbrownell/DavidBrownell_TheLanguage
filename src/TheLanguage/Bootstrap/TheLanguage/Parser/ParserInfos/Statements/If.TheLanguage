@@ -1,0 +1,50 @@
+# ----------------------------------------------------------------------
+# |
+# |  If.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 14:04:40
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Statement import StatementParserInfo, StatementParserInfoRegions
+from ..ParserInfo import ParserInfo, ParserInfoRegions
+from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class IfStatementClauseParserInfo
+    extends ParserInfo
+:
+    public ExpressionParserInfo val condition
+    public List<StatementParserInfo>{ min_length'=1 } val statements
+
+
+# ----------------------------------------------------------------------
+public immutable class IfStatementClauseParserInfoRegions
+    extends ParserInfoRegions
+:
+    public ExpressionParserInfoRegions val condition
+    public List<StatementParserInfoRegions>{ min_length'=1 } val statements
+
+
+# ----------------------------------------------------------------------
+public immutable class IfStatementParserInfo
+    extends StatementParserInfo
+:
+    public List<IfStatementClauseParserInfo>{ min_length'=1 } val clauses
+    public (List<StatementParserInfo>{ min_length'=1 } | None) val else_statements
+
+
+# ----------------------------------------------------------------------
+public immutable class IfStatementParserInfoRegions
+    extends StatementParserInfoRegions
+:
+    public List<IfStatementClauseParserInfoRegions>{ min_length'=1 } val clauses
+    public (List<StatementParserInfoRegions>{ min_length'=1 } | None) val else_statements

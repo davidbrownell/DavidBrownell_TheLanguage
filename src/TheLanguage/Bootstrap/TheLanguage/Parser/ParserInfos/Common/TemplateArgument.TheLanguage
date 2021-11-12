@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from .TypeModifier import TypeModifierParserInfo, TypeModifierParserInfoRegions
+from . import TypeModifier
 
 from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
 
@@ -30,8 +30,18 @@ public immutable class TemplateTypeArgumentParserInfo
     extends ParserInfo
 :
     public TypeParserInfo val type
-    public (TypeModifierParserInfo | None) val modifier
+    public (TypeModifier | None) val modifier
     public (String | None) val keyword
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        ensure (
+            self.modifier is None
+            or (
+                self.modifier == TypeModifier::Var
+                or self.modifier == TypeModifier::Val
+            )
+        )
 
 
 # ----------------------------------------------------------------------
@@ -39,7 +49,7 @@ public immutable class TemplateTypeArgumentParserInfoRegions
     extends ParserInfo
 :
     public TypeParserInfoRegions val type
-    public (TypeModifierParserInfoRegions | None) val modifier
+    public (Region | None) val modifier
     public (Region | None) val keyword
 
 

@@ -1,0 +1,42 @@
+# ----------------------------------------------------------------------
+# |
+# |  Variable.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 13:38:07
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Statement import StatementParserInfo, StatementParserInfoRegions
+from ..ParserInfo import Region
+from ..Common import TypeModifier
+from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..Variables.Variable import VariableParserInfo, VariableParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class VariableStatementParserInfo
+    extends StatementParserInfo
+:
+    public TypeModifier val modifier
+    public VariableParserInfo val variable
+    public ExpressionParserInfo val expression
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        ensure self.modifier == TypeModifier::Var or self.modifier == TypeModifier::Val
+
+
+# ----------------------------------------------------------------------
+public immutable class VariableStatementParserInfoRegions
+    extends StatementParserInfoRegions
+:
+    public Region val modifier
+    public VariableParserInfoRegions val variable
+    public ExpressionParserInfoRegions val expression

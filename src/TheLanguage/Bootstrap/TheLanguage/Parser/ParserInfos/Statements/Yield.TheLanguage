@@ -1,0 +1,38 @@
+# ----------------------------------------------------------------------
+# |
+# |  Yield.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 14:14:40
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Statement import StatementParserInfo, StatementParserInfoRegions
+from ..ParserInfo import Region
+from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class YieldStatementParserInfo
+    extends StatementParserInfo
+:
+    public (ExpressionParserInfo | None) val expression
+    [Keyword] public (Bool | None) val is_recursive
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        ensure self.is_recursive is None or self.is_recursive
+
+
+# ----------------------------------------------------------------------
+public immutable class YieldStatementParserInfoRegions
+    extends StatementParserInfoRegions
+:
+    public (ExpressionParserInfoRegions | None) val expression
+    [Keyword] public (Region | None) val is_recursive

@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from .TypeModifier import TypeModifierParserInfo, TypeModifierParserInfoRegions
+from . import TypeModifier
 from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
 from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
 from ..Types.Type import TypeParserInfo, TypeParserInfoRegions
@@ -24,13 +24,19 @@ public immutable class FuncParameterTypeParserInfo
     extends ParserInfo
 :
     public TypeParserInfo val type
-    public TypeModifierParserInfo val modifier
-    public (Bool | None) val is_variadic
+    public TypeModifier val modifier
+    [Keyword] public (Bool | None) val is_variadic
 
     # ----------------------------------------------------------------------
     private None __Init?__():
-        # TODO: ensure self.is_variadic is None or self.is_variadic is True
-        assert self.is_variadic is None or self.is_variadic is True
+        ensure (
+            self.modifier == TypeModifier::Immutable
+            or self.modifier == TypeModifier::Var
+            or self.modifier == TypeModifier::Ref
+            or self.modifier == TypeModifier::Val
+        )
+
+        ensure self.is_variadic is None or self.is_variadic is True
 
 
 # ----------------------------------------------------------------------
@@ -38,8 +44,8 @@ public immutable class FuncParameterTypeParserInfoRegions
     extends ParserInfoRegions
 :
     public TypeParserInfoRegions val type
-    public TypeModifierParserInfoRegions val modifier
-    public (Region | None) val is_variadic
+    public Region val modifier
+    [Keyword] public (Region | None) val is_variadic
 
 
 # ----------------------------------------------------------------------
@@ -71,8 +77,7 @@ public immutable class FuncParametersParserInfo
 
     # ----------------------------------------------------------------------
     private None __Init?__():
-        # TODO: ensure self.positional or self.any or self.keyword
-        assert self.positional or self.any or self.keyword
+        ensure self.positional or self.any or self.keyword
 
 
 # ----------------------------------------------------------------------
@@ -88,5 +93,4 @@ public immutable class FuncParametersParserInfoRegions
 
     # ----------------------------------------------------------------------
     private None __Init?__():
-        # TODO: ensure self.positional or self.any or self.keyword
-        assert self.positional or self.any or self.keyword
+        ensure self.positional or self.any or self.keyword

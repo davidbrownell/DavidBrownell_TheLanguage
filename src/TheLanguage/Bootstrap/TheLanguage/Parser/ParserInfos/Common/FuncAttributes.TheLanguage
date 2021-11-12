@@ -35,16 +35,15 @@ public immutable mixin FuncAttributesParserInfoMixin
 
     # ----------------------------------------------------------------------
     private None __Init?__():
-        # TODO: change these to ensure
-        assert self.is_exceptional is None or self.is_exceptional is True
-        assert self.is_generator is None or self.is_generator is True
-        assert self.is_reentrant is None or self.is_reentrant is True
-        assert self.is_scoped is None or self.is_scoped is True
-        assert self.is_async is None or self.is_async is True
-        assert self.is_perfect_forwarding is None or self.is_perfect_forwarding is True
+        ensure self.is_exceptional is None or self.is_exceptional is True
+        ensure self.is_generator is None or self.is_generator is True
+        ensure self.is_reentrant is None or self.is_reentrant is True
+        ensure self.is_scoped is None or self.is_scoped is True
+        ensure self.is_async is None or self.is_async is True
+        ensure self.is_perfect_forwarding is None or self.is_perfect_forwarding is True
 
-        assert self.parameters is not Bool or self.parameters is False
-        assert self.is_perfect_forwarding is None or self.parameters is False
+        ensure self.parameters is not Bool or self.parameters is False
+        ensure self.is_perfect_forwarding is None or self.parameters is False
 
 
 # ----------------------------------------------------------------------
@@ -58,3 +57,15 @@ public immutable mixin FuncAttributesParserInfoRegionsMixin
     [Keyword] public (Region | None) val is_async
     [Keyword] public (Region | None) val is_perfect_forwarding
     [Keyword] public (ParameterRegionsT | Region) val parameters
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        ensure self.is_exceptional is None or self.is_exceptional is True
+        ensure self.is_generator is None or self.is_generator is True
+        ensure self.is_reentrant is None or self.is_reentrant is True
+        ensure self.is_scoped is None or self.is_scoped is True
+        ensure self.is_async is None or self.is_async is True
+        ensure self.is_perfect_forwarding is None or self.is_perfect_forwarding is True
+
+        ensure self.parameters is not Bool or self.parameters is False
+        ensure self.is_perfect_forwarding is None or self.parameters is False

@@ -1,0 +1,36 @@
+# ----------------------------------------------------------------------
+# |
+# |  Expression.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 14:01:44
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Statement import StatementParserInfo, StatementParserInfoRegions
+from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..Expressions.FuncInvocation import FuncInvocationExpressionParserInfo
+
+
+# ----------------------------------------------------------------------
+public immutable class ExpressionStatementParserInfo
+    extends StatementParserInfo
+:
+    public ExpressionParserInfo val expression
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        ensure self.expression is FuncInvocationExpressionParserInfo
+
+
+# ----------------------------------------------------------------------
+public immutable class ExpressionStatementParserInfoRegions
+    extends StatementParserInfoRegions
+:
+    public ExpressionParserInfoRegions val expression

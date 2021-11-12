@@ -1,0 +1,134 @@
+# ----------------------------------------------------------------------
+# |
+# |  Class.TheLanguage.TODO
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 15:03:55
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Statement import StatementParserInfo, StatementParserInfoRegions
+from ..ParserInfo import ParserInfo, ParserInfoRegions, Region
+from ..Common.ConstraintParameters import ConstraintParametersParserInfo, ConstraintParametersParserInfoRegions
+from ..Common.TemplateParameters import TemplateParametersParserInfo, TemplateParametersParserInfoRegions
+from ..Common import TypeModifier
+from ..Common import VisibilityModifier
+from ..Expressions.Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..Types.Type import TypeParserInfo, TypeParserInfoRegions
+
+
+# ----------------------------------------------------------------------
+public immutable class ClassStatementMemberParserInfo
+    extends ParserInfo
+:
+    public VisibilityModifier val visibility
+    public TypeParserInfo val type
+    public String val name
+    public (ExpressionParserInfo | None) val default
+
+    [Keyword] public (Bool | None) val no_init
+    [Keyword] public (Bool | None) val no_serialization
+    [Keyword] public (Bool | None) val no_compare
+    [Keyword] public (Bool | None) val is_keyword
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        ensure self.no_init is None or self.no_init is True
+        ensure self.no_serialization is None or self.no_serialization is True
+        ensure self.no_compare is None or self.no_compare is True
+        ensure self.is_keyword is None or self.is_keyword is True
+
+
+# ----------------------------------------------------------------------
+public immutable class ClassStatementMemberParserInfoRegions
+    extends ParserInfoRegions
+:
+    public Region val visibility
+    public TypeParserInfoRegions val type
+    public Region val name
+    public (ExpressionParserInfoRegions | None) val default
+
+    [Keyword] public (Region | None) val no_init
+    [Keyword] public (Region | None) val no_serialization
+    [Keyword] public (Region | None) val no_compare
+    [Keyword] public (Region | None) val is_keyword
+
+
+# ----------------------------------------------------------------------
+public enum ClassType:
+    # TODO: Class
+    # TODO: Exception
+    # TODO: Interface
+    # TODO: Mixin
+    # TODO: Struct
+    # TODO: Trait
+
+    python_hack: Class = auto()
+    python_hack: Exception = auto()
+    python_hack: Interface = auto()
+    python_hack: Mixin = auto()
+    python_hack: Struct = auto()
+    python_hack: Trait = auto()
+
+
+# ----------------------------------------------------------------------
+public immutable class ClassStatementParserInfo
+    extends StatementParserInfo
+:
+    public VisibilityModifier val visibility
+    public TypeModifier val type
+    public ClassType val class_type
+    public String val name
+    public (TemplateParametersParserInfo | None) val templates
+    public (ConstraintParametersParserInfo | None) val constraints
+
+    public (List<TypeParserInfo>{ min_length'=1 } | None) val extends
+    public (List<TypeParserInfo>{ min_length'=1 } | None) val implements
+    public (List<TypeParserInfo>{ min_length'=1 } | None) val uses
+
+    public (String | None) val documentation
+
+    public (List<ClassStatementMemberParserInfo>{ min_length'=1 } | None) val members
+    public (List<StatementParserInfo>{ min_length'=1 } | None) val statements
+
+    [Keyword] public (Bool | None) val no_public_ctor
+    [Keyword] public (Bool | None) val no_serialization
+    [Keyword] public (Bool | None) val no_compare
+
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        ensure self.type == TypeModifier::Immutable or self.type == TypeModifier::Mutable
+        ensure self.no_public_ctor is None or self.no_public_ctor is True
+        ensure self.no_serialization is None or self.no_serialization is True
+        ensure self.no_compare is None or self.no_compare is True
+
+
+# ----------------------------------------------------------------------
+public immutable class ClassStatementParserInfoRegions
+    extends StatementParserInfoRegions
+:
+    public Region val visibility
+    public Region val type
+    public Region val class_type
+    public Region val name
+    public (TemplateParametersParserInfoRegions | None) val templates
+    public (ConstraintParametersParserInfoRegions | None) val constraints
+
+    public (List<TypeParserInfoRegions>{ min_length'=1 } | None) val extends
+    public (List<TypeParserInfoRegions>{ min_length'=1 } | None) val implements
+    public (List<TypeParserInfoRegions>{ min_length'=1 } | None) val uses
+
+    public (Region | None) val documentation
+
+    public (List<ClassStatementMemberParserInfoRegions>{ min_length'=1 } | None) val members
+    public (List<StatementParserInfoRegions>{ min_length'=1 } | None) val statements
+
+    [Keyword] public (Region | None) val no_public_ctor
+    [Keyword] public (Region | None) val no_serialization
+    [Keyword] public (Region | None) val no_compare
