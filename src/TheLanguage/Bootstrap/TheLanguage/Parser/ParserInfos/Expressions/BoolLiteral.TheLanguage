@@ -1,0 +1,35 @@
+# ----------------------------------------------------------------------
+# |
+# |  BoolLiteral.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 12:55:34
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..Common.Impl.BoolLiteralMixin import BoolLiteralParserInfoMixin, BoolLiteralParserInfoRegionsMixin
+
+
+# ----------------------------------------------------------------------
+public immutable class BoolLiteralExpressionParserInfo
+    extends ExpressionParserInfo,
+    uses BoolLiteralParserInfoMixin,
+:
+    # Nothing to add here
+    pass
+
+
+# ----------------------------------------------------------------------
+public immutable class BoolLiteralExpressionParserInfoRegions
+    extends ExpressionParserInfoRegions,
+    uses BoolLiteralParserInfoRegionsMixin,
+:
+    # Nothing to add here
+    pass

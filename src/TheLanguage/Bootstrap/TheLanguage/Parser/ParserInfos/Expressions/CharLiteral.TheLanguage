@@ -1,0 +1,35 @@
+# ----------------------------------------------------------------------
+# |
+# |  CharLiteral.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 12:56:22
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..Common.Impl.CharLiteralMixin import CharLiteralParserInfoMixin, CharLiteralParserInfoRegionsMixin
+
+
+# ----------------------------------------------------------------------
+public immutable class CharLiteralExpressionParserInfo
+    extends ExpressionParserInfo,
+    uses CharLiteralParserInfoMixin,
+:
+    # Nothing to add here
+    pass
+
+
+# ----------------------------------------------------------------------
+public immutable class CharLiteralExpressionParserInfoRegions
+    extends ExpressionParserInfoRegions,
+    uses CharLiteralParserInfoRegionsMixin,
+:
+    # Nothing to add here
+    pass

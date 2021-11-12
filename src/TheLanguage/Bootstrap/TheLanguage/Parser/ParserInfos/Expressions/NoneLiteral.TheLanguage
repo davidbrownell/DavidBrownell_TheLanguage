@@ -1,0 +1,35 @@
+# ----------------------------------------------------------------------
+# |
+# |  NoneLiteral.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-11-12 12:57:36
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Expression import ExpressionParserInfo, ExpressionParserInfoRegions
+from ..Common.Impl.NoneLiteralMixin import NoneLiteralParserInfoMixin, NoneLiteralParserInfoRegionsMixin
+
+
+# ----------------------------------------------------------------------
+public immutable class NoneLiteralExpressionParserInfo
+    extends ExpressionParserInfo,
+    uses NoneLiteralParserInfoMixin,
+:
+    # Nothing to add here
+    pass
+
+
+# ----------------------------------------------------------------------
+public immutable class NoneLiteralExpressionParserInfoRegions
+    extends ExpressionParserInfoRegions,
+    uses NoneLiteralParserInfoRegionsMixin,
+:
+    # Nothing to add here
+    pass
