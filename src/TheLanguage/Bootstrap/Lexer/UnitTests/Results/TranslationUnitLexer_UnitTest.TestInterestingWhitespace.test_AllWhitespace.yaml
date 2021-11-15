@@ -1,11 +1,11 @@
-# <class 'Original.Lexer.Components.AST.Node'>
+# <class 'Bootstrap.Lexer.Components.AST.Node'>
 Children:
-  - # <class 'Original.Lexer.Components.AST.Leaf'>
+  - # <class 'Bootstrap.Lexer.Components.AST.Leaf'>
     IsIgnored: True
     IterBegin: "[1, 1] (0)"
     IterEnd: "[4, 1] (3)"
-    Type: "Newline+ <class 'Original.Lexer.Components.Token.NewlineToken'>"
-    Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+    Type: "Newline+ <class 'Bootstrap.Lexer.Components.Token.NewlineToken'>"
+    Value: # <class 'Bootstrap.Lexer.Components.Token.NewlineToken.MatchResult'>
       End: 3
       Start: 0
     Whitespace: None

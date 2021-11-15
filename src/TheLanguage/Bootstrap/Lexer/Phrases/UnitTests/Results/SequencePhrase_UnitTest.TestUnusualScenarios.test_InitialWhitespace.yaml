@@ -1,34 +1,34 @@
-# <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
-Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+# <class 'Bootstrap.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
-        - # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        - # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
           IsIgnored: True
           IterBegin: "[1, 1] (0)"
           IterEnd: "[3, 1] (2)"
           Token: "Newline+"
-          Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+          Value: # <class 'Bootstrap.Lexer.Components.Token.NewlineToken.MatchResult'>
             End: 2
             Start: 0
           Whitespace: None
-        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        - # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
             IsIgnored: False
             IterBegin: "[3, 1] (2)"
             IterEnd: "[3, 7] (8)"
             Token: "lower"
-            Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+            Value: # <class 'Bootstrap.Lexer.Components.Token.RegexToken.MatchResult'>
               Match: "<_sre.SRE_Match object; span=(2, 8), match='lower1'>"
             Whitespace: None
           Phrase: "lower"
-        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        - # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
             IsIgnored: False
             IterBegin: "[3, 7] (8)"
             IterEnd: "[4, 1] (9)"
             Token: "Newline+"
-            Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+            Value: # <class 'Bootstrap.Lexer.Components.Token.NewlineToken.MatchResult'>
               End: 9
               Start: 8
             Whitespace: None
@@ -40,28 +40,28 @@ IterBegin: "[1, 1] (0)"
 IterEnd: "[4, 1] (9)"
 Success: True
 
-# <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
-Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+# <class 'Bootstrap.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
-        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        - # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
             IsIgnored: False
             IterBegin: "[4, 1] (9)"
             IterEnd: "[4, 7] (15)"
             Token: "lower"
-            Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+            Value: # <class 'Bootstrap.Lexer.Components.Token.RegexToken.MatchResult'>
               Match: "<_sre.SRE_Match object; span=(9, 15), match='lower2'>"
             Whitespace: None
           Phrase: "lower"
-        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        - # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
             IsIgnored: False
             IterBegin: "[4, 7] (15)"
             IterEnd: "[5, 1] (16)"
             Token: "Newline+"
-            Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+            Value: # <class 'Bootstrap.Lexer.Components.Token.NewlineToken.MatchResult'>
               End: 16
               Start: 15
             Whitespace: None

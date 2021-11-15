@@ -491,6 +491,7 @@ def test_InvalidMultilineClosingToken():
     assert str(ex) == "('<<<(?P<value>.+?)a>>', 'The closing token must be a multiline phrase token')"
 
 # ----------------------------------------------------------------------
+@pytest.mark.skip("It isn't clear if the check for multiline tokens is a good check or not; the check (and this test) have been disabled for now")
 def test_InvalidNonMultilineTokenHeader():
     with pytest.raises(AssertionError) as ex:
         RegexToken("Invalid", re.compile(r"---"))

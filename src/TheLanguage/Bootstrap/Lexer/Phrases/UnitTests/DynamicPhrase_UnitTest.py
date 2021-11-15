@@ -60,16 +60,16 @@ class TestStandard(object):
         result = await phrase.LexAsync(("root", ), CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                  Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                     IsIgnored: False
                     IterBegin: "[1, 1] (0)"
                     IterEnd: "[1, 5] (4)"
                     Token: "lower"
-                    Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Value: # <class 'Bootstrap.Lexer.Components.Token.RegexToken.MatchResult'>
                       Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
                     Whitespace: None
                   Phrase: "lower"
@@ -94,12 +94,12 @@ class TestStandard(object):
         result = await phrase.LexAsync(("root", ), CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                   DataItems:
-                    - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    - # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: None
                       Phrase: "lower"
                   IsComplete: True
@@ -124,16 +124,16 @@ class TestStandard(object):
         result = await phrase.LexAsync(("root", ), CreateIterator("1234"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                  Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                     IsIgnored: False
                     IterBegin: "[1, 1] (0)"
                     IterEnd: "[1, 5] (4)"
                     Token: "number"
-                    Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Value: # <class 'Bootstrap.Lexer.Components.Token.RegexToken.MatchResult'>
                       Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
                     Whitespace: None
                   Phrase: "number"
@@ -158,16 +158,16 @@ class TestStandard(object):
         result = await phrase.LexAsync(("root", ), CreateIterator("word"), parse_mock)
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                  Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                     IsIgnored: False
                     IterBegin: "[1, 1] (0)"
                     IterEnd: "[1, 5] (4)"
                     Token: "lower"
-                    Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Value: # <class 'Bootstrap.Lexer.Components.Token.RegexToken.MatchResult'>
                       Match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
                     Whitespace: None
                   Phrase: "lower"
@@ -198,16 +198,16 @@ class TestStandard(object):
 
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                  Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                     IsIgnored: False
                     IterBegin: "[1, 1] (0)"
                     IterEnd: "[1, 5] (4)"
                     Token: "number"
-                    Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Value: # <class 'Bootstrap.Lexer.Components.Token.RegexToken.MatchResult'>
                       Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
                     Whitespace: None
                   Phrase: "number"
@@ -227,41 +227,41 @@ class TestStandard(object):
             3) EndPhrase, "lower" [False]
             4) StartPhrase, "number"
             5) OnInternalPhraseAsync, 0, 4
-                # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   IsIgnored: False
                   IterBegin: "[1, 1] (0)"
                   IterEnd: "[1, 5] (4)"
                   Token: "number"
-                  Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                  Value: # <class 'Bootstrap.Lexer.Components.Token.RegexToken.MatchResult'>
                     Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
                   Whitespace: None
                 Phrase: "number"
             6) EndPhrase, "number" [True]
             7) OnInternalPhraseAsync, 0, 4
-                # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                  Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                     IsIgnored: False
                     IterBegin: "[1, 1] (0)"
                     IterEnd: "[1, 5] (4)"
                     Token: "number"
-                    Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                    Value: # <class 'Bootstrap.Lexer.Components.Token.RegexToken.MatchResult'>
                       Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
                     Whitespace: None
                   Phrase: "number"
                 Phrase: "(lower | number)"
             8) EndPhrase, "(lower | number)" [True]
             9) OnInternalPhraseAsync, 0, 4
-                # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                  Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       IsIgnored: False
                       IterBegin: "[1, 1] (0)"
                       IterEnd: "[1, 5] (4)"
                       Token: "number"
-                      Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+                      Value: # <class 'Bootstrap.Lexer.Components.Token.RegexToken.MatchResult'>
                         Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
                       Whitespace: None
                     Phrase: "number"
@@ -287,12 +287,12 @@ class TestStandard(object):
         )
         assert str(result) == textwrap.dedent(
             """\
-            # <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
-            Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-              Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-                Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+            # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.LexResult'>
+            Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+              Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
                   DataItems:
-                    - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+                    - # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
                       Data: None
                       Phrase: "lower"
                   IsComplete: True

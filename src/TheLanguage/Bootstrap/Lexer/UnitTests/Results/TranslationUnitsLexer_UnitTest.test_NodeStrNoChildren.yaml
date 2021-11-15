@@ -1,6 +1,6 @@
-# <class 'Original.Lexer.Components.AST.Node'>
+# <class 'Bootstrap.Lexer.Components.AST.Node'>
 Children: []
 IsIgnored: False
 IterBegin: None
 IterEnd: None
-Type: "Phrase <class 'Original.Lexer.Phrases.TokenPhrase.TokenPhrase'>"
+Type: "Phrase <class 'Bootstrap.Lexer.Phrases.TokenPhrase.TokenPhrase'>"

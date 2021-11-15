@@ -1,25 +1,25 @@
-# <class 'Original.Lexer.Components.Phrase.Phrase.LexResult'>
-Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-  Data: # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-    Data: # <class 'Original.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
+# <class 'Bootstrap.Lexer.Components.Phrase.Phrase.LexResult'>
+Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+  Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+    Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.MultipleLexResultData'>
       DataItems:
-        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        - # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
             IsIgnored: False
             IterBegin: "[1, 1] (0)"
             IterEnd: "[1, 5] (4)"
             Token: "Number Token"
-            Value: # <class 'Original.Lexer.Components.Token.RegexToken.MatchResult'>
+            Value: # <class 'Bootstrap.Lexer.Components.Token.RegexToken.MatchResult'>
               Match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
             Whitespace: None
           Phrase: "Number Token"
-        - # <class 'Original.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
-          Data: # <class 'Original.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        - # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.StandardLexResultData'>
+          Data: # <class 'Bootstrap.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
             IsIgnored: False
             IterBegin: "[1, 5] (4)"
             IterEnd: "[2, 1] (5)"
             Token: "Newline+"
-            Value: # <class 'Original.Lexer.Components.Token.NewlineToken.MatchResult'>
+            Value: # <class 'Bootstrap.Lexer.Components.Token.NewlineToken.MatchResult'>
               End: 5
               Start: 4
             Whitespace: None
