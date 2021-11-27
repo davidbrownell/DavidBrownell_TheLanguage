@@ -36,11 +36,17 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 def test_StandardError():
     # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class StandardError(Error):
-        MessageTemplate                     = Interface.DerivedProperty(  # type: ignore
-            "This is the message",
-        )
+    if USE_THE_LANGUAGE_GENERATED_CODE:
+        class StandardError(Error):
+            @staticmethod
+            def _GetMessageTemplate():
+                return "This is the message"
+    else:
+        @dataclass(frozen=True)
+        class StandardError(Error):
+            MessageTemplate                     = Interface.DerivedProperty(  # type: ignore
+                "This is the message",
+            )
 
     # ----------------------------------------------------------------------
 
@@ -54,14 +60,25 @@ def test_StandardError():
 # ----------------------------------------------------------------------
 def test_CustomError():
     # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class CustomError(Error):
-        one: str
-        two: str
+    if USE_THE_LANGUAGE_GENERATED_CODE:
+        class CustomError(Error):
+            def __init__(self, line, col, one, two):
+                super(CustomError, self).__init__(line, col)
+                self.one = one
+                self.two = two
 
-        MessageTemplate                     = Interface.DerivedProperty(  # type: ignore
-            "Values: one={one}, two={two}",
-        )
+            @staticmethod
+            def _GetMessageTemplate():
+                return "Values: one={one}, two={two}"
+    else:
+        @dataclass(frozen=True)
+        class CustomError(Error):
+            one: str
+            two: str
+
+            MessageTemplate                     = Interface.DerivedProperty(  # type: ignore
+                "Values: one={one}, two={two}",
+            )
 
     # ----------------------------------------------------------------------
 

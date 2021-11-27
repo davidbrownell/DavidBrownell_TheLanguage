@@ -44,3 +44,9 @@ class Set(object):
 
     def __getattr__(self, name):
         return getattr(self._values, name)
+
+    def __eq__(self, other):
+        return self._values == other._values
+
+    def __contains__(self, value):
+        return value in self._values

@@ -188,7 +188,7 @@ def _CreateGenericNameToken(
                 r"""(?P<value>(?#
                     Initial Underscores [optional]                          )_*(?#
                     Alpha                                                   ){initial_char}(?#
-                    Alphanumeric                                            )[a-zA-Z0-9_:\.]*(?#
+                    Alphanumeric                                            )[a-zA-Z0-9_]*(?#
                     Don't end with an underscore; that will come later      )(?<!_)(?#
                     Don't end with a :                                      )(?<!:)(?#
                     Don't end with a .                                      )(?<!\.)(?#

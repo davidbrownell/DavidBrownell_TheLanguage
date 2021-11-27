@@ -50,6 +50,12 @@ class PythonTarget(Target):
 
         FileSystem.MakeDirs(self._output_dir)
 
+        potential_filename = os.path.join(self._output_dir, "__init__.py")
+        if not os.path.isfile(potential_filename):
+            with open(potential_filename, "w") as f:
+                pass
+
+
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
@@ -66,6 +72,14 @@ class PythonTarget(Target):
         assert fully_qualified_name.startswith(self._input_dir), (fully_qualified_name, self._input_dir)
         relative_path = FileSystem.TrimPath(fully_qualified_name, self._input_dir)
 
+        relative_path_parts = relative_path.split(os.path.sep)
+        if relative_path_parts[0] != "CommonLibrary":
+            for part_index, part in enumerate(relative_path_parts):
+                if not part.endswith(".TheLanguage"):
+                    relative_path_parts[part_index] = "{}_TheLanguage".format(part)
+
+            relative_path = os.path.join(*relative_path_parts)
+
         output_filename = os.path.join(self._output_dir, "{}.py".format(relative_path.replace(".", "_")))
         output_dirname = os.path.dirname(output_filename)
 
@@ -77,7 +91,7 @@ class PythonTarget(Target):
         visitor = PythonVisitor()
 
         content = visitor.Pass1(
-            common_library_import_prefix="." * (len(os.path.split(relative_path)) + 1),
+            common_library_import_prefix="." * len(relative_path.split(os.path.sep)),
             parser_info=parser_info,
         )
         content = visitor.Pass2(content)

@@ -76,6 +76,7 @@ public mutable class List
 
     [Deferred] public mutable (T | None) TryInsertBack(T value)
     [Deferred] public mutable None InsertBack?(T value)
+    [Deferred] public mutable None Append?(T value)
 
     [Deferred] public mutable (T | None) TryRemove(UIntArch index)
     [Deferred] public mutable T Remove?(UIntArch index)

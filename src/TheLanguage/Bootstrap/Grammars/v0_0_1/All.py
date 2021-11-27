@@ -30,6 +30,7 @@ with InitRelativeImports():
     from .Expressions.MatchValueExpression import MatchValueExpression
     from .Expressions.NoneLiteralExpression import NoneLiteralExpression
     from .Expressions.NumberLiteralExpression import NumberLiteralExpression # TODO: Rename to NumLiteralExpression
+    from .Expressions.SliceExpression import SliceExpression
     from .Expressions.StringLiteralExpression import StringLiteralExpression
     from .Expressions.TernaryExpression import TernaryExpression
     from .Expressions.TupleExpression import TupleExpression
@@ -109,6 +110,7 @@ GrammarPhrases                              = [
     MatchValueExpression(),
     NoneLiteralExpression(),
     NumberLiteralExpression(),
+    SliceExpression(),
     StringLiteralExpression(),
     TernaryExpression(),
     TupleExpression(),

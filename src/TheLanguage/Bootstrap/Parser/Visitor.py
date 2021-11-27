@@ -41,6 +41,7 @@ with InitRelativeImports():
     from .Expressions.LambdaExpressionParserInfo import LambdaExpressionParserInfo
     from .Expressions.MatchTypeExpressionParserInfo import MatchTypeExpressionClauseParserInfo, MatchTypeExpressionParserInfo
     from .Expressions.MatchValueExpressionParserInfo import MatchValueExpressionClauseParserInfo, MatchValueExpressionParserInfo
+    from .Expressions.SliceExpressionParserInfo import SliceExpressionParserInfo
     from .Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo
     from .Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
     from .Expressions.UnaryExpressionParserInfo import (
@@ -376,6 +377,17 @@ class Visitor(VisitorBase):
     def OnMatchValueExpression(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: MatchValueExpressionParserInfo,
+        *args,
+        **kwargs,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnSliceExpression(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: SliceExpressionParserInfo,
         *args,
         **kwargs,
     ) -> Union[None, bool, Callable[[], Any]]:

@@ -32,6 +32,7 @@ public immutable class ClassStatementMemberParserInfo
     public String val name
     public (ExpressionParserInfo | None) val default
 
+    [Keyword] public (Bool | None) val init_only
     [Keyword] public (Bool | None) val no_init
     [Keyword] public (Bool | None) val no_serialization
     [Keyword] public (Bool | None) val no_compare
@@ -39,6 +40,7 @@ public immutable class ClassStatementMemberParserInfo
 
     # ----------------------------------------------------------------------
     private None __Init?__():
+        ensure self.init_only is None or self.init_only is True
         ensure self.no_init is None or self.no_init is True
         ensure self.no_serialization is None or self.no_serialization is True
         ensure self.no_compare is None or self.no_compare is True
@@ -54,6 +56,7 @@ public immutable class ClassStatementMemberParserInfoRegions
     public Region val name
     public (ExpressionParserInfoRegions | None) val default
 
+    [Keyword] public (Region | None) val init_only
     [Keyword] public (Region | None) val no_init
     [Keyword] public (Region | None) val no_serialization
     [Keyword] public (Region | None) val no_compare

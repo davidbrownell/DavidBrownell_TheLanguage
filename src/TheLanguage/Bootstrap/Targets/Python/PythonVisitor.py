@@ -110,7 +110,7 @@ class PythonVisitor(Visitor):
                     from {import_prefix}CommonLibrary.List_TheLanguage import List
                     # from {import_prefix}CommonLibrary.Num_TheLanguage import Num
                     # from {import_prefix}CommonLibrary.Queue_TheLanguage import Queue
-                    from {import_prefix}CommonLibrary.Range_TheLanguage import Range
+                    from {import_prefix}CommonLibrary.Range_TheLanguage import *
                     from {import_prefix}CommonLibrary.Set_TheLanguage import Set
                     from {import_prefix}CommonLibrary.Stack_TheLanguage import Stack
                     from {import_prefix}CommonLibrary.String_TheLanguage import String
@@ -398,6 +398,29 @@ class PythonVisitor(Visitor):
         parser_info: BinaryExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
         with StackHelper(stack)[parser_info] as helper:
+            if parser_info.Operator == BinaryExpressionOperatorType.ChainedFunc:
+                if (
+                    isinstance(parser_info.Left, GenericNameExpressionParserInfo)
+                    and isinstance(parser_info.Right, GenericNameExpressionParserInfo)
+                ):
+                    if (
+                        parser_info.Left.Name == "self"
+                        and parser_info.Right.Name == "__Fields__"
+                    ):
+                        self._stream.write("**self.__dict__")
+                        return False
+
+                if (
+                    isinstance(parser_info.Right, FuncInvocationExpressionParserInfo)
+                    and isinstance(parser_info.Right.Expression, GenericNameExpressionParserInfo)
+                ):
+                    if parser_info.Right.Expression.Name == "Length":
+                        self._stream.write("len(")
+                        self.Accept(parser_info.Left, helper.stack)
+                        self._stream.write(")")
+
+                        return False
+
             with helper["Left"]:
                 self.Accept(parser_info.Left, helper.stack)
 
@@ -553,7 +576,11 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: GenericNameExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        self._stream.write(parser_info.Name.replace("?", "_"))
+        if parser_info.Name == "Format":
+            self._stream.write("format")
+        else:
+            self._stream.write(parser_info.Name.replace("?", "_"))
+
         return False
 
     # ----------------------------------------------------------------------
@@ -661,6 +688,26 @@ class PythonVisitor(Visitor):
         parser_info: MatchValueExpressionParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
         assert False, "TODO: Not implemented yet"
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def OnSliceExpression(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: SliceExpressionParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        with StackHelper(stack)[parser_info] as helper:
+            if parser_info.StartExpression is not None:
+                with helper["StartExpression"]:
+                    self.Accept(parser_info.StartExpression, helper.stack)
+
+            self._stream.write(":")
+
+            if parser_info.EndExpression is not None:
+                with helper["EndExpression"]:
+                    self.Accept(parser_info.EndExpression, helper.stack)
+
+            return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -987,19 +1034,20 @@ class PythonVisitor(Visitor):
             methods = []
             members = []
             saw_init = False
+            saw_to_string = False
 
             for statement in parser_info.Statements:
                 if isinstance(statement, ClassMemberStatementParserInfo):
                     members.append(statement)
                 else:
-                    if (
-                        isinstance(statement, FuncDefinitionStatementParserInfo)
-                        and (
+                    if isinstance(statement, FuncDefinitionStatementParserInfo):
+                        if (
                             statement.Name == FuncDefinitionStatementOperatorType.Init
                             or statement.Name == FuncDefinitionStatementOperatorType.PostInit
-                        )
-                    ):
-                        saw_init = True
+                        ):
+                            saw_init = True
+                        elif statement.Name == FuncDefinitionStatementOperatorType.ToString:
+                            saw_to_string = True
 
                     methods.append(statement)
 
@@ -1017,6 +1065,29 @@ class PythonVisitor(Visitor):
                     )
 
                 if members:
+                    args = []
+                    member_names = []
+
+                    for member in itertools.chain(
+                        # TODO: GetMembers(parser_info.Extends),
+                        # TODO: GetMembers(parser_info.Implements),
+                        # TODO: GetMembers(parser_info.Uses),
+                        members,
+                    ):
+                        if member.InitializedValue is None:
+                            suffix = ""
+                        else:
+                            sink = StringIO()
+
+                            self._stream_stack.append(sink)
+                            with CallOnExit(self._stream_stack.pop):
+                                self.Accept(member.InitializedValue, stack)
+
+                            suffix = "={}".format(sink.getvalue())
+
+                        args.append("{}{}".format(member.Name, suffix))
+                        member_names.append(member.Name)
+
                     self._stream.write(
                         textwrap.dedent(
                             """\
@@ -1025,18 +1096,12 @@ class PythonVisitor(Visitor):
 
                             {indent}self._Init_()
 
+                            def __eq__(self, other):
+                            {indent}return {compare_statements}
+
                             """,
                         ).format(
-                            args=", ".join(
-                                [
-                                    member.Name for member in itertools.chain(
-                                        # TODO: GetMembers(parser_info.Extends),
-                                        # TODO: GetMembers(parser_info.Implements),
-                                        # TODO: GetMembers(parser_info.Uses),
-                                        members,
-                                    )
-                                ],
-                            ),
+                            args=", ".join(args),
                             assignments=StringHelpers.LeftJustify(
                                 "\n".join(
                                     [
@@ -1048,6 +1113,7 @@ class PythonVisitor(Visitor):
                                 skip_first_line=False,
                             ),
                             indent=self._indentation,
+                            compare_statements=" and ".join(["self.{member} == other.{member}".format(member=member) for member in member_names]),
                         ),
                     )
 
@@ -1082,6 +1148,16 @@ class PythonVisitor(Visitor):
                 with helper["Statements"]:
                     for method in methods:
                         self.Accept(method, helper.stack)
+
+                if saw_to_string:
+                    self._stream.write(
+                        textwrap.dedent(
+                            """\
+                            def __str__(self):
+                                return self._ToString_()
+                            """,
+                        ),
+                    )
 
         return False
 
@@ -1122,9 +1198,6 @@ class PythonVisitor(Visitor):
                 self.Accept(parser_info.ReturnType, helper.stack)
                 self._stream.write("\n")
 
-            if parser_info.Statements is None:
-                self._stream.write("# ")
-
             new_stream = self._stream
 
             if isinstance(parser_info.Name, str):
@@ -1162,34 +1235,36 @@ class PythonVisitor(Visitor):
 
                         self.Accept(parser_info.Parameters, helper.stack)
 
-                if parser_info.Statements is not None:
-                    self._stream.write(":\n")
+                self._stream.write(":\n")
+                with self._Indent():
+                    if parser_info.Statements is not None:
 
-                    with self._Indent():
-                        if parser_info.Documentation:
-                            self._stream.write(
-                                textwrap.dedent(
-                                    '''\
-                                    """\\
-                                    {}
-                                    """
+                            if parser_info.Documentation:
+                                self._stream.write(
+                                    textwrap.dedent(
+                                        '''\
+                                        """\\
+                                        {}
+                                        """
 
-                                    ''',
-                                ).format(parser_info.Documentation),
-                            )
+                                        ''',
+                                    ).format(parser_info.Documentation),
+                                )
 
-                        if parser_info.CapturedVariables is not None:
-                            with helper["CapturedVariables"]:
-                                for variable in parser_info.CapturedVariables:
-                                    self._stream.write("nonlocal ")
-                                    self.Accept(variable, helper.stack)
-                                    self._stream.write("\n")
+                            if parser_info.CapturedVariables is not None:
+                                with helper["CapturedVariables"]:
+                                    for variable in parser_info.CapturedVariables:
+                                        self._stream.write("nonlocal ")
+                                        self.Accept(variable, helper.stack)
+                                        self._stream.write("\n")
 
-                            self._stream.write("\n")
+                                self._stream.write("\n")
 
-                        with helper["Statements"]:
-                            for statement in parser_info.Statements:
-                                self.Accept(statement, helper.stack)
+                            with helper["Statements"]:
+                                for statement in parser_info.Statements:
+                                    self.Accept(statement, helper.stack)
+                    else:
+                        self._stream.write('raise Exception("Abstract/Deferred method")\n')
 
             self._stream.write("\n")
 
@@ -1602,7 +1677,7 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: FuncTypeParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        pass # TODO # BugBug
+        pass # TODO
 
     # ----------------------------------------------------------------------
     @Interface.override

@@ -44,7 +44,7 @@ with InitRelativeImports():
 # |
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class InvalidTabsAndSpacesNormalizeError(Error):
+class InvalidTabsAndSpacesError(Error):
     MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
         "The spaces and/or tabs used to indent this line differ from the spaces and/or tabs used on previous lines.",
     )
@@ -347,7 +347,7 @@ def Normalize(
                             num_chars == indentation_stack[-1].num_chars
                             and indentation_value != indentation_stack[-1].value
                         ):
-                            raise InvalidTabsAndSpacesNormalizeError(
+                            raise InvalidTabsAndSpacesError(
                                 len(line_infos) + 1,
                                 offset - line_start_offset + 1,
                             )

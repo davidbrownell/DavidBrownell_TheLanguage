@@ -327,13 +327,13 @@ class TestNormalize(object):
 
     # ----------------------------------------------------------------------
     def test_TabAndSpaceMix(self):
-        with pytest.raises(InvalidTabsAndSpacesNormalizeError) as ex:
+        with pytest.raises(InvalidTabsAndSpacesError) as ex:
             Normalize("   One\n\t\t\tTwo\n")
 
         assert ex.value.Line == 2
         assert ex.value.Column == 4
 
-        with pytest.raises(InvalidTabsAndSpacesNormalizeError) as ex:
+        with pytest.raises(InvalidTabsAndSpacesError) as ex:
             Normalize("if True:\n  \tone\n \t two")
 
         assert ex.value.Line == 3

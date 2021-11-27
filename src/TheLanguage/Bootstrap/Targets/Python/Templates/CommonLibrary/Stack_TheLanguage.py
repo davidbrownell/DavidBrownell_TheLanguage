@@ -24,7 +24,7 @@ class Stack(object):
         return self._items[-1]
 
     @staticmethod
-    def Create(self, *items):
+    def Create(*items):
         return Stack(*items)
 
     def TryPush(self, value):
@@ -41,3 +41,9 @@ class Stack(object):
 
     def __getattr__(self, name):
         return getattr(self._items, name)
+
+    def __len__(self):
+        return len(self._items)
+
+    def __eq__(self, other):
+        return self._items == other._items
