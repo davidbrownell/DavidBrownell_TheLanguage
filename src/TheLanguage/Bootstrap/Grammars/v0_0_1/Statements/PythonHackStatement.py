@@ -49,7 +49,7 @@ class PythonHackStatement(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    CommonTokens.RegexToken("PythonHack", re.compile(r"python_hack:\s*(?P<value>[^\n]*)")),
+                    CommonTokens.RegexToken("PythonHack", re.compile(r"python_hack: (?P<value>[^\n]*)")),
                     CommonTokens.Newline,
                 ],
             ),

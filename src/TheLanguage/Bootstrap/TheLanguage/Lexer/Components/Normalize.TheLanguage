@@ -97,7 +97,6 @@ protected immutable class LineInfo:
     python_hack: def NumDedents(self): return self.num_dedents
     python_hack: @property
     python_hack: def NewIndentationValue(self): return self.new_indentation_value
-    python_hack:
 
 
 # ----------------------------------------------------------------------
@@ -124,9 +123,9 @@ public immutable class NormalizedContent:
         # TODO: In the future --         ->Digest()
         # TODO: In the future -- )
 
-        hasher = HashLib::Sha256()
+        var hasher = HashLib::Sha256()
         hasher.Update(content)
-        hash = hasher.Digest()
+        val hash = hasher.Digest()
 
         return NormalizedContent(content, content_length, line_infos, hash)
 
@@ -138,7 +137,6 @@ public immutable class NormalizedContent:
     python_hack: def LineInfos(self): return self.line_infos
     python_hack: @property
     python_hack: def Hash(self): return self.hash
-    python_hack:
 
 
 # ----------------------------------------------------------------------
@@ -227,11 +225,11 @@ public NormalizedContent Normalize?(
     #               <<<!!!                !!!>>>        !!! Note that there can be multiple triplets as part of a phrase
     #
 
-    content = (content if content[-1] == '\n' else (content + '\n')) as val
-    multiline_tokens_to_ignore = (multiline_tokens_to_ignore or Set<String>()) as val
+    content = (content if content and content[-1] == '\n' else (content + '\n')) as val # TODO
+    multiline_tokens_to_ignore = (multiline_tokens_to_ignore or Set<String>()) as val # TODO
 
     # TODO: The parameter names in the lambda should not be required long term. Need to improve how types, parameters, and arguments interact
-    suppress_indentation_func = (suppress_indentation_func or (
+    suppress_indentation_func = (suppress_indentation_func or ( # TODO
         lambda (
             IntArch offset_start,
             IntArch offset_end,
@@ -241,7 +239,7 @@ public NormalizedContent Normalize?(
             False
     )) as val # TODO: lambda ***: False
 
-    content_length = content.Length()
+    content_length = content.Length() # TODO
 
     # ----------------------------------------------------------------------
     private immutable class IndentationInfo:
@@ -276,7 +274,7 @@ public NormalizedContent Normalize?(
 
             if char == ' ' or char == '\t': # TODO: char.IsHorizontalWhitespace()
                 if whitespace_start is None:
-                    whitespace_start = offset
+                    whitespace_start = offset # TODO
 
             else:
                 if whitespace_start is not None:
@@ -284,7 +282,7 @@ public NormalizedContent Normalize?(
                         LineInfo.WhitespaceRange(copy whitespace_start, copy offset)
                     )
 
-                    whitespace_start = None
+                    whitespace_start = None # TODO
 
                 if char == '\n':
                     break
@@ -299,20 +297,20 @@ public NormalizedContent Normalize?(
         TypeOf'(offset) once content_end
 
         if not whitespace_ranges:
-            content_start = offset_start
-            content_end = offset_end
+            content_start = offset_start # TODO
+            content_end = offset_end # TODO
         else:
             with initial_range = whitespace_ranges.Peek?(0):
                 if initial_range.begin == offset_start:
-                    content_start = initial_range.end
+                    content_start = initial_range.end # TODO
                 else:
-                    content_start = offset_start
+                    content_start = offset_start # TODO
 
             with last_range = whitespace_ranges.Peek?(-1):
                 if last_range.end == offset_end and last_range.begin != offset_start:
-                    content_end = last_range.begin
+                    content_end = last_range.begin # TODO
                 else:
-                    content_end = offset_end
+                    content_end = offset_end # TODO
 
         # Calculate new dedentation- and indentation-values
         (UInt | None) once num_dedents
@@ -328,8 +326,8 @@ public NormalizedContent Normalize?(
                 content_end,
             )
         ):
-            num_dedents = None
-            new_indentation_value = None
+            num_dedents = None # TODO
+            new_indentation_value = None # TODO
 
         else:
             # Does the detected indentation for this line represent a dedent and/or indent?
@@ -338,7 +336,7 @@ public NormalizedContent Normalize?(
 
             if this_num_chars != 0:
                 for index in IntGenerator(offset_start, content_start):
-                    char = content[index]
+                    char = content[index] # TODO
 
                     # Ensure that " \t" compares as different from "\t " and that "\t" compares
                     # as different from " ".
@@ -361,7 +359,7 @@ public NormalizedContent Normalize?(
                     content_start - offset_start + 1,
                 )
 
-            num_dedents = 0
+            num_dedents = 0 # TODO
 
             # Detect dedents
             while this_num_chars < indentation_stack.Peek().num_chars:
@@ -369,14 +367,14 @@ public NormalizedContent Normalize?(
                 num_dedents += 1
 
             if num_dedents == 0:
-                num_dedents = None
+                num_dedents = None # TODO
 
             # Detect indents
             if this_num_chars > indentation_stack.Peek().num_chars:
-                new_indentation_value = this_indentation_value
+                new_indentation_value = this_indentation_value # TODO
                 indentation_stack.Push?(IndentationInfo(this_num_chars, this_indentation_value))
             else:
-                new_indentation_value = None
+                new_indentation_value = None # TODO
 
         offset += 1
 
@@ -395,7 +393,7 @@ public NormalizedContent Normalize?(
     while offset < content_length:
         line_infos.Append?(CreateLineInfo())
 
-        num_multiline_delimiters = GetNumMultilineTokenDelimiters(
+        num_multiline_delimiters = GetNumMultilineTokenDelimiters( # TODO
             content,
             start_index=line_infos[-1].content_start,
             end_index=line_infos[-1].content_end,
@@ -407,13 +405,13 @@ public NormalizedContent Normalize?(
         ):
             # Toggle the current state
             if multiline_token_info is None:
-                multiline_token_info = MultilineTokenInfo(line_infos.Length() - 1, num_multiline_delimiters)
+                multiline_token_info = MultilineTokenInfo(line_infos.Length() - 1, num_multiline_delimiters) # TODO
             else:
-                multiline_token_info = None
+                multiline_token_info = None # TODO
 
     # Detect when a mutliline token has been opened but not closed
     if multiline_token_info is not None:
-        line_info = line_infos[multiline_token_info.line_index]  # BugBug: Defaulting to other type when there is only 2
+        line_info = line_infos[multiline_token_info.line_index]  # BugBug: Defaulting to other type when there is only 2 # TODO
 
         raise NoClosingMultilineTokenError(
             multiline_token_info.line_index + 1,
@@ -440,6 +438,19 @@ public NormalizedContent Normalize?(
 # ----------------------------------------------------------------------
 # TODO: protected val multiline_token_delimiter_length = 3
 val multiline_token_delimiter_length = 3
+
+python_hack: import textwrap
+python_hack: MultilineTokenDelimiterRegexTemplate        = textwrap.dedent(
+python_hack:     r"""{{header}}(?#
+python_hack:         Don't consume other triplets.
+python_hack:             The number of items here must match
+python_hack:             MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH.           )(?!{triplet_item}{triplet_item}{triplet_item})(?#
+python_hack:         Value                                           )(?P<value>.*?)(?#
+python_hack:         No slash as a prefix to the closing triplet[s]  )(?<!\\)(?#
+python_hack:     ){{footer}}""",
+python_hack: ).format(
+python_hack:     triplet_item=r"[^A-Za-z0-9 \t\n]",
+python_hack: )
 
 protected UInt GetNumMultilineTokenDelimiters(
     String val content,

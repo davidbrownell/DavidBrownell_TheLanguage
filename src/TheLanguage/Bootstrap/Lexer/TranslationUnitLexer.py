@@ -71,29 +71,22 @@ class InvalidDynamicTraversalError(Error):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
 class SyntaxInvalidError(Error):
     """Exception raises when no matching phrases could be found"""
 
-    get_parent_statement_node_func : InitVar[Callable[[AST.Node], Optional[AST.Node]]]
+    def __init__(
+        self,
+        line: int,
+        col: int,
+        get_parent_statement_node_func : InitVar[Callable[[AST.Node], Optional[AST.Node]]],
+        root: AST.Node,
+    ) -> None:
+        super(SyntaxInvalidError, self).__init__(line, col)
 
-    Root: AST.Node
+        self.Root = root
+        self.ErrorContext = None
+        self.ErrorNode = None
 
-    ErrorContext: str                       = field(init=False)
-    ErrorNode: AST.Node                     = field(init=False)
-
-    MessageTemplate                         = Interface.DerivedProperty(  # type: ignore
-        textwrap.dedent(
-            """\
-            The syntax is not recognized. [{Line}, {Column}]
-
-            {ErrorContext}
-            """,
-        ),
-    )
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, get_parent_statement_node_func):
         # When this exception is created, we are only provided with the root node.
         # This code attempts to drill down into the exact node that caused a problem in
         # the hope of providing better contextual information.
@@ -187,8 +180,8 @@ class SyntaxInvalidError(Error):
                 if potential_whitespace is not None:
                     column += (potential_whitespace[1] - potential_whitespace[0])
 
-                object.__setattr__(self, "Line", error_node.IterEnd.Line)
-                object.__setattr__(self, "Column", column)
+                object.__setattr__(self, "line", error_node.IterEnd.Line)
+                object.__setattr__(self, "column", column)
 
         # Generate contextual information
 
@@ -339,6 +332,16 @@ class SyntaxInvalidError(Error):
 
         object.__setattr__(self, "ErrorNode", error_node)
         object.__setattr__(self, "ErrorContext", error_context)
+
+    # ----------------------------------------------------------------------
+    def _GetMessageTemplate(self):
+        return textwrap.dedent(
+            """\
+            The syntax is not recognized. [{line}, {column}]
+
+            {ErrorContext}
+            """,
+        )
 
 
 # ----------------------------------------------------------------------

@@ -83,6 +83,9 @@ class BinaryStatement(GrammarPhrase):
         "^=": OperatorType.BitXorInplace,
         "&=": OperatorType.BitAndInplace,
         "|=": OperatorType.BitOrInplace,
+
+        # Assignment
+        "=": OperatorType.Assignment,
     }
 
     assert len(OPERATOR_MAP) == len(OperatorType)
@@ -95,7 +98,7 @@ class BinaryStatement(GrammarPhrase):
                 name=self.PHRASE_NAME,
                 item=[
                     # <name>
-                    DynamicPhrasesType.Names,
+                    DynamicPhrasesType.Expressions,
 
                     # <operator>
                     PhraseItem.Create(
@@ -129,7 +132,7 @@ class BinaryStatement(GrammarPhrase):
 
             # <name>
             name_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-            name_info = cast(NameParserInfo, GetParserInfo(name_node))
+            name_info = cast(ExpressionParserInfo, GetParserInfo(name_node))
 
             # <operator>
             operator_leaf = cast(AST.Leaf, ExtractOr(cast(AST.Node, nodes[1])))

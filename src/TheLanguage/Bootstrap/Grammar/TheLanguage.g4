@@ -293,6 +293,7 @@ assert_statement: (
 binary_statement: (
     standard_name
     (
+        '=' |
         '+=' | '-=' | '*=' | '**=' | '/=' | '//=' | '%=' |
         '<<=' | '>>=' | '^=' | '&=' | '|='
     )

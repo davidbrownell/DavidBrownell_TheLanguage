@@ -41,6 +41,9 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
+    # Assignment
+    Assignment                              = auto()
+
     # Mathematical
     AddInplace                              = auto()
     SubtractInplace                         = auto()
@@ -61,7 +64,7 @@ class OperatorType(Enum):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class BinaryStatementParserInfo(StatementParserInfo):
-    Name: NameParserInfo
+    Name: ExpressionParserInfo
     Operator: OperatorType
     Expression: ExpressionParserInfo
 

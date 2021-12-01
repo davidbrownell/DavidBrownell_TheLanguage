@@ -189,7 +189,7 @@ private mutable class FixedInt
         return NumBits' > 0 and NumBits' <= 128
 
     (Bool | String | None) __EvalConstraints'__():
-        result = Int{min_value', max_value'}::__EvalConstraints'__()
+        val result = Int{min_value', max_value'}::__EvalConstraints'__()
         if result is False or result is String:
             return result
 

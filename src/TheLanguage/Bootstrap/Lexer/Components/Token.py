@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Normalize import GetNumMultilineTokenDelimiters, MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH
+    from .Normalize import GetNumMultilineTokenDelimiters, multiline_token_delimiter_length as MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH
     from .NormalizedIterator import NormalizedIterator
 
 
@@ -306,6 +306,7 @@ class RegexToken(Token):
             assert GetNumMultilineTokenDelimiters(
                 pattern,
                 start_index=max(0, pattern_len - MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH),
+                end_index=pattern_len,
             ) == 1, (pattern, "The closing token must be a multiline phrase token")
 
         # else:

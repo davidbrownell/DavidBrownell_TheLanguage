@@ -100,6 +100,7 @@ class PythonVisitor(Visitor):
                 # ----------------------------------------------------------------------
                 {documentation}
 
+                import copy
                 from enum import Enum
 
                 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -913,7 +914,9 @@ class PythonVisitor(Visitor):
             with helper["Name"]:
                 self.Accept(parser_info.Name, helper.stack)
 
-            if parser_info.Operator == BinaryStatementOperatorType.AddInplace:
+            if parser_info.Operator == BinaryStatementOperatorType.Assignment:
+                operator = "="
+            elif parser_info.Operator == BinaryStatementOperatorType.AddInplace:
                 operator = "+="
             elif parser_info.Operator == BinaryStatementOperatorType.SubtractInplace:
                 operator = "-="
@@ -1085,7 +1088,9 @@ class PythonVisitor(Visitor):
 
                             suffix = "={}".format(sink.getvalue())
 
-                        args.append("{}{}".format(member.Name, suffix))
+                        if not member.NoInit:
+                            args.append("{}{}".format(member.Name, suffix))
+
                         member_names.append(member.Name)
 
                     self._stream.write(
@@ -1099,6 +1104,9 @@ class PythonVisitor(Visitor):
                             def __eq__(self, other):
                             {indent}return {compare_statements}
 
+                            def Clone(self):
+                            {indent}return copy.deepcopy(self)
+
                             """,
                         ).format(
                             args=", ".join(args),
@@ -1106,7 +1114,7 @@ class PythonVisitor(Visitor):
                                 "\n".join(
                                     [
                                         "self.{name} = {name}".format(name=member.Name)
-                                        for member in members
+                                        for member in members if not member.NoInit
                                     ],
                                 ),
                                 len(self._indentation),
@@ -1129,19 +1137,22 @@ class PythonVisitor(Visitor):
                                 indent=self._indentation,
                             ),
                         )
-                elif base_classes:
-                    self._stream.write(
-                        textwrap.dedent(
-                            """\
-                            def __init__(self, *args, **kwargs):
-                            {indent}super({name}, self).__init__(*args, **kwargs)
 
-                            """,
-                        ).format(
-                            indent=self._indentation,
-                            name=parser_info.Name,
-                        ),
-                    )
+                elif base_classes:
+                    if parser_info.ClassType != ClassType.Enum:
+                        self._stream.write(
+                            textwrap.dedent(
+                                """\
+                                def __init__(self, *args, **kwargs):
+                                {indent}super({name}, self).__init__(*args, **kwargs)
+
+                                """,
+                            ).format(
+                                indent=self._indentation,
+                                name=parser_info.Name,
+                            ),
+                        )
+
                 else:
                     self._stream.write("pass # No members\n\n")
 

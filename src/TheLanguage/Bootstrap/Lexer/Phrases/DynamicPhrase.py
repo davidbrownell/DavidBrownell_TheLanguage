@@ -382,7 +382,8 @@ class DynamicPhrase(Phrase):
             if this_result is None:
                 return None
 
-            normalized_iter = this_result.IterEnd
+            if not data_items or this_result.Success:
+                normalized_iter = this_result.IterEnd
 
             assert this_result.Data is not None
             data_items.append(this_result.Data)

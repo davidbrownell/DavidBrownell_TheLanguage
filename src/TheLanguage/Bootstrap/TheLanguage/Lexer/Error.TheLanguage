@@ -45,4 +45,3 @@ public immutable exception Error:
     python_hack: def Line(self): return self.line
     python_hack: @property
     python_hack: def Column(self): return self.column
-    python_hack:

@@ -44,7 +44,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class VariableDeclarationStatementParserInfo(StatementParserInfo):
-    Modifier: Optional[TypeModifier]
+    Modifier: TypeModifier
     Name: NameParserInfo
     Expression: ExpressionParserInfo
 

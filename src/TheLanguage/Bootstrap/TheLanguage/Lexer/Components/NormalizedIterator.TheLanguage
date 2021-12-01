@@ -56,7 +56,7 @@ public mutable class NormalizedIterator:
     # ----------------------------------------------------------------------
     public static NormalizedIterator Create(NormalizedContent val content):
         return NormalizedIterator(
-            NormalizedContentEx(content),
+            NormalizedContentEx.Create(content),
             0,
             0,
             None,
@@ -185,20 +185,15 @@ public mutable class NormalizedIterator:
         assert self.Offset() == self.LineInfo().offset_start
 
         if self._consumed_dedent_line != self._line_info_index:
-            # TODO: self._consumed_dedent_line = self._line_info_index
-            # TODO: self._consumed_dedent_count = 0
+            self._consumed_dedent_line = self._line_info_index # TODO
+            self._consumed_dedent_count = 0 # TODO
 
-            var self__consumed_dedent_line = self._line_info_index
-            var self__consumed_dedent_count = 0
-
-        assert self._consumed_dedent_count is Int
-        # TODO self._consumed_dedent_count += 1
-        self__consumed_dedent_count += 1
+        # TODO: assert self._consumed_dedent_count is Int
+        self._consumed_dedent_count += 1
 
     # ----------------------------------------------------------------------
     public mutable None SkipLine():
-        # TODO: self._offset = self.LineInfo().offset_end
-        var self__offset = self.LineInfo().offset_end
+        self._offset = self.LineInfo().offset_end # TODO
 
         self.Advance(1)
 
@@ -239,8 +234,7 @@ public mutable class NormalizedIterator:
             assert delta == 1
             assert self.GetNextTokenType() == TokenType.EndOfLine
 
-            # TODO: self._line_info_index += 1
-            self__line_info_index += 1
+            self._line_info_index += 1
 
         else:
             assert offset >= line_info.offset_start and offset <= line_info.offset_end, "The offset should be within the current line"
@@ -256,34 +250,87 @@ public mutable class NormalizedIterator:
                 )
             ), "We are looking at content (A), at the beginning of the line and are skipping the whitespace prefix (B) or are skipping the entire line (C)"
 
-        # TODO: self._offset += delta
-        self__offset += delta
+        self._offset += delta
 
     # ----------------------------------------------------------------------
     # |
     # |  Private Types
     # |
     # ----------------------------------------------------------------------
-    private immutable class NormalizedContentEx
-        extends NormalizedContent
-    :
-        <<<
-        Adds end-of-file-dedent info to NormalizedContent
-        >>>
-
-        [InitOnly] public Bool val has_end_of_file_dedents
+    [PrivateCtor]
+    private immutable class NormalizedContentEx:
+        public using LineInfos              = List<LineInfo>{min_length'=1}
+        public using HashBytes              = List<Int8>{min_length'=32, max_length'=32}
 
         # ----------------------------------------------------------------------
-        private None __Init?__():
-            last_line_info = self.line_infos[-1]
+        public String val content
+        public PosInt val content_length
+        public LineInfos val line_infos
+        public HashBytes val hash
+        [NoInit] public Bool val has_end_of_file_dedents
 
-            has_end_of_file_dedents = (
+        # ----------------------------------------------------------------------
+        public static NormalizedContentEx Create(
+            NormalizedContent val content,
+        ):
+            # TODO: In the future -- hash = (
+            # TODO: In the future --     HashLib::Sha256()
+            # TODO: In the future --         ->Update(content)
+            # TODO: In the future --         ->Digest()
+            # TODO: In the future -- )
+            var hasher = HashLib::Sha256()
+            hasher.Update(content.content)
+            val hash = hasher.Digest()
+
+            return NormalizedContentEx(
+                content.content,
+                content.content_length,
+                content.line_infos,
+                content.hash,
+            )
+
+        # ----------------------------------------------------------------------
+        private override None __Init?__():
+            val last_line_info = self.line_infos[-1]
+
+            self.has_end_of_file_dedents = (
                 last_line_info.num_dedents is not None
                 and last_line_info.num_dedents > 0
                 and last_line_info.offset_start == last_line_info.offset_end
                 and last_line_info.content_start == last_line_info.offset_start
                 and last_line_info.content_end == last_line_info.offset_end
             )
+
+        python_hack: @property
+        python_hack: def Content(self): return self.content
+        python_hack: @property
+        python_hack: def ContentLen(self): return self.content_length
+        python_hack: @property
+        python_hack: def LineInfos(self): return self.line_infos
+        python_hack: @property
+        python_hack: def Hash(self): return self.hash
+
+    # TODO: Restore this code once inheritance is working as expected and remove the code above
+    # private immutable class NormalizedContentEx
+    #     extends NormalizedContent
+    # :
+    #     <<<
+    #     Adds end-of-file-dedent info to NormalizedContent
+    #     >>>
+    #
+    #     [NoInit] public Bool val has_end_of_file_dedents
+    #
+    #     # ----------------------------------------------------------------------
+    #     private None __Init?__():
+    #         val last_line_info = self.line_infos[-1]
+    #
+    #         self.has_end_of_file_dedents = ( # TODO
+    #             last_line_info.num_dedents is not None
+    #             and last_line_info.num_dedents > 0
+    #             and last_line_info.offset_start == last_line_info.offset_end
+    #             and last_line_info.content_start == last_line_info.offset_start
+    #             and last_line_info.content_end == last_line_info.offset_end
+    #         )
 
     # ----------------------------------------------------------------------
     # |

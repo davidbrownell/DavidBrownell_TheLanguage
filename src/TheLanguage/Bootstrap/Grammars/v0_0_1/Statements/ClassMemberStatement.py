@@ -125,8 +125,7 @@ class ClassMemberStatement(GrammarPhrase):
             for attribute_node in cast(List[AST.Node], ExtractRepeat(attributes_node)):
                 attribute_data.append(AttributePhraseItem.ExtractLexerData(cast(AST.Node, attribute_node)))
 
-            # TODO: Leverage attribute data
-
+            # Leverage attribute data
             no_init_node = None
             no_init_info = None
 
@@ -135,6 +134,20 @@ class ClassMemberStatement(GrammarPhrase):
 
             no_compare_node = None
             no_compare_info = None
+
+            for attributes in attribute_data:
+                for attribute in attributes:
+                    if attribute.Name == "NoInit":
+                        no_init_node = attribute.NameLeaf
+                        no_init_info = True
+
+                    elif attribute.Name == "NoSerialize":
+                        no_serialize_node = attribute.NameLeaf
+                        no_serialize_info = True
+
+                    elif attribute.Name == "NoCompare":
+                        no_compare_node = attribute.NameLeaf
+                        no_compare_info = True
 
             # <visibility>?
             visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))

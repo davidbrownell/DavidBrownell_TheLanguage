@@ -74,9 +74,7 @@ class VariableDeclarationStatement(GrammarPhrase):
                 name=self.PHRSE_NAME,
                 item=[
                     # <modifier>
-                    OptionalPhraseItem.Create(
-                        item=TypeModifier.CreatePhraseItem(),
-                    ),
+                    TypeModifier.CreatePhraseItem(),
 
                     # <name>
                     DynamicPhrasesType.Names,
@@ -107,12 +105,9 @@ class VariableDeclarationStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
-            # <modifier>?
-            modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
-            if modifier_node is None:
-                modifier_info = None
-            else:
-                modifier_info = TypeModifier.Extract(modifier_node)
+            # <modifier>
+            modifier_node = cast(AST.Node, nodes[0])
+            modifier_info = TypeModifier.Extract(modifier_node)
 
             # <name>
             name_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))

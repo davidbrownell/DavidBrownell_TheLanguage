@@ -21,251 +21,252 @@ from .Normalize import GetNumMultilineTokenDelimiters, multiline_token_delimiter
 from .NormalizedIterator import NormalizedIterator
 
 
-# ----------------------------------------------------------------------
-private immutable class Token:
-    # ----------------------------------------------------------------------
-    # |  Public Types
-    public immutable class MatchResult:
-       public NormalizedIterator val iterator
-
-    # ----------------------------------------------------------------------
-    # |  Public Data
-    [Keyword] public String val name
-    [Keyword] public Bool val is_control_token
-    [Keyword] public Bool val is_always_ignored
-
-    # ----------------------------------------------------------------------
-    # |  Public Methods
-    public abstract immutable (MatchResult | None) val Match?(NormalizedIterator var iterator)
-
-
-# ----------------------------------------------------------------------
-public immutable class NewlineToken
-    extends Token
-:
-    <<<
-    Token that matches 1 or more newlines.
-    >>>
-
-    # ----------------------------------------------------------------------
-    # |  Public Types
-    public immutable class MatchResult
-        extends Token::MatchResult
-    :
-        public UIntArch val start
-        public PosIntArch val end
-
-        # ----------------------------------------------------------------------
-        private None __Init?__():
-            assert self.start <= self.end
-
-    # ----------------------------------------------------------------------
-    # |  Public Data
-    [Keyword] public Bool val capture_many
-
-    # ----------------------------------------------------------------------
-    # |  Public Methods
-    public static NewlineToken val Create(
-        Bool val capture_many,
-        Bool val is_always_ignored,
-    ):
-        return NewlineToken(
-            name="Newline+" if capture_many else "Newline",
-            is_control_token=False,
-            is_always_ignored=is_always_ignored,
-            capture_many=capture_many,
-        )
-
-    # ----------------------------------------------------------------------
-    public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
-        if iterator.GetNextTokenType() != NormalizedIterator::TokenType::EndOfLine:
-            return None
-
-        val newline_start = iterator.Offset()
-
-        iterator.Advance(1)
-
-        if self.capture_many:
-            while iterator.IsBlankLine():
-                iterator.SkipLine()
-
-        return MatchResult(move iterator, newline_start, iterator.Offset())
-
-
-# ----------------------------------------------------------------------
-public immutable class IndentToken
-    extends Token
-:
-    <<<
-    Token matching indentations of arbitrary length.
-    >>>
-
-    # ----------------------------------------------------------------------
-    # |  Public Types
-    public immutable class MatchResult
-        extends Token::MatchResult
-    :
-        public UIntArch val start
-        public PosIntArch val end
-        public PosInt val indent_value
-
-        # ----------------------------------------------------------------------
-        private None __Init?__():
-            assert self.start <= self.end
-
-    # ----------------------------------------------------------------------
-    # |  Public Methods
-    public static IndentToken val Create():
-        return IndentToken(
-            name="Indent",
-            is_control_token=False,
-            is_always_ignored=False,
-        )
-
-    # ----------------------------------------------------------------------
-    public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
-        if iterator.GetNextTokenType() != NormalizedIterator::TokenType::Indent:
-            return None
-
-        iterator.SkipWhitespacePrefix()
-
-        val line_info = iterator.LineInfo()
-
-        assert line_info.new_indentation_value is not None
-
-        return MatchResult(
-            move iterator,
-            line_info.offset_start,
-            line_info.offset_end,
-            line_info.new_indentation_value as PosArch
-        )
-
-
-# ----------------------------------------------------------------------
-public immutable class DedentToken
-    extends Token
-:
-    <<<
-    Token matching a single dedentation.
-    >>>
-
-    # ----------------------------------------------------------------------
-    # |  Public Types
-    public immutable class MatchResult
-        extends Token::MatchResult
-    :
-        pass
-
-    # ----------------------------------------------------------------------
-    # |  Public Methods
-    public static DedentToken val Create():
-        return DedentToken(
-            name="Dedent",
-            is_control_token=False,
-            is_always_ignored=False,
-        )
-
-    # ----------------------------------------------------------------------
-    public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
-        if iterator.GetNextTokenType() != NormalizedIterator::TokenType::Dedent:
-            return None
-
-        iterator.ConsumeDedent()
-
-        if iterator.GetNextTokenType() == NormalizedIterator::TokenType::WhitespacePrefix:
-            iterator.SkipWhitespacePrefix()
-
-        return MatchResult(move iterator)
-
-
-# ----------------------------------------------------------------------
-public immutable class RegexToken
-    extends Token
-:
-    <<<
-    Token that matches content against a regular expression.
-    >>>
-
-    # ----------------------------------------------------------------------
-    # |  Public Types
-    public immutable class MatchResult
-        extends Token::MatchResult
-    :
-        public RegexMatch val match
-
-    # ----------------------------------------------------------------------
-    # |  Public Data
-    [Keyword] public Regex val regex
-    [Keyword] public Bool val is_multiline
-
-    # ----------------------------------------------------------------------
-    # |  Public Methods
-    public static RegexToken Create(
-        String val name,
-        Regex val regex,
-        *,
-        Bool val is_multiline=False,
-        Bool val is_always_ignored=False,
-    ):
-        return RegexToken(
-            name=name,
-            is_control_token=False,
-            is_always_ignored=is_always_ignored,
-            regex=regex,
-            is_multiline=is_multiline,
-        )
-
-    # ----------------------------------------------------------------------
-    public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
-        if iterator.GetNextTokenType() != NormalizedIterator::TokenType::Content:
-            return None
-
-        val match = self.regex.Match(
-            iterator.Content(),
-            start=iterator.Offset(),
-            end=iterator.ContentLength() if self.is_multiline else iterator.LineInfo().content_end,
-        )
-
-        if match is None:
-            return None
-
-        val match_length = match.End() - match.Start()
-
-        if self.is_multiline:
-            iterator = _AdvanceMultiline(move iterator, move match_length)
-        else:
-            iterator.Advance(match_length)
-
-        return MatchResult(move iterator, match)
-
-    # ----------------------------------------------------------------------
-    # |  Private Methods
-    private static NormalizedIterator var _AdvanceMultiline(
-        NormalizedIterator var iterator,
-        PosInt var delta,
-    ):
-        while delta:
-            while iterator.GetNextTokenType() == NormalizedIterator::TokenType::Dedent:
-                iterator.ConsumeDedent()
-
-            val this_delta = Min(delta, iterator.LineInfo().offset_end - iterator.Offset())
-
-            # Delta can be 0 if we are looking at a blank line
-            if this_delta != 0:
-                iterator.Advance(this_delta)
-                delta -= this_delta
-
-            # Skip the newline (if necessary)
-            if delta:
-                iterator.Advance(1)
-                delta -= 1
-
-        return move iterator
-
-
-
-# BugBug: ControlTokenBase
-# BugBug: PushIgnoreWhitespaceControl
-# BugBug: PopIgnoreWhitespaceControl
-# BugBug: PushPreserveWhitespaceControl
-# BugBug: PopPreserveWhitespaceControl
+# BugBug: # ----------------------------------------------------------------------
+# BugBug: private immutable class Token:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Types
+# BugBug:     public immutable class MatchResult:
+# BugBug:        public NormalizedIterator val iterator
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Data
+# BugBug:     [Keyword] public String val name
+# BugBug:     [Keyword] public Bool val is_control_token
+# BugBug:     [Keyword] public Bool val is_always_ignored
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Methods
+# BugBug:     public abstract immutable (MatchResult | None) val Match?(NormalizedIterator var iterator)
+# BugBug:
+# BugBug:
+# BugBug: # ----------------------------------------------------------------------
+# BugBug: public immutable class NewlineToken
+# BugBug:     extends Token
+# BugBug: :
+# BugBug:     <<<
+# BugBug:     Token that matches 1 or more newlines.
+# BugBug:     >>>
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Types
+# BugBug:     public immutable class MatchResult
+# BugBug:         extends Token::MatchResult
+# BugBug:     :
+# BugBug:         public UIntArch val start
+# BugBug:         public PosIntArch val end
+# BugBug:
+# BugBug:         # ----------------------------------------------------------------------
+# BugBug:         private None __Init?__():
+# BugBug:             assert self.start <= self.end
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Data
+# BugBug:     [Keyword] public Bool val capture_many
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Methods
+# BugBug:     public static NewlineToken val Create(
+# BugBug:         Bool val capture_many,
+# BugBug:         Bool val is_always_ignored,
+# BugBug:     ):
+# BugBug:         return NewlineToken(
+# BugBug:             name="Newline+" if capture_many else "Newline",
+# BugBug:             is_control_token=False,
+# BugBug:             is_always_ignored=is_always_ignored,
+# BugBug:             capture_many=capture_many,
+# BugBug:         )
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
+# BugBug:         if iterator.GetNextTokenType() != NormalizedIterator::TokenType::EndOfLine:
+# BugBug:             return None
+# BugBug:
+# BugBug:         val newline_start = iterator.Offset()
+# BugBug:
+# BugBug:         iterator.Advance(1)
+# BugBug:
+# BugBug:         if self.capture_many:
+# BugBug:             while iterator.IsBlankLine():
+# BugBug:                 iterator.SkipLine()
+# BugBug:
+# BugBug:         return MatchResult(move iterator, newline_start, iterator.Offset())
+# BugBug:
+# BugBug:
+# BugBug: # ----------------------------------------------------------------------
+# BugBug: public immutable class IndentToken
+# BugBug:     extends Token
+# BugBug: :
+# BugBug:     <<<
+# BugBug:     Token matching indentations of arbitrary length.
+# BugBug:     >>>
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Types
+# BugBug:     public immutable class MatchResult
+# BugBug:         extends Token::MatchResult
+# BugBug:     :
+# BugBug:         public UIntArch val start
+# BugBug:         public PosIntArch val end
+# BugBug:         public PosInt val indent_value
+# BugBug:
+# BugBug:         # ----------------------------------------------------------------------
+# BugBug:         private None __Init?__():
+# BugBug:             assert self.start <= self.end
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Methods
+# BugBug:     public static IndentToken val Create():
+# BugBug:         return IndentToken(
+# BugBug:             name="Indent",
+# BugBug:             is_control_token=False,
+# BugBug:             is_always_ignored=False,
+# BugBug:         )
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
+# BugBug:         if iterator.GetNextTokenType() != NormalizedIterator::TokenType::Indent:
+# BugBug:             return None
+# BugBug:
+# BugBug:         iterator.SkipWhitespacePrefix()
+# BugBug:
+# BugBug:         val line_info = iterator.LineInfo()
+# BugBug:
+# BugBug:         assert line_info.new_indentation_value is not None
+# BugBug:
+# BugBug:         return MatchResult(
+# BugBug:             move iterator,
+# BugBug:             line_info.offset_start,
+# BugBug:             line_info.offset_end,
+# BugBug:             line_info.new_indentation_value as PosArch
+# BugBug:         )
+# BugBug:
+# BugBug:
+# BugBug: # ----------------------------------------------------------------------
+# BugBug: public immutable class DedentToken
+# BugBug:     extends Token
+# BugBug: :
+# BugBug:     <<<
+# BugBug:     Token matching a single dedentation.
+# BugBug:     >>>
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Types
+# BugBug:     public immutable class MatchResult
+# BugBug:         extends Token::MatchResult
+# BugBug:     :
+# BugBug:         pass
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Methods
+# BugBug:     public static DedentToken val Create():
+# BugBug:         return DedentToken(
+# BugBug:             name="Dedent",
+# BugBug:             is_control_token=False,
+# BugBug:             is_always_ignored=False,
+# BugBug:         )
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
+# BugBug:         if iterator.GetNextTokenType() != NormalizedIterator::TokenType::Dedent:
+# BugBug:             return None
+# BugBug:
+# BugBug:         iterator.ConsumeDedent()
+# BugBug:
+# BugBug:         if iterator.GetNextTokenType() == NormalizedIterator::TokenType::WhitespacePrefix:
+# BugBug:             iterator.SkipWhitespacePrefix()
+# BugBug:
+# BugBug:         return MatchResult(move iterator)
+# BugBug:
+# BugBug:
+# BugBug: # ----------------------------------------------------------------------
+# BugBug: public immutable class RegexToken
+# BugBug:     extends Token
+# BugBug: :
+# BugBug:     <<<
+# BugBug:     Token that matches content against a regular expression.
+# BugBug:     >>>
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Types
+# BugBug:     public immutable class MatchResult
+# BugBug:         extends Token::MatchResult
+# BugBug:     :
+# BugBug:         public RegexMatch val match
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Data
+# BugBug:     [Keyword] public Regex val regex
+# BugBug:     [Keyword] public Bool val is_multiline
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Public Methods
+# BugBug:     public static RegexToken Create(
+# BugBug:         String val name,
+# BugBug:         Regex val regex,
+# BugBug:         *,
+# BugBug:         Bool val is_multiline=False,
+# BugBug:         Bool val is_always_ignored=False,
+# BugBug:     ):
+# BugBug:         return RegexToken(
+# BugBug:             name=name,
+# BugBug:             is_control_token=False,
+# BugBug:             is_always_ignored=is_always_ignored,
+# BugBug:             regex=regex,
+# BugBug:             is_multiline=is_multiline,
+# BugBug:         )
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
+# BugBug:         if iterator.GetNextTokenType() != NormalizedIterator::TokenType::Content:
+# BugBug:             return None
+# BugBug:
+# BugBug:         val match = self.regex.Match(
+# BugBug:             iterator.Content(),
+# BugBug:             start=iterator.Offset(),
+# BugBug:             end=iterator.ContentLength() if self.is_multiline else iterator.LineInfo().content_end,
+# BugBug:         )
+# BugBug:
+# BugBug:         if match is None:
+# BugBug:             return None
+# BugBug:
+# BugBug:         val match_length = match.End() - match.Start()
+# BugBug:
+# BugBug:         if self.is_multiline:
+# BugBug:             iterator = _AdvanceMultiline(move iterator, move match_length)
+# BugBug:         else:
+# BugBug:             iterator.Advance(match_length)
+# BugBug:
+# BugBug:         return MatchResult(move iterator, match)
+# BugBug:
+# BugBug:     # ----------------------------------------------------------------------
+# BugBug:     # |  Private Methods
+# BugBug:     private static NormalizedIterator var _AdvanceMultiline(
+# BugBug:         NormalizedIterator var iterator,
+# BugBug:         PosInt var delta,
+# BugBug:     ):
+# BugBug:         while delta:
+# BugBug:             while iterator.GetNextTokenType() == NormalizedIterator::TokenType::Dedent:
+# BugBug:                 iterator.ConsumeDedent()
+# BugBug:
+# BugBug:             val this_delta = Min(delta, iterator.LineInfo().offset_end - iterator.Offset())
+# BugBug:
+# BugBug:             # Delta can be 0 if we are looking at a blank line
+# BugBug:             if this_delta != 0:
+# BugBug:                 iterator.Advance(this_delta)
+# BugBug:                 delta -= this_delta
+# BugBug:
+# BugBug:             # Skip the newline (if necessary)
+# BugBug:             if delta:
+# BugBug:                 iterator.Advance(1)
+# BugBug:                 delta -= 1
+# BugBug:
+# BugBug:         return move iterator
+# BugBug:
+# BugBug:
+# BugBug:
+# BugBug: # BugBug: ControlTokenBase
+# BugBug: # BugBug: PushIgnoreWhitespaceControl
+# BugBug: # BugBug: PopIgnoreWhitespaceControl
+# BugBug: # BugBug: PushPreserveWhitespaceControl
+# BugBug: # BugBug: PopPreserveWhitespaceControl
+# BugBug:

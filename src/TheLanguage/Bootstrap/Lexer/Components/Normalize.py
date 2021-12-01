@@ -144,15 +144,15 @@ else:
 
     # ----------------------------------------------------------------------
     # Note that this regular expression template needs to change any time that there is a change
-    # with `MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH` or `GetNumMultilineTokenDelimiters`.
+    # with `multiline_token_delimiter_length` or `GetNumMultilineTokenDelimiters`.
     # ----------------------------------------------------------------------
-    MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH       = 3
+    multiline_token_delimiter_length        = 3
 
     MultilineTokenDelimiterRegexTemplate        = textwrap.dedent(
         r"""{{header}}(?#
             Don't consume other triplets.
                 The number of items here must match
-                MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH.           )(?!{triplet_item}{triplet_item}{triplet_item})(?#
+                multiline_token_delimiter_length.           )(?!{triplet_item}{triplet_item}{triplet_item})(?#
             Value                                           )(?P<value>.*?)(?#
             No slash as a prefix to the closing triplet[s]  )(?<!\\)(?#
         ){{footer}}""",
@@ -183,7 +183,7 @@ else:
         if start_index == end_index:
             return 0
 
-        if (end_index - start_index) % MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH != 0:
+        if (end_index - start_index) % multiline_token_delimiter_length != 0:
             return 0
 
         original_start_index = start_index
@@ -194,13 +194,13 @@ else:
                 return 0
 
             # Every item within the delimiter must be the same
-            for offset in range(start_index + 1, start_index + MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH):
+            for offset in range(start_index + 1, start_index + multiline_token_delimiter_length):
                 if content[offset] != content[start_index]:
                     return 0
 
-            start_index += MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH
+            start_index += multiline_token_delimiter_length
 
-        return (end_index - original_start_index) // MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH
+        return (end_index - original_start_index) // multiline_token_delimiter_length
 
 
     # ----------------------------------------------------------------------
