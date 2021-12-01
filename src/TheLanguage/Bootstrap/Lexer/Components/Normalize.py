@@ -112,14 +112,14 @@ else:
         """"Data returned from calls to `Normalize`"""
 
         Content: str
-        ContentLen: int
+        ContentLength: int
         LineInfos: List[LineInfo]
         Hash: bytes                             = field(default=None)  # type: ignore
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
             assert self.Content, self
-            assert self.ContentLen, self
+            assert self.ContentLength, self
             assert self.LineInfos, self
 
             if self.Hash is None:

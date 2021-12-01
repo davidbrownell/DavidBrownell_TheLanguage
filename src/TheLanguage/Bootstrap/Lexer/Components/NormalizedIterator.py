@@ -96,7 +96,7 @@ else:
         ) -> "NormalizedIterator":
             return NormalizedIterator(
                 normalized_content.Content,
-                normalized_content.ContentLen,
+                normalized_content.ContentLength,
                 normalized_content.LineInfos,
                 normalized_content.Hash,
             )
@@ -152,8 +152,8 @@ else:
             return self._impl.Data.Content
 
         @property
-        def ContentLen(self) -> int:
-            return self._impl.Data.ContentLen
+        def ContentLength(self) -> int:
+            return self._impl.Data.ContentLength
 
         @property
         def LineInfos(self) -> List[LineInfo]:
@@ -239,7 +239,7 @@ else:
         @dataclass(frozen=True)
         class ImmutableContentData(object):
             Content: str
-            ContentLen: int
+            ContentLength: int
             LineInfos: List[LineInfo]
             Hash: bytes
             HasEndOfFileDedents: bool           = field(init=False)

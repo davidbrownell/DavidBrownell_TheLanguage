@@ -278,7 +278,7 @@ async def LexAsync(
 
                         # ----------------------------------------------------------------------
 
-                        normalized_iter = Phrase.NormalizedIterator.FromNormalizedContent(
+                        normalized_iter = Phrase.NormalizedIterator.Create(
                             Normalize(
                                 content,
                                 suppress_indentation_func=SuppressIndentationInfo,

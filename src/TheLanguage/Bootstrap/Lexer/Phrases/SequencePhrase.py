@@ -251,9 +251,6 @@ class SequencePhrase(Phrase):
         comments_or_whitespace_data_items: Optional[List[Phrase.TokenLexResultData]] = None
         prev_token_was_pop_control = False
 
-        if self.Name == "Binary Statement":
-            BugBug = 10
-
         for phrase_index in range(starting_phrase_index, len(self.Phrases)):
             phrase = self.Phrases[phrase_index]
 

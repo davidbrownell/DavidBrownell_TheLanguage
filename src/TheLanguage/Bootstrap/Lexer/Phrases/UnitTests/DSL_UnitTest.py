@@ -180,7 +180,7 @@ class TestLexSimple(object):
         iter = CreateIterator("one two\t\t\t\t")
 
         assert str(iter) == "[1, 1] (0)"
-        assert iter.ContentLen == 12
+        assert iter.ContentLength == 12
 
         result = await self._phrase.LexAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
@@ -204,7 +204,7 @@ class TestLexSimple(object):
 
         # Line 1
         assert str(iter) == "[1, 1] (0)"
-        assert iter.ContentLen == 19
+        assert iter.ContentLength == 19
 
         result = await self._phrase.LexAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
@@ -230,7 +230,7 @@ class TestLexSimple(object):
         iter = CreateIterator("one two\n\n  \n    \n")
 
         assert str(iter) == "[1, 1] (0)"
-        assert iter.ContentLen == 17
+        assert iter.ContentLength == 17
 
         result = await self._phrase.LexAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"
@@ -246,7 +246,7 @@ class TestLexSimple(object):
         iter = CreateIterator("one two three")
 
         assert str(iter) == "[1, 1] (0)"
-        assert iter.ContentLen == 14
+        assert iter.ContentLength == 14
 
         result = await self._phrase.LexAsync(("root", ), iter, parse_mock)
         assert str(iter) == "[1, 1] (0)",  "The incoming iterator should not be modified"

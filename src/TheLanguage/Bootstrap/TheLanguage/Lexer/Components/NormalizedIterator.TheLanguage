@@ -71,35 +71,45 @@ public mutable class NormalizedIterator:
     # ----------------------------------------------------------------------
     # TODO: Convert to properties
 
+    python_hack: @property
     public immutable String val Content():
         return self._content.content
 
+    python_hack: @property
     public immutable PosInt val ContentLength():
         return self._content.content_length
 
+    python_hack: @property
     public immutable LineInfos val LineInfos():
         return self._content.line_infos
 
+    python_hack: @property
     public immutable HashBytes val Hash():
         return self._content.hash
 
+    python_hack: @property
     public immutable Bool val HasEndOfFileDedents():
         return self._content.has_end_of_file_dedents
 
+    python_hack: @property
     public immutable UIntArch val Offset():
         return self._offset
 
+    python_hack: @property
     public immutable LineInfo val LineInfo():
         return self._content.line_infos[self._line_info_index]
 
+    python_hack: @property
     public immutable PosInt val Line():
         return self._line_info_index + 1
 
+    python_hack: @property
     public immutable PosInt val Column():
         if self.AtEnd():
             return 1
 
-        return self._offset - self.LineInfo().offset_start + 1
+        # TODO: return self._offset - self.LineInfo().offset_start + 1
+        return self._offset - self.LineInfo.offset_start + 1
 
     # ----------------------------------------------------------------------
     public immutable (
@@ -110,23 +120,27 @@ public mutable class NormalizedIterator:
     ) ToCacheKey():
         return (
             self.Hash(),
-            self.Offset(),
+            # TODO: self.Offset(),
+            self.Offset,
             self._consumed_dedent_line.Clone(),
             self._consumed_dedent_count.Clone(),
         )
 
     # ----------------------------------------------------------------------
     public immutable Bool val AtEnd():
-        val line_infos = self.LineInfos()
+        # TODO: val line_infos = self.LineInfos()
+        val line_infos = self.LineInfos
 
         if self._line_info_index == len(line_infos):
             return True
 
         if (
-            self.HasEndOfFileDedents()
+            # TODO: self.HasEndOfFileDedents()
+            self.HasEndOfFileDedents
             and self._line_info_index == len(line_infos) - 1
             and self._consumed_dedent_line == self._line_info_index
-            and self._consumed_dedent_count == self.LineInfo().num_dedents
+            # TODO: and self._consumed_dedent_count == self.LineInfo().num_dedents
+            and self._consumed_dedent_count == self.LineInfo.num_dedents
         ):
             return True
 
@@ -137,7 +151,8 @@ public mutable class NormalizedIterator:
         if self.AtEnd():
             return TokenType.EndOfFile
 
-        val line_info = self.LineInfo()
+        # TODO: val line_info = self.LineInfo()
+        val line_info = self.LineInfo
 
         if (
             line_info.num_dedents is not None
@@ -171,18 +186,23 @@ public mutable class NormalizedIterator:
 
         # The trailing dedent lines should not be considered blank lines
         if (
-            self._line_info_index == len(self.LineInfos()) - 1
-            and self.HasEndOfFileDedents()
+            # TODO: self._line_info_index == len(self.LineInfos()) - 1
+            self._line_info_index == len(self.LineInfos) - 1
+            # TODO: and self.HasEndOfFileDedents()
+            and self.HasEndOfFileDedents
         ):
             return False
 
-        val line_info = self.LineInfo()
+        # TODO: val line_info = self.LineInfo()
+        val line_info = self.LineInfo
         return line_info.content_end == line_info.content_start
 
     # ----------------------------------------------------------------------
     public mutable None ConsumeDedent():
-        assert self.LineInfo().num_dedents is not None
-        assert self.Offset() == self.LineInfo().offset_start
+        # TODO: assert self.LineInfo().num_dedents is not None
+        assert self.LineInfo.num_dedents is not None
+        # TODO: assert self.Offset() == self.LineInfo().offset_start
+        assert self.Offset == self.LineInfo.offset_start
 
         if self._consumed_dedent_line != self._line_info_index:
             self._consumed_dedent_line = self._line_info_index # TODO
@@ -193,14 +213,15 @@ public mutable class NormalizedIterator:
 
     # ----------------------------------------------------------------------
     public mutable None SkipLine():
-        self._offset = self.LineInfo().offset_end # TODO
+        self._offset = self.LineInfo.offset_end
 
         self.Advance(1)
 
     # ----------------------------------------------------------------------
     public mutable None SkipWhitespacePrefix():
         val offset = self._offset
-        val line_info = self.LineInfo()
+        # TODO: val line_info = self.LineInfo()
+        val line_info = self.LineInfo
 
         assert offset == line_info.offset_start
 
@@ -212,7 +233,8 @@ public mutable class NormalizedIterator:
     # ----------------------------------------------------------------------
     public mutable None SkipWhitespaceSuffix():
         val offset = self._offset
-        val line_info = self.LineInfo()
+        # TODO: val line_info = self.LineInfo()
+        val line_info = self.LineInfo
 
         assert offset == line_info.content_end
 
@@ -228,7 +250,8 @@ public mutable class NormalizedIterator:
         >>>
 
         val offset = self._offset
-        val line_info = self.LineInfo()
+        # TODO: val line_info = self.LineInfo()
+        val line_info = self.LineInfo
 
         if offset == line_info.offset_end:
             assert delta == 1
@@ -268,6 +291,9 @@ public mutable class NormalizedIterator:
         public LineInfos val line_infos
         public HashBytes val hash
         [NoInit] public Bool val has_end_of_file_dedents
+
+        python_hack: def Clone(self):
+        python_hack:     return self.__class__(self.content, self.content_length, self.line_infos, self.hash)
 
         # ----------------------------------------------------------------------
         public static NormalizedContentEx Create(
@@ -331,6 +357,9 @@ public mutable class NormalizedIterator:
     #             and last_line_info.content_start == last_line_info.offset_start
     #             and last_line_info.content_end == last_line_info.offset_end
     #         )
+
+    python_hack: def Clone(self):
+    python_hack:     return self.__class__(self._content, self._offset, self._line_info_index, self._consumed_dedent_line, self._consumed_dedent_count)
 
     # ----------------------------------------------------------------------
     # |

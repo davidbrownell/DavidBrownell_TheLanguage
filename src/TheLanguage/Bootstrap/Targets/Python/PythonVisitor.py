@@ -1104,9 +1104,6 @@ class PythonVisitor(Visitor):
                             def __eq__(self, other):
                             {indent}return {compare_statements}
 
-                            def Clone(self):
-                            {indent}return copy.deepcopy(self)
-
                             """,
                         ).format(
                             args=", ".join(args),

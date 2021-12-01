@@ -138,7 +138,7 @@ class TestNormalizedContent(object):
         result = NormalizedContent.Create("hello", 5, [LineInfo(1, 4, 3, 4, [])])
 
         assert result.Content == "hello"
-        assert result.ContentLen == 5
+        assert result.ContentLength == 5
         assert result.LineInfos == [LineInfo(1, 4, 3, 4, [])]
 
         assert result == result

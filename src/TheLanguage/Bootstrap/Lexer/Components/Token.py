@@ -341,7 +341,7 @@ class RegexToken(Token):
         match = self.Regex.match(
             normalized_iter.Content,
             pos=normalized_iter.Offset,
-            endpos=normalized_iter.ContentLen if self.IsMultiline else normalized_iter.LineInfo.ContentEnd,
+            endpos=normalized_iter.ContentLength if self.IsMultiline else normalized_iter.LineInfo.ContentEnd,
         )
 
         if match:
