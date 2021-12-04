@@ -121,7 +121,7 @@ _statements_phrase_item                     = OneOrMorePhraseItem(
 )
 
 
-_value_token                                = RegexToken(
+_value_token                                = RegexToken.Create(
     "<value>",
     re.compile(r"(?P<value>[a-zA-Z0-9_\-\.]+)\b"),
 )
@@ -138,10 +138,10 @@ def _CreateWithStatement() -> Phrase:
             "=",
             _value_token,
             ":",
-            NewlineToken(),
-            IndentToken(),
+            NewlineToken.Create(),
+            IndentToken.Create(),
             _statements_phrase_item,
-            DedentToken(),
+            DedentToken.Create(),
         ],
     )
 
@@ -195,7 +195,7 @@ def _CreateConditionalStatement() -> Phrase:
                 item=[
                     # '('
                     "(",
-                    PushIgnoreWhitespaceControlToken(),
+                    PushIgnoreWhitespaceControlToken.Create(),
 
                     # <condition_phrase>
                     None,
@@ -209,7 +209,7 @@ def _CreateConditionalStatement() -> Phrase:
                     ),
 
                     # ')'
-                    PopIgnoreWhitespaceControlToken(),
+                    PopIgnoreWhitespaceControlToken.Create(),
                     ")",
                 ],
             ),
@@ -224,10 +224,10 @@ def _CreateConditionalStatement() -> Phrase:
             "__if",
             condition_phrase,
             ":",
-            NewlineToken(),
-            IndentToken(),
+            NewlineToken.Create(),
+            IndentToken.Create(),
             _statements_phrase_item,
-            DedentToken(),
+            DedentToken.Create(),
         ],
     )
 

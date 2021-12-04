@@ -255,7 +255,7 @@ class SyntaxInvalidError(Error):
 
                                 if (
                                     isinstance(error_node.Type.Phrases[num_phrases], TokenPhrase)
-                                    and error_node.Type.Phrases[num_phrases].Token.IsControlToken
+                                    and error_node.Type.Phrases[num_phrases].Token.is_control_token
                                     and num_phrases + 1 < len(error_node.Type.Phrases)
                                 ):
                                     num_phrases += 1

@@ -47,9 +47,9 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class TestStandard(object):
 
-    _upper_token                            = RegexToken("Upper Token", re.compile(r"(?P<value>[A-Z]+)"))
-    _lower_token                            = RegexToken("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
-    _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>[0-9]+)"))
+    _upper_token                            = RegexToken.Create("Upper Token", re.compile(r"(?P<value>[A-Z]+)"))
+    _lower_token                            = RegexToken.Create("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
+    _number_token                           = RegexToken.Create("Number Token", re.compile(r"(?P<value>[0-9]+)"))
 
     _upper_phrase                           = CreatePhrase(name="Upper Phrase", item=[_upper_token, NewlineToken()])
     _lower_phrase                           = CreatePhrase(name="Lower Phrase", item=[_lower_token, NewlineToken()])

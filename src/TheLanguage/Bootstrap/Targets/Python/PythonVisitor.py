@@ -1102,7 +1102,7 @@ class PythonVisitor(Visitor):
                             {indent}self._Init_()
 
                             def __eq__(self, other):
-                            {indent}return {compare_statements}
+                            {indent}return isinstance(other, self.__class__) and {compare_statements}
 
                             """,
                         ).format(

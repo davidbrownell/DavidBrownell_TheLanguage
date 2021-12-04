@@ -48,6 +48,7 @@ public mutable class NormalizedIterator:
         python_hack: WhitespaceSuffix = 5
         python_hack: EndOfLine = 6
         python_hack: EndOfFile = 7
+        python_hack: def __eq__(self, other): return self.value == other.value
 
     # ----------------------------------------------------------------------
     # |
@@ -71,45 +72,64 @@ public mutable class NormalizedIterator:
     # ----------------------------------------------------------------------
     # TODO: Convert to properties
 
-    python_hack: @property
-    public immutable String val Content():
+    public immutable String val ContentProper():
         return self._content.content
 
-    python_hack: @property
-    public immutable PosInt val ContentLength():
+    public immutable PosInt val ContentLengthProper():
         return self._content.content_length
 
-    python_hack: @property
-    public immutable LineInfos val LineInfos():
+    public immutable LineInfos val LineInfosProper():
         return self._content.line_infos
 
-    python_hack: @property
-    public immutable HashBytes val Hash():
+    public immutable HashBytes val HashProper():
         return self._content.hash
 
-    python_hack: @property
-    public immutable Bool val HasEndOfFileDedents():
+    public immutable Bool val HasEndOfFileDedentsProper():
         return self._content.has_end_of_file_dedents
 
-    python_hack: @property
-    public immutable UIntArch val Offset():
+    public immutable UIntArch val OffsetProper():
         return self._offset
 
-    python_hack: @property
-    public immutable LineInfo val LineInfo():
+    public immutable LineInfo val LineInfoProper():
         return self._content.line_infos[self._line_info_index]
 
-    python_hack: @property
-    public immutable PosInt val Line():
+    public immutable PosInt val LineProper():
         return self._line_info_index + 1
 
-    python_hack: @property
-    public immutable PosInt val Column():
+    public immutable PosInt val ColumnProper():
         if self.AtEnd():
             return 1
 
         # TODO: return self._offset - self.LineInfo().offset_start + 1
         return self._offset - self.LineInfo.offset_start + 1
+
+    python_hack: @property
+    python_hack: def Content(self):
+    python_hack:     return self.ContentProper()
+    python_hack: @property
+    python_hack: def ContentLength(self):
+    python_hack:     return self.ContentLengthProper()
+    python_hack: @property
+    python_hack: def LineInfos(self):
+    python_hack:     return self.LineInfosProper()
+    python_hack: @property
+    python_hack: def Hash(self):
+    python_hack:     return self.HashProper()
+    python_hack: @property
+    python_hack: def HasEndOfFileDedents(self):
+    python_hack:     return self.HasEndOfFileDedentsProper()
+    python_hack: @property
+    python_hack: def Offset(self):
+    python_hack:     return self.OffsetProper()
+    python_hack: @property
+    python_hack: def LineInfo(self):
+    python_hack:     return self.LineInfoProper()
+    python_hack: @property
+    python_hack: def Line(self):
+    python_hack:     return self.LineProper()
+    python_hack: @property
+    python_hack: def Column(self):
+    python_hack:     return self.ColumnProper()
 
     # ----------------------------------------------------------------------
     public immutable (

@@ -56,9 +56,9 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class TestStandard(object):
-    _lower_phrase                           = TokenPhrase(RegexToken("lower", re.compile(r"(?P<value>[a-z]+[0-9]*)")))
-    _upper_phrase                           = TokenPhrase(RegexToken("upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)")))
-    _number_phrase                          = TokenPhrase(RegexToken("number", re.compile(r"(?P<value>[0-9]+)")))
+    _lower_phrase                           = TokenPhrase(RegexToken.Create("lower", re.compile(r"(?P<value>[a-z]+[0-9]*)")))
+    _upper_phrase                           = TokenPhrase(RegexToken.Create("upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)")))
+    _number_phrase                          = TokenPhrase(RegexToken.Create("number", re.compile(r"(?P<value>[0-9]+)")))
     _newline_phrase                         = TokenPhrase(NewlineToken())
 
     _phrase                                 = OrPhrase(
@@ -471,8 +471,8 @@ class TestStandard(object):
 
 # ----------------------------------------------------------------------
 class TestSort(object):
-    _short_phrase                           = TokenPhrase(RegexToken("Short", re.compile(r"(?P<value>\d\d)")))
-    _long_phrase                            = TokenPhrase(RegexToken("Long", re.compile(r"(?P<value>\d\d\d\d)")))
+    _short_phrase                           = TokenPhrase(RegexToken.Create("Short", re.compile(r"(?P<value>\d\d)")))
+    _long_phrase                            = TokenPhrase(RegexToken.Create("Long", re.compile(r"(?P<value>\d\d\d\d)")))
 
     _sort_phrase                            = OrPhrase(
         [
@@ -631,8 +631,8 @@ class TestLexReturnsNone(object):
 # ----------------------------------------------------------------------
 @pytest.mark.asyncio
 async def test_BigFailuresTrumpSmallSuccesses(parse_mock):
-    lower_phrase = TokenPhrase(RegexToken("lower", re.compile(r"(?P<value>[a-z]+[0-9]*)")))
-    upper_phrase = TokenPhrase(RegexToken("upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)")))
+    lower_phrase = TokenPhrase(RegexToken.Create("lower", re.compile(r"(?P<value>[a-z]+[0-9]*)")))
+    upper_phrase = TokenPhrase(RegexToken.Create("upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)")))
 
     short_phrase = SequencePhrase(DefaultCommentToken, [lower_phrase])
     long_phrase = SequencePhrase(DefaultCommentToken, [lower_phrase, lower_phrase, upper_phrase])

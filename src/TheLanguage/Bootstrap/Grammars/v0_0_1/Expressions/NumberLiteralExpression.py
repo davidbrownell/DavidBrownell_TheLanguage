@@ -70,7 +70,7 @@ class NumberLiteralExpression(GrammarPhrase):
                 name=self.PHRASE_NAME,
                 item=[
                     # Note that this must be a sequence so that ExtractParserInfo will be called.
-                    RegexToken(
+                    RegexToken.Create(
                         "<number>",
                         re.compile(r"(?P<value>{}\.\d+)".format(IntegerLiteralExpression.INTEGER_REGEX)),
                     ),

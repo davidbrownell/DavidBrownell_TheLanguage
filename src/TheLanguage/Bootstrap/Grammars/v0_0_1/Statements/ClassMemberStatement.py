@@ -135,6 +135,9 @@ class ClassMemberStatement(GrammarPhrase):
             no_compare_node = None
             no_compare_info = None
 
+            is_override_node = None
+            is_override_info = None
+
             for attributes in attribute_data:
                 for attribute in attributes:
                     if attribute.Name == "NoInit":
@@ -148,6 +151,10 @@ class ClassMemberStatement(GrammarPhrase):
                     elif attribute.Name == "NoCompare":
                         no_compare_node = attribute.NameLeaf
                         no_compare_info = True
+
+                    elif attribute.Name == "Override":
+                        is_override_node = attribute.NameLeaf
+                        is_override_info = True
 
             # <visibility>?
             visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -188,6 +195,7 @@ class ClassMemberStatement(GrammarPhrase):
                     no_init_node,
                     no_serialize_node,
                     no_compare_node,
+                    is_override_node,
                 ),  # type: ignore
                 ClassStatement.GetContainingClassParserInfo(node, FuncDefinitionStatement.PHRASE_NAME),  # type: ignore
                 visibility_info,  # type: ignore
@@ -197,6 +205,7 @@ class ClassMemberStatement(GrammarPhrase):
                 no_init_info,
                 no_serialize_info,
                 no_compare_info,
+                is_override_info,
             )
 
         # ----------------------------------------------------------------------

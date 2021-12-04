@@ -52,11 +52,11 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-_word_token                                 = RegexToken("Word Token", re.compile(r"(?P<value>[a-z]+)"))
-_number_token                               = RegexToken("Number Token", re.compile(r"(?P<value>\d+)"))
-_upper_token                                = RegexToken("Upper Token", re.compile(r"(?P<value>[A-Z]+)"))
-_lpar_token                                 = RegexToken("lpar", re.compile(r"\("))
-_rpar_token                                 = RegexToken("rpar", re.compile(r"\)"))
+_word_token                                 = RegexToken.Create("Word Token", re.compile(r"(?P<value>[a-z]+)"))
+_number_token                               = RegexToken.Create("Number Token", re.compile(r"(?P<value>\d+)"))
+_upper_token                                = RegexToken.Create("Upper Token", re.compile(r"(?P<value>[A-Z]+)"))
+_lpar_token                                 = RegexToken.Create("lpar", re.compile(r"\("))
+_rpar_token                                 = RegexToken.Create("rpar", re.compile(r"\)"))
 
 # ----------------------------------------------------------------------
 class TestLexSimple(object):
@@ -65,7 +65,7 @@ class TestLexSimple(object):
         item=[
             _word_token,
             _word_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 
@@ -262,13 +262,13 @@ class TestLexIndentAndDedent(object):
         name="Phrase",
         item=[
             _word_token,
-            NewlineToken(),
-            IndentToken(),
+            NewlineToken.Create(),
+            IndentToken.Create(),
             _word_token,
-            NewlineToken(),
+            NewlineToken.Create(),
             _word_token,
-            NewlineToken(),
-            DedentToken(),
+            NewlineToken.Create(),
+            DedentToken.Create(),
         ],
     )
 
@@ -341,15 +341,15 @@ class TestIgnoreWhitespace(object):
         item=[
             _word_token,
             _lpar_token,
-            PushIgnoreWhitespaceControlToken(),
+            PushIgnoreWhitespaceControlToken.Create(),
             _word_token,
             _word_token,
             _word_token,
             _word_token,
-            PopIgnoreWhitespaceControlToken(),
+            PopIgnoreWhitespaceControlToken.Create(),
             _rpar_token,
             _word_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 
@@ -446,7 +446,7 @@ class TestDynamicPhrases(object):
         item=[
             _word_token,
             _word_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 
@@ -454,7 +454,7 @@ class TestDynamicPhrases(object):
         name="Number Phrase",
         item=[
             _number_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 
@@ -524,7 +524,7 @@ class TestOrPhrases(object):
         name="Word Phrase",
         item=[
             _word_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 
@@ -532,7 +532,7 @@ class TestOrPhrases(object):
         name="Number Phrase",
         item=[
             _number_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 
@@ -540,7 +540,7 @@ class TestOrPhrases(object):
         name="Upper Phrase",
         item=[
             _upper_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 
@@ -958,12 +958,12 @@ class TestComments(object):
         name="Indent",
         item=[
             _word_token,
-            RegexToken("Colon", re.compile(r":")),
-            NewlineToken(),
-            IndentToken(),
+            RegexToken.Create("Colon", re.compile(r":")),
+            NewlineToken.Create(),
+            IndentToken.Create(),
             [_upper_token, NewlineToken()],
             [_number_token, NewlineToken()],
-            DedentToken(),
+            DedentToken.Create(),
         ],
     )
 
@@ -1147,7 +1147,7 @@ class TestRecursiveSequencePhrase(object):
             [_upper_token, NewlineToken()],
             (
                 None,
-                [RegexToken("Delimiter", re.compile(r"----")), NewlineToken()],
+                [RegexToken.Create("Delimiter", re.compile(r"----")), NewlineToken()],
             ),
             [_word_token, NewlineToken()],
         ],
@@ -1187,11 +1187,11 @@ async def test_IgnoreWhitespace(parse_mock):
     phrase = CreatePhrase(
         name="Phrase",
         item=[
-            PushIgnoreWhitespaceControlToken(),
+            PushIgnoreWhitespaceControlToken.Create(),
             _word_token,
             _word_token,
             _word_token,
-            PopIgnoreWhitespaceControlToken(),
+            PopIgnoreWhitespaceControlToken.Create(),
         ],
     )
 
@@ -1222,18 +1222,18 @@ async def test_IgnoreWhitespaceNestedPhrase(parse_mock):
         name="Phrase",
         item=[
             _word_token,
-            NewlineToken(),
+            NewlineToken.Create(),
             CreatePhrase(
                 name="Nested",
                 item=[
-                    PushIgnoreWhitespaceControlToken(),
+                    PushIgnoreWhitespaceControlToken.Create(),
                     _word_token,
                     _word_token,
-                    PopIgnoreWhitespaceControlToken(),
+                    PopIgnoreWhitespaceControlToken.Create(),
                 ],
             ),
             _word_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 
@@ -1266,23 +1266,23 @@ async def test_IgnoreWhitespaceNestedPhraseWithDedents(parse_mock):
         name="Phrase",
         item=[
             _word_token,
-            RegexToken("':'", re.compile(r":")),
-            NewlineToken(),
-            IndentToken(),
+            RegexToken.Create("':'", re.compile(r":")),
+            NewlineToken.Create(),
+            IndentToken.Create(),
             CreatePhrase(
                 name="Nested",
                 item=[
-                    PushIgnoreWhitespaceControlToken(),
+                    PushIgnoreWhitespaceControlToken.Create(),
                     _word_token,
                     _word_token,
-                    PopIgnoreWhitespaceControlToken(),
+                    PopIgnoreWhitespaceControlToken.Create(),
                 ],
             ),
             _word_token,
-            NewlineToken(),
-            DedentToken(),
+            NewlineToken.Create(),
+            DedentToken.Create(),
             _word_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 
@@ -1316,19 +1316,19 @@ async def test_IgnoreWhitespaceNestedPhraseEndWithDedents(parse_mock):
         name="Phrase",
         item=[
             _word_token,
-            RegexToken("':'", re.compile(r":")),
-            NewlineToken(),
-            IndentToken(),
+            RegexToken.Create("':'", re.compile(r":")),
+            NewlineToken.Create(),
+            IndentToken.Create(),
             CreatePhrase(
                 name="Nested",
                 item=[
-                    PushIgnoreWhitespaceControlToken(),
+                    PushIgnoreWhitespaceControlToken.Create(),
                     _word_token,
                     _word_token,
-                    PopIgnoreWhitespaceControlToken(),
+                    PopIgnoreWhitespaceControlToken.Create(),
                 ],
             ),
-            DedentToken(),
+            DedentToken.Create(),
         ],
     )
 

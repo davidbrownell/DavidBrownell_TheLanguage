@@ -59,13 +59,13 @@ class TokenPhrase(Phrase):
         assert token
 
         if name is None:
-            name = token.Name
+            name = token.name
 
         assert name is not None
 
         super(TokenPhrase, self).__init__(
             name,
-            Token=lambda token: token.Name,
+            Token=lambda token: token.name,
         )
 
         self.Token                          = token
@@ -233,7 +233,7 @@ class TokenPhrase(Phrase):
                     result,
                     potential_iter_begin,
                     potential_iter,
-                    IsIgnored=self.Token.IsAlwaysIgnored,
+                    IsIgnored=self.Token.is_always_ignored,
                 ),
                 unique_id,
             )
@@ -253,9 +253,9 @@ class TokenPhrase(Phrase):
     # |  Private Data
     # |
     # ----------------------------------------------------------------------
-    _indent_token                           = IndentToken()
-    _dedent_token                           = DedentToken()
-    _newline_token                          = NewlineToken()
+    _indent_token                           = IndentToken.Create()
+    _dedent_token                           = DedentToken.Create()
+    _newline_token                          = NewlineToken.Create()
 
     # ----------------------------------------------------------------------
     # |

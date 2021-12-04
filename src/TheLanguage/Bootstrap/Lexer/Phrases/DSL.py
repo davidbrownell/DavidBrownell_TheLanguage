@@ -42,7 +42,7 @@ with InitRelativeImports():
 
     from ..Components.AST import Leaf, Node
     from ..Components.Phrase import DynamicPhrasesType, Phrase
-    from ..Components.Token import RegexToken, Token
+    from ..Components.Token import NewlineToken, IndentToken, DedentToken, RegexToken, Token, PushIgnoreWhitespaceControlToken, PopIgnoreWhitespaceControlToken, PushPreserveWhitespaceControlToken, PopPreserveWhitespaceControlToken
 
 
 # ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ with InitRelativeImports():
 # |  Public Types
 # |
 # ----------------------------------------------------------------------
-DefaultCommentToken                         = RegexToken(
+DefaultCommentToken                         = RegexToken.Create(
     "<comment>",
     re.compile(
         textwrap.dedent(
@@ -277,17 +277,17 @@ def ExtractToken(
 
     if isinstance(leaf.Value, RegexToken.MatchResult):
         if group_dict_name is not None:
-            return leaf.Value.Match.group(group_dict_name)
+            return leaf.Value.match.group(group_dict_name)
 
-        groups_dict = leaf.Value.Match.groupdict()
+        groups_dict = leaf.Value.match.groupdict()
 
         if len(groups_dict) == 1:
             return next(iter(groups_dict.values()))
 
         if use_match:
-            return leaf.Value.Match.string[leaf.Value.Match.start() : leaf.Value.Match.end()]
+            return leaf.Value.match.string[leaf.Value.match.start() : leaf.Value.match.end()]
 
-    return cast(Token, leaf.Type).Name
+    return cast(Token, leaf.Type).name
 
 
 # ----------------------------------------------------------------------
@@ -401,7 +401,7 @@ def ExtractSequence(
         if len(results) != len(phrases):
             phrase = phrases[len(results)]
 
-            if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
+            if isinstance(phrase, TokenPhrase) and phrase.Token.is_control_token:
                 results.append(None)
                 continue
 
@@ -537,7 +537,7 @@ def _PopulateItem(
     if isinstance(item, Phrase):
         phrase = item
 
-    elif isinstance(item, Token):
+    elif isinstance(item, (NewlineToken, IndentToken, DedentToken, RegexToken, PushIgnoreWhitespaceControlToken, PopIgnoreWhitespaceControlToken, PushPreserveWhitespaceControlToken, PopPreserveWhitespaceControlToken)):
         phrase = TokenPhrase(
             item,
             name=name,
@@ -545,7 +545,7 @@ def _PopulateItem(
 
     elif isinstance(item, str):
         phrase = TokenPhrase(
-            RegexToken(
+            RegexToken.Create(
                 name or "'{}'".format(item),
                 re.compile(r"{}{}".format(re.escape(item), "\\b" if item.isalnum() else "")),
             ),

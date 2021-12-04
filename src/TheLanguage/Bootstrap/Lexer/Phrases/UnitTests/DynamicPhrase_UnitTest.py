@@ -46,8 +46,8 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class TestStandard(object):
-    _lower_phrase                           = TokenPhrase(RegexToken("lower", re.compile(r"(?P<value>[a-z]+)")))
-    _number_phrase                          = TokenPhrase(RegexToken("number", re.compile(r"(?P<value>[0-9]+)")))
+    _lower_phrase                           = TokenPhrase(RegexToken.Create("lower", re.compile(r"(?P<value>[a-z]+)")))
+    _number_phrase                          = TokenPhrase(RegexToken.Create("number", re.compile(r"(?P<value>[0-9]+)")))
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio
@@ -319,8 +319,8 @@ class TestStandard(object):
 # ----------------------------------------------------------------------
 class TestLeftRecursiveSemicolonSuffix(object):
     _phrases                                = [
-        CreatePhrase(RegexToken("Lower", re.compile(r"(?P<value>[a-z_]+[0-9]*)"))),
-        CreatePhrase(RegexToken("Upper", re.compile(r"(?P<value>[A-Z_]+[0-9]*)"))),
+        CreatePhrase(RegexToken.Create("Lower", re.compile(r"(?P<value>[a-z_]+[0-9]*)"))),
+        CreatePhrase(RegexToken.Create("Upper", re.compile(r"(?P<value>[A-Z_]+[0-9]*)"))),
         CreatePhrase(name="Add", item=[DynamicPhrasesType.Statements, "+", DynamicPhrasesType.Statements, ";"]),
         CreatePhrase(name="Sub", item=[DynamicPhrasesType.Statements, "-", DynamicPhrasesType.Statements, ";"]),
         CreatePhrase(name="Mul", item=[DynamicPhrasesType.Statements, "*", DynamicPhrasesType.Statements, ";"]),
@@ -378,8 +378,8 @@ class TestLeftRecursiveSemicolonSuffix(object):
 # ----------------------------------------------------------------------
 class TestLeftRecursive(object):
     _phrases                                = [
-        CreatePhrase(RegexToken("Lower", re.compile(r"(?P<value>[a-z_]+[0-9]*)"))),
-        CreatePhrase(RegexToken("Upper", re.compile(r"(?P<value>[A-Z_]+[0-9]*)"))),
+        CreatePhrase(RegexToken.Create("Lower", re.compile(r"(?P<value>[a-z_]+[0-9]*)"))),
+        CreatePhrase(RegexToken.Create("Upper", re.compile(r"(?P<value>[A-Z_]+[0-9]*)"))),
         CreatePhrase(name="Add", item=[DynamicPhrasesType.Statements, "+", DynamicPhrasesType.Statements]),
         CreatePhrase(name="Sub", item=[DynamicPhrasesType.Statements, "-", DynamicPhrasesType.Statements]),
         CreatePhrase(name="Mul", item=[DynamicPhrasesType.Statements, "*", DynamicPhrasesType.Statements]),

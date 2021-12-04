@@ -94,6 +94,13 @@ class ClassMemberStatementParserInfo(StatementParserInfo):
     NoSerialize: Optional[bool]
     NoCompare: Optional[bool]
 
+    # TODO: ToVerify:
+    #   - Containing class must have base
+    #   - Name must be valid member in base class
+    #   - Value may not be overridden by any other base
+
+    IsOverride: Optional[bool]
+
     # TODO: Likely more flags
 
     # ----------------------------------------------------------------------
@@ -137,6 +144,14 @@ class ClassMemberStatementParserInfo(StatementParserInfo):
         assert self.NoInit is None or self.NoInit
         assert self.NoSerialize is None or self.NoSerialize
         assert self.NoCompare is None or self.NoCompare
+        assert self.IsOverride is None or self.IsOverride
+
+        if self.IsOverride:
+            if self.InitializedValue is None:
+                raise Exception("Overrides must have default values")
+
+            if self.NoInit or self.NoSerialize or self.NoCompare:
+                raise Exception("Overrides cannot have other flags")
 
         self.Validate()
 

@@ -44,7 +44,7 @@ class BoolLiteralExpressionImpl(GrammarPhrase):
                 name=phrase_name,
                 item=[
                     # Note that this must be a sequence so that ExtractParserInfo will be called.
-                    RegexToken(
+                    RegexToken.Create(
                         "<bool>",
                         re.compile(r"(?P<value>True|False)\b"),
                     ),

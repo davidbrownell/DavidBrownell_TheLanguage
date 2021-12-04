@@ -87,10 +87,10 @@ class TestStandard(object):
         ),
     }
 
-    _include_token                          = RegexToken("Include Token", re.compile(r"(?P<value>include)"))
-    _upper_token                            = RegexToken("Upper Token", re.compile(r"(?P<value>[A-Z]+)"))
-    _lower_token                            = RegexToken("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
-    _number_token                           = RegexToken("Number Token", re.compile(r"(?P<value>[0-9]+)"))
+    _include_token                          = RegexToken.Create("Include Token", re.compile(r"(?P<value>include)"))
+    _upper_token                            = RegexToken.Create("Upper Token", re.compile(r"(?P<value>[A-Z]+)"))
+    _lower_token                            = RegexToken.Create("Lower Token", re.compile(r"(?P<value>[a-z]+)"))
+    _number_token                           = RegexToken.Create("Number Token", re.compile(r"(?P<value>[0-9]+)"))
 
     _include_phrase                         = CreatePhrase(name="Include", item=[_include_token, _lower_token, NewlineToken()])
     _upper_phrase                           = CreatePhrase(name="Upper", item=[_upper_token, NewlineToken()])
@@ -101,12 +101,12 @@ class TestStandard(object):
         name="New Scope",
         item=[
             _upper_token,
-            RegexToken("Colon Token", re.compile(r":")),
-            NewlineToken(),
-            IndentToken(),
+            RegexToken.Create("Colon Token", re.compile(r":")),
+            NewlineToken.Create(),
+            IndentToken.Create(),
             DynamicPhrasesType.Statements,
             DynamicPhrasesType.Statements,
-            DedentToken(),
+            DedentToken.Create(),
         ],
     )
 
@@ -116,7 +116,7 @@ class TestStandard(object):
             _number_token,
             _number_token,
             _number_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 

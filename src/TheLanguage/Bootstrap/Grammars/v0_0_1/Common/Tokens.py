@@ -32,15 +32,15 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-Dedent                                      = DedentToken()
-Indent                                      = IndentToken()
-Newline                                     = NewlineToken()
+Dedent                                      = DedentToken.Create()
+Indent                                      = IndentToken.Create()
+Newline                                     = NewlineToken.Create()
 
-PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken()
-PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
+PopIgnoreWhitespaceControl                  = PopIgnoreWhitespaceControlToken.Create()
+PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken.Create()
 
-PopPreserveWhitespaceControl                = PopPreserveWhitespaceControlToken()
-PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken()
+PopPreserveWhitespaceControl                = PopPreserveWhitespaceControlToken.Create()
+PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken.Create()
 
 # The following keywords are special and should not be consumed by the generic expression below.
 # Without this special consideration, the phrase (for example):
@@ -181,7 +181,7 @@ def _CreateGenericNameToken(
     else:
         assert False, filter_func  # pragma: no cover
 
-    return RegexToken(
+    return RegexToken.Create(
         token_name,
         re.compile(
             textwrap.dedent(

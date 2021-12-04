@@ -269,7 +269,7 @@ async def LexAsync(
                             content_end: int,
                         ) -> bool:
                             return bool(
-                                comment_token.Regex.match(
+                                comment_token.regex.match(
                                     content,
                                     pos=content_start,
                                     endpos=content_end,

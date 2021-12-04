@@ -56,7 +56,7 @@ class NoneTypeImpl(GrammarPhrase):
             CreatePhrase(
                 name=phrase_name,
                 item=[
-                    RegexToken("'None'", re.compile(r"None\b")),
+                    RegexToken.Create("'None'", re.compile(r"None\b")),
 
                     # <modifier>?
                     OptionalPhraseItem.Create(

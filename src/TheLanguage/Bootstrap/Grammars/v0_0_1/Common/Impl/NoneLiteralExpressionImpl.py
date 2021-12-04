@@ -42,7 +42,7 @@ class NoneLiteralExpressionImpl(GrammarPhrase):
                 name=phrase_name,
                 item=[
                     # Note that this must be a sequence so that ExtractParserInfo will be called.
-                    RegexToken("'None'", re.compile(r"None\b")),
+                    RegexToken.Create("'None'", re.compile(r"None\b")),
                 ],
             ),
         )

@@ -154,7 +154,7 @@ class MultilineStatementBase(GrammarPhrase):
             CreatePhrase(
                 name=phrase_name,
                 item=[
-                    RegexToken(
+                    RegexToken.Create(
                         "Multi-line Content",
                         re.compile(
                             MultilineTokenDelimiterRegexTemplate.format(

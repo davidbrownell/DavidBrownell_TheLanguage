@@ -434,7 +434,7 @@ class DynamicPhrase(Phrase):
                 )
 
                 non_control_token_phrases = sum(
-                    1 if not isinstance(phrase, TokenPhrase) or not phrase.Token.IsControlToken else 0
+                    1 if not isinstance(phrase, TokenPhrase) or not phrase.Token.is_control_token else 0
                     for phrase in data_item.Phrase.Phrases
                 )
 

@@ -70,7 +70,7 @@ class CharacterLiteralExpression(GrammarPhrase):
                 name=self.PHRASE_NAME,
                 item=[
                     # Note that this must be a sequence so that ExtractParserInfo will be called.
-                    RegexToken(
+                    RegexToken.Create(
                         "<char>",
                         re.compile(r"'(?P<value>\\?(?:\\'|.))'"),
                     ),

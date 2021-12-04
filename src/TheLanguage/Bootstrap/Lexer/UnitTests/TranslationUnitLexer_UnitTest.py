@@ -68,9 +68,9 @@ def parse_mock(parse_mock_impl):
 
 
 # ----------------------------------------------------------------------
-_upper_token                                = RegexToken("Upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)"))
-_lower_token                                = RegexToken("Lower", re.compile(r"(?P<value>[a-z]+[0-9]*)"))
-_number_token                               = RegexToken("Number", re.compile(r"(?P<value>\d+[a-z]*)"))
+_upper_token                                = RegexToken.Create("Upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)"))
+_lower_token                                = RegexToken.Create("Lower", re.compile(r"(?P<value>[a-z]+[0-9]*)"))
+_number_token                               = RegexToken.Create("Number", re.compile(r"(?P<value>\d+[a-z]*)"))
 
 
 # ----------------------------------------------------------------------
@@ -80,8 +80,8 @@ class TestSyntaxInvalidError(object):
         item=[
             _upper_token,
             ":",
-            NewlineToken(),
-            IndentToken(),
+            NewlineToken.Create(),
+            IndentToken.Create(),
             CustomArityPhraseItem.Create(
                 OrPhraseItem()
                     | [_upper_token, NewlineToken()]
@@ -91,7 +91,7 @@ class TestSyntaxInvalidError(object):
                 2,
                 4,
             ),
-            DedentToken(),
+            DedentToken.Create(),
         ],
     )
 
@@ -513,12 +513,12 @@ class TestIndentAndComments(object):
             [
                 _lower_token,
                 ":",
-                NewlineToken(),
-                IndentToken(),
+                NewlineToken.Create(),
+                IndentToken.Create(),
                 OneOrMorePhraseItem.Create(
                     [_upper_token, NewlineToken()],
                 ),
-                DedentToken(),
+                DedentToken.Create(),
             ],
         ),
     )
@@ -740,12 +740,12 @@ class TestIndentation(object):
         name="Phrase",
         item=[
             _upper_token,
-            NewlineToken(),
-            IndentToken(),
+            NewlineToken.Create(),
+            IndentToken.Create(),
             _upper_token,
             _upper_token,
-            NewlineToken(),
-            DedentToken(),
+            NewlineToken.Create(),
+            DedentToken.Create(),
         ],
     )
 
@@ -921,14 +921,14 @@ class TestNewScopedPhrasesComplex(object):
         name="New Scope",
         item=[
             _upper_token,
-            RegexToken("Colon", re.compile(r":")),
-            NewlineToken(),
-            IndentToken(),
+            RegexToken.Create("Colon", re.compile(r":")),
+            NewlineToken.Create(),
+            IndentToken.Create(),
             DynamicPhrasesType.Statements,
             DynamicPhrasesType.Statements,
             DynamicPhrasesType.Statements,
             DynamicPhrasesType.Statements,
-            DedentToken(),
+            DedentToken.Create(),
         ],
     )
 
@@ -1150,7 +1150,7 @@ async def test_DynamicExpressions(parse_mock):
                             _upper_token,
                             DynamicPhrasesType.Expressions,
                             _lower_token,
-                            NewlineToken(),
+                            NewlineToken.Create(),
                         ],
                     ),
                 ],
@@ -1175,9 +1175,9 @@ class TestCatastrophicInclude(object):
     _include_phrase_item                    = PhraseItem.Create(
         name="Include Phrase",
         item=[
-            RegexToken("include", re.compile(r"include")),
+            RegexToken.Create("include", re.compile(r"include")),
             _upper_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 
@@ -1207,7 +1207,7 @@ class TestCatastrophicInclude(object):
         name="Lower Phrase",
         item=[
             _lower_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 
@@ -1215,7 +1215,7 @@ class TestCatastrophicInclude(object):
         name="Number Phrase",
         item=[
             _number_token,
-            NewlineToken(),
+            NewlineToken.Create(),
         ],
     )
 

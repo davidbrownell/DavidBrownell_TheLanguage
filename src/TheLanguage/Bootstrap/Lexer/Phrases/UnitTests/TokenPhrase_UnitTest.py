@@ -50,7 +50,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class TestWords(object):
-    _word_phrase                            = TokenPhrase(RegexToken("Word", re.compile(r"(?P<value>[a-zA-Z0-9]+)\b")))
+    _word_phrase                            = TokenPhrase(RegexToken.Create("Word", re.compile(r"(?P<value>[a-zA-Z0-9]+)\b")))
     _newline_phrase                         = TokenPhrase(NewlineToken())
     _indent_phrase                          = TokenPhrase(IndentToken())
     _dedent_phrase                          = TokenPhrase(DedentToken())

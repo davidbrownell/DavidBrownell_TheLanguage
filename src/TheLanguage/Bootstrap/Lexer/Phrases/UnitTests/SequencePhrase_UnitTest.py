@@ -51,8 +51,8 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class TestUnusualScenarios(object):
-    _lower_phrase                           = TokenPhrase(RegexToken("lower", re.compile(r"(?P<value>[a-z]+[0-9]*)")))
-    _upper_phrase                           = TokenPhrase(RegexToken("upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)")))
+    _lower_phrase                           = TokenPhrase(RegexToken.Create("lower", re.compile(r"(?P<value>[a-z]+[0-9]*)")))
+    _upper_phrase                           = TokenPhrase(RegexToken.Create("upper", re.compile(r"(?P<value>[A-Z]+[0-9]*)")))
     _newline_phrase                         = TokenPhrase(NewlineToken())
 
     _phrase                                 = OrPhrase(

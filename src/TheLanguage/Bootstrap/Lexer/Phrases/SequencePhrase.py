@@ -82,24 +82,24 @@ class SequencePhrase(Phrase):
         control_token_tracker = set()
 
         for phrase_index, phrase in enumerate(phrases):
-            if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
+            if isinstance(phrase, TokenPhrase) and phrase.Token.is_control_token:
                 if phrase_index == 0:
                     assert (
                         isinstance(phrases[-1], TokenPhrase)
-                        and cast(TokenPhrase, phrases[-1]).Token.IsControlToken
+                        and cast(TokenPhrase, phrases[-1]).Token.is_control_token
                     ), "The last phrase must be a control token when the first phrase is a control token"
 
                 control_token = cast(ControlTokenBase, phrase.Token)
 
-                if control_token.ClosingToken is not None:
+                if control_token.closing_token is not None:
                     key = type(control_token)
                     if key in control_token_tracker:
                         assert False, key
 
                     control_token_tracker.add(key)
 
-                if control_token.OpeningToken is not None:
-                    key = control_token.OpeningToken
+                if control_token.opening_token is not None:
+                    key = control_token.opening_token
 
                     if key not in control_token_tracker:
                         assert False, key
@@ -109,7 +109,7 @@ class SequencePhrase(Phrase):
             elif phrase_index == 0:
                 assert not (
                     isinstance(phrases[-1], TokenPhrase)
-                    and cast(TokenPhrase, phrases[-1]).Token.IsControlToken
+                    and cast(TokenPhrase, phrases[-1]).Token.is_control_token
                 ), "The last phrase must not be a control token when the first phrase is not a control token"
 
         assert not control_token_tracker, control_token_tracker
@@ -288,7 +288,7 @@ class SequencePhrase(Phrase):
                     ) = potential_comments_or_whitespace_result
 
             # Process control tokens
-            if isinstance(phrase, TokenPhrase) and phrase.Token.IsControlToken:
+            if isinstance(phrase, TokenPhrase) and phrase.Token.is_control_token:
                 if isinstance(phrase.Token, PushIgnoreWhitespaceControlToken):
                     ignore_whitespace_ctr += 1
 
@@ -314,7 +314,7 @@ class SequencePhrase(Phrase):
                 # If we are pushing a new value, reset the collected comment or whitespace tokens
                 # as they might be impacted by the new value. If popping, preserve the tokens that
                 # we collected under the previous settings.
-                prev_token_was_pop_control = phrase.Token.OpeningToken is not None
+                prev_token_was_pop_control = phrase.Token.opening_token is not None
 
                 if not prev_token_was_pop_control:
                     if comments_or_whitespace_data_items:
