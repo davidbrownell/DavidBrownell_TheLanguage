@@ -129,7 +129,7 @@ class RepeatPhrase(Phrase):
                 ):
                     return None
 
-                return Phrase.LexResult(True, original_normalized_iter, normalized_iter, data)
+                return Phrase.LexResult(True, Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter), data)
 
             # Gather the failure information
             if error_result is not None:
@@ -139,8 +139,7 @@ class RepeatPhrase(Phrase):
             # pylint: disable=too-many-function-args
             return Phrase.LexResult(
                 False,
-                original_normalized_iter,
-                normalized_iter,
+                Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
                 Phrase.StandardLexResultData(
                     self,
                     Phrase.MultipleLexResultData(results, True),

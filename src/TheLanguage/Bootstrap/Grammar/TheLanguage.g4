@@ -75,6 +75,7 @@ tokens { INDENT, DEDENT }
 // - Customizable code generation for:
 //       * assert: Noop, Raise, FailFast
 //       * ensure: Raise, FailFast
+// - Base class visibility can be used to determine if a class heirarchy is polymorphic or is leveraging the compiler for consistency
 
 // ----------------------------------------------------------------------
 STANDARD_CASE_STRICT: [a-z][a-zA-Z0-9_]*;

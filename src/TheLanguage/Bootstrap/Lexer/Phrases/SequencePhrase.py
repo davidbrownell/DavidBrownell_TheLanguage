@@ -125,7 +125,7 @@ class SequencePhrase(Phrase):
 
         super(SequencePhrase, self).__init__(
             name,
-            CommentToken=None,
+            # CommentToken=None,
         )
 
         self.CommentToken                   = comment_token
@@ -378,8 +378,7 @@ class SequencePhrase(Phrase):
         # pylint: disable=too-many-function-args
         return Phrase.LexResult(
             success,
-            original_normalized_iter,
-            normalized_iter,
+            Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
             Phrase.StandardLexResultData(
                 self,
                 Phrase.MultipleLexResultData(data_items, True),

@@ -76,6 +76,9 @@ public immutable class NewlineToken
     [Keyword] public Bool val is_always_ignored=False
     # TODO: Remove (end)
 
+    python_hack: @property
+    python_hack: def Name(self): return self.name
+
     # ----------------------------------------------------------------------
     # |  Public Methods
     public static NewlineToken val Create(
@@ -141,6 +144,9 @@ public immutable class IndentToken
     [Keyword] public String val name
     [Keyword] public Bool val is_control_token
     [Keyword] public Bool val is_always_ignored
+
+    python_hack: @property
+    python_hack: def Name(self): return self.name
     # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
@@ -201,6 +207,9 @@ public immutable class DedentToken
     [Keyword] public String val name
     [Keyword] public Bool val is_control_token
     [Keyword] public Bool val is_always_ignored
+
+    python_hack: @property
+    python_hack: def Name(self): return self.name
     # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
@@ -258,6 +267,9 @@ public immutable class RegexToken
     # TODO: Remove (begin)
     [Keyword] public Bool val is_control_token
     [Keyword] public Bool val is_always_ignored
+
+    python_hack: @property
+    python_hack: def Name(self): return self.name
     # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
@@ -380,6 +392,9 @@ private immutable class ControlTokenBase
     [Keyword] public (ControlTokenBase | None) val closing_token=None
     [Keyword] public (ControlTokenBase | None) val opening_token=None
 
+    python_hack: @property
+    python_hack: def Name(self): return self.name
+
     # ----------------------------------------------------------------------
     # |  Public Methods
     public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
@@ -413,6 +428,10 @@ public immutable class PushIgnoreWhitespaceControlToken
     private None __Init?__():
         python_hack: self.is_control_token = True
         python_hack: self.is_always_ignored = False
+
+    python_hack: @property
+    python_hack: def Name(self): return self.name
+
     # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
@@ -443,6 +462,10 @@ public immutable class PopIgnoreWhitespaceControlToken
     private None __Init?__():
         python_hack: self.is_control_token = True
         python_hack: self.is_always_ignored = False
+
+    python_hack: @property
+    python_hack: def Name(self): return self.name
+
     # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
@@ -473,6 +496,10 @@ public immutable class PushPreserveWhitespaceControlToken
     private None __Init?__():
         python_hack: self.is_control_token = True
         python_hack: self.is_always_ignored = False
+
+    python_hack: @property
+    python_hack: def Name(self): return self.name
+
     # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
@@ -503,6 +530,10 @@ public immutable class PopPreserveWhitespaceControlToken
     private None __Init?__():
         python_hack: self.is_control_token = True
         python_hack: self.is_always_ignored = False
+
+    python_hack: @property
+    python_hack: def Name(self): return self.name
+
     # TODO: Remove (end)
 
     # ----------------------------------------------------------------------

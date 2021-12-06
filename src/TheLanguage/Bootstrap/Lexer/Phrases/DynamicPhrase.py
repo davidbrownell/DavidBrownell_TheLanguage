@@ -300,8 +300,7 @@ class DynamicPhrase(Phrase):
         # pylint: disable=too-many-function-args
         return Phrase.LexResult(
             result.Success,
-            normalized_iter,
-            result.IterEnd,
+            Phrase.NormalizedIteratorRange(normalized_iter, result.IterEnd),
             data,
         )
 
@@ -399,8 +398,7 @@ class DynamicPhrase(Phrase):
             # pylint: disable=too-many-function-args
             return Phrase.LexResult(
                 False,
-                original_normalized_iter,
-                normalized_iter,
+                Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
                 Phrase.StandardLexResultData(self, error_data_item, unique_id),
             )
 
@@ -556,8 +554,7 @@ class DynamicPhrase(Phrase):
             # pylint: disable=too-many-function-args
             return Phrase.LexResult(
                 False,
-                original_normalized_iter,
-                normalized_iter,
+                Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
                 data,
             )
 
@@ -580,7 +577,7 @@ class DynamicPhrase(Phrase):
             if isinstance(data, Phrase.StandardLexResultData):
                 object.__setattr__(
                     data,
-                    "UniqueId",
+                    "unique_id",
                     (unique_id_suffix_str, str(unique_id_suffix_iteration), ),
                 )
 
@@ -616,8 +613,7 @@ class DynamicPhrase(Phrase):
         # pylint: disable=too-many-function-args
         return Phrase.LexResult(
             True,
-            original_normalized_iter,
-            normalized_iter,
+            Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
             cast(Phrase.StandardLexResultData, data),
         )
 

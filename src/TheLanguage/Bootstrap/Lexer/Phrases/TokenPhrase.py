@@ -65,7 +65,7 @@ class TokenPhrase(Phrase):
 
         super(TokenPhrase, self).__init__(
             name,
-            Token=lambda token: token.name,
+            # Token=lambda token: token.name,
         )
 
         self.Token                          = token
@@ -218,8 +218,7 @@ class TokenPhrase(Phrase):
                 # pylint: disable=too-many-function-args
                 return Phrase.LexResult(
                     False,
-                    normalized_iter,
-                    normalized_iter,
+                    Phrase.NormalizedIteratorRange(normalized_iter, normalized_iter),
                     Phrase.StandardLexResultData(self, None, None),
                 )
 
@@ -231,9 +230,8 @@ class TokenPhrase(Phrase):
                     self.Token,
                     potential_whitespace,
                     result,
-                    potential_iter_begin,
-                    potential_iter,
-                    IsIgnored=self.Token.is_always_ignored,
+                    Phrase.NormalizedIteratorRange(potential_iter_begin, potential_iter),
+                    is_ignored=self.Token.is_always_ignored,
                 ),
                 unique_id,
             )
@@ -246,7 +244,11 @@ class TokenPhrase(Phrase):
                 return None
 
             # pylint: disable=too-many-function-args
-            return Phrase.LexResult(True, normalized_iter.Clone(), potential_iter, data)
+            return Phrase.LexResult(
+                True,
+                Phrase.NormalizedIteratorRange(normalized_iter.Clone(), potential_iter),
+                data,
+            )
 
     # ----------------------------------------------------------------------
     # |
@@ -347,9 +349,8 @@ class TokenPhrase(Phrase):
                 comment_token,
                 potential_whitespace,
                 result,
-                normalized_iter_begin,
-                normalized_iter,
-                IsIgnored=True,
+                Phrase.NormalizedIteratorRange(normalized_iter_begin, normalized_iter),
+                is_ignored=True,
             ),
         ]
 
@@ -418,9 +419,8 @@ class TokenPhrase(Phrase):
                 cls._indent_token,
                 None,
                 result,
-                normalized_iter_begin,
-                normalized_iter,
-                IsIgnored=True,
+                Phrase.NormalizedIteratorRange(normalized_iter_begin, normalized_iter),
+                is_ignored=True,
             )
 
         elif next_token_type == Phrase.NormalizedIterator.TokenType.Dedent:
@@ -437,9 +437,8 @@ class TokenPhrase(Phrase):
                 cls._dedent_token,
                 None,
                 result,
-                normalized_iter_begin,
-                normalized_iter,
-                IsIgnored=True,
+                Phrase.NormalizedIteratorRange(normalized_iter_begin, normalized_iter),
+                is_ignored=True,
             )
 
         # Consume potential newlines
@@ -461,9 +460,8 @@ class TokenPhrase(Phrase):
                     cls._newline_token,
                     potential_whitespace,
                     result,
-                    normalized_iter_begin,
-                    normalized_iter,
-                    IsIgnored=True,
+                    Phrase.NormalizedIteratorRange(normalized_iter_begin, normalized_iter),
+                    is_ignored=True,
                 )
 
         return None

@@ -101,7 +101,7 @@ class PythonVisitor(Visitor):
                 {documentation}
 
                 import copy
-                from enum import Enum
+                from enum import auto, Enum
 
                 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -1070,6 +1070,8 @@ class PythonVisitor(Visitor):
                 if members:
                     args = []
                     member_names = []
+                    init_assignments = []
+                    extra_init_assignments = []
 
                     for member in itertools.chain(
                         # TODO: GetMembers(parser_info.Extends),
@@ -1088,8 +1090,19 @@ class PythonVisitor(Visitor):
 
                             suffix = "={}".format(sink.getvalue())
 
-                        if not member.NoInit:
+                        if member.NoInit:
+                            if member.InitializedValue is not None:
+                                sink = StringIO()
+                                self._stream_stack.append(sink)
+                                with CallOnExit(self._stream_stack.pop):
+                                    self.Accept(member.InitializedValue, stack)
+
+                                sink = sink.getvalue()
+
+                                extra_init_assignments.append("self.{} = {}".format(member.Name, sink))
+                        else:
                             args.append("{}{}".format(member.Name, suffix))
+                            init_assignments.append("self.{name} = {name}".format(name=member.Name))
 
                         member_names.append(member.Name)
 
@@ -1097,28 +1110,75 @@ class PythonVisitor(Visitor):
                         textwrap.dedent(
                             """\
                             def __init__(self, {args}):
-                            {assignments}
+                            {init_assignments}{extra_init_assignments}
 
                             {indent}self._Init_()
 
                             def __eq__(self, other):
-                            {indent}return isinstance(other, self.__class__) and {compare_statements}
+                                if not isinstance(other, self.__class__): return False
+                                return self.__class__.__Compare__(self, other) == 0
+
+                            def __ne__(self, other):
+                                if not isinstance(other, self.__class__): return True
+                                return self.__class__.__Compare__(self, other) != 0
+
+                            def __lt__(self, other):
+                                if not isinstance(other, self.__class__): return False
+                                return self.__class__.__Compare__(self, other) < 0
+
+                            def __le__(self, other):
+                                if not isinstance(other, self.__class__): return False
+                                return self.__class__.__Compare__(self, other) <= 0
+
+                            def __gt__(self, other):
+                                if not isinstance(other, self.__class__): return False
+                                return self.__class__.__Compare__(self, other) > 0
+
+                            def __ge__(self, other):
+                                if not isinstance(other, self.__class__): return False
+                                return self.__class__.__Compare__(self, other) >= 0
+
+                            @classmethod
+                            def __Compare__(cls, a, b):
+                            {indent}{compare_statements}
+
+                            {indent}return 0
 
                             """,
                         ).format(
                             args=", ".join(args),
-                            assignments=StringHelpers.LeftJustify(
-                                "\n".join(
-                                    [
-                                        "self.{name} = {name}".format(name=member.Name)
-                                        for member in members if not member.NoInit
-                                    ],
-                                ),
+                            init_assignments=StringHelpers.LeftJustify(
+                                "\n".join(init_assignments),
                                 len(self._indentation),
                                 skip_first_line=False,
                             ),
+                            extra_init_assignments="" if not extra_init_assignments else "\n{}".format(
+                                StringHelpers.LeftJustify(
+                                    "\n".join(extra_init_assignments),
+                                    len(self._indentation),
+                                    skip_first_line=False,
+                                ),
+                            ),
                             indent=self._indentation,
-                            compare_statements=" and ".join(["self.{member} == other.{member}".format(member=member) for member in member_names]),
+                            compare_statements=StringHelpers.LeftJustify(
+                                "\n".join(
+                                    [
+                                        textwrap.dedent(
+                                            """\
+                                            if a.{name} is None and b.{name} is None: pass
+                                            elif a.{name} is None: return -1
+                                            elif b.{name} is None: return 1
+                                            elif a.{name} < b.{name}: return -1
+                                            elif a.{name} > b.{name}: return 1
+                                            """,
+                                        ).format(
+                                            name=member_name,
+                                        )
+                                        for member_name in member_names
+                                    ],
+                                ),
+                                len(self._indentation),
+                            ).rstrip(),
                         ),
                     )
 

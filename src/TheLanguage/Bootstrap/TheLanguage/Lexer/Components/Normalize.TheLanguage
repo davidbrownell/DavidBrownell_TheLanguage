@@ -134,6 +134,8 @@ public immutable class NormalizedContent:
     python_hack: @property
     python_hack: def ContentLen(self): return self.content_length
     python_hack: @property
+    python_hack: def ContentLength(self): return self.content_length
+    python_hack: @property
     python_hack: def LineInfos(self): return self.line_infos
     python_hack: @property
     python_hack: def Hash(self): return self.hash

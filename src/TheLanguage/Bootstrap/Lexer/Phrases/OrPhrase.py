@@ -226,13 +226,16 @@ class OrPhrase(Phrase):
                 if not await observer.OnInternalPhraseAsync(data, original_normalized_iter, best_result.IterEnd):
                     return None
 
-                return Phrase.LexResult(True, original_normalized_iter, best_result.IterEnd, data)
+                return Phrase.LexResult(
+                    True,
+                    Phrase.NormalizedIteratorRange(original_normalized_iter, best_result.IterEnd),
+                    data,
+                )
 
             # pylint: disable=too-many-function-args
             return Phrase.LexResult(
                 False,
-                original_normalized_iter,
-                best_result.IterEnd,
+                Phrase.NormalizedIteratorRange(original_normalized_iter, best_result.IterEnd),
                 Phrase.StandardLexResultData(
                     self,
                     Phrase.MultipleLexResultData([result.Data for result in results], True),

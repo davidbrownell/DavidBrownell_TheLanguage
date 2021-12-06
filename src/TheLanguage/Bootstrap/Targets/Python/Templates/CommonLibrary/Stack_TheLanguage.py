@@ -45,5 +45,19 @@ class Stack(object):
     def __len__(self):
         return len(self._items)
 
-    def __eq__(self, other):
-        return self._items == other._items
+    def __eq__(self, other): return self.__class__.__Compare__(self, other) == 0
+    def __ne__(self, other): return self.__class__.__Compare__(self, other) != 0
+    def __lt__(self, other): return self.__class__.__Compare__(self, other) < 0
+    def __le__(self, other): return self.__class__.__Compare__(self, other) <= 0
+    def __gt__(self, other): return self.__class__.__Compare__(self, other) > 0
+    def __ge__(self, other): return self.__class__.__Compare__(self, other) >= 0
+
+    @classmethod
+    def __Compare__(cls, a, b):
+        if not isinstance(a, cls) or not isinstance(b, cls):
+            return False
+
+        if a._items < b._items: return -1
+        if a._items > b._items: return 1
+
+        return 0

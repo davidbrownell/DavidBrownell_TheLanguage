@@ -80,6 +80,10 @@ else:
         # True if the token should always be ignored (good for comments)
         IsAlwaysIgnored                         = False
 
+        @property
+        def is_always_ignored(self):
+            return self.IsAlwaysIgnored
+
         # ----------------------------------------------------------------------
         # |
         # |  Public Methods
@@ -96,6 +100,10 @@ else:
         def Name(self):
             """Name of the token"""
             raise Exception("Abstract property")  # pragma: no cover
+
+        @property
+        def name(self):
+            return self.Name
 
         # ----------------------------------------------------------------------
         @staticmethod
@@ -133,6 +141,10 @@ else:
         # |  Public Methods
         # |
         # ----------------------------------------------------------------------
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            return cls(*args, **kwargs)
+
         def __init__(
             self,
             capture_many=True,
@@ -206,6 +218,10 @@ else:
         # |  Public Methods
         # |
         # ----------------------------------------------------------------------
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            return cls(*args, **kwargs)
+
         @staticmethod
         @Interface.override
         def Match(
@@ -251,6 +267,10 @@ else:
         # |  Public Methods
         # |
         # ----------------------------------------------------------------------
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            return cls(*args, **kwargs)
+
         @staticmethod
         @Interface.override
         def Match(
@@ -280,11 +300,18 @@ else:
         class MatchResult(Token.MatchResult):
             Match: TypingMatch
 
+            @property
+            def match(self): return self.Match
+
         # ----------------------------------------------------------------------
         # |
         # |  Public Methods
         # |
         # ----------------------------------------------------------------------
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            return cls(*args, **kwargs)
+
         def __init__(
             self,
             name: str,
@@ -334,6 +361,13 @@ else:
             self.IsMultiline                    = is_multiline
             self.IsAlwaysIgnored                = is_always_ignored
 
+        @property
+        def regex(self): return self.Regex
+        @property
+        def is_multiline(self): return self.IsMultiline
+        @property
+        def is_always_ignored(self): return self.IsAlwaysIgnored
+
         # ----------------------------------------------------------------------
         @property
         @Interface.override
@@ -380,6 +414,11 @@ else:
         ClosingToken: Optional["ControlTokenBase"]          = None
         OpeningToken: Optional["ControlTokenBase"]          = None
 
+        @property
+        def closing_token(self): return self.ClosingToken
+        @property
+        def opening_token(self): return self.OpeningToken
+
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.override
@@ -404,6 +443,11 @@ else:
         Name                                    = Interface.DerivedProperty("PushIgnoreWhitespaceControl")  # type: ignore
         ClosingToken                            = "PopIgnoreWhitespaceControlToken"   # type: ignore # Set below
 
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            return cls(*args, **kwargs)
+
+
 
     # ----------------------------------------------------------------------
     @Interface.staticderived
@@ -416,6 +460,11 @@ else:
 
         Name                                    = Interface.DerivedProperty("PopIgnoreWhitespaceControl")  # type: ignore
         OpeningToken                            = PushIgnoreWhitespaceControlToken  # type: ignore
+
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            return cls(*args, **kwargs)
+
 
 
     PushIgnoreWhitespaceControlToken.ClosingToken           = PopIgnoreWhitespaceControlToken  # type: ignore
@@ -431,6 +480,11 @@ else:
         Name                                    = Interface.DerivedProperty("PushPreserveWhitespaceControlToken")  # type: ignore
         ClosingToken                            = "PopIgnoreWhitespaceControlToken"  # type: ignore # Set below
 
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            return cls(*args, **kwargs)
+
+
 
     # ----------------------------------------------------------------------
     @Interface.staticderived
@@ -444,6 +498,11 @@ else:
 
         Name                                    = Interface.DerivedProperty("PopPreserveWhitespaceControlToken")  # type: ignore
         OpeningToken                            = PushPreserveWhitespaceControlToken  # type: ignore
+
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            return cls(*args, **kwargs)
+
 
 
     PushPreserveWhitespaceControlToken.ClosingToken         = PopPreserveWhitespaceControlToken  # type: ignore

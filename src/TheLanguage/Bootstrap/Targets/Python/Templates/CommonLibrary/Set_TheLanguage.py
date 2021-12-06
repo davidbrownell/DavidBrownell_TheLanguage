@@ -45,8 +45,22 @@ class Set(object):
     def __getattr__(self, name):
         return getattr(self._values, name)
 
-    def __eq__(self, other):
-        return self._values == other._values
+    def __eq__(self, other): return self.__class__.__Compare__(self, other) == 0
+    def __ne__(self, other): return self.__class__.__Compare__(self, other) != 0
+    def __lt__(self, other): return self.__class__.__Compare__(self, other) < 0
+    def __le__(self, other): return self.__class__.__Compare__(self, other) <= 0
+    def __gt__(self, other): return self.__class__.__Compare__(self, other) > 0
+    def __ge__(self, other): return self.__class__.__Compare__(self, other) >= 0
+
+    @classmethod
+    def __Compare__(cls, a, b):
+        if not isinstance(a, cls) or not isinstance(b, cls):
+            return False
+
+        if a._values < b._values: return -1
+        if a._values > b._values: return 1
+
+        return 0
 
     def __contains__(self, value):
         return value in self._values

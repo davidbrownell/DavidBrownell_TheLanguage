@@ -101,6 +101,10 @@ else:
                 normalized_content.Hash,
             )
 
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            return cls.FromNormalizedContent(*args, **kwargs)
+
         # ----------------------------------------------------------------------
         def __init__(
             self,
