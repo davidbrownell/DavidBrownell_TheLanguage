@@ -224,6 +224,8 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
 
     Visibility: VisibilityModifier                      = field(init=False)
     MethodModifier: MethodModifierType                  = field(init=False)
+
+    # TODO: This should be TypeModifier
     ClassModifier: Optional[ClassModifierType]          = field(init=False)
 
     ReturnType: TypeParserInfo

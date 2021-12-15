@@ -33,17 +33,13 @@ _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-the_language_output_dir = os.getenv("THE_LANGUAGE_OUTPUT_DIR")
-if the_language_output_dir is not None:
+if True:
     import sys
-    sys.path.insert(0, the_language_output_dir)
+    sys.path.insert(0, os.path.join(_script_dir, "..", "..", "GeneratedCode"))
     from Lexer_TheLanguage.Components_TheLanguage.Token_TheLanguage import *
     sys.path.pop(0)
 
-    USE_THE_LANGUAGE_GENERATED_CODE = True
 else:
-    USE_THE_LANGUAGE_GENERATED_CODE = False
-
     with InitRelativeImports():
         from .Normalize import GetNumMultilineTokenDelimiters, multiline_token_delimiter_length as MULTILINE_TOKEN_DELIMITER_ITEM_LENGTH
         from .NormalizedIterator import NormalizedIterator
@@ -108,7 +104,7 @@ else:
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.abstractmethod
-        def Match(
+        def Match_(
             normalized_iter: NormalizedIterator,
         ) -> Optional["MatchResult"]:
             """Returns match information if a match was found for the iterator in its current position"""
@@ -164,7 +160,7 @@ else:
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def Match(
+        def Match_(
             self,
             normalized_iter: NormalizedIterator,
         ) -> Optional[Token.MatchResult]:
@@ -224,7 +220,7 @@ else:
 
         @staticmethod
         @Interface.override
-        def Match(
+        def Match_(
             normalized_iter: NormalizedIterator,
         ) -> Optional[Token.MatchResult]:
             if normalized_iter.GetNextTokenType() != NormalizedIterator.TokenType.Indent:
@@ -273,7 +269,7 @@ else:
 
         @staticmethod
         @Interface.override
-        def Match(
+        def Match_(
             normalized_iter: NormalizedIterator,
         ) -> Optional[Token.MatchResult]:
             if normalized_iter.GetNextTokenType() != NormalizedIterator.TokenType.Dedent:
@@ -376,7 +372,7 @@ else:
 
         # ----------------------------------------------------------------------
         @Interface.override
-        def Match(
+        def Match_(
             self,
             normalized_iter: NormalizedIterator,
         ) -> Optional[Token.MatchResult]:
@@ -422,7 +418,7 @@ else:
         # ----------------------------------------------------------------------
         @staticmethod
         @Interface.override
-        def Match(
+        def Match_(
             normalized_iter: NormalizedIterator,
         ) -> Optional[Token.MatchResult]:
             raise Exception("This method should never be invoked for control tokens")

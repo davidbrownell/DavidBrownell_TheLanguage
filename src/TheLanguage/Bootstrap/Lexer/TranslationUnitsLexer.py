@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Components.Normalize import Normalize
+    from .Components.Normalize import Normalize_
 
     from .TranslationUnitLexer import (
         AST,
@@ -112,7 +112,7 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    async def OnPushScopeAsync(
+    def OnPushScope(
         fully_qualified_name: str,
         data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
@@ -123,7 +123,7 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    async def OnPopScopeAsync(
+    def OnPopScope(
         fully_qualified_name: str,
         data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
@@ -134,7 +134,7 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    async def OnPhraseCompleteAsync(
+    def OnPhraseComplete(
         fully_qualified_name: str,
         phrase: Phrase,
         node: AST.Node,
@@ -279,7 +279,7 @@ async def LexAsync(
                         # ----------------------------------------------------------------------
 
                         normalized_iter = Phrase.NormalizedIterator.Create(
-                            Normalize(
+                            Normalize_(
                                 content,
                                 suppress_indentation_func=SuppressIndentationInfo,
                             ),
@@ -371,7 +371,7 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         self,
         fully_qualified_name: str,
         observer: Observer,
-        async_lex_func: Callable[[str], Awaitable[Optional[DynamicPhrasesInfo]]],
+        async_lex_func: Callable[[str], Optional[DynamicPhrasesInfo]],
     ):
         self._fully_qualified_name          = fully_qualified_name
         self._observer                      = observer
@@ -389,17 +389,17 @@ class _TranslationUnitObserver(TranslationUnitObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnPushScopeAsync(self, *args, **kwargs):
-        return await self._observer.OnPushScopeAsync(self._fully_qualified_name, *args, **kwargs)
+    def OnPushScope(self, *args, **kwargs):
+        return self._observer.OnPushScope(self._fully_qualified_name, *args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnPopScopeAsync(self, *args, **kwargs):
-        return await self._observer.OnPopScopeAsync(self._fully_qualified_name, *args, **kwargs)
+    def OnPopScope(self, *args, **kwargs):
+        return self._observer.OnPopScope(self._fully_qualified_name, *args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnPhraseCompleteAsync(
+    def OnPhraseComplete(
         self,
         phrase: Phrase,
         node: AST.Node,
@@ -409,7 +409,7 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         bool,
         DynamicPhrasesInfo,
     ]:
-        result = await self._observer.OnPhraseCompleteAsync(
+        result = self._observer.OnPhraseComplete(
             self._fully_qualified_name,
             phrase,
             node,
@@ -425,7 +425,7 @@ class _TranslationUnitObserver(TranslationUnitObserver):
                     result.SourceName,
                 )
 
-            result = await self._async_lex_func(result.FullyQualifiedName)
+            result = self._async_lex_func(result.FullyQualifiedName)
             if result is None:
                 return False
 

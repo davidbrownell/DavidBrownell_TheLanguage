@@ -340,7 +340,7 @@ class SyntaxObserverDecorator(TranslationUnitsLexerObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnPushScopeAsync(
+    def OnPushScope(
         self,
         fully_qualified_name: str,
         data: Phrase.StandardLexResultData,
@@ -370,7 +370,7 @@ class SyntaxObserverDecorator(TranslationUnitsLexerObserver):
         if result is not None:
             return result
 
-        return await self._observer.OnPushScopeAsync(
+        return self._observer.OnPushScope(
             fully_qualified_name,
             data,
             iter_before,
@@ -379,15 +379,15 @@ class SyntaxObserverDecorator(TranslationUnitsLexerObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnPopScopeAsync(self, *args, **kwargs):  # pylint: disable=arguments-differ
+    def OnPopScope(self, *args, **kwargs):  # pylint: disable=arguments-differ
         assert self._should_ignore_stack
         self._should_ignore_stack.pop()
 
-        return await self._observer.OnPopScopeAsync(*args, **kwargs)
+        return self._observer.OnPopScope(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnPhraseCompleteAsync(
+    def OnPhraseComplete(
         self,
         fully_qualified_name: str,
         phrase: Phrase,
@@ -416,7 +416,7 @@ class SyntaxObserverDecorator(TranslationUnitsLexerObserver):
 
         object.__setattr__(node, "IsIgnored", self._should_ignore_stack[-1])
 
-        return await self._observer.OnPhraseCompleteAsync(
+        return self._observer.OnPhraseComplete(
             fully_qualified_name,
             phrase,
             node,

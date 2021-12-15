@@ -245,7 +245,7 @@ class DynamicPhrase(Phrase):
             if (
                 result.Success
                 and result.Data is not None
-                and not await observer.OnInternalPhraseAsync(
+                and not observer.OnInternalPhrase(
                     result.Data,
                     result.IterBegin,
                     result.IterEnd,

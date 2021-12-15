@@ -410,7 +410,7 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    async def OnPushScopeAsync(
+    def OnPushScope(
         data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
         iter_after: Phrase.NormalizedIterator,
@@ -420,7 +420,7 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    async def OnPopScopeAsync(
+    def OnPopScope(
         data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
         iter_after: Phrase.NormalizedIterator,
@@ -430,7 +430,7 @@ class Observer(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    async def OnPhraseCompleteAsync(
+    def OnPhraseComplete(
         phrase: Phrase,
         node: AST.Node,
         iter_before: Phrase.NormalizedIterator,
@@ -991,12 +991,12 @@ class _PhraseObserver(Phrase.Observer):
                     assert False, data.Data  # pragma: no cover
 
                 for data_item in data_items:
-                    if isinstance(data_item, Phrase.TokenLexResultData):
+                    if data_item.__class__.__name__ == "TokenLexResultData":
                         self.__class__.CreateLeaf(data_item, node)
-                    elif isinstance(data_item, Phrase.StandardLexResultData):
+                    elif data_item.__class__.__name__ == "PhraseLexResultData":
                         self.CreateNode(data_item, node)
                     else:
-                        assert False, data_item  # pragma: no cover
+                        assert False, data_item.__class__.__name__  # pragma: no cover
 
             if cache_key is not None:
                 self._node_cache[cache_key] = node
@@ -1069,7 +1069,7 @@ class _PhraseObserver(Phrase.Observer):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnPushScopeAsync(
+    def OnPushScope(
         self,
         data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
@@ -1077,7 +1077,7 @@ class _PhraseObserver(Phrase.Observer):
     ) -> None:
         self._scope_level += 1
 
-        result = await self._observer.OnPushScopeAsync(data, iter_before, iter_after)
+        result = self._observer.OnPushScope(data, iter_before, iter_after)
         if isinstance(result, DynamicPhrasesInfo):
             assert data.UniqueId is not None
             unique_id = data.UniqueId
@@ -1092,7 +1092,7 @@ class _PhraseObserver(Phrase.Observer):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnPopScopeAsync(
+    def OnPopScope(
         self,
         data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
@@ -1107,11 +1107,11 @@ class _PhraseObserver(Phrase.Observer):
         assert self._scope_level
         self._scope_level -= 1
 
-        await self._observer.OnPopScopeAsync(data, iter_before, iter_after)
+        self._observer.OnPopScope(data, iter_before, iter_after)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnInternalPhraseAsync(
+    def OnInternalPhrase(
         self,
         data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
@@ -1120,7 +1120,7 @@ class _PhraseObserver(Phrase.Observer):
         assert data.Data is not None
         assert data.UniqueId is not None
 
-        result = await self._observer.OnPhraseCompleteAsync(
+        result = self._observer.OnPhraseComplete(
             data.Phrase,
             cast(AST.Node, self.CreateNode(data, None)),
             iter_before,

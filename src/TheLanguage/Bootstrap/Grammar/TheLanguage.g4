@@ -28,7 +28,7 @@ tokens { INDENT, DEDENT }
 //             Value1 <<----
 // - '::' when used with types
 // - Dotted variable names
-// - More lieniency for parameter placement with functions (as in, open paren can start indented on its own line) (especially those with captures)
+// - More lieniency for placement with functions (as in, open paren can start indented on its own line) (especially those with captures)
 // - Leading underscore indicates 'private'
 // - Function type should take generator/scoped/etc. into account
 // - 'immutable' variable type for functions
@@ -266,6 +266,7 @@ standard_statement: (
     | continue_statement
     | delete_statement
     | docstring_statement
+    | exit_statement
     | for_statement
     | func_definition_statement
     | if_statement
@@ -349,6 +350,9 @@ delete_statement: 'delete' variable_name (',' variable_name)* ','? NEWLINE;
 docstring_statement: '<<<' .*? '>>>' NEWLINE;
 
 // ----------------------------------------------------------------------
+exit_statement: 'exit' ':' standard_expression NEWLINE;
+
+// ----------------------------------------------------------------------
 for_statement: (
     'for'
     standard_name
@@ -362,7 +366,7 @@ func_definition_statement: (
     attributes?
     visibility_modifier?
     method_modifier?
-    class_modifier?
+    class_modifier? // TOOD: Should be type_modifier (with restrictions (e.g. shared/isolated aren't valid))
     standard_type /*type_modifier is required*/
     function_name
     template_parameters?

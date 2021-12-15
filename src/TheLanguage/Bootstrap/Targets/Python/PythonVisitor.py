@@ -1,6 +1,7 @@
 import itertools
 import os
 import textwrap
+import uuid
 
 from io import StringIO
 
@@ -38,9 +39,11 @@ class PythonVisitor(Visitor):
 
         self._stream_stack: List[TextIO] = [sink]
         self._indentation = " " * (indent_level or 4)
-        self._imports = []
+        self._import_statements = []
+        self._imports = {}
         self._prev_line: Optional[int] = None
         self._import_prefix = common_library_import_prefix
+        self._unique_id_stack = []
 
         self.Accept(parser_info, [])
 
@@ -51,15 +54,23 @@ class PythonVisitor(Visitor):
         self,
         content: str,
     ) -> str:
-        if self._imports:
+        if self._import_statements:
             imports = StringHelpers.LeftJustify(
-                "\n".join(self._imports),
+                "\n".join(self._import_statements),
                 len(self._indentation),
             )
         else:
             imports = ""
 
         content = content.replace(self._IMPORTS_PLACEHOLDER, imports)
+
+        lines = content.split("\n")
+
+        for line_index, line in enumerate(lines):
+            if line.isspace():
+                lines[line_index] = ""
+
+        content = "\n".join(lines)
 
         return content
 
@@ -76,7 +87,7 @@ class PythonVisitor(Visitor):
         if self._prev_line is not None and self._prev_line != parser_info.Regions__.Self__.Begin.Line: # type: ignore && pylint: disable=no-member
             assert parser_info.Regions__.Self__.Begin.Line > self._prev_line  # type: ignore && pylint: disable=no-member
 
-            self._stream.write("*****\n" * (parser_info.Regions__.Self__.Begin.Line - self._prev_line)) # type: ignore && pylint: disable=no-member
+            self._stream.write("\n" * (parser_info.Regions__.Self__.Begin.Line - self._prev_line)) # type: ignore && pylint: disable=no-member
 
         self._prev_line = parser_info.Regions__.Self__.End.Line # type: ignore && pylint: disable=no-member
 
@@ -990,242 +1001,315 @@ class PythonVisitor(Visitor):
         parser_info: ClassStatementParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
         with StackHelper(stack)[parser_info] as helper:
-            self._stream.write(
-                textwrap.dedent(
-                    """\
-                    # Visibility: {}
-                    # ClassModifier: {}
-                    # ClassType: {}
-                    """,
-                ).format(
-                    parser_info.Visibility.name,
-                    parser_info.ClassModifier.name,
-                    parser_info.ClassType.name,
-                ),
-            )
-
-            if parser_info.Templates is not None:
-                with helper["Templates"]:
-                    self.Accept(parser_info.Templates, helper.stack)
-
-            if parser_info.Constraints is not None:
-                with helper["Constraints"]:
-                    self.Accept(parser_info.Constraints, helper.stack)
-
-            base_classes = [
-                dependency.Name.replace("::", ".") for dependency in itertools.chain(
-                    (parser_info.Extends or []),
-                    (parser_info.Implements or []),
-                    (parser_info.Uses or []),
+            unique_id = str(uuid.uuid4()).replace("-", "")
+            self._unique_id_stack.append(unique_id)
+            with CallOnExit(self._unique_id_stack.pop):
+                self._stream.write(
+                    textwrap.dedent(
+                        """\
+                        # Visibility: {}
+                        # ClassModifier: {}
+                        # ClassType: {}
+                        """,
+                    ).format(
+                        parser_info.Visibility.name,
+                        parser_info.ClassModifier.name,
+                        parser_info.ClassType.name,
+                    ),
                 )
-            ]
 
-            if not base_classes:
-                if parser_info.ClassType == ClassType.Exception:
-                    base_classes.append("Exception")
+                if parser_info.Templates is not None:
+                    with helper["Templates"]:
+                        self.Accept(parser_info.Templates, helper.stack)
+
+                if parser_info.Constraints is not None:
+                    with helper["Constraints"]:
+                        self.Accept(parser_info.Constraints, helper.stack)
+
+                base_class_prefix = []
+
+                for item in stack[:-1]:
+                    if isinstance(item, ClassStatementParserInfo):
+                        base_class_prefix.append(item.Name)
+
+                base_class_prefix = ".".join(base_class_prefix)
+                if base_class_prefix:
+                    base_class_prefix += "."
+
+                # ----------------------------------------------------------------------
+                def ToTypeName(name):
+                    if name in self._imports:
+                        return name
+
+                    name = name.replace("::", ".")
+                    if name.startswith(base_class_prefix):
+                        return name
+
+                    return "{}{}".format(base_class_prefix, name)
+
+                # ----------------------------------------------------------------------
+
+                base_classes = [
+                    dependency.Name
+                    for dependency in itertools.chain(
+                        (parser_info.Extends or []),
+                        (parser_info.Implements or []),
+                        (parser_info.Uses or []),
+                    )
+                ]
+
+                generate_init_method = True
+
+                if base_classes:
+                    standard_base = None
+                elif parser_info.ClassType == ClassType.Exception:
+                    standard_base = "Exception"
                 elif parser_info.ClassType == ClassType.Enum:
-                    base_classes.append("Enum")
-
-            self._stream.write(
-                "class {}({}):\n".format(
-                    parser_info.Name,
-                    "object" if not base_classes else ", ".join(base_classes),
-                ),
-            )
-
-            # Organize the statements
-            methods = []
-            members = []
-            saw_init = False
-            saw_to_string = False
-
-            for statement in parser_info.Statements:
-                if isinstance(statement, ClassMemberStatementParserInfo):
-                    members.append(statement)
+                    standard_base = "Enum"
+                    generate_init_method = False
                 else:
-                    if isinstance(statement, FuncDefinitionStatementParserInfo):
-                        if (
-                            statement.Name == FuncDefinitionStatementOperatorType.Init
-                            or statement.Name == FuncDefinitionStatementOperatorType.PostInit
-                        ):
-                            saw_init = True
-                        elif statement.Name == FuncDefinitionStatementOperatorType.ToString:
-                            saw_to_string = True
+                    standard_base = "object"
 
-                    methods.append(statement)
+                self._stream.write(
+                    "class {}({}):\n".format(
+                        parser_info.Name,
+                        ", ".join(base_classes + ([standard_base] if standard_base is not None else [])),
+                    ),
+                )
 
-            with self._Indent():
-                if parser_info.Documentation is not None:
-                    self._stream.write(
-                        textwrap.dedent(
-                            '''\
-                            """\\
-                            {}
-                            """
+                # Organize the statements
+                methods = []
+                members = []
 
-                            ''',
-                        ).format(parser_info.Documentation),
-                    )
+                saw_init = False
+                saw_to_string = False
 
-                if members:
-                    args = []
-                    member_names = []
-                    init_assignments = []
-                    extra_init_assignments = []
+                for statement in parser_info.Statements:
+                    if isinstance(statement, ClassMemberStatementParserInfo):
+                        members.append(statement)
+                    else:
+                        if isinstance(statement, FuncDefinitionStatementParserInfo):
+                            if (
+                                statement.Name == FuncDefinitionStatementOperatorType.Init
+                                or statement.Name == FuncDefinitionStatementOperatorType.PostInit
+                            ):
+                                saw_init = True
+                            elif statement.Name == FuncDefinitionStatementOperatorType.ToString:
+                                saw_to_string = True
 
-                    for member in itertools.chain(
-                        # TODO: GetMembers(parser_info.Extends),
-                        # TODO: GetMembers(parser_info.Implements),
-                        # TODO: GetMembers(parser_info.Uses),
-                        members,
-                    ):
-                        if member.InitializedValue is None:
-                            suffix = ""
-                        else:
-                            sink = StringIO()
+                        methods.append(statement)
 
-                            self._stream_stack.append(sink)
-                            with CallOnExit(self._stream_stack.pop):
-                                self.Accept(member.InitializedValue, stack)
-
-                            suffix = "={}".format(sink.getvalue())
-
-                        if member.NoInit:
-                            if member.InitializedValue is not None:
-                                sink = StringIO()
-                                self._stream_stack.append(sink)
-                                with CallOnExit(self._stream_stack.pop):
-                                    self.Accept(member.InitializedValue, stack)
-
-                                sink = sink.getvalue()
-
-                                extra_init_assignments.append("self.{} = {}".format(member.Name, sink))
-                        else:
-                            args.append("{}{}".format(member.Name, suffix))
-                            init_assignments.append("self.{name} = {name}".format(name=member.Name))
-
-                        member_names.append(member.Name)
-
-                    self._stream.write(
-                        textwrap.dedent(
-                            """\
-                            def __init__(self, {args}):
-                            {init_assignments}{extra_init_assignments}
-
-                            {indent}self._Init_()
-
-                            def __eq__(self, other):
-                                if not isinstance(other, self.__class__): return False
-                                return self.__class__.__Compare__(self, other) == 0
-
-                            def __ne__(self, other):
-                                if not isinstance(other, self.__class__): return True
-                                return self.__class__.__Compare__(self, other) != 0
-
-                            def __lt__(self, other):
-                                if not isinstance(other, self.__class__): return False
-                                return self.__class__.__Compare__(self, other) < 0
-
-                            def __le__(self, other):
-                                if not isinstance(other, self.__class__): return False
-                                return self.__class__.__Compare__(self, other) <= 0
-
-                            def __gt__(self, other):
-                                if not isinstance(other, self.__class__): return False
-                                return self.__class__.__Compare__(self, other) > 0
-
-                            def __ge__(self, other):
-                                if not isinstance(other, self.__class__): return False
-                                return self.__class__.__Compare__(self, other) >= 0
-
-                            @classmethod
-                            def __Compare__(cls, a, b):
-                            {indent}{compare_statements}
-
-                            {indent}return 0
-
-                            """,
-                        ).format(
-                            args=", ".join(args),
-                            init_assignments=StringHelpers.LeftJustify(
-                                "\n".join(init_assignments),
-                                len(self._indentation),
-                                skip_first_line=False,
-                            ),
-                            extra_init_assignments="" if not extra_init_assignments else "\n{}".format(
-                                StringHelpers.LeftJustify(
-                                    "\n".join(extra_init_assignments),
-                                    len(self._indentation),
-                                    skip_first_line=False,
-                                ),
-                            ),
-                            indent=self._indentation,
-                            compare_statements=StringHelpers.LeftJustify(
-                                "\n".join(
-                                    [
-                                        textwrap.dedent(
-                                            """\
-                                            if a.{name} is None and b.{name} is None: pass
-                                            elif a.{name} is None: return -1
-                                            elif b.{name} is None: return 1
-                                            elif a.{name} < b.{name}: return -1
-                                            elif a.{name} > b.{name}: return 1
-                                            """,
-                                        ).format(
-                                            name=member_name,
-                                        )
-                                        for member_name in member_names
-                                    ],
-                                ),
-                                len(self._indentation),
-                            ).rstrip(),
-                        ),
-                    )
-
-                    if not saw_init:
+                with self._Indent():
+                    if parser_info.Documentation is not None:
                         self._stream.write(
                             textwrap.dedent(
-                                """\
-                                def _Init_(self):
-                                {indent}pass
+                                '''\
+                                """\\
+                                {}
+                                """
 
-                                """,
-                            ).format(
-                                indent=self._indentation,
-                            ),
+                                ''',
+                            ).format(parser_info.Documentation),
                         )
 
-                elif base_classes:
-                    if parser_info.ClassType != ClassType.Enum:
+                    args = []
+                    init_statements = []
+                    pre_init_statements = []
+
+                    if members:
+                        for member in members:
+                            if member.InitializedValue is None:
+                                initialized_value = None
+                            else:
+                                sink = StringIO()
+
+                                self._stream_stack.append(sink)
+                                with CallOnExit(self._stream_stack.pop):
+                                    self.Accept(member.InitializedValue, helper.stack)
+
+                                initialized_value = sink.getvalue()
+
+                            if member.NoInit:
+                                init_statements.append(
+                                    textwrap.dedent(
+                                        """\
+                                        # {name}
+                                        self.{name} = {value}
+                                        """,
+                                    ).format(
+                                        name=member.Name,
+                                        value=initialized_value,
+                                    ),
+                                )
+                            elif member.IsOverride:
+                                pre_init_statements.append('kwargs["{}"] = {}'.format(member.Name, initialized_value))
+
+                            else:
+                                if initialized_value:
+                                    args.append("{}={}".format(member.Name, initialized_value))
+                                else:
+                                    args.append(member.Name)
+
+                                init_statements.append(
+                                    textwrap.dedent(
+                                        """\
+                                        # {name}
+                                        if "{name}" in kwargs:
+                                            self.{name} = kwargs.pop("{name}")
+                                        elif args:
+                                            self.{name} = args.pop(0)
+                                        else:
+                                            {default_statement}
+                                        """,
+                                    ).format(
+                                        name=member.Name,
+                                        value=initialized_value,
+                                        default_statement="self.{} = {}".format(member.Name, initialized_value) if initialized_value else 'raise Exception("{} was not provided")'.format(member.Name),
+                                    ),
+                                )
+
+                    if not base_classes:
+                        base_class_comparison_template = "# No bases"
+                    else:
+                        base_class_comparison_template = StringHelpers.LeftJustify(
+                            "\n".join(
+                                [
+                                    "if {}.{{op}}(self, other) is False: return False".format(ToTypeName(base_class))
+                                    for base_class in base_classes
+                                ],
+                            ),
+                            4,
+                        )
+
+                    if generate_init_method:
                         self._stream.write(
                             textwrap.dedent(
                                 """\
                                 def __init__(self, *args, **kwargs):
-                                {indent}super({name}, self).__init__(*args, **kwargs)
+                                    {class_name}._InternalInit(self, list(args), kwargs)
+
+                                def _InternalInit(self, args, kwargs):
+                                    # {args}
+
+                                    {pre_init_statements}{base_init_statements}
+
+                                    {init_statements}
+
+                                    self._Init_{unique_id}_()
+
+                                def __eq__(self, other):
+                                    {base_eq}
+                                    if not isinstance(other, self.__class__): return False
+                                    return self.__class__.__Compare__(self, other) == 0
+
+                                def __ne__(self, other):
+                                    {base_ne}
+                                    if not isinstance(other, self.__class__): return True
+                                    return self.__class__.__Compare__(self, other) != 0
+
+                                def __lt__(self, other):
+                                    {base_lt}
+                                    if not isinstance(other, self.__class__): return False
+                                    return self.__class__.__Compare__(self, other) < 0
+
+                                def __le__(self, other):
+                                    {base_le}
+                                    if not isinstance(other, self.__class__): return False
+                                    return self.__class__.__Compare__(self, other) <= 0
+
+                                def __gt__(self, other):
+                                    {base_gt}
+                                    if not isinstance(other, self.__class__): return False
+                                    return self.__class__.__Compare__(self, other) > 0
+
+                                def __ge__(self, other):
+                                    {base_ge}
+                                    if not isinstance(other, self.__class__): return False
+                                    return self.__class__.__Compare__(self, other) >= 0
+
+                                @classmethod
+                                def __Compare__(cls, a, b):
+                                {indent}{compare_statements}
+
+                                {indent}return 0
 
                                 """,
                             ).format(
+                                class_name=ToTypeName(parser_info.Name),
+                                unique_id=self._unique_id_stack[-1],
                                 indent=self._indentation,
-                                name=parser_info.Name,
+                                args=", ".join(args),
+                                pre_init_statements="" if not pre_init_statements else "{}\n\n    ".format(
+                                    StringHelpers.LeftJustify(
+                                        "\n".join(pre_init_statements),
+                                        4,
+                                    ),
+                                ),
+                                base_init_statements="# No bases" if not base_classes else StringHelpers.LeftJustify(
+                                    "\n".join(
+                                        [
+                                            "{}._InternalInit(self, args, kwargs)".format(ToTypeName(base_class))
+                                            for base_class in base_classes
+                                        ],
+                                    ),
+                                    4,
+                                ).rstrip(),
+                                init_statements="# No members" if not init_statements else StringHelpers.LeftJustify(
+                                    "\n".join(init_statements),
+                                    4,
+                                ).rstrip(),
+                                compare_statements=StringHelpers.LeftJustify(
+                                    "\n".join(
+                                        [
+                                            textwrap.dedent(
+                                                """\
+                                                if a.{name} is None and b.{name} is None: pass
+                                                elif a.{name} is None: return -1
+                                                elif b.{name} is None: return 1
+                                                elif a.{name} < b.{name}: return -1
+                                                elif a.{name} > b.{name}: return 1
+                                                """,
+                                            ).format(
+                                                name=member.Name,
+                                            )
+                                            for member in members
+                                        ],
+                                    ),
+                                    len(self._indentation),
+                                ).rstrip(),
+                                base_eq=base_class_comparison_template.format(op="__eq__"),
+                                base_ne=base_class_comparison_template.format(op="__ne__"),
+                                base_lt=base_class_comparison_template.format(op="__lt__"),
+                                base_le=base_class_comparison_template.format(op="__le__"),
+                                base_gt=base_class_comparison_template.format(op="__gt__"),
+                                base_ge=base_class_comparison_template.format(op="__ge__"),
                             ),
                         )
 
-                else:
-                    self._stream.write("pass # No members\n\n")
+                        if not saw_init:
+                            self._stream.write(
+                                textwrap.dedent(
+                                    """\
+                                    def _Init_{}_(self):
+                                        pass
 
-                with helper["Statements"]:
-                    for method in methods:
-                        self.Accept(method, helper.stack)
+                                    """,
+                                ).format(self._unique_id_stack[-1]),
+                            )
 
-                if saw_to_string:
-                    self._stream.write(
-                        textwrap.dedent(
-                            """\
-                            def __str__(self):
-                                return self._ToString_()
-                            """,
-                        ),
-                    )
+                    with helper["Statements"]:
+                        for method in methods:
+                            self.Accept(method, helper.stack)
+
+                    if saw_to_string:
+                        self._stream.write(
+                            textwrap.dedent(
+                                """\
+                                def __str__(self):
+                                    return self._ToString_{}_()
+                                """,
+                            ).format(self._unique_id_stack[-1]),
+                        )
 
         return False
 
@@ -1251,6 +1335,16 @@ class PythonVisitor(Visitor):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def OnExitStatement(
+        self,
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: ExitStatementParserInfo,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        assert False, "BugBug"
+        return False
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def OnFuncDefinitionStatement(
         self,
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
@@ -1269,7 +1363,7 @@ class PythonVisitor(Visitor):
             new_stream = self._stream
 
             if isinstance(parser_info.Name, str):
-                name = parser_info.Name.replace("?", "").replace("!", "")
+                name = parser_info.Name.replace("?", "_").replace("!", "_")
             else:
                 if parser_info.Name in FUNC_DEFINITION_COMPILE_TIME_OPERATORS:
                     name = parser_info.Name.name
@@ -1402,8 +1496,10 @@ class PythonVisitor(Visitor):
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: ImportStatementItemParserInfo,
     ) -> Union[None, bool, Callable[[], Any]]:
-        # Nothing to do here
-        pass
+        key = parser_info.Alias or parser_info.Name
+
+        assert key not in self._imports, key
+        self._imports[key] = parser_info.Name
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -1415,7 +1511,7 @@ class PythonVisitor(Visitor):
         if parser_info.ImportType == ImportStatementImportType.SourceIsDirectory:
             assert len(parser_info.ImportItems) == 1
 
-            self._imports.append(
+            self._import_statements.append(
                 "from {source}{dot}{imp}_TheLanguage import {imp}{suffix}".format(
                     source=parser_info.SourceFilename,
                     dot="" if parser_info.SourceFilename.startswith("..") else ".",
@@ -1425,9 +1521,9 @@ class PythonVisitor(Visitor):
             )
 
         elif parser_info.ImportType == ImportStatementImportType.SourceIsModule:
-            self._imports.append(
-                "from {source}_TheLanguage import {imports}".format(
-                    source=parser_info.SourceFilename,
+            self._import_statements.append(
+                "from {source} import {imports}".format(
+                    source=".".join(["" if not component else "{}_TheLanguage".format(component) for component in parser_info.SourceFilename.split(".")]),
                     imports=", ".join(
                         [
                             "{}{}".format(
@@ -1442,8 +1538,6 @@ class PythonVisitor(Visitor):
 
         else:
             assert False, parser_info.ImportType
-
-        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -1873,8 +1967,16 @@ class PythonVisitor(Visitor):
             yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     def _ToOperatorName(
+        self,
         operator: FuncDefinitionStatementOperatorType,
     ) -> str:
-        return "_{}_".format(operator.name)
+        has_unique_id = operator in [
+            FuncDefinitionStatementOperatorType.Init,
+            FuncDefinitionStatementOperatorType.ToString,
+        ]
+
+        return "_{}_{}".format(
+            operator.name,
+            "" if not has_unique_id else "{}_".format(self._unique_id_stack[-1]),
+        )

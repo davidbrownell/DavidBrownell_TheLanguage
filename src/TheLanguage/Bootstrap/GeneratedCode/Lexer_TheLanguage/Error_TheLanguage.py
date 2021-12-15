@@ -24,7 +24,7 @@ with InitRelativeImports():
     from ..CommonLibrary.Stack_TheLanguage import Stack
     from ..CommonLibrary.String_TheLanguage import String
 
-    
+
 
 # Visibility: public
 # ClassModifier: immutable
@@ -33,15 +33,15 @@ class Error(Exception):
     """\
     Base class for all lexer-related errors.
     """
-    
+
     def __init__(self, *args, **kwargs):
         Error._InternalInit(self, list(args), kwargs)
-    
+
     def _InternalInit(self, args, kwargs):
         # line, column
-    
+
         # No bases
-    
+
         # line
         if "line" in kwargs:
             self.line = kwargs.pop("line")
@@ -49,7 +49,7 @@ class Error(Exception):
             self.line = args.pop(0)
         else:
             raise Exception("line was not provided")
-    
+
         # column
         if "column" in kwargs:
             self.column = kwargs.pop("column")
@@ -57,39 +57,39 @@ class Error(Exception):
             self.column = args.pop(0)
         else:
             raise Exception("column was not provided")
-    
-        self._Init_8bab0fcbc52d44849aafac4823945c30_()
-    
+
+        self._Init_af537bd01cbc478d8a57d279d3740a1a_()
+
     def __eq__(self, other):
         # No bases
         if not isinstance(other, self.__class__): return False
         return self.__class__.__Compare__(self, other) == 0
-    
+
     def __ne__(self, other):
         # No bases
         if not isinstance(other, self.__class__): return True
         return self.__class__.__Compare__(self, other) != 0
-    
+
     def __lt__(self, other):
         # No bases
         if not isinstance(other, self.__class__): return False
         return self.__class__.__Compare__(self, other) < 0
-    
+
     def __le__(self, other):
         # No bases
         if not isinstance(other, self.__class__): return False
         return self.__class__.__Compare__(self, other) <= 0
-    
+
     def __gt__(self, other):
         # No bases
         if not isinstance(other, self.__class__): return False
         return self.__class__.__Compare__(self, other) > 0
-    
+
     def __ge__(self, other):
         # No bases
         if not isinstance(other, self.__class__): return False
         return self.__class__.__Compare__(self, other) >= 0
-    
+
     @classmethod
     def __Compare__(cls, a, b):
         if a.line is None and b.line is None: pass
@@ -97,31 +97,31 @@ class Error(Exception):
         elif b.line is None: return 1
         elif a.line < b.line: return -1
         elif a.line > b.line: return 1
-    
+
         if a.column is None and b.column is None: pass
         elif a.column is None: return -1
         elif b.column is None: return 1
         elif a.column < b.column: return -1
         elif a.column > b.column: return 1
-    
+
         return 0
-    
+
     # Return Type: String
-    def _ToString_8bab0fcbc52d44849aafac4823945c30_(self):
+    def _ToString_af537bd01cbc478d8a57d279d3740a1a_(self):
         return self._GetMessageTemplate().format(**self.__dict__, )
-    
+
     # Return Type: None
-    def _Init_8bab0fcbc52d44849aafac4823945c30_(self):
+    def _Init_af537bd01cbc478d8a57d279d3740a1a_(self):
         assert self.line >= 1
         assert self.column >= 1
-    
+
     # Return Type: String
     def _GetMessageTemplate(self):
         raise Exception("Abstract/Deferred method")
-    
+
     @property
     def Line(self): return self.line
     @property
     def Column(self): return self.column
     def __str__(self):
-        return self._ToString_8bab0fcbc52d44849aafac4823945c30_()
+        return self._ToString_af537bd01cbc478d8a57d279d3740a1a_()

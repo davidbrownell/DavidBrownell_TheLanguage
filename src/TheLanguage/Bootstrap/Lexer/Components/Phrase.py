@@ -44,17 +44,13 @@ _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-the_language_output_dir = os.getenv("THE_LANGUAGE_OUTPUT_DIR")
-if the_language_output_dir is not None:
+if True:
     import sys
-    sys.path.insert(0, the_language_output_dir)
+    sys.path.insert(0, os.path.join(_script_dir, "..", "..", "GeneratedCode"))
     from Lexer_TheLanguage.Components_TheLanguage.Phrase_TheLanguage import *
     sys.path.pop(0)
 
-    USE_THE_LANGUAGE_GENERATED_CODE = True
 else:
-    USE_THE_LANGUAGE_GENERATED_CODE = False
-
     with InitRelativeImports():
         from .NormalizedIterator import NormalizedIterator
         from .ThreadPool import EnqueueAsyncItemType
@@ -81,14 +77,69 @@ else:
         # |  Public Types
         # |
         # ----------------------------------------------------------------------
+        class NormalizedIteratorRange(object):
+            def __init__(self, begin, end):
+                self.begin = begin
+                self.end = end
+
+                self._Init_()
+
+            def __eq__(self, other):
+                if not isinstance(other, self.__class__): return False
+                return self.__class__.__Compare__(self, other) == 0
+
+            def __ne__(self, other):
+                if not isinstance(other, self.__class__): return True
+                return self.__class__.__Compare__(self, other) != 0
+
+            def __lt__(self, other):
+                if not isinstance(other, self.__class__): return False
+                return self.__class__.__Compare__(self, other) < 0
+
+            def __le__(self, other):
+                if not isinstance(other, self.__class__): return False
+                return self.__class__.__Compare__(self, other) <= 0
+
+            def __gt__(self, other):
+                if not isinstance(other, self.__class__): return False
+                return self.__class__.__Compare__(self, other) > 0
+
+            def __ge__(self, other):
+                if not isinstance(other, self.__class__): return False
+                return self.__class__.__Compare__(self, other) >= 0
+
+            @classmethod
+            def __Compare__(cls, a, b):
+                if a.begin is None and b.begin is None: pass
+                elif a.begin is None: return -1
+                elif b.begin is None: return 1
+                elif a.begin < b.begin: return -1
+                elif a.begin > b.begin: return 1
+
+                if a.end is None and b.end is None: pass
+                elif a.end is None: return -1
+                elif b.end is None: return 1
+                elif a.end < b.end: return -1
+                elif a.end > b.end: return 1
+
+                return 0
+
+            # Return Type: None
+            def _Init_(self):
+                assert self.begin.Offset <= self.end.Offset
+
         @dataclass(frozen=True, repr=False)
         class LexResult(YamlRepr.ObjectReprImplBase):
             """Result returned by calls to LexAsync"""
 
             Success: bool
-            IterBegin: NormalizedIterator
-            IterEnd: NormalizedIterator
+            iter: "NormalizedIteratorRange"
             Data: Optional["Phrase.StandardLexResultData"]
+
+            @property
+            def IterBegin(self): return self.iter.begin
+            @property
+            def IterEnd(self): return self.iter.end
 
             # ----------------------------------------------------------------------
             def __post_init__(self):
@@ -147,7 +198,7 @@ else:
 
         # ----------------------------------------------------------------------
         @dataclass(frozen=True, repr=False)
-        class StandardLexResultData(LexResultData):
+        class PhraseLexResultData(LexResultData):
             Phrase: "Phrase"  # type: ignore
             Data: Optional["Phrase.LexResultData"]
             UniqueId: Optional[Tuple[str, ...]]
@@ -155,7 +206,7 @@ else:
 
             # ----------------------------------------------------------------------
             def __post_init__(self):
-                super(Phrase.StandardLexResultData, self).__post_init__(
+                super(Phrase.PhraseLexResultData, self).__post_init__(
                     Phrase=lambda phrase: phrase.Name,
                     UniqueId=None,
                     PotentialErrorContext=None,
@@ -166,11 +217,15 @@ else:
                     or (self.Data is None and self.UniqueId is None)
                 )
 
+        StandardLexResultData = PhraseLexResultData
+
         # ----------------------------------------------------------------------
         @dataclass(frozen=True, repr=False)
-        class MultipleLexResultData(LexResultData):
+        class PhraseContainerLexResultData(LexResultData):
             DataItems: List[Optional["Phrase.LexResultData"]]
             IsComplete: bool
+
+        MultipleLexResultData = PhraseContainerLexResultData
 
         # ----------------------------------------------------------------------
         @dataclass(frozen=True, repr=False)
@@ -181,9 +236,15 @@ else:
 
             Whitespace: Optional[Tuple[int, int]]
             Value: TokenClass.MatchResult
-            IterBegin: NormalizedIterator
-            IterEnd: NormalizedIterator
-            IsIgnored: bool
+            iter: "NormalizedIteratorRange"
+            is_ignored: bool
+
+            @property
+            def IterBegin(self): return self.iter.begin
+            @property
+            def IterEnd(self): return self.iter.end
+            @property
+            def IsIgnored(self): return self.is_ignored
 
             # ----------------------------------------------------------------------
             def __post_init__(self):
@@ -238,7 +299,7 @@ else:
             # ----------------------------------------------------------------------
             @staticmethod
             @Interface.abstractmethod
-            async def OnPushScopeAsync(
+            def OnPushScope(
                 data: "Phrase.StandardLexResultData",
                 iter_before: NormalizedIterator,
                 iter_after: NormalizedIterator,
@@ -248,7 +309,7 @@ else:
             # ----------------------------------------------------------------------
             @staticmethod
             @Interface.abstractmethod
-            async def OnPopScopeAsync(
+            def OnPopScope(
                 data: "Phrase.StandardLexResultData",
                 iter_before: NormalizedIterator,
                 iter_after: NormalizedIterator,
@@ -258,7 +319,7 @@ else:
             # ----------------------------------------------------------------------
             @staticmethod
             @Interface.abstractmethod
-            async def OnInternalPhraseAsync(
+            def OnInternalPhrase(
                 data: "Phrase.StandardLexResultData",
                 iter_before: NormalizedIterator,
                 iter_after: NormalizedIterator,

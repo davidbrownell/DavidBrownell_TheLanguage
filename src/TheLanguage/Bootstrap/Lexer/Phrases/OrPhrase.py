@@ -223,7 +223,7 @@ class OrPhrase(Phrase):
                 # pylint: disable=too-many-function-args
                 data = Phrase.StandardLexResultData(self, best_result.Data, unique_id)
 
-                if not await observer.OnInternalPhraseAsync(data, original_normalized_iter, best_result.IterEnd):
+                if not observer.OnInternalPhrase(data, original_normalized_iter, best_result.IterEnd):
                     return None
 
                 return Phrase.LexResult(

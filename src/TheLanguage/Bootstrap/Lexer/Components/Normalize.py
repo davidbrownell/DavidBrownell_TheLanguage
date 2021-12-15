@@ -34,17 +34,13 @@ _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-the_language_output_dir = os.getenv("THE_LANGUAGE_OUTPUT_DIR")
-if the_language_output_dir is not None:
+if True:
     import sys
-    sys.path.insert(0, the_language_output_dir)
+    sys.path.insert(0, os.path.join(_script_dir, "..", "..", "GeneratedCode"))
     from Lexer_TheLanguage.Components_TheLanguage.Normalize_TheLanguage import *
     sys.path.pop(0)
 
-    USE_THE_LANGUAGE_GENERATED_CODE = True
 else:
-    USE_THE_LANGUAGE_GENERATED_CODE = False
-
     with InitRelativeImports():
         from ..Error import Error
 
@@ -83,6 +79,19 @@ else:
         NumDedents: Optional[int]               = field(default=None)
         NewIndentationValue: Optional[int]      = field(default=None)
 
+        @property
+        def offset_start(self): return self.OffsetStart
+        @property
+        def offset_end(self): return self.OffsetEnd
+        @property
+        def content_start(self): return self.ContentStart
+        @property
+        def content_end(self): return self.ContentEnd
+        @property
+        def num_dedents(self): return self.NumDedents
+        @property
+        def new_indentation_value(self): return self.NewIndentationValue
+
         # ----------------------------------------------------------------------
         def __post_init__(self):
             assert self.OffsetStart >= 0, self
@@ -115,6 +124,15 @@ else:
         ContentLength: int
         LineInfos: List[LineInfo]
         Hash: bytes                             = field(default=None)  # type: ignore
+
+        @property
+        def content(self): return self.Content
+        @property
+        def content_length(self): return self.ContentLength
+        @property
+        def line_infos(self): return self.LineInfos
+        @property
+        def hash(self): return self.Hash
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
@@ -204,7 +222,7 @@ else:
 
 
     # ----------------------------------------------------------------------
-    def Normalize(
+    def Normalize_(
         content: str,
 
         # A set of tokens that look and feel like multi-line toggle tokens, but should not be considered

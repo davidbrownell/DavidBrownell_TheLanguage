@@ -177,7 +177,7 @@ class SequencePhrase(Phrase):
             if result is None:
                 return None
 
-            if result.Success and not await observer.OnInternalPhraseAsync(
+            if result.Success and not observer.OnInternalPhrase(
                 cast(Phrase.StandardLexResultData, result.Data),
                 original_normalized_iter,
                 result.IterEnd,
@@ -252,6 +252,9 @@ class SequencePhrase(Phrase):
         prev_token_was_pop_control = False
 
         for phrase_index in range(starting_phrase_index, len(self.Phrases)):
+            if self.Name == "Import Statement" and normalized_iter.Line == 20:
+                BugBug = 10
+
             phrase = self.Phrases[phrase_index]
 
             # Extract whitespace or comments if necessary

@@ -49,6 +49,7 @@ with InitRelativeImports():
     from .Statements.ContinueStatement import ContinueStatement
     from .Statements.DeleteStatement import DeleteStatement
     from .Statements.DocstringStatement import DocstringStatement
+    from .Statements.ExitStatement import ExitStatement
     from .Statements.ForStatement import ForStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
     from .Statements.FuncInvocationStatement import FuncInvocationStatement
@@ -129,6 +130,7 @@ GrammarPhrases                              = [
     ContinueStatement(),
     DeleteStatement(),
     DocstringStatement(),
+    ExitStatement(),
     ForStatement(),
     FuncDefinitionStatement(),
     FuncInvocationStatement(),

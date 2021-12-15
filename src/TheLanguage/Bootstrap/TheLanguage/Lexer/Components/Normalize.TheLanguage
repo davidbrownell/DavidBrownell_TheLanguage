@@ -100,7 +100,7 @@ protected immutable class LineInfo:
 
 
 # ----------------------------------------------------------------------
-[PrivateCtor]
+[ProtectedCtor]
 public immutable class NormalizedContent:
     public using LineInfos                  = List<LineInfo>{min_length'=1}
     public using HashBytes                  = List<Int8>{min_length'=32, max_length'=32}

@@ -70,6 +70,7 @@ with InitRelativeImports():
     from .Statements.ClassStatementParserInfo import ClassStatementDependencyParserInfo, ClassStatementParserInfo
     from .Statements.ContinueStatementParserInfo import ContinueStatementParserInfo
     from .Statements.DeleteStatementParserInfo import DeleteStatementParserInfo
+    from .Statements.ExitStatementParserInfo import ExitStatementParserInfo
     from .Statements.FuncDefinitionStatementParserInfo import (
         FuncDefinitionStatementParserInfo,
         OperatorType as FuncDefinitionStatementOperatorType,
@@ -597,6 +598,17 @@ class Visitor(VisitorBase):
     def OnDeleteStatement(
         stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
         parser_info: DeleteStatementParserInfo,
+        *args,
+        **kwargs,
+    ) -> Union[None, bool, Callable[[], Any]]:
+        raise Exception("Abstract method")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def OnExitStatement(
+        stack: List[Union[str, ParserInfo, Tuple[ParserInfo, str]]],
+        parser_info: ExitStatementParserInfo,
         *args,
         **kwargs,
     ) -> Union[None, bool, Callable[[], Any]]:

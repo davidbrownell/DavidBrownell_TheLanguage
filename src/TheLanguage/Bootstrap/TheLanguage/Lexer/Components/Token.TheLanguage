@@ -35,29 +35,37 @@ private immutable class Token:
     [Keyword] public Bool val is_always_ignored
     [Keyword] public Bool val is_control_token
 
+    python_hack: @property
+    python_hack: def Name(self): return self.name
+    python_hack: @property
+    python_hack: def IsAlwaysIgnored(self): return self.is_always_ignored
+    python_hack: @property
+    python_hack: def IsControlToken(self): return self.is_control_token
+
     # ----------------------------------------------------------------------
     # |  Public Methods
     public abstract immutable (MatchResult | None) val Match?(NormalizedIterator var iterator)
+
+python_hack: Token_MatchResult = Token.MatchResult
 
 
 # ----------------------------------------------------------------------
 [PrivateCtor]
 public immutable class NewlineToken
-    # TODO: extends Token
+    extends Token
 :
     <<<
     Token that matches 1 or more newlines.
     >>>
 
+    python_hack: Token_MatchResult = Token_MatchResult
+
     # ----------------------------------------------------------------------
     # |  Public Types
     public immutable class MatchResult
         # TODO: extends Token::MatchResult
+        extends Token_MatchResult
     :
-        # TODO: Remove (begin)
-        public NormalizedIterator val iterator
-        # TODO: Remove (end)
-
         public UIntArch val start
         public PosIntArch val end
 
@@ -67,17 +75,7 @@ public immutable class NewlineToken
 
     # ----------------------------------------------------------------------
     # |  Public Data
-    [Keyword] public String val name # TODO: remove
-
     [Keyword] public Bool val capture_many
-
-    # TODO: Remove (begin)
-    [Keyword] public Bool val is_control_token=False
-    [Keyword] public Bool val is_always_ignored=False
-    # TODO: Remove (end)
-
-    python_hack: @property
-    python_hack: def Name(self): return self.name
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -107,29 +105,26 @@ public immutable class NewlineToken
                 iterator.SkipLine()
 
         # TODO: return MatchResult(move iterator, newline_start, iterator.OffsetProper())
-        return NewlineToken_MatchResult(move iterator, newline_start, iterator.OffsetProper())
-
-python_hack: NewlineToken_MatchResult = NewlineToken.MatchResult
+        return NewlineToken.MatchResult(move iterator, newline_start, iterator.OffsetProper())
 
 
 # ----------------------------------------------------------------------
 [PrivateCtor]
 public immutable class IndentToken
-    # TODO: extends Token
+    extends Token
 :
     <<<
     Token matching indentations of arbitrary length.
     >>>
 
+    python_hack: Token_MatchResult = Token_MatchResult
+
     # ----------------------------------------------------------------------
     # |  Public Types
     public immutable class MatchResult
         # TODO: extends Token::MatchResult
+        extends Token_MatchResult
     :
-        # TODO: Remove (begin)
-        public NormalizedIterator val iterator
-        # TODO: Remove (end)
-
         public UIntArch val start
         public PosIntArch val end
         public PosInt val indent_value
@@ -137,17 +132,6 @@ public immutable class IndentToken
         # ----------------------------------------------------------------------
         private None __Init?__():
             ensure self.start <= self.end
-
-    # ----------------------------------------------------------------------
-    # |  Public Data
-    # TODO: Remove (begin)
-    [Keyword] public String val name
-    [Keyword] public Bool val is_control_token
-    [Keyword] public Bool val is_always_ignored
-
-    python_hack: @property
-    python_hack: def Name(self): return self.name
-    # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -170,7 +154,7 @@ public immutable class IndentToken
         assert line_info.new_indentation_value is not None
 
         # TODO: return MatchResult(
-        return IndentToken_MatchResult(
+        return IndentToken.MatchResult(
             move iterator,
             line_info.offset_start,
             line_info.content_start,
@@ -178,39 +162,25 @@ public immutable class IndentToken
             line_info.new_indentation_value # The cast is generated as a comment in Python, which cases the closing paren to be a comment as well
         )
 
-python_hack: IndentToken_MatchResult = IndentToken.MatchResult
-
 
 # ----------------------------------------------------------------------
 [PrivateCtor]
 public immutable class DedentToken
-    # TODO: extends Token
+    extends Token
 :
     <<<
     Token matching a single dedentation.
     >>>
 
+    python_hack: Token_MatchResult = Token_MatchResult
+
     # ----------------------------------------------------------------------
     # |  Public Types
     public immutable class MatchResult
         # TODO: extends Token::MatchResult
+        extends Token_MatchResult
     :
-        # TODO: Remove (begin)
-        public NormalizedIterator val iterator
-        # TODO: Remove (end)
-
-        # TODO: pass
-
-    # TODO: Remove (begin)
-    # ----------------------------------------------------------------------
-    # |  Public Data
-    [Keyword] public String val name
-    [Keyword] public Bool val is_control_token
-    [Keyword] public Bool val is_always_ignored
-
-    python_hack: @property
-    python_hack: def Name(self): return self.name
-    # TODO: Remove (end)
+        pass
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -232,45 +202,32 @@ public immutable class DedentToken
             iterator.SkipWhitespacePrefix()
 
         # TODO: return MatchResult(move iterator)
-        return DedentToken_MatchResult(move iterator)
-
-python_hack: DedentToken_MatchResult = DedentToken.MatchResult
+        return DedentToken.MatchResult(move iterator)
 
 
 # ----------------------------------------------------------------------
 [PrivateCtor]
 public immutable class RegexToken
-    # TODO: extends Token
+    extends Token
 :
     <<<
     Token that matches content against a regular expression.
     >>>
 
+    python_hack: Token_MatchResult = Token_MatchResult
+
     # ----------------------------------------------------------------------
     # |  Public Types
     public immutable class MatchResult
         # TODO: extends Token::MatchResult
+        extends Token_MatchResult
     :
-        # TODO: Remove (begin)
-        public NormalizedIterator val iterator
-        # TODO: Remove (end)
-
         public RegexMatch val match
 
     # ----------------------------------------------------------------------
     # |  Public Data
-    [Keyword] public String val name # TODO: Remove
-
     [Keyword] public Regex val regex
     [Keyword] public Bool val is_multiline
-
-    # TODO: Remove (begin)
-    [Keyword] public Bool val is_control_token
-    [Keyword] public Bool val is_always_ignored
-
-    python_hack: @property
-    python_hack: def Name(self): return self.name
-    # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -346,7 +303,7 @@ public immutable class RegexToken
             iterator.Advance(match_length)
 
         # TODO: return MatchResult(move iterator, match)
-        return RegexToken_MatchResult(move iterator, match)
+        return RegexToken.MatchResult(move iterator, match)
 
     # ----------------------------------------------------------------------
     # |  Private Methods
@@ -372,28 +329,17 @@ public immutable class RegexToken
 
         return move iterator
 
-python_hack: RegexToken_MatchResult = RegexToken.MatchResult
-
 
 # ----------------------------------------------------------------------
 [ProtectedCtor]
 private immutable class ControlTokenBase
-    # TODO: extends Token
+    extends Token
 :
-    # TODO: Remove (begin)
-    # ----------------------------------------------------------------------
-    # |  Public Data
-    [Keyword] public String val name
-    # TODO: Remove (end)
+    [Override] public Bool val is_control_token = True
+    [Override] public Bool val is_always_ignored = False
 
-    # TODO: [Override] public Bool val is_control_token = True
-    # TODO: [Override] public Bool val is_always_ignored = False
-
-    [Keyword] public (ControlTokenBase | None) val closing_token=None
-    [Keyword] public (ControlTokenBase | None) val opening_token=None
-
-    python_hack: @property
-    python_hack: def Name(self): return self.name
+    [Keyword] public (ControlTokenBase | None) val closing_token
+    [Keyword] public (ControlTokenBase | None) val opening_token
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -412,33 +358,18 @@ private immutable class ControlTokenBase
 # ----------------------------------------------------------------------
 [PrivateCtor]
 public immutable class PushIgnoreWhitespaceControlToken
-    # TODO: extends ControlTokenBase
+    extends ControlTokenBase
 :
     <<<
     BugBug
     >>>
-
-    # TODO: Remove (begin)
-    # ----------------------------------------------------------------------
-    # |  Public Data
-    [Keyword] public String val name
-    [Keyword] public (ControlTokenBase | None) val closing_token=None
-    [Keyword] public (ControlTokenBase | None) val opening_token=None
-
-    private None __Init?__():
-        python_hack: self.is_control_token = True
-        python_hack: self.is_always_ignored = False
-
-    python_hack: @property
-    python_hack: def Name(self): return self.name
-
-    # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
     public static PushIgnoreWhitespaceControlToken Create():
         return PushIgnoreWhitespaceControlToken(
             name="PushIgnoreWhitespaceControl",
+            opening_token=None,
             closing_token=PopIgnoreWhitespaceControlToken,
         )
 
@@ -446,27 +377,11 @@ public immutable class PushIgnoreWhitespaceControlToken
 # ----------------------------------------------------------------------
 [PrivateCtor]
 public immutable class PopIgnoreWhitespaceControlToken
-    # TODO: extends ControlTokenBase
+    extends ControlTokenBase
 :
     <<<
     BugBug
     >>>
-
-    # TODO: Remove (begin)
-    # ----------------------------------------------------------------------
-    # |  Public Data
-    [Keyword] public String val name
-    [Keyword] public (ControlTokenBase | None) val closing_token=None
-    [Keyword] public (ControlTokenBase | None) val opening_token=None
-
-    private None __Init?__():
-        python_hack: self.is_control_token = True
-        python_hack: self.is_always_ignored = False
-
-    python_hack: @property
-    python_hack: def Name(self): return self.name
-
-    # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -474,39 +389,25 @@ public immutable class PopIgnoreWhitespaceControlToken
         return PopIgnoreWhitespaceControlToken(
             name="PopIgnoreWhitespaceControl",
             opening_token=PushIgnoreWhitespaceControlToken,
+            closing_token=None,
         )
 
 
 # ----------------------------------------------------------------------
 [PrivateCtor]
 public immutable class PushPreserveWhitespaceControlToken
-    # TODO: extends ControlTokenBase
+    extends ControlTokenBase
 :
     <<<
     BugBug
     >>>
-
-    # TODO: Remove (begin)
-    # ----------------------------------------------------------------------
-    # |  Public Data
-    [Keyword] public String val name
-    [Keyword] public (ControlTokenBase | None) val closing_token=None
-    [Keyword] public (ControlTokenBase | None) val opening_token=None
-
-    private None __Init?__():
-        python_hack: self.is_control_token = True
-        python_hack: self.is_always_ignored = False
-
-    python_hack: @property
-    python_hack: def Name(self): return self.name
-
-    # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
     public static PushPreserveWhitespaceControlToken Create():
         return PushPreserveWhitespaceControlToken(
             name="PushPreserveWhitespaceControl",
+            opening_token=None,
             closing_token=PopPreserveWhitespaceControlToken,
         )
 
@@ -514,27 +415,11 @@ public immutable class PushPreserveWhitespaceControlToken
 # ----------------------------------------------------------------------
 [PrivateCtor]
 public immutable class PopPreserveWhitespaceControlToken
-    # TODO: extends ControlTokenBase
+    extends ControlTokenBase
 :
     <<<
     BugBug
     >>>
-
-    # TODO: Remove (begin)
-    # ----------------------------------------------------------------------
-    # |  Public Data
-    [Keyword] public String val name
-    [Keyword] public (ControlTokenBase | None) val closing_token=None
-    [Keyword] public (ControlTokenBase | None) val opening_token=None
-
-    private None __Init?__():
-        python_hack: self.is_control_token = True
-        python_hack: self.is_always_ignored = False
-
-    python_hack: @property
-    python_hack: def Name(self): return self.name
-
-    # TODO: Remove (end)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -542,4 +427,5 @@ public immutable class PopPreserveWhitespaceControlToken
         return PopPreserveWhitespaceControlToken(
             name="PopPreserveWhitespaceControl",
             opening_token=PushPreserveWhitespaceControlToken,
+            closing_token=None,
         )

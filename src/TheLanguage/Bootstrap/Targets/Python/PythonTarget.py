@@ -55,7 +55,6 @@ class PythonTarget(Target):
             with open(potential_filename, "w") as f:
                 pass
 
-
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override

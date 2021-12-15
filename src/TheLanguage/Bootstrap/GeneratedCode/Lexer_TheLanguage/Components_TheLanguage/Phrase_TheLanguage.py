@@ -83,7 +83,7 @@ class Phrase(object):
         # _is_populated
         self._is_populated = False
 
-        self._Init_0283b1074c124772b9f5f3780f7ddbf8_()
+        self._Init_20be8c66138c4733a2f60d2b3169daa1_()
 
     def __eq__(self, other):
         # No bases
@@ -137,7 +137,7 @@ class Phrase(object):
 
         return 0
 
-    def _Init_0283b1074c124772b9f5f3780f7ddbf8_(self):
+    def _Init_20be8c66138c4733a2f60d2b3169daa1_(self):
         pass
 
     NormalizedIterator = NormalizedIterator
@@ -170,7 +170,7 @@ class Phrase(object):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_4a5ec29dcf4e4821b5fff2b2534a2181_()
+            self._Init_974f96459d6342ce9b18ea8c0682cd35_()
 
         def __eq__(self, other):
             # No bases
@@ -219,7 +219,7 @@ class Phrase(object):
             return 0
 
         # Return Type: None
-        def _Init_4a5ec29dcf4e4821b5fff2b2534a2181_(self):
+        def _Init_974f96459d6342ce9b18ea8c0682cd35_(self):
             assert self.begin <= self.end
 
     # Visibility: public
@@ -262,7 +262,7 @@ class Phrase(object):
             else:
                 raise Exception("data was not provided")
 
-            self._Init_22eba04d0a8b408b8d3ddaf1014e739b_()
+            self._Init_3dd0a3ddfe9f4bda988461e415ad1f4c_()
 
         def __eq__(self, other):
             # No bases
@@ -325,7 +325,7 @@ class Phrase(object):
         @property
         def Data(self): return self.data
         # Return Type: None
-        def _Init_22eba04d0a8b408b8d3ddaf1014e739b_(self):
+        def _Init_3dd0a3ddfe9f4bda988461e415ad1f4c_(self):
             assert self.data is not None or self.success is False
 
     # Visibility: private
@@ -336,13 +336,13 @@ class Phrase(object):
             Phrase._LexResultData._InternalInit(self, list(args), kwargs)
 
         def _InternalInit(self, args, kwargs):
-            #
+            # 
 
             # No bases
 
             # No members
 
-            self._Init_90c08f1d044c4c00a1f63d6556dfe78f_()
+            self._Init_46fc8a33aaa2477fb2030f7cd3f52153_()
 
         def __eq__(self, other):
             # No bases
@@ -380,7 +380,7 @@ class Phrase(object):
 
             return 0
 
-        def _Init_90c08f1d044c4c00a1f63d6556dfe78f_(self):
+        def _Init_46fc8a33aaa2477fb2030f7cd3f52153_(self):
             pass
 
         pass
@@ -441,7 +441,7 @@ class Phrase(object):
             else:
                 raise Exception("is_ignored was not provided")
 
-            self._Init_d0973f1aef004bab94cec7151ef29a97_()
+            self._Init_1fdc804ca4cb48e8863ad910b97d60ab_()
 
         def __eq__(self, other):
             if Phrase._LexResultData.__eq__(self, other) is False: return False
@@ -507,7 +507,7 @@ class Phrase(object):
 
             return 0
 
-        def _Init_d0973f1aef004bab94cec7151ef29a97_(self):
+        def _Init_1fdc804ca4cb48e8863ad910b97d60ab_(self):
             pass
 
         LineInfo_WhitespaceRange = LineInfo.WhitespaceRange
@@ -572,7 +572,7 @@ class Phrase(object):
             else:
                 self.potential_error_context = None
 
-            self._Init_60023321e5844ccdbaf6eec954989772_()
+            self._Init_7f17cff5b26142e688fe85e292310414_()
 
         def __eq__(self, other):
             if Phrase._LexResultData.__eq__(self, other) is False: return False
@@ -632,7 +632,7 @@ class Phrase(object):
 
             return 0
 
-        def _Init_60023321e5844ccdbaf6eec954989772_(self):
+        def _Init_7f17cff5b26142e688fe85e292310414_(self):
             pass
 
         @property
@@ -675,7 +675,7 @@ class Phrase(object):
             else:
                 raise Exception("is_complete was not provided")
 
-            self._Init_cc67920816734c00960c48fceacc3a24_()
+            self._Init_07a3267e9ac84b78920f1aa51fcead69_()
 
         def __eq__(self, other):
             if Phrase._LexResultData.__eq__(self, other) is False: return False
@@ -723,7 +723,7 @@ class Phrase(object):
 
             return 0
 
-        def _Init_cc67920816734c00960c48fceacc3a24_(self):
+        def _Init_07a3267e9ac84b78920f1aa51fcead69_(self):
             pass
 
         @property
@@ -744,13 +744,13 @@ class Phrase(object):
             Phrase.Observer._InternalInit(self, list(args), kwargs)
 
         def _InternalInit(self, args, kwargs):
-            #
+            # 
 
             # No bases
 
             # No members
 
-            self._Init_86b76934aeac4d5cb19162f7856d5cac_()
+            self._Init_92642caf8ca84686962d50d5fd98c2e7_()
 
         def __eq__(self, other):
             # No bases
@@ -788,7 +788,7 @@ class Phrase(object):
 
             return 0
 
-        def _Init_86b76934aeac4d5cb19162f7856d5cac_(self):
+        def _Init_92642caf8ca84686962d50d5fd98c2e7_(self):
             pass
 
         # Visibility: public
@@ -819,7 +819,7 @@ class Phrase(object):
                 else:
                     self.name = None
 
-                self._Init_afd935897ef54fd1b9bd692f75c8b1c4_()
+                self._Init_9fc1905293bc412bb873b01c039f1b91_()
 
             def __eq__(self, other):
                 # No bases
@@ -867,7 +867,7 @@ class Phrase(object):
 
                 return 0
 
-            def _Init_afd935897ef54fd1b9bd692f75c8b1c4_(self):
+            def _Init_9fc1905293bc412bb873b01c039f1b91_(self):
                 pass
 
         # Return Type: GetDynamicPhrasesResult
@@ -896,9 +896,7 @@ class Phrase(object):
 
         def OnPushScopeProxy(self, data, range): return self.OnPushScope(data, range.begin, range.end)
         def OnPopScopeProxy(self, data, range): return self.OnPopScope(data, range.begin, range.end)
-        def OnInternalPhraseProxy(self, data, range):
-            return self.OnInternalPhrase(data, range.begin, range.end)
-
+        def OnInternalPhraseProxy(self, data, range): return self.OnInternalPhrase(data, range.begin, range.end)
     @property
     def Name(self): return self._name_
     @Name.setter
@@ -934,10 +932,8 @@ class Phrase(object):
         return self._PopulateRecursiveImpl(new_phrase, )
 
     async def LexAsync(self, *args, **kwargs):
-        import asyncio
         kwargs.pop("single_threaded", None)
         return self.Lex(*args, **kwargs)
-
     # Return Type: <LexResult | None> val
     def Lex(self, unique_id, iter, observer, ignore_whitespace=False, ):
         raise Exception("Abstract/Deferred method")
@@ -945,3 +941,4 @@ class Phrase(object):
     # Return Type: Bool val
     def _PopulateRecursiveImpl(self, new_phrase, ):
         raise Exception("Abstract/Deferred method")
+

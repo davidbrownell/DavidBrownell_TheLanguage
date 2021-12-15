@@ -197,10 +197,18 @@ class MultilineStatementBase(GrammarPhrase):
             expected_indentation = leaf.IterBegin.Content[leaf.IterBegin.Offset - expected_indentation_len : leaf.IterBegin.Offset]
 
             for line_index, line in enumerate(lines):
-                if not line.startswith(expected_indentation):
-                    raise InvalidMultilineIndentError.FromNode(leaf, self.Header, line_index + 1)
+                if not line:
+                    continue
 
-                lines[line_index] = line[expected_indentation_len:]
+                if not line.startswith(expected_indentation):
+                    if line.isspace():
+                        line = ""
+                    else:
+                        raise InvalidMultilineIndentError.FromNode(leaf, self.Header, line_index + 1)
+                else:
+                    line = line[expected_indentation_len:]
+
+                lines[line_index] = line
 
         # The last line should be empty, as it should be the indentation and footer
         if lines[-1]:

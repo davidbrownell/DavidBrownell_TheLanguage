@@ -41,9 +41,6 @@ inflect                                     = inflect_mod.engine()
     input_directory_or_filename=CommandLine.FilenameTypeInfo(
         match_any=True,
     ),
-    output_directory=CommandLine.DirectoryTypeInfo(
-        ensure_exists=False,
-    ),
     configuration=CommandLine.EnumTypeInfo(
         values=["Debug", "ReleaseNoOptimizations", "Release"],
         arity="?",
@@ -52,7 +49,6 @@ inflect                                     = inflect_mod.engine()
 )
 def Execute(
     input_directory_or_filename,
-    output_directory,
     configuration="Debug",
     output_stream=sys.stdout,
 ):
@@ -61,6 +57,8 @@ def Execute(
         prefix="\nResults: ",
         suffix="\n",
     ) as dm:
+        output_directory = os.path.join(_script_dir, "GeneratedCode")
+
         filenames = []
 
         dm.stream.write("Gathering input...")
@@ -77,7 +75,7 @@ def Execute(
                     include_file_extensions=[".TheLanguage"],
                 ))
 
-                # filenames = [ r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\Bootstrap\TheLanguage\Lexer\Components\Phrase.TheLanguage", ] # BugBug
+                # filenames = [ r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\Bootstrap\TheLanguage\Lexer\Error.TheLanguage", ] # BugBug
                 input_dir = input_directory_or_filename
             else:
                 assert False, input_directory_or_filename  # pragma: no cover

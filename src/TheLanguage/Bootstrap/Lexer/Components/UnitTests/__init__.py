@@ -62,7 +62,7 @@ def parse_mock():
 
     mock.Enqueue = mock._thread_pool.EnqueueAsync
 
-    mock.OnPushScopeAsync = CoroutineMock()
+    mock.OnPushScope = CoroutineMock()
     mock.OnPopScopeAsync = CoroutineMock()
     mock.OnInternalPhraseAsync = CoroutineMock()
 

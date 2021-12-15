@@ -35,5 +35,5 @@ class MethodModifier(Enum):
     final                                   = auto()
     override                                = auto()
     standard                                = auto()
-    static                                  = auto()
+    static                                  = auto() # TODO: Move static, should be a class modifier
     virtual                                 = auto()

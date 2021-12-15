@@ -538,13 +538,13 @@ def _PopulateItem(
         phrase = item
 
     elif isinstance(item, (NewlineToken, IndentToken, DedentToken, RegexToken, PushIgnoreWhitespaceControlToken, PopIgnoreWhitespaceControlToken, PushPreserveWhitespaceControlToken, PopPreserveWhitespaceControlToken)):
-        phrase = TokenPhrase(
+        phrase = TokenPhrase.Create(
             item,
             name=name,
         )
 
     elif isinstance(item, str):
-        phrase = TokenPhrase(
+        phrase = TokenPhrase.Create(
             RegexToken.Create(
                 name or "'{}'".format(item),
                 re.compile(r"{}{}".format(re.escape(item), "\\b" if item.isalnum() else "")),

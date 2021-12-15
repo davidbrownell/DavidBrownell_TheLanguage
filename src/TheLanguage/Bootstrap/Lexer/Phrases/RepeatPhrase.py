@@ -122,7 +122,7 @@ class RepeatPhrase(Phrase):
                     error_result.Data if error_result is not None else None,
                 )
 
-                if not await observer.OnInternalPhraseAsync(
+                if not observer.OnInternalPhrase(
                     data,
                     original_normalized_iter,
                     normalized_iter,

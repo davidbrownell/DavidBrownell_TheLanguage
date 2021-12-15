@@ -220,7 +220,7 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    async def OnPushScopeAsync(
+    def OnPushScope(
         fully_qualified_name: str,
         data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
@@ -232,7 +232,7 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    async def OnPopScopeAsync(
+    def OnPopScope(
         fully_qualified_name: str,
         data: Phrase.StandardLexResultData,
         iter_before: Phrase.NormalizedIterator,
@@ -243,7 +243,7 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def OnPhraseCompleteAsync(
+    def OnPhraseComplete(
         self,
         fully_qualified_name: str,
         phrase: Phrase,
