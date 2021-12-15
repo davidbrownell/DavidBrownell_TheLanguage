@@ -19,7 +19,7 @@ BugBug
 
 from .Normalize import LineInfo, NormalizedContent
 
-# TODO: Refine these values once python_hack statements are removed
+# TODO: Refine all .TheLanguage code once python_hack statements are removed
 
 
 # ----------------------------------------------------------------------
@@ -63,7 +63,6 @@ public mutable class NormalizedIterator:
             0,
             0,
             0,
-            None,
             None,
         )
 
@@ -154,13 +153,11 @@ public mutable class NormalizedIterator:
         UIntArch,
         UintArch,
         (UIntArch | None),
-        (UIntArch | None),
     ) ToCacheKey():
         return (
             self.Hash(),
             self.OffsetProper(),
             self._whitespace_range_index.Clone(),
-            self._consumed_dedent_line.Clone(),
             self._consumed_dedent_count.Clone(),
         )
 
@@ -174,7 +171,6 @@ public mutable class NormalizedIterator:
         if (
             self.HasEndOfFileDedentsProper()
             and self._line_info_index == len(line_infos) - 1
-            and self._consumed_dedent_line == self._line_info_index
             and self._consumed_dedent_count == self.LineInfoProper().num_dedents
         ):
             return True
@@ -190,10 +186,7 @@ public mutable class NormalizedIterator:
 
         if (
             line_info.num_dedents is not None
-            and (
-                self._consumed_dedent_line != self._line_info_index
-                or self._consumed_dedent_count != line_info.num_dedents
-            )
+            and self._consumed_dedent_count != line_info.num_dedents
         ):
             return TokenType.Dedent
 
@@ -234,11 +227,9 @@ public mutable class NormalizedIterator:
         assert self.LineInfoProper().num_dedents is not None
         assert self.OffsetProper() == self.LineInfoProper().offset_start
 
-        if self._consumed_dedent_line != self._line_info_index:
-            self._consumed_dedent_line = self._line_info_index # TODO
-            self._consumed_dedent_count = 0 # TODO
+        if self._consumed_dedent_count is None:
+            self._consumed_dedent_count = 0
 
-        # TODO: assert self._consumed_dedent_count is Int
         self._consumed_dedent_count += 1
 
     # ----------------------------------------------------------------------
@@ -285,7 +276,9 @@ public mutable class NormalizedIterator:
             assert self.GetNextTokenType() == TokenType.EndOfLine
 
             self._line_info_index += 1
+
             self._whitespace_range_index = 0
+            self._consumed_dedent_count = None
 
         else:
             assert offset >= line_info.offset_start and offset <= line_info.offset_end, "The offset should be within the current line"
@@ -353,7 +346,7 @@ public mutable class NormalizedIterator:
             )
 
     python_hack: def Clone(self):
-    python_hack:     return self.__class__(self._content, self._offset, self._line_info_index, self._whitespace_range_index, self._consumed_dedent_line, self._consumed_dedent_count)
+    python_hack:     return self.__class__(self._content, self._offset, self._line_info_index, self._whitespace_range_index, self._consumed_dedent_count)
 
     # ----------------------------------------------------------------------
     # |
@@ -366,9 +359,6 @@ public mutable class NormalizedIterator:
     private UIntArch var _line_info_index
 
     private UIntArch var _whitespace_range_index
-
-    # BugBug: I don't think that _consumed_dedent_line is necessary if the count is reset in Advance; similar to what is done with _whitespace_range_index
-    private (UIntArch | None) var _consumed_dedent_line
     private (UIntArch | None) var _consumed_dedent_count
 
     # ----------------------------------------------------------------------
@@ -385,11 +375,13 @@ public mutable class NormalizedIterator:
 
             # TODO (Length syntax is wonky): ensure self._whitespace_range_index < line_info.whitespace_ranges.Length()
 
-        # TODO (Length syntax is wonky): ensure self._consumed_dedent_line is None or self._consumed_dedent_line < self._content.line_infos.Length()
-        ensure (
-            (self._consumed_dedent_count is None and self._consumed_dedent_line is None)
-            or (self._consumed_dedent_count is not None and self._consumed_dedent_line is not None)
-        )
+            ensure (
+                self._consumed_dedent_count is None
+                or (
+                    line_info.num_dedents is not None
+                    and self._consumed_dedent_count <= line_info.num_dedents
+                )
+            )
 
 
 python_hack: NormalizedContentEx = NormalizedIterator.NormalizedContentEx

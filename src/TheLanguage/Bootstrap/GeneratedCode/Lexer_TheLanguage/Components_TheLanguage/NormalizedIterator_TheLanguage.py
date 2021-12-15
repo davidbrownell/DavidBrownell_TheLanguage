@@ -38,7 +38,7 @@ class NormalizedIterator(object):
         NormalizedIterator._InternalInit(self, list(args), kwargs)
 
     def _InternalInit(self, args, kwargs):
-        # _content, _offset, _line_info_index, _whitespace_range_index, _consumed_dedent_line, _consumed_dedent_count
+        # _content, _offset, _line_info_index, _whitespace_range_index, _consumed_dedent_count
 
         # No bases
 
@@ -74,14 +74,6 @@ class NormalizedIterator(object):
         else:
             raise Exception("_whitespace_range_index was not provided")
 
-        # _consumed_dedent_line
-        if "_consumed_dedent_line" in kwargs:
-            self._consumed_dedent_line = kwargs.pop("_consumed_dedent_line")
-        elif args:
-            self._consumed_dedent_line = args.pop(0)
-        else:
-            raise Exception("_consumed_dedent_line was not provided")
-
         # _consumed_dedent_count
         if "_consumed_dedent_count" in kwargs:
             self._consumed_dedent_count = kwargs.pop("_consumed_dedent_count")
@@ -90,7 +82,7 @@ class NormalizedIterator(object):
         else:
             raise Exception("_consumed_dedent_count was not provided")
 
-        self._Init_a35e00a6419d4ad096e0eb088b298a26_()
+        self._Init_c38468d872824075801187a652607c6e_()
 
     def __eq__(self, other):
         # No bases
@@ -148,12 +140,6 @@ class NormalizedIterator(object):
         elif a._whitespace_range_index < b._whitespace_range_index: return -1
         elif a._whitespace_range_index > b._whitespace_range_index: return 1
 
-        if a._consumed_dedent_line is None and b._consumed_dedent_line is None: pass
-        elif a._consumed_dedent_line is None: return -1
-        elif b._consumed_dedent_line is None: return 1
-        elif a._consumed_dedent_line < b._consumed_dedent_line: return -1
-        elif a._consumed_dedent_line > b._consumed_dedent_line: return 1
-
         if a._consumed_dedent_count is None and b._consumed_dedent_count is None: pass
         elif a._consumed_dedent_count is None: return -1
         elif b._consumed_dedent_count is None: return 1
@@ -177,7 +163,7 @@ class NormalizedIterator(object):
     # Return Type: NormalizedIterator
     @staticmethod
     def Create(content, ):
-        return NormalizedIterator(NormalizedContentEx.Create(content, ), 0, 0, 0, None, None, )
+        return NormalizedIterator(NormalizedContentEx.Create(content, ), 0, 0, 0, None, )
 
     # Return Type: String val
     def _Repr_(self):
@@ -261,9 +247,9 @@ class NormalizedIterator(object):
     @property
     def Column(self):
         return self.ColumnProper()
-    # Return Type: Tuple(HashBytes, UIntArch, UintArch, <UIntArch | None>, <UIntArch | None>)
+    # Return Type: Tuple(HashBytes, UIntArch, UintArch, <UIntArch | None>)
     def ToCacheKey(self):
-        return (self.Hash(), self.OffsetProper(), self._whitespace_range_index.Clone(), self._consumed_dedent_line.Clone(), self._consumed_dedent_count.Clone(), )
+        return (self.Hash(), self.OffsetProper(), self._whitespace_range_index.Clone(), self._consumed_dedent_count.Clone(), )
 
     # Return Type: Bool val
     def AtEnd(self):
@@ -271,7 +257,7 @@ class NormalizedIterator(object):
         if self._line_info_index == len(line_infos, ):
             return True
 
-        if (self.HasEndOfFileDedentsProper() and self._line_info_index == len(line_infos, ) - 1 and self._consumed_dedent_line == self._line_info_index and self._consumed_dedent_count == self.LineInfoProper().num_dedents):
+        if (self.HasEndOfFileDedentsProper() and self._line_info_index == len(line_infos, ) - 1 and self._consumed_dedent_count == self.LineInfoProper().num_dedents):
             return True
 
         return False
@@ -282,7 +268,7 @@ class NormalizedIterator(object):
             return TokenType.EndOfFile
 
         line_info = self.LineInfoProper()
-        if (line_info.num_dedents is not None and (self._consumed_dedent_line != self._line_info_index or self._consumed_dedent_count != line_info.num_dedents)):
+        if (line_info.num_dedents is not None and self._consumed_dedent_count != line_info.num_dedents):
             return TokenType.Dedent
 
         if self._offset < line_info.content_start:
@@ -315,8 +301,7 @@ class NormalizedIterator(object):
     def ConsumeDedent(self):
         assert self.LineInfoProper().num_dedents is not None
         assert self.OffsetProper() == self.LineInfoProper().offset_start
-        if self._consumed_dedent_line != self._line_info_index:
-            self._consumed_dedent_line = self._line_info_index
+        if self._consumed_dedent_count is None:
             self._consumed_dedent_count = 0
 
         self._consumed_dedent_count += 1
@@ -359,6 +344,7 @@ class NormalizedIterator(object):
             assert self.GetNextTokenType() == TokenType.EndOfLine
             self._line_info_index += 1
             self._whitespace_range_index = 0
+            self._consumed_dedent_count = None
         else:
             assert offset >= line_info.offset_start and offset <= line_info.offset_end, "The offset should be within the current line"
             assert offset + delta <= line_info.offset_end, "The delta should not move us past the current line"
@@ -391,7 +377,7 @@ class NormalizedIterator(object):
             # has_end_of_file_dedents
             self.has_end_of_file_dedents = None
 
-            self._Init_7907ddb4b9124b409e029ceeb8bd4d40_()
+            self._Init_3fb8e5b593a84fc9a4d9ff18ebb5e647_()
 
         def __eq__(self, other):
             if NormalizedContent.__eq__(self, other) is False: return False
@@ -439,19 +425,19 @@ class NormalizedIterator(object):
             return NormalizedContentEx(content.content, content.content_length, content.line_infos, content.hash, )
 
         # Return Type: None
-        def _Init_7907ddb4b9124b409e029ceeb8bd4d40_(self):
+        def _Init_3fb8e5b593a84fc9a4d9ff18ebb5e647_(self):
             last_line_info = self.line_infos[-1]
             self.has_end_of_file_dedents = (last_line_info.num_dedents is not None and last_line_info.num_dedents > 0 and last_line_info.offset_start == last_line_info.offset_end and last_line_info.content_start == last_line_info.offset_start and last_line_info.content_end == last_line_info.offset_end)
 
     def Clone(self):
-        return self.__class__(self._content, self._offset, self._line_info_index, self._whitespace_range_index, self._consumed_dedent_line, self._consumed_dedent_count)
+        return self.__class__(self._content, self._offset, self._line_info_index, self._whitespace_range_index, self._consumed_dedent_count)
     # Return Type: None
-    def _Init_a35e00a6419d4ad096e0eb088b298a26_(self):
+    def _Init_c38468d872824075801187a652607c6e_(self):
         assert self._offset <= self._content.content_length
         if self._offset != self._content.content_length:
             line_info = self._content.line_infos[self._line_info_index]
+            assert (self._consumed_dedent_count is None or (line_info.num_dedents is not None and self._consumed_dedent_count <= line_info.num_dedents))
 
-        assert ((self._consumed_dedent_count is None and self._consumed_dedent_line is None) or (self._consumed_dedent_count is not None and self._consumed_dedent_line is not None))
 
 NormalizedContentEx = NormalizedIterator.NormalizedContentEx
 TokenType = NormalizedIterator.TokenType
