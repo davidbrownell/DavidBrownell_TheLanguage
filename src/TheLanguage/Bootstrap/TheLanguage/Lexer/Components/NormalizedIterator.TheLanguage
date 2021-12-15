@@ -304,7 +304,7 @@ public mutable class NormalizedIterator:
         self._offset += delta
 
         # Determine if applying the delta indicates that we are looking at a new whitespace range.
-        if not self.AtEnd():
+        if self._offset != self._content.content_length:
             val whitespace_ranges = self.LineInfoProper().whitespace_ranges
             val whitespace_ranges_len = whitespace_ranges.Length() # TODO: Only necessary because Length syntax is wonky
 

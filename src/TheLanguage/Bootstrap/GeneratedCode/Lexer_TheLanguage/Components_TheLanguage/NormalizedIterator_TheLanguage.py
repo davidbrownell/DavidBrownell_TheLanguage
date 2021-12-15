@@ -90,7 +90,7 @@ class NormalizedIterator(object):
         else:
             raise Exception("_consumed_dedent_count was not provided")
 
-        self._Init_3e58b51585c84539ae23d772fc14bda0_()
+        self._Init_a35e00a6419d4ad096e0eb088b298a26_()
 
     def __eq__(self, other):
         # No bases
@@ -365,7 +365,7 @@ class NormalizedIterator(object):
             assert (offset >= line_info.content_start or (offset == line_info.offset_start and (offset + delta == line_info.content_start or delta == line_info.offset_end - line_info.offset_start))), "We are looking at content (A), at the beginning of the line and are skipping the whitespace prefix (B) or are skipping the contents on the line (C) <but not the newline itself>"
 
         self._offset += delta
-        if not self.AtEnd():
+        if self._offset != self._content.content_length:
             whitespace_ranges = self.LineInfoProper().whitespace_ranges
             whitespace_ranges_len = len(whitespace_ranges)
             while (self._whitespace_range_index < whitespace_ranges_len and self._offset > whitespace_ranges[self._whitespace_range_index].begin):
@@ -391,7 +391,7 @@ class NormalizedIterator(object):
             # has_end_of_file_dedents
             self.has_end_of_file_dedents = None
 
-            self._Init_41ce87ceb4c94850b2545a9d858bd5bd_()
+            self._Init_7907ddb4b9124b409e029ceeb8bd4d40_()
 
         def __eq__(self, other):
             if NormalizedContent.__eq__(self, other) is False: return False
@@ -439,14 +439,14 @@ class NormalizedIterator(object):
             return NormalizedContentEx(content.content, content.content_length, content.line_infos, content.hash, )
 
         # Return Type: None
-        def _Init_41ce87ceb4c94850b2545a9d858bd5bd_(self):
+        def _Init_7907ddb4b9124b409e029ceeb8bd4d40_(self):
             last_line_info = self.line_infos[-1]
             self.has_end_of_file_dedents = (last_line_info.num_dedents is not None and last_line_info.num_dedents > 0 and last_line_info.offset_start == last_line_info.offset_end and last_line_info.content_start == last_line_info.offset_start and last_line_info.content_end == last_line_info.offset_end)
 
     def Clone(self):
         return self.__class__(self._content, self._offset, self._line_info_index, self._whitespace_range_index, self._consumed_dedent_line, self._consumed_dedent_count)
     # Return Type: None
-    def _Init_3e58b51585c84539ae23d772fc14bda0_(self):
+    def _Init_a35e00a6419d4ad096e0eb088b298a26_(self):
         assert self._offset <= self._content.content_length
         if self._offset != self._content.content_length:
             line_info = self._content.line_infos[self._line_info_index]
