@@ -30,7 +30,7 @@ _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-if False: # BugBug True:
+if True:
     import sys
     sys.path.insert(0, os.path.join(_script_dir, "..", "..", "GeneratedCode"))
     from Lexer_TheLanguage.Phrases_TheLanguage.TokenPhrase_TheLanguage import *
@@ -221,7 +221,7 @@ else:
                 # We only want to consume whitespace if there is a match that follows; collect
                 # it for now, but do not modify the provided iterator.
                 potential_iter = normalized_iter.Clone()
-                potential_whitespace = self.__class__.ExtractPotentialWhitespace(potential_iter)
+                potential_whitespace = self.__class__.ExtractPotentialWhitespace(potential_iter) # BugBug: < bumps potential_iter to 719 even though potential_whitespace is None
                 potential_iter_begin = potential_iter.Clone()
 
                 result = self.Token.Match_(potential_iter)

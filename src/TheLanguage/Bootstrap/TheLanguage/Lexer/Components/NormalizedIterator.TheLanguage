@@ -52,6 +52,8 @@ public mutable class NormalizedIterator:
         python_hack: EndOfFile = 7
         python_hack: def __eq__(self, other): return self.value == other.value
 
+    python_hack: LineInfo_WhitespaceRange = LineInfo.WhitespaceRange
+
     # ----------------------------------------------------------------------
     # |
     # |  Public Methods
@@ -103,21 +105,6 @@ public mutable class NormalizedIterator:
             return 1
 
         return self._offset - self.LineInfoProper().offset_start + 1
-
-    python_hack: LineInfo_WhitespaceRange = LineInfo.WhitespaceRange
-
-    # TODO: public immutable (LineInfo::WhitespaceRange | None) val NextWhitespaceRangeProper():
-    public immutable (LineInfo_WhitespaceRange | None) val NextWhitespaceRangeProper():
-
-        if self.AtEnd():
-            return None
-
-        val whitespace_ranges = self.LineInfoProper().WhitespaceRanges()
-
-        if self._whitespace_range_index >= whitespace_ranges.Length():
-            return None
-
-        return whitespace_ranges[self._whitespace_range_index]
 
     python_hack: @property
     python_hack: def Content(self):
@@ -176,6 +163,22 @@ public mutable class NormalizedIterator:
             return True
 
         return False
+
+    # ----------------------------------------------------------------------
+    # TODO: public immutable (LineInfo::WhitespaceRange | None) val GetNextWhitespaceRange():
+    public immutable (LineInfo_WhitespaceRange | None) val GetNextWhitespaceRange():
+        if self.GetNextTokenType() != TokenType.Content:
+            return None
+
+        val whitespace_ranges = self.LineInfoProper().whitespace_ranges
+
+        val whitespace_ranges_length = whitespace_ranges.Length() # TODO: Necessary because Length syntax is funky
+
+        # TODO if self._whitespace_range_index == whitespace_ranges.Length():
+        if self._whitespace_range_index == whitespace_ranges_length:
+            return None
+
+        return whitespace_ranges[self._whitespace_range_index]
 
     # ----------------------------------------------------------------------
     public immutable TokenType val GetNextTokenType():

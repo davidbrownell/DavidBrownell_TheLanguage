@@ -427,7 +427,7 @@ class DynamicPhrase(Phrase):
                 # The number of existing (non-ignored) data items should be 1 less than the number
                 # of expected (non-control-token) data items; merging this one will complete the phrase.
                 non_ignored_data_items = sum(
-                    1 if not isinstance(di, Phrase.TokenLexResultData) or not di.IsIgnored else 0
+                    1 if not di.__class__.__name__ == "TokenLexResultData" or not di.IsIgnored else 0
                     for di in data_item.Data.DataItems
                 )
 
@@ -574,7 +574,7 @@ class DynamicPhrase(Phrase):
             if data is None:
                 return
 
-            if isinstance(data, Phrase.StandardLexResultData):
+            if data.__class__.__name__ == "PhraseLexResultData":
                 object.__setattr__(
                     data,
                     "unique_id",
@@ -584,16 +584,16 @@ class DynamicPhrase(Phrase):
                 unique_id_suffix_iteration += 1
                 UpdateUniqueIds(data.Data)
 
-            elif isinstance(data, Phrase.MultipleLexResultData):
+            elif data.__class__.__name__ == "PhraseContainerLexResultData":
                 for data_item in data.DataItems:
                     UpdateUniqueIds(data_item)
 
-            elif isinstance(data, Phrase.TokenLexResultData):
+            elif data.__class__.__name__ == "TokenLexResultData":
                 # Nothing to do here
                 pass
 
             else:
-                assert False, data  # pragma: no cover
+                assert False, data.__class__.__name__  # pragma: no cover
 
         # ----------------------------------------------------------------------
 

@@ -24,7 +24,7 @@ with InitRelativeImports():
     from ...CommonLibrary.Stack_TheLanguage import Stack
     from ...CommonLibrary.String_TheLanguage import String
 
-    from ..Components_TheLanguage.Phrase_TheLanguage import Phrase
+    from ..Components_TheLanguage.Phrase_TheLanguage import Phrase, NormalizedIterator
     from ..Components_TheLanguage.Token_TheLanguage import DedentToken, IndentToken, NewlineToken, RegexToken, Token
 
 # Visibility: public
@@ -47,7 +47,7 @@ class TokenPhrase(Phrase):
         else:
             raise Exception("token was not provided")
 
-        self._Init_057f05ba48f94e92a99887cb2e71111c_()
+        self._Init_388f0535f46a439992263bff5f0cb344_()
 
     def __eq__(self, other):
         if Phrase.__eq__(self, other) is False: return False
@@ -89,7 +89,7 @@ class TokenPhrase(Phrase):
 
         return 0
 
-    def _Init_057f05ba48f94e92a99887cb2e71111c_(self):
+    def _Init_388f0535f46a439992263bff5f0cb344_(self):
         pass
 
     @property
@@ -110,14 +110,24 @@ class TokenPhrase(Phrase):
         TokenLexResultData = Phrase.TokenLexResultData
         result = None # as <Token_MatchResult | None>
         observer.StartPhrase(unique_id, self, )
-        iter_before = iter.Clone()
-        result = self.token.Match_(iter, )
+        original_iter = iter.Clone()
+        next_whitespace_range = iter.GetNextWhitespaceRange()
+        whitespace_prefix = None
+        if next_whitespace_range is not None:
+            if iter.OffsetProper() == next_whitespace_range.begin:
+                whitespace_prefix = next_whitespace_range
+                iter.Advance(whitespace_prefix.end - whitespace_prefix.begin, )
+
+        elif iter.GetNextTokenType() == NormalizedIterator.TokenType.WhitespacePrefix:
+            iter.SkipWhitespacePrefix()
+
+        result = self.token.Match_(iter.Clone(), )
         if result is None:
             observer.EndPhrase(unique_id, self, result is not None)
-            return LexResult(False, NormalizedIteratorRange(iter_before, iter_before, ), PhraseLexResultData(self, None, None, ), )
+            return LexResult(False, NormalizedIteratorRange(original_iter, original_iter, ), PhraseLexResultData(self, None, None, ), )
 
-        iter_range = NormalizedIteratorRange(iter_before, result.iterator, )
-        data = PhraseLexResultData(self, TokenLexResultData(self.token, None, result, iter_range, is_ignored=self.token.is_always_ignored, ), unique_id, )
+        iter_range = NormalizedIteratorRange(iter, result.iterator, )
+        data = PhraseLexResultData(self, TokenLexResultData(self.token, whitespace_prefix, result, iter_range, is_ignored=self.token.is_always_ignored, ), unique_id, )
         if self.token is IndentToken:
             observer.OnPushScopeProxy(data, iter_range, )
         elif self.token is DedentToken:

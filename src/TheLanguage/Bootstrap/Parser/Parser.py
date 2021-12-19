@@ -246,7 +246,7 @@ def CreateParserRegion(
     if isinstance(node, AST.Leaf) and node.Whitespace is not None:
         location_begin = Location(
             location_begin.Line,
-            location_begin.Column + node.Whitespace[1] - node.Whitespace[0] - 1,
+            location_begin.Column + (node.Whitespace[1] if isinstance(node.Whitespace, tuple) else node.Whitespace.end) - (node.Whitespace[0] if isinstance(node.Whitespace, tuple) else node.Whitespace.begin) - 1,
         )
 
     return Region(location_begin, CreateLocation(node.IterEnd))

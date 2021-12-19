@@ -252,24 +252,21 @@ class SequencePhrase(Phrase):
         prev_token_was_pop_control = False
 
         for phrase_index in range(starting_phrase_index, len(self.Phrases)):
-            if self.Name == "Import Statement" and normalized_iter.Line == 20:
-                BugBug = 10
-
             phrase = self.Phrases[phrase_index]
 
             # Extract whitespace or comments if necessary
             if (
                 comments_or_whitespace_data_items is None
-                or (isinstance(phrase, TokenPhrase) and not prev_token_was_pop_control)
+                or (phrase.__class__.__name__ == "TokenPhrase" and not prev_token_was_pop_control)
             ):
                 if comments_or_whitespace_data_items:
                     normalized_iter = comments_or_whitespace_data_items[0].IterBegin  # pylint: disable=unsubscriptable-object
 
                 comments_or_whitespace_data_items = []
 
-                if isinstance(phrase, TokenPhrase):
-                    next_phrase_is_indent = isinstance(phrase.Token, IndentToken)
-                    next_phrase_is_dedent = isinstance(phrase.Token, DedentToken)
+                if phrase.__class__.__name__ == "TokenPhrase":
+                    next_phrase_is_indent = phrase.Token.__class__.__name__ == "IndentToken"
+                    next_phrase_is_dedent = phrase.Token.__class__.__name__ == "DedentToken"
                 else:
                     next_phrase_is_indent = False
                     next_phrase_is_dedent = False

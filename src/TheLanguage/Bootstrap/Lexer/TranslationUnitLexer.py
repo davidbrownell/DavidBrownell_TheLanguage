@@ -983,12 +983,12 @@ class _PhraseObserver(Phrase.Observer):
         # Populate the children (if necessary)
         if not was_cached:
             if isinstance(node, AST.Node) and data.Data is not None:
-                if isinstance(data.Data, Phrase.StandardLexResultData):
+                if data.Data.__class__.__name__ == "PhraseLexResultData":
                     data_items = [data.Data]
-                elif isinstance(data.Data, Phrase.MultipleLexResultData):
+                elif data.Data.__class__.__name__ == "PhraseContainerLexResultData":
                     data_items = data.Data.DataItems
                 else:
-                    assert False, data.Data  # pragma: no cover
+                    assert False, data.Data.__class__.__name__  # pragma: no cover
 
                 for data_item in data_items:
                     if data_item.__class__.__name__ == "TokenLexResultData":
