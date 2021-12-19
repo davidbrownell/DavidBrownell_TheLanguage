@@ -47,7 +47,7 @@ class TokenPhrase(Phrase):
         else:
             raise Exception("token was not provided")
 
-        self._Init_388f0535f46a439992263bff5f0cb344_()
+        self._Init_5137c8d1c37041a1bcf26b5c9cca8614_()
 
     def __eq__(self, other):
         if Phrase.__eq__(self, other) is False: return False
@@ -89,7 +89,7 @@ class TokenPhrase(Phrase):
 
         return 0
 
-    def _Init_388f0535f46a439992263bff5f0cb344_(self):
+    def _Init_5137c8d1c37041a1bcf26b5c9cca8614_(self):
         pass
 
     @property

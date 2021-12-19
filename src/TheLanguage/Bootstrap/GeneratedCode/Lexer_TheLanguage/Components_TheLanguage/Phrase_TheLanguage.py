@@ -83,7 +83,7 @@ class Phrase(object):
         # _is_populated
         self._is_populated = False
 
-        self._Init_9297e6c855d14ac8bc93363933a13bff_()
+        self._Init_0de31c431d5a435b8e7f6b90270c4920_()
 
     def __eq__(self, other):
         # No bases
@@ -137,7 +137,7 @@ class Phrase(object):
 
         return 0
 
-    def _Init_9297e6c855d14ac8bc93363933a13bff_(self):
+    def _Init_0de31c431d5a435b8e7f6b90270c4920_(self):
         pass
 
     NormalizedIterator = NormalizedIterator
@@ -170,7 +170,7 @@ class Phrase(object):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_88e706cf859b4557ac0b8fa94d80f348_()
+            self._Init_a4f7122cdc7945c194e2d17aa8a079e5_()
 
         def __eq__(self, other):
             # No bases
@@ -219,7 +219,7 @@ class Phrase(object):
             return 0
 
         # Return Type: None
-        def _Init_88e706cf859b4557ac0b8fa94d80f348_(self):
+        def _Init_a4f7122cdc7945c194e2d17aa8a079e5_(self):
             assert self.begin <= self.end
 
     # Visibility: public
@@ -262,7 +262,7 @@ class Phrase(object):
             else:
                 raise Exception("data was not provided")
 
-            self._Init_9f59122f79c14b1ea5953d449b220c44_()
+            self._Init_3c0e6d803b444ae7a003baaa5bb83680_()
 
         def __eq__(self, other):
             # No bases
@@ -325,7 +325,7 @@ class Phrase(object):
         @property
         def Data(self): return self.data
         # Return Type: None
-        def _Init_9f59122f79c14b1ea5953d449b220c44_(self):
+        def _Init_3c0e6d803b444ae7a003baaa5bb83680_(self):
             assert self.data is not None or self.success is False
 
     # Visibility: private
@@ -342,7 +342,7 @@ class Phrase(object):
 
             # No members
 
-            self._Init_bbcebfbbe01b4543b1b85c617ce990d2_()
+            self._Init_77070e135e6e4e8390d774aad4d1d00b_()
 
         def __eq__(self, other):
             # No bases
@@ -380,7 +380,7 @@ class Phrase(object):
 
             return 0
 
-        def _Init_bbcebfbbe01b4543b1b85c617ce990d2_(self):
+        def _Init_77070e135e6e4e8390d774aad4d1d00b_(self):
             pass
 
         pass
@@ -441,7 +441,7 @@ class Phrase(object):
             else:
                 raise Exception("is_ignored was not provided")
 
-            self._Init_b45be759554246dfa306007cd6db233e_()
+            self._Init_b0a20936f25141648d47b1a9cd889d19_()
 
         def __eq__(self, other):
             if Phrase._LexResultData.__eq__(self, other) is False: return False
@@ -507,7 +507,7 @@ class Phrase(object):
 
             return 0
 
-        def _Init_b45be759554246dfa306007cd6db233e_(self):
+        def _Init_b0a20936f25141648d47b1a9cd889d19_(self):
             pass
 
         LineInfo_WhitespaceRange = LineInfo.WhitespaceRange
@@ -572,7 +572,7 @@ class Phrase(object):
             else:
                 self.potential_error_context = None
 
-            self._Init_57758c2b5a524f6cbbc0c51652660e14_()
+            self._Init_d3acc3cd51484de28501ef14df9df5d6_()
 
         def __eq__(self, other):
             if Phrase._LexResultData.__eq__(self, other) is False: return False
@@ -632,7 +632,7 @@ class Phrase(object):
 
             return 0
 
-        def _Init_57758c2b5a524f6cbbc0c51652660e14_(self):
+        def _Init_d3acc3cd51484de28501ef14df9df5d6_(self):
             pass
 
         @property
@@ -675,7 +675,7 @@ class Phrase(object):
             else:
                 raise Exception("is_complete was not provided")
 
-            self._Init_d25f9a82c0f84c2fbc981fb9b18253e3_()
+            self._Init_5cf900316afb4f4bad3315cb5f3f0b51_()
 
         def __eq__(self, other):
             if Phrase._LexResultData.__eq__(self, other) is False: return False
@@ -723,7 +723,7 @@ class Phrase(object):
 
             return 0
 
-        def _Init_d25f9a82c0f84c2fbc981fb9b18253e3_(self):
+        def _Init_5cf900316afb4f4bad3315cb5f3f0b51_(self):
             pass
 
         @property
@@ -750,7 +750,7 @@ class Phrase(object):
 
             # No members
 
-            self._Init_e794e56a4b66489ba3fde875ce522f65_()
+            self._Init_cd85f30ca2404941b31827bdf5482784_()
 
         def __eq__(self, other):
             # No bases
@@ -788,7 +788,7 @@ class Phrase(object):
 
             return 0
 
-        def _Init_e794e56a4b66489ba3fde875ce522f65_(self):
+        def _Init_cd85f30ca2404941b31827bdf5482784_(self):
             pass
 
         # Visibility: public
@@ -819,7 +819,7 @@ class Phrase(object):
                 else:
                     self.name = None
 
-                self._Init_3b167981bba94e658bff7b8c7bcf1a0c_()
+                self._Init_9293f955a36d445ebed28499253cd6b6_()
 
             def __eq__(self, other):
                 # No bases
@@ -867,7 +867,7 @@ class Phrase(object):
 
                 return 0
 
-            def _Init_3b167981bba94e658bff7b8c7bcf1a0c_(self):
+            def _Init_9293f955a36d445ebed28499253cd6b6_(self):
                 pass
 
         # Return Type: GetDynamicPhrasesResult

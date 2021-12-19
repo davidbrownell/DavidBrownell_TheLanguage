@@ -596,7 +596,7 @@ def _PopulateItem(
         )
 
     elif item is None:
-        phrase = RecursivePlaceholderPhrase()
+        phrase = RecursivePlaceholderPhrase.Create()
 
     else:
         assert False, item  # pragma: no cover
