@@ -191,12 +191,11 @@ public mutable class Phrase:
         >>>
 
         public List<(LexResultData | None)>{ min_length'=0 } val data_items
-        [Keyword] public Bool val is_complete
 
         python_hack: @property
         python_hack: def DataItems(self): return self.data_items
         python_hack: @property
-        python_hack: def IsComplete(self): return self.is_complete
+        python_hack: def IsComplete(self): return True
 
     python_hack: StandardLexResultData = PhraseLexResultData
     python_hack: MultipleLexResultData = PhraseContainerLexResultData

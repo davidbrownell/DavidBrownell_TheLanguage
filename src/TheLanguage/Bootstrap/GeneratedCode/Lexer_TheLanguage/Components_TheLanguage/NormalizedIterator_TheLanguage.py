@@ -82,7 +82,7 @@ class NormalizedIterator(object):
         else:
             raise Exception("_consumed_dedent_count was not provided")
 
-        self._Init_cb1ee14c1e664a19b5a7d1261208bb9b_()
+        self._Init_13b684d56e6949a4a8c468730b1ed9b3_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -412,7 +412,7 @@ class NormalizedIterator(object):
             # has_end_of_file_dedents
             self.has_end_of_file_dedents = None
 
-            self._Init_773ad3cd02de48b6b329f4beccf2ad88_()
+            self._Init_2a26f6cb4f8e4a84ad8d445711134b73_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -507,14 +507,14 @@ class NormalizedIterator(object):
             return NormalizedContentEx(content.content, content.content_length, content.line_infos, content.hash, )
 
         # Return Type: None
-        def _Init_773ad3cd02de48b6b329f4beccf2ad88_(self):
+        def _Init_2a26f6cb4f8e4a84ad8d445711134b73_(self):
             last_line_info = self.line_infos[-1]
             self.has_end_of_file_dedents = (last_line_info.num_dedents is not None and last_line_info.num_dedents > 0 and last_line_info.offset_start == last_line_info.offset_end and last_line_info.content_start == last_line_info.offset_start and last_line_info.content_end == last_line_info.offset_end)
 
     def Clone(self):
         return self.__class__(self._content, self._offset, self._line_info_index, self._whitespace_range_index, self._consumed_dedent_count)
     # Return Type: None
-    def _Init_cb1ee14c1e664a19b5a7d1261208bb9b_(self):
+    def _Init_13b684d56e6949a4a8c468730b1ed9b3_(self):
         assert self._offset <= self._content.content_length
         if self._offset != self._content.content_length:
             line_info = self._content.line_infos[self._line_info_index]

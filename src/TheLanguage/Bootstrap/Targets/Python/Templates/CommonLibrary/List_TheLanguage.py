@@ -72,6 +72,10 @@ class List(object):
     def RemoveBack_(self):
         return self.TryRemoveBack()
 
+    def Sort(self):
+        self._items.sort()
+        return self
+
     def __getattr__(self, name: str):
         return getattr(self._items, name)
 

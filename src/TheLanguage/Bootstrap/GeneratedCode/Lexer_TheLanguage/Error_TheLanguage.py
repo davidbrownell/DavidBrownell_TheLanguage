@@ -58,7 +58,7 @@ class Error(Exception):
         else:
             raise Exception("column was not provided")
 
-        self._Init_a11a31b09a004f43b5a44d26d30b909b_()
+        self._Init_ef5d874c3fd645bab7e1ecd69dd34aeb_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -149,11 +149,11 @@ class Error(Exception):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_a11a31b09a004f43b5a44d26d30b909b_(self):
+    def _Init_ef5d874c3fd645bab7e1ecd69dd34aeb_(self):
         pass
 
     # Return Type: String
-    def _ToString_a11a31b09a004f43b5a44d26d30b909b_(self):
+    def _ToString_ef5d874c3fd645bab7e1ecd69dd34aeb_(self):
         return self._GetMessageTemplate().format(**self.__dict__, )
 
     # Return Type: String
@@ -165,4 +165,4 @@ class Error(Exception):
     @property
     def Column(self): return self.column
     def __str__(self):
-        return self._ToString_a11a31b09a004f43b5a44d26d30b909b_()
+        return self._ToString_ef5d874c3fd645bab7e1ecd69dd34aeb_()

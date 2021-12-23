@@ -81,7 +81,7 @@ class SequencePhrase(Phrase):
         # _newline_token
         self._newline_token = NewlineToken.Create()
 
-        self._Init_4298e076646e4f3c917c717eafbbe4c4_()
+        self._Init_01a94f6c51b64b0694a7664f33514dc7_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -217,7 +217,7 @@ class SequencePhrase(Phrase):
         return self._LexImpl(unique_id, iter, observer, ignore_whitespace_ctr=1 if ignore_whitespace else 0, ignored_indentation_level=None, starting_phrase_index=1, )
 
     # Return Type: None
-    def _Init_4298e076646e4f3c917c717eafbbe4c4_(self):
+    def _Init_01a94f6c51b64b0694a7664f33514dc7_(self):
         pass
 
     # Return Type: Bool val
@@ -392,7 +392,7 @@ class SequencePhrase(Phrase):
 
             ignored_data_items = None
 
-        return LexResult(success, NormalizedIteratorRange(original_iter, iter, ), PhraseLexResultData(self, Phrase.PhraseContainerLexResultData(data_items, is_complete=True, ), unique_id, ), )
+        return LexResult(success, NormalizedIteratorRange(original_iter, iter, ), PhraseLexResultData(self, Phrase.PhraseContainerLexResultData(data_items, ), unique_id, ), )
 
     # Return Type: String
     @staticmethod

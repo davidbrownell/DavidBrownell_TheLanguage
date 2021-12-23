@@ -1,0 +1,268 @@
+# ----------------------------------------------------------------------
+# |
+# |  OrPhrase.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-12-23 11:10:21
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+Contains the `OrPhrase` object.
+>>>
+
+from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
+from ..Components.Phrase import Phrase
+
+
+# ----------------------------------------------------------------------
+[PrivateCtor]
+public mutable class OrPhrase
+    extends Phrase
+:
+    <<<
+    Attempts to match one of the provided phrases.
+    >>>
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Types
+    # |
+    # ----------------------------------------------------------------------
+    public using Phrases = List<Phrase>{ min_length'=1 }
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Data
+    # |
+    # ----------------------------------------------------------------------
+    public Bool val sort_results
+
+    # By default, ambiguity results when multiple phrases are successfully matched for the same
+    # amount of data. When this value is set to True, the phrase order will be used to resolve
+    # this ambiguity rather than resulting in an error.
+    public Bool val ambiguities_resolved_by_order
+
+    private Bool val _name_is_default
+    private Phrases var _phrases
+
+    # BugBug: phrases property
+
+    python_hack: @property
+    python_hack: def Phrases(self): return self._phrases
+    python_hack: def __hash__(self): return super(OrPhrase, self).__hash__()
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
+    public static OrPhrase Create(
+        any:
+            Phrases var phrases,
+        key:
+            Bool val sort_results=True,
+            Bool val ambiguities_resolved_by_order=False,
+            (String | None) var name=None,
+    ):
+        Bool once name_is_default
+
+        if name is None:
+            name = OrPhrase._CreateDefaultName(phrases)
+            name_is_default = True
+        else:
+            name_is_default = False
+
+        return OrPhrase(
+            move name,
+            sort_results,
+            ambiguities_resolved_by_order,
+            # TODO (wonky_casting): name_is_default as val
+            name_is_default,
+            move phrases,
+        )
+
+    # ----------------------------------------------------------------------
+    public override immutable (LexResult | None) val Lex(
+        any:
+            UniqueId val unique_id,
+            NormalizedIterator var iter,
+            Observer ref observer,
+        key:
+            Bool val ignore_whitespace = False,
+    ):
+        python_hack: LexResult = Phrase.LexResult
+        python_hack: NormalizedIteratorRange = Phrase.NormalizedIteratorRange
+        python_hack: PhraseLexResultData = Phrase.PhraseLexResultData
+        python_hack: PhraseContainerLexResultData = Phrase.PhraseContainerLexResultData
+
+        var best_result = None as (LexResult | None)
+
+        observer.StartPhrase(unique_id, self)
+        # TODO: exit: observer.EndPhrase(unique_id, self, best_result is not None and best_result.success)
+
+        var results = List<LexResult>()
+
+        results.Reserve?(self._phrases.Length())
+
+        # TODO: Execute this in parallel
+        for (phrase_index, phrase, ) in Enumerate(self._phrases):
+            val result = phrase.Lex(
+                # TODO: unique_id + `{self.name} ({phrase_index})`,
+                unique_id + ("{} ({})".Format(self.Name, phrase_index), ),
+                iter.Clone(),
+                # TODO: ref observer,
+                observer,
+                ignore_whitespace=ignore_whitespace,
+            )
+
+            results.InsertBack?(result)
+
+        UIntArch once best_index
+
+        if self.sort_results:
+            # Stable sort according to:
+            #   - Longest matched content
+            #   - Success
+            #   - Phrase index
+
+            # TODO: Use comprehension
+            var sort_data = List<(UIntArch, Bool, IntArch)>()
+
+            sort_data.Reserve?(self._phrases.Length())
+
+            for (result_index, result, ) in Enumerate(results):
+                sort_data.InsertBack?(
+                    (
+                        result.range.end.OffsetProper(),
+                        result.success,
+
+                        # Ensure that phrases that appear earlier in the list are considered as
+                        # better when all else is equal.
+                        -result_index,
+                    ),
+                )
+
+            sort_data.Sort()
+
+            best_index = -sort_data[-1][-1]
+
+            # TODO (difficult syntax): if (
+            # TODO (difficult syntax):     not self.ambiguities_resolved_by_order
+            # TODO (difficult syntax):     and sort_data.Length() > 1
+            # TODO (difficult syntax):     and sort_data[-1][:-1] == sort_data[-2][:-1]
+            # TODO (difficult syntax): ):
+            # TODO (difficult syntax):     val best_result = results[best_index]
+            # TODO (difficult syntax):
+            # TODO (difficult syntax):     assert best_result.data is not None
+            # TODO (difficult syntax):
+            # TODO (difficult syntax):     # It's not ambiguous if all of the match content is ignored
+            # TODO (difficult syntax):     if not (
+            # TODO (difficult syntax):         (
+            # TODO (difficult syntax):             best_result.data.data is TokenLexResultData
+            # TODO (difficult syntax):             and best_result.data.data.is_ignored
+            # TODO (difficult syntax):         )
+            # TODO (difficult syntax):         or (
+            # TODO (difficult syntax):             best_result.data.data is PhraseContainerLexResultData
+            # TODO (difficult syntax):             and All(
+            # TODO (difficult syntax):                 data is TokenLexResultData and data.is_ignored
+            # TODO (difficult syntax):                 for data in best_result.data.data.data_items
+            # TODO (difficult syntax):             )
+            # TODO (difficult syntax):         )
+            # TODO (difficult syntax):     ):
+            # TODO (difficult syntax):         # Find any additional ambiguities
+            # TODO (difficult syntax):         var index = -2
+            # TODO (difficult syntax):
+            # TODO (difficult syntax):         for index in Range(index - 1, -sort_data.Length() - 1, -1):
+            # TODO (difficult syntax):             if sort_data[index][:-1] != sort_data[-1][:-1]:
+            # TODO (difficult syntax):                 break
+            # TODO (difficult syntax):
+            # TODO (difficult syntax):         assert False, "BugBug"
+            # TODO (difficult syntax):         # TODO: assert False,
+            # TODO (difficult syntax):         # TODO:     """
+            # TODO (difficult syntax):         # TODO:     Assertions here indicate a grammar that requires context to lex correctly;
+            # TODO (difficult syntax):         # TODO:     please modify the grammar so that context is no longer required.
+            # TODO (difficult syntax):         # TODO:
+            # TODO (difficult syntax):         # TODO:     {} ambiguities detected.
+            # TODO (difficult syntax):         # TODO:
+            # TODO (difficult syntax):         # TODO:
+            # TODO (difficult syntax):         # TODO:
+            # TODO (difficult syntax):         # TODO:     {}
+            # TODO (difficult syntax):         # TODO:     """.Format(
+            # TODO (difficult syntax):         # TODO:         -index,
+            # TODO (difficult syntax):         # TODO:         "\n\n\n".Join(results[-sort_data[index][-1]] for index in Range(-1, index - 1, -1)),
+            # TODO (difficult syntax):         # TODO:     )
+
+        else:
+            for (index, result, ) in Enumerate(results):
+                if result.success:
+                    best_index = index
+                    break
+
+            if best_index is None:
+                best_index = 0
+
+        val best_result = results[best_index]
+        val range = NormalizedIteratorRange(
+            # TODO ('as'): iter as val,
+            iter,
+            best_result.range.end,
+        )
+
+        if best_result.success:
+            val result = LexResult(
+                True,
+                range,
+                PhraseLexResultData(
+                    self,
+                    best_result.data,
+                    unique_id,
+                ),
+            )
+
+            if not observer.OnInternalPhraseProxy(result.data, result.range):
+                return None
+
+            return result
+
+        return LexResult(
+            False,
+            range,
+            PhraseLexResultData(
+                self,
+                # TODO: PhraseContainerLexResultData([result.data for result in results]),
+                PhraseContainerLexResultData(result.data for result in results),
+                unique_id,
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
+    # ----------------------------------------------------------------------
+    private override mutable Bool val _PopulateRecursiveImpl(Phrase val new_phrase):
+        var replaced_phrase = False
+
+        for (phrase_index, phrase) in Enumerate(self._phrases):
+            if phrase is RecursivePlaceholderPhrase:
+                self._phrases[phrase_index] = new_phrase
+                replaced_phrase = True
+
+            else:
+                replaced_phrase = phrase.PopulateRecursive(self, new_phrase) or replaced_phrase
+
+        if replaced_phrase and self._name_is_default:
+            self._name_ = OrPhrase._CreateDefaultName(self._phrases)
+
+        return replaced_phrase
+
+    # ----------------------------------------------------------------------
+    private static String _CreateDefaultName(Phrases immutable phrases):
+        return "({})".Format(" | ".join(phrase.Name for phrase in phrases))

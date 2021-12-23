@@ -284,7 +284,7 @@ class SyntaxInvalidError(Error):
 
                             break
 
-                    elif isinstance(error_node.Type, (DynamicPhrase, OrPhrase)):
+                    elif error_node.Type.__class__.__name__ in ["DynamicPhrase", "OrPhrase", ]:
                         # Keep walking
                         pass
 

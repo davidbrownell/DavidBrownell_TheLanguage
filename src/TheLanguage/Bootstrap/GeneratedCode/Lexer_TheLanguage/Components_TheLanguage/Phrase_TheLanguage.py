@@ -83,7 +83,7 @@ class Phrase(object):
         # _is_populated
         self._is_populated = False
 
-        self._Init_de3e6f435d5c4e3da3dc9dcc4b189827_()
+        self._Init_30bee51d2a4f43cc9f3f1d52324cc357_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -171,7 +171,7 @@ class Phrase(object):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_de3e6f435d5c4e3da3dc9dcc4b189827_(self):
+    def _Init_30bee51d2a4f43cc9f3f1d52324cc357_(self):
         pass
 
     NormalizedIterator = NormalizedIterator
@@ -204,7 +204,7 @@ class Phrase(object):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_7959b9a2f2944fc5a3e69d4c5c806a99_()
+            self._Init_a5e006f87a2445118e7e5078cae271c5_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -296,7 +296,7 @@ class Phrase(object):
             return result
 
         # Return Type: None
-        def _Init_7959b9a2f2944fc5a3e69d4c5c806a99_(self):
+        def _Init_a5e006f87a2445118e7e5078cae271c5_(self):
             assert self.begin <= self.end
 
     # Visibility: public
@@ -339,7 +339,7 @@ class Phrase(object):
             else:
                 raise Exception("data was not provided")
 
-            self._Init_a4478c22c3d64396ab6d7a14feada045_()
+            self._Init_0f84378303734b72a9b1042028a051e4_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -442,7 +442,7 @@ class Phrase(object):
         @property
         def Data(self): return self.data
         # Return Type: None
-        def _Init_a4478c22c3d64396ab6d7a14feada045_(self):
+        def _Init_0f84378303734b72a9b1042028a051e4_(self):
             assert self.data is not None or self.success is False
 
     # Visibility: private
@@ -459,7 +459,7 @@ class Phrase(object):
 
             # No members
 
-            self._Init_924652d9993e47338f6d1d88a4b081c4_()
+            self._Init_50c3c17b67f74f9784ee0dfb7b585820_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -546,7 +546,7 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_924652d9993e47338f6d1d88a4b081c4_(self):
+        def _Init_50c3c17b67f74f9784ee0dfb7b585820_(self):
             pass
 
         pass
@@ -575,7 +575,7 @@ class Phrase(object):
             else:
                 raise Exception("whitespace was not provided")
 
-            self._Init_74f71e80f31e452cbbc197b0122ce23d_()
+            self._Init_de639d1e71364a489270628103c3f0de_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -664,7 +664,7 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_74f71e80f31e452cbbc197b0122ce23d_(self):
+        def _Init_de639d1e71364a489270628103c3f0de_(self):
             pass
 
         LineInfo_WhitespaceRange = LineInfo.WhitespaceRange
@@ -716,7 +716,7 @@ class Phrase(object):
             else:
                 raise Exception("is_ignored was not provided")
 
-            self._Init_ca4e15b1e0ca48ea87960edfbb304c15_()
+            self._Init_cecbbc3b652242ff9cdf5c10b1e2c180_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -814,7 +814,7 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_ca4e15b1e0ca48ea87960edfbb304c15_(self):
+        def _Init_cecbbc3b652242ff9cdf5c10b1e2c180_(self):
             pass
 
         Token_MatchResult = Token.MatchResult
@@ -879,7 +879,7 @@ class Phrase(object):
             else:
                 self.potential_error_context = None
 
-            self._Init_d8d4e185ae4f419ba56af305f2c449d3_()
+            self._Init_d254d216f7404a8bbac2e53c2cfeed6e_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -977,7 +977,7 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_d8d4e185ae4f419ba56af305f2c449d3_(self):
+        def _Init_d254d216f7404a8bbac2e53c2cfeed6e_(self):
             pass
 
         @property
@@ -1000,7 +1000,7 @@ class Phrase(object):
             Phrase.PhraseContainerLexResultData._InternalInit(self, list(args), kwargs)
 
         def _InternalInit(self, args, kwargs):
-            # data_items, is_complete
+            # data_items
 
             Phrase._LexResultData._InternalInit(self, args, kwargs)
 
@@ -1012,15 +1012,7 @@ class Phrase(object):
             else:
                 raise Exception("data_items was not provided")
 
-            # is_complete
-            if "is_complete" in kwargs:
-                self.is_complete = kwargs.pop("is_complete")
-            elif args:
-                self.is_complete = args.pop(0)
-            else:
-                raise Exception("is_complete was not provided")
-
-            self._Init_c8dc93987ea6430e8077ca0c698f4f63_()
+            self._Init_90920f6312414957896cfa3491679851_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -1072,9 +1064,6 @@ class Phrase(object):
             result = cls.__CompareItem__(a.data_items, b.data_items, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.is_complete, b.is_complete, compare_cache)
-            if result is not None: return result
-
             return 0
 
         @classmethod
@@ -1112,13 +1101,13 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_c8dc93987ea6430e8077ca0c698f4f63_(self):
+        def _Init_90920f6312414957896cfa3491679851_(self):
             pass
 
         @property
         def DataItems(self): return self.data_items
         @property
-        def IsComplete(self): return self.is_complete
+        def IsComplete(self): return True
     StandardLexResultData = PhraseLexResultData
     MultipleLexResultData = PhraseContainerLexResultData
     # Visibility: public
@@ -1139,7 +1128,7 @@ class Phrase(object):
 
             # No members
 
-            self._Init_2bc2d34e1a3a4aad884f1f80bb842172_()
+            self._Init_1c77773ebe7c4ed882508a8753c63ebe_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -1226,7 +1215,7 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_2bc2d34e1a3a4aad884f1f80bb842172_(self):
+        def _Init_1c77773ebe7c4ed882508a8753c63ebe_(self):
             pass
 
         # Visibility: public
@@ -1257,7 +1246,7 @@ class Phrase(object):
                 else:
                     self.name = None
 
-                self._Init_1a4933c28d134bb7b36aef0de66d72ee_()
+                self._Init_80c2f44ae6d94dcd9aa7b2e654161db4_()
 
             def __eq__(self, other):
                 compare_cache = {}
@@ -1348,7 +1337,7 @@ class Phrase(object):
                 compare_cache[cache_key] = result
                 return result
 
-            def _Init_1a4933c28d134bb7b36aef0de66d72ee_(self):
+            def _Init_80c2f44ae6d94dcd9aa7b2e654161db4_(self):
                 pass
 
         # Return Type: GetDynamicPhrasesResult

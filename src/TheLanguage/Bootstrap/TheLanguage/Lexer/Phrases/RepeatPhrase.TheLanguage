@@ -27,7 +27,7 @@ public mutable class RepeatPhrase
     extends Phrase
 :
     <<<
-    Matches content that repeats the provided phrase N times
+    Matches content that repeats the provided phrase N times.
     >>>
 
     # ----------------------------------------------------------------------
@@ -140,10 +140,7 @@ public mutable class RepeatPhrase
                 ),
                 PhraseLexResultData(
                     self,
-                    PhraseContainerLexResultData(
-                        move results,
-                        is_complete=True,
-                    ),
+                    PhraseContainerLexResultData(move results),
                     unique_id,
                     error_result.data if error_result is not None else None,
                 ),
@@ -168,10 +165,7 @@ public mutable class RepeatPhrase
             ),
             PhraseLexResultData(
                 self,
-                PhraseContainerLexResultData(
-                    move results,
-                    is_complete=True,
-                ),
+                PhraseContainerLexResultData(move results),
                 unique_id,
             ),
         )

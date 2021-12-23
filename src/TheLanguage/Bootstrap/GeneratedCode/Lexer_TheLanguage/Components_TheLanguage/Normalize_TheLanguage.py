@@ -41,7 +41,7 @@ class InvalidTabsAndSpacesError(Error):
 
         # No members
 
-        self._Init_d4f03d49320f431da7d6b550e496e37c_()
+        self._Init_824ed57fc4a34cd1953d1f48c3d0238c_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -129,7 +129,7 @@ class InvalidTabsAndSpacesError(Error):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_d4f03d49320f431da7d6b550e496e37c_(self):
+    def _Init_824ed57fc4a34cd1953d1f48c3d0238c_(self):
         pass
 
     # Return Type: String
@@ -150,7 +150,7 @@ class NoClosingMultilineTokenError(Error):
 
         # No members
 
-        self._Init_66d36c23c1a74ae29a79dd7e6ee50913_()
+        self._Init_ed7653d22cd647f196b6cac19e7abb57_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -238,7 +238,7 @@ class NoClosingMultilineTokenError(Error):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_66d36c23c1a74ae29a79dd7e6ee50913_(self):
+    def _Init_ed7653d22cd647f196b6cac19e7abb57_(self):
         pass
 
     # Return Type: String
@@ -313,7 +313,7 @@ class LineInfo(object):
         else:
             self.new_indentation_value = None
 
-        self._Init_ddab9cd164b34a4fa5619e36d2835ded_()
+        self._Init_c2bc9579777c4df6a6080749e885aae7_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -447,7 +447,7 @@ class LineInfo(object):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_6ca06966760249e6aba366731995d36c_()
+            self._Init_a1fd9ed6654a48f3bb7b6837ad316049_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -539,7 +539,7 @@ class LineInfo(object):
             return result
 
         # Return Type: None
-        def _Init_6ca06966760249e6aba366731995d36c_(self):
+        def _Init_a1fd9ed6654a48f3bb7b6837ad316049_(self):
             assert self.begin < self.end
 
     # Type alias: public WhitespaceRanges = List<WhitespaceRange, >{min_length'=0, }
@@ -556,7 +556,7 @@ class LineInfo(object):
         return self.content_end != self.offset_end
 
     # Return Type: None
-    def _Init_ddab9cd164b34a4fa5619e36d2835ded_(self):
+    def _Init_c2bc9579777c4df6a6080749e885aae7_(self):
         assert self.offset_end >= self.offset_start
         assert self.content_start >= self.offset_start
         assert self.content_end >= self.content_start
@@ -618,7 +618,7 @@ class NormalizedContent(object):
         else:
             raise Exception("hash was not provided")
 
-        self._Init_0fcbde998f014692956297f314f4f086_()
+        self._Init_0c35f4e7142941c6a688b70bf04be98d_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -715,7 +715,7 @@ class NormalizedContent(object):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_0fcbde998f014692956297f314f4f086_(self):
+    def _Init_0c35f4e7142941c6a688b70bf04be98d_(self):
         pass
 
     # Type alias: public LineInfos = List<LineInfo, >{min_length'=1, }
@@ -777,7 +777,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             else:
                 raise Exception("value was not provided")
 
-            self._Init_d46925095be3441f864773b831675215_()
+            self._Init_61ac661729ea421c9fc26b59dd491325_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -868,7 +868,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             compare_cache[cache_key] = result
             return result
 
-        def _Init_d46925095be3441f864773b831675215_(self):
+        def _Init_61ac661729ea421c9fc26b59dd491325_(self):
             pass
 
     # Visibility: private
@@ -899,7 +899,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             else:
                 raise Exception("num_delimiters was not provided")
 
-            self._Init_8df90167ced9478b827e30aaf7a46464_()
+            self._Init_8e00e20981704486838a77a7f03f5e7e_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -990,7 +990,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             compare_cache[cache_key] = result
             return result
 
-        def _Init_8df90167ced9478b827e30aaf7a46464_(self):
+        def _Init_8e00e20981704486838a77a7f03f5e7e_(self):
             pass
 
     line_infos = List()

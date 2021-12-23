@@ -499,10 +499,7 @@ public mutable class SequencePhrase
             NormalizedIteratorRange(original_iter, move iter),
             PhraseLexResultData(
                 self,
-                Phrase.PhraseContainerLexResultData(
-                    move data_items,
-                    is_complete=True,
-                ),
+                Phrase.PhraseContainerLexResultData(move data_items),
                 unique_id,
             ),
         )

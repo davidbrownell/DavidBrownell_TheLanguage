@@ -347,7 +347,7 @@ def ExtractOr(
     node: Node,
 ) -> Union[Leaf, Node]:
     # Drill into the or node
-    assert isinstance(node.Type, OrPhrase), node.Type
+    assert node.Type.__class__.__name__ == "OrPhrase", node.Type.__class__.__name__
     assert len(node.Children) == 1
     return node.Children[0]
 
@@ -531,10 +531,17 @@ def _PopulateItem(
     # Certain PhraseItem decorators can only be used with certain item types
     assert exclude_phrases is None or (exclude_phrases and isinstance(item, DynamicPhrasesType)), (exclude_phrases, item)
     assert is_valid_data_func is None or (is_valid_data_func and isinstance(item, DynamicPhrasesType)), (is_valid_data_func, item)
-    assert ambiguities_resolved_by_order is None or (ambiguities_resolved_by_order and isinstance(item, (tuple, OrPhrase))), (ambiguities_resolved_by_order, item)
+    assert ambiguities_resolved_by_order is None or (ambiguities_resolved_by_order and (isinstance(item, tuple) or item.__class__.__name__ == "OrPhrase")), (ambiguities_resolved_by_order, item)
 
     # Begin the conversion process
-    if isinstance(item, Phrase):
+    is_phrase = False
+
+    for base in item.__class__.__bases__:
+        if base.__name__ == "Phrase":
+            is_phrase = True
+            break
+
+    if is_phrase:
         phrase = item
 
     elif isinstance(item, (NewlineToken, IndentToken, DedentToken, RegexToken, PushIgnoreWhitespaceControlToken, PopIgnoreWhitespaceControlToken, PushPreserveWhitespaceControlToken, PopPreserveWhitespaceControlToken)):
@@ -576,7 +583,7 @@ def _PopulateItem(
             _PopulateItem(comment_token, phrase_item) for phrase_item in item
         ]
 
-        phrase = OrPhrase(
+        phrase = OrPhrase.Create(
             or_phrases,
             name=name,
             ambiguities_resolved_by_order=ambiguities_resolved_by_order,
@@ -589,7 +596,7 @@ def _PopulateItem(
             _PopulateItem(comment_token, phrase_item) for phrase_item in item.Items
         ]
 
-        phrase = OrPhrase(
+        phrase = OrPhrase.Create(
             or_phrases,
             name=name,
             ambiguities_resolved_by_order=ambiguities_resolved_by_order,

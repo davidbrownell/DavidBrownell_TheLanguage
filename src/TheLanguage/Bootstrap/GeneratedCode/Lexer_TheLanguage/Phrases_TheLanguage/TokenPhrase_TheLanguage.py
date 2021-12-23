@@ -47,7 +47,7 @@ class TokenPhrase(Phrase):
         else:
             raise Exception("token was not provided")
 
-        self._Init_a40aecade2aa4de391d81954f025be69_()
+        self._Init_93a49330702749fdb601e8ee9937bdc5_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -136,7 +136,7 @@ class TokenPhrase(Phrase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_a40aecade2aa4de391d81954f025be69_(self):
+    def _Init_93a49330702749fdb601e8ee9937bdc5_(self):
         pass
 
     @property

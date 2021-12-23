@@ -4,7 +4,7 @@
 # |
 # ----------------------------------------------------------------------
 """\
-Contains the `RepeatPhrase` object.
+Contains the `OrPhrase` object.
 """
 
 
@@ -25,39 +25,39 @@ with InitRelativeImports():
     from ...CommonLibrary.String_TheLanguage import String
 
     from .RecursivePlaceholderPhrase_TheLanguage import RecursivePlaceholderPhrase
-    from ..Components_TheLanguage.Phrase_TheLanguage import Phrase, NormalizedIterator
+    from ..Components_TheLanguage.Phrase_TheLanguage import Phrase
 
 # Visibility: public
 # ClassModifier: mutable
 # ClassType: Class
-class RepeatPhrase(Phrase):
+class OrPhrase(Phrase):
     """\
-    Matches content that repeats the provided phrase N times.
+    Attempts to match one of the provided phrases.
     """
 
     def __init__(self, *args, **kwargs):
-        RepeatPhrase._InternalInit(self, list(args), kwargs)
+        OrPhrase._InternalInit(self, list(args), kwargs)
 
     def _InternalInit(self, args, kwargs):
-        # min_matches, max_matches, _name_is_default, _phrase
+        # sort_results, ambiguities_resolved_by_order, _name_is_default, _phrases
 
         Phrase._InternalInit(self, args, kwargs)
 
-        # min_matches
-        if "min_matches" in kwargs:
-            self.min_matches = kwargs.pop("min_matches")
+        # sort_results
+        if "sort_results" in kwargs:
+            self.sort_results = kwargs.pop("sort_results")
         elif args:
-            self.min_matches = args.pop(0)
+            self.sort_results = args.pop(0)
         else:
-            raise Exception("min_matches was not provided")
+            raise Exception("sort_results was not provided")
 
-        # max_matches
-        if "max_matches" in kwargs:
-            self.max_matches = kwargs.pop("max_matches")
+        # ambiguities_resolved_by_order
+        if "ambiguities_resolved_by_order" in kwargs:
+            self.ambiguities_resolved_by_order = kwargs.pop("ambiguities_resolved_by_order")
         elif args:
-            self.max_matches = args.pop(0)
+            self.ambiguities_resolved_by_order = args.pop(0)
         else:
-            raise Exception("max_matches was not provided")
+            raise Exception("ambiguities_resolved_by_order was not provided")
 
         # _name_is_default
         if "_name_is_default" in kwargs:
@@ -67,15 +67,15 @@ class RepeatPhrase(Phrase):
         else:
             raise Exception("_name_is_default was not provided")
 
-        # _phrase
-        if "_phrase" in kwargs:
-            self._phrase = kwargs.pop("_phrase")
+        # _phrases
+        if "_phrases" in kwargs:
+            self._phrases = kwargs.pop("_phrases")
         elif args:
-            self._phrase = args.pop(0)
+            self._phrases = args.pop(0)
         else:
-            raise Exception("_phrase was not provided")
+            raise Exception("_phrases was not provided")
 
-        self._Init_67d9e018cc944b6a82e4f65fb3e003b6_()
+        self._Init_ecf96e93d9ca40a6b79e8f926cddacc0_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -124,16 +124,16 @@ class RepeatPhrase(Phrase):
         result = Phrase.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
-        result = cls.__CompareItem__(a.min_matches, b.min_matches, compare_cache)
+        result = cls.__CompareItem__(a.sort_results, b.sort_results, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a.max_matches, b.max_matches, compare_cache)
+        result = cls.__CompareItem__(a.ambiguities_resolved_by_order, b.ambiguities_resolved_by_order, compare_cache)
         if result is not None: return result
 
         result = cls.__CompareItem__(a._name_is_default, b._name_is_default, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a._phrase, b._phrase, compare_cache)
+        result = cls.__CompareItem__(a._phrases, b._phrases, compare_cache)
         if result is not None: return result
 
         return 0
@@ -173,24 +173,24 @@ class RepeatPhrase(Phrase):
         compare_cache[cache_key] = result
         return result
 
+    def _Init_ecf96e93d9ca40a6b79e8f926cddacc0_(self):
+        pass
+
+    # Type alias: public Phrases = List<Phrase, >{min_length'=1, }
     @property
-    def Phrase(self): return self._phrase
-    @property
-    def MinMatches(self): return self.min_matches
-    @property
-    def MaxMatches(self): return self.max_matches
-    def __hash__(self): return super(RepeatPhrase, self).__hash__()
-    # Return Type: RepeatPhrase
+    def Phrases(self): return self._phrases
+    def __hash__(self): return super(OrPhrase, self).__hash__()
+    # Return Type: OrPhrase
     @staticmethod
-    def Create(phrase, min_matches, max_matches, name=None, ):
+    def Create(phrases, sort_results=True, ambiguities_resolved_by_order=False, name=None, ):
         name_is_default = None
         if name is None:
-            name = RepeatPhrase._CreateDefaultName(phrase, min_matches, max_matches, )
+            name = OrPhrase._CreateDefaultName(phrases, )
             name_is_default = True
         else:
             name_is_default = False
 
-        return RepeatPhrase(name, min_matches, max_matches, name_is_default, phrase, )
+        return OrPhrase(name, sort_results, ambiguities_resolved_by_order, name_is_default, phrases, )
 
     # Return Type: <LexResult | None> val
     def Lex(self, unique_id, iter, observer, ignore_whitespace=False, ):
@@ -198,60 +198,59 @@ class RepeatPhrase(Phrase):
         NormalizedIteratorRange = Phrase.NormalizedIteratorRange
         PhraseLexResultData = Phrase.PhraseLexResultData
         PhraseContainerLexResultData = Phrase.PhraseContainerLexResultData
-        original_iter = iter.Clone()
-        success = False
+        best_result = None # as <LexResult | None>
         observer.StartPhrase(unique_id, self, )
         results = List()
-        error_result = None # as <LexResult | None>
-        while not iter.AtEnd():
-            result = self._phrase.Lex(unique_id + ("{} [{}]".format(self.Name, len(results), ), ), iter.Clone(), observer, ignore_whitespace=ignore_whitespace, )
-            if result is None:
-                return None
+        results.Reserve_(len(self._phrases), )
+        for (phrase_index, phrase, ) in Enumerate(self._phrases, ):
+            result = phrase.Lex(unique_id + ("{} ({})".format(self.Name, phrase_index, ), ), iter.Clone(), observer, ignore_whitespace=ignore_whitespace, )
+            results.InsertBack_(result, )
+        best_index = None
+        if self.sort_results:
+            sort_data = List()
+            sort_data.Reserve_(len(self._phrases), )
+            for (result_index, result, ) in Enumerate(results, ):
+                sort_data.InsertBack_((result.range.end.OffsetProper(), result.success, -result_index, ), )
+            sort_data.Sort()
+            best_index = -sort_data[-1][-1]
+        else:
+            for (index, result, ) in Enumerate(results, ):
+                if result.success:
+                    best_index = index
+                    break
 
-            if not result.success:
-                error_result = result
-                break
+            if best_index is None:
+                best_index = 0
 
-            results.InsertBack_(result.data, )
-            iter = result.range.end.Clone()
-            if self.max_matches is not None and (len(results) == self.max_matches):
-                break
 
-        if len(results) >= self.min_matches:
-            success = True
-            assert self.max_matches is None or (len(results) <= self.max_matches)
-            result = LexResult(True, NormalizedIteratorRange(original_iter, iter, ), PhraseLexResultData(self, PhraseContainerLexResultData(results, ), unique_id, error_result.data if error_result is not None else None, ), )
-            if observer.OnInternalPhraseProxy(result.data, result.range, ) is None:
+        best_result = results[best_index]
+        range = NormalizedIteratorRange(iter, best_result.range.end, )
+        if best_result.success:
+            result = LexResult(True, range, PhraseLexResultData(self, best_result.data, unique_id, ), )
+            if not observer.OnInternalPhraseProxy(result.data, result.range, ):
                 return None
 
             return result
 
-        if error_result is not None:
-            results.InsertBack_(error_result.data, )
-            iter = error_result.range.end
-
-        return LexResult(False, NormalizedIteratorRange(original_iter, iter, ), PhraseLexResultData(self, PhraseContainerLexResultData(results, ), unique_id, ), )
-
-    # Return Type: None
-    def _Init_67d9e018cc944b6a82e4f65fb3e003b6_(self):
-        assert self.max_matches is None or self.max_matches >= self.min_matches
+        return LexResult(False, range, PhraseLexResultData(self, PhraseContainerLexResultData(result.data for result in results, ), unique_id, ), )
 
     # Return Type: Bool val
     def _PopulateRecursiveImpl(self, new_phrase, ):
         replaced_phrase = False
-        if self._phrase.__class__.__name__ == "RecursivePlaceholderPhrase":
-            self._phrase = new_phrase
-            replaced_phrase = True
-        else:
-            replaced_phrase = self._phrase.PopulateRecursive(self, new_phrase, ) or replaced_phrase
+        for (phrase_index, phrase, ) in Enumerate(self._phrases, ):
+            if phrase.__class__.__name__ == "RecursivePlaceholderPhrase":
+                self._phrases[phrase_index] = new_phrase
+                replaced_phrase = True
+            else:
+                replaced_phrase = phrase.PopulateRecursive(self, new_phrase, ) or replaced_phrase
 
         if replaced_phrase and self._name_is_default:
-            self._name_ = RepeatPhrase._CreateDefaultName(self._phrase, self.min_matches, self.max_matches, )
+            self._name_ = OrPhrase._CreateDefaultName(self._phrases, )
 
         return replaced_phrase
 
     # Return Type: String
     @staticmethod
-    def _CreateDefaultName(phrase, min_matches, max_matches, ):
-        return "{{{}, {}, {}}}".format(phrase.Name, min_matches, max_matches, )
+    def _CreateDefaultName(phrases, ):
+        return "({})".format(" | ".join(phrase.Name for phrase in phrases, ), )
 

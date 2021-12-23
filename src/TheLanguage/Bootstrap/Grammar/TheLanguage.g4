@@ -22,6 +22,8 @@ tokens { INDENT, DEDENT }
 // |
 // ----------------------------------------------------------------------
 // - ``-style format strings
+//     + local variables
+//     + attributes/properties of objects
 // - Properties as class members; only allows single expression (like lambdas)
 // - Enum value statements:
 //        enum Foo:
@@ -42,6 +44,7 @@ tokens { INDENT, DEDENT }
 
 // Function Attributes
 //   - Deferred
+//   - Property("name"); overrides actual name (implies not set to parser)
 //
 // Class Attributes
 //   - PrivateCtor
@@ -57,6 +60,7 @@ tokens { INDENT, DEDENT }
 //   - NoSerialize
 //   - NoCompare
 //   - Keyword
+//   - Override
 
 // ----------------------------------------------------------------------
 // |

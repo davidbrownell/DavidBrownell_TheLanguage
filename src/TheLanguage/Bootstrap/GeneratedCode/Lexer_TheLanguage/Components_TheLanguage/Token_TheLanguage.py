@@ -63,7 +63,7 @@ class Token(object):
         else:
             raise Exception("is_control_token was not provided")
 
-        self._Init_7ecc359c98e64f33af738a5a1e7fa47d_()
+        self._Init_0d0dca7ee9834d52be91a315c0a08a45_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -157,7 +157,7 @@ class Token(object):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_7ecc359c98e64f33af738a5a1e7fa47d_(self):
+    def _Init_0d0dca7ee9834d52be91a315c0a08a45_(self):
         pass
 
     # Visibility: public
@@ -180,7 +180,7 @@ class Token(object):
             else:
                 raise Exception("iterator was not provided")
 
-            self._Init_48799cce5906432693b5b381bd818400_()
+            self._Init_c639e6ce36be43d4aa3539537147f066_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -268,7 +268,7 @@ class Token(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_48799cce5906432693b5b381bd818400_(self):
+        def _Init_c639e6ce36be43d4aa3539537147f066_(self):
             pass
 
     @property
@@ -306,7 +306,7 @@ class NewlineToken(Token):
         else:
             raise Exception("capture_many was not provided")
 
-        self._Init_73626d26f7f5469e8bcfff08bd1b908b_()
+        self._Init_aee307c0f6d644a6a58f947e1f9a7820_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -395,7 +395,7 @@ class NewlineToken(Token):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_73626d26f7f5469e8bcfff08bd1b908b_(self):
+    def _Init_aee307c0f6d644a6a58f947e1f9a7820_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -427,7 +427,7 @@ class NewlineToken(Token):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_26d0ff3851874f84801789bd6299d1b5_()
+            self._Init_1bd301bb2ff5431787e5b1c8b80f02f8_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -520,7 +520,7 @@ class NewlineToken(Token):
             return result
 
         # Return Type: None
-        def _Init_26d0ff3851874f84801789bd6299d1b5_(self):
+        def _Init_1bd301bb2ff5431787e5b1c8b80f02f8_(self):
             assert self.start <= self.end
 
     # Return Type: NewlineToken val
@@ -559,7 +559,7 @@ class IndentToken(Token):
 
         # No members
 
-        self._Init_09fb7e5f60034f63b747c4ed1e4c43e5_()
+        self._Init_40d07c43dc50434e92873ce4a0e6e0b8_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -647,7 +647,7 @@ class IndentToken(Token):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_09fb7e5f60034f63b747c4ed1e4c43e5_(self):
+    def _Init_40d07c43dc50434e92873ce4a0e6e0b8_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -687,7 +687,7 @@ class IndentToken(Token):
             else:
                 raise Exception("indent_value was not provided")
 
-            self._Init_80cd5e81cf984f289ab3aae74aa22d93_()
+            self._Init_10136a8c23e54a4ba17ddba27a7b1070_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -783,7 +783,7 @@ class IndentToken(Token):
             return result
 
         # Return Type: None
-        def _Init_80cd5e81cf984f289ab3aae74aa22d93_(self):
+        def _Init_10136a8c23e54a4ba17ddba27a7b1070_(self):
             assert self.start <= self.end
 
     # Return Type: IndentToken val
@@ -819,7 +819,7 @@ class DedentToken(Token):
 
         # No members
 
-        self._Init_e0ad9de8a8d44e6d8ee2532ae1bf57f8_()
+        self._Init_724629860e2d4116bcc2d8e0a0b10093_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -907,7 +907,7 @@ class DedentToken(Token):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_e0ad9de8a8d44e6d8ee2532ae1bf57f8_(self):
+    def _Init_724629860e2d4116bcc2d8e0a0b10093_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -925,7 +925,7 @@ class DedentToken(Token):
 
             # No members
 
-            self._Init_4bcc635403af4ecf9f8c0cba98aa90b4_()
+            self._Init_fbe454219cb14d8a8438b2463911c696_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -1013,7 +1013,7 @@ class DedentToken(Token):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_4bcc635403af4ecf9f8c0cba98aa90b4_(self):
+        def _Init_fbe454219cb14d8a8438b2463911c696_(self):
             pass
 
         pass
@@ -1051,7 +1051,7 @@ class HorizontalWhitespaceToken(Token):
 
         # No members
 
-        self._Init_6b8d18222dee48e0a965334de88d64a8_()
+        self._Init_514224bbf974493d9e7ba454b7d084ca_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -1139,7 +1139,7 @@ class HorizontalWhitespaceToken(Token):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_6b8d18222dee48e0a965334de88d64a8_(self):
+    def _Init_514224bbf974493d9e7ba454b7d084ca_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -1171,7 +1171,7 @@ class HorizontalWhitespaceToken(Token):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_61bf75de87a1440599b7afaeb7799e19_()
+            self._Init_c87c3a99339a43fdb5b5eb8541f8acfc_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -1263,7 +1263,7 @@ class HorizontalWhitespaceToken(Token):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_61bf75de87a1440599b7afaeb7799e19_(self):
+        def _Init_c87c3a99339a43fdb5b5eb8541f8acfc_(self):
             pass
 
     # Return Type: HorizontalWhitespaceToken val
@@ -1315,7 +1315,7 @@ class RegexToken(Token):
         else:
             raise Exception("is_multiline was not provided")
 
-        self._Init_0770041d69ac42b6b1340b78382d2bc0_()
+        self._Init_061fee4045da4e9caf16fd5788a2fb99_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -1407,7 +1407,7 @@ class RegexToken(Token):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_0770041d69ac42b6b1340b78382d2bc0_(self):
+    def _Init_061fee4045da4e9caf16fd5788a2fb99_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -1431,7 +1431,7 @@ class RegexToken(Token):
             else:
                 raise Exception("match was not provided")
 
-            self._Init_925d0591e31c4418be2f84a9837541ee_()
+            self._Init_51b483fa5fb549bebc541f9430b02146_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -1520,7 +1520,7 @@ class RegexToken(Token):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_925d0591e31c4418be2f84a9837541ee_(self):
+        def _Init_51b483fa5fb549bebc541f9430b02146_(self):
             pass
 
     # Return Type: RegexToken
@@ -1602,7 +1602,7 @@ class ControlTokenBase(Token):
         else:
             raise Exception("opening_token was not provided")
 
-        self._Init_cd4f0679048d4f948873d3845b9f2e58_()
+        self._Init_d8c845794748461084b1d3644f5e2a3a_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -1705,7 +1705,7 @@ class ControlTokenBase(Token):
         raise Exception("This method should never be invoked for control tokens", )
 
     # Return Type: None
-    def _Init_cd4f0679048d4f948873d3845b9f2e58_(self):
+    def _Init_d8c845794748461084b1d3644f5e2a3a_(self):
         assert ((self.closing_token is not None and self.opening_token is None) or (self.closing_token is None and self.opening_token is not None))
 
 # Visibility: public
@@ -1726,7 +1726,7 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_97878f267739466d9ecae27bb4cbed7b_()
+        self._Init_6a68ef5d763f4c679855fac6242c77ac_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -1814,7 +1814,7 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_97878f267739466d9ecae27bb4cbed7b_(self):
+    def _Init_6a68ef5d763f4c679855fac6242c77ac_(self):
         pass
 
     # Return Type: PushIgnoreWhitespaceControlToken
@@ -1840,7 +1840,7 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_8a7bc6a64a134780ba6405fcc565784c_()
+        self._Init_b49319d04da64f24b9be30a700b3a6ae_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -1928,7 +1928,7 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_8a7bc6a64a134780ba6405fcc565784c_(self):
+    def _Init_b49319d04da64f24b9be30a700b3a6ae_(self):
         pass
 
     # Return Type: PopIgnoreWhitespaceControlToken
@@ -1954,7 +1954,7 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_c32765d6ec6943309edce024e447347d_()
+        self._Init_5705d181e9394c91825fa9137921f0f7_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -2042,7 +2042,7 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_c32765d6ec6943309edce024e447347d_(self):
+    def _Init_5705d181e9394c91825fa9137921f0f7_(self):
         pass
 
     # Return Type: PushPreserveWhitespaceControlToken
@@ -2068,7 +2068,7 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_02383eb8195e4d529c833946f25fcc11_()
+        self._Init_5d96379386b1458f9654567282b26ffe_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -2156,7 +2156,7 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_02383eb8195e4d529c833946f25fcc11_(self):
+    def _Init_5d96379386b1458f9654567282b26ffe_(self):
         pass
 
     # Return Type: PopPreserveWhitespaceControlToken
