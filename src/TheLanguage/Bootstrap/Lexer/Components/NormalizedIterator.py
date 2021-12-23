@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 if True:
     import sys
-    sys.path.insert(0, os.path.join(_script_dir, "..", "..", "GeneratedCode"))
+    sys.path.insert(0, os.path.normpath(os.path.join(_script_dir, "..", "..", "GeneratedCode")))
     from Lexer_TheLanguage.Components_TheLanguage.NormalizedIterator_TheLanguage import *
     sys.path.pop(0)
 

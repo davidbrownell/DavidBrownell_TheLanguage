@@ -70,13 +70,12 @@ class RepeatPhrase(Phrase):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def LexAsync(
+    def Lex(
         self,
         unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
-        single_threaded=False,
     ) -> Optional[Phrase.LexResult]:
 
         success = False
@@ -89,12 +88,11 @@ class RepeatPhrase(Phrase):
             error_result: Optional[Phrase.LexResult] = None
 
             while not normalized_iter.AtEnd():
-                result = await self.Phrase.LexAsync(
+                result = self.Phrase.Lex(
                     unique_id + ("{} [{}]".format(self.Name, len(results)), ),
                     normalized_iter.Clone(),
                     observer,
                     ignore_whitespace=ignore_whitespace,
-                    single_threaded=single_threaded,
                 )
 
                 if result is None:

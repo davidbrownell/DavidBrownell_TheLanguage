@@ -630,7 +630,7 @@ class _SequenceSuffixWrapper(Phrase):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def LexAsync(
+    def Lex(
         self,
         unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
@@ -638,7 +638,7 @@ class _SequenceSuffixWrapper(Phrase):
         ignore_whitespace=False,
         single_threaded=False,
     ) -> Optional[Phrase.LexResult]:
-        return await self._phrase.LexSuffixAsync(
+        return self._phrase.LexSuffix(
             unique_id,
             normalized_iter,
             observer,

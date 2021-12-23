@@ -83,7 +83,7 @@ class Phrase(object):
         # _is_populated
         self._is_populated = False
 
-        self._Init_0de31c431d5a435b8e7f6b90270c4920_()
+        self._Init_a10c8c63384e4b81895db600499f6d5d_()
 
     def __eq__(self, other):
         # No bases
@@ -117,27 +117,40 @@ class Phrase(object):
 
     @classmethod
     def __Compare__(cls, a, b):
-        if a._name_ is None and b._name_ is None: pass
-        elif a._name_ is None: return -1
-        elif b._name_ is None: return 1
-        elif a._name_ < b._name_: return -1
-        elif a._name_ > b._name_: return 1
+        # No bases
 
-        if a._parent is None and b._parent is None: pass
-        elif a._parent is None: return -1
-        elif b._parent is None: return 1
-        elif a._parent < b._parent: return -1
-        elif a._parent > b._parent: return 1
+        result = cls.__CompareItem__(a._name_, b._name_)
+        if result is not None: return result
 
-        if a._is_populated is None and b._is_populated is None: pass
-        elif a._is_populated is None: return -1
-        elif b._is_populated is None: return 1
-        elif a._is_populated < b._is_populated: return -1
-        elif a._is_populated > b._is_populated: return 1
+        result = cls.__CompareItem__(a._parent, b._parent)
+        if result is not None: return result
+
+        result = cls.__CompareItem__(a._is_populated, b._is_populated)
+        if result is not None: return result
 
         return 0
 
-    def _Init_0de31c431d5a435b8e7f6b90270c4920_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_a10c8c63384e4b81895db600499f6d5d_(self):
         pass
 
     NormalizedIterator = NormalizedIterator
@@ -170,7 +183,7 @@ class Phrase(object):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_a4f7122cdc7945c194e2d17aa8a079e5_()
+            self._Init_a088c1e73ba6461180ce0fe3343ccdba_()
 
         def __eq__(self, other):
             # No bases
@@ -204,22 +217,38 @@ class Phrase(object):
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.begin is None and b.begin is None: pass
-            elif a.begin is None: return -1
-            elif b.begin is None: return 1
-            elif a.begin < b.begin: return -1
-            elif a.begin > b.begin: return 1
+            # No bases
 
-            if a.end is None and b.end is None: pass
-            elif a.end is None: return -1
-            elif b.end is None: return 1
-            elif a.end < b.end: return -1
-            elif a.end > b.end: return 1
+            result = cls.__CompareItem__(a.begin, b.begin)
+            if result is not None: return result
+
+            result = cls.__CompareItem__(a.end, b.end)
+            if result is not None: return result
 
             return 0
 
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
         # Return Type: None
-        def _Init_a4f7122cdc7945c194e2d17aa8a079e5_(self):
+        def _Init_a088c1e73ba6461180ce0fe3343ccdba_(self):
             assert self.begin <= self.end
 
     # Visibility: public
@@ -262,7 +291,7 @@ class Phrase(object):
             else:
                 raise Exception("data was not provided")
 
-            self._Init_3c0e6d803b444ae7a003baaa5bb83680_()
+            self._Init_d71d2b1f57974cfaa2cc80de838c20e7_()
 
         def __eq__(self, other):
             # No bases
@@ -296,25 +325,38 @@ class Phrase(object):
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.success is None and b.success is None: pass
-            elif a.success is None: return -1
-            elif b.success is None: return 1
-            elif a.success < b.success: return -1
-            elif a.success > b.success: return 1
+            # No bases
 
-            if a.range is None and b.range is None: pass
-            elif a.range is None: return -1
-            elif b.range is None: return 1
-            elif a.range < b.range: return -1
-            elif a.range > b.range: return 1
+            result = cls.__CompareItem__(a.success, b.success)
+            if result is not None: return result
 
-            if a.data is None and b.data is None: pass
-            elif a.data is None: return -1
-            elif b.data is None: return 1
-            elif a.data < b.data: return -1
-            elif a.data > b.data: return 1
+            result = cls.__CompareItem__(a.range, b.range)
+            if result is not None: return result
+
+            result = cls.__CompareItem__(a.data, b.data)
+            if result is not None: return result
 
             return 0
+
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
 
         @property
         def Success(self): return self.success
@@ -325,7 +367,7 @@ class Phrase(object):
         @property
         def Data(self): return self.data
         # Return Type: None
-        def _Init_3c0e6d803b444ae7a003baaa5bb83680_(self):
+        def _Init_d71d2b1f57974cfaa2cc80de838c20e7_(self):
             assert self.data is not None or self.success is False
 
     # Visibility: private
@@ -342,7 +384,7 @@ class Phrase(object):
 
             # No members
 
-            self._Init_77070e135e6e4e8390d774aad4d1d00b_()
+            self._Init_86b71ca6774543cf8c63437685b99804_()
 
         def __eq__(self, other):
             # No bases
@@ -376,15 +418,127 @@ class Phrase(object):
 
         @classmethod
         def __Compare__(cls, a, b):
+            # No bases
+
 
 
             return 0
 
-        def _Init_77070e135e6e4e8390d774aad4d1d00b_(self):
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_86b71ca6774543cf8c63437685b99804_(self):
             pass
 
         pass
     LexResultData = _LexResultData
+    # Visibility: public
+    # ClassModifier: immutable
+    # ClassType: Class
+    class WhitespaceLexResultData(_LexResultData):
+        """\
+        BugBug
+        """
+
+        def __init__(self, *args, **kwargs):
+            Phrase.WhitespaceLexResultData._InternalInit(self, list(args), kwargs)
+
+        def _InternalInit(self, args, kwargs):
+            # whitespace
+
+            Phrase._LexResultData._InternalInit(self, args, kwargs)
+
+            # whitespace
+            if "whitespace" in kwargs:
+                self.whitespace = kwargs.pop("whitespace")
+            elif args:
+                self.whitespace = args.pop(0)
+            else:
+                raise Exception("whitespace was not provided")
+
+            self._Init_3df39378c97d49048e2e041805d257f2_()
+
+        def __eq__(self, other):
+            if Phrase._LexResultData.__eq__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other) == 0
+
+        def __ne__(self, other):
+            if Phrase._LexResultData.__ne__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return True
+            return self.__class__.__Compare__(self, other) != 0
+
+        def __lt__(self, other):
+            if Phrase._LexResultData.__lt__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other) < 0
+
+        def __le__(self, other):
+            if Phrase._LexResultData.__le__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other) <= 0
+
+        def __gt__(self, other):
+            if Phrase._LexResultData.__gt__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other) > 0
+
+        def __ge__(self, other):
+            if Phrase._LexResultData.__ge__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other) >= 0
+
+        @classmethod
+        def __Compare__(cls, a, b):
+            result = Phrase._LexResultData.__Compare__(a, b)
+            if result != 0: return result
+
+            result = cls.__CompareItem__(a.whitespace, b.whitespace)
+            if result is not None: return result
+
+            return 0
+
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_3df39378c97d49048e2e041805d257f2_(self):
+            pass
+
+        LineInfo_WhitespaceRange = LineInfo.WhitespaceRange
     # Visibility: public
     # ClassModifier: immutable
     # ClassType: Class
@@ -441,7 +595,7 @@ class Phrase(object):
             else:
                 raise Exception("is_ignored was not provided")
 
-            self._Init_b0a20936f25141648d47b1a9cd889d19_()
+            self._Init_7873f037c5564ed2b7bed255e6343257_()
 
         def __eq__(self, other):
             if Phrase._LexResultData.__eq__(self, other) is False: return False
@@ -475,43 +629,51 @@ class Phrase(object):
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.token is None and b.token is None: pass
-            elif a.token is None: return -1
-            elif b.token is None: return 1
-            elif a.token < b.token: return -1
-            elif a.token > b.token: return 1
+            result = Phrase._LexResultData.__Compare__(a, b)
+            if result != 0: return result
 
-            if a.whitespace is None and b.whitespace is None: pass
-            elif a.whitespace is None: return -1
-            elif b.whitespace is None: return 1
-            elif a.whitespace < b.whitespace: return -1
-            elif a.whitespace > b.whitespace: return 1
+            result = cls.__CompareItem__(a.token, b.token)
+            if result is not None: return result
 
-            if a.value is None and b.value is None: pass
-            elif a.value is None: return -1
-            elif b.value is None: return 1
-            elif a.value < b.value: return -1
-            elif a.value > b.value: return 1
+            result = cls.__CompareItem__(a.whitespace, b.whitespace)
+            if result is not None: return result
 
-            if a.range is None and b.range is None: pass
-            elif a.range is None: return -1
-            elif b.range is None: return 1
-            elif a.range < b.range: return -1
-            elif a.range > b.range: return 1
+            result = cls.__CompareItem__(a.value, b.value)
+            if result is not None: return result
 
-            if a.is_ignored is None and b.is_ignored is None: pass
-            elif a.is_ignored is None: return -1
-            elif b.is_ignored is None: return 1
-            elif a.is_ignored < b.is_ignored: return -1
-            elif a.is_ignored > b.is_ignored: return 1
+            result = cls.__CompareItem__(a.range, b.range)
+            if result is not None: return result
+
+            result = cls.__CompareItem__(a.is_ignored, b.is_ignored)
+            if result is not None: return result
 
             return 0
 
-        def _Init_b0a20936f25141648d47b1a9cd889d19_(self):
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_7873f037c5564ed2b7bed255e6343257_(self):
             pass
 
-        LineInfo_WhitespaceRange = LineInfo.WhitespaceRange
         Token_MatchResult = Token.MatchResult
+        LineInfo_WhitespaceRange = LineInfo.WhitespaceRange
         @property
         def Token(self): return self.token
         @property
@@ -572,7 +734,7 @@ class Phrase(object):
             else:
                 self.potential_error_context = None
 
-            self._Init_d3acc3cd51484de28501ef14df9df5d6_()
+            self._Init_99da70f797ea42bba4c25215f8736a78_()
 
         def __eq__(self, other):
             if Phrase._LexResultData.__eq__(self, other) is False: return False
@@ -606,33 +768,44 @@ class Phrase(object):
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.phrase is None and b.phrase is None: pass
-            elif a.phrase is None: return -1
-            elif b.phrase is None: return 1
-            elif a.phrase < b.phrase: return -1
-            elif a.phrase > b.phrase: return 1
+            result = Phrase._LexResultData.__Compare__(a, b)
+            if result != 0: return result
 
-            if a.data is None and b.data is None: pass
-            elif a.data is None: return -1
-            elif b.data is None: return 1
-            elif a.data < b.data: return -1
-            elif a.data > b.data: return 1
+            result = cls.__CompareItem__(a.phrase, b.phrase)
+            if result is not None: return result
 
-            if a.unique_id is None and b.unique_id is None: pass
-            elif a.unique_id is None: return -1
-            elif b.unique_id is None: return 1
-            elif a.unique_id < b.unique_id: return -1
-            elif a.unique_id > b.unique_id: return 1
+            result = cls.__CompareItem__(a.data, b.data)
+            if result is not None: return result
 
-            if a.potential_error_context is None and b.potential_error_context is None: pass
-            elif a.potential_error_context is None: return -1
-            elif b.potential_error_context is None: return 1
-            elif a.potential_error_context < b.potential_error_context: return -1
-            elif a.potential_error_context > b.potential_error_context: return 1
+            result = cls.__CompareItem__(a.unique_id, b.unique_id)
+            if result is not None: return result
+
+            result = cls.__CompareItem__(a.potential_error_context, b.potential_error_context)
+            if result is not None: return result
 
             return 0
 
-        def _Init_d3acc3cd51484de28501ef14df9df5d6_(self):
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_99da70f797ea42bba4c25215f8736a78_(self):
             pass
 
         @property
@@ -675,7 +848,7 @@ class Phrase(object):
             else:
                 raise Exception("is_complete was not provided")
 
-            self._Init_5cf900316afb4f4bad3315cb5f3f0b51_()
+            self._Init_23f6eecc2efa4ecbbe136e5b15c1b3ff_()
 
         def __eq__(self, other):
             if Phrase._LexResultData.__eq__(self, other) is False: return False
@@ -709,21 +882,38 @@ class Phrase(object):
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.data_items is None and b.data_items is None: pass
-            elif a.data_items is None: return -1
-            elif b.data_items is None: return 1
-            elif a.data_items < b.data_items: return -1
-            elif a.data_items > b.data_items: return 1
+            result = Phrase._LexResultData.__Compare__(a, b)
+            if result != 0: return result
 
-            if a.is_complete is None and b.is_complete is None: pass
-            elif a.is_complete is None: return -1
-            elif b.is_complete is None: return 1
-            elif a.is_complete < b.is_complete: return -1
-            elif a.is_complete > b.is_complete: return 1
+            result = cls.__CompareItem__(a.data_items, b.data_items)
+            if result is not None: return result
+
+            result = cls.__CompareItem__(a.is_complete, b.is_complete)
+            if result is not None: return result
 
             return 0
 
-        def _Init_5cf900316afb4f4bad3315cb5f3f0b51_(self):
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_23f6eecc2efa4ecbbe136e5b15c1b3ff_(self):
             pass
 
         @property
@@ -750,7 +940,7 @@ class Phrase(object):
 
             # No members
 
-            self._Init_cd85f30ca2404941b31827bdf5482784_()
+            self._Init_f42047d747ca48edbba1d0c7c6fa6db0_()
 
         def __eq__(self, other):
             # No bases
@@ -784,11 +974,33 @@ class Phrase(object):
 
         @classmethod
         def __Compare__(cls, a, b):
+            # No bases
+
 
 
             return 0
 
-        def _Init_cd85f30ca2404941b31827bdf5482784_(self):
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_f42047d747ca48edbba1d0c7c6fa6db0_(self):
             pass
 
         # Visibility: public
@@ -819,7 +1031,7 @@ class Phrase(object):
                 else:
                     self.name = None
 
-                self._Init_9293f955a36d445ebed28499253cd6b6_()
+                self._Init_2e3b9daabb784073b771834ff5f7aef5_()
 
             def __eq__(self, other):
                 # No bases
@@ -853,21 +1065,37 @@ class Phrase(object):
 
             @classmethod
             def __Compare__(cls, a, b):
-                if a.phrases is None and b.phrases is None: pass
-                elif a.phrases is None: return -1
-                elif b.phrases is None: return 1
-                elif a.phrases < b.phrases: return -1
-                elif a.phrases > b.phrases: return 1
+                # No bases
 
-                if a.name is None and b.name is None: pass
-                elif a.name is None: return -1
-                elif b.name is None: return 1
-                elif a.name < b.name: return -1
-                elif a.name > b.name: return 1
+                result = cls.__CompareItem__(a.phrases, b.phrases)
+                if result is not None: return result
+
+                result = cls.__CompareItem__(a.name, b.name)
+                if result is not None: return result
 
                 return 0
 
-            def _Init_9293f955a36d445ebed28499253cd6b6_(self):
+            @classmethod
+            def __CompareItem__(cls, a, b):
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
+                return None
+
+            def _Init_2e3b9daabb784073b771834ff5f7aef5_(self):
                 pass
 
         # Return Type: GetDynamicPhrasesResult
@@ -931,9 +1159,6 @@ class Phrase(object):
         self._is_populated = True
         return self._PopulateRecursiveImpl(new_phrase, )
 
-    async def LexAsync(self, *args, **kwargs):
-        kwargs.pop("single_threaded", None)
-        return self.Lex(*args, **kwargs)
     # Return Type: <LexResult | None> val
     def Lex(self, unique_id, iter, observer, ignore_whitespace=False, ):
         raise Exception("Abstract/Deferred method")

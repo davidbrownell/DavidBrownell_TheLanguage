@@ -72,13 +72,12 @@ class OrPhrase(Phrase):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def LexAsync(
+    def Lex(
         self,
         unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
-        single_threaded=False,
     ) -> Optional[Phrase.LexResult]:
 
         best_result: Optional[Phrase.LexResult] = None
@@ -93,23 +92,24 @@ class OrPhrase(Phrase):
             results: List[Phrase.LexResult] = []
 
             # ----------------------------------------------------------------------
-            async def ExecuteAsync(phrase_index, phrase):
-                return await phrase.LexAsync(
+            def Execute(phrase_index, phrase):
+                return phrase.Lex(
                     unique_id + ("{} ({})".format(self.Name, phrase_index), ),
                     normalized_iter.Clone(),
                     observer,
                     ignore_whitespace=ignore_whitespace,
-                    single_threaded=single_threaded,
                 )
 
             # ----------------------------------------------------------------------
+
+            single_threaded = True # Hack!
 
             if not single_threaded and len(self.Phrases) == 1:
                 single_threaded = True
 
             if single_threaded:
                 for phrase_index, phrase in enumerate(self.Phrases):
-                    result = await ExecuteAsync(phrase_index, phrase)
+                    result = Execute(phrase_index, phrase)
                     if result is None:
                         return None
 
@@ -119,9 +119,9 @@ class OrPhrase(Phrase):
                         break
 
             else:
-                gathered_results = await observer.Enqueue(
+                gathered_results = observer.Enqueue(
                     [
-                        (ExecuteAsync, [phrase_index, phrase])
+                        (Execute, [phrase_index, phrase])
                         for phrase_index, phrase in enumerate(self.Phrases)
                     ],  # type: ignore
                 )

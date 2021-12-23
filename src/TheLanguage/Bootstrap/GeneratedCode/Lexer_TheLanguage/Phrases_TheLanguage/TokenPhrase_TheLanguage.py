@@ -47,7 +47,7 @@ class TokenPhrase(Phrase):
         else:
             raise Exception("token was not provided")
 
-        self._Init_5137c8d1c37041a1bcf26b5c9cca8614_()
+        self._Init_d70b83e50baf410eb575577144ea4815_()
 
     def __eq__(self, other):
         if Phrase.__eq__(self, other) is False: return False
@@ -81,15 +81,35 @@ class TokenPhrase(Phrase):
 
     @classmethod
     def __Compare__(cls, a, b):
-        if a.token is None and b.token is None: pass
-        elif a.token is None: return -1
-        elif b.token is None: return 1
-        elif a.token < b.token: return -1
-        elif a.token > b.token: return 1
+        result = Phrase.__Compare__(a, b)
+        if result != 0: return result
+
+        result = cls.__CompareItem__(a.token, b.token)
+        if result is not None: return result
 
         return 0
 
-    def _Init_5137c8d1c37041a1bcf26b5c9cca8614_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_d70b83e50baf410eb575577144ea4815_(self):
         pass
 
     @property
@@ -115,6 +135,7 @@ class TokenPhrase(Phrase):
         whitespace_prefix = None
         if next_whitespace_range is not None:
             if iter.OffsetProper() == next_whitespace_range.begin:
+                assert False, "This should not be happening here once it is done in SequencePhrase"
                 whitespace_prefix = next_whitespace_range
                 iter.Advance(whitespace_prefix.end - whitespace_prefix.begin, )
 
@@ -128,9 +149,9 @@ class TokenPhrase(Phrase):
 
         iter_range = NormalizedIteratorRange(iter, result.iterator, )
         data = PhraseLexResultData(self, TokenLexResultData(self.token, whitespace_prefix, result, iter_range, is_ignored=self.token.is_always_ignored, ), unique_id, )
-        if self.token is IndentToken:
+        if self.token.__class__.__name__ == "IndentToken":
             observer.OnPushScopeProxy(data, iter_range, )
-        elif self.token is DedentToken:
+        elif self.token.__class__.__name__ == "DedentToken":
             observer.OnPopScopeProxy(data, iter_range, )
         elif not observer.OnInternalPhraseProxy(data, iter_range, ):
             return None

@@ -427,7 +427,7 @@ def ExtractSequence(
         assert phrase is not None
         assert child_node is not None
 
-        if isinstance(phrase, RepeatPhrase) and child_node.Type != phrase:
+        if phrase.__class__.__name__ == "RepeatPhrase" and child_node.Type != phrase:
             assert phrase.MinMatches == 0, phrase.MinMatches
             results.append(None)
 
@@ -565,7 +565,7 @@ def _PopulateItem(
             _PopulateItem(comment_token, phrase_item) for phrase_item in item
         ]
 
-        phrase = SequencePhrase(
+        phrase = SequencePhrase.Create(
             comment_token,
             sequence_phrases,
             name=name,

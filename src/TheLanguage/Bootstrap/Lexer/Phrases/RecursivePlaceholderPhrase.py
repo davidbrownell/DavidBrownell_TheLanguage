@@ -29,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 if True:
     import sys
-    sys.path.insert(0, os.path.join(_script_dir, "..", "..", "GeneratedCode"))
+    sys.path.insert(0, os.path.normpath(os.path.join(_script_dir, "..", "..", "GeneratedCode")))
     from Lexer_TheLanguage.Phrases_TheLanguage.RecursivePlaceholderPhrase_TheLanguage import *
     sys.path.pop(0)
 
@@ -53,7 +53,7 @@ else:
 
         # ----------------------------------------------------------------------
         @Interface.override
-        async def LexAsync(self, *args, **kwargs):  # <Parameters differ from overridden, unused argument> pylint: disable=W0221, W0613
+        def Async(self, *args, **kwargs):  # <Parameters differ from overridden, unused argument> pylint: disable=W0221, W0613
             raise Exception("This method should never be called on an instance of this object")
 
         # ----------------------------------------------------------------------

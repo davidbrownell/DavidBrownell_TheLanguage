@@ -44,7 +44,7 @@ with InitRelativeImports():
         AST,
         DynamicPhrasesInfo,
         Observer as TranslationUnitsObserver,
-        LexAsync as TranslationUnitsLexAsync,
+        Lex as TranslationUnitsLex,
         Phrase,
         RegexToken,
     )
@@ -118,14 +118,12 @@ def Lex(
         default_grammar,
     )
 
-    return asyncio.get_event_loop().run_until_complete(
-        TranslationUnitsLexAsync(
-            comment_token,
-            fully_qualified_names,
-            observer.Grammars[observer.DefaultGrammarVersion],
-            observer,
-            single_threaded=max_num_threads==1,
-        ),
+    return TranslationUnitsLex(
+        comment_token,
+        fully_qualified_names,
+        observer.Grammars[observer.DefaultGrammarVersion],
+        observer,
+        single_threaded=max_num_threads==1,
     )
 
 

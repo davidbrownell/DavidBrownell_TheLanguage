@@ -64,7 +64,7 @@ def CreatePhrase(result):
 
         # ----------------------------------------------------------------------
         @Interface.override
-        async def LexAsync(self, *args, **kwargs):
+        def Lex(self, *args, **kwargs):
             return self.parse_mock(*args, **kwargs)
 
         # ----------------------------------------------------------------------

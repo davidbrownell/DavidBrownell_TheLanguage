@@ -82,7 +82,7 @@ class NormalizedIterator(object):
         else:
             raise Exception("_consumed_dedent_count was not provided")
 
-        self._Init_ff11e265437b498c8a0773698e335fe5_()
+        self._Init_2264973e510a4102ae463e0126fbf938_()
 
     def __eq__(self, other):
         # No bases
@@ -116,37 +116,44 @@ class NormalizedIterator(object):
 
     @classmethod
     def __Compare__(cls, a, b):
-        if a._content is None and b._content is None: pass
-        elif a._content is None: return -1
-        elif b._content is None: return 1
-        elif a._content < b._content: return -1
-        elif a._content > b._content: return 1
+        # No bases
 
-        if a._offset is None and b._offset is None: pass
-        elif a._offset is None: return -1
-        elif b._offset is None: return 1
-        elif a._offset < b._offset: return -1
-        elif a._offset > b._offset: return 1
+        result = cls.__CompareItem__(a._content, b._content)
+        if result is not None: return result
 
-        if a._line_info_index is None and b._line_info_index is None: pass
-        elif a._line_info_index is None: return -1
-        elif b._line_info_index is None: return 1
-        elif a._line_info_index < b._line_info_index: return -1
-        elif a._line_info_index > b._line_info_index: return 1
+        result = cls.__CompareItem__(a._offset, b._offset)
+        if result is not None: return result
 
-        if a._whitespace_range_index is None and b._whitespace_range_index is None: pass
-        elif a._whitespace_range_index is None: return -1
-        elif b._whitespace_range_index is None: return 1
-        elif a._whitespace_range_index < b._whitespace_range_index: return -1
-        elif a._whitespace_range_index > b._whitespace_range_index: return 1
+        result = cls.__CompareItem__(a._line_info_index, b._line_info_index)
+        if result is not None: return result
 
-        if a._consumed_dedent_count is None and b._consumed_dedent_count is None: pass
-        elif a._consumed_dedent_count is None: return -1
-        elif b._consumed_dedent_count is None: return 1
-        elif a._consumed_dedent_count < b._consumed_dedent_count: return -1
-        elif a._consumed_dedent_count > b._consumed_dedent_count: return 1
+        result = cls.__CompareItem__(a._whitespace_range_index, b._whitespace_range_index)
+        if result is not None: return result
+
+        result = cls.__CompareItem__(a._consumed_dedent_count, b._consumed_dedent_count)
+        if result is not None: return result
 
         return 0
+
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
 
     # Visibility: public
     # ClassModifier: immutable
@@ -378,7 +385,7 @@ class NormalizedIterator(object):
             # has_end_of_file_dedents
             self.has_end_of_file_dedents = None
 
-            self._Init_a64c0afb6a7849d7969b7b85c4bc8e6d_()
+            self._Init_0cfed810ddb4467ebe9637b3751fc05f_()
 
         def __eq__(self, other):
             if NormalizedContent.__eq__(self, other) is False: return False
@@ -412,13 +419,33 @@ class NormalizedIterator(object):
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.has_end_of_file_dedents is None and b.has_end_of_file_dedents is None: pass
-            elif a.has_end_of_file_dedents is None: return -1
-            elif b.has_end_of_file_dedents is None: return 1
-            elif a.has_end_of_file_dedents < b.has_end_of_file_dedents: return -1
-            elif a.has_end_of_file_dedents > b.has_end_of_file_dedents: return 1
+            result = NormalizedContent.__Compare__(a, b)
+            if result != 0: return result
+
+            result = cls.__CompareItem__(a.has_end_of_file_dedents, b.has_end_of_file_dedents)
+            if result is not None: return result
 
             return 0
+
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
 
         # Return Type: NormalizedContentEx val
         @staticmethod
@@ -426,14 +453,14 @@ class NormalizedIterator(object):
             return NormalizedContentEx(content.content, content.content_length, content.line_infos, content.hash, )
 
         # Return Type: None
-        def _Init_a64c0afb6a7849d7969b7b85c4bc8e6d_(self):
+        def _Init_0cfed810ddb4467ebe9637b3751fc05f_(self):
             last_line_info = self.line_infos[-1]
             self.has_end_of_file_dedents = (last_line_info.num_dedents is not None and last_line_info.num_dedents > 0 and last_line_info.offset_start == last_line_info.offset_end and last_line_info.content_start == last_line_info.offset_start and last_line_info.content_end == last_line_info.offset_end)
 
     def Clone(self):
         return self.__class__(self._content, self._offset, self._line_info_index, self._whitespace_range_index, self._consumed_dedent_count)
     # Return Type: None
-    def _Init_ff11e265437b498c8a0773698e335fe5_(self):
+    def _Init_2264973e510a4102ae463e0126fbf938_(self):
         assert self._offset <= self._content.content_length
         if self._offset != self._content.content_length:
             line_info = self._content.line_infos[self._line_info_index]

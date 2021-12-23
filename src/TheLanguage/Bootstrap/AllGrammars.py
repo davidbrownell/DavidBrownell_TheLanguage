@@ -281,7 +281,14 @@ def Parse(
             Callable[[], ParserInfo],
             Tuple[ParserInfo, Callable[[], ParserInfo]],
         ]:
-            if isinstance(node.Type, Phrase):
+            is_phrase = False
+
+            for base in node.Type.__class__.__bases__:
+                if base.__name__ == "Phrase":
+                    is_phrase = True
+                    break
+
+            if is_phrase:
                 grammar_phrase = GrammarPhraseLookup.get(node.Type, None)
                 if grammar_phrase is not None:
                     result = grammar_phrase.ExtractParserInfo(node)

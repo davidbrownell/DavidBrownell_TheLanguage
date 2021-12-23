@@ -17,7 +17,7 @@
 Basic building blocks for token processing.
 >>>
 
-from .Normalize import GetNumMultilineTokenDelimiters, multiline_token_delimiter_length
+from .Normalize import GetNumMultilineTokenDelimiters, LineInfo, multiline_token_delimiter_length
 from .NormalizedIterator import NormalizedIterator
 
 
@@ -203,6 +203,55 @@ public immutable class DedentToken
 
         # TODO: return MatchResult(move iterator)
         return DedentToken.MatchResult(move iterator)
+
+
+# ----------------------------------------------------------------------
+[PrivateCtor]
+public immutable class HorizontalWhitespaceToken
+    extends Token
+:
+    <<<
+    Token that matches horizontal whitespace.
+    >>>
+
+    python_hack: Token_MatchResult = Token_MatchResult
+
+    # ----------------------------------------------------------------------
+    # |  Public Types
+    public immutable class MatchResult
+        # TODO: extends Token::MatchResult
+        extends Token_MatchResult
+    :
+        public UIntArch val start
+        public PosIntArch val end
+
+    # ----------------------------------------------------------------------
+    # |  Public Methods
+    public static HorizontalWhitespaceToken val Create():
+        return HorizontalWhitespaceToken(
+            name="HorizontalWhitespace",
+            is_control_token=False,
+            is_always_ignored=True,
+        )
+
+    # ----------------------------------------------------------------------
+    public override immutable (MatchResult | None) val Match?(NormalizedIterator var iterator):
+        if iterator.GetNextTokenType() != NormalizedIterator::TokenType::Content:
+            return None
+
+        val whitespace_range = iterator.GetNextWhitespaceRange()
+
+        if whitespace_range is None or iterator.OffsetProper() != whitespace_range.begin:
+            return None
+
+        iterator.Advance(whitespace_range.end - whitespace_range.begin)
+
+        # TODO: return MatchResult(move iterator)
+        return HorizontalWhitespaceToken.MatchResult(
+            move iterator,
+            whitespace_range.begin,
+            whitespace_range.end,
+        )
 
 
 # ----------------------------------------------------------------------

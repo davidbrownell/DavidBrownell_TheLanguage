@@ -164,7 +164,7 @@ class SequencePhrase(Phrase):
             else:
                 ignored_indentation_level = None
 
-            result = await self._LexAsyncImpl(
+            result = self._LexImpl(
                 unique_id,
                 normalized_iter,
                 observer,
@@ -187,7 +187,7 @@ class SequencePhrase(Phrase):
             return result
 
     # ----------------------------------------------------------------------
-    async def LexSuffixAsync(
+    async def LexSuffix(
         self,
         unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
@@ -195,7 +195,7 @@ class SequencePhrase(Phrase):
         ignore_whitespace=False,
         single_threaded=False,
     ) -> Optional[Phrase.LexResult]:
-        return await self._LexAsyncImpl(
+        return self._LexImpl(
             unique_id,
             normalized_iter,
             observer,
@@ -231,7 +231,7 @@ class SequencePhrase(Phrase):
         return replaced_phrase
 
     # ----------------------------------------------------------------------
-    async def _LexAsyncImpl(
+    def _LexImpl(
         self,
         unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
@@ -327,7 +327,7 @@ class SequencePhrase(Phrase):
             prev_token_was_pop_control = False
 
             # Process the phrase
-            result = await phrase.LexAsync(
+            result = phrase.Lex(
                 unique_id + ("{} [{}]".format(self.Name, phrase_index), ),
                 normalized_iter,
                 observer,

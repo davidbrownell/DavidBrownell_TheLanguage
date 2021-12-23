@@ -76,6 +76,7 @@ def Execute(
                 ))
 
                 # filenames = [ r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\Bootstrap\TheLanguage\Lexer\Components\Normalize.TheLanguage", ] # BugBug
+
                 input_dir = input_directory_or_filename
             else:
                 assert False, input_directory_or_filename  # pragma: no cover

@@ -434,7 +434,22 @@ class PythonVisitor(Visitor):
                         return False
 
             with helper["Left"]:
-                self.Accept(parser_info.Left, helper.stack)
+                left_content = StringIO()
+
+                self._stream_stack.append(left_content)
+                with CallOnExit(self._stream_stack.pop):
+                    self.Accept(parser_info.Left, helper.stack)
+
+                left_content = left_content.getvalue()
+
+            with helper["Right"]:
+                right_content = StringIO()
+
+                self._stream_stack.append(right_content)
+                with CallOnExit(self._stream_stack.pop):
+                    self.Accept(parser_info.Right, helper.stack)
+
+                right_content = right_content.getvalue()
 
             surrounding_spaces = True
 
@@ -447,7 +462,15 @@ class PythonVisitor(Visitor):
             elif parser_info.Operator == BinaryExpressionOperatorType.LogicalNotIn:
                 operator = "not in"
             elif parser_info.Operator == BinaryExpressionOperatorType.LogicalIs:
-                operator = "is"
+                if not (
+                    right_content.startswith("not")
+                    or right_content in ["None", "True", "False"]
+                ):
+                    self._stream.write('{}.__class__.__name__ == "{}"'.format(left_content, right_content))
+                    return False
+
+                operator = 'is'
+
             elif parser_info.Operator == BinaryExpressionOperatorType.ChainedFunc:
                 operator = "."
                 surrounding_spaces = False
@@ -496,13 +519,14 @@ class PythonVisitor(Visitor):
             else:
                 assert False, parser_info.Operator
 
+            self._stream.write(left_content)
+
             if surrounding_spaces:
                 self._stream.write(" {} ".format(operator))
             else:
                 self._stream.write(operator)
 
-            with helper["Right"]:
-                self.Accept(parser_info.Right, helper.stack)
+            self._stream.write(right_content)
 
         return False
 
@@ -590,6 +614,8 @@ class PythonVisitor(Visitor):
     ) -> Union[None, bool, Callable[[], Any]]:
         if parser_info.Name == "Format":
             self._stream.write("format")
+        elif parser_info.Name == "Join":
+            self._stream.write("join")
         else:
             self._stream.write(parser_info.Name.replace("?", "_"))
 
@@ -1229,9 +1255,31 @@ class PythonVisitor(Visitor):
 
                                 @classmethod
                                 def __Compare__(cls, a, b):
+                                {indent}{base_compare_statements}
+
                                 {indent}{compare_statements}
 
                                 {indent}return 0
+
+                                @classmethod
+                                def __CompareItem__(cls, a, b):
+                                    if a is None and b is None:
+                                        return None
+
+                                    if a is None: return -1
+                                    if b is None: return 1
+
+                                    try:
+                                        if a < b: return -1
+                                        if a > b: return 1
+                                    except TypeError:
+                                        a = id(a)
+                                        b = id(b)
+
+                                        if a < b: return -1
+                                        if a > b: return 1
+
+                                    return None
 
                                 """,
                             ).format(
@@ -1258,16 +1306,27 @@ class PythonVisitor(Visitor):
                                     "\n".join(init_statements),
                                     4,
                                 ).rstrip(),
+                                base_compare_statements="# No bases" if not base_classes else StringHelpers.LeftJustify(
+                                    "".join(
+                                        [
+                                            textwrap.dedent(
+                                                """\
+                                                result = {}.__Compare__(a, b)
+                                                if result != 0: return result
+                                                """,
+                                            ).format(ToTypeName(base_class))
+                                            for base_class in base_classes
+                                        ],
+                                    ),
+                                    4,
+                                ).rstrip(),
                                 compare_statements=StringHelpers.LeftJustify(
                                     "\n".join(
                                         [
                                             textwrap.dedent(
                                                 """\
-                                                if a.{name} is None and b.{name} is None: pass
-                                                elif a.{name} is None: return -1
-                                                elif b.{name} is None: return 1
-                                                elif a.{name} < b.{name}: return -1
-                                                elif a.{name} > b.{name}: return 1
+                                                result = cls.__CompareItem__(a.{name}, b.{name})
+                                                if result is not None: return result
                                                 """,
                                             ).format(
                                                 name=member.Name,

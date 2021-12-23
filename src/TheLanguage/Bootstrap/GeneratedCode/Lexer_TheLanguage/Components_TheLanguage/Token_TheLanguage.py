@@ -24,7 +24,7 @@ with InitRelativeImports():
     from ...CommonLibrary.Stack_TheLanguage import Stack
     from ...CommonLibrary.String_TheLanguage import String
 
-    from .Normalize_TheLanguage import GetNumMultilineTokenDelimiters, multiline_token_delimiter_length
+    from .Normalize_TheLanguage import GetNumMultilineTokenDelimiters, LineInfo, multiline_token_delimiter_length
     from .NormalizedIterator_TheLanguage import NormalizedIterator
 
 # Visibility: private
@@ -63,7 +63,7 @@ class Token(object):
         else:
             raise Exception("is_control_token was not provided")
 
-        self._Init_48ceba5d2b3f4bed8c810febe6a4df81_()
+        self._Init_76f1e24a25bb42a69dca669671dc4642_()
 
     def __eq__(self, other):
         # No bases
@@ -97,27 +97,40 @@ class Token(object):
 
     @classmethod
     def __Compare__(cls, a, b):
-        if a.name is None and b.name is None: pass
-        elif a.name is None: return -1
-        elif b.name is None: return 1
-        elif a.name < b.name: return -1
-        elif a.name > b.name: return 1
+        # No bases
 
-        if a.is_always_ignored is None and b.is_always_ignored is None: pass
-        elif a.is_always_ignored is None: return -1
-        elif b.is_always_ignored is None: return 1
-        elif a.is_always_ignored < b.is_always_ignored: return -1
-        elif a.is_always_ignored > b.is_always_ignored: return 1
+        result = cls.__CompareItem__(a.name, b.name)
+        if result is not None: return result
 
-        if a.is_control_token is None and b.is_control_token is None: pass
-        elif a.is_control_token is None: return -1
-        elif b.is_control_token is None: return 1
-        elif a.is_control_token < b.is_control_token: return -1
-        elif a.is_control_token > b.is_control_token: return 1
+        result = cls.__CompareItem__(a.is_always_ignored, b.is_always_ignored)
+        if result is not None: return result
+
+        result = cls.__CompareItem__(a.is_control_token, b.is_control_token)
+        if result is not None: return result
 
         return 0
 
-    def _Init_48ceba5d2b3f4bed8c810febe6a4df81_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_76f1e24a25bb42a69dca669671dc4642_(self):
         pass
 
     # Visibility: public
@@ -140,7 +153,7 @@ class Token(object):
             else:
                 raise Exception("iterator was not provided")
 
-            self._Init_2d383b9d88b548c5a50056c5cb8582e2_()
+            self._Init_0db153d885094f94a4c6ed85f2ac3dcb_()
 
         def __eq__(self, other):
             # No bases
@@ -174,15 +187,34 @@ class Token(object):
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.iterator is None and b.iterator is None: pass
-            elif a.iterator is None: return -1
-            elif b.iterator is None: return 1
-            elif a.iterator < b.iterator: return -1
-            elif a.iterator > b.iterator: return 1
+            # No bases
+
+            result = cls.__CompareItem__(a.iterator, b.iterator)
+            if result is not None: return result
 
             return 0
 
-        def _Init_2d383b9d88b548c5a50056c5cb8582e2_(self):
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_0db153d885094f94a4c6ed85f2ac3dcb_(self):
             pass
 
     @property
@@ -220,7 +252,7 @@ class NewlineToken(Token):
         else:
             raise Exception("capture_many was not provided")
 
-        self._Init_b44f257f9150401aa1c6ac7a84101569_()
+        self._Init_4c3e3e9f907249af829805e26c129561_()
 
     def __eq__(self, other):
         if Token.__eq__(self, other) is False: return False
@@ -254,15 +286,35 @@ class NewlineToken(Token):
 
     @classmethod
     def __Compare__(cls, a, b):
-        if a.capture_many is None and b.capture_many is None: pass
-        elif a.capture_many is None: return -1
-        elif b.capture_many is None: return 1
-        elif a.capture_many < b.capture_many: return -1
-        elif a.capture_many > b.capture_many: return 1
+        result = Token.__Compare__(a, b)
+        if result != 0: return result
+
+        result = cls.__CompareItem__(a.capture_many, b.capture_many)
+        if result is not None: return result
 
         return 0
 
-    def _Init_b44f257f9150401aa1c6ac7a84101569_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_4c3e3e9f907249af829805e26c129561_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -294,7 +346,7 @@ class NewlineToken(Token):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_6aefb330b1ad4bcca701d5ce8d533d89_()
+            self._Init_7246cc8a7a0c4315b3d27cd95773b21f_()
 
         def __eq__(self, other):
             if NewlineToken.Token_MatchResult.__eq__(self, other) is False: return False
@@ -328,22 +380,39 @@ class NewlineToken(Token):
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.start is None and b.start is None: pass
-            elif a.start is None: return -1
-            elif b.start is None: return 1
-            elif a.start < b.start: return -1
-            elif a.start > b.start: return 1
+            result = NewlineToken.Token_MatchResult.__Compare__(a, b)
+            if result != 0: return result
 
-            if a.end is None and b.end is None: pass
-            elif a.end is None: return -1
-            elif b.end is None: return 1
-            elif a.end < b.end: return -1
-            elif a.end > b.end: return 1
+            result = cls.__CompareItem__(a.start, b.start)
+            if result is not None: return result
+
+            result = cls.__CompareItem__(a.end, b.end)
+            if result is not None: return result
 
             return 0
 
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
         # Return Type: None
-        def _Init_6aefb330b1ad4bcca701d5ce8d533d89_(self):
+        def _Init_7246cc8a7a0c4315b3d27cd95773b21f_(self):
             assert self.start <= self.end
 
     # Return Type: NewlineToken val
@@ -382,7 +451,7 @@ class IndentToken(Token):
 
         # No members
 
-        self._Init_13306717706049ffba42f153443ced40_()
+        self._Init_50d749b7741d4b0aa677bbca54af8b7b_()
 
     def __eq__(self, other):
         if Token.__eq__(self, other) is False: return False
@@ -416,11 +485,34 @@ class IndentToken(Token):
 
     @classmethod
     def __Compare__(cls, a, b):
+        result = Token.__Compare__(a, b)
+        if result != 0: return result
+
 
 
         return 0
 
-    def _Init_13306717706049ffba42f153443ced40_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_50d749b7741d4b0aa677bbca54af8b7b_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -460,7 +552,7 @@ class IndentToken(Token):
             else:
                 raise Exception("indent_value was not provided")
 
-            self._Init_67147b22ad964a1fb14358c9cc21cd14_()
+            self._Init_7ef21c46c3f44bc08317594aec7d5dca_()
 
         def __eq__(self, other):
             if IndentToken.Token_MatchResult.__eq__(self, other) is False: return False
@@ -494,28 +586,42 @@ class IndentToken(Token):
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.start is None and b.start is None: pass
-            elif a.start is None: return -1
-            elif b.start is None: return 1
-            elif a.start < b.start: return -1
-            elif a.start > b.start: return 1
+            result = IndentToken.Token_MatchResult.__Compare__(a, b)
+            if result != 0: return result
 
-            if a.end is None and b.end is None: pass
-            elif a.end is None: return -1
-            elif b.end is None: return 1
-            elif a.end < b.end: return -1
-            elif a.end > b.end: return 1
+            result = cls.__CompareItem__(a.start, b.start)
+            if result is not None: return result
 
-            if a.indent_value is None and b.indent_value is None: pass
-            elif a.indent_value is None: return -1
-            elif b.indent_value is None: return 1
-            elif a.indent_value < b.indent_value: return -1
-            elif a.indent_value > b.indent_value: return 1
+            result = cls.__CompareItem__(a.end, b.end)
+            if result is not None: return result
+
+            result = cls.__CompareItem__(a.indent_value, b.indent_value)
+            if result is not None: return result
 
             return 0
 
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
         # Return Type: None
-        def _Init_67147b22ad964a1fb14358c9cc21cd14_(self):
+        def _Init_7ef21c46c3f44bc08317594aec7d5dca_(self):
             assert self.start <= self.end
 
     # Return Type: IndentToken val
@@ -551,7 +657,7 @@ class DedentToken(Token):
 
         # No members
 
-        self._Init_7f39fa83068440739eb1081ec80e00ce_()
+        self._Init_64394aaf3ae0444a99ab6c3ad803ba5e_()
 
     def __eq__(self, other):
         if Token.__eq__(self, other) is False: return False
@@ -585,11 +691,34 @@ class DedentToken(Token):
 
     @classmethod
     def __Compare__(cls, a, b):
+        result = Token.__Compare__(a, b)
+        if result != 0: return result
+
 
 
         return 0
 
-    def _Init_7f39fa83068440739eb1081ec80e00ce_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_64394aaf3ae0444a99ab6c3ad803ba5e_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -607,7 +736,7 @@ class DedentToken(Token):
 
             # No members
 
-            self._Init_2386cdde39864e9694127a23e028c1fc_()
+            self._Init_e4979df7d89b40c4a4b7a755496c5627_()
 
         def __eq__(self, other):
             if DedentToken.Token_MatchResult.__eq__(self, other) is False: return False
@@ -641,11 +770,34 @@ class DedentToken(Token):
 
         @classmethod
         def __Compare__(cls, a, b):
+            result = DedentToken.Token_MatchResult.__Compare__(a, b)
+            if result != 0: return result
+
 
 
             return 0
 
-        def _Init_2386cdde39864e9694127a23e028c1fc_(self):
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_e4979df7d89b40c4a4b7a755496c5627_(self):
             pass
 
         pass
@@ -668,36 +820,22 @@ class DedentToken(Token):
 # Visibility: public
 # ClassModifier: immutable
 # ClassType: Class
-class RegexToken(Token):
+class HorizontalWhitespaceToken(Token):
     """\
-    Token that matches content against a regular expression.
+    Token that matches horizontal whitespace.
     """
 
     def __init__(self, *args, **kwargs):
-        RegexToken._InternalInit(self, list(args), kwargs)
+        HorizontalWhitespaceToken._InternalInit(self, list(args), kwargs)
 
     def _InternalInit(self, args, kwargs):
-        # regex, is_multiline
+        # 
 
         Token._InternalInit(self, args, kwargs)
 
-        # regex
-        if "regex" in kwargs:
-            self.regex = kwargs.pop("regex")
-        elif args:
-            self.regex = args.pop(0)
-        else:
-            raise Exception("regex was not provided")
+        # No members
 
-        # is_multiline
-        if "is_multiline" in kwargs:
-            self.is_multiline = kwargs.pop("is_multiline")
-        elif args:
-            self.is_multiline = args.pop(0)
-        else:
-            raise Exception("is_multiline was not provided")
-
-        self._Init_b446a953a02e493e8d5868b548d6cbb8_()
+        self._Init_dae9d216db8045b4b889034dffbfd4cd_()
 
     def __eq__(self, other):
         if Token.__eq__(self, other) is False: return False
@@ -731,21 +869,248 @@ class RegexToken(Token):
 
     @classmethod
     def __Compare__(cls, a, b):
-        if a.regex is None and b.regex is None: pass
-        elif a.regex is None: return -1
-        elif b.regex is None: return 1
-        elif a.regex < b.regex: return -1
-        elif a.regex > b.regex: return 1
+        result = Token.__Compare__(a, b)
+        if result != 0: return result
 
-        if a.is_multiline is None and b.is_multiline is None: pass
-        elif a.is_multiline is None: return -1
-        elif b.is_multiline is None: return 1
-        elif a.is_multiline < b.is_multiline: return -1
-        elif a.is_multiline > b.is_multiline: return 1
+
 
         return 0
 
-    def _Init_b446a953a02e493e8d5868b548d6cbb8_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_dae9d216db8045b4b889034dffbfd4cd_(self):
+        pass
+
+    Token_MatchResult = Token_MatchResult
+    # Visibility: public
+    # ClassModifier: immutable
+    # ClassType: Class
+    class MatchResult(Token_MatchResult):
+        def __init__(self, *args, **kwargs):
+            HorizontalWhitespaceToken.MatchResult._InternalInit(self, list(args), kwargs)
+
+        def _InternalInit(self, args, kwargs):
+            # start, end
+
+            HorizontalWhitespaceToken.Token_MatchResult._InternalInit(self, args, kwargs)
+
+            # start
+            if "start" in kwargs:
+                self.start = kwargs.pop("start")
+            elif args:
+                self.start = args.pop(0)
+            else:
+                raise Exception("start was not provided")
+
+            # end
+            if "end" in kwargs:
+                self.end = kwargs.pop("end")
+            elif args:
+                self.end = args.pop(0)
+            else:
+                raise Exception("end was not provided")
+
+            self._Init_0ecb5d5d13fb4d2697c2dce61369f187_()
+
+        def __eq__(self, other):
+            if HorizontalWhitespaceToken.Token_MatchResult.__eq__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other) == 0
+
+        def __ne__(self, other):
+            if HorizontalWhitespaceToken.Token_MatchResult.__ne__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return True
+            return self.__class__.__Compare__(self, other) != 0
+
+        def __lt__(self, other):
+            if HorizontalWhitespaceToken.Token_MatchResult.__lt__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other) < 0
+
+        def __le__(self, other):
+            if HorizontalWhitespaceToken.Token_MatchResult.__le__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other) <= 0
+
+        def __gt__(self, other):
+            if HorizontalWhitespaceToken.Token_MatchResult.__gt__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other) > 0
+
+        def __ge__(self, other):
+            if HorizontalWhitespaceToken.Token_MatchResult.__ge__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other) >= 0
+
+        @classmethod
+        def __Compare__(cls, a, b):
+            result = HorizontalWhitespaceToken.Token_MatchResult.__Compare__(a, b)
+            if result != 0: return result
+
+            result = cls.__CompareItem__(a.start, b.start)
+            if result is not None: return result
+
+            result = cls.__CompareItem__(a.end, b.end)
+            if result is not None: return result
+
+            return 0
+
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_0ecb5d5d13fb4d2697c2dce61369f187_(self):
+            pass
+
+    # Return Type: HorizontalWhitespaceToken val
+    @staticmethod
+    def Create():
+        return HorizontalWhitespaceToken(name="HorizontalWhitespace", is_control_token=False, is_always_ignored=True, )
+
+    # Return Type: <MatchResult | None> val
+    def Match_(self, iterator, ):
+        if iterator.GetNextTokenType() != NormalizedIterator.TokenType.Content:
+            return None
+
+        whitespace_range = iterator.GetNextWhitespaceRange()
+        if whitespace_range is None or iterator.OffsetProper() != whitespace_range.begin:
+            return None
+
+        iterator.Advance(whitespace_range.end - whitespace_range.begin, )
+        return HorizontalWhitespaceToken.MatchResult(iterator, whitespace_range.begin, whitespace_range.end, )
+
+# Visibility: public
+# ClassModifier: immutable
+# ClassType: Class
+class RegexToken(Token):
+    """\
+    Token that matches content against a regular expression.
+    """
+
+    def __init__(self, *args, **kwargs):
+        RegexToken._InternalInit(self, list(args), kwargs)
+
+    def _InternalInit(self, args, kwargs):
+        # regex, is_multiline
+
+        Token._InternalInit(self, args, kwargs)
+
+        # regex
+        if "regex" in kwargs:
+            self.regex = kwargs.pop("regex")
+        elif args:
+            self.regex = args.pop(0)
+        else:
+            raise Exception("regex was not provided")
+
+        # is_multiline
+        if "is_multiline" in kwargs:
+            self.is_multiline = kwargs.pop("is_multiline")
+        elif args:
+            self.is_multiline = args.pop(0)
+        else:
+            raise Exception("is_multiline was not provided")
+
+        self._Init_9686c4ffacc741a89b1b88febd8fc3a7_()
+
+    def __eq__(self, other):
+        if Token.__eq__(self, other) is False: return False
+        if not isinstance(other, self.__class__): return False
+        return self.__class__.__Compare__(self, other) == 0
+
+    def __ne__(self, other):
+        if Token.__ne__(self, other) is False: return False
+        if not isinstance(other, self.__class__): return True
+        return self.__class__.__Compare__(self, other) != 0
+
+    def __lt__(self, other):
+        if Token.__lt__(self, other) is False: return False
+        if not isinstance(other, self.__class__): return False
+        return self.__class__.__Compare__(self, other) < 0
+
+    def __le__(self, other):
+        if Token.__le__(self, other) is False: return False
+        if not isinstance(other, self.__class__): return False
+        return self.__class__.__Compare__(self, other) <= 0
+
+    def __gt__(self, other):
+        if Token.__gt__(self, other) is False: return False
+        if not isinstance(other, self.__class__): return False
+        return self.__class__.__Compare__(self, other) > 0
+
+    def __ge__(self, other):
+        if Token.__ge__(self, other) is False: return False
+        if not isinstance(other, self.__class__): return False
+        return self.__class__.__Compare__(self, other) >= 0
+
+    @classmethod
+    def __Compare__(cls, a, b):
+        result = Token.__Compare__(a, b)
+        if result != 0: return result
+
+        result = cls.__CompareItem__(a.regex, b.regex)
+        if result is not None: return result
+
+        result = cls.__CompareItem__(a.is_multiline, b.is_multiline)
+        if result is not None: return result
+
+        return 0
+
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_9686c4ffacc741a89b1b88febd8fc3a7_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -769,7 +1134,7 @@ class RegexToken(Token):
             else:
                 raise Exception("match was not provided")
 
-            self._Init_d8fe45f1e0b24c7098b12edb389d0543_()
+            self._Init_8d75c4ec85764cf6ad0af68ba52f3b5d_()
 
         def __eq__(self, other):
             if RegexToken.Token_MatchResult.__eq__(self, other) is False: return False
@@ -803,15 +1168,35 @@ class RegexToken(Token):
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.match is None and b.match is None: pass
-            elif a.match is None: return -1
-            elif b.match is None: return 1
-            elif a.match < b.match: return -1
-            elif a.match > b.match: return 1
+            result = RegexToken.Token_MatchResult.__Compare__(a, b)
+            if result != 0: return result
+
+            result = cls.__CompareItem__(a.match, b.match)
+            if result is not None: return result
 
             return 0
 
-        def _Init_d8fe45f1e0b24c7098b12edb389d0543_(self):
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_8d75c4ec85764cf6ad0af68ba52f3b5d_(self):
             pass
 
     # Return Type: RegexToken
@@ -893,7 +1278,7 @@ class ControlTokenBase(Token):
         else:
             raise Exception("opening_token was not provided")
 
-        self._Init_e6b8722d695643a79a7a0dad18ebe9c1_()
+        self._Init_8adad81b72cf4243b164e6acbea8911b_()
 
     def __eq__(self, other):
         if Token.__eq__(self, other) is False: return False
@@ -927,38 +1312,49 @@ class ControlTokenBase(Token):
 
     @classmethod
     def __Compare__(cls, a, b):
-        if a.is_control_token is None and b.is_control_token is None: pass
-        elif a.is_control_token is None: return -1
-        elif b.is_control_token is None: return 1
-        elif a.is_control_token < b.is_control_token: return -1
-        elif a.is_control_token > b.is_control_token: return 1
+        result = Token.__Compare__(a, b)
+        if result != 0: return result
 
-        if a.is_always_ignored is None and b.is_always_ignored is None: pass
-        elif a.is_always_ignored is None: return -1
-        elif b.is_always_ignored is None: return 1
-        elif a.is_always_ignored < b.is_always_ignored: return -1
-        elif a.is_always_ignored > b.is_always_ignored: return 1
+        result = cls.__CompareItem__(a.is_control_token, b.is_control_token)
+        if result is not None: return result
 
-        if a.closing_token is None and b.closing_token is None: pass
-        elif a.closing_token is None: return -1
-        elif b.closing_token is None: return 1
-        elif a.closing_token < b.closing_token: return -1
-        elif a.closing_token > b.closing_token: return 1
+        result = cls.__CompareItem__(a.is_always_ignored, b.is_always_ignored)
+        if result is not None: return result
 
-        if a.opening_token is None and b.opening_token is None: pass
-        elif a.opening_token is None: return -1
-        elif b.opening_token is None: return 1
-        elif a.opening_token < b.opening_token: return -1
-        elif a.opening_token > b.opening_token: return 1
+        result = cls.__CompareItem__(a.closing_token, b.closing_token)
+        if result is not None: return result
+
+        result = cls.__CompareItem__(a.opening_token, b.opening_token)
+        if result is not None: return result
 
         return 0
+
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
 
     # Return Type: <MatchResult | None> val
     def Match_(self, iterator, ):
         raise Exception("This method should never be invoked for control tokens", )
 
     # Return Type: None
-    def _Init_e6b8722d695643a79a7a0dad18ebe9c1_(self):
+    def _Init_8adad81b72cf4243b164e6acbea8911b_(self):
         assert ((self.closing_token is not None and self.opening_token is None) or (self.closing_token is None and self.opening_token is not None))
 
 # Visibility: public
@@ -979,7 +1375,7 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_3235940d968d4a89baf44e969ef2e117_()
+        self._Init_498dfb27421f4531bd15da1ac80edb50_()
 
     def __eq__(self, other):
         if ControlTokenBase.__eq__(self, other) is False: return False
@@ -1013,11 +1409,34 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
 
     @classmethod
     def __Compare__(cls, a, b):
+        result = ControlTokenBase.__Compare__(a, b)
+        if result != 0: return result
+
 
 
         return 0
 
-    def _Init_3235940d968d4a89baf44e969ef2e117_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_498dfb27421f4531bd15da1ac80edb50_(self):
         pass
 
     # Return Type: PushIgnoreWhitespaceControlToken
@@ -1043,7 +1462,7 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_71e07e8fa961499faf37192324ad658e_()
+        self._Init_314fed004d664292912de438f2e6e91b_()
 
     def __eq__(self, other):
         if ControlTokenBase.__eq__(self, other) is False: return False
@@ -1077,11 +1496,34 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
 
     @classmethod
     def __Compare__(cls, a, b):
+        result = ControlTokenBase.__Compare__(a, b)
+        if result != 0: return result
+
 
 
         return 0
 
-    def _Init_71e07e8fa961499faf37192324ad658e_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_314fed004d664292912de438f2e6e91b_(self):
         pass
 
     # Return Type: PopIgnoreWhitespaceControlToken
@@ -1107,7 +1549,7 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_c5d86ab5910e45ab997d3dc5c2921fd9_()
+        self._Init_4ab2f32eda814400a461a393394cda93_()
 
     def __eq__(self, other):
         if ControlTokenBase.__eq__(self, other) is False: return False
@@ -1141,11 +1583,34 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
 
     @classmethod
     def __Compare__(cls, a, b):
+        result = ControlTokenBase.__Compare__(a, b)
+        if result != 0: return result
+
 
 
         return 0
 
-    def _Init_c5d86ab5910e45ab997d3dc5c2921fd9_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_4ab2f32eda814400a461a393394cda93_(self):
         pass
 
     # Return Type: PushPreserveWhitespaceControlToken
@@ -1171,7 +1636,7 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_ecfa699a83ae48f5b73e574170356ab4_()
+        self._Init_cd4f5591888c4e208881390dd726fdfc_()
 
     def __eq__(self, other):
         if ControlTokenBase.__eq__(self, other) is False: return False
@@ -1205,11 +1670,34 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
 
     @classmethod
     def __Compare__(cls, a, b):
+        result = ControlTokenBase.__Compare__(a, b)
+        if result != 0: return result
+
 
 
         return 0
 
-    def _Init_ecfa699a83ae48f5b73e574170356ab4_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_cd4f5591888c4e208881390dd726fdfc_(self):
         pass
 
     # Return Type: PopPreserveWhitespaceControlToken

@@ -159,12 +159,12 @@ class DynamicPhrase(Phrase):
         data: Phrase.StandardLexResultData,
     ) -> Phrase.StandardLexResultData:
         assert isinstance(data.Phrase, DynamicPhrase)
-        assert isinstance(data.Data, Phrase.StandardLexResultData)
+        assert data.Data.__class__.__name__ == "PhraseLexResultData"
 
         data = data.Data
 
         assert isinstance(data.Phrase, OrPhrase)
-        assert isinstance(data.Data, Phrase.StandardLexResultData)
+        assert data.Data.__class__.__name__ == "PhraseLexResultData"
 
         data = data.Data
 
@@ -172,13 +172,12 @@ class DynamicPhrase(Phrase):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def LexAsync(
+    def Lex(
         self,
         unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
-        single_threaded=False,
     ) -> Optional[Phrase.LexResult]:
 
         result: Optional[Phrase.LexResult] = None
@@ -218,7 +217,7 @@ class DynamicPhrase(Phrase):
             if left_recursive_phrases:
                 assert standard_phrases
 
-                result = await self._LexLeftRecursiveAsync(
+                result = self._LexLeftRecursive(
                     dynamic_phrases_name,
                     left_recursive_phrases,
                     standard_phrases,
@@ -226,17 +225,15 @@ class DynamicPhrase(Phrase):
                     normalized_iter,
                     observer,
                     ignore_whitespace=ignore_whitespace,
-                    single_threaded=single_threaded,
                 )
             elif standard_phrases:
-                result = await self._LexStandardAsync(
+                result = self._LexStandard(
                     dynamic_phrases_name,
                     standard_phrases,
                     unique_id,
                     normalized_iter,
                     observer,
                     ignore_whitespace=ignore_whitespace,
-                    single_threaded=single_threaded,
                 )
 
             if result is None:
@@ -267,7 +264,7 @@ class DynamicPhrase(Phrase):
         return False
 
     # ----------------------------------------------------------------------
-    async def _LexStandardAsync(
+    def _LexStandard(
         self,
         dynamic_phrases_name: Optional[str],
         phrases: List[Phrase],
@@ -276,19 +273,17 @@ class DynamicPhrase(Phrase):
         observer: Phrase.Observer,
         *,
         ignore_whitespace: bool,
-        single_threaded: bool,
     ) -> Optional[Phrase.LexResult]:
         or_phrase = OrPhrase(
             phrases,
             name=dynamic_phrases_name,
         )
 
-        result = await or_phrase.LexAsync(
+        result = or_phrase.Lex(
             unique_id + (or_phrase.Name, ),
             normalized_iter,
             observer,
             ignore_whitespace=ignore_whitespace,
-            single_threaded=single_threaded,
         )
 
         if result is None:
@@ -305,7 +300,7 @@ class DynamicPhrase(Phrase):
         )
 
     # ----------------------------------------------------------------------
-    async def _LexLeftRecursiveAsync(
+    def _LexLeftRecursive(
         self,
         dynamic_phrases_name: Optional[str],
         left_recursive_phrases: List[Phrase],
@@ -315,7 +310,6 @@ class DynamicPhrase(Phrase):
         observer: Phrase.Observer,
         *,
         ignore_whitespace: bool,
-        single_threaded: bool,
     ) -> Optional[Phrase.LexResult]:
 
         # If here, we need to simulate greedy left-recursive consumption without devolving into
@@ -370,12 +364,11 @@ class DynamicPhrase(Phrase):
         while True:
             this_phrase, this_unique_id = next(phrase_iterator)
 
-            this_result = await this_phrase.LexAsync(
+            this_result = this_phrase.Lex(
                 this_unique_id,
                 normalized_iter,
                 observer,
                 ignore_whitespace=ignore_whitespace,
-                single_threaded=single_threaded,
             )
 
             if this_result is None:
@@ -422,7 +415,7 @@ class DynamicPhrase(Phrase):
                 previous_data_item = data_items[data_item_index - 1]
 
                 assert isinstance(data_item.Phrase, SequencePhrase)
-                assert isinstance(data_item.Data, Phrase.MultipleLexResultData)
+                assert data_item.Data.__class__.__name__ == "PhraseContainerLexResultData"
 
                 # The number of existing (non-ignored) data items should be 1 less than the number
                 # of expected (non-control-token) data items; merging this one will complete the phrase.
@@ -432,7 +425,7 @@ class DynamicPhrase(Phrase):
                 )
 
                 non_control_token_phrases = sum(
-                    1 if not isinstance(phrase, TokenPhrase) or not phrase.Token.is_control_token else 0
+                    1 if not phrase.__class__.__name__ == "TokenPhrase" or not phrase.Token.is_control_token else 0
                     for phrase in data_item.Phrase.Phrases
                 )
 
@@ -464,10 +457,10 @@ class DynamicPhrase(Phrase):
             self.IsLeftRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
             and self.__class__.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
         ):
-            assert isinstance(value_data.Data, Phrase.MultipleLexResultData)
-            assert isinstance(value_data.Data.DataItems[-1], Phrase.StandardLexResultData)
+            assert value_data.Data.__class__.__name__ == "PhraseContainerLexResultData"
+            assert value_data.Data.DataItems[-1].__class__.__name__ == "PhraseLexResultData"
 
-            value_data = self.SkipDynamicData(cast(Phrase.StandardLexResultData, value_data.Data.DataItems[-1]))
+            value_data = self.SkipDynamicData(cast(Phrase.PhraseLexResultData, value_data.Data.DataItems[-1]))
 
             if self.__class__.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType):
                 # TODO: Add tests with a combo of mathematical, logical, and func operators ('.', '->', etc.)
@@ -523,13 +516,13 @@ class DynamicPhrase(Phrase):
                 root_actual = self.SkipDynamicData(root_dynamic)
 
                 assert isinstance(root_actual.Phrase, SequencePhrase)
-                assert isinstance(root_actual.Data, Phrase.MultipleLexResultData)
+                assert root_actual.Data.__class__.__name__ == "PhraseContainerLexResultData"
 
                 new_root_dynamic = root_actual.Data.DataItems[-1]
                 new_root_actual = self.SkipDynamicData(cast(Phrase.StandardLexResultData, new_root_dynamic))
 
                 assert isinstance(new_root_actual.Phrase, SequencePhrase)
-                assert isinstance(new_root_actual.Data, Phrase.MultipleLexResultData)
+                assert new_root_actual.Data.__class__.__name__ == "PhraseContainerLexResultData"
 
                 travel = new_root_actual
 
@@ -633,20 +626,18 @@ class _SequenceSuffixWrapper(Phrase):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    async def LexAsync(
+    def Lex(
         self,
         unique_id: Tuple[str, ...],
         normalized_iter: Phrase.NormalizedIterator,
         observer: Phrase.Observer,
         ignore_whitespace=False,
-        single_threaded=False,
     ) -> Optional[Phrase.LexResult]:
-        return await self._phrase.LexSuffixAsync(
+        return self._phrase.LexSuffix(
             unique_id,
             normalized_iter,
             observer,
             ignore_whitespace=ignore_whitespace,
-            single_threaded=single_threaded,
         )
 
     # ----------------------------------------------------------------------

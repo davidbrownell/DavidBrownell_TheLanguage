@@ -41,7 +41,7 @@ with InitRelativeImports():
         AST,
         DynamicPhrasesInfo,
         Error,
-        LexAsync as TranslationUnitLexAsync,
+        Lex as TranslationUnitLex,
         Observer as TranslationUnitObserver,
         Phrase,
         RegexToken,
@@ -149,7 +149,7 @@ class Observer(Interface.Interface):
 
 
 # ----------------------------------------------------------------------
-async def LexAsync(
+def Lex(
     comment_token: RegexToken,
     fully_qualified_names: List[str],
     initial_phrases_info: DynamicPhrasesInfo,
@@ -187,7 +187,7 @@ async def LexAsync(
     is_complete = threading.Event()
 
     # ----------------------------------------------------------------------
-    async def ExecuteAsync(
+    def Execute(
         fully_qualified_name: str,
         increment_pending_ctr=True,
     ) -> Optional[DynamicPhrasesInfo]:
@@ -288,10 +288,10 @@ async def LexAsync(
                         translation_unit_observer = _TranslationUnitObserver(
                             fully_qualified_name,
                             observer,
-                            ExecuteAsync,
+                            Execute,
                         )
 
-                        root = await TranslationUnitLexAsync(
+                        root = TranslationUnitLex(
                             comment_token,
                             initial_phrases_info,
                             normalized_iter,
@@ -334,14 +334,14 @@ async def LexAsync(
 
     if single_threaded:
         for fqn in fully_qualified_names:
-            result = await ExecuteAsync(fqn, increment_pending_ctr=False)
+            result = Execute(fqn, increment_pending_ctr=False)
             if result is None:
                 return None
 
     else:
-        results = await observer.Enqueue(
+        results = observer.Enqueue(
             [
-                (ExecuteAsync, [fqn], {"increment_pending_ctr": False})
+                (Execute, [fqn], {"increment_pending_ctr": False})
                 for fqn in fully_qualified_names
             ],
         )

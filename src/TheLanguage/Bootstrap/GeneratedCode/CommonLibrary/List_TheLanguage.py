@@ -3,7 +3,7 @@ class List(object):
         self._items = list(items)
 
     def Empty(self):
-        return bool(self._items)
+        return not self._items
 
     def NumElements(self):
         return len(self._items)
@@ -75,6 +75,10 @@ class List(object):
     def __getattr__(self, name: str):
         return getattr(self._items, name)
 
+    def __setitem__(self, index, value):
+        self._items[index] = value
+        return self
+
     def __getitem__(self, index):
         return self._items[index]
 
@@ -100,3 +104,8 @@ class List(object):
 
     def __contains__(self, value):
         return value in self._items
+
+    def __iadd__(self, other):
+        assert isinstance(other, type(self)), (self, other)
+        self._items += other._items
+        return self

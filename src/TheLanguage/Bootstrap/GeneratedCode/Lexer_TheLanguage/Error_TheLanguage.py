@@ -58,7 +58,7 @@ class Error(Exception):
         else:
             raise Exception("column was not provided")
 
-        self._Init_a56bc6bac58a4bceb940d7d88ff37b60_()
+        self._Init_b7e0f38886ca47838cedbd5adc6c33a3_()
 
     def __eq__(self, other):
         # No bases
@@ -92,28 +92,42 @@ class Error(Exception):
 
     @classmethod
     def __Compare__(cls, a, b):
-        if a.line is None and b.line is None: pass
-        elif a.line is None: return -1
-        elif b.line is None: return 1
-        elif a.line < b.line: return -1
-        elif a.line > b.line: return 1
+        # No bases
 
-        if a.column is None and b.column is None: pass
-        elif a.column is None: return -1
-        elif b.column is None: return 1
-        elif a.column < b.column: return -1
-        elif a.column > b.column: return 1
+        result = cls.__CompareItem__(a.line, b.line)
+        if result is not None: return result
+
+        result = cls.__CompareItem__(a.column, b.column)
+        if result is not None: return result
 
         return 0
 
-    # Return Type: String
-    def _ToString_a56bc6bac58a4bceb940d7d88ff37b60_(self):
-        return self._GetMessageTemplate().format(**self.__dict__, )
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
 
-    # Return Type: None
-    def _Init_a56bc6bac58a4bceb940d7d88ff37b60_(self):
-        assert self.line >= 1
-        assert self.column >= 1
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_b7e0f38886ca47838cedbd5adc6c33a3_(self):
+        pass
+
+    # Return Type: String
+    def _ToString_b7e0f38886ca47838cedbd5adc6c33a3_(self):
+        return self._GetMessageTemplate().format(**self.__dict__, )
 
     # Return Type: String
     def _GetMessageTemplate(self):
@@ -124,4 +138,4 @@ class Error(Exception):
     @property
     def Column(self): return self.column
     def __str__(self):
-        return self._ToString_a56bc6bac58a4bceb940d7d88ff37b60_()
+        return self._ToString_b7e0f38886ca47838cedbd5adc6c33a3_()

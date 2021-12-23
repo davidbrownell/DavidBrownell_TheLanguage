@@ -448,7 +448,7 @@ class Observer(Interface.Interface):
 # |  Public Functions
 # |
 # ----------------------------------------------------------------------
-async def LexAsync(
+def Lex(
     comment_token: RegexToken,
     initial_phrase_info: DynamicPhrasesInfo,
     normalized_iter: Phrase.NormalizedIterator,
@@ -539,12 +539,11 @@ async def LexAsync(
                 continue
 
         # Process the content
-        result = await phrase.LexAsync(
+        result = phrase.Lex(
             ("root", ),
             normalized_iter,
             phrase_observer,
             ignore_whitespace=False,
-            single_threaded=single_threaded,
         )
 
         if result is None or result.Data is None:

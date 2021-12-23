@@ -34,11 +34,6 @@ public immutable exception Error:
         return self._GetMessageTemplate().Format(self.__Fields__)
 
     # ----------------------------------------------------------------------
-    private override immutable None __Init?__():
-        ensure self.line >= 1
-        ensure self.column >= 1
-
-    # ----------------------------------------------------------------------
     private abstract immutable String _GetMessageTemplate()
 
     python_hack: @property

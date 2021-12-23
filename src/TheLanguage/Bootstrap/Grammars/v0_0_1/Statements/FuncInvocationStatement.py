@@ -84,17 +84,17 @@ class FuncInvocationStatement(GrammarPhrase):
     def __init__(self):
         # ----------------------------------------------------------------------
         def IsValidData(
-            data: Phrase.StandardLexResultData,
+            data: Phrase.PhraseLexResultData,
         ) -> bool:
             data = DynamicPhrase.SkipDynamicData(data)
-            assert isinstance(data, Phrase.StandardLexResultData), data
+            assert data.__class__.__name__ == "PhraseLexResultData", data
 
             # Are we looking at a right-recursive phrase where the last matched phrase is a
             # func invocation?
             if DynamicPhrase.IsRightRecursivePhrase(data.Phrase, DynamicPhrasesType.Expressions):
-                assert isinstance(data.Data, Phrase.MultipleLexResultData), data.Data
+                assert data.Data.__class__.__name__ == "PhraseContainerLexResultData", data.Data.__class__.__name__
 
-                data = cast(Phrase.StandardLexResultData, data.Data.DataItems[-1])
+                data = cast(Phrase.PhraseLexResultData, data.Data.DataItems[-1])
                 data = DynamicPhrase.SkipDynamicData(data)
 
             # Are we looking at a func invocation?

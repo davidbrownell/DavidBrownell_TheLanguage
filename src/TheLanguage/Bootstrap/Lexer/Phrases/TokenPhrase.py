@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 if True:
     import sys
-    sys.path.insert(0, os.path.join(_script_dir, "..", "..", "GeneratedCode"))
+    sys.path.insert(0, os.path.normpath(os.path.join(_script_dir, "..", "..", "GeneratedCode")))
     from Lexer_TheLanguage.Phrases_TheLanguage.TokenPhrase_TheLanguage import *
     sys.path.pop(0)
 
@@ -205,13 +205,12 @@ else:
         # ----------------------------------------------------------------------
         # TODO: Caching Opportunity
         @Interface.override
-        async def LexAsync(
+        def Lex(
             self,
             unique_id: Tuple[str, ...],
             normalized_iter: Phrase.NormalizedIterator,
             observer: Phrase.Observer,
             ignore_whitespace=False,
-            single_threaded=False,
         ) -> Optional[Phrase.LexResult]:
 
             result: Optional[TokenClass.MatchResult] = None

@@ -47,7 +47,7 @@ class RecursivePlaceholderPhrase(Phrase):
 
         # No members
 
-        self._Init_86387b30c8604f5ca8d0f6dc31487b47_()
+        self._Init_f8986211570142c4b6f25f253b20cd52_()
 
     def __eq__(self, other):
         if Phrase.__eq__(self, other) is False: return False
@@ -81,11 +81,34 @@ class RecursivePlaceholderPhrase(Phrase):
 
     @classmethod
     def __Compare__(cls, a, b):
+        result = Phrase.__Compare__(a, b)
+        if result != 0: return result
+
 
 
         return 0
 
-    def _Init_86387b30c8604f5ca8d0f6dc31487b47_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_f8986211570142c4b6f25f253b20cd52_(self):
         pass
 
     # Return Type: RecursivePlaceholderPhrase

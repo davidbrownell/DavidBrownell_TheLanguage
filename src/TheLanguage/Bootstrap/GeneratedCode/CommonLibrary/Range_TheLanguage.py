@@ -9,3 +9,6 @@ def Min(a, b):
 
 def Max(a, b):
     return a if a > b else b
+
+def Enumerate(value):
+    yield from enumerate(value)

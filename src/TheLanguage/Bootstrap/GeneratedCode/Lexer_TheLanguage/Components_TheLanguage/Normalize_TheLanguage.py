@@ -41,7 +41,7 @@ class InvalidTabsAndSpacesError(Error):
 
         # No members
 
-        self._Init_603b63f4d74c4474bc9a62bfa38a4fa5_()
+        self._Init_2ac3953664f14cd48b0ae1b40a69c09c_()
 
     def __eq__(self, other):
         if Error.__eq__(self, other) is False: return False
@@ -75,11 +75,34 @@ class InvalidTabsAndSpacesError(Error):
 
     @classmethod
     def __Compare__(cls, a, b):
+        result = Error.__Compare__(a, b)
+        if result != 0: return result
+
 
 
         return 0
 
-    def _Init_603b63f4d74c4474bc9a62bfa38a4fa5_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_2ac3953664f14cd48b0ae1b40a69c09c_(self):
         pass
 
     # Return Type: String
@@ -100,7 +123,7 @@ class NoClosingMultilineTokenError(Error):
 
         # No members
 
-        self._Init_633e30a89968434ba246206bd745cefc_()
+        self._Init_535b89bca8d74e4d842d3aee279f73b9_()
 
     def __eq__(self, other):
         if Error.__eq__(self, other) is False: return False
@@ -134,11 +157,34 @@ class NoClosingMultilineTokenError(Error):
 
     @classmethod
     def __Compare__(cls, a, b):
+        result = Error.__Compare__(a, b)
+        if result != 0: return result
+
 
 
         return 0
 
-    def _Init_633e30a89968434ba246206bd745cefc_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_535b89bca8d74e4d842d3aee279f73b9_(self):
         pass
 
     # Return Type: String
@@ -213,7 +259,7 @@ class LineInfo(object):
         else:
             self.new_indentation_value = None
 
-        self._Init_d8ae241a8d5349bb8e948e7f975d1b02_()
+        self._Init_b513f1567cb64051ba809f27792a9165_()
 
     def __eq__(self, other):
         # No bases
@@ -247,49 +293,50 @@ class LineInfo(object):
 
     @classmethod
     def __Compare__(cls, a, b):
-        if a.offset_start is None and b.offset_start is None: pass
-        elif a.offset_start is None: return -1
-        elif b.offset_start is None: return 1
-        elif a.offset_start < b.offset_start: return -1
-        elif a.offset_start > b.offset_start: return 1
+        # No bases
 
-        if a.offset_end is None and b.offset_end is None: pass
-        elif a.offset_end is None: return -1
-        elif b.offset_end is None: return 1
-        elif a.offset_end < b.offset_end: return -1
-        elif a.offset_end > b.offset_end: return 1
+        result = cls.__CompareItem__(a.offset_start, b.offset_start)
+        if result is not None: return result
 
-        if a.content_start is None and b.content_start is None: pass
-        elif a.content_start is None: return -1
-        elif b.content_start is None: return 1
-        elif a.content_start < b.content_start: return -1
-        elif a.content_start > b.content_start: return 1
+        result = cls.__CompareItem__(a.offset_end, b.offset_end)
+        if result is not None: return result
 
-        if a.content_end is None and b.content_end is None: pass
-        elif a.content_end is None: return -1
-        elif b.content_end is None: return 1
-        elif a.content_end < b.content_end: return -1
-        elif a.content_end > b.content_end: return 1
+        result = cls.__CompareItem__(a.content_start, b.content_start)
+        if result is not None: return result
 
-        if a.whitespace_ranges is None and b.whitespace_ranges is None: pass
-        elif a.whitespace_ranges is None: return -1
-        elif b.whitespace_ranges is None: return 1
-        elif a.whitespace_ranges < b.whitespace_ranges: return -1
-        elif a.whitespace_ranges > b.whitespace_ranges: return 1
+        result = cls.__CompareItem__(a.content_end, b.content_end)
+        if result is not None: return result
 
-        if a.num_dedents is None and b.num_dedents is None: pass
-        elif a.num_dedents is None: return -1
-        elif b.num_dedents is None: return 1
-        elif a.num_dedents < b.num_dedents: return -1
-        elif a.num_dedents > b.num_dedents: return 1
+        result = cls.__CompareItem__(a.whitespace_ranges, b.whitespace_ranges)
+        if result is not None: return result
 
-        if a.new_indentation_value is None and b.new_indentation_value is None: pass
-        elif a.new_indentation_value is None: return -1
-        elif b.new_indentation_value is None: return 1
-        elif a.new_indentation_value < b.new_indentation_value: return -1
-        elif a.new_indentation_value > b.new_indentation_value: return 1
+        result = cls.__CompareItem__(a.num_dedents, b.num_dedents)
+        if result is not None: return result
+
+        result = cls.__CompareItem__(a.new_indentation_value, b.new_indentation_value)
+        if result is not None: return result
 
         return 0
+
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
 
     # Visibility: public
     # ClassModifier: immutable
@@ -319,7 +366,7 @@ class LineInfo(object):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_1c59bd161a2747febf4e89c35e5b371e_()
+            self._Init_338198b25cd248bba78370fcf8285a6d_()
 
         def __eq__(self, other):
             # No bases
@@ -353,22 +400,38 @@ class LineInfo(object):
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.begin is None and b.begin is None: pass
-            elif a.begin is None: return -1
-            elif b.begin is None: return 1
-            elif a.begin < b.begin: return -1
-            elif a.begin > b.begin: return 1
+            # No bases
 
-            if a.end is None and b.end is None: pass
-            elif a.end is None: return -1
-            elif b.end is None: return 1
-            elif a.end < b.end: return -1
-            elif a.end > b.end: return 1
+            result = cls.__CompareItem__(a.begin, b.begin)
+            if result is not None: return result
+
+            result = cls.__CompareItem__(a.end, b.end)
+            if result is not None: return result
 
             return 0
 
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
         # Return Type: None
-        def _Init_1c59bd161a2747febf4e89c35e5b371e_(self):
+        def _Init_338198b25cd248bba78370fcf8285a6d_(self):
             assert self.begin < self.end
 
     # Type alias: public WhitespaceRanges = List<WhitespaceRange, >{min_length'=0, }
@@ -385,7 +448,7 @@ class LineInfo(object):
         return self.content_end != self.offset_end
 
     # Return Type: None
-    def _Init_d8ae241a8d5349bb8e948e7f975d1b02_(self):
+    def _Init_b513f1567cb64051ba809f27792a9165_(self):
         assert self.offset_end >= self.offset_start
         assert self.content_start >= self.offset_start
         assert self.content_end >= self.content_start
@@ -447,7 +510,7 @@ class NormalizedContent(object):
         else:
             raise Exception("hash was not provided")
 
-        self._Init_94b9be41ef6e48dd9e9709d29829beb7_()
+        self._Init_91dc835c8b59454491e1c3ceed1fa134_()
 
     def __eq__(self, other):
         # No bases
@@ -481,33 +544,43 @@ class NormalizedContent(object):
 
     @classmethod
     def __Compare__(cls, a, b):
-        if a.content is None and b.content is None: pass
-        elif a.content is None: return -1
-        elif b.content is None: return 1
-        elif a.content < b.content: return -1
-        elif a.content > b.content: return 1
+        # No bases
 
-        if a.content_length is None and b.content_length is None: pass
-        elif a.content_length is None: return -1
-        elif b.content_length is None: return 1
-        elif a.content_length < b.content_length: return -1
-        elif a.content_length > b.content_length: return 1
+        result = cls.__CompareItem__(a.content, b.content)
+        if result is not None: return result
 
-        if a.line_infos is None and b.line_infos is None: pass
-        elif a.line_infos is None: return -1
-        elif b.line_infos is None: return 1
-        elif a.line_infos < b.line_infos: return -1
-        elif a.line_infos > b.line_infos: return 1
+        result = cls.__CompareItem__(a.content_length, b.content_length)
+        if result is not None: return result
 
-        if a.hash is None and b.hash is None: pass
-        elif a.hash is None: return -1
-        elif b.hash is None: return 1
-        elif a.hash < b.hash: return -1
-        elif a.hash > b.hash: return 1
+        result = cls.__CompareItem__(a.line_infos, b.line_infos)
+        if result is not None: return result
+
+        result = cls.__CompareItem__(a.hash, b.hash)
+        if result is not None: return result
 
         return 0
 
-    def _Init_94b9be41ef6e48dd9e9709d29829beb7_(self):
+    @classmethod
+    def __CompareItem__(cls, a, b):
+        if a is None and b is None:
+            return None
+
+        if a is None: return -1
+        if b is None: return 1
+
+        try:
+            if a < b: return -1
+            if a > b: return 1
+        except TypeError:
+            a = id(a)
+            b = id(b)
+
+            if a < b: return -1
+            if a > b: return 1
+
+        return None
+
+    def _Init_91dc835c8b59454491e1c3ceed1fa134_(self):
         pass
 
     # Type alias: public LineInfos = List<LineInfo, >{min_length'=1, }
@@ -569,7 +642,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             else:
                 raise Exception("value was not provided")
 
-            self._Init_b036d95dc9d64bf2a6304b259f03fdd3_()
+            self._Init_3b0d5f095b15410e960500e4223127b6_()
 
         def __eq__(self, other):
             # No bases
@@ -603,21 +676,37 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.num_chars is None and b.num_chars is None: pass
-            elif a.num_chars is None: return -1
-            elif b.num_chars is None: return 1
-            elif a.num_chars < b.num_chars: return -1
-            elif a.num_chars > b.num_chars: return 1
+            # No bases
 
-            if a.value is None and b.value is None: pass
-            elif a.value is None: return -1
-            elif b.value is None: return 1
-            elif a.value < b.value: return -1
-            elif a.value > b.value: return 1
+            result = cls.__CompareItem__(a.num_chars, b.num_chars)
+            if result is not None: return result
+
+            result = cls.__CompareItem__(a.value, b.value)
+            if result is not None: return result
 
             return 0
 
-        def _Init_b036d95dc9d64bf2a6304b259f03fdd3_(self):
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_3b0d5f095b15410e960500e4223127b6_(self):
             pass
 
     # Visibility: private
@@ -648,7 +737,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             else:
                 raise Exception("num_delimiters was not provided")
 
-            self._Init_a3e7afcf4a5145df9c836134e6c94950_()
+            self._Init_10ca62163e804ad6b8265d1a362dda07_()
 
         def __eq__(self, other):
             # No bases
@@ -682,21 +771,37 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
 
         @classmethod
         def __Compare__(cls, a, b):
-            if a.line_index is None and b.line_index is None: pass
-            elif a.line_index is None: return -1
-            elif b.line_index is None: return 1
-            elif a.line_index < b.line_index: return -1
-            elif a.line_index > b.line_index: return 1
+            # No bases
 
-            if a.num_delimiters is None and b.num_delimiters is None: pass
-            elif a.num_delimiters is None: return -1
-            elif b.num_delimiters is None: return 1
-            elif a.num_delimiters < b.num_delimiters: return -1
-            elif a.num_delimiters > b.num_delimiters: return 1
+            result = cls.__CompareItem__(a.line_index, b.line_index)
+            if result is not None: return result
+
+            result = cls.__CompareItem__(a.num_delimiters, b.num_delimiters)
+            if result is not None: return result
 
             return 0
 
-        def _Init_a3e7afcf4a5145df9c836134e6c94950_(self):
+        @classmethod
+        def __CompareItem__(cls, a, b):
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
+            return None
+
+        def _Init_10ca62163e804ad6b8265d1a362dda07_(self):
             pass
 
     line_infos = List()
