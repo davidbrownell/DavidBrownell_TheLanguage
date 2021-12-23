@@ -41,7 +41,7 @@ class InvalidTabsAndSpacesError(Error):
 
         # No members
 
-        self._Init_951c868de8e646d8aac78b060f724c56_()
+        self._Init_ee8701c2ae0e4c7aa82448fb151aa6d9_()
 
     def __eq__(self, other):
         if Error.__eq__(self, other) is False: return False
@@ -102,7 +102,7 @@ class InvalidTabsAndSpacesError(Error):
 
         return None
 
-    def _Init_951c868de8e646d8aac78b060f724c56_(self):
+    def _Init_ee8701c2ae0e4c7aa82448fb151aa6d9_(self):
         pass
 
     # Return Type: String
@@ -123,7 +123,7 @@ class NoClosingMultilineTokenError(Error):
 
         # No members
 
-        self._Init_a9c6fd1d4e734f88a3df30545c54c593_()
+        self._Init_66120d1bb00549e5a12d64c52b7e4b1e_()
 
     def __eq__(self, other):
         if Error.__eq__(self, other) is False: return False
@@ -184,7 +184,7 @@ class NoClosingMultilineTokenError(Error):
 
         return None
 
-    def _Init_a9c6fd1d4e734f88a3df30545c54c593_(self):
+    def _Init_66120d1bb00549e5a12d64c52b7e4b1e_(self):
         pass
 
     # Return Type: String
@@ -259,7 +259,7 @@ class LineInfo(object):
         else:
             self.new_indentation_value = None
 
-        self._Init_5fa7679a9fe7487cbf5d17ca0f28f531_()
+        self._Init_9c1f2151a5c04341be4d60b7b333a6ad_()
 
     def __eq__(self, other):
         # No bases
@@ -366,7 +366,7 @@ class LineInfo(object):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_58263802895e4570bfd3136ac3a314ad_()
+            self._Init_ce49aad5d79b45ebb22171657204e62a_()
 
         def __eq__(self, other):
             # No bases
@@ -431,7 +431,7 @@ class LineInfo(object):
             return None
 
         # Return Type: None
-        def _Init_58263802895e4570bfd3136ac3a314ad_(self):
+        def _Init_ce49aad5d79b45ebb22171657204e62a_(self):
             assert self.begin < self.end
 
     # Type alias: public WhitespaceRanges = List<WhitespaceRange, >{min_length'=0, }
@@ -448,7 +448,7 @@ class LineInfo(object):
         return self.content_end != self.offset_end
 
     # Return Type: None
-    def _Init_5fa7679a9fe7487cbf5d17ca0f28f531_(self):
+    def _Init_9c1f2151a5c04341be4d60b7b333a6ad_(self):
         assert self.offset_end >= self.offset_start
         assert self.content_start >= self.offset_start
         assert self.content_end >= self.content_start
@@ -510,7 +510,7 @@ class NormalizedContent(object):
         else:
             raise Exception("hash was not provided")
 
-        self._Init_722f39f0e5144ff7a96597818410d1a0_()
+        self._Init_d06c912c805f431f939c5a70452dd862_()
 
     def __eq__(self, other):
         # No bases
@@ -580,7 +580,7 @@ class NormalizedContent(object):
 
         return None
 
-    def _Init_722f39f0e5144ff7a96597818410d1a0_(self):
+    def _Init_d06c912c805f431f939c5a70452dd862_(self):
         pass
 
     # Type alias: public LineInfos = List<LineInfo, >{min_length'=1, }
@@ -642,7 +642,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             else:
                 raise Exception("value was not provided")
 
-            self._Init_dea23e34959a4c59bb6e39870373565a_()
+            self._Init_a4d99d2923ad42dc8bef3379957bcb48_()
 
         def __eq__(self, other):
             # No bases
@@ -706,7 +706,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
 
             return None
 
-        def _Init_dea23e34959a4c59bb6e39870373565a_(self):
+        def _Init_a4d99d2923ad42dc8bef3379957bcb48_(self):
             pass
 
     # Visibility: private
@@ -737,7 +737,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             else:
                 raise Exception("num_delimiters was not provided")
 
-            self._Init_ce438998c97e4ea88a5c30012e123935_()
+            self._Init_5c8658b7daed4775bab628873ed74754_()
 
         def __eq__(self, other):
             # No bases
@@ -801,7 +801,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
 
             return None
 
-        def _Init_ce438998c97e4ea88a5c30012e123935_(self):
+        def _Init_5c8658b7daed4775bab628873ed74754_(self):
             pass
 
     line_infos = List()

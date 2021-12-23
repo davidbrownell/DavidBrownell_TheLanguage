@@ -213,8 +213,6 @@ public mutable class SequencePhrase
 
         val original_iter = iter.Clone()
 
-        # BugBug: Handle beginning and ending of file content
-
         # ----------------------------------------------------------------------
         (List<LexResultData>{ min_length'=1 } | None) val ExtractIgnoredDataItems |
             self,
@@ -222,6 +220,7 @@ public mutable class SequencePhrase
             ignore_whitespace_ctr,
             ignored_indentation_level,
         |():
+            val at_content_start = iter.OffsetProper() == 0
             var data_items = List<LexResultData>()
             var eat_next_newline = False
 
@@ -357,9 +356,9 @@ public mutable class SequencePhrase
                     # Newlines are meaningful, wnless they fall at the beginning of the file
                     if (
                         not eat_next_newline
+                        and not at_content_start
                         and ignore_whitespace_ctr == 0
                         and ignored_indentation_level is None
-                        and iter.OffsetProper() != 0
                     ):
                         break
 
@@ -404,6 +403,9 @@ public mutable class SequencePhrase
 
             if ignored_data_items is None:
                 ignored_data_items = ExtractIgnoredDataItems()
+
+                if iter.AtEnd():
+                    break
 
             # Process control tokens
             if phrase is TokenPhrase and phrase.token.is_control_token:

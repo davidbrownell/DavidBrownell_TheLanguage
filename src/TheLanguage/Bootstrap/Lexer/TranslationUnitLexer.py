@@ -520,23 +520,23 @@ def Lex(
         phrase_observer.ClearNodeCache()
 
         # Get leading comments or whitespace
-        result = TokenPhrase.ExtractPotentialCommentsOrWhitespace(
-            comment_token,
-            normalized_iter,
-            0,
-            ignore_whitespace=False,
-            next_phrase_is_indent=False,
-            next_phrase_is_dedent=False,
-        )
-
-        if result is not None:
-            data_items, normalized_iter, _ = result
-
-            for data in data_items:
-                phrase_observer.__class__.CreateLeaf(data, root)
-
-            if normalized_iter.AtEnd():
-                continue
+        # BugBug result = TokenPhrase.ExtractPotentialCommentsOrWhitespace(
+        # BugBug     comment_token,
+        # BugBug     normalized_iter,
+        # BugBug     0,
+        # BugBug     ignore_whitespace=False,
+        # BugBug     next_phrase_is_indent=False,
+        # BugBug     next_phrase_is_dedent=False,
+        # BugBug )
+        # BugBug
+        # BugBug if result is not None:
+        # BugBug     data_items, normalized_iter, _ = result
+        # BugBug
+        # BugBug     for data in data_items:
+        # BugBug         phrase_observer.__class__.CreateLeaf(data, root)
+        # BugBug
+        # BugBug     if normalized_iter.AtEnd():
+        # BugBug         continue
 
         # Process the content
         result = phrase.Lex(

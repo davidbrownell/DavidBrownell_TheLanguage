@@ -58,7 +58,7 @@ class Error(Exception):
         else:
             raise Exception("column was not provided")
 
-        self._Init_c9663dfd6b6049039ce85e327bf87505_()
+        self._Init_d8d2baa6dc334a219a57995ee9bd8c42_()
 
     def __eq__(self, other):
         # No bases
@@ -122,11 +122,11 @@ class Error(Exception):
 
         return None
 
-    def _Init_c9663dfd6b6049039ce85e327bf87505_(self):
+    def _Init_d8d2baa6dc334a219a57995ee9bd8c42_(self):
         pass
 
     # Return Type: String
-    def _ToString_c9663dfd6b6049039ce85e327bf87505_(self):
+    def _ToString_d8d2baa6dc334a219a57995ee9bd8c42_(self):
         return self._GetMessageTemplate().format(**self.__dict__, )
 
     # Return Type: String
@@ -138,4 +138,4 @@ class Error(Exception):
     @property
     def Column(self): return self.column
     def __str__(self):
-        return self._ToString_c9663dfd6b6049039ce85e327bf87505_()
+        return self._ToString_d8d2baa6dc334a219a57995ee9bd8c42_()
