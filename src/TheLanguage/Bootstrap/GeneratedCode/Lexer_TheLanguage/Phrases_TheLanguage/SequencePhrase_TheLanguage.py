@@ -81,85 +81,100 @@ class SequencePhrase(Phrase):
         # _newline_token
         self._newline_token = NewlineToken.Create()
 
-        self._Init_36aebe90904f4bd0b82715aa47aa05b5_()
+        self._Init_4298e076646e4f3c917c717eafbbe4c4_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if Phrase.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if Phrase.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if Phrase.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if Phrase.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if Phrase.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if Phrase.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = Phrase.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = Phrase.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
-        result = cls.__CompareItem__(a.comment_token, b.comment_token)
+        result = cls.__CompareItem__(a.comment_token, b.comment_token, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a._name_is_default, b._name_is_default)
+        result = cls.__CompareItem__(a._name_is_default, b._name_is_default, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a._phrases, b._phrases)
-        if result is not None: return result
-
-        result = cls.__CompareItem__(a._indent_token, b._indent_token)
-        if result is not None: return result
-
-        result = cls.__CompareItem__(a._dedent_token, b._dedent_token)
-        if result is not None: return result
-
-        result = cls.__CompareItem__(a._horizontal_whitespace_token, b._horizontal_whitespace_token)
-        if result is not None: return result
-
-        result = cls.__CompareItem__(a._newline_token, b._newline_token)
+        result = cls.__CompareItem__(a._phrases, b._phrases, compare_cache)
         if result is not None: return result
 
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
-
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
+        compare_cache[cache_key] = result
+        return result
 
     # Type alias: public Phrases = List<Phrase, >{min_length'=1, }
     @property
@@ -202,7 +217,7 @@ class SequencePhrase(Phrase):
         return self._LexImpl(unique_id, iter, observer, ignore_whitespace_ctr=1 if ignore_whitespace else 0, ignored_indentation_level=None, starting_phrase_index=1, )
 
     # Return Type: None
-    def _Init_36aebe90904f4bd0b82715aa47aa05b5_(self):
+    def _Init_4298e076646e4f3c917c717eafbbe4c4_(self):
         pass
 
     # Return Type: Bool val
@@ -344,7 +359,7 @@ class SequencePhrase(Phrase):
 
                 continue
 
-            result = phrase.Lex(unique_id + ("{} [{}]".format(self.Name, phrase_index, ), ), iter, observer, ignore_whitespace=ignore_whitespace_ctr != 0, )
+            result = phrase.Lex(unique_id + ("{} [{}]".format(self.Name, phrase_index, ), ), iter.Clone(), observer, ignore_whitespace=ignore_whitespace_ctr != 0, )
             if result is None:
                 return None
 
@@ -368,9 +383,6 @@ class SequencePhrase(Phrase):
                 print("Parsing: Ln {}".format(prev_line))
         if ignored_data_items is not None:
             if ignored_data_items:
-                if ignored_data_items[-1].range.end.AtEnd():
-                    assert False, "BugBug"
-
                 if prev_token_was_pop_control:
                     data_items += ignored_data_items
                     iter = ignored_data_items[-1].range.end.Clone()
@@ -386,3 +398,4 @@ class SequencePhrase(Phrase):
     @staticmethod
     def _CreateDefaultName(phrases, ):
         return "[{}]".format(", ".join(phrase.Name for phrase in phrases, ), )
+

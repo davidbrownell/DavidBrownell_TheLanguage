@@ -365,7 +365,7 @@ def ExtractRepeat(
     if node is None:
         return []
 
-    assert isinstance(node.Type, RepeatPhrase), node.Type
+    assert node.Type.__class__.__name__ == "RepeatPhrase", node.Type.__class__.__name__
 
     if node.Type.MaxMatches == 1:
         assert node.Children or node.Type.MinMatches == 0, node.Type.MinMatches
@@ -418,7 +418,7 @@ def ExtractSequence(
         else:
             # If here, we have exhausted all of the children. This can only happen when we are
             # looking at a RepeatPhrase that supported 0 matches.
-            assert isinstance(phrase, RepeatPhrase), phrase
+            assert phrase.__class__.__name__ == "RepeatPhrase", phrase.__class__.__name__
             assert phrase.MinMatches == 0, phrase.MinMatches
 
             results.append(None)
@@ -602,7 +602,7 @@ def _PopulateItem(
         assert False, item  # pragma: no cover
 
     if arity is not None:
-        phrase = RepeatPhrase(
+        phrase = RepeatPhrase.Create(
             phrase,
             arity[0],
             arity[1],

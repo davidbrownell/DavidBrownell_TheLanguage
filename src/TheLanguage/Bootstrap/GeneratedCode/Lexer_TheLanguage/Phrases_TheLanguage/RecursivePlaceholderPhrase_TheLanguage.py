@@ -47,41 +47,53 @@ class RecursivePlaceholderPhrase(Phrase):
 
         # No members
 
-        self._Init_d5dafbf61d2946e3bd05bd3a8442f341_()
+        self._Init_0325420ab7a3428e83e0b69eaca0243d_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if Phrase.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if Phrase.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if Phrase.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if Phrase.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if Phrase.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if Phrase.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = Phrase.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = Phrase.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
 
@@ -89,26 +101,41 @@ class RecursivePlaceholderPhrase(Phrase):
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_d5dafbf61d2946e3bd05bd3a8442f341_(self):
+    def _Init_0325420ab7a3428e83e0b69eaca0243d_(self):
         pass
 
     # Return Type: RecursivePlaceholderPhrase

@@ -63,74 +63,101 @@ class Token(object):
         else:
             raise Exception("is_control_token was not provided")
 
-        self._Init_108a6c2d74884f8993ea08f1df53faf1_()
+        self._Init_7ecc359c98e64f33af738a5a1e7fa47d_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
+    def __Compare__(cls, a, b, compare_cache):
         # No bases
 
-        result = cls.__CompareItem__(a.name, b.name)
+        result = cls.__CompareItem__(a.name, b.name, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a.is_always_ignored, b.is_always_ignored)
+        result = cls.__CompareItem__(a.is_always_ignored, b.is_always_ignored, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a.is_control_token, b.is_control_token)
+        result = cls.__CompareItem__(a.is_control_token, b.is_control_token, compare_cache)
         if result is not None: return result
 
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_108a6c2d74884f8993ea08f1df53faf1_(self):
+    def _Init_7ecc359c98e64f33af738a5a1e7fa47d_(self):
         pass
 
     # Visibility: public
@@ -153,68 +180,95 @@ class Token(object):
             else:
                 raise Exception("iterator was not provided")
 
-            self._Init_e1164d45e1f94b96852bc1d0a838c8fa_()
+            self._Init_48799cce5906432693b5b381bd818400_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
+        def __Compare__(cls, a, b, compare_cache):
             # No bases
 
-            result = cls.__CompareItem__(a.iterator, b.iterator)
+            result = cls.__CompareItem__(a.iterator, b.iterator, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
+            compare_cache[cache_key] = result
+            return result
 
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
-
-        def _Init_e1164d45e1f94b96852bc1d0a838c8fa_(self):
+        def _Init_48799cce5906432693b5b381bd818400_(self):
             pass
 
     @property
@@ -252,69 +306,96 @@ class NewlineToken(Token):
         else:
             raise Exception("capture_many was not provided")
 
-        self._Init_f776a46d19834e8eab654314d322711e_()
+        self._Init_73626d26f7f5469e8bcfff08bd1b908b_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if Token.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if Token.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if Token.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if Token.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if Token.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if Token.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = Token.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = Token.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
-        result = cls.__CompareItem__(a.capture_many, b.capture_many)
+        result = cls.__CompareItem__(a.capture_many, b.capture_many, compare_cache)
         if result is not None: return result
 
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_f776a46d19834e8eab654314d322711e_(self):
+    def _Init_73626d26f7f5469e8bcfff08bd1b908b_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -346,73 +427,100 @@ class NewlineToken(Token):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_b760242d8d334442b920ad576638946e_()
+            self._Init_26d0ff3851874f84801789bd6299d1b5_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             if NewlineToken.Token_MatchResult.__eq__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             if NewlineToken.Token_MatchResult.__ne__(self, other) is False: return False
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             if NewlineToken.Token_MatchResult.__lt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             if NewlineToken.Token_MatchResult.__le__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             if NewlineToken.Token_MatchResult.__gt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             if NewlineToken.Token_MatchResult.__ge__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
-            result = NewlineToken.Token_MatchResult.__Compare__(a, b)
+        def __Compare__(cls, a, b, compare_cache):
+            result = NewlineToken.Token_MatchResult.__Compare__(a, b, compare_cache)
             if result != 0: return result
 
-            result = cls.__CompareItem__(a.start, b.start)
+            result = cls.__CompareItem__(a.start, b.start, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.end, b.end)
+            result = cls.__CompareItem__(a.end, b.end, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
-
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
+            compare_cache[cache_key] = result
+            return result
 
         # Return Type: None
-        def _Init_b760242d8d334442b920ad576638946e_(self):
+        def _Init_26d0ff3851874f84801789bd6299d1b5_(self):
             assert self.start <= self.end
 
     # Return Type: NewlineToken val
@@ -451,41 +559,53 @@ class IndentToken(Token):
 
         # No members
 
-        self._Init_732c90326b754c8a91e5e9ad97bce268_()
+        self._Init_09fb7e5f60034f63b747c4ed1e4c43e5_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if Token.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if Token.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if Token.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if Token.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if Token.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if Token.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = Token.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = Token.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
 
@@ -493,26 +613,41 @@ class IndentToken(Token):
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_732c90326b754c8a91e5e9ad97bce268_(self):
+    def _Init_09fb7e5f60034f63b747c4ed1e4c43e5_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -552,76 +687,103 @@ class IndentToken(Token):
             else:
                 raise Exception("indent_value was not provided")
 
-            self._Init_20ce2cba0f5041acb2fbdd1ace3b125b_()
+            self._Init_80cd5e81cf984f289ab3aae74aa22d93_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             if IndentToken.Token_MatchResult.__eq__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             if IndentToken.Token_MatchResult.__ne__(self, other) is False: return False
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             if IndentToken.Token_MatchResult.__lt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             if IndentToken.Token_MatchResult.__le__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             if IndentToken.Token_MatchResult.__gt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             if IndentToken.Token_MatchResult.__ge__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
-            result = IndentToken.Token_MatchResult.__Compare__(a, b)
+        def __Compare__(cls, a, b, compare_cache):
+            result = IndentToken.Token_MatchResult.__Compare__(a, b, compare_cache)
             if result != 0: return result
 
-            result = cls.__CompareItem__(a.start, b.start)
+            result = cls.__CompareItem__(a.start, b.start, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.end, b.end)
+            result = cls.__CompareItem__(a.end, b.end, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.indent_value, b.indent_value)
+            result = cls.__CompareItem__(a.indent_value, b.indent_value, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
-
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
+            compare_cache[cache_key] = result
+            return result
 
         # Return Type: None
-        def _Init_20ce2cba0f5041acb2fbdd1ace3b125b_(self):
+        def _Init_80cd5e81cf984f289ab3aae74aa22d93_(self):
             assert self.start <= self.end
 
     # Return Type: IndentToken val
@@ -657,41 +819,53 @@ class DedentToken(Token):
 
         # No members
 
-        self._Init_30173aa5ab354caaa23be7eeea17e3b8_()
+        self._Init_e0ad9de8a8d44e6d8ee2532ae1bf57f8_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if Token.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if Token.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if Token.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if Token.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if Token.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if Token.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = Token.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = Token.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
 
@@ -699,86 +873,17 @@ class DedentToken(Token):
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
-            return None
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
 
-        if a is None: return -1
-        if b is None: return 1
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        def Impl():
+            nonlocal a
+            nonlocal b
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_30173aa5ab354caaa23be7eeea17e3b8_(self):
-        pass
-
-    Token_MatchResult = Token_MatchResult
-    # Visibility: public
-    # ClassModifier: immutable
-    # ClassType: Class
-    class MatchResult(Token_MatchResult):
-        def __init__(self, *args, **kwargs):
-            DedentToken.MatchResult._InternalInit(self, list(args), kwargs)
-
-        def _InternalInit(self, args, kwargs):
-            # 
-
-            DedentToken.Token_MatchResult._InternalInit(self, args, kwargs)
-
-            # No members
-
-            self._Init_64c4bdcdcd24440e85deaed6f34d7c77_()
-
-        def __eq__(self, other):
-            if DedentToken.Token_MatchResult.__eq__(self, other) is False: return False
-            if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
-
-        def __ne__(self, other):
-            if DedentToken.Token_MatchResult.__ne__(self, other) is False: return False
-            if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
-
-        def __lt__(self, other):
-            if DedentToken.Token_MatchResult.__lt__(self, other) is False: return False
-            if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
-
-        def __le__(self, other):
-            if DedentToken.Token_MatchResult.__le__(self, other) is False: return False
-            if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
-
-        def __gt__(self, other):
-            if DedentToken.Token_MatchResult.__gt__(self, other) is False: return False
-            if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
-
-        def __ge__(self, other):
-            if DedentToken.Token_MatchResult.__ge__(self, other) is False: return False
-            if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
-
-        @classmethod
-        def __Compare__(cls, a, b):
-            result = DedentToken.Token_MatchResult.__Compare__(a, b)
-            if result != 0: return result
-
-
-
-            return 0
-
-        @classmethod
-        def __CompareItem__(cls, a, b):
             if a is None and b is None:
                 return None
 
@@ -797,7 +902,118 @@ class DedentToken(Token):
 
             return None
 
-        def _Init_64c4bdcdcd24440e85deaed6f34d7c77_(self):
+        result = Impl()
+
+        compare_cache[cache_key] = result
+        return result
+
+    def _Init_e0ad9de8a8d44e6d8ee2532ae1bf57f8_(self):
+        pass
+
+    Token_MatchResult = Token_MatchResult
+    # Visibility: public
+    # ClassModifier: immutable
+    # ClassType: Class
+    class MatchResult(Token_MatchResult):
+        def __init__(self, *args, **kwargs):
+            DedentToken.MatchResult._InternalInit(self, list(args), kwargs)
+
+        def _InternalInit(self, args, kwargs):
+            # 
+
+            DedentToken.Token_MatchResult._InternalInit(self, args, kwargs)
+
+            # No members
+
+            self._Init_4bcc635403af4ecf9f8c0cba98aa90b4_()
+
+        def __eq__(self, other):
+            compare_cache = {}
+
+            if DedentToken.Token_MatchResult.__eq__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
+
+        def __ne__(self, other):
+            compare_cache = {}
+
+            if DedentToken.Token_MatchResult.__ne__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return True
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
+
+        def __lt__(self, other):
+            compare_cache = {}
+
+            if DedentToken.Token_MatchResult.__lt__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
+
+        def __le__(self, other):
+            compare_cache = {}
+
+            if DedentToken.Token_MatchResult.__le__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
+
+        def __gt__(self, other):
+            compare_cache = {}
+
+            if DedentToken.Token_MatchResult.__gt__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
+
+        def __ge__(self, other):
+            compare_cache = {}
+
+            if DedentToken.Token_MatchResult.__ge__(self, other) is False: return False
+            if not isinstance(other, self.__class__): return False
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
+
+        @classmethod
+        def __Compare__(cls, a, b, compare_cache):
+            result = DedentToken.Token_MatchResult.__Compare__(a, b, compare_cache)
+            if result != 0: return result
+
+
+
+            return 0
+
+        @classmethod
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
+                return None
+
+            result = Impl()
+
+            compare_cache[cache_key] = result
+            return result
+
+        def _Init_4bcc635403af4ecf9f8c0cba98aa90b4_(self):
             pass
 
         pass
@@ -835,41 +1051,53 @@ class HorizontalWhitespaceToken(Token):
 
         # No members
 
-        self._Init_09bef33884aa445bab1aa83a9f737ab1_()
+        self._Init_6b8d18222dee48e0a965334de88d64a8_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if Token.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if Token.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if Token.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if Token.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if Token.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if Token.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = Token.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = Token.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
 
@@ -877,26 +1105,41 @@ class HorizontalWhitespaceToken(Token):
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_09bef33884aa445bab1aa83a9f737ab1_(self):
+    def _Init_6b8d18222dee48e0a965334de88d64a8_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -928,72 +1171,99 @@ class HorizontalWhitespaceToken(Token):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_97375c1523a84616b6e955a80966fb2e_()
+            self._Init_61bf75de87a1440599b7afaeb7799e19_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             if HorizontalWhitespaceToken.Token_MatchResult.__eq__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             if HorizontalWhitespaceToken.Token_MatchResult.__ne__(self, other) is False: return False
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             if HorizontalWhitespaceToken.Token_MatchResult.__lt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             if HorizontalWhitespaceToken.Token_MatchResult.__le__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             if HorizontalWhitespaceToken.Token_MatchResult.__gt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             if HorizontalWhitespaceToken.Token_MatchResult.__ge__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
-            result = HorizontalWhitespaceToken.Token_MatchResult.__Compare__(a, b)
+        def __Compare__(cls, a, b, compare_cache):
+            result = HorizontalWhitespaceToken.Token_MatchResult.__Compare__(a, b, compare_cache)
             if result != 0: return result
 
-            result = cls.__CompareItem__(a.start, b.start)
+            result = cls.__CompareItem__(a.start, b.start, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.end, b.end)
+            result = cls.__CompareItem__(a.end, b.end, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
+            compare_cache[cache_key] = result
+            return result
 
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
-
-        def _Init_97375c1523a84616b6e955a80966fb2e_(self):
+        def _Init_61bf75de87a1440599b7afaeb7799e19_(self):
             pass
 
     # Return Type: HorizontalWhitespaceToken val
@@ -1045,72 +1315,99 @@ class RegexToken(Token):
         else:
             raise Exception("is_multiline was not provided")
 
-        self._Init_9d4a7b3a511742f1869bfa14e544f9e1_()
+        self._Init_0770041d69ac42b6b1340b78382d2bc0_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if Token.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if Token.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if Token.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if Token.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if Token.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if Token.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = Token.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = Token.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
-        result = cls.__CompareItem__(a.regex, b.regex)
+        result = cls.__CompareItem__(a.regex, b.regex, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a.is_multiline, b.is_multiline)
+        result = cls.__CompareItem__(a.is_multiline, b.is_multiline, compare_cache)
         if result is not None: return result
 
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_9d4a7b3a511742f1869bfa14e544f9e1_(self):
+    def _Init_0770041d69ac42b6b1340b78382d2bc0_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -1134,69 +1431,96 @@ class RegexToken(Token):
             else:
                 raise Exception("match was not provided")
 
-            self._Init_94ed6cb74b3a4ed2b7210e67d25cb6ff_()
+            self._Init_925d0591e31c4418be2f84a9837541ee_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             if RegexToken.Token_MatchResult.__eq__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             if RegexToken.Token_MatchResult.__ne__(self, other) is False: return False
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             if RegexToken.Token_MatchResult.__lt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             if RegexToken.Token_MatchResult.__le__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             if RegexToken.Token_MatchResult.__gt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             if RegexToken.Token_MatchResult.__ge__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
-            result = RegexToken.Token_MatchResult.__Compare__(a, b)
+        def __Compare__(cls, a, b, compare_cache):
+            result = RegexToken.Token_MatchResult.__Compare__(a, b, compare_cache)
             if result != 0: return result
 
-            result = cls.__CompareItem__(a.match, b.match)
+            result = cls.__CompareItem__(a.match, b.match, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
+            compare_cache[cache_key] = result
+            return result
 
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
-
-        def _Init_94ed6cb74b3a4ed2b7210e67d25cb6ff_(self):
+        def _Init_925d0591e31c4418be2f84a9837541ee_(self):
             pass
 
     # Return Type: RegexToken
@@ -1278,83 +1602,110 @@ class ControlTokenBase(Token):
         else:
             raise Exception("opening_token was not provided")
 
-        self._Init_aa7dfe006dae45c38f57ad86051cd5be_()
+        self._Init_cd4f0679048d4f948873d3845b9f2e58_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if Token.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if Token.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if Token.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if Token.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if Token.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if Token.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = Token.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = Token.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
-        result = cls.__CompareItem__(a.is_control_token, b.is_control_token)
+        result = cls.__CompareItem__(a.is_control_token, b.is_control_token, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a.is_always_ignored, b.is_always_ignored)
+        result = cls.__CompareItem__(a.is_always_ignored, b.is_always_ignored, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a.closing_token, b.closing_token)
+        result = cls.__CompareItem__(a.closing_token, b.closing_token, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a.opening_token, b.opening_token)
+        result = cls.__CompareItem__(a.opening_token, b.opening_token, compare_cache)
         if result is not None: return result
 
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
-
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
+        compare_cache[cache_key] = result
+        return result
 
     # Return Type: <MatchResult | None> val
     def Match_(self, iterator, ):
         raise Exception("This method should never be invoked for control tokens", )
 
     # Return Type: None
-    def _Init_aa7dfe006dae45c38f57ad86051cd5be_(self):
+    def _Init_cd4f0679048d4f948873d3845b9f2e58_(self):
         assert ((self.closing_token is not None and self.opening_token is None) or (self.closing_token is None and self.opening_token is not None))
 
 # Visibility: public
@@ -1375,41 +1726,53 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_9148c9a3e57246b5ad9942f665a80e87_()
+        self._Init_97878f267739466d9ecae27bb4cbed7b_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = ControlTokenBase.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = ControlTokenBase.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
 
@@ -1417,26 +1780,41 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_9148c9a3e57246b5ad9942f665a80e87_(self):
+    def _Init_97878f267739466d9ecae27bb4cbed7b_(self):
         pass
 
     # Return Type: PushIgnoreWhitespaceControlToken
@@ -1462,41 +1840,53 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_86e45d63d6fd472c96464f2123f5aa33_()
+        self._Init_8a7bc6a64a134780ba6405fcc565784c_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = ControlTokenBase.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = ControlTokenBase.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
 
@@ -1504,26 +1894,41 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_86e45d63d6fd472c96464f2123f5aa33_(self):
+    def _Init_8a7bc6a64a134780ba6405fcc565784c_(self):
         pass
 
     # Return Type: PopIgnoreWhitespaceControlToken
@@ -1549,41 +1954,53 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_85565c42748c45eb87a7f2760eb9a3c5_()
+        self._Init_c32765d6ec6943309edce024e447347d_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = ControlTokenBase.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = ControlTokenBase.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
 
@@ -1591,26 +2008,41 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_85565c42748c45eb87a7f2760eb9a3c5_(self):
+    def _Init_c32765d6ec6943309edce024e447347d_(self):
         pass
 
     # Return Type: PushPreserveWhitespaceControlToken
@@ -1636,41 +2068,53 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_25195ef7bf3a44369444618a997972ac_()
+        self._Init_02383eb8195e4d529c833946f25fcc11_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__eq__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__ne__(self, other) is False: return False
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__lt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__le__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__gt__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         if ControlTokenBase.__ge__(self, other) is False: return False
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
-        result = ControlTokenBase.__Compare__(a, b)
+    def __Compare__(cls, a, b, compare_cache):
+        result = ControlTokenBase.__Compare__(a, b, compare_cache)
         if result != 0: return result
 
 
@@ -1678,26 +2122,41 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_25195ef7bf3a44369444618a997972ac_(self):
+    def _Init_02383eb8195e4d529c833946f25fcc11_(self):
         pass
 
     # Return Type: PopPreserveWhitespaceControlToken

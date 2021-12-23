@@ -32,145 +32,157 @@ _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-with InitRelativeImports():
-    from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
-    from ..Components.Phrase import Phrase
+if True:
+    import sys
+    sys.path.insert(0, os.path.normpath(os.path.join(_script_dir, "..", "..", "GeneratedCode")))
+    from Lexer_TheLanguage.Phrases_TheLanguage.RepeatPhrase_TheLanguage import *
+    sys.path.pop(0)
 
+else:
+    with InitRelativeImports():
+        from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
+        from ..Components.Phrase import Phrase
 
-# ----------------------------------------------------------------------
-class RepeatPhrase(Phrase):
-    """Matches content that repeats the provided phrase N times"""
 
     # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        phrase: Phrase,
-        min_matches: int,
-        max_matches: Optional[int],
-        name: Optional[str]=None,
-    ):
-        assert phrase
-        assert min_matches >= 0, min_matches
-        assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
+    class RepeatPhrase(Phrase):
+        """Matches content that repeats the provided phrase N times"""
 
-        if name is None:
-            name = self.__class__._CreateDefaultName(phrase, min_matches, max_matches)
-            name_is_default = True
-        else:
-            name_is_default = False
+        # ----------------------------------------------------------------------
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            return cls(*args, **kwargs)
 
-        assert name is not None
+        # ----------------------------------------------------------------------
+        def __init__(
+            self,
+            phrase: Phrase,
+            min_matches: int,
+            max_matches: Optional[int],
+            name: Optional[str]=None,
+        ):
+            assert phrase
+            assert min_matches >= 0, min_matches
+            assert max_matches is None or max_matches >= min_matches, (min_matches, max_matches)
 
-        super(RepeatPhrase, self).__init__(name)
+            if name is None:
+                name = self.__class__._CreateDefaultName(phrase, min_matches, max_matches)
+                name_is_default = True
+            else:
+                name_is_default = False
 
-        self.Phrase                         = phrase
-        self.MinMatches                     = min_matches
-        self.MaxMatches                     = max_matches
-        self._name_is_default               = name_is_default
+            assert name is not None
 
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Lex(
-        self,
-        unique_id: Tuple[str, ...],
-        normalized_iter: Phrase.NormalizedIterator,
-        observer: Phrase.Observer,
-        ignore_whitespace=False,
-    ) -> Optional[Phrase.LexResult]:
+            super(RepeatPhrase, self).__init__(name)
 
-        success = False
+            self.Phrase                         = phrase
+            self.MinMatches                     = min_matches
+            self.MaxMatches                     = max_matches
+            self._name_is_default               = name_is_default
 
-        observer.StartPhrase(unique_id, self)
-        with CallOnExit(lambda: observer.EndPhrase(unique_id, self, success)):
-            original_normalized_iter = normalized_iter.Clone()
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def Lex(
+            self,
+            unique_id: Tuple[str, ...],
+            normalized_iter: Phrase.NormalizedIterator,
+            observer: Phrase.Observer,
+            ignore_whitespace=False,
+        ) -> Optional[Phrase.LexResult]:
 
-            results: List[Optional[Phrase.LexResultData]] = []
-            error_result: Optional[Phrase.LexResult] = None
+            success = False
 
-            while not normalized_iter.AtEnd():
-                result = self.Phrase.Lex(
-                    unique_id + ("{} [{}]".format(self.Name, len(results)), ),
-                    normalized_iter.Clone(),
-                    observer,
-                    ignore_whitespace=ignore_whitespace,
-                )
+            observer.StartPhrase(unique_id, self)
+            with CallOnExit(lambda: observer.EndPhrase(unique_id, self, success)):
+                original_normalized_iter = normalized_iter.Clone()
 
-                if result is None:
-                    return None
+                results: List[Optional[Phrase.LexResultData]] = []
+                error_result: Optional[Phrase.LexResult] = None
 
-                if not result.Success:
-                    error_result = result
-                    break
+                while not normalized_iter.AtEnd():
+                    result = self.Phrase.Lex(
+                        unique_id + ("{} [{}]".format(self.Name, len(results)), ),
+                        normalized_iter.Clone(),
+                        observer,
+                        ignore_whitespace=ignore_whitespace,
+                    )
 
-                results.append(result.Data)
-                normalized_iter = result.IterEnd.Clone()
+                    if result is None:
+                        return None
 
-                if self.MaxMatches is not None and len(results) == self.MaxMatches:
-                    break
+                    if not result.Success:
+                        error_result = result
+                        break
 
-            if len(results) >= self.MinMatches:
-                success = True
-                assert self.MaxMatches is None or len(results) <= self.MaxMatches
+                    results.append(result.Data)
+                    normalized_iter = result.IterEnd.Clone()
+
+                    if self.MaxMatches is not None and len(results) == self.MaxMatches:
+                        break
+
+                if len(results) >= self.MinMatches:
+                    success = True
+                    assert self.MaxMatches is None or len(results) <= self.MaxMatches
+
+                    # pylint: disable=too-many-function-args
+                    data = self.__class__.StandardLexResultData(
+                        self,
+                        Phrase.MultipleLexResultData(results, True),
+                        unique_id,
+                        error_result.Data if error_result is not None else None,
+                    )
+
+                    if not observer.OnInternalPhrase(
+                        data,
+                        original_normalized_iter,
+                        normalized_iter,
+                    ):
+                        return None
+
+                    return Phrase.LexResult(True, Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter), data)
+
+                # Gather the failure information
+                if error_result is not None:
+                    results.append(error_result.Data)
+                    normalized_iter = error_result.IterEnd
 
                 # pylint: disable=too-many-function-args
-                data = self.__class__.StandardLexResultData(
-                    self,
-                    Phrase.MultipleLexResultData(results, True),
-                    unique_id,
-                    error_result.Data if error_result is not None else None,
+                return Phrase.LexResult(
+                    False,
+                    Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
+                    Phrase.StandardLexResultData(
+                        self,
+                        Phrase.MultipleLexResultData(results, True),
+                        unique_id,
+                    ),
                 )
 
-                if not observer.OnInternalPhrase(
-                    data,
-                    original_normalized_iter,
-                    normalized_iter,
-                ):
-                    return None
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def _PopulateRecursiveImpl(
+            self,
+            new_phrase: Phrase,
+        ) -> bool:
+            replaced_phrase = False
 
-                return Phrase.LexResult(True, Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter), data)
+            if isinstance(self.Phrase, RecursivePlaceholderPhrase):
+                self.Phrase = new_phrase
+                replaced_phrase = True
+            else:
+                replaced_phrase = self.Phrase.PopulateRecursive(self, new_phrase) or replaced_phrase
 
-            # Gather the failure information
-            if error_result is not None:
-                results.append(error_result.Data)
-                normalized_iter = error_result.IterEnd
+            if replaced_phrase and self._name_is_default:
+                self.Name = self.__class__._CreateDefaultName(self.Phrase, self.MinMatches, self.MaxMatches)
 
-            # pylint: disable=too-many-function-args
-            return Phrase.LexResult(
-                False,
-                Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
-                Phrase.StandardLexResultData(
-                    self,
-                    Phrase.MultipleLexResultData(results, True),
-                    unique_id,
-                ),
-            )
+            return replaced_phrase
 
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _PopulateRecursiveImpl(
-        self,
-        new_phrase: Phrase,
-    ) -> bool:
-        replaced_phrase = False
-
-        if isinstance(self.Phrase, RecursivePlaceholderPhrase):
-            self.Phrase = new_phrase
-            replaced_phrase = True
-        else:
-            replaced_phrase = self.Phrase.PopulateRecursive(self, new_phrase) or replaced_phrase
-
-        if replaced_phrase and self._name_is_default:
-            self.Name = self.__class__._CreateDefaultName(self.Phrase, self.MinMatches, self.MaxMatches)
-
-        return replaced_phrase
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _CreateDefaultName(
-        phrase: Phrase,
-        min_matches: int,
-        max_matches: Optional[int],
-    ) -> str:
-        return "{{{}, {}, {}}}".format(phrase.Name, min_matches, max_matches)
+        # ----------------------------------------------------------------------
+        @staticmethod
+        def _CreateDefaultName(
+            phrase: Phrase,
+            min_matches: int,
+            max_matches: Optional[int],
+        ) -> str:
+            return "{{{}, {}, {}}}".format(phrase.Name, min_matches, max_matches)

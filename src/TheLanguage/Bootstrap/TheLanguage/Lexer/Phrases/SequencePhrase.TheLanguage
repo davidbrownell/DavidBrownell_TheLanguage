@@ -36,6 +36,7 @@ from ..Components.Token import (
 
 
 # ----------------------------------------------------------------------
+[PrivateCtor]
 public mutable class SequencePhrase
     extends Phrase
 :
@@ -181,8 +182,7 @@ public mutable class SequencePhrase
         var replaced_phrase = False
 
         for (phrase_index, phrase, ) in Enumerate(self._phrases):
-            # TODO (is isn't working in python): if phrase is RecursivePlaceholderPhrase:
-            if phrase.__class__.__name__ == "RecursivePlaceholderPhrase":
+            if phrase is RecursivePlaceholderPhrase:
                 self._phrases[phrase_index] = new_phrase
                 replaced_phrase = True
 
@@ -448,7 +448,7 @@ public mutable class SequencePhrase
             var result = phrase.Lex(
                 # TODO: unique_id + `{self.Name} [{phrase_index}]`,
                 unique_id + ("{} [{}]".Format(self.Name, phrase_index), ),
-                move iter,
+                iter.Clone(),
                 # TODO: ref observer
                 observer,
                 ignore_whitespace=ignore_whitespace_ctr != 0,

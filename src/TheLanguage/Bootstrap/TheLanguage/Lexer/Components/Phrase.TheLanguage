@@ -257,6 +257,7 @@ public mutable class Phrase:
         python_hack: def OnPopScopeProxy(self, data, range): return self.OnPopScope(data, range.begin, range.end)
         python_hack: def OnInternalPhraseProxy(self, data, range): return self.OnInternalPhrase(data, range.begin, range.end)
 
+    # TODO: name property
 
     python_hack: @property
     python_hack: def Name(self): return self._name_
@@ -334,8 +335,8 @@ public mutable class Phrase:
     # |  Private Data
     # |
     # ----------------------------------------------------------------------
-    [NoInit] private (Phrase | None) var _parent = None
-    [NoInit] private Bool var _is_populated = False
+    [NoInit, NoCompare, NoSerialize] private (Phrase | None) var _parent = None
+    [NoInit, NoCompare, NoSerialize] private Bool var _is_populated = False
 
     # ----------------------------------------------------------------------
     # |

@@ -82,78 +82,105 @@ class NormalizedIterator(object):
         else:
             raise Exception("_consumed_dedent_count was not provided")
 
-        self._Init_0b5b153c4edd4245be9a9bf9f3f91781_()
+        self._Init_cb1ee14c1e664a19b5a7d1261208bb9b_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
+    def __Compare__(cls, a, b, compare_cache):
         # No bases
 
-        result = cls.__CompareItem__(a._content, b._content)
+        result = cls.__CompareItem__(a._content, b._content, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a._offset, b._offset)
+        result = cls.__CompareItem__(a._offset, b._offset, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a._line_info_index, b._line_info_index)
+        result = cls.__CompareItem__(a._line_info_index, b._line_info_index, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a._whitespace_range_index, b._whitespace_range_index)
+        result = cls.__CompareItem__(a._whitespace_range_index, b._whitespace_range_index, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a._consumed_dedent_count, b._consumed_dedent_count)
+        result = cls.__CompareItem__(a._consumed_dedent_count, b._consumed_dedent_count, compare_cache)
         if result is not None: return result
 
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
-
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
+        compare_cache[cache_key] = result
+        return result
 
     # Visibility: public
     # ClassModifier: immutable
@@ -385,67 +412,94 @@ class NormalizedIterator(object):
             # has_end_of_file_dedents
             self.has_end_of_file_dedents = None
 
-            self._Init_4da9b00a3b144e9cb90821a9a0932b5e_()
+            self._Init_773ad3cd02de48b6b329f4beccf2ad88_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             if NormalizedContent.__eq__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             if NormalizedContent.__ne__(self, other) is False: return False
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             if NormalizedContent.__lt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             if NormalizedContent.__le__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             if NormalizedContent.__gt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             if NormalizedContent.__ge__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
-            result = NormalizedContent.__Compare__(a, b)
+        def __Compare__(cls, a, b, compare_cache):
+            result = NormalizedContent.__Compare__(a, b, compare_cache)
             if result != 0: return result
 
-            result = cls.__CompareItem__(a.has_end_of_file_dedents, b.has_end_of_file_dedents)
+            result = cls.__CompareItem__(a.has_end_of_file_dedents, b.has_end_of_file_dedents, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
-
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
+            compare_cache[cache_key] = result
+            return result
 
         # Return Type: NormalizedContentEx val
         @staticmethod
@@ -453,14 +507,14 @@ class NormalizedIterator(object):
             return NormalizedContentEx(content.content, content.content_length, content.line_infos, content.hash, )
 
         # Return Type: None
-        def _Init_4da9b00a3b144e9cb90821a9a0932b5e_(self):
+        def _Init_773ad3cd02de48b6b329f4beccf2ad88_(self):
             last_line_info = self.line_infos[-1]
             self.has_end_of_file_dedents = (last_line_info.num_dedents is not None and last_line_info.num_dedents > 0 and last_line_info.offset_start == last_line_info.offset_end and last_line_info.content_start == last_line_info.offset_start and last_line_info.content_end == last_line_info.offset_end)
 
     def Clone(self):
         return self.__class__(self._content, self._offset, self._line_info_index, self._whitespace_range_index, self._consumed_dedent_count)
     # Return Type: None
-    def _Init_0b5b153c4edd4245be9a9bf9f3f91781_(self):
+    def _Init_cb1ee14c1e664a19b5a7d1261208bb9b_(self):
         assert self._offset <= self._content.content_length
         if self._offset != self._content.content_length:
             line_info = self._content.line_infos[self._line_info_index]

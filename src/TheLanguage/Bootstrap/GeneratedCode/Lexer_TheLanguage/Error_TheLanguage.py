@@ -58,75 +58,102 @@ class Error(Exception):
         else:
             raise Exception("column was not provided")
 
-        self._Init_d8d2baa6dc334a219a57995ee9bd8c42_()
+        self._Init_a11a31b09a004f43b5a44d26d30b909b_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
+    def __Compare__(cls, a, b, compare_cache):
         # No bases
 
-        result = cls.__CompareItem__(a.line, b.line)
+        result = cls.__CompareItem__(a.line, b.line, compare_cache)
         if result is not None: return result
 
-        result = cls.__CompareItem__(a.column, b.column)
+        result = cls.__CompareItem__(a.column, b.column, compare_cache)
         if result is not None: return result
 
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_d8d2baa6dc334a219a57995ee9bd8c42_(self):
+    def _Init_a11a31b09a004f43b5a44d26d30b909b_(self):
         pass
 
     # Return Type: String
-    def _ToString_d8d2baa6dc334a219a57995ee9bd8c42_(self):
+    def _ToString_a11a31b09a004f43b5a44d26d30b909b_(self):
         return self._GetMessageTemplate().format(**self.__dict__, )
 
     # Return Type: String
@@ -138,4 +165,4 @@ class Error(Exception):
     @property
     def Column(self): return self.column
     def __str__(self):
-        return self._ToString_d8d2baa6dc334a219a57995ee9bd8c42_()
+        return self._ToString_a11a31b09a004f43b5a44d26d30b909b_()

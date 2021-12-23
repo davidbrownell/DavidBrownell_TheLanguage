@@ -273,7 +273,7 @@ class SyntaxInvalidError(Error):
 
                             break
 
-                    elif isinstance(error_node.Type, RepeatPhrase):
+                    elif error_node.Type.__class__.__name__ == "RepeatPhrase":
                         if error_node.Children[-1].IterEnd is None:
                             error_context = "{} expected".format(
                                 GenerateContextPrefix(

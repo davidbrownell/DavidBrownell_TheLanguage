@@ -1224,62 +1224,89 @@ class PythonVisitor(Visitor):
                                     self._Init_{unique_id}_()
 
                                 def __eq__(self, other):
+                                    compare_cache = {{}}
+
                                     {base_eq}
                                     if not isinstance(other, self.__class__): return False
-                                    return self.__class__.__Compare__(self, other) == 0
+                                    return self.__class__.__Compare__(self, other, compare_cache) == 0
 
                                 def __ne__(self, other):
+                                    compare_cache = {{}}
+
                                     {base_ne}
                                     if not isinstance(other, self.__class__): return True
-                                    return self.__class__.__Compare__(self, other) != 0
+                                    return self.__class__.__Compare__(self, other, compare_cache) != 0
 
                                 def __lt__(self, other):
+                                    compare_cache = {{}}
+
                                     {base_lt}
                                     if not isinstance(other, self.__class__): return False
-                                    return self.__class__.__Compare__(self, other) < 0
+                                    return self.__class__.__Compare__(self, other, compare_cache) < 0
 
                                 def __le__(self, other):
+                                    compare_cache = {{}}
+
                                     {base_le}
                                     if not isinstance(other, self.__class__): return False
-                                    return self.__class__.__Compare__(self, other) <= 0
+                                    return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
                                 def __gt__(self, other):
+                                    compare_cache = {{}}
+
                                     {base_gt}
                                     if not isinstance(other, self.__class__): return False
-                                    return self.__class__.__Compare__(self, other) > 0
+                                    return self.__class__.__Compare__(self, other, compare_cache) > 0
 
                                 def __ge__(self, other):
+                                    compare_cache = {{}}
+
                                     {base_ge}
                                     if not isinstance(other, self.__class__): return False
-                                    return self.__class__.__Compare__(self, other) >= 0
+                                    return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
                                 @classmethod
-                                def __Compare__(cls, a, b):
-                                {indent}{base_compare_statements}
+                                def __Compare__(cls, a, b, compare_cache):
+                                    {base_compare_statements}
 
-                                {indent}{compare_statements}
+                                    {compare_statements}
 
-                                {indent}return 0
+                                    return 0
 
                                 @classmethod
-                                def __CompareItem__(cls, a, b):
-                                    if a is None and b is None:
+                                def __CompareItem__(cls, a, b, compare_cache):
+                                    cache_key = (id(a), id(b), )
+
+                                    cache_value = compare_cache.get(cache_key, None)
+                                    if cache_value is not None:
+                                        return cache_value
+
+                                    def Impl():
+                                        nonlocal a
+                                        nonlocal b
+
+                                        if a is None and b is None:
+                                            return None
+
+                                        if a is None: return -1
+                                        if b is None: return 1
+
+                                        try:
+                                            if a < b: return -1
+                                            if a > b: return 1
+                                        except TypeError:
+                                            a = id(a)
+                                            b = id(b)
+
+                                            if a < b: return -1
+                                            if a > b: return 1
+
                                         return None
 
-                                    if a is None: return -1
-                                    if b is None: return 1
+                                    result = Impl()
 
-                                    try:
-                                        if a < b: return -1
-                                        if a > b: return 1
-                                    except TypeError:
-                                        a = id(a)
-                                        b = id(b)
-
-                                        if a < b: return -1
-                                        if a > b: return 1
-
-                                    return None
+                                    compare_cache[cache_key] = result
+                                    return result
 
                                 """,
                             ).format(
@@ -1311,7 +1338,7 @@ class PythonVisitor(Visitor):
                                         [
                                             textwrap.dedent(
                                                 """\
-                                                result = {}.__Compare__(a, b)
+                                                result = {}.__Compare__(a, b, compare_cache)
                                                 if result != 0: return result
                                                 """,
                                             ).format(ToTypeName(base_class))
@@ -1325,16 +1352,16 @@ class PythonVisitor(Visitor):
                                         [
                                             textwrap.dedent(
                                                 """\
-                                                result = cls.__CompareItem__(a.{name}, b.{name})
+                                                result = cls.__CompareItem__(a.{name}, b.{name}, compare_cache)
                                                 if result is not None: return result
                                                 """,
                                             ).format(
                                                 name=member.Name,
                                             )
-                                            for member in members
+                                            for member in members if not member.NoCompare
                                         ],
                                     ),
-                                    len(self._indentation),
+                                    4,
                                 ).rstrip(),
                                 base_eq=base_class_comparison_template.format(op="__eq__"),
                                 base_ne=base_class_comparison_template.format(op="__ne__"),

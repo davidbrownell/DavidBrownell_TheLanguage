@@ -83,74 +83,95 @@ class Phrase(object):
         # _is_populated
         self._is_populated = False
 
-        self._Init_81f688a200664507be82bc19c65b4789_()
+        self._Init_de3e6f435d5c4e3da3dc9dcc4b189827_()
 
     def __eq__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) == 0
+        return self.__class__.__Compare__(self, other, compare_cache) == 0
 
     def __ne__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return True
-        return self.__class__.__Compare__(self, other) != 0
+        return self.__class__.__Compare__(self, other, compare_cache) != 0
 
     def __lt__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) < 0
+        return self.__class__.__Compare__(self, other, compare_cache) < 0
 
     def __le__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) <= 0
+        return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
     def __gt__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) > 0
+        return self.__class__.__Compare__(self, other, compare_cache) > 0
 
     def __ge__(self, other):
+        compare_cache = {}
+
         # No bases
         if not isinstance(other, self.__class__): return False
-        return self.__class__.__Compare__(self, other) >= 0
+        return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
     @classmethod
-    def __Compare__(cls, a, b):
+    def __Compare__(cls, a, b, compare_cache):
         # No bases
 
-        result = cls.__CompareItem__(a._name_, b._name_)
-        if result is not None: return result
-
-        result = cls.__CompareItem__(a._parent, b._parent)
-        if result is not None: return result
-
-        result = cls.__CompareItem__(a._is_populated, b._is_populated)
+        result = cls.__CompareItem__(a._name_, b._name_, compare_cache)
         if result is not None: return result
 
         return 0
 
     @classmethod
-    def __CompareItem__(cls, a, b):
-        if a is None and b is None:
+    def __CompareItem__(cls, a, b, compare_cache):
+        cache_key = (id(a), id(b), )
+
+        cache_value = compare_cache.get(cache_key, None)
+        if cache_value is not None:
+            return cache_value
+
+        def Impl():
+            nonlocal a
+            nonlocal b
+
+            if a is None and b is None:
+                return None
+
+            if a is None: return -1
+            if b is None: return 1
+
+            try:
+                if a < b: return -1
+                if a > b: return 1
+            except TypeError:
+                a = id(a)
+                b = id(b)
+
+                if a < b: return -1
+                if a > b: return 1
+
             return None
 
-        if a is None: return -1
-        if b is None: return 1
+        result = Impl()
 
-        try:
-            if a < b: return -1
-            if a > b: return 1
-        except TypeError:
-            a = id(a)
-            b = id(b)
+        compare_cache[cache_key] = result
+        return result
 
-            if a < b: return -1
-            if a > b: return 1
-
-        return None
-
-    def _Init_81f688a200664507be82bc19c65b4789_(self):
+    def _Init_de3e6f435d5c4e3da3dc9dcc4b189827_(self):
         pass
 
     NormalizedIterator = NormalizedIterator
@@ -183,72 +204,99 @@ class Phrase(object):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_28480926cc8944198de5f184677f8a29_()
+            self._Init_7959b9a2f2944fc5a3e69d4c5c806a99_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
+        def __Compare__(cls, a, b, compare_cache):
             # No bases
 
-            result = cls.__CompareItem__(a.begin, b.begin)
+            result = cls.__CompareItem__(a.begin, b.begin, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.end, b.end)
+            result = cls.__CompareItem__(a.end, b.end, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
-
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
+            compare_cache[cache_key] = result
+            return result
 
         # Return Type: None
-        def _Init_28480926cc8944198de5f184677f8a29_(self):
+        def _Init_7959b9a2f2944fc5a3e69d4c5c806a99_(self):
             assert self.begin <= self.end
 
     # Visibility: public
@@ -291,72 +339,99 @@ class Phrase(object):
             else:
                 raise Exception("data was not provided")
 
-            self._Init_d4845e0ee09c4caeb219da42c71a5adb_()
+            self._Init_a4478c22c3d64396ab6d7a14feada045_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
+        def __Compare__(cls, a, b, compare_cache):
             # No bases
 
-            result = cls.__CompareItem__(a.success, b.success)
+            result = cls.__CompareItem__(a.success, b.success, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.range, b.range)
+            result = cls.__CompareItem__(a.range, b.range, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.data, b.data)
+            result = cls.__CompareItem__(a.data, b.data, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
-
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
+            compare_cache[cache_key] = result
+            return result
 
         @property
         def Success(self): return self.success
@@ -367,7 +442,7 @@ class Phrase(object):
         @property
         def Data(self): return self.data
         # Return Type: None
-        def _Init_d4845e0ee09c4caeb219da42c71a5adb_(self):
+        def _Init_a4478c22c3d64396ab6d7a14feada045_(self):
             assert self.data is not None or self.success is False
 
     # Visibility: private
@@ -384,40 +459,52 @@ class Phrase(object):
 
             # No members
 
-            self._Init_4cb8425631eb42bc9f765fdb2f68b531_()
+            self._Init_924652d9993e47338f6d1d88a4b081c4_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
+        def __Compare__(cls, a, b, compare_cache):
             # No bases
 
 
@@ -425,26 +512,41 @@ class Phrase(object):
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
+            compare_cache[cache_key] = result
+            return result
 
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
-
-        def _Init_4cb8425631eb42bc9f765fdb2f68b531_(self):
+        def _Init_924652d9993e47338f6d1d88a4b081c4_(self):
             pass
 
         pass
@@ -473,69 +575,96 @@ class Phrase(object):
             else:
                 raise Exception("whitespace was not provided")
 
-            self._Init_94595d0511e44fcab2730b14bc2f7e54_()
+            self._Init_74f71e80f31e452cbbc197b0122ce23d_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__eq__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__ne__(self, other) is False: return False
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__lt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__le__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__gt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__ge__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
-            result = Phrase._LexResultData.__Compare__(a, b)
+        def __Compare__(cls, a, b, compare_cache):
+            result = Phrase._LexResultData.__Compare__(a, b, compare_cache)
             if result != 0: return result
 
-            result = cls.__CompareItem__(a.whitespace, b.whitespace)
+            result = cls.__CompareItem__(a.whitespace, b.whitespace, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
+            compare_cache[cache_key] = result
+            return result
 
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
-
-        def _Init_94595d0511e44fcab2730b14bc2f7e54_(self):
+        def _Init_74f71e80f31e452cbbc197b0122ce23d_(self):
             pass
 
         LineInfo_WhitespaceRange = LineInfo.WhitespaceRange
@@ -587,78 +716,105 @@ class Phrase(object):
             else:
                 raise Exception("is_ignored was not provided")
 
-            self._Init_3defc1cf2cf140d1b0a43461a45d2fb7_()
+            self._Init_ca4e15b1e0ca48ea87960edfbb304c15_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__eq__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__ne__(self, other) is False: return False
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__lt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__le__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__gt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__ge__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
-            result = Phrase._LexResultData.__Compare__(a, b)
+        def __Compare__(cls, a, b, compare_cache):
+            result = Phrase._LexResultData.__Compare__(a, b, compare_cache)
             if result != 0: return result
 
-            result = cls.__CompareItem__(a.token, b.token)
+            result = cls.__CompareItem__(a.token, b.token, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.value, b.value)
+            result = cls.__CompareItem__(a.value, b.value, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.range, b.range)
+            result = cls.__CompareItem__(a.range, b.range, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.is_ignored, b.is_ignored)
+            result = cls.__CompareItem__(a.is_ignored, b.is_ignored, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
+            compare_cache[cache_key] = result
+            return result
 
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
-
-        def _Init_3defc1cf2cf140d1b0a43461a45d2fb7_(self):
+        def _Init_ca4e15b1e0ca48ea87960edfbb304c15_(self):
             pass
 
         Token_MatchResult = Token.MatchResult
@@ -723,78 +879,105 @@ class Phrase(object):
             else:
                 self.potential_error_context = None
 
-            self._Init_791c597b9b9542dca2b0095467bbb35a_()
+            self._Init_d8d4e185ae4f419ba56af305f2c449d3_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__eq__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__ne__(self, other) is False: return False
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__lt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__le__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__gt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__ge__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
-            result = Phrase._LexResultData.__Compare__(a, b)
+        def __Compare__(cls, a, b, compare_cache):
+            result = Phrase._LexResultData.__Compare__(a, b, compare_cache)
             if result != 0: return result
 
-            result = cls.__CompareItem__(a.phrase, b.phrase)
+            result = cls.__CompareItem__(a.phrase, b.phrase, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.data, b.data)
+            result = cls.__CompareItem__(a.data, b.data, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.unique_id, b.unique_id)
+            result = cls.__CompareItem__(a.unique_id, b.unique_id, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.potential_error_context, b.potential_error_context)
+            result = cls.__CompareItem__(a.potential_error_context, b.potential_error_context, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
+            compare_cache[cache_key] = result
+            return result
 
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
-
-        def _Init_791c597b9b9542dca2b0095467bbb35a_(self):
+        def _Init_d8d4e185ae4f419ba56af305f2c449d3_(self):
             pass
 
         @property
@@ -837,72 +1020,99 @@ class Phrase(object):
             else:
                 raise Exception("is_complete was not provided")
 
-            self._Init_6dc0750e5ee741b0ac36bf6328c229b3_()
+            self._Init_c8dc93987ea6430e8077ca0c698f4f63_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__eq__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__ne__(self, other) is False: return False
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__lt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__le__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__gt__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             if Phrase._LexResultData.__ge__(self, other) is False: return False
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
-            result = Phrase._LexResultData.__Compare__(a, b)
+        def __Compare__(cls, a, b, compare_cache):
+            result = Phrase._LexResultData.__Compare__(a, b, compare_cache)
             if result != 0: return result
 
-            result = cls.__CompareItem__(a.data_items, b.data_items)
+            result = cls.__CompareItem__(a.data_items, b.data_items, compare_cache)
             if result is not None: return result
 
-            result = cls.__CompareItem__(a.is_complete, b.is_complete)
+            result = cls.__CompareItem__(a.is_complete, b.is_complete, compare_cache)
             if result is not None: return result
 
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
+            compare_cache[cache_key] = result
+            return result
 
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
-
-        def _Init_6dc0750e5ee741b0ac36bf6328c229b3_(self):
+        def _Init_c8dc93987ea6430e8077ca0c698f4f63_(self):
             pass
 
         @property
@@ -929,40 +1139,52 @@ class Phrase(object):
 
             # No members
 
-            self._Init_3a80cae4fb2c4e3cb70ef91687c28c62_()
+            self._Init_2bc2d34e1a3a4aad884f1f80bb842172_()
 
         def __eq__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) == 0
+            return self.__class__.__Compare__(self, other, compare_cache) == 0
 
         def __ne__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return True
-            return self.__class__.__Compare__(self, other) != 0
+            return self.__class__.__Compare__(self, other, compare_cache) != 0
 
         def __lt__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) < 0
+            return self.__class__.__Compare__(self, other, compare_cache) < 0
 
         def __le__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) <= 0
+            return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
         def __gt__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) > 0
+            return self.__class__.__Compare__(self, other, compare_cache) > 0
 
         def __ge__(self, other):
+            compare_cache = {}
+
             # No bases
             if not isinstance(other, self.__class__): return False
-            return self.__class__.__Compare__(self, other) >= 0
+            return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
         @classmethod
-        def __Compare__(cls, a, b):
+        def __Compare__(cls, a, b, compare_cache):
             # No bases
 
 
@@ -970,26 +1192,41 @@ class Phrase(object):
             return 0
 
         @classmethod
-        def __CompareItem__(cls, a, b):
-            if a is None and b is None:
+        def __CompareItem__(cls, a, b, compare_cache):
+            cache_key = (id(a), id(b), )
+
+            cache_value = compare_cache.get(cache_key, None)
+            if cache_value is not None:
+                return cache_value
+
+            def Impl():
+                nonlocal a
+                nonlocal b
+
+                if a is None and b is None:
+                    return None
+
+                if a is None: return -1
+                if b is None: return 1
+
+                try:
+                    if a < b: return -1
+                    if a > b: return 1
+                except TypeError:
+                    a = id(a)
+                    b = id(b)
+
+                    if a < b: return -1
+                    if a > b: return 1
+
                 return None
 
-            if a is None: return -1
-            if b is None: return 1
+            result = Impl()
 
-            try:
-                if a < b: return -1
-                if a > b: return 1
-            except TypeError:
-                a = id(a)
-                b = id(b)
+            compare_cache[cache_key] = result
+            return result
 
-                if a < b: return -1
-                if a > b: return 1
-
-            return None
-
-        def _Init_3a80cae4fb2c4e3cb70ef91687c28c62_(self):
+        def _Init_2bc2d34e1a3a4aad884f1f80bb842172_(self):
             pass
 
         # Visibility: public
@@ -1020,71 +1257,98 @@ class Phrase(object):
                 else:
                     self.name = None
 
-                self._Init_bfb9819b4cff4d579cb7003bbb209ede_()
+                self._Init_1a4933c28d134bb7b36aef0de66d72ee_()
 
             def __eq__(self, other):
+                compare_cache = {}
+
                 # No bases
                 if not isinstance(other, self.__class__): return False
-                return self.__class__.__Compare__(self, other) == 0
+                return self.__class__.__Compare__(self, other, compare_cache) == 0
 
             def __ne__(self, other):
+                compare_cache = {}
+
                 # No bases
                 if not isinstance(other, self.__class__): return True
-                return self.__class__.__Compare__(self, other) != 0
+                return self.__class__.__Compare__(self, other, compare_cache) != 0
 
             def __lt__(self, other):
+                compare_cache = {}
+
                 # No bases
                 if not isinstance(other, self.__class__): return False
-                return self.__class__.__Compare__(self, other) < 0
+                return self.__class__.__Compare__(self, other, compare_cache) < 0
 
             def __le__(self, other):
+                compare_cache = {}
+
                 # No bases
                 if not isinstance(other, self.__class__): return False
-                return self.__class__.__Compare__(self, other) <= 0
+                return self.__class__.__Compare__(self, other, compare_cache) <= 0
 
             def __gt__(self, other):
+                compare_cache = {}
+
                 # No bases
                 if not isinstance(other, self.__class__): return False
-                return self.__class__.__Compare__(self, other) > 0
+                return self.__class__.__Compare__(self, other, compare_cache) > 0
 
             def __ge__(self, other):
+                compare_cache = {}
+
                 # No bases
                 if not isinstance(other, self.__class__): return False
-                return self.__class__.__Compare__(self, other) >= 0
+                return self.__class__.__Compare__(self, other, compare_cache) >= 0
 
             @classmethod
-            def __Compare__(cls, a, b):
+            def __Compare__(cls, a, b, compare_cache):
                 # No bases
 
-                result = cls.__CompareItem__(a.phrases, b.phrases)
+                result = cls.__CompareItem__(a.phrases, b.phrases, compare_cache)
                 if result is not None: return result
 
-                result = cls.__CompareItem__(a.name, b.name)
+                result = cls.__CompareItem__(a.name, b.name, compare_cache)
                 if result is not None: return result
 
                 return 0
 
             @classmethod
-            def __CompareItem__(cls, a, b):
-                if a is None and b is None:
+            def __CompareItem__(cls, a, b, compare_cache):
+                cache_key = (id(a), id(b), )
+
+                cache_value = compare_cache.get(cache_key, None)
+                if cache_value is not None:
+                    return cache_value
+
+                def Impl():
+                    nonlocal a
+                    nonlocal b
+
+                    if a is None and b is None:
+                        return None
+
+                    if a is None: return -1
+                    if b is None: return 1
+
+                    try:
+                        if a < b: return -1
+                        if a > b: return 1
+                    except TypeError:
+                        a = id(a)
+                        b = id(b)
+
+                        if a < b: return -1
+                        if a > b: return 1
+
                     return None
 
-                if a is None: return -1
-                if b is None: return 1
+                result = Impl()
 
-                try:
-                    if a < b: return -1
-                    if a > b: return 1
-                except TypeError:
-                    a = id(a)
-                    b = id(b)
+                compare_cache[cache_key] = result
+                return result
 
-                    if a < b: return -1
-                    if a > b: return 1
-
-                return None
-
-            def _Init_bfb9819b4cff4d579cb7003bbb209ede_(self):
+            def _Init_1a4933c28d134bb7b36aef0de66d72ee_(self):
                 pass
 
         # Return Type: GetDynamicPhrasesResult

@@ -1,0 +1,209 @@
+# ----------------------------------------------------------------------
+# |
+# |  RepeatPhrase.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-12-22 17:05:30
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+Contains the `RepeatPhrase` object.
+>>>
+
+from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
+from ..Components.Phrase import Phrase, NormalizedIterator
+
+
+# ----------------------------------------------------------------------
+[PrivateCtor]
+public mutable class RepeatPhrase
+    extends Phrase
+:
+    <<<
+    Matches content that repeats the provided phrase N times
+    >>>
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Data
+    # |
+    # ----------------------------------------------------------------------
+    public UIntArch val min_matches
+    public (UIntArch | None) val max_matches
+    private Bool val _name_is_default
+    private Phrase val _phrase
+
+    # BugBug: phrase property
+
+    python_hack: @property
+    python_hack: def Phrase(self): return self._phrase
+    python_hack: @property
+    python_hack: def MinMatches(self): return self.min_matches
+    python_hack: @property
+    python_hack: def MaxMatches(self): return self.max_matches
+    python_hack: def __hash__(self): return super(RepeatPhrase, self).__hash__()
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
+    public static RepeatPhrase Create(
+        Phrase var phrase,
+        UIntArch val min_matches,
+        (UIntArch | None) val max_matches,
+        (String | None) var name = None,
+    ):
+        Bool once name_is_default
+
+        if name is None:
+            name = RepeatPhrase._CreateDefaultName(phrase, min_matches, max_matches)
+            name_is_default = True
+        else:
+            name_is_default = False
+
+        return RepeatPhrase(
+            move name,
+            min_matches,
+            max_matches,
+            # TODO (wonky casting): name_is_default as val,
+            name_is_default,
+            move phrase,
+        )
+
+    # ----------------------------------------------------------------------
+    public override immutable (LexResult | None) val Lex(
+        any:
+            UniqueId val unique_id,
+            NormalizedIterator var iter,
+            Observer ref observer,
+        key:
+            Bool val ignore_whitespace = False,
+    ):
+        python_hack: LexResult = Phrase.LexResult
+        python_hack: NormalizedIteratorRange = Phrase.NormalizedIteratorRange
+        python_hack: PhraseLexResultData = Phrase.PhraseLexResultData
+        python_hack: PhraseContainerLexResultData = Phrase.PhraseContainerLexResultData
+
+        val original_iter = iter.Clone()
+
+        var success = False
+
+        observer.StartPhrase(unique_id, self)
+        # TODO: exit: observer.EndPhrase(unique_id, self, result is not None and result.success)
+
+        var results = List<LexResultData>()
+        var error_result = None as (LexResult | None)
+
+        while not iter.AtEnd():
+            val result = self._phrase.Lex(
+                # TODO: unique_id + `{self.name} [{results.Length()}]`,
+                unique_id + ("{} [{}]".Format(self.Name, results.Length()), ),
+                iter.Clone(),
+                # TODO: ref observer,
+                observer,
+                ignore_whitespace=ignore_whitespace,
+            )
+
+            if result is None:
+                return None
+
+            if not result.success:
+                error_result = result
+                break
+
+            results.InsertBack?(result.data)
+            iter = result.range.end.Clone()
+
+            # TODO (AST recordinging): if self.max_matches is not None and results.Length() == self.max_matches:
+            if self.max_matches is not None and (results.Length() == self.max_matches):
+                break
+
+        if results.Length() >= self.min_matches:
+            success = True
+            # TODO (AST reordering issue): assert self.max_matches is None or results.Length() <= self.max_matches
+            assert self.max_matches is None or (results.Length() <= self.max_matches)
+
+            val result = LexResult(
+                True,
+                NormalizedIteratorRange(
+                    original_iter,
+                    # TODO (wonky 'as'): iter as val
+                    iter,
+                ),
+                PhraseLexResultData(
+                    self,
+                    PhraseContainerLexResultData(
+                        move results,
+                        is_complete=True,
+                    ),
+                    unique_id,
+                    error_result.data if error_result is not None else None,
+                ),
+            )
+
+            if observer.OnInternalPhraseProxy(result.data, result.range) is None:
+                return None
+
+            return result
+
+        # Gather the failure information
+        if error_result is not None:
+            results.InsertBack?(error_result.data)
+            iter = error_result.range.end
+
+        return LexResult(
+            False,
+            NormalizedIteratorRange(
+                original_iter,
+                # TODO: iter as val,
+                iter,
+            ),
+            PhraseLexResultData(
+                self,
+                PhraseContainerLexResultData(
+                    move results,
+                    is_complete=True,
+                ),
+                unique_id,
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
+    # ----------------------------------------------------------------------
+    private immutable None __Init?__():
+        ensure self.max_matches is None or self.max_matches >= self.min_matches
+
+    # ----------------------------------------------------------------------
+    private override mutable Bool val _PopulateRecursiveImpl(Phrase val new_phrase):
+        var replaced_phrase = False
+
+        if self._phrase is RecursivePlaceholderPhrase:
+            self._phrase = new_phrase
+            replaced_phrase = True
+        else:
+            replaced_phrase = self._phrase.PopulateRecursive(self, new_phrase) or replaced_phrase
+
+        if replaced_phrase and self._name_is_default:
+            self._name_ = RepeatPhrase._CreateDefaultName(self._phrase, self.min_matches, self.max_matches)
+
+        return replaced_phrase
+
+    # ----------------------------------------------------------------------
+    private static String _CreateDefaultName(
+        Phrase immutable phrase,
+        UIntArch val min_matches,
+        (UIntArch | None) val max_matches,
+    ):
+        # TODO: return `{{{phrase.name}, {min_matches}, {max_matches}}}`
+        return "{{{}, {}, {}}}".Format(phrase.Name, min_matches, max_matches)
