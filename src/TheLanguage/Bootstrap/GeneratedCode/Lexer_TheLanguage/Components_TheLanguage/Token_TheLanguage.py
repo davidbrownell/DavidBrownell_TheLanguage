@@ -63,7 +63,7 @@ class Token(object):
         else:
             raise Exception("is_control_token was not provided")
 
-        self._Init_76f1e24a25bb42a69dca669671dc4642_()
+        self._Init_34f2389de2a94953901a5381054b43d4_()
 
     def __eq__(self, other):
         # No bases
@@ -130,7 +130,7 @@ class Token(object):
 
         return None
 
-    def _Init_76f1e24a25bb42a69dca669671dc4642_(self):
+    def _Init_34f2389de2a94953901a5381054b43d4_(self):
         pass
 
     # Visibility: public
@@ -153,7 +153,7 @@ class Token(object):
             else:
                 raise Exception("iterator was not provided")
 
-            self._Init_0db153d885094f94a4c6ed85f2ac3dcb_()
+            self._Init_94c30e466aa84b86891195f29ba38ba2_()
 
         def __eq__(self, other):
             # No bases
@@ -214,7 +214,7 @@ class Token(object):
 
             return None
 
-        def _Init_0db153d885094f94a4c6ed85f2ac3dcb_(self):
+        def _Init_94c30e466aa84b86891195f29ba38ba2_(self):
             pass
 
     @property
@@ -252,7 +252,7 @@ class NewlineToken(Token):
         else:
             raise Exception("capture_many was not provided")
 
-        self._Init_4c3e3e9f907249af829805e26c129561_()
+        self._Init_97c13d944d3049e5a05c9c2344e2ed34_()
 
     def __eq__(self, other):
         if Token.__eq__(self, other) is False: return False
@@ -314,7 +314,7 @@ class NewlineToken(Token):
 
         return None
 
-    def _Init_4c3e3e9f907249af829805e26c129561_(self):
+    def _Init_97c13d944d3049e5a05c9c2344e2ed34_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -346,7 +346,7 @@ class NewlineToken(Token):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_7246cc8a7a0c4315b3d27cd95773b21f_()
+            self._Init_2b1e5903ff9244bfada31217285a8f8f_()
 
         def __eq__(self, other):
             if NewlineToken.Token_MatchResult.__eq__(self, other) is False: return False
@@ -412,7 +412,7 @@ class NewlineToken(Token):
             return None
 
         # Return Type: None
-        def _Init_7246cc8a7a0c4315b3d27cd95773b21f_(self):
+        def _Init_2b1e5903ff9244bfada31217285a8f8f_(self):
             assert self.start <= self.end
 
     # Return Type: NewlineToken val
@@ -451,7 +451,7 @@ class IndentToken(Token):
 
         # No members
 
-        self._Init_50d749b7741d4b0aa677bbca54af8b7b_()
+        self._Init_5f9136dfbe1145d0a43126e9063c6adf_()
 
     def __eq__(self, other):
         if Token.__eq__(self, other) is False: return False
@@ -512,7 +512,7 @@ class IndentToken(Token):
 
         return None
 
-    def _Init_50d749b7741d4b0aa677bbca54af8b7b_(self):
+    def _Init_5f9136dfbe1145d0a43126e9063c6adf_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -552,7 +552,7 @@ class IndentToken(Token):
             else:
                 raise Exception("indent_value was not provided")
 
-            self._Init_7ef21c46c3f44bc08317594aec7d5dca_()
+            self._Init_a03dce20a977405783309ad2b56d9618_()
 
         def __eq__(self, other):
             if IndentToken.Token_MatchResult.__eq__(self, other) is False: return False
@@ -621,7 +621,7 @@ class IndentToken(Token):
             return None
 
         # Return Type: None
-        def _Init_7ef21c46c3f44bc08317594aec7d5dca_(self):
+        def _Init_a03dce20a977405783309ad2b56d9618_(self):
             assert self.start <= self.end
 
     # Return Type: IndentToken val
@@ -657,7 +657,7 @@ class DedentToken(Token):
 
         # No members
 
-        self._Init_64394aaf3ae0444a99ab6c3ad803ba5e_()
+        self._Init_b078b0bf7c9d4da1a96b1d6ff03c0bc9_()
 
     def __eq__(self, other):
         if Token.__eq__(self, other) is False: return False
@@ -718,7 +718,7 @@ class DedentToken(Token):
 
         return None
 
-    def _Init_64394aaf3ae0444a99ab6c3ad803ba5e_(self):
+    def _Init_b078b0bf7c9d4da1a96b1d6ff03c0bc9_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -736,7 +736,7 @@ class DedentToken(Token):
 
             # No members
 
-            self._Init_e4979df7d89b40c4a4b7a755496c5627_()
+            self._Init_3da3d11fa3e34413a6029d01bf88ab55_()
 
         def __eq__(self, other):
             if DedentToken.Token_MatchResult.__eq__(self, other) is False: return False
@@ -797,7 +797,7 @@ class DedentToken(Token):
 
             return None
 
-        def _Init_e4979df7d89b40c4a4b7a755496c5627_(self):
+        def _Init_3da3d11fa3e34413a6029d01bf88ab55_(self):
             pass
 
         pass
@@ -835,7 +835,7 @@ class HorizontalWhitespaceToken(Token):
 
         # No members
 
-        self._Init_dae9d216db8045b4b889034dffbfd4cd_()
+        self._Init_ca9d9c96292847698bde49c5a5e0a9df_()
 
     def __eq__(self, other):
         if Token.__eq__(self, other) is False: return False
@@ -896,7 +896,7 @@ class HorizontalWhitespaceToken(Token):
 
         return None
 
-    def _Init_dae9d216db8045b4b889034dffbfd4cd_(self):
+    def _Init_ca9d9c96292847698bde49c5a5e0a9df_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -928,7 +928,7 @@ class HorizontalWhitespaceToken(Token):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_0ecb5d5d13fb4d2697c2dce61369f187_()
+            self._Init_b3c5c2c8d0cd4a4dbd4634454825ed14_()
 
         def __eq__(self, other):
             if HorizontalWhitespaceToken.Token_MatchResult.__eq__(self, other) is False: return False
@@ -993,7 +993,7 @@ class HorizontalWhitespaceToken(Token):
 
             return None
 
-        def _Init_0ecb5d5d13fb4d2697c2dce61369f187_(self):
+        def _Init_b3c5c2c8d0cd4a4dbd4634454825ed14_(self):
             pass
 
     # Return Type: HorizontalWhitespaceToken val
@@ -1045,7 +1045,7 @@ class RegexToken(Token):
         else:
             raise Exception("is_multiline was not provided")
 
-        self._Init_9686c4ffacc741a89b1b88febd8fc3a7_()
+        self._Init_853156e482bc48289057340b21ea5c97_()
 
     def __eq__(self, other):
         if Token.__eq__(self, other) is False: return False
@@ -1110,7 +1110,7 @@ class RegexToken(Token):
 
         return None
 
-    def _Init_9686c4ffacc741a89b1b88febd8fc3a7_(self):
+    def _Init_853156e482bc48289057340b21ea5c97_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -1134,7 +1134,7 @@ class RegexToken(Token):
             else:
                 raise Exception("match was not provided")
 
-            self._Init_8d75c4ec85764cf6ad0af68ba52f3b5d_()
+            self._Init_f631d837b95643c9b2195f2bd4d0a811_()
 
         def __eq__(self, other):
             if RegexToken.Token_MatchResult.__eq__(self, other) is False: return False
@@ -1196,7 +1196,7 @@ class RegexToken(Token):
 
             return None
 
-        def _Init_8d75c4ec85764cf6ad0af68ba52f3b5d_(self):
+        def _Init_f631d837b95643c9b2195f2bd4d0a811_(self):
             pass
 
     # Return Type: RegexToken
@@ -1278,7 +1278,7 @@ class ControlTokenBase(Token):
         else:
             raise Exception("opening_token was not provided")
 
-        self._Init_8adad81b72cf4243b164e6acbea8911b_()
+        self._Init_781be172767d44f08e7f3e9c0679199e_()
 
     def __eq__(self, other):
         if Token.__eq__(self, other) is False: return False
@@ -1354,7 +1354,7 @@ class ControlTokenBase(Token):
         raise Exception("This method should never be invoked for control tokens", )
 
     # Return Type: None
-    def _Init_8adad81b72cf4243b164e6acbea8911b_(self):
+    def _Init_781be172767d44f08e7f3e9c0679199e_(self):
         assert ((self.closing_token is not None and self.opening_token is None) or (self.closing_token is None and self.opening_token is not None))
 
 # Visibility: public
@@ -1375,7 +1375,7 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_498dfb27421f4531bd15da1ac80edb50_()
+        self._Init_b3c4aeddcb634a2fb65fed73f5b0fbeb_()
 
     def __eq__(self, other):
         if ControlTokenBase.__eq__(self, other) is False: return False
@@ -1436,7 +1436,7 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
 
         return None
 
-    def _Init_498dfb27421f4531bd15da1ac80edb50_(self):
+    def _Init_b3c4aeddcb634a2fb65fed73f5b0fbeb_(self):
         pass
 
     # Return Type: PushIgnoreWhitespaceControlToken
@@ -1462,7 +1462,7 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_314fed004d664292912de438f2e6e91b_()
+        self._Init_c084a16830a0444daa45b4db9125fd11_()
 
     def __eq__(self, other):
         if ControlTokenBase.__eq__(self, other) is False: return False
@@ -1523,7 +1523,7 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
 
         return None
 
-    def _Init_314fed004d664292912de438f2e6e91b_(self):
+    def _Init_c084a16830a0444daa45b4db9125fd11_(self):
         pass
 
     # Return Type: PopIgnoreWhitespaceControlToken
@@ -1549,7 +1549,7 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_4ab2f32eda814400a461a393394cda93_()
+        self._Init_352e165a474d4e8aaf6e9f0a56bd1f7f_()
 
     def __eq__(self, other):
         if ControlTokenBase.__eq__(self, other) is False: return False
@@ -1610,7 +1610,7 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
 
         return None
 
-    def _Init_4ab2f32eda814400a461a393394cda93_(self):
+    def _Init_352e165a474d4e8aaf6e9f0a56bd1f7f_(self):
         pass
 
     # Return Type: PushPreserveWhitespaceControlToken
@@ -1636,7 +1636,7 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_cd4f5591888c4e208881390dd726fdfc_()
+        self._Init_9a838d21a7cd4b81a7c9f7e60fee166b_()
 
     def __eq__(self, other):
         if ControlTokenBase.__eq__(self, other) is False: return False
@@ -1697,7 +1697,7 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
 
         return None
 
-    def _Init_cd4f5591888c4e208881390dd726fdfc_(self):
+    def _Init_9a838d21a7cd4b81a7c9f7e60fee166b_(self):
         pass
 
     # Return Type: PopPreserveWhitespaceControlToken

@@ -1,0 +1,510 @@
+# ----------------------------------------------------------------------
+# |
+# |  SequencePhrase.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2021-12-17 18:41:18
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2021
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<<
+Contains the `SequencePhrase` object.
+>>>
+
+from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
+from .TokenPhrase import TokenPhrase
+
+from ..Components.Phrase import Phrase, NormalizedIterator
+from ..Components.Token import (
+    ControlTokenBase,
+    DedentToken,
+    HorizontalWhitespaceToken,
+    IndentToken,
+    NewlineToken,
+    PopIgnoreWhitespaceControlToken,
+    PopPreserveWhitespaceControlToken,
+    PushIgnoreWhitespaceControlToken,
+    PushPreserveWhitespaceControlToken,
+    RegexToken,
+)
+
+
+# ----------------------------------------------------------------------
+public mutable class SequencePhrase
+    extends Phrase
+:
+    <<<
+    Matches a sequence of `Phrases`.
+    >>>
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Types
+    # |
+    # ----------------------------------------------------------------------
+    public using Phrases = List<Phrase>{ min_length'=1 }
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Data
+    # |
+    # ----------------------------------------------------------------------
+    public RegexToken val comment_token
+    private Bool val _name_is_default
+    private Phrases var _phrases
+
+    # BugBug: phrases property
+
+    python_hack: @property
+    python_hack: def Phrases(self): return self._phrases
+    python_hack: def __hash__(self): return super(SequencePhrase, self).__hash__()
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
+    public static SequencePhrase Create(
+        RegexToken val regex_token,
+        Phrases var phrases,
+        (String | None) var name = None,
+    ):
+        Bool once name_is_default
+
+        if name is None:
+            name = SequencePhrase._CreateDefaultName(phrases)
+            name_is_default = True
+        else:
+            name_is_default = False
+
+        return SequencePhrase(
+            move name,
+            regex_token,
+            # TODO (wonky casting): name_is_default as val,
+            name_is_default,
+            move phrases,
+        )
+
+    # ----------------------------------------------------------------------
+    public override immutable (LexResult | None) val Lex(
+        any:
+            UniqueId val unique_id,
+            NormalizedIterator var iter,
+            Observer ref observer,
+        key:
+            Bool val ignore_whitespace = False,
+    ):
+        python_hack: NormalizedIteratorRange = Phrase.NormalizedIteratorRange
+
+        var result = None as (LexResult | None)
+
+        observer.StartPhrase(unique_id, self)
+        # TODO: exit: observer.EndPhrase(unique_id, self, result is not None and result.success)
+
+        # If the first phrase is a control token indicating that whitespace should be ignored, we
+        # need to make sure that the trailing dedents aren't greedily consumed; instead we need to
+        # consume as many as get use back to the level that it is right now.
+
+        (Uint | None) once ignored_indentation_level
+
+        if self._phrases[0] is TokenPhrase and self._phrases[0].token is PushIgnoreWhitespaceControlToken:
+            ignored_indentation_level = 0
+        else:
+            ignored_indentation_level = None
+
+        result = self._LexImpl(
+            unique_id,
+            move iter,
+            observer, # TODO: ref observer
+            ignore_whitespace_ctr=1 if ignore_whitespace else 0,
+            ignored_indentation_level=ignored_indentation_level,
+            starting_phrase_index=0,
+        )
+
+        if result is None:
+            return None
+
+        if result.success and not observer.OnInternalPhraseProxy(
+            # TODO (wonky cast): result.data as PhraseLexResultData,
+            result.data,
+            result.range,
+        ):
+            return None
+
+        return result
+
+    # ----------------------------------------------------------------------
+    public immutable (LexResult | None) val LexSuffix(
+        any:
+            UniqueId val unique_id,
+            NormalizedIterator var iter,
+            Observer ref observer,
+        key:
+            Bool val ignore_whitespace = False,
+    ):
+        return self._LexImpl(
+            unique_id,
+            move iter,
+            observer, # TODO: ref observer
+            ignore_whitespace_ctr=1 if ignore_whitespace else 0,
+            ignored_indentation_level=None,
+            starting_phrase_index=1,
+        )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
+    # ----------------------------------------------------------------------
+    # TODO: Static
+    [NoInit, NoCompare, NoSerialize] private IndentToken val _indent_token = IndentToken.Create()
+    [NoInit, NoCompare, NoSerialize] private DedentToken val _dedent_token = DedentToken.Create()
+    [NoInit, NoCompare, NoSerialize] private HorizontalWhitespaceToken val _horizontal_whitespace_token = HorizontalWhitespaceToken.Create()
+    [NoInit, NoCompare, NoSerialize] private NewlineToken val _newline_token = NewlineToken.Create()
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
+    # ----------------------------------------------------------------------
+    private None __Init?__():
+        pass # BugBug: Validate use on control tokens
+
+    # ----------------------------------------------------------------------
+    private override mutable Bool val _PopulateRecursiveImpl(Phrase val new_phrase):
+        var replaced_phrase = False
+
+        for (phrase_index, phrase, ) in Enumerate(self._phrases):
+            # TODO (is isn't working in python): if phrase is RecursivePlaceholderPhrase:
+            if phrase.__class__.__name__ == "RecursivePlaceholderPhrase":
+                self._phrases[phrase_index] = new_phrase
+                replaced_phrase = True
+
+            else:
+                replaced_phrase = phrase.PopulateRecursive(self, new_phrase) or replaced_phrase
+
+        if replaced_phrase and self._name_is_default:
+            self._name_ = SequencePhrase._CreateDefaultName(self._phrases)
+
+        return replaced_phrase
+
+    # ----------------------------------------------------------------------
+    private immutable (LexResult | None) val _LexImpl(
+        any:
+            UniqueId val unique_id,
+            NormalizedIterator var iter,
+            Observer ref observer,
+        key:
+            UIntArch var ignore_whitespace_ctr,
+            (UintArch | None) var ignored_indentation_level,
+            UintArch val starting_phrase_index,
+    ):
+        python_hack: LexResult = Phrase.LexResult
+        python_hack: TokenLexResultData = Phrase.TokenLexResultData
+        python_hack: WhitespaceLexResultData = Phrase.WhitespaceLexResultData
+        python_hack: NormalizedIteratorRange = Phrase.NormalizedIteratorRange
+        python_hack: PhraseLexResultData = Phrase.PhraseLexResultData
+
+        val original_iter = iter.Clone()
+
+        # BugBug: Handle beginning and ending of file content
+
+        # ----------------------------------------------------------------------
+        (List<LexResultData>{ min_length'=1 } | None) val ExtractIgnoredDataItems |
+            self,
+            iter,
+            ignore_whitespace_ctr,
+            ignored_indentation_level,
+        |():
+            var data_items = List<LexResultData>()
+            var eat_next_newline = False
+
+            while not iter.AtEnd():
+                val next_token_type = iter.GetNextTokenType()
+
+                if next_token_type == NormalizedIterator::TokenType::Indent:
+                    if ignore_whitespace_ctr == 0 and ignored_indentation_level is None:
+                        break
+
+                    val result = self._indent_token.Match?(iter.Clone())
+                    assert result is not None
+
+                    if ignored_indentation_level is None:
+                        data_items.InsertBack?(
+                            TokenLexResultData(
+                                self._indent_token,
+                                result,
+                                NormalizedIteratorRange(
+                                    # TODO ('as' problems): iter as val,
+                                    iter,
+                                    result.iterator,
+                                ),
+                                is_ignored=True,
+                            ),
+                        )
+                    else:
+                        ignored_indentation_level += 1
+
+                    iter = result.iterator.Clone()
+
+                elif next_token_type == NormalizedIterator::TokenType::Dedent:
+                    if ignore_whitespace_ctr == 0 and ignored_indentation_level is None:
+                        break
+
+                    val result = self._dedent_token.Match?(iter.Clone())
+                    assert result is not None
+
+                    if ignored_indentation_level is None:
+                        data_items.InsertBack?(
+                            TokenLexResultData(
+                                self._dedent_token,
+                                result,
+                                NormalizedIteratorRange(
+                                    # TODO ('as' problems): iter as val,
+                                    iter,
+                                    result.iterator,
+                                ),
+                                is_ignored=True,
+                            ),
+                        )
+                    else:
+                        assert ignored_indentation_level != 0
+                        ignored_indentation_level -= 1
+
+                    iter = result.iterator.Clone()
+
+                elif next_token_type == NormalizedIterator::TokenType::WhitespacePrefix:
+                    # No content to add to data_items, as this implies that the current line's
+                    # indentation is at the same level as the previous line's indentation.
+                    iter.SkipWhitespacePrefix()
+
+                elif next_token_type == NormalizedIterator::TokenType::Content:
+                    val num_data_items = data_items.Length()
+
+                    # Are we looking at horizontal whitespace?
+                    val result = self._horizontal_whitespace_token.Match?(iter.Clone())
+
+                    if result is not None:
+                        data_items.InsertBack?(
+                            TokenLexResultData(
+                                self._horizontal_whitespace_token,
+                                result,
+                                NormalizedIteratorRange(
+                                    # TODO ('as' problems): iter as val,
+                                    iter,
+                                    result.iterator,
+                                ),
+                                is_ignored=True,
+                            ),
+                        )
+
+                        iter = result.iterator.Clone()
+
+                    # Are we looking at a comment?
+                    val at_beginning_of_line = iter.OffsetProper() == iter.LineInfoProper().content_start
+
+                    val result = self.comment_token.Match?(iter.Clone())
+
+                    if result is not None:
+                        data_items.InsertBack?(
+                            TokenLexResultData(
+                                self.comment_token,
+                                result,
+                                NormalizedIteratorRange(
+                                    # TODO ('as' problems): iter as val,
+                                    iter,
+                                    result.iterator,
+                                ),
+                                is_ignored=True,
+                            ),
+                        )
+
+                        eat_next_newline = at_beginning_of_line
+
+                        iter = result.iterator.Clone()
+
+                    if data_items.Length() != num_data_items:
+                        continue
+
+                    break
+
+                elif next_token_type == NormalizedIterator::TokenType::WhitespaceSuffix:
+                    val result = self._horizontal_whitespace_token.Match?(iter.Clone())
+                    assert result is not None
+
+                    data_items.InsertBack?(
+                        TokenLexResultData(
+                            self._horizontal_whitespace_token,
+                            result,
+                            NormalizedIteratorRange(
+                                # TODO ('as' problems): iter as val,
+                                iter,
+                                result.iterator,
+                            ),
+                            is_ignored=True,
+                        ),
+                    )
+
+                    iter = result.iterator.Clone()
+
+                elif next_token_type == NormalizedIterator::TokenType::EndOfLine:
+                    # Newlines are meaningful, wnless they fall at the beginning of the file
+                    if (
+                        not eat_next_newline
+                        and ignore_whitespace_ctr == 0
+                        and ignored_indentation_level is None
+                        and iter.OffsetProper() != 0
+                    ):
+                        break
+
+                    val result = self._newline_token.Match?(iter.Clone())
+                    assert result is not None
+
+                    data_items.InsertBack?(
+                        TokenLexResultData(
+                            self._newline_token,
+                            result,
+                            NormalizedIteratorRange(
+                                # TODO ('as' problems): iter as val,
+                                iter,
+                                result.iterator,
+                            ),
+                            is_ignored=True,
+                        ),
+                    )
+
+                    iter = result.iterator.Clone()
+
+                    eat_next_newline = False
+
+                else:
+                    assert False, next_token_type
+
+            return move data_items
+
+        # ----------------------------------------------------------------------
+
+        # Variables used to track state as we go
+        var success = False
+        var data_items = List<LexResultData>()
+        var ignored_data_items = None as (List<LexResultData>{ min_length'=1 } | None)
+        var preserved_ignore_whitespace_ctr = None as (UIntArch | None)
+        var prev_token_was_pop_control = False
+
+        python_hack: prev_line = None
+
+        for phrase_index in Range(starting_phrase_index, self._phrases.Length()):
+            val phrase = self._phrases[phrase_index]
+
+            if ignored_data_items is None:
+                ignored_data_items = ExtractIgnoredDataItems()
+
+            # Process control tokens
+            if phrase is TokenPhrase and phrase.token.is_control_token:
+                if phrase.token is PushIgnoreWhitespaceControlToken:
+                    ignore_whitespace_ctr += 1
+
+                elif phrase.token is PopIgnoreWhitespaceControlToken:
+                    assert ignore_whitespace_ctr != 0
+                    ignore_whitespace_ctr -= 1
+
+                elif phrase.token is PushPreserveWhitespaceControlToken:
+                    assert preserved_ignore_whitespace_ctr is None
+                    preserved_ignore_whitespace_ctr = ignore_whitespace_ctr
+
+                    ignore_whitespace_ctr = 0
+
+                elif phrase.token is PopPreserveWhitespaceControlToken:
+                    assert preserved_ignore_whitespace_ctr is not None
+
+                    ignore_whitespace_ctr = preserved_ignore_whitespace_ctr
+                    preserved_ignore_whitespace_ctr = None
+
+                else:
+                    assert False, phrase.token
+
+                # If we are pushing a new value, we have to reset the ignored data items previously
+                # collected as the collection criteria may change based on the control token just
+                # consumed.
+                prev_token_was_pop_control = phrase.token.opening_token is not None
+
+                if not prev_token_was_pop_control and ignored_data_items is not None:
+                    if ignored_data_items:
+                        iter = ignored_data_items[0].range.begin.Clone()
+
+                    ignored_data_items = None
+
+                continue
+
+            # Process all other phrases
+            var result = phrase.Lex(
+                # TODO: unique_id + `{self.Name} [{phrase_index}]`,
+                unique_id + ("{} [{}]".Format(self.Name, phrase_index), ),
+                move iter,
+                # TODO: ref observer
+                observer,
+                ignore_whitespace=ignore_whitespace_ctr != 0,
+            )
+
+            if result is None:
+                return None
+
+            if (
+                result.success
+                and result.range.begin != result.range.end
+                and ignored_data_items is not None
+            ):
+                if ignored_data_items:
+                    data_items += ignored_data_items
+
+                ignored_data_items = None
+
+            if result.data is not None:
+                data_items.InsertBack?(result.data)
+
+            iter = result.range.end.Clone()
+
+            if not result.Success:
+                success = False
+                break
+
+            success = True
+
+            python_hack: if result.range.begin != result.range.end and iter.LineProper() != prev_line:
+            python_hack:     prev_line = iter.LineProper()
+            python_hack:     print("Parsing: Ln {}".format(prev_line))
+
+        if ignored_data_items is not None:
+            if ignored_data_items:
+                # If the previous token as a pop, we should consider the ignored output as part of the current phrase.
+                # Otherwise, we should consider the tokens as part of the next phrase.
+                if prev_token_was_pop_control:
+                    data_items += ignored_data_items
+                    iter = ignored_data_items[-1].range.end.Clone()
+                else:
+                    iter = ignored_data_items[0].range.begin.Clone()
+
+            ignored_data_items = None
+
+        return LexResult(
+            success,
+            NormalizedIteratorRange(original_iter, move iter),
+            PhraseLexResultData(
+                self,
+                Phrase.PhraseContainerLexResultData(
+                    move data_items,
+                    is_complete=True,
+                ),
+                unique_id,
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    private static String _CreateDefaultName(Phrases immutable phrases):
+        return "[{}]".Format(", ".Join(phrase.Name for phrase in phrases))

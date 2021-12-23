@@ -47,7 +47,7 @@ class RecursivePlaceholderPhrase(Phrase):
 
         # No members
 
-        self._Init_f8986211570142c4b6f25f253b20cd52_()
+        self._Init_2a28044d76454c35af323b85e1d681cb_()
 
     def __eq__(self, other):
         if Phrase.__eq__(self, other) is False: return False
@@ -108,7 +108,7 @@ class RecursivePlaceholderPhrase(Phrase):
 
         return None
 
-    def _Init_f8986211570142c4b6f25f253b20cd52_(self):
+    def _Init_2a28044d76454c35af323b85e1d681cb_(self):
         pass
 
     # Return Type: RecursivePlaceholderPhrase

@@ -81,7 +81,7 @@ class SequencePhrase(Phrase):
         # _newline_token
         self._newline_token = NewlineToken.Create()
 
-        self._Init_c69eeb6ecf544875b4532cc574b17a4f_()
+        self._Init_56dd106191324927bc9a3488fef79df6_()
 
     def __eq__(self, other):
         if Phrase.__eq__(self, other) is False: return False
@@ -202,7 +202,7 @@ class SequencePhrase(Phrase):
         return self._LexImpl(unique_id, iter, observer, ignore_whitespace_ctr=1 if ignore_whitespace else 0, ignored_indentation_level=None, starting_phrase_index=1, )
 
     # Return Type: None
-    def _Init_c69eeb6ecf544875b4532cc574b17a4f_(self):
+    def _Init_56dd106191324927bc9a3488fef79df6_(self):
         pass
 
     # Return Type: Bool val
@@ -243,11 +243,10 @@ class SequencePhrase(Phrase):
                     if ignore_whitespace_ctr == 0 and ignored_indentation_level is None:
                         break
 
-                    current_iter = iter.Clone()
-                    result = self._indent_token.Match_(iter, )
+                    result = self._indent_token.Match_(iter.Clone(), )
                     assert result is not None
                     if ignored_indentation_level is None:
-                        data_items.InsertBack_(TokenLexResultData(self._indent_token, None, result, NormalizedIteratorRange(current_iter, result.iterator, ), is_ignored=True, ), )
+                        data_items.InsertBack_(TokenLexResultData(self._indent_token, result, NormalizedIteratorRange(iter, result.iterator, ), is_ignored=True, ), )
                     else:
                         ignored_indentation_level += 1
 
@@ -256,11 +255,10 @@ class SequencePhrase(Phrase):
                     if ignore_whitespace_ctr == 0 and ignored_indentation_level is None:
                         break
 
-                    current_iter = iter.Clone()
-                    result = self._dedent_token.Match_(iter, )
+                    result = self._dedent_token.Match_(iter.Clone(), )
                     assert result is not None
                     if ignored_indentation_level is None:
-                        data_items.InsertBack_(TokenLexResultData(self._dedent_token, None, result, NormalizedIteratorRange(current_iter, result.iterator, ), is_ignored=True, ), )
+                        data_items.InsertBack_(TokenLexResultData(self._dedent_token, result, NormalizedIteratorRange(iter, result.iterator, ), is_ignored=True, ), )
                     else:
                         assert ignored_indentation_level != 0
                         ignored_indentation_level -= 1
@@ -270,42 +268,34 @@ class SequencePhrase(Phrase):
                     iter.SkipWhitespacePrefix()
                 elif next_token_type == NormalizedIterator.TokenType.Content:
                     num_data_items = len(data_items)
-                    current_iter = iter.Clone()
-                    result = self._horizontal_whitespace_token.Match_(iter, )
+                    result = self._horizontal_whitespace_token.Match_(iter.Clone(), )
                     if result is not None:
-                        data_items.InsertBack_(TokenLexResultData(self._horizontal_whitespace_token, None, result, NormalizedIteratorRange(current_iter, result.iterator, ), is_ignored=True, ), )
+                        data_items.InsertBack_(TokenLexResultData(self._horizontal_whitespace_token, result, NormalizedIteratorRange(iter, result.iterator, ), is_ignored=True, ), )
                         iter = result.iterator.Clone()
-                    else:
-                        iter = current_iter
 
                     at_beginning_of_line = iter.OffsetProper() == iter.LineInfoProper().content_start
-                    current_iter = iter.Clone()
-                    result = self.comment_token.Match_(iter, )
+                    result = self.comment_token.Match_(iter.Clone(), )
                     if result is not None:
-                        data_items.InsertBack_(TokenLexResultData(self.comment_token, None, result, NormalizedIteratorRange(current_iter, result.iterator, ), is_ignored=True, ), )
+                        data_items.InsertBack_(TokenLexResultData(self.comment_token, result, NormalizedIteratorRange(iter, result.iterator, ), is_ignored=True, ), )
                         eat_next_newline = at_beginning_of_line
                         iter = result.iterator.Clone()
-                    else:
-                        iter = current_iter
 
                     if len(data_items) != num_data_items:
                         continue
 
                     break
                 elif next_token_type == NormalizedIterator.TokenType.WhitespaceSuffix:
-                    current_iter = iter.Clone()
-                    result = self._horizontal_whitespace_token.Match_(iter, )
+                    result = self._horizontal_whitespace_token.Match_(iter.Clone(), )
                     assert result is not None
-                    data_items.InsertBack_(TokenLexResultData(self._horizontal_whitespace_token, None, result, NormalizedIteratorRange(current_iter, result.iterator, ), is_ignored=True, ), )
+                    data_items.InsertBack_(TokenLexResultData(self._horizontal_whitespace_token, result, NormalizedIteratorRange(iter, result.iterator, ), is_ignored=True, ), )
                     iter = result.iterator.Clone()
                 elif next_token_type == NormalizedIterator.TokenType.EndOfLine:
                     if (not eat_next_newline and ignore_whitespace_ctr == 0 and ignored_indentation_level is None and iter.OffsetProper() != 0):
                         break
 
-                    current_iter = iter.Clone()
-                    result = self._newline_token.Match_(iter, )
+                    result = self._newline_token.Match_(iter.Clone(), )
                     assert result is not None
-                    data_items.InsertBack_(TokenLexResultData(self._newline_token, None, result, NormalizedIteratorRange(current_iter, result.iterator, ), is_ignored=True, ), )
+                    data_items.InsertBack_(TokenLexResultData(self._newline_token, result, NormalizedIteratorRange(iter, result.iterator, ), is_ignored=True, ), )
                     iter = result.iterator.Clone()
                     eat_next_newline = False
                 else:
