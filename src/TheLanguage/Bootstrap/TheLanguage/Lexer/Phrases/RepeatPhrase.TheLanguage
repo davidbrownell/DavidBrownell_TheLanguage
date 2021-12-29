@@ -131,6 +131,8 @@ public mutable class RepeatPhrase
             # TODO (AST reordering issue): assert self.max_matches is None or results.Length() <= self.max_matches
             assert self.max_matches is None or (results.Length() <= self.max_matches)
 
+            python_hack: results = list(results)
+
             val result = LexResult(
                 True,
                 NormalizedIteratorRange(
@@ -155,6 +157,8 @@ public mutable class RepeatPhrase
         if error_result is not None:
             results.InsertBack?(error_result.data)
             iter = error_result.range.end
+
+        python_hack: results = list(results)
 
         return LexResult(
             False,

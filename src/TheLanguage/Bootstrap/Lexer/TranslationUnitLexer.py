@@ -466,7 +466,7 @@ def Lex(
         initial_phrase_info,
     )
 
-    phrase = DynamicPhrase(
+    phrase = DynamicPhrase.Create(
         DynamicPhrasesType.Statements,
         lambda unique_id, phrases_type, observer: observer.GetDynamicPhrases(unique_id, phrases_type),
         name=name,
@@ -986,6 +986,8 @@ class _PhraseObserver(Phrase.Observer):
                     data_items = [data.Data]
                 elif data.Data.__class__.__name__ == "PhraseContainerLexResultData":
                     data_items = data.Data.DataItems
+                elif isinstance(data.Data, list):
+                    data_items = data.Data
                 else:
                     assert False, data.Data.__class__.__name__  # pragma: no cover
 

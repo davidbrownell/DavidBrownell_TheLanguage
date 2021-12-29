@@ -376,6 +376,7 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         self._fully_qualified_name          = fully_qualified_name
         self._observer                      = observer
         self._async_lex_func                = async_lex_func
+        self._prev_line                     = None
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -409,6 +410,10 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         bool,
         DynamicPhrasesInfo,
     ]:
+        if self._prev_line is None or iter_after.Line > self._prev_line:
+            self._prev_line = iter_after.Line
+            print("Parsed: {} {}".format(iter_after.Line, self._fully_qualified_name))
+
         result = self._observer.OnPhraseComplete(
             self._fully_qualified_name,
             phrase,

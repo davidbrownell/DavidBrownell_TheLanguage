@@ -309,7 +309,7 @@ def Parse(
             node: Union[AST.Leaf, AST.Node],
         ) -> Optional[Tuple[AST.Leaf, str]]:
             if isinstance(node.Type, Phrase):
-                if isinstance(node.Type, DynamicPhrase):
+                if node.Type.__class__.__name__ == "DynamicPhrase":
                     node = cast(AST.Node, ExtractDynamic(cast(AST.Node, node)))
 
                 semver = GrammarVersionLookup.get(node.Type, None)  # type: ignore

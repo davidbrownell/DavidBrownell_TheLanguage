@@ -109,7 +109,13 @@ class List(object):
     def __contains__(self, value):
         return value in self._items
 
+    def __add__(self, other):
+        return List(*(self._items + other._items))
+
     def __iadd__(self, other):
         assert isinstance(other, type(self)), (self, other)
         self._items += other._items
         return self
+
+    def __iter__(self):
+        return self._items.__iter__()

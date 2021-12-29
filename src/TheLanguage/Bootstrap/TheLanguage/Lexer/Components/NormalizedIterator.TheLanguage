@@ -21,6 +21,7 @@ from .Normalize import LineInfo, NormalizedContent
 
 # TODO: Refine all .TheLanguage code once python_hack statements are removed
 
+python_hack: import textwrap
 
 # ----------------------------------------------------------------------
 [PrivateCtor]
@@ -133,6 +134,23 @@ public mutable class NormalizedIterator:
     python_hack: @property
     python_hack: def Column(self):
     python_hack:     return self.ColumnProper()
+    python_hack: def __str__(self):
+    python_hack:     return textwrap.dedent(
+    python_hack:         """\
+    python_hack:         NormalizedIterator:
+    python_hack:           line: {}
+    python_hack:           column: {}
+    python_hack:           offset: {}
+    python_hack:           _whitespace_range_index: {}
+    python_hack:           _consumed_dedent_count: {}
+    python_hack:         """,
+    python_hack:     ).format(
+    python_hack:         self.LineProper(),
+    python_hack:         self.ColumnProper(),
+    python_hack:         self._offset,
+    python_hack:         self._whitespace_range_index,
+    python_hack:         self._consumed_dedent_count,
+    python_hack:     )
 
     # ----------------------------------------------------------------------
     public immutable (

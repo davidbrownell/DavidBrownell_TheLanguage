@@ -335,7 +335,7 @@ def ExtractTokenSpan(
 def ExtractDynamic(
     node: Node,
 ) -> Union[Leaf, Node]:
-    assert isinstance(node.Type, DynamicPhrase), node.Type
+    assert node.Type.__class__.__name__ == "DynamicPhrase", node.Type
     assert len(node.Children) == 1
     node = cast(Node, node.Children[0])
 
@@ -559,7 +559,7 @@ def _PopulateItem(
         )
 
     elif isinstance(item, DynamicPhrasesType):
-        phrase = DynamicPhrase(
+        phrase = DynamicPhrase.Create(
             item,
             lambda unique_id, phrases_type, observer: observer.GetDynamicPhrases(unique_id, phrases_type),
             exclude_phrases=exclude_phrases,

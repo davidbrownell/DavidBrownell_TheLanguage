@@ -20,6 +20,9 @@ Basic building blocks for token processing.
 from .Normalize import GetNumMultilineTokenDelimiters, LineInfo, multiline_token_delimiter_length
 from .NormalizedIterator import NormalizedIterator
 
+python_hack: import textwrap
+python_hack: from CommonEnvironment import StringHelpers
+
 
 # ----------------------------------------------------------------------
 [ProtectedCtor]
@@ -68,6 +71,18 @@ public immutable class NewlineToken
     :
         public UIntArch val start
         public PosIntArch val end
+
+        python_hack: def __str__(self):
+        python_hack:     return textwrap.dedent(
+        python_hack:         """\
+        python_hack:         NewlineToken.MatchResult:
+        python_hack:           start: {}
+        python_hack:           end: {}
+        python_hack:         """,
+        python_hack:     ).format(
+        python_hack:         self.start,
+        python_hack:         self.end,
+        python_hack:     )
 
         # ----------------------------------------------------------------------
         private None __Init?__():
@@ -129,6 +144,20 @@ public immutable class IndentToken
         public PosIntArch val end
         public PosInt val indent_value
 
+        python_hack: def __str__(self):
+        python_hack:     return textwrap.dedent(
+        python_hack:         """\
+        python_hack:         IndentToken.MatchResult:
+        python_hack:           start: {}
+        python_hack:           end: {}
+        python_hack:           indent_value: {}
+        python_hack:         """,
+        python_hack:     ).format(
+        python_hack:         self.start,
+        python_hack:         self.end,
+        python_hack:         self.indent_value,
+        python_hack:     )
+
         # ----------------------------------------------------------------------
         private None __Init?__():
             ensure self.start <= self.end
@@ -182,6 +211,9 @@ public immutable class DedentToken
     :
         pass
 
+        python_hack: def __str__(self):
+        python_hack:     return "DedentToken.MatchResult"
+
     # ----------------------------------------------------------------------
     # |  Public Methods
     public static DedentToken val Create():
@@ -224,6 +256,18 @@ public immutable class HorizontalWhitespaceToken
     :
         public UIntArch val start
         public PosIntArch val end
+
+        python_hack: def __str__(self):
+        python_hack:     return textwrap.dedent(
+        python_hack:         """\
+        python_hack:         HorizontalWhitespaceToken.MatchResult:
+        python_hack:           start: {}
+        python_hack:           end: {}
+        python_hack:         """,
+        python_hack:     ).format(
+        python_hack:         self.start,
+        python_hack:         self.end,
+        python_hack:     )
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -272,6 +316,16 @@ public immutable class RegexToken
         extends Token_MatchResult
     :
         public RegexMatch val match
+
+        python_hack: def __str__(self):
+        python_hack:     return textwrap.dedent(
+        python_hack:         """\
+        python_hack:         RegexToken.MatchResult:
+        python_hack:           match: {}
+        python_hack:         """,
+        python_hack:     ).format(
+        python_hack:         self.match,
+        python_hack:     )
 
     # ----------------------------------------------------------------------
     # |  Public Data

@@ -20,6 +20,10 @@ Contains the `Phrase` object
 from .Normalize import LineInfo
 from .NormalizedIterator import NormalizedIterator
 from .Token import Token
+from .UniqueId import UniqueId
+
+python_hack: import textwrap
+python_hack: from CommonEnvironment import StringHelpers
 
 # BugBug:
 #   - Change Phrase visibility to internal
@@ -88,6 +92,21 @@ public mutable class Phrase:
         private None __Init?__():
             ensure self.begin <= self.end
 
+        python_hack: def __str__(self):
+        python_hack:     return textwrap.dedent(
+        python_hack:         """\
+        python_hack:         NormalizedIteratorRange:
+        python_hack:           begin:
+        python_hack:             {}
+        python_hack:           end:
+        python_hack:             {}
+        python_hack:         """,
+        python_hack:     ).format(
+        python_hack:         StringHelpers.LeftJustify(str(self.begin,), 4).rstrip(),
+        python_hack:         StringHelpers.LeftJustify(str(self.end), 4).rstrip(),
+        python_hack:     )
+
+
     # ----------------------------------------------------------------------
     public immutable struct LexResult:
         <<<
@@ -106,6 +125,21 @@ public mutable class Phrase:
         python_hack: def IterEnd(self): return self.range.end
         python_hack: @property
         python_hack: def Data(self): return self.data
+        python_hack: def __str__(self):
+        python_hack:     return textwrap.dedent(
+        python_hack:         """\
+        python_hack:         LexResult:
+        python_hack:           success: {}
+        python_hack:           range:
+        python_hack:             {}
+        python_hack:           data:
+        python_hack:             {}
+        python_hack:         """,
+        python_hack:     ).format(
+        python_hack:         self.success,
+        python_hack:         StringHelpers.LeftJustify(str(self.range), 4).rstrip(),
+        python_hack:         StringHelpers.LeftJustify(str(self.data), 4).rstrip(),
+        python_hack:     )
 
         # ----------------------------------------------------------------------
         private immutable None __Init?__():
@@ -129,6 +163,14 @@ public mutable class Phrase:
 
         # TODO: public LineInfo::WhitespaceRange val whitespace
         public LineInfo_WhitespaceRange val whitespace
+
+        python_hack: def __str__(self):
+        python_hack:     return textwrap.dedent(
+        python_hack:         """
+        python_hack:         WhitespaceLexResultData:
+        python_hack:           whitespace: {} -> {}
+        python_hack:         """.format(self.whitespace.begin, self.whitespace.end),
+        python_hack:     )
 
     # ----------------------------------------------------------------------
     public immutable class TokenLexResultData
@@ -159,6 +201,23 @@ public mutable class Phrase:
         python_hack: def IterEnd(self): return self.range.end
         python_hack: @property
         python_hack: def IsIgnored(self): return self.is_ignored
+        python_hack: def __str__(self):
+        python_hack:     return textwrap.dedent(
+        python_hack:         """\
+        python_hack:         TokenLexResultData:
+        python_hack:           token: {}
+        python_hack:           value:
+        python_hack:             {}
+        python_hack:           range:
+        python_hack:             {}
+        python_hack:           is_ignored: {}
+        python_hack:         """,
+        python_hack:     ).format(
+        python_hack:         StringHelpers.LeftJustify(str(self.token.name), 4),
+        python_hack:         StringHelpers.LeftJustify(str(self.value), 4).rstrip(),
+        python_hack:         StringHelpers.LeftJustify(str(self.range), 4).rstrip(),
+        python_hack:         StringHelpers.LeftJustify(str(self.is_ignored), 4),
+        python_hack:     )
 
     # ----------------------------------------------------------------------
     public immutable class PhraseLexResultData
@@ -181,6 +240,18 @@ public mutable class Phrase:
         python_hack: def UniqueId(self): return self.unique_id
         python_hack: @property
         python_hack: def PotentialErrorContext(self): return self.potential_error_context
+        python_hack: def __str__(self):
+        python_hack:     return textwrap.dedent(
+        python_hack:         """\
+        python_hack:         PhraseLexResultData:
+        python_hack:           phrase: {}
+        python_hack:           data:
+        python_hack:             {}
+        python_hack:         """,
+        python_hack:     ).format(
+        python_hack:         StringHelpers.LeftJustify(str(self.phrase.Name), 4),
+        python_hack:         StringHelpers.LeftJustify(str(self.data), 4).rstrip(),
+        python_hack:     )
 
     # ----------------------------------------------------------------------
     public immutable class PhraseContainerLexResultData
@@ -196,6 +267,16 @@ public mutable class Phrase:
         python_hack: def DataItems(self): return self.data_items
         python_hack: @property
         python_hack: def IsComplete(self): return True
+        python_hack: def __str__(self):
+        python_hack:     return textwrap.dedent(
+        python_hack:         """\
+        python_hack:         PhraseContainerLexResultData:
+        python_hack:           data_items:
+        python_hack:         {}
+        python_hack:         """,
+        python_hack:     ).format(
+        python_hack:         "\n".join("    - {}".format(StringHelpers.LeftJustify(str(data_item), 6)).rstrip() for data_item in self.data_items),
+        python_hack:     )
 
     python_hack: StandardLexResultData = PhraseLexResultData
     python_hack: MultipleLexResultData = PhraseContainerLexResultData
@@ -255,6 +336,13 @@ public mutable class Phrase:
         python_hack: def OnPushScopeProxy(self, data, range): return self.OnPushScope(data, range.begin, range.end)
         python_hack: def OnPopScopeProxy(self, data, range): return self.OnPopScope(data, range.begin, range.end)
         python_hack: def OnInternalPhraseProxy(self, data, range): return self.OnInternalPhrase(data, range.begin, range.end)
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Data
+    # |
+    # ----------------------------------------------------------------------
+    protected String var _name_
 
     # TODO: name property
 
@@ -321,13 +409,6 @@ public mutable class Phrase:
         <<<
         BugBug
         >>>
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Data
-    # |
-    # ----------------------------------------------------------------------
-    protected String var _name_
 
     # ----------------------------------------------------------------------
     # |

@@ -231,13 +231,15 @@ public mutable class OrPhrase
 
             return result
 
+        python_hack: all_results = [result.data for result in results]
+
         return LexResult(
             False,
             range,
             PhraseLexResultData(
                 self,
                 # TODO: PhraseContainerLexResultData([result.data for result in results]),
-                PhraseContainerLexResultData(result.data for result in results),
+                all_results, # TODO
                 unique_id,
             ),
         )

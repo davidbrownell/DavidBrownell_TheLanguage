@@ -31,621 +31,636 @@ _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-with InitRelativeImports():
-    from .OrPhrase import OrPhrase
-    from .SequencePhrase import SequencePhrase
-    from .TokenPhrase import TokenPhrase
+if True:
+    import sys
+    sys.path.insert(0, os.path.normpath(os.path.join(_script_dir, "..", "..", "GeneratedCode")))
+    from Lexer_TheLanguage.Phrases_TheLanguage.DynamicPhrase_TheLanguage import *
+    sys.path.pop(0)
 
-    from ..Components.Phrase import DynamicPhrasesType, Phrase
+else:
 
+    with InitRelativeImports():
+        from .OrPhrase import OrPhrase
+        from .SequencePhrase import SequencePhrase
+        from .TokenPhrase import TokenPhrase
 
-# ----------------------------------------------------------------------
-class DynamicPhrase(Phrase):
-    """\
-    Collects dynamic statements and invokes them, ensure that left-recursive phrases work as intended.
+        from ..Components.Phrase import DynamicPhrasesType, Phrase
 
-    Prevents infinite recursion for those phrases that are left recursive (meaning they belong to
-    a category and consume that category as the first phrase within the sequence).
-
-    Examples:
-        # The phrase is an expression and the first phrase within the sequence is also an expression
-        AddExpression:= <expression> '+' <expression>
-        CastExpression:= <expression> 'as' <type>
-        IndexExpression:= <expression> '[' <expression> ']'
-    """
 
     # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        phrases_type: DynamicPhrasesType,
-        get_dynamic_phrases_func: Callable[
-            [
-                Tuple[str, ...],            # unique_id
-                DynamicPhrasesType,
-                Phrase.Observer,
-            ],
-            Tuple[List[Phrase], Optional[str]],         # List of phrases and optional name to refer to them by
-        ],
-        name: Optional[str]=None,
-        include_phrases: Optional[List[Union[str, Phrase]]]=None,
-        exclude_phrases: Optional[List[Union[str, Phrase]]]=None,
-        is_valid_data_func: Optional[Callable[[Phrase.StandardLexResultData], bool]]=None,
-    ):
-        assert get_dynamic_phrases_func
+    class DynamicPhrase(Phrase):
+        """\
+        Collects dynamic statements and invokes them, ensure that left-recursive phrases work as intended.
 
-        name = name or "Dynamic Phrase"
+        Prevents infinite recursion for those phrases that are left recursive (meaning they belong to
+        a category and consume that category as the first phrase within the sequence).
 
-        super(DynamicPhrase, self).__init__(name)
-
-        self.DynamicPhrasesType             = phrases_type
-        self._get_dynamic_phrases_func      = get_dynamic_phrases_func
-        self._display_name: Optional[str]   = None
+        Examples:
+            # The phrase is an expression and the first phrase within the sequence is also an expression
+            AddExpression:= <expression> '+' <expression>
+            CastExpression:= <expression> 'as' <type>
+            IndexExpression:= <expression> '[' <expression> ']'
+        """
 
         # ----------------------------------------------------------------------
-        def CreateIncludePhraseFunc(include_phrase, exclude_phrases):
-            assert (
-                (not include_phrase and not exclude_phrases)
-                or not exclude_phrases
-                or not include_phrase
-            )
-
-            if include_phrase:
-                include_phrase = set(
-                    [
-                        phrase.Name if isinstance(phrase, Phrase) else phrase
-                        for phrase in include_phrase
-                    ],
-                )
-
-                return lambda phrase: phrase.Name in include_phrase
-
-            if exclude_phrases:
-                exclude_phrases = set(
-                    [
-                        phrase.Name if isinstance(phrase, Phrase) else phrase
-                        for phrase in exclude_phrases
-                    ],
-                )
-
-                return lambda phrase: phrase.Name not in exclude_phrases
-
-            return lambda phrase: True
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            return cls(*args, **kwargs)
 
         # ----------------------------------------------------------------------
-
-        self._pre_phrase_filter_func        = CreateIncludePhraseFunc(include_phrases, exclude_phrases)
-        self._is_valid_data_func            = is_valid_data_func or (lambda *args, **kwargs: True)
-
-    # ----------------------------------------------------------------------
-    @property
-    def DisplayName(self):
-        return self._display_name or self.Name
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def IsLeftRecursivePhrase(
-        phrase: Phrase,
-        phrases_type: Optional[DynamicPhrasesType],
-    ) -> bool:
-        return (
-            isinstance(phrase, SequencePhrase)
-            and len(phrase.Phrases) > 1
-            and isinstance(phrase.Phrases[0], DynamicPhrase)
-            and (
-                phrases_type is None
-                or phrase.Phrases[0].DynamicPhrasesType == phrases_type
-            )
-        )
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def IsRightRecursivePhrase(
-        phrase: Phrase,
-        phrases_type: Optional[DynamicPhrasesType],
-    ) -> bool:
-        return (
-            isinstance(phrase, SequencePhrase)
-            and len(phrase.Phrases) > 2
-            and isinstance(phrase.Phrases[-1], DynamicPhrase)
-            and (
-                phrases_type is None
-                or cast(DynamicPhrase, phrase.Phrases[-1]).DynamicPhrasesType == phrases_type
-            )
-        )
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def SkipDynamicData(
-        data: Phrase.StandardLexResultData,
-    ) -> Phrase.StandardLexResultData:
-        assert isinstance(data.Phrase, DynamicPhrase)
-        assert data.Data.__class__.__name__ == "PhraseLexResultData"
-
-        data = data.Data
-
-        assert data.Phrase.__class__.__name__ == "OrPhrase"
-        assert data.Data.__class__.__name__ == "PhraseLexResultData"
-
-        data = data.Data
-
-        return data
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Lex(
-        self,
-        unique_id: Tuple[str, ...],
-        normalized_iter: Phrase.NormalizedIterator,
-        observer: Phrase.Observer,
-        ignore_whitespace=False,
-    ) -> Optional[Phrase.LexResult]:
-
-        result: Optional[Phrase.LexResult] = None
-
-        observer.StartPhrase(unique_id, self)
-        with CallOnExit(
-            lambda: observer.EndPhrase(unique_id, self, result is not None and result.Success)
-        ):
-            # Get the dynamic phrases
-            dynamic_phrases, dynamic_phrases_name = self._get_dynamic_phrases_func(
-                unique_id,
-                self.DynamicPhrasesType,
-                observer,
-            )
-
-            assert isinstance(dynamic_phrases, list), dynamic_phrases
-
-            self._display_name = dynamic_phrases_name
-
-            # Filter the list by those that have been explicitly included or excluded
-            dynamic_phrases = [
-                phrase for phrase in dynamic_phrases if self._pre_phrase_filter_func(phrase)
-            ]
-
-            # TODO: Is there a way to cache these results so that we don't have to filter over and over?
-
-            # Split the phrases into those that are left-recursive and those that are not
-            left_recursive_phrases = []
-            standard_phrases = []
-
-            for phrase in dynamic_phrases:
-                if self.__class__.IsLeftRecursivePhrase(phrase, self.DynamicPhrasesType):
-                    left_recursive_phrases.append(phrase)
-                else:
-                    standard_phrases.append(phrase)
-
-            if left_recursive_phrases:
-                assert standard_phrases
-
-                result = self._LexLeftRecursive(
-                    dynamic_phrases_name,
-                    left_recursive_phrases,
-                    standard_phrases,
-                    unique_id,
-                    normalized_iter,
-                    observer,
-                    ignore_whitespace=ignore_whitespace,
-                )
-            elif standard_phrases:
-                result = self._LexStandard(
-                    dynamic_phrases_name,
-                    standard_phrases,
-                    unique_id,
-                    normalized_iter,
-                    observer,
-                    ignore_whitespace=ignore_whitespace,
-                )
-
-            if result is None:
-                return None
-
-            if (
-                result.Success
-                and result.Data is not None
-                and not observer.OnInternalPhrase(
-                    result.Data,
-                    result.IterBegin,
-                    result.IterEnd,
-                )
-            ):
-                return None
-
-            return result
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _PopulateRecursiveImpl(
-        self,
-        new_phrase: Phrase,
-    ) -> bool:
-        # Nothing downstream has changed
-        return False
-
-    # ----------------------------------------------------------------------
-    def _LexStandard(
-        self,
-        dynamic_phrases_name: Optional[str],
-        phrases: List[Phrase],
-        unique_id: Tuple[str, ...],
-        normalized_iter: Phrase.NormalizedIterator,
-        observer: Phrase.Observer,
-        *,
-        ignore_whitespace: bool,
-    ) -> Optional[Phrase.LexResult]:
-        or_phrase = OrPhrase.Create(
-            phrases,
-            name=dynamic_phrases_name,
-        )
-
-        result = or_phrase.Lex(
-            unique_id + (or_phrase.Name, ),
-            normalized_iter,
-            observer,
-            ignore_whitespace=ignore_whitespace,
-        )
-
-        if result is None:
-            return None
-
-        # pylint: disable=too-many-function-args
-        data = Phrase.StandardLexResultData(self, result.Data, unique_id)
-
-        # pylint: disable=too-many-function-args
-        return Phrase.LexResult(
-            result.Success,
-            Phrase.NormalizedIteratorRange(normalized_iter, result.IterEnd),
-            data,
-        )
-
-    # ----------------------------------------------------------------------
-    def _LexLeftRecursive(
-        self,
-        dynamic_phrases_name: Optional[str],
-        left_recursive_phrases: List[Phrase],
-        standard_phrases: List[Phrase],
-        unique_id: Tuple[str, ...],
-        normalized_iter: Phrase.NormalizedIterator,
-        observer: Phrase.Observer,
-        *,
-        ignore_whitespace: bool,
-    ) -> Optional[Phrase.LexResult]:
-
-        # If here, we need to simulate greedy left-recursive consumption without devolving into
-        # infinite recursion scenarios. To simulate this, simulate recursion interspersed with
-        # attempts to match non-left-recursive phrases. Try the left recursive phrases at 1 level
-        # of recursion first, then try the non-left-recursive phrases.
-
-        assert left_recursive_phrases
-        assert standard_phrases
-
-        # ----------------------------------------------------------------------
-        def PhraseIterator() -> Generator[
-            Tuple[
-                Phrase,
-                Tuple[str, ...],
-            ],
-            None,
-            None
-        ]:
-            # Prefix
-            yield (
-                OrPhrase.Create(
-                    standard_phrases,
-                    name="{} <Prefix>".format(dynamic_phrases_name or ""),
-                ),
-                unique_id + ("__Prefix__", ),
-            )
-
-            # Suffix(es)
-            suffix_phrase = OrPhrase.Create(
+        def __init__(
+            self,
+            phrases_type: DynamicPhrasesType,
+            get_dynamic_phrases_func: Callable[
                 [
-                    _SequenceSuffixWrapper(cast(SequencePhrase, phrase))
-                    for phrase in left_recursive_phrases
+                    Tuple[str, ...],            # unique_id
+                    DynamicPhrasesType,
+                    Phrase.Observer,
                 ],
-                name="{} <Suffix>".format(dynamic_phrases_name or ""),
-            )
+                Tuple[List[Phrase], Optional[str]],         # List of phrases and optional name to refer to them by
+            ],
+            name: Optional[str]=None,
+            include_phrases: Optional[List[Union[str, Phrase]]]=None,
+            exclude_phrases: Optional[List[Union[str, Phrase]]]=None,
+            is_valid_data_func: Optional[Callable[[Phrase.StandardLexResultData], bool]]=None,
+        ):
+            assert get_dynamic_phrases_func
 
-            iteration = 0
+            name = name or "Dynamic Phrase"
 
-            while True:
-                yield (suffix_phrase, unique_id + ("__Suffix__", str(iteration)))
-                iteration += 1
+            super(DynamicPhrase, self).__init__(name)
+
+            self.DynamicPhrasesType             = phrases_type
+            self._get_dynamic_phrases_func      = get_dynamic_phrases_func
+            self._display_name: Optional[str]   = None
+
+            # ----------------------------------------------------------------------
+            def CreateIncludePhraseFunc(include_phrase, exclude_phrases):
+                assert (
+                    (not include_phrase and not exclude_phrases)
+                    or not exclude_phrases
+                    or not include_phrase
+                )
+
+                if include_phrase:
+                    include_phrase = set(
+                        [
+                            phrase.Name if isinstance(phrase, Phrase) else phrase
+                            for phrase in include_phrase
+                        ],
+                    )
+
+                    return lambda phrase: phrase.Name in include_phrase
+
+                if exclude_phrases:
+                    exclude_phrases = set(
+                        [
+                            phrase.Name if isinstance(phrase, Phrase) else phrase
+                            for phrase in exclude_phrases
+                        ],
+                    )
+
+                    return lambda phrase: phrase.Name not in exclude_phrases
+
+                return lambda phrase: True
+
+            # ----------------------------------------------------------------------
+
+            self._pre_phrase_filter_func        = CreateIncludePhraseFunc(include_phrases, exclude_phrases)
+            self._is_valid_data_func            = is_valid_data_func or (lambda *args, **kwargs: True)
 
         # ----------------------------------------------------------------------
+        @property
+        def DisplayName(self):
+            return self._display_name or self.Name
 
-        original_normalized_iter = normalized_iter.Clone()
+        # ----------------------------------------------------------------------
+        @staticmethod
+        def IsLeftRecursivePhrase(
+            phrase: Phrase,
+            phrases_type: Optional[DynamicPhrasesType],
+        ) -> bool:
+            return (
+                isinstance(phrase, SequencePhrase)
+                and len(phrase.Phrases) > 1
+                and isinstance(phrase.Phrases[0], DynamicPhrase)
+                and (
+                    phrases_type is None
+                    or phrase.Phrases[0].DynamicPhrasesType == phrases_type
+                )
+            )
 
-        data_items: List[Phrase.StandardLexResultData] = []
+        # ----------------------------------------------------------------------
+        @staticmethod
+        def IsRightRecursivePhrase(
+            phrase: Phrase,
+            phrases_type: Optional[DynamicPhrasesType],
+        ) -> bool:
+            return (
+                isinstance(phrase, SequencePhrase)
+                and len(phrase.Phrases) > 2
+                and isinstance(phrase.Phrases[-1], DynamicPhrase)
+                and (
+                    phrases_type is None
+                    or cast(DynamicPhrase, phrase.Phrases[-1]).DynamicPhrasesType == phrases_type
+                )
+            )
 
-        phrase_iterator = PhraseIterator()
+        # ----------------------------------------------------------------------
+        @staticmethod
+        def SkipDynamicData(
+            data: Phrase.StandardLexResultData,
+        ) -> Phrase.StandardLexResultData:
+            if data.Phrase.__class__.__name__ != "DynamicPhrase":
+                BugBug = 10
 
-        while True:
-            this_phrase, this_unique_id = next(phrase_iterator)
+            assert data.Phrase.__class__.__name__ == "DynamicPhrase", data.Phrase.__class__.__name__
+            assert data.Data.__class__.__name__ == "PhraseLexResultData"
 
-            this_result = this_phrase.Lex(
-                this_unique_id,
+            data = data.Data
+
+            assert data.Phrase.__class__.__name__ == "OrPhrase"
+            assert data.Data.__class__.__name__ == "PhraseLexResultData"
+
+            data = data.Data
+
+            return data
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def Lex(
+            self,
+            unique_id: Tuple[str, ...],
+            normalized_iter: Phrase.NormalizedIterator,
+            observer: Phrase.Observer,
+            ignore_whitespace=False,
+        ) -> Optional[Phrase.LexResult]:
+
+            result: Optional[Phrase.LexResult] = None
+
+            observer.StartPhrase(unique_id, self)
+            with CallOnExit(
+                lambda: observer.EndPhrase(unique_id, self, result is not None and result.Success)
+            ):
+                # Get the dynamic phrases
+                dynamic_phrases, dynamic_phrases_name = self._get_dynamic_phrases_func(
+                    unique_id,
+                    self.DynamicPhrasesType,
+                    observer,
+                )
+
+                assert isinstance(dynamic_phrases, list), dynamic_phrases
+
+                self._display_name = dynamic_phrases_name
+
+                # Filter the list by those that have been explicitly included or excluded
+                dynamic_phrases = [
+                    phrase for phrase in dynamic_phrases if self._pre_phrase_filter_func(phrase)
+                ]
+
+                # TODO: Is there a way to cache these results so that we don't have to filter over and over?
+
+                # Split the phrases into those that are left-recursive and those that are not
+                left_recursive_phrases = []
+                standard_phrases = []
+
+                for phrase in dynamic_phrases:
+                    if self.__class__.IsLeftRecursivePhrase(phrase, self.DynamicPhrasesType):
+                        left_recursive_phrases.append(phrase)
+                    else:
+                        standard_phrases.append(phrase)
+
+                if left_recursive_phrases:
+                    assert standard_phrases
+
+                    result = self._LexLeftRecursive(
+                        dynamic_phrases_name,
+                        left_recursive_phrases,
+                        standard_phrases,
+                        unique_id,
+                        normalized_iter,
+                        observer,
+                        ignore_whitespace=ignore_whitespace,
+                    )
+                elif standard_phrases:
+                    result = self._LexStandard(
+                        dynamic_phrases_name,
+                        standard_phrases,
+                        unique_id,
+                        normalized_iter,
+                        observer,
+                        ignore_whitespace=ignore_whitespace,
+                    )
+
+                if result is None:
+                    return None
+
+                if (
+                    result.Success
+                    and result.Data is not None
+                    and not observer.OnInternalPhrase(
+                        result.Data,
+                        result.IterBegin,
+                        result.IterEnd,
+                    )
+                ):
+                    return None
+
+                return result
+
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def _PopulateRecursiveImpl(
+            self,
+            new_phrase: Phrase,
+        ) -> bool:
+            # Nothing downstream has changed
+            return False
+
+        # ----------------------------------------------------------------------
+        def _LexStandard(
+            self,
+            dynamic_phrases_name: Optional[str],
+            phrases: List[Phrase],
+            unique_id: Tuple[str, ...],
+            normalized_iter: Phrase.NormalizedIterator,
+            observer: Phrase.Observer,
+            *,
+            ignore_whitespace: bool,
+        ) -> Optional[Phrase.LexResult]:
+            or_phrase = OrPhrase.Create(
+                phrases,
+                name=dynamic_phrases_name,
+            )
+
+            result = or_phrase.Lex(
+                unique_id + (or_phrase.Name, ),
                 normalized_iter,
                 observer,
                 ignore_whitespace=ignore_whitespace,
             )
 
-            if this_result is None:
+            if result is None:
                 return None
 
-            if not data_items or this_result.Success:
-                normalized_iter = this_result.IterEnd
+            # pylint: disable=too-many-function-args
+            data = Phrase.StandardLexResultData(self, result.Data, unique_id)
 
-            assert this_result.Data is not None
-            data_items.append(this_result.Data)
-
-            if not this_result.Success:
-                break
-
-        assert not normalized_iter.AtEnd()
-
-        error_data_item = data_items.pop()
-
-        if not data_items:
             # pylint: disable=too-many-function-args
             return Phrase.LexResult(
-                False,
-                Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
-                Phrase.StandardLexResultData(self, error_data_item, unique_id),
-            )
-
-        # Strip the prefix- and suffix-cruft from the output data so that we can simulate a standard
-        # phrase.
-        for data_item_index, data_item in enumerate(data_items):
-            assert data_item.Phrase.__class__.__name__ == "OrPhrase", data_item.Phrase.__class__.__name__
-            assert data_item.Data is not None
-
-            data_items[data_item_index] = data_item.Data
-
-        # Create an OrPhrase item that looks like what would be generated by the standard lexer
-        pseudo_or_phrase = OrPhrase.Create(
-            left_recursive_phrases + standard_phrases,
-            name=dynamic_phrases_name,
-        )
-
-        # Massage the results into the expected format
-        for data_item_index, data_item in enumerate(data_items):
-            if data_item_index != 0:
-                previous_data_item = data_items[data_item_index - 1]
-
-                assert isinstance(data_item.Phrase, SequencePhrase)
-                assert data_item.Data.__class__.__name__ == "PhraseContainerLexResultData"
-
-                # The number of existing (non-ignored) data items should be 1 less than the number
-                # of expected (non-control-token) data items; merging this one will complete the phrase.
-                non_ignored_data_items = sum(
-                    1 if not di.__class__.__name__ == "TokenLexResultData" or not di.IsIgnored else 0
-                    for di in data_item.Data.DataItems
-                )
-
-                non_control_token_phrases = sum(
-                    1 if not phrase.__class__.__name__ == "TokenPhrase" or not phrase.Token.is_control_token else 0
-                    for phrase in data_item.Phrase.Phrases
-                )
-
-                assert non_ignored_data_items == non_control_token_phrases - 1
-
-                # Insert the previous element into the current data item
-                data_item.Data.DataItems.insert(0, previous_data_item)
-
-            # pylint: disable=too-many-function-args
-            data_items[data_item_index] = Phrase.StandardLexResultData(
-                self,
-                Phrase.StandardLexResultData(
-                    pseudo_or_phrase,
-                    data_item,
-                    # Don't worry about providing an unique_id here, as they are all going to be
-                    # overwritten below.
-                    unique_id,
-                ),
-                unique_id,
-            )
-
-        data = data_items[-1]
-
-        # We may need to alter the tree if we are working with a combination of left- and right-
-        # recursive phrases
-        value_data = self.SkipDynamicData(data)
-
-        if (
-            self.IsLeftRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
-            and self.__class__.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
-        ):
-            assert value_data.Data.__class__.__name__ == "PhraseContainerLexResultData"
-            assert value_data.Data.DataItems[-1].__class__.__name__ == "PhraseLexResultData"
-
-            value_data = self.SkipDynamicData(cast(Phrase.PhraseLexResultData, value_data.Data.DataItems[-1]))
-
-            if self.__class__.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType):
-                # TODO: Add tests with a combo of mathematical, logical, and func operators ('.', '->', etc.)
-                #       Not all types should support this decoration, but right now it is applied to all; tests
-                #       will illustrate the problem.
-                #
-                #             one and two.three.Four() -> (((one and two).three).Four())     <<This is not correct>>
-
-                # Splitting phrases into those that are left-recursive and those that
-                # aren't avoids infinite recursion with left-recursive phrases, but it
-                # means that we are overly greedy for those phrases that are also right-
-                # recursive. So, we have to perform some tree manipulation to end up with
-                # the results that we want. The diagrams below illustrate the scenario and operations.
-                #
-                #   ==============================================================================
-                #
-                #   Scenario                            Should be parsed as:
-                #   ----------------------------------  ------------------------------------------
-                #   1 + 2 - 3                           ((1 + 2) - 3)
-                #
-                #   What we have (incorrect):           What we want (correct):
-                #   ----------------------------------  ------------------------------------------
-                #   root -->     +                      new_root --> -
-                #               / \                                 / \
-                #              1   -   <-- new_root     root -->   +   3
-                #                 / \                             / \
-                #   travel -->   2   3                           1   2  <-- travel
-                #
-                #   ==============================================================================
-                #
-                #   Scenario                            Should be parsed as:
-                #   ----------------------------------  ------------------------------------------
-                #   1 + 2 - 3 * 4                       (((1 + 2) - 3) * 4)
-                #
-                #   What we have (incorrect):           What we want (correct):
-                #   ----------------------------------  ------------------------------------------
-                #   root -->     +                      new_root --> *
-                #               / \                                 / \
-                #              1   *    <-- new_root               -   4
-                #                 / \                             / \
-                #   travel -->   -   4                  root --> +   3
-                #               / \                             / \
-                #              2   3                           1   2  <-- travel
-                #
-                #   ==============================================================================
-                #
-                #   1) Identify travel (left-most left-recursive phrase)
-                #   2) Root last = travel first
-                #   3) Travel first = root
-                #   4) Root = new root
-
-                root_dynamic = data
-                root_actual = self.SkipDynamicData(root_dynamic)
-
-                assert isinstance(root_actual.Phrase, SequencePhrase)
-                assert root_actual.Data.__class__.__name__ == "PhraseContainerLexResultData"
-
-                new_root_dynamic = root_actual.Data.DataItems[-1]
-                new_root_actual = self.SkipDynamicData(cast(Phrase.StandardLexResultData, new_root_dynamic))
-
-                assert isinstance(new_root_actual.Phrase, SequencePhrase)
-                assert new_root_actual.Data.__class__.__name__ == "PhraseContainerLexResultData"
-
-                travel = new_root_actual
-
-                while True:
-                    potential_travel_dynamic = travel.Data.DataItems[0]
-                    potential_travel_actual = self.SkipDynamicData(potential_travel_dynamic)
-
-                    if not self.__class__.IsRightRecursivePhrase(potential_travel_actual.Phrase, self.DynamicPhrasesType):
-                        break
-
-                    travel = potential_travel_actual
-
-                root_actual.Data.DataItems[-1] = travel.Data.DataItems[0]
-                travel.Data.DataItems[0] = data
-
-                data = new_root_dynamic
-
-        # Should this data be considered as valid?
-        assert isinstance(data, Phrase.StandardLexResultData)
-
-        if not self._is_valid_data_func(data):
-            # pylint: disable=too-many-function-args
-            return Phrase.LexResult(
-                False,
-                Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
+                result.Success,
+                Phrase.NormalizedIteratorRange(normalized_iter, result.IterEnd),
                 data,
             )
 
-        # At this point, we have massaged and modified the structure of the tree to the point where
-        # attempting to use previously cached values will not work. Update all of the unique_ids for
-        # all data in the hierarchy to prevent caching.
-
-        unique_id_suffix_str = "Pseudo ({})".format(uuid.uuid4())
-        unique_id_suffix_iteration = 0
-
         # ----------------------------------------------------------------------
-        def UpdateUniqueIds(
-            data: Optional[Phrase.LexResultData],
-        ):
-            nonlocal unique_id_suffix_iteration
+        def _LexLeftRecursive(
+            self,
+            dynamic_phrases_name: Optional[str],
+            left_recursive_phrases: List[Phrase],
+            standard_phrases: List[Phrase],
+            unique_id: Tuple[str, ...],
+            normalized_iter: Phrase.NormalizedIterator,
+            observer: Phrase.Observer,
+            *,
+            ignore_whitespace: bool,
+        ) -> Optional[Phrase.LexResult]:
 
-            if data is None:
-                return
+            # If here, we need to simulate greedy left-recursive consumption without devolving into
+            # infinite recursion scenarios. To simulate this, simulate recursion interspersed with
+            # attempts to match non-left-recursive phrases. Try the left recursive phrases at 1 level
+            # of recursion first, then try the non-left-recursive phrases.
 
-            if data.__class__.__name__ == "PhraseLexResultData":
-                object.__setattr__(
-                    data,
-                    "unique_id",
-                    (unique_id_suffix_str, str(unique_id_suffix_iteration), ),
+            assert left_recursive_phrases
+            assert standard_phrases
+
+            # ----------------------------------------------------------------------
+            def PhraseIterator() -> Generator[
+                Tuple[
+                    Phrase,
+                    Tuple[str, ...],
+                ],
+                None,
+                None
+            ]:
+                # Prefix
+                yield (
+                    OrPhrase.Create(
+                        standard_phrases,
+                        name="{} <Prefix>".format(dynamic_phrases_name or ""),
+                    ),
+                    unique_id + ("__Prefix__", ),
                 )
 
-                unique_id_suffix_iteration += 1
-                UpdateUniqueIds(data.Data)
+                # Suffix(es)
+                suffix_phrase = OrPhrase.Create(
+                    [
+                        _SequenceSuffixWrapper(cast(SequencePhrase, phrase))
+                        for phrase in left_recursive_phrases
+                    ],
+                    name="{} <Suffix>".format(dynamic_phrases_name or ""),
+                )
 
-            elif data.__class__.__name__ == "PhraseContainerLexResultData":
-                for data_item in data.DataItems:
-                    UpdateUniqueIds(data_item)
+                iteration = 0
 
-            elif data.__class__.__name__ == "TokenLexResultData":
-                # Nothing to do here
-                pass
+                while True:
+                    yield (suffix_phrase, unique_id + ("__Suffix__", str(iteration)))
+                    iteration += 1
 
-            else:
-                assert False, data.__class__.__name__  # pragma: no cover
+            # ----------------------------------------------------------------------
+
+            original_normalized_iter = normalized_iter.Clone()
+
+            data_items: List[Phrase.StandardLexResultData] = []
+
+            phrase_iterator = PhraseIterator()
+
+            while True:
+                this_phrase, this_unique_id = next(phrase_iterator)
+
+                this_result = this_phrase.Lex(
+                    this_unique_id,
+                    normalized_iter,
+                    observer,
+                    ignore_whitespace=ignore_whitespace,
+                )
+
+                if this_result is None:
+                    return None
+
+                if not data_items or this_result.Success:
+                    normalized_iter = this_result.IterEnd
+
+                assert this_result.Data is not None
+                data_items.append(this_result.Data)
+
+                if not this_result.Success:
+                    break
+
+            assert not normalized_iter.AtEnd()
+
+            error_data_item = data_items.pop()
+
+            if not data_items:
+                # pylint: disable=too-many-function-args
+                return Phrase.LexResult(
+                    False,
+                    Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
+                    Phrase.StandardLexResultData(self, error_data_item, unique_id),
+                )
+
+            # Strip the prefix- and suffix-cruft from the output data so that we can simulate a standard
+            # phrase.
+            for data_item_index, data_item in enumerate(data_items):
+                assert data_item.Phrase.__class__.__name__ == "OrPhrase", data_item.Phrase.__class__.__name__
+                assert data_item.Data is not None
+
+                data_items[data_item_index] = data_item.Data
+
+            # Create an OrPhrase item that looks like what would be generated by the standard lexer
+            pseudo_or_phrase = OrPhrase.Create(
+                left_recursive_phrases + standard_phrases,
+                name=dynamic_phrases_name,
+            )
+
+            # Massage the results into the expected format
+            for data_item_index, data_item in enumerate(data_items):
+                if data_item_index != 0:
+                    previous_data_item = data_items[data_item_index - 1]
+
+                    assert isinstance(data_item.Phrase, SequencePhrase)
+                    assert data_item.Data.__class__.__name__ == "PhraseContainerLexResultData"
+
+                    # The number of existing (non-ignored) data items should be 1 less than the number
+                    # of expected (non-control-token) data items; merging this one will complete the phrase.
+                    non_ignored_data_items = sum(
+                        1 if not di.__class__.__name__ == "TokenLexResultData" or not di.IsIgnored else 0
+                        for di in data_item.Data.DataItems
+                    )
+
+                    non_control_token_phrases = sum(
+                        1 if not phrase.__class__.__name__ == "TokenPhrase" or not phrase.Token.is_control_token else 0
+                        for phrase in data_item.Phrase.Phrases
+                    )
+
+                    assert non_ignored_data_items == non_control_token_phrases - 1
+
+                    # Insert the previous element into the current data item
+                    data_item.Data.DataItems.insert(0, previous_data_item)
+
+                # pylint: disable=too-many-function-args
+                data_items[data_item_index] = Phrase.StandardLexResultData(
+                    self,
+                    Phrase.StandardLexResultData(
+                        pseudo_or_phrase,
+                        data_item,
+                        # Don't worry about providing an unique_id here, as they are all going to be
+                        # overwritten below.
+                        unique_id,
+                    ),
+                    unique_id,
+                )
+
+            data = data_items[-1]
+
+            # We may need to alter the tree if we are working with a combination of left- and right-
+            # recursive phrases
+            value_data = self.SkipDynamicData(data)
+
+            if (
+                self.IsLeftRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
+                and self.__class__.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType)
+            ):
+                assert value_data.Data.__class__.__name__ == "PhraseContainerLexResultData"
+                assert value_data.Data.DataItems[-1].__class__.__name__ == "PhraseLexResultData"
+
+                value_data = self.SkipDynamicData(cast(Phrase.PhraseLexResultData, value_data.Data.DataItems[-1]))
+
+                if self.__class__.IsRightRecursivePhrase(value_data.Phrase, self.DynamicPhrasesType):
+                    # TODO: Add tests with a combo of mathematical, logical, and func operators ('.', '->', etc.)
+                    #       Not all types should support this decoration, but right now it is applied to all; tests
+                    #       will illustrate the problem.
+                    #
+                    #             one and two.three.Four() -> (((one and two).three).Four())     <<This is not correct>>
+
+                    # Splitting phrases into those that are left-recursive and those that
+                    # aren't avoids infinite recursion with left-recursive phrases, but it
+                    # means that we are overly greedy for those phrases that are also right-
+                    # recursive. So, we have to perform some tree manipulation to end up with
+                    # the results that we want. The diagrams below illustrate the scenario and operations.
+                    #
+                    #   ==============================================================================
+                    #
+                    #   Scenario                            Should be parsed as:
+                    #   ----------------------------------  ------------------------------------------
+                    #   1 + 2 - 3                           ((1 + 2) - 3)
+                    #
+                    #   What we have (incorrect):           What we want (correct):
+                    #   ----------------------------------  ------------------------------------------
+                    #   root -->     +                      new_root --> -
+                    #               / \                                 / \
+                    #              1   -   <-- new_root     root -->   +   3
+                    #                 / \                             / \
+                    #   travel -->   2   3                           1   2  <-- travel
+                    #
+                    #   ==============================================================================
+                    #
+                    #   Scenario                            Should be parsed as:
+                    #   ----------------------------------  ------------------------------------------
+                    #   1 + 2 - 3 * 4                       (((1 + 2) - 3) * 4)
+                    #
+                    #   What we have (incorrect):           What we want (correct):
+                    #   ----------------------------------  ------------------------------------------
+                    #   root -->     +                      new_root --> *
+                    #               / \                                 / \
+                    #              1   *    <-- new_root               -   4
+                    #                 / \                             / \
+                    #   travel -->   -   4                  root --> +   3
+                    #               / \                             / \
+                    #              2   3                           1   2  <-- travel
+                    #
+                    #   ==============================================================================
+                    #
+                    #   1) Identify travel (left-most left-recursive phrase)
+                    #   2) Root last = travel first
+                    #   3) Travel first = root
+                    #   4) Root = new root
+                    root_dynamic = data
+                    root_actual = self.SkipDynamicData(root_dynamic)
+
+                    assert isinstance(root_actual.Phrase, SequencePhrase)
+                    assert root_actual.Data.__class__.__name__ == "PhraseContainerLexResultData"
+
+                    new_root_dynamic = root_actual.Data.DataItems[-1]
+                    new_root_actual = self.SkipDynamicData(cast(Phrase.StandardLexResultData, new_root_dynamic))
+
+                    assert isinstance(new_root_actual.Phrase, SequencePhrase)
+                    assert new_root_actual.Data.__class__.__name__ == "PhraseContainerLexResultData"
+
+                    travel = new_root_actual
+
+                    while True:
+                        potential_travel_dynamic = travel.Data.DataItems[0]
+                        potential_travel_actual = self.SkipDynamicData(potential_travel_dynamic)
+
+                        if not self.__class__.IsRightRecursivePhrase(potential_travel_actual.Phrase, self.DynamicPhrasesType):
+                            break
+
+                        travel = potential_travel_actual
+
+                    root_actual.Data.DataItems[-1] = travel.Data.DataItems[0]
+                    travel.Data.DataItems[0] = data
+
+                    data = new_root_dynamic
+
+            # Should this data be considered as valid?
+            assert isinstance(data, Phrase.StandardLexResultData)
+
+            if not self._is_valid_data_func(data):
+                # pylint: disable=too-many-function-args
+                return Phrase.LexResult(
+                    False,
+                    Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
+                    data,
+                )
+
+            # At this point, we have massaged and modified the structure of the tree to the point where
+            # attempting to use previously cached values will not work. Update all of the unique_ids for
+            # all data in the hierarchy to prevent caching.
+
+            unique_id_suffix_str = "Pseudo ({})".format(uuid.uuid4())
+            unique_id_suffix_iteration = 0
+
+            # ----------------------------------------------------------------------
+            def UpdateUniqueIds(
+                data: Optional[Phrase.LexResultData],
+            ):
+                nonlocal unique_id_suffix_iteration
+
+                if data is None:
+                    return
+
+                if data.__class__.__name__ == "PhraseLexResultData":
+                    object.__setattr__(
+                        data,
+                        "unique_id",
+                        (unique_id_suffix_str, str(unique_id_suffix_iteration), ),
+                    )
+
+                    unique_id_suffix_iteration += 1
+                    UpdateUniqueIds(data.Data)
+
+                elif data.__class__.__name__ == "PhraseContainerLexResultData":
+                    for data_item in data.DataItems:
+                        UpdateUniqueIds(data_item)
+
+                elif data.__class__.__name__ == "TokenLexResultData":
+                    # Nothing to do here
+                    pass
+
+                else:
+                    assert False, data.__class__.__name__  # pragma: no cover
+
+            # ----------------------------------------------------------------------
+
+            UpdateUniqueIds(data)
+
+            # Create data that includes the error info
+            data = cast(Phrase.StandardLexResultData, data)
+
+            # pylint: disable=too-many-function-args
+            data = Phrase.StandardLexResultData(
+                data.Phrase,
+                data.Data,
+                data.UniqueId,
+                error_data_item,
+            )
+
+            # pylint: disable=too-many-function-args
+            return Phrase.LexResult(
+                True,
+                Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
+                cast(Phrase.StandardLexResultData, data),
+            )
+
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    class _SequenceSuffixWrapper(Phrase):
+        # ----------------------------------------------------------------------
+        def __init__(
+            self,
+            phrase: SequencePhrase,
+        ):
+            super(_SequenceSuffixWrapper, self).__init__("Wrapper ({})".format(phrase.Name))
+
+            self._phrase                        = phrase
 
         # ----------------------------------------------------------------------
+        @Interface.override
+        def Lex(
+            self,
+            unique_id: Tuple[str, ...],
+            normalized_iter: Phrase.NormalizedIterator,
+            observer: Phrase.Observer,
+            ignore_whitespace=False,
+        ) -> Optional[Phrase.LexResult]:
+            return self._phrase.LexSuffix(
+                unique_id,
+                normalized_iter,
+                observer,
+                ignore_whitespace=ignore_whitespace,
+            )
 
-        UpdateUniqueIds(data)
-
-        # Create data that includes the error info
-        data = cast(Phrase.StandardLexResultData, data)
-
-        # pylint: disable=too-many-function-args
-        data = Phrase.StandardLexResultData(
-            data.Phrase,
-            data.Data,
-            data.UniqueId,
-            error_data_item,
-        )
-
-        # pylint: disable=too-many-function-args
-        return Phrase.LexResult(
-            True,
-            Phrase.NormalizedIteratorRange(original_normalized_iter, normalized_iter),
-            cast(Phrase.StandardLexResultData, data),
-        )
-
-
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-class _SequenceSuffixWrapper(Phrase):
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        phrase: SequencePhrase,
-    ):
-        super(_SequenceSuffixWrapper, self).__init__("Wrapper ({})".format(phrase.Name))
-
-        self._phrase                        = phrase
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Lex(
-        self,
-        unique_id: Tuple[str, ...],
-        normalized_iter: Phrase.NormalizedIterator,
-        observer: Phrase.Observer,
-        ignore_whitespace=False,
-    ) -> Optional[Phrase.LexResult]:
-        return self._phrase.LexSuffix(
-            unique_id,
-            normalized_iter,
-            observer,
-            ignore_whitespace=ignore_whitespace,
-        )
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _PopulateRecursiveImpl(
-        self,
-        new_phrase: Phrase,
-    ) -> bool:
-        raise Exception("This should never be called, as this object should never be instantiated as part of a Phrase hierarchy")
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def _PopulateRecursiveImpl(
+            self,
+            new_phrase: Phrase,
+        ) -> bool:
+            raise Exception("This should never be called, as this object should never be instantiated as part of a Phrase hierarchy")

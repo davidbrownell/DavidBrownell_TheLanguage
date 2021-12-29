@@ -52,6 +52,7 @@ def Create() -> PhraseItem:
                 item="...",
             ),
 
+            # TODO: Name should be optional if not used
             # <generic_name>
             CommonTokens.GenericLowerName,
 

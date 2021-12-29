@@ -75,7 +75,7 @@ def Execute(
                     include_file_extensions=[".TheLanguage"],
                 ))
 
-                # filenames = [ r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\Bootstrap\TheLanguage\Lexer\Phrases\OrPhrase.TheLanguage", ] # BugBug
+                # filenames = [ r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\Bootstrap\TheLanguage\Lexer\Phrases\DynamicPhrase.TheLanguage", ] # BugBug
 
                 input_dir = input_directory_or_filename
             else:

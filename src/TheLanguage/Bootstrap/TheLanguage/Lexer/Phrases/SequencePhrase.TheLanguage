@@ -396,8 +396,6 @@ public mutable class SequencePhrase
         var preserved_ignore_whitespace_ctr = None as (UIntArch | None)
         var prev_token_was_pop_control = False
 
-        python_hack: prev_line = None
-
         for phrase_index in Range(starting_phrase_index, self._phrases.Length()):
             val phrase = self._phrases[phrase_index]
 
@@ -478,10 +476,6 @@ public mutable class SequencePhrase
 
             success = True
 
-            python_hack: if result.range.begin != result.range.end and iter.LineProper() != prev_line:
-            python_hack:     prev_line = iter.LineProper()
-            python_hack:     print("Parsing: Ln {}".format(prev_line))
-
         if ignored_data_items is not None:
             if ignored_data_items:
                 # If the previous token as a pop, we should consider the ignored output as part of the current phrase.
@@ -493,6 +487,8 @@ public mutable class SequencePhrase
                     iter = ignored_data_items[0].range.begin.Clone()
 
             ignored_data_items = None
+
+        python_hack: data_items = list(data_items)
 
         return LexResult(
             success,

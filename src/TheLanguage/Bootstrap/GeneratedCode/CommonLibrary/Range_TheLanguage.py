@@ -12,3 +12,6 @@ def Max(a, b):
 
 def Enumerate(value):
     yield from enumerate(value)
+
+def Sum(*args):
+    return sum(*args)
