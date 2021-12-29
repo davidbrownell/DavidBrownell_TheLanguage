@@ -33,7 +33,10 @@ class RepeatPhrase(Phrase):
     """
 
     def __init__(self, *args, **kwargs):
-        RepeatPhrase._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        RepeatPhrase._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # min_matches, max_matches, _name_is_default, _phrase
@@ -72,7 +75,7 @@ class RepeatPhrase(Phrase):
         else:
             raise Exception("_phrase was not provided")
 
-        self._Init_124867e2d95447959037e6537e5cca25_()
+        self._Init_278c1c7250bf46c1a0ca3ef00a3bbe75_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -232,7 +235,7 @@ class RepeatPhrase(Phrase):
         return LexResult(False, NormalizedIteratorRange(original_iter, iter, ), PhraseLexResultData(self, PhraseContainerLexResultData(results, ), unique_id, ), )
 
     # Return Type: None
-    def _Init_124867e2d95447959037e6537e5cca25_(self):
+    def _Init_278c1c7250bf46c1a0ca3ef00a3bbe75_(self):
         assert self.max_matches is None or self.max_matches >= self.min_matches
 
     # Return Type: Bool val

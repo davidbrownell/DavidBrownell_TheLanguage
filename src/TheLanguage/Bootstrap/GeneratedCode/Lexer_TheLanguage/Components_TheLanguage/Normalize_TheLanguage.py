@@ -28,7 +28,10 @@ with InitRelativeImports():
 # ClassType: Exception
 class InvalidTabsAndSpacesError(Error):
     def __init__(self, *args, **kwargs):
-        InvalidTabsAndSpacesError._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        InvalidTabsAndSpacesError._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # 
@@ -37,7 +40,7 @@ class InvalidTabsAndSpacesError(Error):
 
         # No members
 
-        self._Init_c8440fa12b4b42b1b6e177f91bc4f3e4_()
+        self._Init_27c44f6d6ac04fe3a42dd6b355954d7c_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -125,7 +128,7 @@ class InvalidTabsAndSpacesError(Error):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_c8440fa12b4b42b1b6e177f91bc4f3e4_(self):
+    def _Init_27c44f6d6ac04fe3a42dd6b355954d7c_(self):
         pass
 
     # Return Type: String
@@ -137,7 +140,10 @@ class InvalidTabsAndSpacesError(Error):
 # ClassType: Exception
 class NoClosingMultilineTokenError(Error):
     def __init__(self, *args, **kwargs):
-        NoClosingMultilineTokenError._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        NoClosingMultilineTokenError._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # 
@@ -146,7 +152,7 @@ class NoClosingMultilineTokenError(Error):
 
         # No members
 
-        self._Init_52ef2f9b74754a0b8ef4717cb32a34e0_()
+        self._Init_9fa04b52151747e3a4f0b5c0502b4a70_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -234,7 +240,7 @@ class NoClosingMultilineTokenError(Error):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_52ef2f9b74754a0b8ef4717cb32a34e0_(self):
+    def _Init_9fa04b52151747e3a4f0b5c0502b4a70_(self):
         pass
 
     # Return Type: String
@@ -246,7 +252,10 @@ class NoClosingMultilineTokenError(Error):
 # ClassType: Class
 class LineInfo(object):
     def __init__(self, *args, **kwargs):
-        LineInfo._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        LineInfo._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # offset_start, offset_end, content_start, content_end, whitespace_ranges, num_dedents=None, new_indentation_value=None
@@ -309,7 +318,7 @@ class LineInfo(object):
         else:
             self.new_indentation_value = None
 
-        self._Init_a49e39c83ae3492d9a4a76c1937900f4_()
+        self._Init_eaf81dc84b434d849f14d964eef78f85_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -420,7 +429,10 @@ class LineInfo(object):
     # ClassType: Class
     class WhitespaceRange(object):
         def __init__(self, *args, **kwargs):
-            LineInfo.WhitespaceRange._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            LineInfo.WhitespaceRange._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # begin, end
@@ -443,7 +455,7 @@ class LineInfo(object):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_73615588ec8e4783b4963e417b2126b8_()
+            self._Init_2f0655d161d342888636a2fb8ce559d6_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -535,7 +547,7 @@ class LineInfo(object):
             return result
 
         # Return Type: None
-        def _Init_73615588ec8e4783b4963e417b2126b8_(self):
+        def _Init_2f0655d161d342888636a2fb8ce559d6_(self):
             assert self.begin < self.end
 
     # Type alias: public WhitespaceRanges = List<WhitespaceRange, >{min_length'=0, }
@@ -552,7 +564,7 @@ class LineInfo(object):
         return self.content_end != self.offset_end
 
     # Return Type: None
-    def _Init_a49e39c83ae3492d9a4a76c1937900f4_(self):
+    def _Init_eaf81dc84b434d849f14d964eef78f85_(self):
         assert self.offset_end >= self.offset_start
         assert self.content_start >= self.offset_start
         assert self.content_end >= self.content_start
@@ -575,7 +587,10 @@ class LineInfo(object):
 # ClassType: Class
 class NormalizedContent(object):
     def __init__(self, *args, **kwargs):
-        NormalizedContent._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        NormalizedContent._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # content, content_length, line_infos, hash
@@ -614,7 +629,7 @@ class NormalizedContent(object):
         else:
             raise Exception("hash was not provided")
 
-        self._Init_ba9fc125f2c44ff08cb479a6f294c7dc_()
+        self._Init_3d9fe510d79b49458407c8e463bd6d47_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -711,7 +726,7 @@ class NormalizedContent(object):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_ba9fc125f2c44ff08cb479a6f294c7dc_(self):
+    def _Init_3d9fe510d79b49458407c8e463bd6d47_(self):
         pass
 
     # Type alias: public LineInfos = List<LineInfo, >{min_length'=1, }
@@ -750,7 +765,10 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
     # ClassType: Class
     class IndentationInfo(object):
         def __init__(self, *args, **kwargs):
-            IndentationInfo._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            IndentationInfo._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # num_chars, value
@@ -773,7 +791,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             else:
                 raise Exception("value was not provided")
 
-            self._Init_7d06085a2c4f4577b076c0bf2ef09659_()
+            self._Init_5be0c116fb5744afab8812669ddaea33_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -864,7 +882,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             compare_cache[cache_key] = result
             return result
 
-        def _Init_7d06085a2c4f4577b076c0bf2ef09659_(self):
+        def _Init_5be0c116fb5744afab8812669ddaea33_(self):
             pass
 
     # Visibility: private
@@ -872,7 +890,10 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
     # ClassType: Class
     class MultilineTokenInfo(object):
         def __init__(self, *args, **kwargs):
-            MultilineTokenInfo._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            MultilineTokenInfo._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # line_index, num_delimiters
@@ -895,7 +916,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             else:
                 raise Exception("num_delimiters was not provided")
 
-            self._Init_f93e44ce00c0485d8abf055353eb3ada_()
+            self._Init_d2f90d9a097e458eac51af73d410e235_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -986,7 +1007,7 @@ def Normalize_(content, multiline_tokens_to_ignore=None, suppress_indentation_fu
             compare_cache[cache_key] = result
             return result
 
-        def _Init_f93e44ce00c0485d8abf055353eb3ada_(self):
+        def _Init_d2f90d9a097e458eac51af73d410e235_(self):
             pass
 
     line_infos = List()

@@ -33,7 +33,10 @@ class NormalizedIterator(object):
     """
 
     def __init__(self, *args, **kwargs):
-        NormalizedIterator._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        NormalizedIterator._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # _content, _offset, _line_info_index, _whitespace_range_index, _consumed_dedent_count
@@ -80,7 +83,7 @@ class NormalizedIterator(object):
         else:
             raise Exception("_consumed_dedent_count was not provided")
 
-        self._Init_f55c7de59c7a4a288995bd813fb5a83b_()
+        self._Init_2b15bf33d649417599c7ed2a0bd5a08f_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -417,7 +420,10 @@ class NormalizedIterator(object):
         """
 
         def __init__(self, *args, **kwargs):
-            NormalizedIterator.NormalizedContentEx._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            NormalizedIterator.NormalizedContentEx._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # 
@@ -427,7 +433,7 @@ class NormalizedIterator(object):
             # has_end_of_file_dedents
             self.has_end_of_file_dedents = None
 
-            self._Init_f07c803c07884b719b3786d75ec91488_()
+            self._Init_6afbc0b9ab244cf8bde16ecbc827eaf1_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -522,14 +528,14 @@ class NormalizedIterator(object):
             return NormalizedContentEx(content.content, content.content_length, content.line_infos, content.hash, )
 
         # Return Type: None
-        def _Init_f07c803c07884b719b3786d75ec91488_(self):
+        def _Init_6afbc0b9ab244cf8bde16ecbc827eaf1_(self):
             last_line_info = self.line_infos[-1]
             self.has_end_of_file_dedents = (last_line_info.num_dedents is not None and last_line_info.num_dedents > 0 and last_line_info.offset_start == last_line_info.offset_end and last_line_info.content_start == last_line_info.offset_start and last_line_info.content_end == last_line_info.offset_end)
 
     def Clone(self):
         return self.__class__(self._content, self._offset, self._line_info_index, self._whitespace_range_index, self._consumed_dedent_count)
     # Return Type: None
-    def _Init_f55c7de59c7a4a288995bd813fb5a83b_(self):
+    def _Init_2b15bf33d649417599c7ed2a0bd5a08f_(self):
         assert self._offset <= self._content.content_length
         if self._offset != self._content.content_length:
             line_info = self._content.line_infos[self._line_info_index]

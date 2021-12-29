@@ -31,7 +31,10 @@ from CommonEnvironment import StringHelpers
 # ClassType: Class
 class Token(object):
     def __init__(self, *args, **kwargs):
-        Token._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        Token._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # name, is_always_ignored, is_control_token
@@ -62,7 +65,7 @@ class Token(object):
         else:
             raise Exception("is_control_token was not provided")
 
-        self._Init_9844297e51bf40faac08b255113c3322_()
+        self._Init_522bc7b75fac45de95a8f886b7e6897d_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -156,7 +159,7 @@ class Token(object):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_9844297e51bf40faac08b255113c3322_(self):
+    def _Init_522bc7b75fac45de95a8f886b7e6897d_(self):
         pass
 
     # Visibility: public
@@ -164,7 +167,10 @@ class Token(object):
     # ClassType: Class
     class MatchResult(object):
         def __init__(self, *args, **kwargs):
-            Token.MatchResult._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            Token.MatchResult._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # iterator
@@ -179,7 +185,7 @@ class Token(object):
             else:
                 raise Exception("iterator was not provided")
 
-            self._Init_6c03a93d5b37412c9714177e6d5086bd_()
+            self._Init_876da85667d0480c92935b35c78113a4_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -267,7 +273,7 @@ class Token(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_6c03a93d5b37412c9714177e6d5086bd_(self):
+        def _Init_876da85667d0480c92935b35c78113a4_(self):
             pass
 
     @property
@@ -290,7 +296,10 @@ class NewlineToken(Token):
     """
 
     def __init__(self, *args, **kwargs):
-        NewlineToken._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        NewlineToken._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # capture_many
@@ -305,7 +314,7 @@ class NewlineToken(Token):
         else:
             raise Exception("capture_many was not provided")
 
-        self._Init_37624d5dc648491b9d08a57402e1ebe4_()
+        self._Init_811bb22958be4ef89cc31abc67dd8327_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -394,7 +403,7 @@ class NewlineToken(Token):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_37624d5dc648491b9d08a57402e1ebe4_(self):
+    def _Init_811bb22958be4ef89cc31abc67dd8327_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -403,7 +412,10 @@ class NewlineToken(Token):
     # ClassType: Class
     class MatchResult(Token_MatchResult):
         def __init__(self, *args, **kwargs):
-            NewlineToken.MatchResult._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            NewlineToken.MatchResult._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # start, end
@@ -426,7 +438,7 @@ class NewlineToken(Token):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_4e0a3742d5c9463b8cf843958a0f440b_()
+            self._Init_b20d955070ed4d548fe2740b54e6c108_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -530,7 +542,7 @@ class NewlineToken(Token):
                 self.end,
             )
         # Return Type: None
-        def _Init_4e0a3742d5c9463b8cf843958a0f440b_(self):
+        def _Init_b20d955070ed4d548fe2740b54e6c108_(self):
             assert self.start <= self.end
 
     # Return Type: NewlineToken val
@@ -560,7 +572,10 @@ class IndentToken(Token):
     """
 
     def __init__(self, *args, **kwargs):
-        IndentToken._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        IndentToken._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # 
@@ -569,7 +584,7 @@ class IndentToken(Token):
 
         # No members
 
-        self._Init_9b2be3ecffca471f9ca62e2c81441fef_()
+        self._Init_6f6b291d82a147bf949018c8d0a5b77c_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -657,7 +672,7 @@ class IndentToken(Token):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_9b2be3ecffca471f9ca62e2c81441fef_(self):
+    def _Init_6f6b291d82a147bf949018c8d0a5b77c_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -666,7 +681,10 @@ class IndentToken(Token):
     # ClassType: Class
     class MatchResult(Token_MatchResult):
         def __init__(self, *args, **kwargs):
-            IndentToken.MatchResult._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            IndentToken.MatchResult._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # start, end, indent_value
@@ -697,7 +715,7 @@ class IndentToken(Token):
             else:
                 raise Exception("indent_value was not provided")
 
-            self._Init_4791fd473c594462960bfdb6ff76d3a6_()
+            self._Init_714e1fdf383343208661d11010377a91_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -806,7 +824,7 @@ class IndentToken(Token):
                 self.indent_value,
             )
         # Return Type: None
-        def _Init_4791fd473c594462960bfdb6ff76d3a6_(self):
+        def _Init_714e1fdf383343208661d11010377a91_(self):
             assert self.start <= self.end
 
     # Return Type: IndentToken val
@@ -833,7 +851,10 @@ class DedentToken(Token):
     """
 
     def __init__(self, *args, **kwargs):
-        DedentToken._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        DedentToken._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # 
@@ -842,7 +863,7 @@ class DedentToken(Token):
 
         # No members
 
-        self._Init_4a21126896ee494aa565d576c75b355b_()
+        self._Init_467e58eb0a4d4df7875f8ddd3953df4f_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -930,7 +951,7 @@ class DedentToken(Token):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_4a21126896ee494aa565d576c75b355b_(self):
+    def _Init_467e58eb0a4d4df7875f8ddd3953df4f_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -939,7 +960,10 @@ class DedentToken(Token):
     # ClassType: Class
     class MatchResult(Token_MatchResult):
         def __init__(self, *args, **kwargs):
-            DedentToken.MatchResult._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            DedentToken.MatchResult._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # 
@@ -948,7 +972,7 @@ class DedentToken(Token):
 
             # No members
 
-            self._Init_0ea26ca594644557a64396a4f94212c4_()
+            self._Init_28cb699f806541bcb7d8a2dafc681766_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -1036,7 +1060,7 @@ class DedentToken(Token):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_0ea26ca594644557a64396a4f94212c4_(self):
+        def _Init_28cb699f806541bcb7d8a2dafc681766_(self):
             pass
 
         pass
@@ -1067,7 +1091,10 @@ class HorizontalWhitespaceToken(Token):
     """
 
     def __init__(self, *args, **kwargs):
-        HorizontalWhitespaceToken._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        HorizontalWhitespaceToken._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # 
@@ -1076,7 +1103,7 @@ class HorizontalWhitespaceToken(Token):
 
         # No members
 
-        self._Init_672baf8ff09f4cc98119d5691abff03f_()
+        self._Init_465bebc4da64465ab444503194b1dada_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -1164,7 +1191,7 @@ class HorizontalWhitespaceToken(Token):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_672baf8ff09f4cc98119d5691abff03f_(self):
+    def _Init_465bebc4da64465ab444503194b1dada_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -1173,7 +1200,10 @@ class HorizontalWhitespaceToken(Token):
     # ClassType: Class
     class MatchResult(Token_MatchResult):
         def __init__(self, *args, **kwargs):
-            HorizontalWhitespaceToken.MatchResult._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            HorizontalWhitespaceToken.MatchResult._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # start, end
@@ -1196,7 +1226,7 @@ class HorizontalWhitespaceToken(Token):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_c98fdc145ebe477ebd01a326441235a6_()
+            self._Init_4f037d266bc24e95bb97162a59b6b77c_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -1288,7 +1318,7 @@ class HorizontalWhitespaceToken(Token):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_c98fdc145ebe477ebd01a326441235a6_(self):
+        def _Init_4f037d266bc24e95bb97162a59b6b77c_(self):
             pass
 
         def __str__(self):
@@ -1328,7 +1358,10 @@ class RegexToken(Token):
     """
 
     def __init__(self, *args, **kwargs):
-        RegexToken._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        RegexToken._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # regex, is_multiline
@@ -1351,7 +1384,7 @@ class RegexToken(Token):
         else:
             raise Exception("is_multiline was not provided")
 
-        self._Init_1760c253ed6f467c8c3aa86e1b33452c_()
+        self._Init_0bc988771ceb4a48800cbeafe0960764_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -1443,7 +1476,7 @@ class RegexToken(Token):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_1760c253ed6f467c8c3aa86e1b33452c_(self):
+    def _Init_0bc988771ceb4a48800cbeafe0960764_(self):
         pass
 
     Token_MatchResult = Token_MatchResult
@@ -1452,7 +1485,10 @@ class RegexToken(Token):
     # ClassType: Class
     class MatchResult(Token_MatchResult):
         def __init__(self, *args, **kwargs):
-            RegexToken.MatchResult._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            RegexToken.MatchResult._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # match
@@ -1467,7 +1503,7 @@ class RegexToken(Token):
             else:
                 raise Exception("match was not provided")
 
-            self._Init_8a75ffbbfa3a4af7b09eed5a09eb4dad_()
+            self._Init_86a69ca5f38549bcba809ecbc68a9d3d_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -1556,7 +1592,7 @@ class RegexToken(Token):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_8a75ffbbfa3a4af7b09eed5a09eb4dad_(self):
+        def _Init_86a69ca5f38549bcba809ecbc68a9d3d_(self):
             pass
 
         def __str__(self):
@@ -1621,7 +1657,10 @@ class RegexToken(Token):
 # ClassType: Class
 class ControlTokenBase(Token):
     def __init__(self, *args, **kwargs):
-        ControlTokenBase._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        ControlTokenBase._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # closing_token, opening_token
@@ -1647,7 +1686,7 @@ class ControlTokenBase(Token):
         else:
             raise Exception("opening_token was not provided")
 
-        self._Init_1d8d124993704f9fb00d4102cd0bf1db_()
+        self._Init_f784453b74c746bab4a17ea8465b5e24_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -1750,7 +1789,7 @@ class ControlTokenBase(Token):
         raise Exception("This method should never be invoked for control tokens", )
 
     # Return Type: None
-    def _Init_1d8d124993704f9fb00d4102cd0bf1db_(self):
+    def _Init_f784453b74c746bab4a17ea8465b5e24_(self):
         assert ((self.closing_token is not None and self.opening_token is None) or (self.closing_token is None and self.opening_token is not None))
 
 # Visibility: public
@@ -1762,7 +1801,10 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
     """
 
     def __init__(self, *args, **kwargs):
-        PushIgnoreWhitespaceControlToken._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        PushIgnoreWhitespaceControlToken._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # 
@@ -1771,7 +1813,7 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_d78f3268db704834bdc67afe4ed3a7d0_()
+        self._Init_7716f719247547e98e3e0064e13e0227_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -1859,7 +1901,7 @@ class PushIgnoreWhitespaceControlToken(ControlTokenBase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_d78f3268db704834bdc67afe4ed3a7d0_(self):
+    def _Init_7716f719247547e98e3e0064e13e0227_(self):
         pass
 
     # Return Type: PushIgnoreWhitespaceControlToken
@@ -1876,7 +1918,10 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
     """
 
     def __init__(self, *args, **kwargs):
-        PopIgnoreWhitespaceControlToken._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        PopIgnoreWhitespaceControlToken._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # 
@@ -1885,7 +1930,7 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_e9dfab1351d74c22b74467d284d720ab_()
+        self._Init_414b9d3340354999962c95cfe55673ee_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -1973,7 +2018,7 @@ class PopIgnoreWhitespaceControlToken(ControlTokenBase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_e9dfab1351d74c22b74467d284d720ab_(self):
+    def _Init_414b9d3340354999962c95cfe55673ee_(self):
         pass
 
     # Return Type: PopIgnoreWhitespaceControlToken
@@ -1990,7 +2035,10 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
     """
 
     def __init__(self, *args, **kwargs):
-        PushPreserveWhitespaceControlToken._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        PushPreserveWhitespaceControlToken._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # 
@@ -1999,7 +2047,7 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_a4d6012db99d4ab29eb87d471b78c377_()
+        self._Init_70814f2f94d14450a373734e3cdbca03_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -2087,7 +2135,7 @@ class PushPreserveWhitespaceControlToken(ControlTokenBase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_a4d6012db99d4ab29eb87d471b78c377_(self):
+    def _Init_70814f2f94d14450a373734e3cdbca03_(self):
         pass
 
     # Return Type: PushPreserveWhitespaceControlToken
@@ -2104,7 +2152,10 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
     """
 
     def __init__(self, *args, **kwargs):
-        PopPreserveWhitespaceControlToken._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        PopPreserveWhitespaceControlToken._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # 
@@ -2113,7 +2164,7 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
 
         # No members
 
-        self._Init_06610b5417574ea7bdf10cd0fd10f201_()
+        self._Init_2f366747252f4325a7240b6f0d5bbe57_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -2201,7 +2252,7 @@ class PopPreserveWhitespaceControlToken(ControlTokenBase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_06610b5417574ea7bdf10cd0fd10f201_(self):
+    def _Init_2f366747252f4325a7240b6f0d5bbe57_(self):
         pass
 
     # Return Type: PopPreserveWhitespaceControlToken

@@ -35,7 +35,10 @@ class SequencePhrase(Phrase):
     """
 
     def __init__(self, *args, **kwargs):
-        SequencePhrase._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        SequencePhrase._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # comment_token, _name_is_default, _phrases
@@ -78,7 +81,7 @@ class SequencePhrase(Phrase):
         # _newline_token
         self._newline_token = NewlineToken.Create()
 
-        self._Init_aa29e74f48d34633a57013862194452c_()
+        self._Init_e26af190ece3401bb648047a3cc9c961_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -214,7 +217,7 @@ class SequencePhrase(Phrase):
         return self._LexImpl(unique_id, iter, observer, ignore_whitespace_ctr=1 if ignore_whitespace else 0, ignored_indentation_level=None, starting_phrase_index=1, )
 
     # Return Type: None
-    def _Init_aa29e74f48d34633a57013862194452c_(self):
+    def _Init_e26af190ece3401bb648047a3cc9c961_(self):
         pass
 
     # Return Type: Bool val

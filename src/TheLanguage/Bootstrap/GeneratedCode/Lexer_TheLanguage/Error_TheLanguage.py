@@ -32,7 +32,10 @@ class Error(Exception):
     """
 
     def __init__(self, *args, **kwargs):
-        Error._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        Error._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # line, column
@@ -55,7 +58,7 @@ class Error(Exception):
         else:
             raise Exception("column was not provided")
 
-        self._Init_52870968e4da4329828d393c010ed4b2_()
+        self._Init_e5f99892bfbf4b5692cf93af40019ff4_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -146,11 +149,11 @@ class Error(Exception):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_52870968e4da4329828d393c010ed4b2_(self):
+    def _Init_e5f99892bfbf4b5692cf93af40019ff4_(self):
         pass
 
     # Return Type: String
-    def _ToString_52870968e4da4329828d393c010ed4b2_(self):
+    def _ToString_e5f99892bfbf4b5692cf93af40019ff4_(self):
         return self._GetMessageTemplate().format(**self.__dict__, )
 
     # Return Type: String
@@ -162,4 +165,4 @@ class Error(Exception):
     @property
     def Column(self): return self.column
     def __str__(self):
-        return self._ToString_52870968e4da4329828d393c010ed4b2_()
+        return self._ToString_e5f99892bfbf4b5692cf93af40019ff4_()

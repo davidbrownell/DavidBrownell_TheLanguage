@@ -33,7 +33,10 @@ class OrPhrase(Phrase):
     """
 
     def __init__(self, *args, **kwargs):
-        OrPhrase._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        OrPhrase._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # sort_results, ambiguities_resolved_by_order, _name_is_default, _phrases
@@ -72,7 +75,7 @@ class OrPhrase(Phrase):
         else:
             raise Exception("_phrases was not provided")
 
-        self._Init_ce9dc48fa1aa4293ad36a3140e60d3fa_()
+        self._Init_b8dfb17de2534ee399fab6eaa851aff3_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -170,7 +173,7 @@ class OrPhrase(Phrase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_ce9dc48fa1aa4293ad36a3140e60d3fa_(self):
+    def _Init_b8dfb17de2534ee399fab6eaa851aff3_(self):
         pass
 
     # Type alias: public Phrases = List<Phrase, >{min_length'=1, }

@@ -29,7 +29,10 @@ with InitRelativeImports():
 # ClassType: Class
 class TokenPhrase(Phrase):
     def __init__(self, *args, **kwargs):
-        TokenPhrase._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        TokenPhrase._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # token
@@ -44,7 +47,7 @@ class TokenPhrase(Phrase):
         else:
             raise Exception("token was not provided")
 
-        self._Init_4514ec85bfb545d29f41f5b6aab02a55_()
+        self._Init_6539f27a278a4c16a316d344d033ab3e_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -133,7 +136,7 @@ class TokenPhrase(Phrase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_4514ec85bfb545d29f41f5b6aab02a55_(self):
+    def _Init_6539f27a278a4c16a316d344d033ab3e_(self):
         pass
 
     @property

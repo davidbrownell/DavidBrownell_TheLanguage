@@ -50,7 +50,10 @@ class DynamicPhrase(Phrase):
     """
 
     def __init__(self, *args, **kwargs):
-        DynamicPhrase._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        DynamicPhrase._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # phrases_type, is_valid_data_func, _get_dynamic_phrases_func
@@ -84,7 +87,7 @@ class DynamicPhrase(Phrase):
         # _lexer
         self._lexer = None
 
-        self._Init_c60a819fdf804079985ca87de7995549_()
+        self._Init_ed4a6bd523914440a5a145a161c85a8f_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -173,7 +176,7 @@ class DynamicPhrase(Phrase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_c60a819fdf804079985ca87de7995549_(self):
+    def _Init_ed4a6bd523914440a5a145a161c85a8f_(self):
         pass
 
     # Type alias: public Phrases = List<Phrase, >{min_length'=1, }
@@ -261,7 +264,10 @@ class DynamicPhrase(Phrase):
     # ClassType: Class
     class _Lexer(object):
         def __init__(self, *args, **kwargs):
-            DynamicPhrase._Lexer._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            DynamicPhrase._Lexer._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # unique_id, display_name, phrases
@@ -292,7 +298,7 @@ class DynamicPhrase(Phrase):
             else:
                 raise Exception("phrases was not provided")
 
-            self._Init_52b5170ec671492cb4790aa7b01299b4_()
+            self._Init_c49609d4524f43ce833c7d62faad7613_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -386,7 +392,7 @@ class DynamicPhrase(Phrase):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_52b5170ec671492cb4790aa7b01299b4_(self):
+        def _Init_c49609d4524f43ce833c7d62faad7613_(self):
             pass
 
         # Return Type: <LexResult | None> val
@@ -398,7 +404,10 @@ class DynamicPhrase(Phrase):
     # ClassType: Class
     class _StandardLexer(_Lexer):
         def __init__(self, *args, **kwargs):
-            DynamicPhrase._StandardLexer._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            DynamicPhrase._StandardLexer._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # 
@@ -408,7 +417,7 @@ class DynamicPhrase(Phrase):
             # _or_phrase
             self._or_phrase = None
 
-            self._Init_35339bfea020450da63c3468ff911a60_()
+            self._Init_cdfe49968d604c1fa82cbfea8c7d97b7_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -511,7 +520,7 @@ class DynamicPhrase(Phrase):
             return LexResult(result.success, result.range, PhraseLexResultData(phrase, result.data, unique_id, ), )
 
         # Return Type: None
-        def _Init_35339bfea020450da63c3468ff911a60_(self):
+        def _Init_cdfe49968d604c1fa82cbfea8c7d97b7_(self):
             self._or_phrase = OrPhrase.Create(self.phrases, name=self.display_name, ) # as val
 
     # Visibility: private
@@ -519,7 +528,10 @@ class DynamicPhrase(Phrase):
     # ClassType: Class
     class _LeftRecursiveLexer(_Lexer):
         def __init__(self, *args, **kwargs):
-            DynamicPhrase._LeftRecursiveLexer._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            DynamicPhrase._LeftRecursiveLexer._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # left_recursive_phrases
@@ -543,7 +555,7 @@ class DynamicPhrase(Phrase):
             # _pseudo_phrase
             self._pseudo_phrase = None
 
-            self._Init_66f06f709192455586b08aa52dc91e08_()
+            self._Init_567d9ea5e142412d9908dcfda9529c4d_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -750,7 +762,10 @@ class DynamicPhrase(Phrase):
         # ClassType: Class
         class _SequenceSuffixWrapper(Phrase):
             def __init__(self, *args, **kwargs):
-                DynamicPhrase._LeftRecursiveLexer._SequenceSuffixWrapper._InternalInit(self, list(args), kwargs)
+                args = list(args)
+                DynamicPhrase._LeftRecursiveLexer._SequenceSuffixWrapper._InternalInit(self, args, kwargs)
+                assert not args, args
+                assert not kwargs, kwargs
 
             def _InternalInit(self, args, kwargs):
                 # _phrase
@@ -765,7 +780,7 @@ class DynamicPhrase(Phrase):
                 else:
                     raise Exception("_phrase was not provided")
 
-                self._Init_c01bd54a82a44fdcba6fdad02f874e37_()
+                self._Init_7216306d679c4d58b83ee7ef47836cd5_()
 
             def __eq__(self, other):
                 compare_cache = {}
@@ -854,7 +869,7 @@ class DynamicPhrase(Phrase):
                 compare_cache[cache_key] = result
                 return result
 
-            def _Init_c01bd54a82a44fdcba6fdad02f874e37_(self):
+            def _Init_7216306d679c4d58b83ee7ef47836cd5_(self):
                 pass
 
             # Return Type: _SequenceSuffixWrapper val
@@ -868,7 +883,7 @@ class DynamicPhrase(Phrase):
                 return self._phrase.LexSuffix(unique_id, iter, observer, ignore_whitespace=ignore_whitespace, )
 
         # Return Type: None
-        def _Init_66f06f709192455586b08aa52dc91e08_(self):
+        def _Init_567d9ea5e142412d9908dcfda9529c4d_(self):
             assert self.phrases
             self._prefix_phrase = OrPhrase.Create(self.phrases, name="{} <Prefix>".format(self.display_name, ), ) # as val
             _SequenceSuffixWrapper = DynamicPhrase._LeftRecursiveLexer._SequenceSuffixWrapper

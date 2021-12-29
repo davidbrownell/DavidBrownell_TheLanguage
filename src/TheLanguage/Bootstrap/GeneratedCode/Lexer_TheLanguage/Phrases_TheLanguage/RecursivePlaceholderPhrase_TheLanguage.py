@@ -35,7 +35,10 @@ class RecursivePlaceholderPhrase(Phrase):
     """
 
     def __init__(self, *args, **kwargs):
-        RecursivePlaceholderPhrase._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        RecursivePlaceholderPhrase._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # 
@@ -44,7 +47,7 @@ class RecursivePlaceholderPhrase(Phrase):
 
         # No members
 
-        self._Init_7bddcdce43d4438891bbe073ad4292d6_()
+        self._Init_2447b6148de4494cb6b3315e38278748_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -132,7 +135,7 @@ class RecursivePlaceholderPhrase(Phrase):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_7bddcdce43d4438891bbe073ad4292d6_(self):
+    def _Init_2447b6148de4494cb6b3315e38278748_(self):
         pass
 
     # Return Type: RecursivePlaceholderPhrase

@@ -62,7 +62,10 @@ class Phrase(object):
     """
 
     def __init__(self, *args, **kwargs):
-        Phrase._InternalInit(self, list(args), kwargs)
+        args = list(args)
+        Phrase._InternalInit(self, args, kwargs)
+        assert not args, args
+        assert not kwargs, kwargs
 
     def _InternalInit(self, args, kwargs):
         # _name_
@@ -83,7 +86,7 @@ class Phrase(object):
         # _is_populated
         self._is_populated = False
 
-        self._Init_de7f44767ab74f63aa295171095b0193_()
+        self._Init_68f5c663eeec4309a0322178f95b34e7_()
 
     def __eq__(self, other):
         compare_cache = {}
@@ -171,7 +174,7 @@ class Phrase(object):
         compare_cache[cache_key] = result
         return result
 
-    def _Init_de7f44767ab74f63aa295171095b0193_(self):
+    def _Init_68f5c663eeec4309a0322178f95b34e7_(self):
         pass
 
     NormalizedIterator = NormalizedIterator
@@ -181,7 +184,10 @@ class Phrase(object):
     # ClassType: Class
     class NormalizedIteratorRange(object):
         def __init__(self, *args, **kwargs):
-            Phrase.NormalizedIteratorRange._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            Phrase.NormalizedIteratorRange._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # begin, end
@@ -204,7 +210,7 @@ class Phrase(object):
             else:
                 raise Exception("end was not provided")
 
-            self._Init_a438798a345846f7ab712fe0f745fb45_()
+            self._Init_bfbe88e55b3e46c997ef917b32365205_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -296,7 +302,7 @@ class Phrase(object):
             return result
 
         # Return Type: None
-        def _Init_a438798a345846f7ab712fe0f745fb45_(self):
+        def _Init_bfbe88e55b3e46c997ef917b32365205_(self):
             assert self.begin <= self.end
 
         def __str__(self):
@@ -321,7 +327,10 @@ class Phrase(object):
         """
 
         def __init__(self, *args, **kwargs):
-            Phrase.LexResult._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            Phrase.LexResult._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # success, range, data
@@ -352,7 +361,7 @@ class Phrase(object):
             else:
                 raise Exception("data was not provided")
 
-            self._Init_74a3f7f61dae48fea5c81d0c3999c20d_()
+            self._Init_825b422c8fdb416da5301d8de96015ea_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -470,7 +479,7 @@ class Phrase(object):
                 StringHelpers.LeftJustify(str(self.data), 4).rstrip(),
             )
         # Return Type: None
-        def _Init_74a3f7f61dae48fea5c81d0c3999c20d_(self):
+        def _Init_825b422c8fdb416da5301d8de96015ea_(self):
             assert self.data is not None or self.success is False
 
     # Visibility: private
@@ -478,7 +487,10 @@ class Phrase(object):
     # ClassType: Class
     class _LexResultData(object):
         def __init__(self, *args, **kwargs):
-            Phrase._LexResultData._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            Phrase._LexResultData._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # 
@@ -487,7 +499,7 @@ class Phrase(object):
 
             # No members
 
-            self._Init_5db15da487ed4532a0337d641cf03c68_()
+            self._Init_a64250d5939b413494441f9845deecb1_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -574,7 +586,7 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_5db15da487ed4532a0337d641cf03c68_(self):
+        def _Init_a64250d5939b413494441f9845deecb1_(self):
             pass
 
         pass
@@ -588,7 +600,10 @@ class Phrase(object):
         """
 
         def __init__(self, *args, **kwargs):
-            Phrase.WhitespaceLexResultData._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            Phrase.WhitespaceLexResultData._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # whitespace
@@ -603,7 +618,7 @@ class Phrase(object):
             else:
                 raise Exception("whitespace was not provided")
 
-            self._Init_4dab61281f1c421bb29ffd941085e0fc_()
+            self._Init_d2535d9e33ea41acad5f44b30eb7d625_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -692,7 +707,7 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_4dab61281f1c421bb29ffd941085e0fc_(self):
+        def _Init_d2535d9e33ea41acad5f44b30eb7d625_(self):
             pass
 
         LineInfo_WhitespaceRange = LineInfo.WhitespaceRange
@@ -712,7 +727,10 @@ class Phrase(object):
         """
 
         def __init__(self, *args, **kwargs):
-            Phrase.TokenLexResultData._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            Phrase.TokenLexResultData._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # token, value, range, is_ignored
@@ -751,7 +769,7 @@ class Phrase(object):
             else:
                 raise Exception("is_ignored was not provided")
 
-            self._Init_08d5b822d6574aaf9c66f2c4cf2a5c9d_()
+            self._Init_bb27f06c6c5c4188ac6bf6e518ce39a9_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -849,7 +867,7 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_08d5b822d6574aaf9c66f2c4cf2a5c9d_(self):
+        def _Init_bb27f06c6c5c4188ac6bf6e518ce39a9_(self):
             pass
 
         Token_MatchResult = Token.MatchResult
@@ -892,7 +910,10 @@ class Phrase(object):
         """
 
         def __init__(self, *args, **kwargs):
-            Phrase.PhraseLexResultData._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            Phrase.PhraseLexResultData._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # phrase, data, unique_id, potential_error_context=None
@@ -931,7 +952,7 @@ class Phrase(object):
             else:
                 self.potential_error_context = None
 
-            self._Init_d9bcb086b5d14cc1afab9838469c06b6_()
+            self._Init_0869ce19b01746d396ff6c0cfa495a6c_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -1029,7 +1050,7 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_d9bcb086b5d14cc1afab9838469c06b6_(self):
+        def _Init_0869ce19b01746d396ff6c0cfa495a6c_(self):
             pass
 
         @property
@@ -1061,7 +1082,10 @@ class Phrase(object):
         """
 
         def __init__(self, *args, **kwargs):
-            Phrase.PhraseContainerLexResultData._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            Phrase.PhraseContainerLexResultData._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # data_items
@@ -1076,7 +1100,7 @@ class Phrase(object):
             else:
                 raise Exception("data_items was not provided")
 
-            self._Init_2ba92c0359db42fc9ac15adf36cf89e4_()
+            self._Init_3c26374b03224b13aecbb7b5047219a9_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -1165,7 +1189,7 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_2ba92c0359db42fc9ac15adf36cf89e4_(self):
+        def _Init_3c26374b03224b13aecbb7b5047219a9_(self):
             pass
 
         @property
@@ -1193,7 +1217,10 @@ class Phrase(object):
         """
 
         def __init__(self, *args, **kwargs):
-            Phrase.Observer._InternalInit(self, list(args), kwargs)
+            args = list(args)
+            Phrase.Observer._InternalInit(self, args, kwargs)
+            assert not args, args
+            assert not kwargs, kwargs
 
         def _InternalInit(self, args, kwargs):
             # 
@@ -1202,7 +1229,7 @@ class Phrase(object):
 
             # No members
 
-            self._Init_b0f4d5fd9f9d4d44a92e24fe67fe6386_()
+            self._Init_34e0d67084c44006b8207526e5020cfb_()
 
         def __eq__(self, other):
             compare_cache = {}
@@ -1289,7 +1316,7 @@ class Phrase(object):
             compare_cache[cache_key] = result
             return result
 
-        def _Init_b0f4d5fd9f9d4d44a92e24fe67fe6386_(self):
+        def _Init_34e0d67084c44006b8207526e5020cfb_(self):
             pass
 
         # Visibility: public
@@ -1297,7 +1324,10 @@ class Phrase(object):
         # ClassType: Struct
         class GetDynamicPhrasesResult(object):
             def __init__(self, *args, **kwargs):
-                Phrase.Observer.GetDynamicPhrasesResult._InternalInit(self, list(args), kwargs)
+                args = list(args)
+                Phrase.Observer.GetDynamicPhrasesResult._InternalInit(self, args, kwargs)
+                assert not args, args
+                assert not kwargs, kwargs
 
             def _InternalInit(self, args, kwargs):
                 # phrases, name=None
@@ -1320,7 +1350,7 @@ class Phrase(object):
                 else:
                     self.name = None
 
-                self._Init_fd0f2005e8a346e89ecf7d3ff53371bc_()
+                self._Init_27c0cc3b4b4a4aae999a565d07925d37_()
 
             def __eq__(self, other):
                 compare_cache = {}
@@ -1411,7 +1441,7 @@ class Phrase(object):
                 compare_cache[cache_key] = result
                 return result
 
-            def _Init_fd0f2005e8a346e89ecf7d3ff53371bc_(self):
+            def _Init_27c0cc3b4b4a4aae999a565d07925d37_(self):
                 pass
 
         # Return Type: GetDynamicPhrasesResult

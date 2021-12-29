@@ -1212,7 +1212,10 @@ class PythonVisitor(Visitor):
                             textwrap.dedent(
                                 """\
                                 def __init__(self, *args, **kwargs):
-                                    {class_name}._InternalInit(self, list(args), kwargs)
+                                    args = list(args)
+                                    {class_name}._InternalInit(self, args, kwargs)
+                                    assert not args, args
+                                    assert not kwargs, kwargs
 
                                 def _InternalInit(self, args, kwargs):
                                     # {args}
