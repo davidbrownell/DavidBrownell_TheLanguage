@@ -1,0 +1,11 @@
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
+Documentation: None
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Documentation: None
+  Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+Statements:
+  - # <class 'Original.Parser.Statements.ReturnStatementParserInfo.ReturnStatementParserInfo'>
+    Expression: None
+    Regions__: # <class 'types.ReturnStatementParserInfoRegions'>
+      Expression: None
+      Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"

@@ -1,0 +1,30 @@
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
+Documentation: None
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Documentation: None
+  Self__: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+Statements:
+  - # <class 'Original.Parser.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+    Base: None
+    ClassModifier: "ClassModifier.immutable"
+    ClassType: "ClassType.Class"
+    Documentation: "This is the documentation for the class."
+    Implements: None
+    Name: "Class"
+    Regions__: # <class 'types.ClassStatementParserInfoRegions'>
+      Base: None
+      ClassModifier: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+      ClassType: "[Ln 1, Col 1] -> [Ln 1, Col 6]"
+      Documentation: "[Ln 2, Col 5] -> [Ln 4, Col 8]"
+      Implements: None
+      Name: "[Ln 1, Col 7] -> [Ln 1, Col 12]"
+      Self__: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+      Statements: "[Ln 1, Col 14] -> [Ln 6, Col 1]"
+      Uses: None
+      Visibility: "[Ln 1, Col 1] -> [Ln 6, Col 1]"
+    Statements:
+      - # <class 'Original.Parser.Statements.NoopStatementParserInfo.NoopStatementParserInfo'>
+        Regions__: # <class 'types.NoopStatementParserInfoRegions'>
+          Self__: "[Ln 5, Col 5] -> [Ln 6, Col 1]"
+    Uses: None
+    Visibility: "VisibilityModifier.private"

@@ -1,0 +1,42 @@
+# <class 'Original.Parser.RootParserInfo.RootParserInfo'>
+Documentation: None
+Regions__: # <class 'types.RootParserInfoRegions'>
+  Documentation: None
+  Self__: "[Ln 1, Col 1] -> [Ln 3, Col 1]"
+Statements:
+  - # <class 'Original.Parser.Statements.YieldStatementParserInfo.YieldStatementParserInfo'>
+    Expression: # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+      Name: "foo"
+      Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
+        Name: "[Ln 1, Col 12] -> [Ln 1, Col 15]"
+        Self__: "[Ln 1, Col 12] -> [Ln 1, Col 15]"
+    IsRecursive: True
+    Regions__: # <class 'types.YieldStatementParserInfoRegions'>
+      Expression: "[Ln 1, Col 12] -> [Ln 1, Col 15]"
+      IsRecursive: "[Ln 1, Col 7] -> [Ln 1, Col 11]"
+      Self__: "[Ln 1, Col 1] -> [Ln 2, Col 1]"
+  - # <class 'Original.Parser.Statements.YieldStatementParserInfo.YieldStatementParserInfo'>
+    Expression: # <class 'Original.Parser.Expressions.TupleExpressionParserInfo.TupleExpressionParserInfo'>
+      Expressions:
+        - # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+          Name: "a"
+          Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
+            Name: "[Ln 2, Col 13] -> [Ln 2, Col 14]"
+            Self__: "[Ln 2, Col 13] -> [Ln 2, Col 14]"
+        - # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+          Name: "b"
+          Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
+            Name: "[Ln 2, Col 16] -> [Ln 2, Col 17]"
+            Self__: "[Ln 2, Col 16] -> [Ln 2, Col 17]"
+        - # <class 'Original.Parser.Expressions.GenericNameExpressionParserInfo.GenericNameExpressionParserInfo'>
+          Name: "c"
+          Regions__: # <class 'types.GenericNameExpressionParserInfoRegions'>
+            Name: "[Ln 2, Col 19] -> [Ln 2, Col 20]"
+            Self__: "[Ln 2, Col 19] -> [Ln 2, Col 20]"
+      Regions__: # <class 'types.TupleExpressionParserInfoRegions'>
+        Self__: "[Ln 2, Col 12] -> [Ln 2, Col 21]"
+    IsRecursive: True
+    Regions__: # <class 'types.YieldStatementParserInfoRegions'>
+      Expression: "[Ln 2, Col 12] -> [Ln 2, Col 21]"
+      IsRecursive: "[Ln 2, Col 7] -> [Ln 2, Col 11]"
+      Self__: "[Ln 2, Col 1] -> [Ln 3, Col 1]"
