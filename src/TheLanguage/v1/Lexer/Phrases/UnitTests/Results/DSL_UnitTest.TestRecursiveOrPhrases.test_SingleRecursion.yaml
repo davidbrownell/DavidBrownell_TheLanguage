@@ -1,0 +1,50 @@
+# <class 'v1.Lexer.Components.Phrase.Phrase.LexResult'>
+data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+  data:
+    - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+      data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        is_ignored: False
+        token: "lpar"
+        value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+          match: "<_sre.SRE_Match object; span=(0, 1), match='('>"
+      phrase: "lpar"
+    - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+      data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+        data:
+          - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+            data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+              is_ignored: False
+              token: "lpar"
+              value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                match: "<_sre.SRE_Match object; span=(1, 2), match='('>"
+            phrase: "lpar"
+          - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+            data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+              data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                is_ignored: False
+                token: "Word Token"
+                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                  match: "<_sre.SRE_Match object; span=(2, 7), match='hello'>"
+              phrase: "Word Token"
+            phrase: "(Word Token | Recursive Phrase)"
+          - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+            data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+              is_ignored: False
+              token: "rpar"
+              value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                match: "<_sre.SRE_Match object; span=(7, 8), match=')'>"
+            phrase: "rpar"
+        phrase: "Recursive Phrase"
+      phrase: "(Word Token | Recursive Phrase)"
+    - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+      data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        is_ignored: False
+        token: "rpar"
+        value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+          match: "<_sre.SRE_Match object; span=(8, 9), match=')'>"
+      phrase: "rpar"
+  phrase: "Recursive Phrase"
+iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+  begin: "[1, 1] (0)"
+  end: "[1, 10] (9)"
+success: True

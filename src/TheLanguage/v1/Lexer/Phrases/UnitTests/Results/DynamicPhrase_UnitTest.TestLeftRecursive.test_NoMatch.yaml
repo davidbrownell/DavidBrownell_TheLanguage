@@ -1,0 +1,16 @@
+# <class 'v1.Lexer.Components.Phrase.Phrase.LexResult'>
+data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+  data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+    data:
+      - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+        data: None
+        phrase: "Lower"
+      - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+        data: None
+        phrase: "Upper"
+    phrase: "All Phrases <Prefix>"
+  phrase: "Dynamic Phrase"
+iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+  begin: "[1, 1] (0)"
+  end: "[1, 1] (0)"
+success: False

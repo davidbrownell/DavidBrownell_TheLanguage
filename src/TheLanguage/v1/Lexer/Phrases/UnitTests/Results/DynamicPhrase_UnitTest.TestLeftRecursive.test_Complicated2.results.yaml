@@ -1,0 +1,230 @@
+# <class 'v1.Lexer.Components.Phrase.Phrase.LexResult'>
+data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+  data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+    data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+      data:
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+          data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+            data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+              data:
+                - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                  data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                    data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                      data:
+                        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                          data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                            data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                              data:
+                                - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                  data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                    data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                      data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                        is_ignored: False
+                                        token: "Lower"
+                                        value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                          match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
+                                      phrase: "Lower"
+                                    phrase: "All Phrases"
+                                  phrase: "Dynamic Phrase"
+                                - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                  data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                    is_ignored: False
+                                    token: "'+'"
+                                    value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                      match: "<_sre.SRE_Match object; span=(4, 5), match='+'>"
+                                  phrase: "'+'"
+                                - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                  data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                    data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                      data:
+                                        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                          data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                            data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                              data:
+                                                - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                  data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                    data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                      data:
+                                                        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                          data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                            data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                              data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                                                is_ignored: False
+                                                                token: "Lower"
+                                                                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                                                  match: "<_sre.SRE_Match object; span=(6, 9), match='var'>"
+                                                              phrase: "Lower"
+                                                            phrase: "All Phrases"
+                                                          phrase: "DynamicPhrasesType.Statements"
+                                                        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                          data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                                            is_ignored: False
+                                                            token: "'['"
+                                                            value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                                              match: "<_sre.SRE_Match object; span=(9, 10), match='['>"
+                                                          phrase: "'['"
+                                                        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                          data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                            data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                              data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                                                is_ignored: False
+                                                                token: "Lower"
+                                                                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                                                  match: "<_sre.SRE_Match object; span=(10, 11), match='a'>"
+                                                              phrase: "Lower"
+                                                            phrase: "All Phrases"
+                                                          phrase: "DynamicPhrasesType.Statements"
+                                                        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                          data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                                            is_ignored: False
+                                                            token: "']'"
+                                                            value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                                              match: "<_sre.SRE_Match object; span=(11, 12), match=']'>"
+                                                          phrase: "']'"
+                                                      phrase: "Index"
+                                                    phrase: "All Phrases"
+                                                  phrase: "DynamicPhrasesType.Statements"
+                                                - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                  data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                                    is_ignored: False
+                                                    token: "'['"
+                                                    value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                                      match: "<_sre.SRE_Match object; span=(12, 13), match='['>"
+                                                  phrase: "'['"
+                                                - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                  data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                    data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                      data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                                        is_ignored: False
+                                                        token: "Lower"
+                                                        value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                                          match: "<_sre.SRE_Match object; span=(13, 14), match='b'>"
+                                                      phrase: "Lower"
+                                                    phrase: "All Phrases"
+                                                  phrase: "DynamicPhrasesType.Statements"
+                                                - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                                  data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                                    is_ignored: False
+                                                    token: "']'"
+                                                    value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                                      match: "<_sre.SRE_Match object; span=(14, 15), match=']'>"
+                                                  phrase: "']'"
+                                              phrase: "Index"
+                                            phrase: "All Phrases"
+                                          phrase: "DynamicPhrasesType.Statements"
+                                        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                          data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                            is_ignored: False
+                                            token: "'['"
+                                            value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                              match: "<_sre.SRE_Match object; span=(15, 16), match='['>"
+                                          phrase: "'['"
+                                        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                          data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                            data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                              data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                                is_ignored: False
+                                                token: "Lower"
+                                                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                                  match: "<_sre.SRE_Match object; span=(16, 17), match='c'>"
+                                              phrase: "Lower"
+                                            phrase: "All Phrases"
+                                          phrase: "DynamicPhrasesType.Statements"
+                                        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                                          data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                            is_ignored: False
+                                            token: "']'"
+                                            value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                              match: "<_sre.SRE_Match object; span=(17, 18), match=']'>"
+                                          phrase: "']'"
+                                      phrase: "Index"
+                                    phrase: "All Phrases"
+                                  phrase: "DynamicPhrasesType.Statements"
+                              phrase: "Add"
+                            phrase: "All Phrases"
+                          phrase: "Dynamic Phrase"
+                        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                          data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                            is_ignored: False
+                            token: "'+'"
+                            value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                              match: "<_sre.SRE_Match object; span=(19, 20), match='+'>"
+                          phrase: "'+'"
+                        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                          data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                            data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                              data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                                is_ignored: False
+                                token: "Lower"
+                                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                                  match: "<_sre.SRE_Match object; span=(21, 26), match='three'>"
+                              phrase: "Lower"
+                            phrase: "All Phrases"
+                          phrase: "DynamicPhrasesType.Statements"
+                      phrase: "Add"
+                    phrase: "All Phrases"
+                  phrase: "DynamicPhrasesType.Statements"
+                - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                  data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                    is_ignored: False
+                    token: "'+'"
+                    value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                      match: "<_sre.SRE_Match object; span=(27, 28), match='+'>"
+                  phrase: "'+'"
+                - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                  data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                    data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                      data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                        is_ignored: False
+                        token: "Lower"
+                        value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                          match: "<_sre.SRE_Match object; span=(29, 33), match='four'>"
+                      phrase: "Lower"
+                    phrase: "All Phrases"
+                  phrase: "DynamicPhrasesType.Statements"
+              phrase: "Add"
+            phrase: "All Phrases"
+          phrase: "DynamicPhrasesType.Statements"
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+          data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            is_ignored: False
+            token: "'if'"
+            value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+              match: "<_sre.SRE_Match object; span=(34, 36), match='if'>"
+          phrase: "'if'"
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+          data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+            data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+              data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                is_ignored: False
+                token: "Upper"
+                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                  match: "<_sre.SRE_Match object; span=(37, 46), match='CONDITION'>"
+              phrase: "Upper"
+            phrase: "All Phrases"
+          phrase: "DynamicPhrasesType.Statements"
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+          data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            is_ignored: False
+            token: "'else'"
+            value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+              match: "<_sre.SRE_Match object; span=(47, 51), match='else'>"
+          phrase: "'else'"
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+          data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+            data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+              data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                is_ignored: False
+                token: "Lower"
+                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                  match: "<_sre.SRE_Match object; span=(52, 56), match='five'>"
+              phrase: "Lower"
+            phrase: "All Phrases"
+          phrase: "DynamicPhrasesType.Statements"
+      phrase: "Ter"
+    phrase: "All Phrases"
+  phrase: "DynamicPhrasesType.Statements"
+iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+  begin: "[1, 1] (0)"
+  end: "[1, 1] (0)"
+success: True
