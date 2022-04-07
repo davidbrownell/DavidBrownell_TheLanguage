@@ -559,6 +559,11 @@ class TestLexReturnsNone(object):
 
         # ----------------------------------------------------------------------
         @Interface.override
+        def PrettyPrint(self, *args, **kwargs):
+            pass
+
+        # ----------------------------------------------------------------------
+        @Interface.override
         def _PopulateRecursiveImpl(
             self,
             new_phrase: Phrase,

@@ -16,8 +16,9 @@
 """Contains the SequencePhrase object"""
 
 import os
+import sys
 
-from typing import List, Optional, Tuple, Union
+from typing import Callable, List, Optional, TextIO, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -64,10 +65,13 @@ class SequencePhrase(Phrase):
         self,
         comment_token: RegexToken,
         phrases: List[Phrase],
+        precedence_func: Optional[Callable[[Phrase, List[Phrase.LexResultData.DataItemType]], int]]=None,
         name: Optional[str]=None,
     ):
         assert phrases
         assert all(phrases)
+
+        precedence_func = precedence_func or (lambda *args, **kwargs: sys.maxsize)
 
         if name is None:
             name = self.__class__._CreateDefaultName(phrases)  # type: ignore  # pylint: disable=protected-access
@@ -80,6 +84,7 @@ class SequencePhrase(Phrase):
 
         self.comment_token                  = comment_token
         self.phrases                        = phrases
+        self._precedence_func               = precedence_func
         self._name_is_default               = name_is_default
 
     # ----------------------------------------------------------------------
@@ -124,6 +129,30 @@ class SequencePhrase(Phrase):
             return result
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def PrettyPrint(
+        indentation: str,
+        data: Phrase.LexResultData.DataItemType,
+        output_stream: TextIO,
+    ) -> None:
+        assert isinstance(data, list), data
+
+        output_stream.write("{}[[[\n".format(indentation))
+
+        this_indentation = indentation + "    "
+
+        for item in data:
+            if isinstance(item, Phrase.TokenLexResultData):
+                assert item.is_ignored
+                continue
+
+            assert isinstance(item, Phrase.LexResultData), item
+            item.phrase.PrettyPrint(this_indentation, item.data, output_stream)
+
+        output_stream.write("{}]]]\n".format(indentation))
+
+    # ----------------------------------------------------------------------
     def LexSuffix(
         self,
         unique_id: Tuple[str, ...],
@@ -142,6 +171,28 @@ class SequencePhrase(Phrase):
             starting_phrase_index=1,
             single_threaded=single_threaded,
         )
+
+    # ----------------------------------------------------------------------
+    def CalcPrecedence(
+        self,
+        data_items: List[Phrase.LexResultData.DataItemType],
+    ) -> int:
+        """\
+        Returns the precedence of this phrase.
+
+        Values with lower values are considered to have higher precedence and will be grouped
+        together when lexing left- and right-recursive phrases. For example, the statement:
+
+            1 + 2 * 3 - 4
+
+        will be grouped as:
+
+            (1 + (2 * 3)) - 4
+
+        because multiplication has higher precedence than addition.
+        """
+
+        return self._precedence_func(self, data_items)
 
     # ----------------------------------------------------------------------
     # |

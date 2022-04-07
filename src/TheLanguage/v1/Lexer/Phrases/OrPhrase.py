@@ -18,7 +18,7 @@
 import os
 import textwrap
 
-from typing import List, Optional, Tuple
+from typing import List, Optional, TextIO, Tuple
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -239,6 +239,17 @@ class OrPhrase(Phrase):
                     None,
                 ),
             )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def PrettyPrint(
+        indentation: str,
+        data: Phrase.LexResultData.DataItemType,
+        output_stream: TextIO,
+    ) -> None:
+        assert isinstance(data, Phrase.LexResultData), data
+        data.phrase.PrettyPrint(indentation, data.data, output_stream)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

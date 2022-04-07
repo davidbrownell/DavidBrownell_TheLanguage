@@ -72,6 +72,9 @@ class TestStandard(object):
                   phrase: "lower"
                 phrase: "(lower)"
               phrase: "Dynamic Phrase"
+            iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+              begin: "[1, 1] (0)"
+              end: "[1, 5] (4)"
             success: True
             """,
         )
@@ -98,6 +101,9 @@ class TestStandard(object):
                     phrase: "lower"
                 phrase: "(lower)"
               phrase: "Dynamic Phrase"
+            iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+              begin: "[1, 1] (0)"
+              end: "[1, 1] (0)"
             success: False
             """,
         )
@@ -127,6 +133,9 @@ class TestStandard(object):
                   phrase: "number"
                 phrase: "(lower | number)"
               phrase: "Dynamic Phrase"
+            iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+              begin: "[1, 1] (0)"
+              end: "[1, 5] (4)"
             success: True
             """,
         )
@@ -156,6 +165,9 @@ class TestStandard(object):
                   phrase: "lower"
                 phrase: "(lower | number)"
               phrase: "Dynamic Phrase"
+            iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+              begin: "[1, 1] (0)"
+              end: "[1, 5] (4)"
             success: True
             """,
         )
@@ -191,6 +203,9 @@ class TestStandard(object):
                   phrase: "number"
                 phrase: "(lower | number)"
               phrase: "Dynamic Phrase"
+            iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+              begin: "[1, 1] (0)"
+              end: "[1, 5] (4)"
             success: True
             """,
         )
@@ -202,7 +217,7 @@ class TestStandard(object):
             2) StartPhrase, "lower"
             3) EndPhrase, "lower" [False]
             4) StartPhrase, "number"
-            5) OnInternalPhraseAsync, 0, 4
+            5) OnInternalPhrase, 0, 4
                 # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   is_ignored: False
@@ -211,7 +226,7 @@ class TestStandard(object):
                     match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
                 phrase: "number"
             6) EndPhrase, "number" [True]
-            7) OnInternalPhraseAsync, 0, 4
+            7) OnInternalPhrase, 0, 4
                 # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -222,7 +237,7 @@ class TestStandard(object):
                   phrase: "number"
                 phrase: "(lower | number)"
             8) EndPhrase, "(lower | number)" [True]
-            9) OnInternalPhraseAsync, 0, 4
+            9) OnInternalPhrase, 0, 4
                 # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
@@ -263,6 +278,9 @@ class TestStandard(object):
                     phrase: "lower"
                 phrase: "(lower)"
               phrase: "Dynamic Phrase"
+            iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+              begin: "[1, 1] (0)"
+              end: "[1, 1] (0)"
             success: False
             """,
         )
@@ -343,12 +361,48 @@ class TestLeftRecursive(object):
     _phrases                                = [
         CreatePhrase(RegexToken("Lower", re.compile(r"(?P<value>[a-z_]+[0-9]*)"))),
         CreatePhrase(RegexToken("Upper", re.compile(r"(?P<value>[A-Z_]+[0-9]*)"))),
-        CreatePhrase(name="Add", item=[DynamicPhrasesType.Statements, "+", DynamicPhrasesType.Statements]),
-        CreatePhrase(name="Sub", item=[DynamicPhrasesType.Statements, "-", DynamicPhrasesType.Statements]),
-        CreatePhrase(name="Mul", item=[DynamicPhrasesType.Statements, "*", DynamicPhrasesType.Statements]),
-        CreatePhrase(name="Div", item=[DynamicPhrasesType.Statements, "/", DynamicPhrasesType.Statements]),
-        CreatePhrase(name="Ter", item=[DynamicPhrasesType.Statements, "if", DynamicPhrasesType.Statements, "else", DynamicPhrasesType.Statements]),
-        CreatePhrase(name="Index", item=[DynamicPhrasesType.Statements, "[", DynamicPhrasesType.Statements, "]"]),
+        CreatePhrase(
+            PhraseItem(
+                name="Add",
+                item=[DynamicPhrasesType.Statements, "+", DynamicPhrasesType.Statements],
+                precedence_func=lambda *args, **kwargs: 1000,
+            ),
+        ),
+        CreatePhrase(
+            PhraseItem(
+                name="Sub",
+                item=[DynamicPhrasesType.Statements, "-", DynamicPhrasesType.Statements],
+                precedence_func=lambda *args, **kwargs: 1000,
+            ),
+        ),
+        CreatePhrase(
+            PhraseItem(
+                name="Mul",
+                item=[DynamicPhrasesType.Statements, "*", DynamicPhrasesType.Statements],
+                precedence_func=lambda *args, **kwargs: 100,
+            ),
+        ),
+        CreatePhrase(
+            PhraseItem(
+                name="Div",
+                item=[DynamicPhrasesType.Statements, "/", DynamicPhrasesType.Statements],
+                precedence_func=lambda *args, **kwargs: 100,
+            ),
+        ),
+        CreatePhrase(
+            PhraseItem(
+                name="Ter",
+                item=[DynamicPhrasesType.Statements, "if", DynamicPhrasesType.Statements, "else", DynamicPhrasesType.Statements],
+                precedence_func=lambda *args, **kwargs: 10,
+            ),
+        ),
+        CreatePhrase(
+            PhraseItem(
+                name="Index",
+                item=[DynamicPhrasesType.Statements, "[", DynamicPhrasesType.Statements, "]"],
+                precedence_func=lambda *args, **kwargs: 1,
+            ),
+        ),
     ]
 
     _phrase                                 = DynamicPhrase(
@@ -552,3 +606,73 @@ class TestLeftRecursive(object):
         )
 
         CompareResultsFromFile(MethodCallsToString(parse_mock_ex), suffix=".events", file_ext=".txt")
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_Expr1(self, parse_mock_ex):
+        CompareResultsFromFile(
+            str(
+                self._phrase.Lex(
+                    ("root", ),
+                    CreateIterator("one + two * three + four"),
+                    parse_mock_ex,
+                    single_threaded=True,
+                ),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_Expr2(self, parse_mock_ex):
+        CompareResultsFromFile(
+            str(
+                self._phrase.Lex(
+                    ("root", ),
+                    CreateIterator("one * two * three + four"),
+                    parse_mock_ex,
+                    single_threaded=True,
+                ),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_Expr3(self, parse_mock_ex):
+        CompareResultsFromFile(
+            str(
+                self._phrase.Lex(
+                    ("root", ),
+                    CreateIterator("one + two * six / three + five"),
+                    parse_mock_ex,
+                    single_threaded=True,
+                ),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_Expr4(self, parse_mock_ex):
+        CompareResultsFromFile(
+            str(
+                self._phrase.Lex(
+                    ("root", ),
+                    CreateIterator("one + two[a] * three"),
+                    parse_mock_ex,
+                    single_threaded=True,
+                ),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_Expr5(self, parse_mock_ex):
+        CompareResultsFromFile(
+            str(
+                self._phrase.Lex(
+                    ("root", ),
+                    CreateIterator("one * two[a] * three"),
+                    parse_mock_ex,
+                    single_threaded=True,
+                ),
+            ),
+        )

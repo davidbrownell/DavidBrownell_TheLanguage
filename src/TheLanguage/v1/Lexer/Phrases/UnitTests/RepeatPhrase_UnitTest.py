@@ -730,6 +730,11 @@ def test_parseReturnsNone(parse_mock):
 
         # ----------------------------------------------------------------------
         @Interface.override
+        def PrettyPrint(self, *args, **kwargs):
+            pass
+
+        # ----------------------------------------------------------------------
+        @Interface.override
         def _PopulateRecursiveImpl(
             self,
             new_phrase: Phrase,

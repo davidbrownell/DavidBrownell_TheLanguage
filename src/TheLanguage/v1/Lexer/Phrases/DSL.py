@@ -93,12 +93,15 @@ class PhraseItem(object):
 
         # When creating an OrPhrase, any ambiguities are resolved using the order in which they appear (rather than generating an error)
         ambiguities_resolved_by_order: Optional[bool]=None,
+
+        precedence_func: Optional[Callable[[Phrase, List[Phrase.LexResultData.DataItemType]], int]]=None,
     ):
         self.item                           = item
         self.name                           = name
         self.exclude_phrases                = exclude_phrases
         self.is_valid_data_func             = is_valid_data_func
         self.ambiguities_resolved_by_order  = ambiguities_resolved_by_order
+        self.precedence_func                = precedence_func
 
 
 # ----------------------------------------------------------------------
@@ -208,12 +211,14 @@ def _PopulateItem(
     exclude_phrases: Optional[List[Union[str, Phrase]]]=None,
     is_valid_data_func: Optional[Callable[[Phrase.LexResultData], bool]]=None,
     ambiguities_resolved_by_order: Optional[bool]=None,
+    precedence_func: Optional[Callable[[Phrase, List[Phrase.LexResultData.DataItemType]], int]]=None,
 ) -> Phrase:
     if isinstance(item, Phrase):
         assert name is None, name
         assert exclude_phrases is None, exclude_phrases
         assert is_valid_data_func is None, is_valid_data_func
         assert ambiguities_resolved_by_order is None, ambiguities_resolved_by_order
+        assert precedence_func is None
 
         return item
 
@@ -222,6 +227,7 @@ def _PopulateItem(
         assert exclude_phrases is None, exclude_phrases
         assert is_valid_data_func is None, is_valid_data_func
         assert ambiguities_resolved_by_order is None, ambiguities_resolved_by_order
+        assert precedence_func is None
 
         phrase = _PopulateItem(
             comment_token,
@@ -230,6 +236,7 @@ def _PopulateItem(
             exclude_phrases=item.exclude_phrases,
             is_valid_data_func=item.is_valid_data_func,
             ambiguities_resolved_by_order=item.ambiguities_resolved_by_order,
+            precedence_func=item.precedence_func,
         )
 
         if isinstance(item, CustomArityPhraseItem):
@@ -244,6 +251,7 @@ def _PopulateItem(
 
     if isinstance(item, DynamicPhrasesType):
         assert ambiguities_resolved_by_order is None, ambiguities_resolved_by_order
+        assert precedence_func is None, precedence_func
 
         return DynamicPhrase(
             item,
@@ -257,6 +265,8 @@ def _PopulateItem(
     assert is_valid_data_func is None, is_valid_data_func
 
     if isinstance(item, tuple):
+        assert precedence_func is None, precedence_func
+
         or_phrases = [_PopulateItem(comment_token, phrase_item) for phrase_item in item]
 
         return OrPhrase(
@@ -273,8 +283,11 @@ def _PopulateItem(
         return SequencePhrase(
             comment_token,
             sequence_phrases,
+            precedence_func=precedence_func,
             name=name,
         )
+
+    assert precedence_func is None, precedence_func
 
     if isinstance(item, Token):
         return TokenPhrase(

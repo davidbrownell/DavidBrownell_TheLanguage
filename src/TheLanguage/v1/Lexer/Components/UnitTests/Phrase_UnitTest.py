@@ -68,6 +68,11 @@ def CreatePhrase(result):
             return self.parse_mock(*args, **kwargs)
 
         # ----------------------------------------------------------------------
+        @Interface.override
+        def PrettyPrint(self, *args, **kwargs):
+            pass
+
+        # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         # ----------------------------------------------------------------------
         @Interface.override
@@ -102,6 +107,11 @@ class TestStandard(object):
         @staticmethod
         @Interface.override
         async def Lex(*args, **kwargs):
+            pass
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def PrettyPrint(self, *args, **kwargs):
             pass
 
         # ----------------------------------------------------------------------

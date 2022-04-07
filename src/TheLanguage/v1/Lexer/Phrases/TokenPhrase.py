@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional, Tuple
+from typing import Optional, TextIO, Tuple
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -111,6 +111,22 @@ class TokenPhrase(Phrase):
                 return None
 
             return Phrase.LexResult.Create(True, iter_range, data)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def PrettyPrint(
+        indentation: str,
+        data: Phrase.LexResultData.DataItemType,
+        output_stream: TextIO,
+    ) -> None:
+        assert isinstance(data, Phrase.TokenLexResultData), data
+
+        if data.is_ignored or not isinstance(data.token, RegexToken):
+            return
+
+        assert isinstance(data.value, RegexToken.MatchResult), data.value
+        output_stream.write("{}{}\n".format(indentation, data.value.match.group()))
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

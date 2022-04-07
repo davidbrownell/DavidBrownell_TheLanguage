@@ -16,6 +16,7 @@
 """Contains types used when defining phrases"""
 
 import os
+import sys
 import textwrap
 import threading
 
@@ -211,6 +212,13 @@ class Phrase(Interface.Interface, ObjectReprImplBase):
                 potential_error_context=None,
             )
 
+        # ----------------------------------------------------------------------
+        def PrettyPrint(
+            self,
+            output_stream: TextIO=sys.stdout,
+        ) -> None:
+            self.phrase.PrettyPrint("", self.data, output_stream)
+
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class TokenLexResultData(ObjectReprImplBase):
@@ -365,6 +373,17 @@ class Phrase(Interface.Interface, ObjectReprImplBase):
         None,                               # Terminate processing
         "Phrase.LexResult",                 # Result may or may not be successful
     ]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def PrettyPrint(
+        indentation: str,
+        data: "Phrase.LexResultData.DataItemType",
+        output_stream: TextIO,
+    ) -> None:
+        """Pretty prints output"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------

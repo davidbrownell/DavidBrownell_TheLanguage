@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Tuple
+from typing import TextIO, Tuple
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -56,6 +56,16 @@ class RecursivePlaceholderPhrase(Phrase):
         *,
         ignore_whitespace=False,  # type: ignore  # pylint: disable=unused-argument
     ):
+        raise Exception("This method should never be called on an instance of this object")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def PrettyPrint(
+        indentation: str,
+        data: Phrase.LexResultData.DataItemType,
+        output_stream: TextIO,
+    ) -> None:
         raise Exception("This method should never be called on an instance of this object")
 
     # ----------------------------------------------------------------------

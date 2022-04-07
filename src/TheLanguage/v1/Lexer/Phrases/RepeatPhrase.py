@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional, Tuple
+from typing import List, Optional, TextIO, Tuple
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -136,6 +136,26 @@ class RepeatPhrase(Phrase):
                 Phrase.NormalizedIteratorRange.Create(normalized_iter.Clone(), working_iter),
                 Phrase.LexResultData.Create(self, unique_id, results, None),
             )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def PrettyPrint(
+        indentation: str,
+        data: Phrase.LexResultData.DataItemType,
+        output_stream: TextIO,
+    ) -> None:
+        assert isinstance(data, list), data
+
+        output_stream.write("{}{{{{{{\n".format(indentation))
+
+        this_indentation = indentation + "    "
+
+        for item in data:
+            assert isinstance(item, Phrase.LexResultData), item
+            item.phrase.PrettyPrint(this_indentation, item.data, output_stream)
+
+        output_stream.write("{}}}}}}}\n".format(indentation))
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
