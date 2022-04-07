@@ -1,0 +1,97 @@
+# <class 'v1.Lexer.Components.Phrase.Phrase.LexResult'>
+data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+  data:
+    - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+      data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        is_ignored: False
+        token: "Word Token"
+        value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+          match: "<_sre.SRE_Match object; span=(0, 5), match='worda'>"
+      phrase: "Word Token"
+    - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+      data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        is_ignored: False
+        token: "Newline+"
+        value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+          range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+            begin: 5
+            end: 8
+      phrase: "Newline+"
+    - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+      data:
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          is_ignored: True
+          token: "Indent"
+          value: # <class 'v1.Lexer.Components.Tokens.IndentToken.MatchResult'>
+            indent_value: 8
+            range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+              begin: 8
+              end: 16
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+          data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            is_ignored: False
+            token: "Word Token"
+            value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+              match: "<_sre.SRE_Match object; span=(16, 21), match='wordb'>"
+          phrase: "Word Token"
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          is_ignored: True
+          token: "Newline+"
+          value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+            range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+              begin: 21
+              end: 22
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          is_ignored: True
+          token: "Indent"
+          value: # <class 'v1.Lexer.Components.Tokens.IndentToken.MatchResult'>
+            indent_value: 12
+            range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+              begin: 22
+              end: 34
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+          data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+            is_ignored: False
+            token: "Word Token"
+            value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+              match: "<_sre.SRE_Match object; span=(34, 39), match='wordc'>"
+          phrase: "Word Token"
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          is_ignored: True
+          token: "Newline+"
+          value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+            range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+              begin: 39
+              end: 41
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          is_ignored: True
+          token: "Dedent"
+          value: # <class 'v1.Lexer.Components.Tokens.DedentToken.MatchResult'>
+            {}
+        - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          is_ignored: True
+          token: "Dedent"
+          value: # <class 'v1.Lexer.Components.Tokens.DedentToken.MatchResult'>
+            {}
+      phrase: "Nested"
+    - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+      data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        is_ignored: False
+        token: "Word Token"
+        value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+          match: "<_sre.SRE_Match object; span=(41, 46), match='wordd'>"
+      phrase: "Word Token"
+    - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+      data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        is_ignored: False
+        token: "Newline+"
+        value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+          range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+            begin: 46
+            end: 47
+      phrase: "Newline+"
+  phrase: "Phrase"
+iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+  begin: "[1, 1] (0)"
+  end: "[8, 1] (47)"
+success: True

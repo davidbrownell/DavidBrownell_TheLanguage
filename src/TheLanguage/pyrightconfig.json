@@ -1,0 +1,6 @@
+{
+    "reportUnnecessaryTypeIgnoreComments": true,
+    "exclude": [
+        "**/*Tests/*"
+    ]
+}

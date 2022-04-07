@@ -1,0 +1,24 @@
+0) StartPhrase, "(Word Phrase | Number Phrase | Upper Phrase)"
+1) StartPhrase, "Word Phrase"
+2) StartPhrase, "Word Token"
+3) OnInternalPhrase, 0, 4
+    # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+    data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+      is_ignored: False
+      token: "Word Token"
+      value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+        match: "<_sre.SRE_Match object; span=(0, 4), match='this'>"
+    phrase: "Word Token"
+4) EndPhrase, "Word Token" [True]
+5) StartPhrase, "Newline+"
+6) EndPhrase, "Newline+" [False]
+7) EndPhrase, "Word Phrase" [False]
+8) StartPhrase, "Number Phrase"
+9) StartPhrase, "Number Token"
+10) EndPhrase, "Number Token" [False]
+11) EndPhrase, "Number Phrase" [False]
+12) StartPhrase, "Upper Phrase"
+13) StartPhrase, "Upper Token"
+14) EndPhrase, "Upper Token" [False]
+15) EndPhrase, "Upper Phrase" [False]
+16) EndPhrase, "(Word Phrase | Number Phrase | Upper Phrase)" [False]

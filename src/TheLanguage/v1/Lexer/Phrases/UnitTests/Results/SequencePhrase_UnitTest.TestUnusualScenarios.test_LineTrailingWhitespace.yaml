@@ -1,0 +1,67 @@
+# <class 'v1.Lexer.Components.Phrase.Phrase.LexResult'>
+data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+  data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+    data:
+      - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+        data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          is_ignored: False
+          token: "lower"
+          value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+            match: "<_sre.SRE_Match object; span=(0, 6), match='lower1'>"
+        phrase: "lower"
+      - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        is_ignored: True
+        token: "HorizontalWhitespace"
+        value: # <class 'v1.Lexer.Components.Tokens.HorizontalWhitespaceToken.MatchResult'>
+          range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+            begin: 6
+            end: 10
+      - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+        data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          is_ignored: False
+          token: "Newline+"
+          value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+            range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+              begin: 10
+              end: 11
+        phrase: "Newline+"
+    phrase: "[lower, Newline+]"
+  phrase: "([lower, Newline+] | [upper, Newline+])"
+iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+  begin: "[1, 1] (0)"
+  end: "[2, 1] (11)"
+success: True
+
+# <class 'v1.Lexer.Components.Phrase.Phrase.LexResult'>
+data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+  data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+    data:
+      - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+        data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          is_ignored: False
+          token: "lower"
+          value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+            match: "<_sre.SRE_Match object; span=(11, 17), match='lower2'>"
+        phrase: "lower"
+      - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+        is_ignored: True
+        token: "HorizontalWhitespace"
+        value: # <class 'v1.Lexer.Components.Tokens.HorizontalWhitespaceToken.MatchResult'>
+          range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+            begin: 17
+            end: 19
+      - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+        data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+          is_ignored: False
+          token: "Newline+"
+          value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+            range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+              begin: 19
+              end: 20
+        phrase: "Newline+"
+    phrase: "[lower, Newline+]"
+  phrase: "([lower, Newline+] | [upper, Newline+])"
+iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+  begin: "[2, 1] (11)"
+  end: "[3, 1] (20)"
+success: True
