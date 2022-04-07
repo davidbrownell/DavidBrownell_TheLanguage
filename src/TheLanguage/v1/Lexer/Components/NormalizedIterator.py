@@ -41,9 +41,9 @@ with InitRelativeImports():
 def NormalizedIteratorCopyOnWriteDecorator(method):
     # ----------------------------------------------------------------------
     def CopyOnWrite(self, *args, **kwargs):
-        if not self._owns_impl:                         # pylint: ignore
-            self._impl = self._impl.Clone()             # pylint: ignore
-            self._owns_impl = True                      # pylint: ignore
+        if not self._owns_impl:                         # pylint: disable=protected-access
+            self._impl = self._impl.Clone()             # pylint: disable=protected-access
+            self._owns_impl = True                      # pylint: disable=protected-access
 
         return method(self, *args, **kwargs)
 
