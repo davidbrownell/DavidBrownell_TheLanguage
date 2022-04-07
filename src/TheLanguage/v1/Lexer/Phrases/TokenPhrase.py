@@ -98,6 +98,7 @@ class TokenPhrase(Phrase):
                 Phrase.TokenLexResultData.Create(
                     self.token,
                     result,
+                    iter_range,
                     is_ignored=self.token.is_always_ignored,
                 ),
                 None,

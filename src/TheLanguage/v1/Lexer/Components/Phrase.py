@@ -224,6 +224,7 @@ class Phrase(Interface.Interface, ObjectReprImplBase):
     class TokenLexResultData(ObjectReprImplBase):
         token: Token
         value: Token.MatchResult
+        iter_range: "Phrase.NormalizedIteratorRange"
         is_ignored: bool
 
         # ----------------------------------------------------------------------
@@ -346,7 +347,7 @@ class Phrase(Interface.Interface, ObjectReprImplBase):
         if self.parent is None:
             self.parent = parent
         else:
-            assert self.parent == parent, (
+            assert self.parent != parent, (
                 "A Phrase should not be the child of multiple parents; consider constructing the Phrase with `PhraseItem` in `../Phrases/DSL.py`.",
                 self.parent.name,
                 parent.name if parent is not None else None,

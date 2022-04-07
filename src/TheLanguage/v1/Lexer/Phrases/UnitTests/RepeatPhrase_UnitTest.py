@@ -82,6 +82,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 1] (0)"
+                        end: "[1, 4] (3)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
@@ -91,6 +94,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 4] (3)"
+                        end: "[2, 1] (4)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -115,6 +121,9 @@ class TestStandard(object):
                 # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   is_ignored: False
+                  iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                    begin: "[1, 1] (0)"
+                    end: "[1, 4] (3)"
                   token: "Word"
                   value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                     match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
@@ -127,6 +136,9 @@ class TestStandard(object):
                 data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                     is_ignored: False
+                    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                      begin: "[1, 1] (0)"
+                      end: "[1, 4] (3)"
                     token: "Word"
                     value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                       match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
@@ -141,6 +153,9 @@ class TestStandard(object):
                 # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                   is_ignored: False
+                  iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                    begin: "[1, 4] (3)"
+                    end: "[2, 1] (4)"
                   token: "Newline+"
                   value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                     range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -153,6 +168,9 @@ class TestStandard(object):
                 data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                     is_ignored: False
+                    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                      begin: "[1, 4] (3)"
+                      end: "[2, 1] (4)"
                     token: "Newline+"
                     value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                       range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -168,6 +186,9 @@ class TestStandard(object):
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         is_ignored: False
+                        iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                          begin: "[1, 1] (0)"
+                          end: "[1, 4] (3)"
                         token: "Word"
                         value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                           match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
@@ -177,6 +198,9 @@ class TestStandard(object):
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                         is_ignored: False
+                        iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                          begin: "[1, 4] (3)"
+                          end: "[2, 1] (4)"
                         token: "Newline+"
                         value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                           range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -214,6 +238,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 1] (0)"
+                        end: "[1, 4] (3)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
@@ -223,6 +250,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 4] (3)"
+                        end: "[2, 1] (4)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -234,6 +264,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[2, 1] (4)"
+                        end: "[2, 4] (7)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
@@ -243,6 +276,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[2, 4] (7)"
+                        end: "[3, 1] (8)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -286,6 +322,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 1] (0)"
+                        end: "[1, 4] (3)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
@@ -295,6 +334,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 4] (3)"
+                        end: "[2, 1] (4)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -306,6 +348,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[2, 1] (4)"
+                        end: "[2, 4] (7)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
@@ -315,6 +360,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[2, 4] (7)"
+                        end: "[3, 1] (8)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -397,6 +445,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 1] (0)"
+                        end: "[1, 4] (3)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(0, 3), match='abc'>"
@@ -446,6 +497,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 1] (0)"
+                        end: "[1, 4] (3)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
@@ -455,6 +509,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 4] (3)"
+                        end: "[2, 1] (4)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -466,6 +523,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[2, 1] (4)"
+                        end: "[2, 4] (7)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
@@ -475,6 +535,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[2, 4] (7)"
+                        end: "[3, 1] (8)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -516,6 +579,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 1] (0)"
+                        end: "[1, 4] (3)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
@@ -525,6 +591,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 4] (3)"
+                        end: "[2, 1] (4)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -536,6 +605,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[2, 1] (4)"
+                        end: "[2, 4] (7)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
@@ -545,6 +617,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[2, 4] (7)"
+                        end: "[3, 1] (8)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -578,6 +653,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 1] (0)"
+                        end: "[1, 4] (3)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
@@ -587,6 +665,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 4] (3)"
+                        end: "[2, 1] (4)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -627,6 +708,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 1] (0)"
+                        end: "[1, 4] (3)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
@@ -636,6 +720,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 4] (3)"
+                        end: "[2, 1] (4)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -676,6 +763,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 1] (0)"
+                        end: "[1, 4] (3)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
@@ -685,6 +775,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[1, 4] (3)"
+                        end: "[2, 1] (4)"
                       token: "Newline+"
                       value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                         range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
@@ -696,6 +789,9 @@ class TestStandard(object):
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
                       is_ignored: False
+                      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                        begin: "[2, 1] (4)"
+                        end: "[2, 4] (7)"
                       token: "Word"
                       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                         match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
@@ -773,22 +869,25 @@ def test_OnInternalPhrase(parse_mock):
 
     assert str(result) == textwrap.dedent(
         """\
-        # <class 'v1.Lexer.Components.Phrase.Phrase.LexResult'>
-        data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
-          data:
-            - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
-              data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                is_ignored: False
-                token: "Newline+"
-                value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
-                  range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
-                    begin: 0
-                    end: 4
-              phrase: "Newline+"
-          phrase: "{Newline+, 1, None}"
-        iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-          begin: "[1, 1] (0)"
-          end: "[5, 1] (4)"
-        success: True
+            # <class 'v1.Lexer.Components.Phrase.Phrase.LexResult'>
+            data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+              data:
+                - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+                  data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+                    is_ignored: False
+                    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                      begin: "[1, 1] (0)"
+                      end: "[5, 1] (4)"
+                    token: "Newline+"
+                    value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+                      range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+                        begin: 0
+                        end: 4
+                  phrase: "Newline+"
+              phrase: "{Newline+, 1, None}"
+            iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+              begin: "[1, 1] (0)"
+              end: "[5, 1] (4)"
+            success: True
         """,
     )

@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from dataclasses import dataclass, field
 
@@ -129,7 +129,42 @@ class NormalizedIterator(object):
         if other is None:
             return False
 
-        return self.ToCacheKey() == other.ToCacheKey()
+        return self.__class__._Impl.CompareCacheKeys(self.ToCacheKey(), other.ToCacheKey()) == 0
+
+    # ----------------------------------------------------------------------
+    def __ne__(self, other) -> bool:
+        if other is None:
+            return True
+
+        return self.__class__._Impl.CompareCacheKeys(self.ToCacheKey(), other.ToCacheKey()) != 0
+
+    # ----------------------------------------------------------------------
+    def __lt__(self, other) -> bool:
+        if other is None:
+            return False
+
+        return self.__class__._Impl.CompareCacheKeys(self.ToCacheKey(), other.ToCacheKey()) < 0
+
+    # ----------------------------------------------------------------------
+    def __le__(self, other) -> bool:
+        if other is None:
+            return False
+
+        return self.__class__._Impl.CompareCacheKeys(self.ToCacheKey(), other.ToCacheKey()) <= 0
+
+    # ----------------------------------------------------------------------
+    def __gt__(self, other) -> bool:
+        if other is None:
+            return True
+
+        return self.__class__._Impl.CompareCacheKeys(self.ToCacheKey(), other.ToCacheKey()) > 0
+
+    # ----------------------------------------------------------------------
+    def __ge__(self, other) -> bool:
+        if other is None:
+            return True
+
+        return self.__class__._Impl.CompareCacheKeys(self.ToCacheKey(), other.ToCacheKey()) >= 0
 
     # ----------------------------------------------------------------------
     def __repr__(self) -> str:
@@ -298,14 +333,54 @@ class NormalizedIterator(object):
             return False
 
         # ----------------------------------------------------------------------
+        CacheKeyType                        = Tuple[
+            bytes,
+            int,
+            Optional[int],
+        ]
+
         @InstanceCacheGet
-        def ToCacheKey(self):
+        def ToCacheKey(self) -> CacheKeyType:
             return (
                 self.content.hash,
                 self.offset,
-                self.whitespace_range_index,
                 self.consumed_dedent_count,
             )
+
+        # ----------------------------------------------------------------------
+        @staticmethod
+        def CompareCacheKeys(
+            this_key: CacheKeyType,
+            that_key: CacheKeyType,
+        ) -> int:
+            # hash
+            if this_key[0] < that_key[0]:
+                return -1
+            if this_key[0] > that_key[0]:
+                return 1
+
+            # offset
+            if this_key[1] < that_key[1]:
+                return -1
+            if this_key[1] > that_key[1]:
+                return 1
+
+            # consumed_dedent_count
+            this_value = this_key[2]
+            that_value = that_key[2]
+
+            if this_value is None and that_value is None:
+                pass
+            elif this_value is None:
+                return -1
+            elif that_value is None:
+                return 1
+            elif this_value < that_value:
+                return -1
+            elif this_value > that_value:
+                return 1
+
+            return 0
 
         # ----------------------------------------------------------------------
         @InstanceCacheGet
