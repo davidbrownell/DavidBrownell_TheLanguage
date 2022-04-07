@@ -5,6 +5,9 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
         data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
           is_ignored: False
+          iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+            begin: "[1, 1] (0)"
+            end: "[1, 5] (4)"
           token: "Word Token"
           value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
             match: "<_sre.SRE_Match object; span=(0, 4), match='word'>"
@@ -12,6 +15,9 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
         data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
           is_ignored: False
+          iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+            begin: "[1, 5] (4)"
+            end: "[2, 1] (5)"
           token: "Newline+"
           value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
             range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>

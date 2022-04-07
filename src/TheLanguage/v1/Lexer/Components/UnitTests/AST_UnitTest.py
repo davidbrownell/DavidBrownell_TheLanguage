@@ -32,13 +32,9 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Node():
-    node = Node(
-        None,
-        is_ignored=False,
-    )
+    node = Node(None)
 
     assert node.type is None
-    assert node.is_ignored == False
     assert node.parent is None
     assert node.children == []
     assert node.iter_range is None

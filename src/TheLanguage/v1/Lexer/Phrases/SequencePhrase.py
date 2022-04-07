@@ -265,6 +265,8 @@ class SequencePhrase(Phrase):
                     if ignore_whitespace_ctr == 0 and ignored_indentation_level is None:
                         break
 
+                    prev_iter = working_iter.Clone()
+
                     result = self._indent_token.Match(working_iter)
                     assert result is not None
 
@@ -272,6 +274,7 @@ class SequencePhrase(Phrase):
                         Phrase.TokenLexResultData.Create(
                             self._indent_token,
                             result,
+                            Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
                             is_ignored=True,
                         ),
                     )
@@ -285,6 +288,8 @@ class SequencePhrase(Phrase):
                     elif ignore_whitespace_ctr != 0 and ignored_indentation_level == 0:
                         break
 
+                    prev_iter = working_iter.Clone()
+
                     result = self._dedent_token.Match(working_iter)
                     assert result is not None
 
@@ -292,6 +297,7 @@ class SequencePhrase(Phrase):
                         Phrase.TokenLexResultData.Create(
                             self._dedent_token,
                             result,
+                            Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
                             is_ignored=True,
                         ),
                     )
@@ -308,6 +314,8 @@ class SequencePhrase(Phrase):
                 elif next_token_type == NormalizedIterator.TokenType.Content:
                     num_data_items = len(data_items)
 
+                    prev_iter = working_iter.Clone()
+
                     # Are we looking at horizontal whitespace?
                     result = self._horizontal_whitespace_token.Match(working_iter)
 
@@ -316,6 +324,7 @@ class SequencePhrase(Phrase):
                             Phrase.TokenLexResultData.Create(
                                 self._horizontal_whitespace_token,
                                 result,
+                                Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
                                 is_ignored=True,
                             ),
                         )
@@ -330,6 +339,7 @@ class SequencePhrase(Phrase):
                             Phrase.TokenLexResultData.Create(
                                 self.comment_token,
                                 result,
+                                Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
                                 is_ignored=True,
                             ),
                         )
@@ -342,6 +352,8 @@ class SequencePhrase(Phrase):
                     break
 
                 elif next_token_type == NormalizedIterator.TokenType.WhitespaceSuffix:
+                    prev_iter = working_iter.Clone()
+
                     result = self._horizontal_whitespace_token.Match(working_iter)
                     assert result is not None
 
@@ -349,6 +361,7 @@ class SequencePhrase(Phrase):
                         Phrase.TokenLexResultData.Create(
                             self._horizontal_whitespace_token,
                             result,
+                            Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
                             is_ignored=True,
                         ),
                     )
@@ -363,6 +376,8 @@ class SequencePhrase(Phrase):
                     ):
                         break
 
+                    prev_iter = working_iter.Clone()
+
                     result = self._newline_token.Match(working_iter)
                     assert result is not None
 
@@ -370,6 +385,7 @@ class SequencePhrase(Phrase):
                         Phrase.TokenLexResultData.Create(
                             self._newline_token,
                             result,
+                            Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
                             is_ignored=True,
                         ),
                     )

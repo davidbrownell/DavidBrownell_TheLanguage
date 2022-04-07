@@ -129,7 +129,7 @@ def MethodCallsToString(
                 ),
             )
 
-        elif method_name == "OnPhraseCompleteAsync":
+        elif method_name == "OnPhraseComplete":
             contents.append(
                 textwrap.dedent(
                     """\
@@ -140,9 +140,9 @@ def MethodCallsToString(
                     index,
                     method_name,
                     method_call[1][0].name,
-                    method_call[1][2].offset,
-                    method_call[1][3].offset,
-                    StringHelpers.LeftJustify(method_call[1][1].ToYamlString(), 4),
+                    method_call[1][1].begin.offset,
+                    method_call[1][1].end.offset,
+                    StringHelpers.LeftJustify(method_call[1][2].ToYamlString(), 4),
                 ).rstrip(),
             )
 

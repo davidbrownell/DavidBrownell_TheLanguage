@@ -44,7 +44,6 @@ class _ASTBase(Interface.Interface, ObjectReprImplBase):
     """Common base class for all nodes and leaves"""
 
     type: Union[None, Phrase, Token]
-    is_ignored: bool
     parent: Optional["_ASTBase"]            = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
@@ -91,9 +90,6 @@ class Node(_ASTBase):
 
         for child in self.children:  # type: ignore  # pylint: disable=not-an-iterable
             if isinstance(child, Leaf):
-                if child.is_ignored:
-                    continue
-
                 child_iter_range = child.iter_range
 
             elif isinstance(child, Node):
@@ -103,12 +99,11 @@ class Node(_ASTBase):
             else:
                 assert False, child  # pragma: no cover
 
-            assert child_iter_range is not None
-
-            if min_iter is None or child_iter_range.begin < min_iter:  # type: ignore
-                min_iter = child_iter_range.begin
-            if max_iter is None or child_iter_range.end > max_iter:  # type: ignore
-                max_iter = child_iter_range.end
+            if child_iter_range is not None:
+                if min_iter is None or child_iter_range.begin < min_iter:  # type: ignore
+                    min_iter = child_iter_range.begin
+                if max_iter is None or child_iter_range.end > max_iter:  # type: ignore
+                    max_iter = child_iter_range.end
 
         if min_iter is not None:
             assert max_iter is not None
@@ -147,9 +142,9 @@ class Node(_ASTBase):
 class Leaf(_ASTBase):
     """AST results of a Token"""
 
-    whitespace: Optional[OffsetRange]
     value: Token.MatchResult
     iter_range: Phrase.NormalizedIteratorRange
+    is_ignored: bool
 
     # ----------------------------------------------------------------------
     @Interface.override
