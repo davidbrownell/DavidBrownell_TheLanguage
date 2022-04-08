@@ -955,14 +955,23 @@ def _CreateSyntaxInvalidError(
         while True:
             if isinstance(error_node, AST.Node) and error_node.type is not None:
                 if isinstance(error_node.type, SequencePhrase):
-                    valid_children = [child for child in error_node.children if isinstance(child, AST.Node) or not child.is_ignored]
+                    meaningful_children: List[Union[AST.Leaf, AST.Node]] = []
+
+                    for child in error_node.children:
+                        if isinstance(child, AST.Leaf):
+                            if child.is_ignored:
+                                continue
+                        elif child.iter_range is None:
+                            continue
+
+                        meaningful_children.append(child)
 
                     # Sometimes, the problem isn't due to the phrase that failed but rather the
                     # phrase that came right before it. See if there is error information associated
                     # with the second-to-last phrase.
-                    if len(valid_children) > 1:
+                    if len(meaningful_children) > 1:
                         potential_error_node = getattr(
-                            valid_children[-2],
+                            meaningful_children[-2],
                             _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME,
                             None,
                         )
@@ -972,7 +981,7 @@ def _CreateSyntaxInvalidError(
                                 GeneratePrefix(potential_error_node.type.name),
                             )
 
-                    phrase_index = len(valid_children)
+                    phrase_index = len(meaningful_children)
 
                     if (
                         phrase_index == len(error_node.type.phrases) - 1
@@ -980,8 +989,6 @@ def _CreateSyntaxInvalidError(
                     ):
                         expected_phrase_name = cast(DynamicPhrase, error_node.type.phrases[-1]).DisplayName
                     else:
-
-
                         assert phrase_index < len(error_node.type.phrases)
 
                         if (
@@ -1001,6 +1008,8 @@ def _CreateSyntaxInvalidError(
                         ),
                         error_node.type.name,
                     )
+
+                    break
 
                 elif isinstance(error_node.type, RepeatPhrase):
                     if error_node.children[-1].iter_range is None:

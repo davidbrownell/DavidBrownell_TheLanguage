@@ -168,9 +168,9 @@ def MethodCallsToString(
                     """,
                 ).format(
                     index,
-                    method_call[0][1].offset,
-                    method_call[0][2].offset,
-                    StringHelpers.LeftJustify(method_call[0][0].ToYamlString(), 4),
+                    method_call[0][0].begin.offset,
+                    method_call[0][0].end.offset,
+                    StringHelpers.LeftJustify(method_call[0][1].ToYamlString(), 4),
                 ).rstrip(),
             )
 
