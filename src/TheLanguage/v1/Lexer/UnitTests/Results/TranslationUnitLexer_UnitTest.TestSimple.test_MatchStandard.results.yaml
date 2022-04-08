@@ -1,12 +1,12 @@
-# <class 'v1.Lexer.AST.Node'>
+# <class 'v1.Lexer.Components.AST.Node'>
 children:
-  - # <class 'v1.Lexer.AST.Node'>
+  - # <class 'v1.Lexer.Components.AST.Node'>
     children:
-      - # <class 'v1.Lexer.AST.Node'>
+      - # <class 'v1.Lexer.Components.AST.Node'>
         children:
-          - # <class 'v1.Lexer.AST.Node'>
+          - # <class 'v1.Lexer.Components.AST.Node'>
             children:
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[1, 1] (0)"
@@ -14,7 +14,7 @@ children:
                 type: "Upper <class 'v1.Lexer.Components.Tokens.RegexToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                   match: "<_sre.SRE_Match object; span=(0, 3), match='ONE'>"
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[1, 4] (3)"
@@ -36,13 +36,13 @@ children:
       begin: "[1, 1] (0)"
       end: "[2, 1] (4)"
     type: "DynamicPhrasesType.Statements <class 'v1.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
-  - # <class 'v1.Lexer.AST.Node'>
+  - # <class 'v1.Lexer.Components.AST.Node'>
     children:
-      - # <class 'v1.Lexer.AST.Node'>
+      - # <class 'v1.Lexer.Components.AST.Node'>
         children:
-          - # <class 'v1.Lexer.AST.Node'>
+          - # <class 'v1.Lexer.Components.AST.Node'>
             children:
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[2, 1] (4)"
@@ -50,7 +50,7 @@ children:
                 type: "Lower <class 'v1.Lexer.Components.Tokens.RegexToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                   match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[2, 4] (7)"
@@ -72,13 +72,13 @@ children:
       begin: "[2, 1] (4)"
       end: "[3, 1] (8)"
     type: "DynamicPhrasesType.Statements <class 'v1.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
-  - # <class 'v1.Lexer.AST.Node'>
+  - # <class 'v1.Lexer.Components.AST.Node'>
     children:
-      - # <class 'v1.Lexer.AST.Node'>
+      - # <class 'v1.Lexer.Components.AST.Node'>
         children:
-          - # <class 'v1.Lexer.AST.Node'>
+          - # <class 'v1.Lexer.Components.AST.Node'>
             children:
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[3, 1] (8)"
@@ -86,7 +86,7 @@ children:
                 type: "Number <class 'v1.Lexer.Components.Tokens.RegexToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                   match: "<_sre.SRE_Match object; span=(8, 13), match='33333'>"
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[3, 6] (13)"

@@ -1,12 +1,12 @@
-# <class 'v1.Lexer.AST.Node'>
+# <class 'v1.Lexer.Components.AST.Node'>
 children:
-  - # <class 'v1.Lexer.AST.Node'>
+  - # <class 'v1.Lexer.Components.AST.Node'>
     children:
-      - # <class 'v1.Lexer.AST.Node'>
+      - # <class 'v1.Lexer.Components.AST.Node'>
         children:
-          - # <class 'v1.Lexer.AST.Node'>
+          - # <class 'v1.Lexer.Components.AST.Node'>
             children:
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[1, 1] (0)"
@@ -14,7 +14,7 @@ children:
                 type: "Upper <class 'v1.Lexer.Components.Tokens.RegexToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                   match: "<_sre.SRE_Match object; span=(0, 3), match='ONE'>"
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[1, 4] (3)"
@@ -24,7 +24,7 @@ children:
                   range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
                     begin: 3
                     end: 4
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[2, 1] (4)"
@@ -35,7 +35,7 @@ children:
                   range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
                     begin: 4
                     end: 8
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[2, 5] (8)"
@@ -43,7 +43,7 @@ children:
                 type: "Upper <class 'v1.Lexer.Components.Tokens.RegexToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                   match: "<_sre.SRE_Match object; span=(8, 11), match='TWO'>"
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: True
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[2, 8] (11)"
@@ -53,7 +53,7 @@ children:
                   range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
                     begin: 11
                     end: 17
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[2, 14] (17)"
@@ -61,7 +61,7 @@ children:
                 type: "Upper <class 'v1.Lexer.Components.Tokens.RegexToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
                   match: "<_sre.SRE_Match object; span=(17, 22), match='THREE'>"
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[2, 19] (22)"
@@ -71,7 +71,7 @@ children:
                   range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
                     begin: 22
                     end: 23
-              - # <class 'v1.Lexer.AST.Leaf'>
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[3, 1] (23)"

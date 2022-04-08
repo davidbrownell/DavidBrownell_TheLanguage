@@ -36,9 +36,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from . import AST
     from .Error import CreateError, Location
 
+    from .Components import AST
     from .Components.Phrase import EnqueueAsyncItemType, NormalizedIterator, Phrase
     from .Components.Tokens import RegexToken
 
