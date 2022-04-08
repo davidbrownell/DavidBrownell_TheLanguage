@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Error_UnitTest.py
+# |  PassStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-07 08:48:20
+# |      2022-04-08 13:02:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit tests for Error.py"""
+"""Automated test for PassStatement.py"""
 
 import os
 import textwrap
@@ -28,32 +28,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Error import *
-
-
-# ----------------------------------------------------------------------
-MyError                                     = CreateError(
-    "The error value is: {value} [{location}]\n",
-    value=str,
-)
+    from ....IntegrationTestHelpers import *
+    from ..PassStatement import *
 
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    assert str(MyError.Create(value="foo", location=Location.Create(1, 2))) == textwrap.dedent(
-        """\
-        The error value is: foo [# <class 'v1.Common.Location.Location'>
-        column: 2
-        line: 1
-        ]
-        """,
-    )
-
-    assert str(MyError.Create(value="bar_and_baz", location=Location.Create(100, 200))) == textwrap.dedent(
-        """\
-        The error value is: bar_and_baz [# <class 'v1.Common.Location.Location'>
-        column: 200
-        line: 100
-        ]
-        """,
-    )
+    # TODO:
+    CompareResultsFromFile(str(ExecuteNode(
+        textwrap.dedent(
+            """\
+            pass
+            """,
+        ),
+    )))

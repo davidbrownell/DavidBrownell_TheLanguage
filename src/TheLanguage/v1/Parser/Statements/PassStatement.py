@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Error_UnitTest.py
+# |  PassStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-07 08:48:20
+# |      2022-04-01 12:29:33
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit tests for Error.py"""
+"""Contains the PassStatement object"""
 
 import os
-import textwrap
+
+from typing import List, Optional
+
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 
@@ -28,32 +31,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Error import *
+    from ..Phrase import Phrase
+    from ...Common.Region import Region
 
 
 # ----------------------------------------------------------------------
-MyError                                     = CreateError(
-    "The error value is: {value} [{location}]\n",
-    value=str,
-)
+@dataclass(frozen=True, repr=False)
+class PassStatement(Phrase):
+    """Noop statement"""
 
+    regions: InitVar[List[Optional[Region]]]
 
-# ----------------------------------------------------------------------
-def test_Standard():
-    assert str(MyError.Create(value="foo", location=Location.Create(1, 2))) == textwrap.dedent(
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Create(cls, *args, **kwargs):
         """\
-        The error value is: foo [# <class 'v1.Common.Location.Location'>
-        column: 2
-        line: 1
-        ]
-        """,
-    )
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
 
-    assert str(MyError.Create(value="bar_and_baz", location=Location.Create(100, 200))) == textwrap.dedent(
-        """\
-        The error value is: bar_and_baz [# <class 'v1.Common.Location.Location'>
-        column: 200
-        line: 100
-        ]
-        """,
-    )
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(PassStatement, self).__init__(regions)

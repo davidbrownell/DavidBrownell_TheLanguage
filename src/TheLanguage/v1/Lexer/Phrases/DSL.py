@@ -71,7 +71,7 @@ PhraseItemItemType                          = Union[
     str,                                    # Converts to a TokenPhrase (via a very simple RegexToken)
     DynamicPhrasesType,                     # Converts to a DynamicPhrase
     List["PhraseItemItemType"],             # Converts to a SequencePhrase
-    Tuple["PhraseItemItemType"],            # Converts to an OrPhrase
+    Tuple["PhraseItemItemType", ...],       # Converts to an OrPhrase
     None,                                   # Converts to a RecursivePlaceholderPhrase
 
     "CustomArityPhraseItem",
