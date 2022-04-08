@@ -66,11 +66,11 @@ def test_In():
 def test_Repr():
     assert str(Region(Location(1, 2), Location(3, 4))) == textwrap.dedent(
         """\
-        # <class 'v1.Region.Region'>
-        begin: # <class 'v1.Location.Location'>
+        # <class 'v1.Common.Region.Region'>
+        begin: # <class 'v1.Common.Location.Location'>
           column: 2
           line: 1
-        end: # <class 'v1.Location.Location'>
+        end: # <class 'v1.Common.Location.Location'>
           column: 4
           line: 3
         """,

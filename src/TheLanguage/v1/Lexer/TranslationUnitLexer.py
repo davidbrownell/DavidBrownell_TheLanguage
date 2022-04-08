@@ -327,9 +327,9 @@ class _ScopeTracker(object):
 
         for id_part in unique_id:
             tracker_node = d.get(id_part, None)
-            assert tracker_node is not None
 
-            d = tracker_node.children
+            assert tracker_node is not None
+            d = tracker_node.children  # type: ignore
 
         assert tracker_node is not None
 

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Error_UnitTest.py
+# |  All.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-07 08:48:20
+# |      2022-04-04 08:35:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit tests for Error.py"""
+"""All phrases used to lex content"""
 
 import os
-import textwrap
 
 import CommonEnvironment
 
@@ -28,32 +27,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Error import *
+    # TODO: from .Statements.ClassStatement import ClassStatement
+    from .Statements.PassStatement import PassStatement
 
 
 # ----------------------------------------------------------------------
-MyError                                     = CreateError(
-    "The error value is: {value} [{location}]\n",
-    value=str,
-)
-
-
-# ----------------------------------------------------------------------
-def test_Standard():
-    assert str(MyError.Create(value="foo", location=Location.Create(1, 2))) == textwrap.dedent(
-        """\
-        The error value is: foo [# <class 'v1.Common.Location.Location'>
-        column: 2
-        line: 1
-        ]
-        """,
-    )
-
-    assert str(MyError.Create(value="bar_and_baz", location=Location.Create(100, 200))) == textwrap.dedent(
-        """\
-        The error value is: bar_and_baz [# <class 'v1.Common.Location.Location'>
-        column: 200
-        line: 100
-        ]
-        """,
-    )
+GrammarPhrases                              = [
+    # Expressions
+    # TODO: ClassStatement(),
+    PassStatement(),
+]

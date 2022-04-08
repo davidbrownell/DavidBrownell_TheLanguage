@@ -74,7 +74,7 @@ def test_ComparisonColumn():
 def test_Repr():
     assert str(Location(1, 2)) == textwrap.dedent(
         """\
-        # <class 'v1.Location.Location'>
+        # <class 'v1.Common.Location.Location'>
         column: 2
         line: 1
         """,
