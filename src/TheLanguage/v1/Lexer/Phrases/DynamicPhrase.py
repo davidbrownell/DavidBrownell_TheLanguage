@@ -171,6 +171,11 @@ class DynamicPhrase(Phrase):
         return data
 
     # ----------------------------------------------------------------------
+    @property
+    def DisplayName(self) -> str:
+        return self._display_name or self.name
+
+    # ----------------------------------------------------------------------
     @Interface.override
     def Lex(
         self,
