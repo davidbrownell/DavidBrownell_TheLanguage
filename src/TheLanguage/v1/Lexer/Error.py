@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Location import Location
+    from ..Common.Location import Location
 
 
 # ----------------------------------------------------------------------

@@ -53,7 +53,6 @@ class Observer(Interface.Interface):
     ) -> Optional[AST.Node]:
         raise Exception("Abstract method")  # pragma: no cover
 
-
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
@@ -75,7 +74,6 @@ def Lex(
     comment_token: RegexToken,
     grammar: DynamicPhrasesInfo,
     fully_qualified_names: List[str],
-    source_roots: List[str],
     observer: Observer,
     *,
     max_num_threads: Optional[int]=None,
@@ -96,11 +94,7 @@ def Lex(
     parsing is invoked.
     """
 
-    translation_units_observer = _TranslationUnitsObserver(
-        source_roots,
-        observer,
-        max_num_threads,
-    )
+    translation_units_observer = _TranslationUnitsObserver(observer, max_num_threads)
 
     return TranslationUnitsLex(
         comment_token,
@@ -143,16 +137,11 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        source_roots: List[str],
         observer: Observer,
         max_num_threads: Optional[int]=None,
     ):
-        for source_root in source_roots:
-            assert os.path.isdir(source_root), source_root
-
         assert max_num_threads is None or max_num_threads > 0, max_num_threads
 
-        self._source_roots                  = source_roots
         self._observer                      = observer
         self._executor                      = CreateThreadPool(max_workers=max_num_threads)
 
@@ -199,7 +188,7 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
 
     # ----------------------------------------------------------------------
     @staticmethod
-    @Interface.extensionmethod
+    @Interface.override
     def OnPushScope(
         fully_qualified_name: str,
         iter_range: Phrase.NormalizedIteratorRange,
@@ -210,7 +199,7 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
 
     # ----------------------------------------------------------------------
     @staticmethod
-    @Interface.extensionmethod
+    @Interface.override
     def OnPopScope(
         fully_qualified_name: str,
         iter_range: Phrase.NormalizedIteratorRange,
@@ -220,7 +209,7 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
         return None
 
     # ----------------------------------------------------------------------
-    @Interface.extensionmethod
+    @Interface.override
     def OnPhraseComplete(
         self,
         fully_qualified_name: str,
