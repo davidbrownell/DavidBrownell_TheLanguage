@@ -10,49 +10,49 @@ children:
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[1, 1] (0)"
-                  end: "[1, 4] (3)"
-                type: "Lower <class 'v1.Lexer.Components.Tokens.RegexToken'>"
+                  end: "[1, 8] (7)"
+                type: "Include Token <class 'v1.Lexer.Components.Tokens.RegexToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
-                  match: "<_sre.SRE_Match object; span=(0, 3), match='one'>"
+                  match: "<_sre.SRE_Match object; span=(0, 7), match='include'>"
               - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: True
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-                  begin: "[1, 4] (3)"
-                  end: "[1, 5] (4)"
+                  begin: "[1, 8] (7)"
+                  end: "[1, 9] (8)"
                 type: "HorizontalWhitespace <class 'v1.Lexer.Components.Tokens.HorizontalWhitespaceToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.HorizontalWhitespaceToken.MatchResult'>
-                  range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
-                    begin: 3
-                    end: 4
-              - # <class 'v1.Lexer.Components.AST.Leaf'>
-                is_ignored: False
-                iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-                  begin: "[1, 5] (4)"
-                  end: "[1, 8] (7)"
-                type: "Lower <class 'v1.Lexer.Components.Tokens.RegexToken'>"
-                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
-                  match: "<_sre.SRE_Match object; span=(4, 7), match='two'>"
-              - # <class 'v1.Lexer.Components.AST.Leaf'>
-                is_ignored: False
-                iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-                  begin: "[1, 8] (7)"
-                  end: "[2, 1] (8)"
-                type: "Newline+ <class 'v1.Lexer.Components.Tokens.NewlineToken'>"
-                value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                   range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
                     begin: 7
                     end: 8
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
+                is_ignored: False
+                iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                  begin: "[1, 9] (8)"
+                  end: "[1, 15] (14)"
+                type: "Lower Token <class 'v1.Lexer.Components.Tokens.RegexToken'>"
+                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                  match: "<_sre.SRE_Match object; span=(8, 14), match='number'>"
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
+                is_ignored: False
+                iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                  begin: "[1, 15] (14)"
+                  end: "[2, 1] (15)"
+                type: "Newline+ <class 'v1.Lexer.Components.Tokens.NewlineToken'>"
+                value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+                  range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+                    begin: 14
+                    end: 15
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
-              end: "[2, 1] (8)"
-            type: "Lower <class 'v1.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+              end: "[2, 1] (15)"
+            type: "Include <class 'v1.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
         iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
           begin: "[1, 1] (0)"
-          end: "[2, 1] (8)"
-        type: "(Upper | Lower | Number) <class 'v1.Lexer.Phrases.OrPhrase.OrPhrase'>"
+          end: "[2, 1] (15)"
+        type: "(Include | Upper | Lower | Number | New Scope) <class 'v1.Lexer.Phrases.OrPhrase.OrPhrase'>"
     iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
       begin: "[1, 1] (0)"
-      end: "[2, 1] (8)"
+      end: "[2, 1] (15)"
     type: "DynamicPhrasesType.Statements <class 'v1.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
   - # <class 'v1.Lexer.Components.AST.Node'>
     children:
@@ -63,106 +63,70 @@ children:
               - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-                  begin: "[2, 1] (8)"
-                  end: "[2, 2] (9)"
-                type: "Number <class 'v1.Lexer.Components.Tokens.RegexToken'>"
+                  begin: "[2, 1] (15)"
+                  end: "[2, 2] (16)"
+                type: "Number Token <class 'v1.Lexer.Components.Tokens.RegexToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
-                  match: "<_sre.SRE_Match object; span=(8, 9), match='1'>"
+                  match: "<_sre.SRE_Match object; span=(15, 16), match='1'>"
               - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: True
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-                  begin: "[2, 2] (9)"
-                  end: "[2, 3] (10)"
+                  begin: "[2, 2] (16)"
+                  end: "[2, 3] (17)"
                 type: "HorizontalWhitespace <class 'v1.Lexer.Components.Tokens.HorizontalWhitespaceToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.HorizontalWhitespaceToken.MatchResult'>
                   range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
-                    begin: 9
-                    end: 10
+                    begin: 16
+                    end: 17
               - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: False
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-                  begin: "[2, 3] (10)"
-                  end: "[2, 4] (11)"
-                type: "Number <class 'v1.Lexer.Components.Tokens.RegexToken'>"
+                  begin: "[2, 3] (17)"
+                  end: "[2, 4] (18)"
+                type: "Number Token <class 'v1.Lexer.Components.Tokens.RegexToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
-                  match: "<_sre.SRE_Match object; span=(10, 11), match='2'>"
+                  match: "<_sre.SRE_Match object; span=(17, 18), match='2'>"
               - # <class 'v1.Lexer.Components.AST.Leaf'>
                 is_ignored: True
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-                  begin: "[2, 4] (11)"
-                  end: "[2, 5] (12)"
+                  begin: "[2, 4] (18)"
+                  end: "[2, 5] (19)"
                 type: "HorizontalWhitespace <class 'v1.Lexer.Components.Tokens.HorizontalWhitespaceToken'>"
                 value: # <class 'v1.Lexer.Components.Tokens.HorizontalWhitespaceToken.MatchResult'>
-                  range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
-                    begin: 11
-                    end: 12
-              - # <class 'v1.Lexer.Components.AST.Leaf'>
-                is_ignored: False
-                iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-                  begin: "[2, 5] (12)"
-                  end: "[2, 6] (13)"
-                type: "Number <class 'v1.Lexer.Components.Tokens.RegexToken'>"
-                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
-                  match: "<_sre.SRE_Match object; span=(12, 13), match='3'>"
-              - # <class 'v1.Lexer.Components.AST.Leaf'>
-                is_ignored: False
-                iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-                  begin: "[2, 6] (13)"
-                  end: "[3, 1] (14)"
-                type: "Newline+ <class 'v1.Lexer.Components.Tokens.NewlineToken'>"
-                value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
-                  range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
-                    begin: 13
-                    end: 14
-            iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-              begin: "[2, 1] (8)"
-              end: "[3, 1] (14)"
-            type: "Number <class 'v1.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
-        iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-          begin: "[2, 1] (8)"
-          end: "[3, 1] (14)"
-        type: "(Upper | Lower | Number) <class 'v1.Lexer.Phrases.OrPhrase.OrPhrase'>"
-    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-      begin: "[2, 1] (8)"
-      end: "[3, 1] (14)"
-    type: "DynamicPhrasesType.Statements <class 'v1.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
-  - # <class 'v1.Lexer.Components.AST.Node'>
-    children:
-      - # <class 'v1.Lexer.Components.AST.Node'>
-        children:
-          - # <class 'v1.Lexer.Components.AST.Node'>
-            children:
-              - # <class 'v1.Lexer.Components.AST.Leaf'>
-                is_ignored: False
-                iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-                  begin: "[3, 1] (14)"
-                  end: "[3, 5] (18)"
-                type: "Upper <class 'v1.Lexer.Components.Tokens.RegexToken'>"
-                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
-                  match: "<_sre.SRE_Match object; span=(14, 18), match='WORD'>"
-              - # <class 'v1.Lexer.Components.AST.Leaf'>
-                is_ignored: False
-                iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-                  begin: "[3, 5] (18)"
-                  end: "[4, 1] (19)"
-                type: "Newline+ <class 'v1.Lexer.Components.Tokens.NewlineToken'>"
-                value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
                   range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
                     begin: 18
                     end: 19
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
+                is_ignored: False
+                iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                  begin: "[2, 5] (19)"
+                  end: "[2, 6] (20)"
+                type: "Number Token <class 'v1.Lexer.Components.Tokens.RegexToken'>"
+                value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                  match: "<_sre.SRE_Match object; span=(19, 20), match='3'>"
+              - # <class 'v1.Lexer.Components.AST.Leaf'>
+                is_ignored: False
+                iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                  begin: "[2, 6] (20)"
+                  end: "[3, 1] (21)"
+                type: "Newline+ <class 'v1.Lexer.Components.Tokens.NewlineToken'>"
+                value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+                  range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+                    begin: 20
+                    end: 21
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-              begin: "[3, 1] (14)"
-              end: "[4, 1] (19)"
-            type: "Upper <class 'v1.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+              begin: "[2, 1] (15)"
+              end: "[3, 1] (21)"
+            type: "Dynamic Number <class 'v1.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
         iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-          begin: "[3, 1] (14)"
-          end: "[4, 1] (19)"
-        type: "(Upper | Lower | Number) <class 'v1.Lexer.Phrases.OrPhrase.OrPhrase'>"
+          begin: "[2, 1] (15)"
+          end: "[3, 1] (21)"
+        type: "(Include | Upper | Lower | Number | New Scope) / (Dynamic Number) <class 'v1.Lexer.Phrases.OrPhrase.OrPhrase'>"
     iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-      begin: "[3, 1] (14)"
-      end: "[4, 1] (19)"
+      begin: "[2, 1] (15)"
+      end: "[3, 1] (21)"
     type: "DynamicPhrasesType.Statements <class 'v1.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
   begin: "[1, 1] (0)"
-  end: "[4, 1] (19)"
+  end: "[3, 1] (21)"
 type: "<None>"

@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..TranslationUnitLexer import *
 
-    from ..AST import Node
+    from ..Components.AST import Node
 
     from ..Components.Tokens import (
         DedentToken,

@@ -33,9 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Components.NormalizedIterator import NormalizedIterator
-    from .Components.Phrase import Phrase
-    from .Components.Tokens import Token
+    from .NormalizedIterator import NormalizedIterator
+    from .Phrase import Phrase
+    from .Tokens import Token
 
 
 # ----------------------------------------------------------------------
