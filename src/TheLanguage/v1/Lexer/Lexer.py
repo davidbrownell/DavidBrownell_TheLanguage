@@ -184,7 +184,8 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
         self,
         func_infos: List[EnqueueAsyncItemType],
     ) -> Awaitable[Any]:
-        return self._executor.EnqueueAsync(func_infos)  # type: ignore
+        raise Exception("Async functionality has been partially removed and simply doesn't work right now")
+        # return self._executor.EnqueueAsync(func_infos)  # type: ignore  # pylint: disable=not-callable
 
     # ----------------------------------------------------------------------
     @staticmethod
