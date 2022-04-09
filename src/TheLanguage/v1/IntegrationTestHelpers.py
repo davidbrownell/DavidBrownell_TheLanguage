@@ -186,7 +186,11 @@ def ExecuteParserPhrase(
     content: str,
     *,
     max_num_threads: Optional[int]=None,
-) -> ParserRootPhrase:
+    with_diagnostics=False,
+) -> Union[
+    ParserRootPhrase,
+    Tuple[ParserRootPhrase, Diagnostics],
+]:
     result = PatchAndExecute(
         {
             "filename": content,
@@ -200,7 +204,12 @@ def ExecuteParserPhrase(
     assert len(result) == 1, result
     assert "filename" in result
 
-    root, diagnostics = cast(Tuple[ParserRootPhrase, Diagnostics], result["filename"])
+    result = cast(Tuple[ParserRootPhrase, Diagnostics], result["filename"])
+
+    if with_diagnostics:
+        return result
+
+    root, diagnostics = result
 
     assert not diagnostics, diagnostics
 
