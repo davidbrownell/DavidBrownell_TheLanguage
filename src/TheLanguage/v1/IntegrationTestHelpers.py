@@ -20,7 +20,7 @@ import textwrap
 
 from enum import auto, Flag
 from io import StringIO
-from typing import cast, Dict, List, Optional, Union
+from typing import cast, Dict, List, Optional, Tuple, Union
 from unittest.mock import patch
 
 import pytest
@@ -32,8 +32,6 @@ from CommonEnvironment.AutomatedTestHelpers import (
     CompareResultsFromFile                  # This is imported as a convenience  # pylint: disable=unused-import
 )
 
-from CommonEnvironment import Interface
-
 from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
@@ -42,8 +40,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .AllGrammars import Grammar, GrammarCommentToken, LexObserver
+    from .AllGrammars import Grammar, GrammarCommentToken, LexObserver, ParseObserver
     from .Lexer.Lexer import AST, Lex, Prune
+
+    from .Parser.Parser import (
+        Diagnostics,
+        Parse,
+        Phrase as ParserPhrase,
+        RootPhrase as ParserRootPhrase,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -55,7 +60,6 @@ class PatchAndExecuteFlag(Flag):
     Lex                                     = 0
     Prune                                   = prune_flag
     Parse                                   = prune_flag | parse_flag
-    Validate                                = prune_flag | parse_flag | validate_flag
 
 
 # ----------------------------------------------------------------------
@@ -72,6 +76,7 @@ def PatchAndExecute(
 ) -> Union[
     Dict[str, AST.Node],
     List[Exception],
+    Dict[str, Tuple[ParserRootPhrase, Diagnostics]],
 ]:
     """\
     Patches file system methods invoked by systems under tests and replaces them
@@ -112,49 +117,44 @@ def PatchAndExecute(
 
         assert result is not None
 
-        if not isinstance(result, list):
-            result = cast(Dict[str, AST.Node], result)
-
-            if flag & PatchAndExecuteFlag.prune_flag:
-                Prune(
-                    result,
-                    max_num_threads=max_num_threads,
+        if isinstance(result, list):
+            if len(result) == 1:
+                print(
+                    textwrap.dedent(
+                        """\
+                        # ----------------------------------------------------------------------
+                        # ----------------------------------------------------------------------
+                        # ----------------------------------------------------------------------
+                        {}
+                        # ----------------------------------------------------------------------
+                        # ----------------------------------------------------------------------
+                        # ----------------------------------------------------------------------
+                        """,
+                    ).format(str(result[0])),
                 )
 
-            # TODO: if flag & PatchAndExecuteFlag.parse_flag:
-            # TODO:     result = Parse(
-            # TODO:         result,
-            # TODO:         max_num_threads=max_num_threads,
-            # TODO:     )
-            # TODO:
-            # TODO: if not isinstance(result, list):
-            # TODO:     result = cast(Dict[str, RootParserInfo], result)
-            # TODO:
-            # TODO:     if flag & PatchAndExecuteFlag.validate_flag:
-            # TODO:         result = Validate(
-            # TODO:             cancellation_event,
-            # TODO:             result,
-            # TODO:             max_num_threads=max_num_threads,
-            # TODO:         )
+                raise result[0]
 
-            assert result is not None
+            return result
 
-        if isinstance(result, list) and len(result) == 1:
-            print(
-                textwrap.dedent(
-                    """\
-                    # ----------------------------------------------------------------------
-                    # ----------------------------------------------------------------------
-                    # ----------------------------------------------------------------------
-                    {}
-                    # ----------------------------------------------------------------------
-                    # ----------------------------------------------------------------------
-                    # ----------------------------------------------------------------------
-                    """,
-                ).format(str(result[0])),
+        result = cast(Dict[str, AST.Node], result)
+
+        if flag & PatchAndExecuteFlag.prune_flag:
+            Prune(
+                result,
+                max_num_threads=max_num_threads,
             )
 
-            raise result[0]
+        if flag & PatchAndExecuteFlag.parse_flag:
+            result = Parse(
+                result,
+                ParseObserver(),
+                max_num_threads=max_num_threads,
+            )
+
+        assert result is not None
+
+
 
         return result
 
@@ -186,7 +186,7 @@ def ExecuteParserPhrase(
     content: str,
     *,
     max_num_threads: Optional[int]=None,
-) -> AST.Node:
+) -> ParserRootPhrase:
     result = PatchAndExecute(
         {
             "filename": content,
@@ -200,4 +200,8 @@ def ExecuteParserPhrase(
     assert len(result) == 1, result
     assert "filename" in result
 
-    return cast(ParsePhrase, result["filename"])
+    root, diagnostics = cast(Tuple[ParserRootPhrase, Diagnostics], result["filename"])
+
+    assert not diagnostics, diagnostics
+
+    return root

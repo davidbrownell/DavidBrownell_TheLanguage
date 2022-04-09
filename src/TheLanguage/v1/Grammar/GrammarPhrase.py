@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Callable, cast, Dict, List, Optional
+from typing import Any, Callable, cast, Dict, List, Optional, Tuple, Union
 
 import inflect as inflect_mod
 
@@ -48,6 +48,7 @@ with InitRelativeImports():
         Observer as TranslationUnitsLexerObserver,
     )
 
+    from ..Parser.Diagnostics import Diagnostics
     from ..Parser.Phrase import Phrase as ParserPhrase
 
 
@@ -102,7 +103,7 @@ class GrammarPhrase(Interface.Interface, ObjectReprImplBase):
     @staticmethod
     @Interface.extensionmethod
     def GetDynamicContent(
-        node: AST.Node,
+        node: AST.Node,  # pylint: disable=unused-argument
     ) -> Optional["GrammarPhrase.GetDynamicContentResult"]:
         """Returns any dynamic content that is made available once an instance of the phrase has been lexed"""
 
@@ -110,11 +111,18 @@ class GrammarPhrase(Interface.Interface, ObjectReprImplBase):
         return None
 
     # ----------------------------------------------------------------------
+    ExtractParserPhraseResultType           = Union[
+        ParserPhrase,
+        Tuple[ParserPhrase, Diagnostics],
+        Tuple[ParserPhrase, Callable[[], Optional[Diagnostics]]],
+        Tuple[ParserPhrase, Diagnostics, Callable[[], Optional[Diagnostics]]],
+    ]
+
     @staticmethod
     @Interface.abstractmethod
     def ExtractParserPhrase(
         node: AST.Node,
-    ) -> ParserPhrase:
+    ) -> "GrammarPhrase.ExtractParserPhraseResultType":
         raise Exception("Abstract method")  # pragma: no cover
 
 

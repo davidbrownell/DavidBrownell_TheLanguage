@@ -34,8 +34,8 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    # TODO:
-    CompareResultsFromFile(str(ExecuteNode(
+    # TODO: This is currently displaying the node, but should eventually disable the ParserPhrase
+    CompareResultsFromFile(str(ExecuteParserPhrase(
         textwrap.dedent(
             """\
             pass
