@@ -190,6 +190,8 @@ class DynamicPhrase(Phrase):
 
         observer.StartPhrase(unique_id, self)
         with CallOnExit(lambda: observer.EndPhrase(unique_id, self, result is not None and result.success)):
+            # TODO: Cache results and only re-evaluate if the unique_id changes
+
             # Get the dynamic phrases
             dynamic_phrases, dynamic_name = self._get_dynamic_phrases_func(
                 unique_id,
