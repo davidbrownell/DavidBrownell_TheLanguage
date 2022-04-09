@@ -19,7 +19,7 @@ import os
 import re
 import textwrap
 
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, cast, List, Optional, Match, Tuple, Union
 
 import CommonEnvironment
 
@@ -38,6 +38,7 @@ with InitRelativeImports():
     from .SequencePhrase import SequencePhrase
     from .TokenPhrase import TokenPhrase
 
+    from ..Components.AST import Leaf, Node
     from ..Components.Phrase import DynamicPhrasesType, Phrase
     from ..Components.Tokens import RegexToken, Token
 
@@ -70,7 +71,7 @@ PhraseItemItemType                          = Union[
     str,                                    # Converts to a TokenPhrase (via a very simple RegexToken)
     DynamicPhrasesType,                     # Converts to a DynamicPhrase
     List["PhraseItemItemType"],             # Converts to a SequencePhrase
-    Tuple["PhraseItemItemType"],            # Converts to an OrPhrase
+    Tuple["PhraseItemItemType", ...],       # Converts to an OrPhrase
     None,                                   # Converts to a RecursivePlaceholderPhrase
 
     "CustomArityPhraseItem",
@@ -199,6 +200,209 @@ def CreatePhrase(
     phrase.PopulateRecursive(None, phrase)
 
     return phrase
+
+
+# ----------------------------------------------------------------------
+def ExtractTokenNoThrow(
+    leaf: Leaf,
+    *,
+    return_match_contents=False,
+    group_dict_name: Optional[str]=None,
+) -> Optional[str]:
+    assert isinstance(leaf, Leaf), leaf
+
+    if leaf.is_ignored:
+        return None
+
+    if isinstance(leaf.value, RegexToken.MatchResult):
+        if group_dict_name is not None:
+            return leaf.value.match.group(group_dict_name)
+
+        groups_dict = leaf.value.match.groupdict()
+
+        if len(groups_dict) == 1:
+            return next(iter(groups_dict.values()))
+
+        if return_match_contents:
+            return leaf.value.match.string[leaf.value.match.start() : leaf.value.match.end()]
+
+    return cast(Token, leaf.type).name
+
+
+# ----------------------------------------------------------------------
+def ExtractToken(
+    leaf: Leaf,
+    *,
+    return_match_contents=False,
+    group_dict_name: Optional[str]=None,
+) -> str:
+    result = ExtractTokenNoThrow(
+        leaf,
+        return_match_contents=return_match_contents,
+        group_dict_name=group_dict_name,
+    )
+
+    assert result is not None
+    return result
+
+
+# ----------------------------------------------------------------------
+def ExtractTokenRangeNoThrow(
+    leaf: Leaf,
+    group_dict_name: str,
+    regex_match: Optional[Match]=None,
+) -> Optional[Phrase.NormalizedIteratorRange]:
+    """\
+    Returns the iterators range associated with the start and end of a group within a match
+    (or None if the group didn't match).
+    """
+
+    assert isinstance(leaf, Leaf), leaf
+    assert isinstance(leaf.value, RegexToken.MatchResult), leaf.value
+
+    if regex_match is not None:
+        start = regex_match.start(group_dict_name)
+        end = regex_match.end(group_dict_name)
+    else:
+        start = leaf.value.match.start(group_dict_name)
+        end = leaf.value.match.end(group_dict_name)
+
+        assert start >= leaf.iter_range.begin.offset
+        assert end >= leaf.iter_range.begin.offset
+
+        start -= leaf.iter_range.begin.offset
+        end -= leaf.iter_range.begin.offset
+
+    if start == end:
+        return None
+
+    assert start < end, (start, end)
+
+    begin_iter = leaf.iter_range.begin.Clone()
+    begin_iter.Advance(start)
+
+    end_iter = leaf.iter_range.begin.Clone()
+    end_iter.Advance(end)
+
+    return Phrase.NormalizedIteratorRange.Create(begin_iter, end_iter)
+
+
+# ----------------------------------------------------------------------
+def ExtractTokenRange(
+    leaf: Leaf,
+    group_dict_name: str,
+    regex_match: Optional[Match]=None,
+) -> Phrase.NormalizedIteratorRange:
+    result = ExtractTokenRangeNoThrow(leaf, group_dict_name, regex_match)
+
+    assert result is not None
+    return result
+
+
+# ----------------------------------------------------------------------
+def ExtractDynamic(
+    node: Node,
+) -> Union[Leaf, Node]:
+    assert isinstance(node, Node), node
+    assert isinstance(node.type, DynamicPhrase), node.type
+    assert len(node.children) == 1
+
+    node = cast(Node, node.children[0])
+
+    return ExtractOr(node)
+
+
+# ----------------------------------------------------------------------
+def ExtractOr(
+    node: Node,
+) -> Union[Leaf, Node]:
+    assert isinstance(node, Node), node
+    assert isinstance(node.type, OrPhrase), node.type
+    assert len(node.children) == 1
+
+    return node.children[0]
+
+
+# ----------------------------------------------------------------------
+def ExtractRepeat(
+    node: Node,
+) -> List[Union[Leaf, Node]]:
+    if node is None:
+        return []
+
+    assert isinstance(node, Node), node
+    assert isinstance(node.type, RepeatPhrase), node.type
+
+    return node.children
+
+
+# ----------------------------------------------------------------------
+def ExtractOptional(
+    node: Node,
+) -> Optional[Union[Leaf, Node]]:
+    result = ExtractRepeat(node)
+
+    return result[0] if result else None
+
+
+# ----------------------------------------------------------------------
+def ExtractSequence(
+    node: Node,
+) -> List[Union[Leaf, Node, None]]:
+    assert isinstance(node, Node), node
+    assert isinstance(node.type, SequencePhrase), node.type
+
+    phrases = node.type.phrases
+
+    results: List[Union[Leaf, Node, None]] = []
+    child_index = 0
+
+    while len(results) != len(phrases) and child_index != len(node.children):
+        # Get the phrase
+        phrase = None
+
+        if len(results) != len(phrases):
+            phrase = phrases[len(results)]
+
+            if isinstance(phrase, TokenPhrase) and phrase.token.is_control_token:
+                results.append(None)
+                continue
+
+        # Get the child node
+        child_node = None
+
+        if child_index != len(node.children):
+            child_node = node.children[child_index]
+            child_index += 1
+
+            if isinstance(child_node, Leaf) and child_node.is_ignored:
+                continue
+
+        else:
+            # If here, we have exhausted all of the children. This can only happen when we are
+            # looking at a RepeatPhrase that suppors 0 matches.
+            assert isinstance(phrase, RepeatPhrase), phrase
+            assert phrase.min_matches == 0, phrase.min_matches
+
+            results.append(None)
+            continue
+
+        assert phrase is not None
+        assert child_node is not None
+
+        if isinstance(phrase, RepeatPhrase) and child_node.type != phrase:
+            assert phrase.min_matches == 0, phrase.min_matches
+            results.append(None)
+
+            assert child_index != 0
+            child_index -= 1
+
+            continue
+
+        results.append(child_node)
+
+    assert len(results) == len(phrases), (len(results), len(phrases))
+    return results
 
 
 # ----------------------------------------------------------------------

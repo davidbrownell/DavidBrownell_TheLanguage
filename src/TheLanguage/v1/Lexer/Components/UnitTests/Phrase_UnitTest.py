@@ -185,6 +185,4 @@ async def test_Lex(iterator, parse_mock):
     result = CreatePhrase(1).Lex(("root", ), iterator, parse_mock)
     assert result.success == 1
 
-    assert parse_mock.OnIndent.call_count == 0
-    assert parse_mock.OnDedent.call_count == 0
     assert parse_mock.OnInternalPhrase.call_count == 0

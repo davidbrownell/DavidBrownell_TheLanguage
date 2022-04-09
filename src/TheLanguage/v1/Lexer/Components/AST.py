@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .NormalizedIterator import NormalizedIterator, OffsetRange
+    from .NormalizedIterator import NormalizedIterator
     from .Phrase import Phrase
     from .Tokens import Token
 
