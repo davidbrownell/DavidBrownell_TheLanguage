@@ -20,7 +20,7 @@ import os
 from enum import auto, Enum
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
-from dataclasses import fields, make_dataclass
+from dataclasses import dataclass, fields, make_dataclass, InitVar
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -58,7 +58,7 @@ class Phrase(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        regions: List[Region],
+        regions: List[Optional[Region]],
         regionless_attributes: Optional[List[str]]=None,
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
@@ -107,16 +107,20 @@ class Phrase(ObjectReprImplBase):
 
         regionless_attributes_set.add("_RegionsType")
         regionless_attributes_set.add("_regions")
-        regionless_attributes_set.add("_validate_refions_func")
+        regionless_attributes_set.add("_validate_regions_func")
 
         # Create the dynamic validate func
         object.__setattr__(
             self,
-            "_validate_refions_func",
+            "_validate_regions_func",
             Phrase._ValidateRegionsFuncFactory(self, all_fields, regionless_attributes_set),
         )
 
-        ObjectReprImplBase.__init__(self, **custom_display_funcs)
+        ObjectReprImplBase.__init__(
+            self,
+            has_children=None,
+            **custom_display_funcs,
+        )
 
         # Validate the phrase
         if validate:
@@ -133,7 +137,7 @@ class Phrase(ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     def ValidateRegions(self) -> None:
-        self._validate_refions_func()  # type: ignore # <Has no member> pylint: disable=E1101
+        self._validate_regions_func()  # type: ignore # <Has no member> pylint: disable=E1101
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
@@ -283,3 +287,25 @@ class Phrase(ObjectReprImplBase):
             this_visit_control = VisitControl.Continue
 
         return (existing_diagnostics, this_visit_control)
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class RootPhrase(Phrase):
+
+    regions: InitVar[List[Optional[Region]]]
+    statements: Optional[List[Region]]
+    documentation: Optional[str]
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(RootPhrase, self).__init__(regions)
