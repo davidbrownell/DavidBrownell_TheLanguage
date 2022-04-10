@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, List, Optional, Set, Tuple, Union
+from typing import Callable, Dict, List, Optional, Set, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -38,7 +38,6 @@ with InitRelativeImports():
         GetParentStatementNode as GetParentStatementNodeImpl,
         GrammarPhrase,
         ImportGrammarPhrase,
-        Phrase,
         RegexToken,
     )
 
@@ -46,7 +45,13 @@ with InitRelativeImports():
         AST,
         DynamicPhrasesInfo,
         Observer as LexObserverBase,
+        Phrase as LexerPhrase,
         TranslationUnitsObserver,
+    )
+
+    from .Parser.Parser import (
+        ParseObserver as ParseObserverBase,
+        Phrase as ParserPhrase,
     )
 
 
@@ -54,11 +59,11 @@ with InitRelativeImports():
 def _LoadGrammars() -> Tuple[
     DynamicPhrasesInfo,
     RegexToken,
-    Dict[Phrase, GrammarPhrase],
+    Dict[LexerPhrase, GrammarPhrase],
 ]:
     name_lookup: Set[str] = set()
-    dynamic_phrases: Dict[DynamicPhrasesType, List[Phrase]] = {}
-    phrase_lookop: Dict[Phrase, GrammarPhrase] = {}
+    dynamic_phrases: Dict[DynamicPhrasesType, List[LexerPhrase]] = {}
+    phrase_lookop: Dict[LexerPhrase, GrammarPhrase] = {}
 
     for grammar_phrase in GrammarPhrases:
         assert grammar_phrase.phrase.name not in name_lookup, grammar_phrase.phrase.name
@@ -112,8 +117,8 @@ class LexObserver(LexObserverBase):
     def OnPhraseComplete(
         self,
         fully_qualified_name: str,
-        phrase: Phrase,
-        iter_range: Phrase.NormalizedIteratorRange,
+        phrase: LexerPhrase,
+        iter_range: LexerPhrase.NormalizedIteratorRange,
         node: AST.Node,
     ) -> Union[
         bool,
@@ -138,3 +143,34 @@ class LexObserver(LexObserverBase):
             # TODO: Process result
 
         return True
+
+
+# ----------------------------------------------------------------------
+class ParseObserver(ParseObserverBase):
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def CreateParserPhrase(
+        node: AST.Node,
+    ) -> ParseObserverBase.CreateParserPhraseReturnType:
+        if isinstance(node.type, LexerPhrase):
+            grammar_phrase = GrammarPhraseLookup.get(node.type, None)
+            if grammar_phrase is not None:
+                result = grammar_phrase.ExtractParserPhrase(node)
+                if result is None:
+                    return True
+
+                return result
+
+        return True
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetPotentialDocInfo(
+        node: Union[AST.Leaf, AST.Node],
+    ) -> Optional[Tuple[AST.Leaf, str]]:
+        return None # TODO
+        if isinstance(node.type, LexerPhrase):
+            if isinstance(node.type, DynamicPhrase):
+                node = ExtractDynamic(node)
