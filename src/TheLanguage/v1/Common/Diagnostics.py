@@ -72,19 +72,19 @@ class _Diagnostic(Interface.Interface):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)  # pylint: ignore[abstract-method]
+@dataclass(frozen=True)  # pylint: disable=abstract-method
 class Error(_Diagnostic):
     pass
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)  # pylint: ignore[abstract-method]
+@dataclass(frozen=True)  # pylint: disable=abstract-method
 class Warning(_Diagnostic):
     pass
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)  # pylint: ignore[abstract-method]
+@dataclass(frozen=True)  # pylint: disable=abstract-method
 class Info(_Diagnostic):
     pass
 

@@ -85,4 +85,4 @@ class ConcreteTypePhrase(Phrase):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, *args, **kwargs):
-        return self._ScopedAcceptImpl(self.items, *args, **kwargs)
+        return self._ScopedAcceptImpl(self.items, *args, **kwargs)  # type: ignore
