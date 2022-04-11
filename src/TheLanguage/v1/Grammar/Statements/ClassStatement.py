@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, Dict, List, Optional, Tuple, Union
+from typing import cast, Dict, List, Optional, Tuple
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -262,11 +262,7 @@ class ClassStatement(GrammarPhrase):
             )
 
         # ----------------------------------------------------------------------
-        def Callback() -> Union[
-            ParserClassStatementModule.ClassStatement,
-            Diagnostics,
-            Tuple[ParserClassStatementModule.ClassStatement, Diagnostics],
-        ]:
+        def Callback():
             errors: List[Error] = []
 
             # TODO: <attributes>?
@@ -406,7 +402,7 @@ class ClassStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return Callback
+        return Callback  # type: ignore
 
 
 # ----------------------------------------------------------------------
