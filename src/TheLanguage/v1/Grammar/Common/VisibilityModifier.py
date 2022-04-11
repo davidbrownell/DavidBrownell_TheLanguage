@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  VisibilityModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-04 08:35:44
+# |      2022-04-08 10:11:17
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All phrases used to lex content"""
+"""Functionality associated with visibility modifiers"""
 
 import os
 
@@ -27,13 +27,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Statements.ClassStatement import ClassStatement
-    from .Statements.PassStatement import PassStatement
+    from .Impl import ModifierImpl
+    from ...Parser.Common.VisibilityModifier import VisibilityModifier
 
 
 # ----------------------------------------------------------------------
-GrammarPhrases                              = [
-    # Statements
-    ClassStatement(),
-    PassStatement(),
-]
+CreatePhraseItem                            = ModifierImpl.StandardCreatePhraseItemFuncFactory(VisibilityModifier)
+Extract                                     = ModifierImpl.StandardExtractFuncFactory(VisibilityModifier)

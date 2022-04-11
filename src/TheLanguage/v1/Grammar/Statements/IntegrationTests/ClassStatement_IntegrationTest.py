@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PassStatement_IntegrationTest.py
+# |  ClassStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-08 13:02:44
+# |      2022-04-11 10:51:49
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for PassStatement.py"""
+"""Automated tests for ClassStatement.py"""
 
 import os
 import textwrap
@@ -29,15 +29,45 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ....IntegrationTestHelpers import *
-    from ..PassStatement import *
+    from ..ClassStatement import *
 
 
 # ----------------------------------------------------------------------
-def test_Standard():
+def test_AllDefaults():
     CompareResultsFromFile(str(ExecuteParserPhrase(
         textwrap.dedent(
             """\
-            pass
+            class Simple:
+                pass
+
+            class WithExtends
+                extends Extends1
+            :
+                pass
+
+            class WithUses
+                uses Uses1
+            :
+                pass
+
+            class WithImplements
+                implements Implements1
+            :
+                pass
+            """,
+        ),
+    )))
+
+
+# ----------------------------------------------------------------------
+def test_Visibility():
+    CompareResultsFromFile(str(ExecuteParserPhrase(
+        textwrap.dedent(
+            """\
+            public class PublicClass: pass
+            internal class InternalClass: pass
+            protected class ProtectedClass: pass
+            private class PrivateClass: pass
             """,
         ),
     )))

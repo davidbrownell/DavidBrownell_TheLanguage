@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.Region import Region
+    from .Region import Region
 
 
 # ----------------------------------------------------------------------
@@ -95,6 +95,10 @@ class Diagnostics(ObjectReprImplBase):
     errors: List[Error]                     = field(default_factory=list)
     warnings: List[Warning]                 = field(default_factory=list)
     infos: List[Info]                       = field(default_factory=list)
+
+    # ----------------------------------------------------------------------
+    def HasErrorsOnly(self) -> bool:
+        return bool(self.errors) and not self.warnings and not self.infos
 
     # ----------------------------------------------------------------------
     def __post_init__(self):

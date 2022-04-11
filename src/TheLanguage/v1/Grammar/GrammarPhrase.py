@@ -35,6 +35,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common.Diagnostics import DiagnosticsError
+
     from ..Lexer.Components import AST
 
     from ..Lexer.Phrases.DSL import (       # pylint: disable=unused-import
@@ -48,7 +50,6 @@ with InitRelativeImports():
         Observer as TranslationUnitsLexerObserver,
     )
 
-    from ..Parser.Diagnostics import DiagnosticsError
     from ..Parser.Parser import ParseObserver
 
 
