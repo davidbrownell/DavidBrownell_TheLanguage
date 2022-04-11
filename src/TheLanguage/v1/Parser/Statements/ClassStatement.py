@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -45,7 +45,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 InvalidVisibilityError                      = CreateError(
-    "'{visibility_str}' is not a valid visibility for '{type}' types; valid visibilities are {valid_visibilities}",
+    "'{visibility_str}' is not a valid visibility for '{type}' types; valid visibilities are {valid_visibilities_str}",
     type=str,
     visibility=VisibilityModifier,
     valid_visibilities=List[VisibilityModifier],
@@ -65,7 +65,7 @@ InvalidDependencyError                      = CreateError(
 )
 
 InvalidDependencyVisibilityError            = CreateError(
-    "'{type}' types may not {desc} other types via '{visibility_str}' visibility; valid visibilities are {valid_visibilities}",
+    "'{type}' types may not {desc} other types via '{visibility_str}' visibility; valid visibilities are {valid_visibilities_str}",
     type=str,
     desc=str,
     visibility=VisibilityModifier,
@@ -262,9 +262,13 @@ class ClassStatement(Phrase):
                 errors=errors,
             )
 
+
+
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, *args, **kwargs):
         return self._ScopedAcceptImpl(self.statements, *args, **kwargs)
 
 # TODO: Not valid to have a protected class at root
+# TODO: Constructor Visibility
+# TODO: Ensure that attributes are valid
