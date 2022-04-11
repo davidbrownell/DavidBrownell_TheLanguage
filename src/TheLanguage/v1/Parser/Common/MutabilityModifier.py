@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  MutabilityModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-04 08:35:44
+# |      2022-04-11 12:26:51
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,29 +13,25 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All phrases used to lex content"""
+"""Contains the MutabilityModifier object"""
 
 import os
 
-import CommonEnvironment
+from enum import auto, Flag
 
-from CommonEnvironmentEx.Package import InitRelativeImports
+import CommonEnvironment
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-with InitRelativeImports():
-    from .Statements.ClassAttributeStatement import ClassAttributeStatement
-    from .Statements.ClassStatement import ClassStatement
-    from .Statements.PassStatement import PassStatement
-
 
 # ----------------------------------------------------------------------
-GrammarPhrases                              = [
-    # Statements
-    ClassAttributeStatement(),
-    ClassStatement(),
-    PassStatement(),
-]
+class MutabilityModifier(Flag):
+    var                                     = auto()
+    ref                                     = auto()
+    val                                     = auto()
+
+    mutable                                 = var | ref
+    immutable                               = val

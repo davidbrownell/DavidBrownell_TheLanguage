@@ -62,7 +62,11 @@ ConceptCapabilities                         = _ClassCapabilities(
     valid_method_visibilities=[
         VisibilityModifier.public,
     ],
+    default_method_modifier=MethodModifier.abstract,
+    default_method_visibility=VisibilityModifier.public,
     allow_static_methods=False,
     valid_attribute_visibilities=[],
+    valid_attribute_mutabilities=[],
+    default_attribute_visibility=None,
     allow_mutable_public_attributes=False,
 )

@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, Dict, List, Optional, Tuple
+from typing import cast, Dict, List, Optional, Tuple, Type
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -41,7 +41,7 @@ with InitRelativeImports():
 
     from ..Common.Impl import ModifierImpl
 
-    from ...Common.Diagnostics import CreateError, Error
+    from ...Common.Diagnostics import CreateError, Diagnostics, Error
     from ...Common.Region import Region
 
     from ...Lexer.Phrases.DSL import (
@@ -57,11 +57,12 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegion, CreateRegions, Diagnostics
+    from ...Parser.Parser import CreateRegion, CreateRegions
     from ...Parser.Common.ClassModifier import ClassModifier
 
     from ...Parser.Statements import ClassStatement as ParserClassStatementModule
 
+    from ...Parser.Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
     from ...Parser.Statements.ClassCapabilities.ConceptCapabilities import ConceptCapabilities
     from ...Parser.Statements.ClassCapabilities.InterfaceCapabilities import InterfaceCapabilities
     from ...Parser.Statements.ClassCapabilities.MixinCapabilities import MixinCapabilities
@@ -211,11 +212,38 @@ class ClassStatement(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
+    @classmethod
+    def GetParentClassCapabilities(
+        cls,
+        node: AST.Node,
+        function_defintion_statement: Type, # "FuncDefinitionStatement",
+    ) -> Optional[ClassCapabilities]:
+
+        walking_node = node.parent
+
+        while walking_node is not None:
+            if walking_node.type is not None:
+                if walking_node.type.name == cls.PHRASE_NAME:
+                    return getattr(walking_node, cls._CLASS_CAPABILITIES_ATTRIBUTE_NAME)
+
+                # Do not attempt to get class info if it means walking beyond a function
+                if isinstance(node.type, function_defintion_statement):
+                    break
+
+            walking_node = walking_node.parent
+
+        return None
+
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
-    @staticmethod
+    # ----------------------------------------------------------------------
+    _CLASS_CAPABILITIES_ATTRIBUTE_NAME      = "_class_capabilities"
+
+    # ----------------------------------------------------------------------
+    @classmethod
     @Interface.override
     def _ExtractParserPhraseImpl(
+        cls,
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserPhraseReturnType:
 
@@ -228,6 +256,25 @@ class ClassStatement(GrammarPhrase):
         # Detect early errors and get information necessary for child statements; the rest will be
         # done later.
         errors: List[Error] = []
+
+        # <class_type>
+        class_type_node = cast(AST.Node, nodes[2])
+        class_type_info = ExtractClassType(class_type_node)
+
+        if class_type_info ==  ClassType.class_value:
+            class_capabilities = StandardCapabilities
+        elif class_type_info == ClassType.concept_value:
+            class_capabilities = ConceptCapabilities
+        # TODO: elif class_type_info == ClassType.exception_value:
+        # TODO:     class_capabilities = ExceptionCapabilities
+        elif class_type_info == ClassType.interface_value:
+            class_capabilities = InterfaceCapabilities
+        elif class_type_info == ClassType.mixin_value:
+            class_capabilities = MixinCapabilities
+        elif class_type_info == ClassType.struct_value:
+            class_capabilities = StructCapabilities
+        else:
+            assert False, class_type_info  # pragma: no cover
 
         # <dependencies>?
         all_dependency_nodes: Dict[DependencyType, Tuple[AST.Node, AST.Node]] = {}
@@ -261,6 +308,9 @@ class ClassStatement(GrammarPhrase):
                 errors=errors,
             )
 
+        # This information will be used when children call `GetParentClassCapabilities`
+        object.__setattr__(node, cls._CLASS_CAPABILITIES_ATTRIBUTE_NAME, class_capabilities)
+
         # ----------------------------------------------------------------------
         def Callback():
             errors: List[Error] = []
@@ -280,10 +330,6 @@ class ClassStatement(GrammarPhrase):
                 class_modifier_info = None
             else:
                 class_modifier_info = ExtractClassModifier(class_modifier_node)
-
-            # <class_type>
-            class_type_node = cast(AST.Node, nodes[2])
-            class_type_info = ExtractClassType(class_type_node)
 
             # <type_name>
             type_name_node = cast(AST.Leaf, nodes[3])
@@ -357,21 +403,6 @@ class ClassStatement(GrammarPhrase):
                 statements_info, docstring_info = statements_fragments_result
 
             # Commit
-            if class_type_info ==  ClassType.class_value:
-                class_capabilities = StandardCapabilities
-            elif class_type_info == ClassType.concept_value:
-                class_capabilities = ConceptCapabilities
-            # TODO: elif class_type_info == ClassType.exception_value:
-            # TODO:     class_capabilities = ExceptionCapabilities
-            elif class_type_info == ClassType.interface_value:
-                class_capabilities = InterfaceCapabilities
-            elif class_type_info == ClassType.mixin_value:
-                class_capabilities = MixinCapabilities
-            elif class_type_info == ClassType.struct_value:
-                class_capabilities = StructCapabilities
-            else:
-                assert False, class_type_info  # pragma: no cover
-
             if errors:
                 return Diagnostics(
                     errors=errors,

@@ -31,6 +31,7 @@ with InitRelativeImports():
         ClassCapabilities as _ClassCapabilities,
         ClassModifier,
         MethodModifier,
+        MutabilityModifier,
         VisibilityModifier,
     )
 
@@ -62,10 +63,17 @@ StructCapabilities                          = _ClassCapabilities(
         VisibilityModifier.internal,
         VisibilityModifier.private,
     ],
+    default_method_modifier=MethodModifier.standard,
+    default_method_visibility=VisibilityModifier.private,
     allow_static_methods=True,
     valid_attribute_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.private,
     ],
+    valid_attribute_mutabilities=[
+        MutabilityModifier.var,
+        MutabilityModifier.val,
+    ],
+    default_attribute_visibility=VisibilityModifier.public,
     allow_mutable_public_attributes=True,
 )
