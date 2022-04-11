@@ -140,10 +140,7 @@ class Phrase(ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def Accept(
-        self,
-        visitor,
-    ) -> VisitControl:
+    def Accept(self, visitor) -> VisitControl:
         on_method = getattr(visitor, "On{}".format(self.__class__.__name__), None)
         assert on_method is not None
 

@@ -33,9 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Diagnostics import CreateError, Diagnostics
     from .Phrase import Phrase, Region, RootPhrase
 
+    from ..Common.Diagnostics import CreateError, Diagnostics
     from ..Lexer.Lexer import AST, Phrase as LexerPhrase
 
 
@@ -263,33 +263,45 @@ def GetPhrase(
 
 
 # ----------------------------------------------------------------------
-def CreateRegions(
-    *nodes: Union[
-        AST.Leaf,
-        AST.Node,
+def CreateRegionNoThrow(
+    node: Union[
+        None,
         Region,
         LexerPhrase.NormalizedIteratorRange,
-        None,
+        AST.Leaf,
+        AST.Node,
     ],
+) -> Optional[Region]:
+    if node is None:
+        return None
+    elif isinstance(node, Region):
+        return node
+    elif isinstance(node, LexerPhrase.NormalizedIteratorRange):
+        return node.ToRegion()
+    elif isinstance(node, (AST.Leaf, AST.Node)):
+        if node.iter_range is None:
+            return None
+
+        return node.iter_range.ToRegion()
+    else:
+        assert False, node  # pragma: no cover
+
+
+# ----------------------------------------------------------------------
+def CreateRegion(
+    node: Any,
+) -> Region:
+    result = CreateRegionNoThrow(node)
+    assert result is not None
+
+    return result
+
+
+# ----------------------------------------------------------------------
+def CreateRegions(
+    *nodes: Any,
 ) -> List[Optional[Region]]:
-    results: List[Optional[Region]] = []
-
-    for node in nodes:
-        if node is None:
-            results.append(None)
-        elif isinstance(node, Region):
-            results.append(node)
-        elif isinstance(node, LexerPhrase.NormalizedIteratorRange):
-            results.append(node.ToRegion())
-        elif isinstance(node, (AST.Leaf, AST.Node)):
-            if node.iter_range is None:
-                results.append(None)
-            else:
-                results.append(node.iter_range.ToRegion())
-        else:
-            assert False, node  # pragma: no cover
-
-    return results
+    return [CreateRegionNoThrow(node) for node in nodes]
 
 
 # ----------------------------------------------------------------------

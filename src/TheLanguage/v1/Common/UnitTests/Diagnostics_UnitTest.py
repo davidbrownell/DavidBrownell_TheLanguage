@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  Diagnostics_UnitTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-04 08:35:44
+# |      2022-04-11 11:38:30
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All phrases used to lex content"""
+"""Unit tests for Diagnostics.py"""
 
 import os
 
@@ -27,13 +27,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Statements.ClassStatement import ClassStatement
-    from .Statements.PassStatement import PassStatement
+    from ..Diagnostics import *
+    from ..Location import *
 
 
 # ----------------------------------------------------------------------
-GrammarPhrases                              = [
-    # Statements
-    ClassStatement(),
-    PassStatement(),
-]
+MyError                                     = CreateError(
+    "Here is the {adj} error",
+    adj=str,
+)
+
+
+# ----------------------------------------------------------------------
+def test_Standard():
+    e = MyError.Create(
+        region=Region(Location(1, 2), Location(3, 4)),
+        adj="groovy",
+    )
+
+    assert str(e) == "Here is the groovy error"
+    assert e.region == Region(Location(1, 2), Location(3, 4))
