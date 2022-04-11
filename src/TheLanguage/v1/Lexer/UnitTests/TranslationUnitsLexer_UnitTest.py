@@ -189,9 +189,9 @@ class TestStandard(object):
             @Interface.override
             def Enqueue(
                 self,
-                func_infos: List[EnqueueAsyncItemType],
-            ) -> Awaitable[Any]:
-                return pool.EnqueueAsync(func_infos)
+                func_infos: List[EnqueueFuncInfoType],
+            ) -> EnqueueReturnType:
+                return pool.Enqueue(func_infos)
 
             # ----------------------------------------------------------------------
             @staticmethod

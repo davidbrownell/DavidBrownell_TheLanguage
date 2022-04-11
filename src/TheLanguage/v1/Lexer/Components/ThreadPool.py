@@ -20,7 +20,7 @@ import os
 
 from concurrent.futures import ThreadPoolExecutor
 from types import MethodType
-from typing import Any, Awaitable, Callable, cast, Dict, List, Optional, Tuple, Union
+from typing import Any, Awaitable, Callable, cast, Dict, List, Optional, Tuple, TypeVar, Union
 
 import CommonEnvironment
 
@@ -35,7 +35,28 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # |  Public Types
 # |
 # ----------------------------------------------------------------------
-EnqueueAsyncItemType                        = Union[
+EnqueueFuncInfoType                         = Union[
+    Tuple[
+        Callable[..., Any],
+        List[Any],
+        Dict[str, Any],
+    ],
+    Tuple[
+        Callable[..., Any],
+        List[Any],
+    ],
+    Tuple[
+        Callable[..., Any],
+        Dict[str, Any],
+    ],
+]
+
+EnqueueFuncInfosType                        = List[EnqueueFuncInfoType]
+EnqueueReturnType                           = List["asyncio.Future[Any]"]
+
+
+# ----------------------------------------------------------------------
+EnqueueAsyncFuncInfoReturnType              = Union[
     # function
     Callable[[Any], Awaitable[Any]],
 
@@ -76,6 +97,7 @@ def CreateThreadPool(
         thread_name_prefix=thread_name_prefix or "",
     )
 
+    executor.Enqueue = MethodType(_Enqueue, executor)  # type: ignore
     executor.EnqueueAsync = MethodType(_EnqueueAsync, executor)  # type: ignore
 
     return executor
@@ -84,9 +106,60 @@ def CreateThreadPool(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
+_EnqueueFuncInfoReturnType                  = TypeVar("_EnqueueFuncInfoReturnType")
+
+def _Enqueue(
+    self: ThreadPoolExecutor,
+    func_infos: List[
+        Union[
+            Tuple[
+                Callable[..., _EnqueueFuncInfoReturnType],
+                List[Any],
+                Dict[str, Any],
+            ],
+            Tuple[
+                Callable[..., _EnqueueFuncInfoReturnType],
+                List[Any],
+            ],
+            Tuple[
+                Callable[..., _EnqueueFuncInfoReturnType],
+                Dict[str, Any],
+            ],
+        ]
+    ],
+) -> List["asyncio.Future[_EnqueueFuncInfoReturnType]"]:
+    results: List["asyncio.Future[_EnqueueFuncInfoReturnType]"] = []
+
+    for func_info in func_infos:
+        assert isinstance(func_info, tuple), func_info
+
+        if len(func_info) == 3:
+            func, args, kwargs = func_info
+        elif len(func_info) == 2:
+            func = func_info[0]
+
+            if isinstance(func_info[1], list):
+                args = func_info[1]
+                kwargs = {}
+            elif isinstance(func_info[1], dict):
+                args = []
+                kwargs = func_info[1]
+            else:
+                assert False, func_info  # pragma: no cover
+        else:
+            assert False, func_info  # pragma: no cover
+
+        future = self.submit(func, *args, **kwargs)
+
+        results.append(future)  # type: ignore
+
+    return results
+
+
+# ----------------------------------------------------------------------
 def _EnqueueAsync(
     self,
-    func_infos: List[EnqueueAsyncItemType],
+    func_infos: List[EnqueueAsyncFuncInfoReturnType],
 ) -> Awaitable[Any]:
     coroutines = [
         asyncio.get_event_loop().run_in_executor(self, lambda fi=fi: _InvokeAsync(fi))
@@ -101,7 +174,7 @@ def _EnqueueAsync(
 
 # ----------------------------------------------------------------------
 def _InvokeAsync(
-    func_info: EnqueueAsyncItemType,
+    func_info: EnqueueAsyncFuncInfoReturnType,
 ) -> Any:
     if isinstance(func_info, tuple):
         if len(func_info) == 3:
