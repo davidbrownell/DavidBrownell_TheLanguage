@@ -556,7 +556,7 @@ class TestSort(object):
             """,
         )
 
-        assert len(parse_mock.method_calls) == 6
+        assert len(parse_mock.method_calls) == 9
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio

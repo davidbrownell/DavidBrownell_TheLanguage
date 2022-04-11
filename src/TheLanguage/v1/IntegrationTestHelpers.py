@@ -48,6 +48,7 @@ with InitRelativeImports():
         Parse,
         Phrase as ParserPhrase,
         RootPhrase as ParserRootPhrase,
+        Validate,
     )
 
 
@@ -59,7 +60,8 @@ class PatchAndExecuteFlag(Flag):
 
     Lex                                     = 0
     Prune                                   = prune_flag
-    Parse                                   = prune_flag | parse_flag
+    Parse                                   = Prune | parse_flag
+    Validate                                = Parse | validate_flag
 
 
 # ----------------------------------------------------------------------
@@ -74,9 +76,9 @@ def PatchAndExecute(
     fully_qualified_names: Optional[List[str]]=None,
     max_num_threads: Optional[int]=None,
 ) -> Union[
-    Dict[str, AST.Node],
-    List[Exception],
-    Dict[str, Tuple[ParserRootPhrase, Diagnostics]],
+    Dict[str, AST.Node],                                # PatchAndExecuteFlag.Lex
+    List[Exception],                                    # PatchAndExecuteFlag.Lex
+    Dict[str, Tuple[ParserRootPhrase, Diagnostics]],    # PatchAndExecuteFlag.Parse
 ]:
     """\
     Patches file system methods invoked by systems under tests and replaces them
@@ -152,10 +154,12 @@ def PatchAndExecute(
                 max_num_threads=max_num_threads,
             )
 
+            assert result is not None
+
+            if flag & PatchAndExecuteFlag.validate_flag:
+                result = Validate(result)
+
         assert result is not None
-
-
-
         return result
 
 
@@ -196,7 +200,7 @@ def ExecuteParserPhrase(
             "filename": content,
         },
         [],
-        flag=PatchAndExecuteFlag.Parse,
+        flag=PatchAndExecuteFlag.Validate,
         max_num_threads=max_num_threads,
     )
 

@@ -90,7 +90,7 @@ class OrPhrase(Phrase):
             results: List[Phrase.LexResult] = []
 
             # ----------------------------------------------------------------------
-            def Execute(phrase_index, phrase):
+            def Execute(phrase_index, phrase) -> Phrase.LexResult:
                 return phrase.Lex(
                     unique_id + ("{} ({})".format(self.name, phrase_index), ),
                     normalized_iter.Clone(),
@@ -100,9 +100,6 @@ class OrPhrase(Phrase):
                 )
 
             # ----------------------------------------------------------------------
-
-            # TODO: hack; this method needs to be async if we are going to leverage awaitable
-            single_threaded = True
 
             if single_threaded or len(self.phrases) == 1:
                 for phrase_index, phrase in enumerate(self.phrases):
@@ -116,14 +113,16 @@ class OrPhrase(Phrase):
                         break
 
             else:
-                gathered_results = observer.Enqueue(
+                futures = observer.Enqueue(
                     [
                         (Execute, [phrase_index, phrase])
                         for phrase_index, phrase in enumerate(self.phrases)
                     ],
                 )
 
-                for result in gathered_results:
+                for future in futures:
+                    result = future.result()
+
                     if result is None:
                         return None
                     elif isinstance(result, Exception):

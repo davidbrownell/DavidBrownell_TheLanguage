@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 from dataclasses import dataclass, fields, make_dataclass, InitVar
 
@@ -35,7 +35,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Diagnostics import Diagnostics
     from ..Common.Region import Region
 
 
@@ -53,7 +52,7 @@ class VisitControl(Enum):
 class Phrase(ObjectReprImplBase):
     """A collection of lexical tokens that may or may not be valid"""
 
-    has_children                            = False
+    has_children__                          = False
 
     # ----------------------------------------------------------------------
     def __init__(
@@ -118,7 +117,7 @@ class Phrase(ObjectReprImplBase):
 
         ObjectReprImplBase.__init__(
             self,
-            has_children=None,
+            has_children__=None,
             **custom_display_funcs,
         )
 
@@ -144,18 +143,18 @@ class Phrase(ObjectReprImplBase):
     def Accept(
         self,
         visitor,
-        diagnostics: Diagnostics,
-    ) -> Tuple[Diagnostics, VisitControl]:
+    ) -> VisitControl:
         on_method = getattr(visitor, "On{}".format(self.__class__.__name__), None)
         assert on_method is not None
 
-        diagnostics, visit_control = self._ProcessVisitResults(diagnostics, on_method(self))
+        visit_control = on_method(self)
 
-        if visit_control in [VisitControl.SkipChildren, VisitControl.SkipSiblings]:
+        if visit_control is None:
+            visit_control = VisitControl.Continue
+        elif visit_control in [VisitControl.SkipChildren, VisitControl.SkipSiblings]:
             visit_control = VisitControl.Continue
 
-        assert visit_control in [VisitControl.Continue, VisitControl.Terminate], visit_control
-        return (diagnostics, visit_control)
+        return visit_control
 
     # ----------------------------------------------------------------------
     # |
@@ -164,10 +163,9 @@ class Phrase(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     def _ScopedAcceptImpl(
         self,
-        visitor,
-        diagnostics: Diagnostics,
         children: List["Phrase"],
-    ) -> Tuple[Diagnostics, VisitControl]:
+        visitor,
+    ) -> VisitControl:
         """Implementation of Accept for phrases that introduce new scopes"""
 
         # Get the visitor's dynamic methods
@@ -178,7 +176,9 @@ class Phrase(ObjectReprImplBase):
         assert exit_method is not None
 
         # Invoke the visitor
-        diagnostics, visit_control = self._ProcessVisitResults(diagnostics, enter_method(self))
+        visit_control = enter_method(self)
+        if visit_control is None:
+            visit_control = VisitControl.Continue
 
         if visit_control != VisitControl.Terminate:
             with CallOnExit(lambda: exit_method(self)):
@@ -188,7 +188,9 @@ class Phrase(ObjectReprImplBase):
                     visitor.OnEnterScope(self)
                     with CallOnExit(lambda: visitor.OnExitScope(self)):
                         for child in children:
-                            diagnostics, visit_control = self._ProcessVisitResults(diagnostics, child.Accept(visitor, diagnostics))
+                            visit_control = child.Accept(visitor)
+                            if visit_control is None:
+                                visit_control = VisitControl.Continue
 
                             if visit_control == VisitControl.Continue:
                                 pass # Nothing to do here
@@ -201,7 +203,7 @@ class Phrase(ObjectReprImplBase):
                                 assert False, visit_control  # pragma: no cover
 
         assert visit_control in [VisitControl.Continue, VisitControl.Terminate], visit_control
-        return (diagnostics, visit_control)
+        return visit_control
 
     # ----------------------------------------------------------------------
     # |
@@ -256,45 +258,14 @@ class Phrase(ObjectReprImplBase):
 
         return Func
 
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _ProcessVisitResults(
-        existing_diagnostics: Diagnostics,
-        result: Union[
-            None,
-            Diagnostics,
-            VisitControl,
-            Tuple[Diagnostics, VisitControl],
-        ],
-    ) -> Tuple[Diagnostics, VisitControl]:
-        this_diagnostics: Optional[Diagnostics] = None
-        this_visit_control: Optional[VisitControl] = None
-
-        if result is None:
-            pass # Nothing to do here
-        elif isinstance(result, Diagnostics):
-            this_diagnostics = result
-        elif isinstance(result, VisitControl):
-            this_visit_control = result
-        elif isinstance(result, tuple):
-            this_diagnostics, this_visit_control = result
-        else:
-            assert False, result  # pragma: no cover
-
-        if this_diagnostics is not None:
-            existing_diagnostics = existing_diagnostics.Combine(this_diagnostics)
-        if this_visit_control is None:
-            this_visit_control = VisitControl.Continue
-
-        return (existing_diagnostics, this_visit_control)
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class RootPhrase(Phrase):
+    has_children__                          = True
 
     regions: InitVar[List[Optional[Region]]]
-    statements: Optional[List[Region]]
+    statements: Optional[List[Phrase]]
     documentation: Optional[str]
 
     # ----------------------------------------------------------------------
@@ -309,3 +280,8 @@ class RootPhrase(Phrase):
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
         super(RootPhrase, self).__init__(regions)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, *args, **kwargs):
+        return self._ScopedAcceptImpl(self.statements or [], *args, **kwargs)

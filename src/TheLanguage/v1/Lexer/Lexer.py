@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Awaitable, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -35,7 +35,8 @@ with InitRelativeImports():
     from .TranslationUnitsLexer import (
         AST,
         DynamicPhrasesInfo,
-        EnqueueAsyncItemType,
+        EnqueueFuncInfoType,
+        EnqueueReturnType,
         Observer as TranslationUnitsObserver,
         Lex as TranslationUnitsLex,
         Phrase,
@@ -127,7 +128,7 @@ def Prune(
                 for v in roots.values()
             ]
 
-            [future.result() for future in futures]
+            [future.result() for future in futures]  # pylint: disable=expression-not-assigned
 
 
 # ----------------------------------------------------------------------
@@ -182,10 +183,9 @@ class _TranslationUnitsObserver(TranslationUnitsObserver):
     @Interface.override
     def Enqueue(
         self,
-        func_infos: List[EnqueueAsyncItemType],
-    ) -> Awaitable[Any]:
-        raise Exception("Async functionality has been partially removed and simply doesn't work right now")
-        # return self._executor.EnqueueAsync(func_infos)  # type: ignore  # pylint: disable=not-callable
+        func_infos: List[EnqueueFuncInfoType],
+    ) -> EnqueueReturnType:
+        return self._executor.Enqueue(func_infos)  # type: ignore  # pylint: disable=not-callable
 
     # ----------------------------------------------------------------------
     @staticmethod
