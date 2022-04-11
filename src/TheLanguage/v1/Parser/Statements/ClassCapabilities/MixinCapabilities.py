@@ -31,6 +31,7 @@ with InitRelativeImports():
         ClassCapabilities as _ClassCapabilities,
         ClassModifier,
         MethodModifier,
+        MutabilityModifier,
         VisibilityModifier,
     )
 
@@ -76,6 +77,8 @@ MixinCapabilities                           = _ClassCapabilities(
         VisibilityModifier.protected,
         VisibilityModifier.private,
     ],
+    default_method_modifier=MethodModifier.standard,
+    default_method_visibility=VisibilityModifier.private,
     allow_static_methods=True,
     valid_attribute_visibilities=[
         VisibilityModifier.public,
@@ -83,5 +86,10 @@ MixinCapabilities                           = _ClassCapabilities(
         VisibilityModifier.protected,
         VisibilityModifier.private,
     ],
+    valid_attribute_mutabilities=[
+        MutabilityModifier.var,
+        MutabilityModifier.val,
+    ],
+    default_attribute_visibility=VisibilityModifier.private,
     allow_mutable_public_attributes=False,
 )

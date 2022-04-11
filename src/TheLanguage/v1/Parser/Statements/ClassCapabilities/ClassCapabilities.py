@@ -33,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ...Common.ClassModifier import ClassModifier
     from ...Common.MethodModifier import MethodModifier
+    from ...Common.MutabilityModifier import MutabilityModifier
     from ...Common.VisibilityModifier import VisibilityModifier
 
 
@@ -63,19 +64,35 @@ class ClassCapabilities(ObjectReprImplBase):
 
     valid_method_modifiers: List[MethodModifier]
     valid_method_visibilities: List[VisibilityModifier]
+    default_method_modifier: Optional[MethodModifier]
+    default_method_visibility: Optional[VisibilityModifier]
     allow_static_methods: bool
 
     valid_attribute_visibilities: List[VisibilityModifier]
+    valid_attribute_mutabilities: List[MutabilityModifier]
+    default_attribute_visibility: Optional[VisibilityModifier]
     allow_mutable_public_attributes: bool
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
         assert self.valid_visibilities
         assert self.default_visibility in self.valid_visibilities
+
+        assert self.default_extends_visibility is None or self.default_extends_visibility in self.valid_extends_visibilities
+
         assert (self.valid_implements_types and self.valid_implements_visibilities) or (not self.valid_implements_types and not self.valid_implements_visibilities)
+        assert self.default_implements_visibility is None or self.default_implements_visibility in self.valid_implements_visibilities
+
         assert (self.valid_uses_types and self.valid_uses_visibilities) or (not self.valid_uses_types and not self.valid_uses_visibilities)
+        assert self.default_uses_visibility is None or self.default_uses_visibility in self.valid_uses_visibilities
+
         assert (self.valid_method_modifiers and self.valid_method_visibilities) or (not self.valid_method_modifiers and not self.valid_method_visibilities)
+        assert self.default_method_modifier is None or self.default_method_modifier in self.valid_method_modifiers
+        assert self.default_method_visibility is None or self.default_method_visibility in self.valid_method_visibilities
         assert not self.allow_static_methods or self.valid_method_visibilities
+
+        assert (self.valid_attribute_visibilities and self.valid_attribute_mutabilities) or (not self.valid_attribute_visibilities and not self.valid_attribute_mutabilities)
+        assert self.default_attribute_visibility is None or self.default_attribute_visibility in self.valid_attribute_visibilities
         assert not self.allow_mutable_public_attributes or self.valid_attribute_visibilities
 
         ObjectReprImplBase.__init__(self)

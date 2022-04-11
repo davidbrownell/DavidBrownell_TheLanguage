@@ -81,8 +81,3 @@ class ConcreteTypePhrase(Phrase):
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
         super(ConcreteTypePhrase, self).__init__(regions)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Accept(self, *args, **kwargs):
-        return self._ScopedAcceptImpl(self.items, *args, **kwargs)  # type: ignore
