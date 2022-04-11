@@ -602,7 +602,7 @@ class TestOrPhrases(object):
         result = self._phrase.Lex(("root", ), CreateIterator("word"), parse_mock)
 
         assert result is None
-        assert len(parse_mock.method_calls) == 10
+        assert len(parse_mock.method_calls) == 18
 
 
 # ----------------------------------------------------------------------

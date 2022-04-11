@@ -61,7 +61,8 @@ def parse_mock():
 
     mock.GetParentStatementNode = GetParentStatementNode
 
-    mock.Enqueue = mock._thread_pool.EnqueueAsync
+    mock.Enqueue = mock._thread_pool.Enqueue
+    mock.EnqueueAsync = mock._thread_pool.EnqueueAsync
 
     mock.OnPushScope = Mock() # CoroutineMock()
     mock.OnPopScopec = Mock() # CoroutineMock()
