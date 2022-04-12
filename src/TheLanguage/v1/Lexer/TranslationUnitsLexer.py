@@ -19,7 +19,7 @@ import os
 import threading
 import traceback
 
-from typing import Any, Awaitable, Callable, cast, Dict, List, Optional, Union
+from typing import Callable, cast, Dict, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -42,7 +42,8 @@ with InitRelativeImports():
     from .TranslationUnitLexer import (
         AST,
         DynamicPhrasesInfo,
-        EnqueueAsyncItemType,
+        EnqueueFuncInfoType,
+        EnqueueReturnType,
         Lex as TranslationUnitLex,
         Observer as TranslationUnitObserver,
         NormalizedIterator,
@@ -105,8 +106,8 @@ class Observer(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     def Enqueue(
-        func_infos: List[EnqueueAsyncItemType],
-    ) -> Awaitable[Any]:
+        func_infos: List[EnqueueFuncInfoType],
+    ) -> EnqueueReturnType:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -302,7 +303,7 @@ def Lex(
                             assert thread_info.source_lookup[fully_qualified_name] is None
                             thread_info.source_lookup[fully_qualified_name] = SourceInfo(root, dynamic_phrases)
 
-                    except Exception as ex:
+                    except Exception as ex:  # pylint: disable=broad-except
                         assert not hasattr(ex, "traceback")
                         object.__setattr__(ex, "traceback", traceback.format_exc())
 
@@ -324,9 +325,6 @@ def Lex(
         # Prepopulate `pending_ctr` so that we can make sure that we don't
         # prematurely terminate as threads are spinning up.
         thread_info.pending_ctr = len(fully_qualified_names)
-
-    # TODO: hack; this method needs to be async if we are going to leverage awaitable
-    single_threaded = True
 
     if single_threaded:
         for fqn in fully_qualified_names:
@@ -408,7 +406,13 @@ class _TranslationUnitObserver(TranslationUnitObserver):
             self._prev_line = iter_range.end.line
 
             self._prev_line = iter_range.end.line
-            print("[Temp Diagnostic] Parsed: {} {}".format(iter_range.end.line, self._fully_qualified_name))
+            print(
+                "[Temp Diagnostic] Parsed [Ln {} -> Ln {}] {}".format(
+                    iter_range.begin.line,
+                    iter_range.end.line,
+                    self._fully_qualified_name,
+                ),
+            )
 
         result = self._observer.OnPhraseComplete(
             self._fully_qualified_name,

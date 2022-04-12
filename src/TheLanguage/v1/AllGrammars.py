@@ -50,8 +50,14 @@ with InitRelativeImports():
     )
 
     from .Parser.Parser import (
+        Diagnostics as PhraseDiagnostics,
         ParseObserver as ParseObserverBase,
+        RootPhrase as ParserRootPhrase,
+    )
+
+    from .Parser.Phrase import (
         Phrase as ParserPhrase,
+        VisitControl as PhraseVisitControl,
     )
 
 
@@ -150,19 +156,15 @@ class ParseObserver(ParseObserverBase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def CreateParserPhrase(
+    def ExtractParserPhrase(
         node: AST.Node,
-    ) -> ParseObserverBase.CreateParserPhraseReturnType:
+    ) -> Optional[ParseObserverBase.ExtractParserPhraseReturnType]:
         if isinstance(node.type, LexerPhrase):
             grammar_phrase = GrammarPhraseLookup.get(node.type, None)
             if grammar_phrase is not None:
-                result = grammar_phrase.ExtractParserPhrase(node)
-                if result is None:
-                    return True
+                return grammar_phrase.ExtractParserPhrase(node)
 
-                return result
-
-        return True
+        return None
 
     # ----------------------------------------------------------------------
     @staticmethod

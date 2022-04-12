@@ -21,7 +21,7 @@ import textwrap
 import threading
 
 from enum import auto, Enum
-from typing import Any, Awaitable, Callable, List, Optional, TextIO, Tuple, Union
+from typing import Any, Callable, List, Optional, TextIO, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -39,7 +39,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .NormalizedIterator import NormalizedIterator
-    from .ThreadPool import EnqueueAsyncItemType
+    from .ThreadPool import EnqueueFuncInfoType, EnqueueReturnType
     from .Tokens import Token
 
     from ...Common.Region import Region
@@ -88,7 +88,7 @@ class Phrase(Interface.Interface, ObjectReprImplBase):
 
         # ----------------------------------------------------------------------
         def ToRegion(self) -> Region:
-            return Region(self.begin.ToLocation(), self.end.ToLocation())
+            return Region.Create(self.begin.ToLocation(), self.end.ToLocation())
 
         # ----------------------------------------------------------------------
         @staticmethod
@@ -257,8 +257,8 @@ class Phrase(Interface.Interface, ObjectReprImplBase):
         @staticmethod
         @Interface.abstractmethod
         def Enqueue(
-            func_infos: List[EnqueueAsyncItemType],
-        ) -> Awaitable[Any]:
+            func_infos: List[EnqueueFuncInfoType],
+        ) -> EnqueueReturnType:
             """Enqueues the provided functions in an executor"""
             raise Exception("Abstract method")  # pragma: no cover
 

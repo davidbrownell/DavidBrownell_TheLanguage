@@ -357,7 +357,7 @@ def ExtractSequence(
     results: List[Union[Leaf, Node, None]] = []
     child_index = 0
 
-    while len(results) != len(phrases) and child_index != len(node.children):
+    while len(results) != len(phrases) or child_index != len(node.children):
         # Get the phrase
         phrase = None
 

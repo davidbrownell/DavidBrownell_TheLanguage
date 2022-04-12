@@ -19,7 +19,7 @@ import os
 import threading
 
 from collections import OrderedDict
-from typing import Any, Awaitable, cast, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import cast, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 
 from dataclasses import dataclass, field
 import inflect as inflect_mod
@@ -39,7 +39,14 @@ with InitRelativeImports():
     from .Error import CreateError, Location
 
     from .Components import AST
-    from .Components.Phrase import EnqueueAsyncItemType, NormalizedIterator, Phrase
+
+    from .Components.Phrase import (
+        EnqueueFuncInfoType,
+        EnqueueReturnType,
+        NormalizedIterator,
+        Phrase,
+    )
+
     from .Components.Tokens import RegexToken
 
     from .Phrases.DSL import CreatePhrase, DynamicPhrasesType
@@ -138,8 +145,8 @@ class Observer(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     def Enqueue(
-        func_infos: List[EnqueueAsyncItemType],
-    ) -> Awaitable[Any]:
+        func_infos: List[EnqueueFuncInfoType],
+    ) -> EnqueueReturnType:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -703,11 +710,8 @@ class _PhraseObserver(Phrase.Observer):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Enqueue(
-        self,
-        func_infos: List[EnqueueAsyncItemType],
-    ) -> Awaitable[Any]:
-        return self._observer.Enqueue(func_infos)
+    def Enqueue(self, *args, **kwargs):
+        return self._observer.Enqueue(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -895,6 +899,7 @@ def _CreateSyntaxInvalidError(
             if depth != best_depth:
                 break
 
+        error_node = error_node  # pylint: disable=undefined-loop-variable
         assert error_node is not None
 
         is_error_ambiguous = (

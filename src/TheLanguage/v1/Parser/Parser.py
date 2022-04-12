@@ -19,10 +19,11 @@ import os
 import traceback
 
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Callable, cast, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,9 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Diagnostics import CreateError, Diagnostics, DiagnosticsError
     from .Phrase import Phrase, Region, RootPhrase
 
+    from ..Common.Diagnostics import CreateError, Diagnostics
     from ..Lexer.Lexer import AST, Phrase as LexerPhrase
 
 
@@ -47,19 +48,20 @@ DuplicateDocInfoError                       = CreateError(
 # ----------------------------------------------------------------------
 class ParseObserver(Interface.Interface):
     # ----------------------------------------------------------------------
-    CreateParserPhraseReturnType            = Union[
-        bool,
+    ExtractParserPhraseReturnType           = Union[
         Phrase,
+        Diagnostics,
         Tuple[Phrase, Diagnostics],
-        Tuple[Phrase, Callable[[], Optional[Diagnostics]]],
-        Tuple[Phrase, Diagnostics, Callable[[], Optional[Diagnostics]]],
+        Callable[[], Phrase],
+        Callable[[], Diagnostics],
+        Callable[[], Tuple[Phrase, Diagnostics]],
     ]
 
     @staticmethod
     @Interface.abstractmethod
-    def CreateParserPhrase(
+    def ExtractParserPhrase(
         node: AST.Node,
-    ) -> "ParseObserver.CreateParserPhraseReturnType":
+    ) -> "ParseObserver.ExtractParserPhraseReturnType":
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -80,144 +82,167 @@ def Parse(
 ) -> Optional[
     Dict[
         str,
-        Tuple[RootPhrase, Diagnostics]
+        Tuple[RootPhrase, Diagnostics],
     ]
 ]:
-    single_threaded = max_num_threads == 1 or len(roots) == 1
-
     # ----------------------------------------------------------------------
     def CreateAndExtract(
-        fully_qualified_name: str,
+        fully_qualified_name: str,  # pylint: disable=unused-argument
         root: AST.Node,
     ) -> Optional[Tuple[RootPhrase, Diagnostics]]:
-        try:
-            diagnostics = Diagnostics()
+        diagnostics = Diagnostics()
 
-            callback_funcs: List[Tuple[AST.Node, Callable[[], Any]]] = []
+        callback_funcs: List[Tuple[AST.Node, Callable[[], Any]]] = []
 
-            for node in root.Enum(nodes_only=True):
-                assert isinstance(node, AST.Node), node
+        for node in root.Enum(nodes_only=True):
+            assert isinstance(node, AST.Node), node
 
-                result = observer.CreateParserPhrase(node)
+            result = observer.ExtractParserPhrase(node)
+            if result is None:
+                continue
 
-                this_phrase: Optional[Phrase] = None
-                this_diagnostics: Optional[Diagnostics] = None
-                this_callback: Optional[Callable[[], Any]] = None
+            if callable(result):
+                callback_funcs.append((node, result))
+                continue
 
-                if isinstance(result, bool):
-                    if not result:
-                        return None
+            if isinstance(result, Diagnostics):
+                assert result.errors, result
+                diagnostics = diagnostics.Combine(result)
 
+                continue
+
+            this_phrase: Optional[Phrase] = None
+
+            if isinstance(result, tuple):
+                assert len(result) == 2, result
+
+                this_phrase, this_diagnostics = result
+
+                assert not this_diagnostics.errors, this_diagnostics
+                diagnostics = diagnostics.Combine(this_diagnostics)
+
+            elif isinstance(result, Phrase):
+                this_phrase = result
+
+            else:
+                assert False, result  # pragma: no cover
+
+            assert this_phrase is not None
+            _SetPhrase(node, this_phrase)
+
+        for node, callback in reversed(callback_funcs):
+            result = callback()
+
+            if isinstance(result, Diagnostics):
+                assert result.errors, result
+                diagnostics = diagnostics.Combine(result)
+
+                continue
+
+            this_phrase: Optional[Phrase] = None
+
+            if isinstance(result, tuple):
+                assert len(result) == 2, result
+
+                this_phrase, this_diagnostics = result
+
+                assert not this_diagnostics.errors, this_diagnostics
+                diagnostics = diagnostics.Combine(this_diagnostics)
+
+            elif isinstance(result, Phrase):
+                this_phrase = result
+
+            else:
+                assert False, result  # pragma: no cover
+
+            assert this_phrase is not None
+            _SetPhrase(node, this_phrase)
+
+        # Extract the root information
+        doc_info: Optional[Tuple[AST.Leaf, str]] = None
+        statements: List[Phrase] = []
+
+        for child in root.children:
+            potential_doc_info = observer.GetPotentialDocInfo(child)
+            if potential_doc_info is not None:
+                if doc_info is not None:
+                    diagnostics = diagnostics.Combine(
+                        Diagnostics(
+                            errors=[
+                                DuplicateDocInfoError.Create(
+                                    CreateRegions(potential_doc_info[0]),
+                                ),
+                            ],
+                        ),
+                    )
+                else:
+                    doc_info = potential_doc_info
+
+                continue
+
+            if isinstance(child, AST.Node):
+                phrase = _ExtractPhrase(child)
+                if phrase is None:
                     continue
 
-                if isinstance(result, Phrase):
-                    this_phrase = result
+                statements.append(phrase)
 
-                if isinstance(result, tuple):
-                    if len(result) == 2:
-                        this_phrase = result[0]
-
-                        if isinstance(result[1], Diagnostics):
-                            this_diagnostics = result[1]
-                        elif callable(result[1]):
-                            this_callback = result[1]
-                        else:
-                            assert False, result  # pragma: no cover
-
-                    elif len(result) == 3:
-                        this_phrase, this_diagnostics, this_callback = result
-
-                    else:
-                        assert False, result  # pragma: no cover
-
-                assert this_phrase is not None
-                _SetPhrase(node, this_phrase)
-
-                if this_diagnostics is not None:
-                    diagnostics = diagnostics.Combine(this_diagnostics)
-
-                if this_callback is not None:
-                    callback_funcs.append((node, this_callback))
-
-            for node, callback in reversed(callback_funcs):
-                potential_diagnostics = callback()
-                if potential_diagnostics is not None:
-                    diagnostics.Combine(potential_diagnostics)
-
-            # Extract the root information
-            doc_info: Optional[Tuple[AST.Leaf, str]] = None
-            statements: List[Phrase] = []
-
-            for child in root.children:
-                potential_doc_info = observer.GetPotentialDocInfo(child)
-                if potential_doc_info is not None:
-                    if doc_info is not None:
-                        diagnostics = diagnostics.Combine(
-                            Diagnostics(
-                                errors=[
-                                    DuplicateDocInfoError.Create(
-                                        CreateRegions(potential_doc_info[0]),
-                                    ),
-                                ],
-                            ),
-                        )
-                    else:
-                        doc_info = potential_doc_info
-
-                    continue
-
-                if isinstance(child, AST.Node):
-                    phrase = _ExtractPhrase(child)
-                    if phrase is None:
-                        continue
-
-                    statements.append(phrase)
-
-            return (
-                RootPhrase.Create(
-                    CreateRegions(root, root, None if doc_info is None else doc_info[0]),
-                    statements or None,
-                    None if doc_info is None else doc_info[1],
-                ),
-                diagnostics,
-            )
-
-        except Exception as ex:
-            if not hasattr(ex, "fully_qualified_name"):
-                object.__setattr__(ex, "full_qualified_name", fully_qualified_name)
-
-            if not hasattr(ex, "traceback"):
-                object.__setattr__(ex, "traceback", traceback.format_exc())
-
-            raise
+        return (
+            RootPhrase.Create(
+                CreateRegions(root, root, None if doc_info is None else doc_info[0]),
+                statements or None,
+                None if doc_info is None else doc_info[1],
+            ),
+            diagnostics,
+        )
 
     # ----------------------------------------------------------------------
 
-    results: List[Optional[Tuple[RootPhrase, Diagnostics]]] = []
+    return _Execute(
+        roots,
+        CreateAndExtract,
+        max_num_threads=max_num_threads,
+    )
 
-    if single_threaded:
-        for k, v in roots.items():
-            results.append(CreateAndExtract(k, v))
 
-    else:
-        with ThreadPoolExecutor(
-            max_workers=max_num_threads,
-        ) as executor:
-            futures = [
-                executor.submit(CreateAndExtract, k, v)
-                for k, v in roots.items()
-            ]
+# ----------------------------------------------------------------------
+def Validate(
+    roots: Dict[str, Tuple[RootPhrase, Diagnostics]],
+    *,
+    max_num_threads: Optional[int]=None,
+) -> Optional[Dict[str, Tuple[RootPhrase, Diagnostics]]]:
+    # Extract names
 
-            for future in futures:
-                results.append(future.result())
+    # ----------------------------------------------------------------------
+    def ValidateNames(
+        fully_qualified_name: str,  # pylint: disable=unused-argument
+        input_value: Tuple[RootPhrase, Diagnostics],
+    ) -> _NamespaceVisitor.ReturnType:
+        root, diagnostics = input_value
 
-    if any(result is None for result in results):
+        visitor = _NamespaceVisitor(diagnostics)
+
+        root.Accept(visitor)
+
+        return visitor.root
+
+    # ----------------------------------------------------------------------
+
+    namespace_values = _Execute(
+        roots,
+        ValidateNames,
+        max_num_threads=max_num_threads,
+    )
+
+    if namespace_values is None:
         return None
 
-    return {
-        fully_qualified_name: cast(Tuple[RootPhrase, Diagnostics], result)
-        for fully_qualified_name, result in zip(roots.keys(), results)
-    }
+    if any(diagnostics.errors for (_, diagnostics) in roots.values()):
+        return roots
+
+    # TODO: Validate types
+
+    return roots
 
 
 # ----------------------------------------------------------------------
@@ -238,33 +263,45 @@ def GetPhrase(
 
 
 # ----------------------------------------------------------------------
-def CreateRegions(
-    *nodes: Union[
-        AST.Leaf,
-        AST.Node,
+def CreateRegionNoThrow(
+    node: Union[
+        None,
         Region,
         LexerPhrase.NormalizedIteratorRange,
-        None,
+        AST.Leaf,
+        AST.Node,
     ],
+) -> Optional[Region]:
+    if node is None:
+        return None
+    elif isinstance(node, Region):
+        return node
+    elif isinstance(node, LexerPhrase.NormalizedIteratorRange):
+        return node.ToRegion()
+    elif isinstance(node, (AST.Leaf, AST.Node)):
+        if node.iter_range is None:
+            return None
+
+        return node.iter_range.ToRegion()
+    else:
+        assert False, node  # pragma: no cover
+
+
+# ----------------------------------------------------------------------
+def CreateRegion(
+    node: Any,
+) -> Region:
+    result = CreateRegionNoThrow(node)
+    assert result is not None
+
+    return result
+
+
+# ----------------------------------------------------------------------
+def CreateRegions(
+    *nodes: Any,
 ) -> List[Optional[Region]]:
-    results: List[Optional[Region]] = []
-
-    for node in nodes:
-        if node is None:
-            results.append(None)
-        elif isinstance(node, Region):
-            results.append(node)
-        elif isinstance(node, LexerPhrase.NormalizedIteratorRange):
-            results.append(node.ToRegion())
-        elif isinstance(node, (AST.Leaf, AST.Node)):
-            if node.iter_range is None:
-                results.append(None)
-            else:
-                results.append(node.iter_range.ToRegion())
-        else:
-            assert False, node  # pragma: no cover
-
-    return results
+    return [CreateRegionNoThrow(node) for node in nodes]
 
 
 # ----------------------------------------------------------------------
@@ -304,3 +341,147 @@ def _ExtractPhrase(
 
     assert len(child_phrases) == 1, child_phrases
     return child_phrases[0]
+
+
+# ----------------------------------------------------------------------
+_ExecuteInputType                           = TypeVar("_ExecuteInputType")
+_ExecuteOutputType                          = TypeVar("_ExecuteOutputType")
+
+
+def _Execute(
+    inputs: Dict[str, _ExecuteInputType],
+    execute_func: Callable[[str, _ExecuteInputType], Optional[_ExecuteOutputType]],
+    *,
+    max_num_threads: Optional[int]=None,
+) -> Optional[Dict[str, _ExecuteOutputType]]:
+    # ----------------------------------------------------------------------
+    def Execute(
+        fully_qualified_name: str,
+        input_value: _ExecuteInputType,
+    ) -> Optional[_ExecuteOutputType]:
+        try:
+            return execute_func(fully_qualified_name, input_value)
+        except Exception as ex:
+            if not hasattr(ex, "fully_qualified_name"):
+                object.__setattr__(ex, "full_qualified_name", fully_qualified_name)
+
+            if not hasattr(ex, "traceback"):
+                object.__setattr__(ex, "traceback", traceback.format_exc())
+
+            raise
+
+    # ----------------------------------------------------------------------
+
+    results: List[_ExecuteOutputType] = []
+
+    if max_num_threads == 1 or len(inputs) == 1:
+        for k, v in inputs.items():
+            result = Execute(k, v)
+            if result is None:
+                return None
+
+            results.append(result)
+
+    else:
+        with ThreadPoolExecutor(
+            max_workers=max_num_threads,
+        ) as executor:
+            futures = [
+                executor.submit(Execute, k, v)
+                for k, v in inputs.items()
+            ]
+
+            for future in futures:
+                result = future.result()
+                if result is None:
+                    return None
+
+                results.append(result)
+
+    return {
+        fully_qualified_name: result
+        for fully_qualified_name, result in zip(inputs.keys(), results)
+    }
+
+
+# ----------------------------------------------------------------------
+class _NamespaceVisitor(object):
+    # ----------------------------------------------------------------------
+    # |  Public Types
+    class Node(ObjectReprImplBase):
+        # ----------------------------------------------------------------------
+        def __init__(
+            self,
+            phrase: Optional[Phrase],
+        ):
+            self.phrase                                                     = phrase
+            self.namespaces: Dict[str, List["_NamespaceVisitor.Node"]]      = {}
+            self.unnamed: List["_NamespaceVisitor.Node"]                    = []
+
+            super(_NamespaceVisitor.Node, self).__init__()
+
+    # ----------------------------------------------------------------------
+    ReturnType                              = Dict[str, List["_NamespaceVisitor.Node"]]
+
+    # ----------------------------------------------------------------------
+    # |  Public Methods
+    def __init__(
+        self,
+        diagnostics: Diagnostics,
+    ):
+        self._diagnostics                               = diagnostics
+        self._node_stack: List[_NamespaceVisitor.Node]  = [_NamespaceVisitor.Node(None)]
+
+    # ----------------------------------------------------------------------
+    @property
+    def root(self) -> "_NamespaceVisitor.ReturnType":
+        assert len(self._node_stack) == 1, self._node_stack
+        assert self._node_stack[0].phrase is None, self._node_stack[0]
+
+        return self._node_stack[0].namespaces
+
+    # ----------------------------------------------------------------------
+    def OnEnterScope(
+        self,
+        phrase: Phrase,
+    ) -> None:
+        assert phrase.has_children__, phrase
+
+        new_node = _NamespaceVisitor.Node(phrase)
+
+        name = getattr(phrase, "name", None)
+        if name is not None:
+            self._node_stack[-1].namespaces.setdefault(name, []).append(new_node)
+        else:
+            self._node_stack[-1].unnamed.append(new_node)
+
+        self._node_stack.append(new_node)
+
+    # ----------------------------------------------------------------------
+    def OnExitScope(
+        self,
+        phrase: Phrase,
+    ) -> None:
+        assert phrase.has_children__, phrase
+
+        assert self._node_stack, phrase
+        self._node_stack.pop()
+        assert self._node_stack, phrase
+
+    # ----------------------------------------------------------------------
+    def __getattr__(
+        self,
+        attribute: str,
+    ) -> Callable[[Phrase], None]:
+        return self._NoopMethod
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _NoopMethod(*args, **kwargs):
+        return None
+
+    # TODO: ClassStatement
+    # TODO: Aliases
+    # TODO: Compile-time statements populate parent namespace

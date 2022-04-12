@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Callable, cast, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, cast, Dict, List, Optional
 
 import inflect as inflect_mod
 
@@ -35,21 +35,22 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common.Diagnostics import DiagnosticsError
+
     from ..Lexer.Components import AST
 
-    from ..Lexer.Phrases.DSL import (
+    from ..Lexer.Phrases.DSL import (       # pylint: disable=unused-import
         DefaultCommentToken,
         DynamicPhrasesType,
         Phrase,
-        RegexToken,                         # Imported as a convenience  # pylint: disable=unused-import
+        RegexToken,                         # Imported as a convenience
     )
 
     from ..Lexer.TranslationUnitsLexer import (
         Observer as TranslationUnitsLexerObserver,
     )
 
-    from ..Parser.Diagnostics import Diagnostics
-    from ..Parser.Phrase import Phrase as ParserPhrase
+    from ..Parser.Parser import ParseObserver
 
 
 # ----------------------------------------------------------------------
@@ -111,18 +112,25 @@ class GrammarPhrase(Interface.Interface, ObjectReprImplBase):
         return None
 
     # ----------------------------------------------------------------------
-    ExtractParserPhraseResultType           = Union[
-        ParserPhrase,
-        Tuple[ParserPhrase, Diagnostics],
-        Tuple[ParserPhrase, Callable[[], Optional[Diagnostics]]],
-        Tuple[ParserPhrase, Diagnostics, Callable[[], Optional[Diagnostics]]],
-    ]
+    ExtractParserPhraseReturnType           = ParseObserver.ExtractParserPhraseReturnType
 
+    def ExtractParserPhrase(
+        self,
+        node: AST.Node,
+    ) -> "GrammarPhrase.ExtractParserPhraseReturnType":
+        try:
+            return self._ExtractParserPhraseImpl(node)
+        except DiagnosticsError as ex:
+            return ex
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def ExtractParserPhrase(
+    def _ExtractParserPhraseImpl(
         node: AST.Node,
-    ) -> "GrammarPhrase.ExtractParserPhraseResultType":
+    ) -> "GrammarPhrase.ExtractParserPhraseReturnType":
         raise Exception("Abstract method")  # pragma: no cover
 
 

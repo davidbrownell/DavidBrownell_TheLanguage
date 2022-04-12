@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  All.py
+# |  ClassAttributeStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-04 08:35:44
+# |      2022-04-11 13:02:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""All phrases used to lex content"""
+"""Automated tests for ClassAttributeStatement.py"""
 
 import os
+import textwrap
 
 import CommonEnvironment
 
@@ -27,15 +28,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Statements.ClassAttributeStatement import ClassAttributeStatement
-    from .Statements.ClassStatement import ClassStatement
-    from .Statements.PassStatement import PassStatement
+    from ....IntegrationTestHelpers import *
+    from ..ClassAttributeStatement import *
 
 
 # ----------------------------------------------------------------------
-GrammarPhrases                              = [
-    # Statements
-    ClassAttributeStatement(),
-    ClassStatement(),
-    PassStatement(),
-]
+def test_Simple():
+    CompareResultsFromFile(str(ExecuteParserPhrase(
+        textwrap.dedent(
+            """\
+            class More:
+                TheType1 var value1
+                The.Type val value2
+            """,
+        ),
+    )))
