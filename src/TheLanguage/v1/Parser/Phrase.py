@@ -52,7 +52,7 @@ class VisitControl(Enum):
 class Phrase(ObjectReprImplBase):
     """A collection of lexical tokens that may or may not be valid"""
 
-    has_children__                          = False
+    introduces_scope__                      = False
 
     # ----------------------------------------------------------------------
     def __init__(
@@ -117,7 +117,7 @@ class Phrase(ObjectReprImplBase):
 
         ObjectReprImplBase.__init__(
             self,
-            has_children__=None,
+            introduces_scope__=None,
             **custom_display_funcs,
         )
 
@@ -259,7 +259,7 @@ class Phrase(ObjectReprImplBase):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class RootPhrase(Phrase):
-    has_children__                          = True
+    introduces_scope__                      = True
 
     regions: InitVar[List[Optional[Region]]]
     statements: Optional[List[Phrase]]

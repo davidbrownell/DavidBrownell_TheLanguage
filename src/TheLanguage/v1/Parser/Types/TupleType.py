@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PassStatement.py
+# |  TupleType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-01 12:29:33
+# |      2022-04-12 09:02:55
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the PassStatement object"""
+"""Contains the TupleType object"""
 
 import os
+
+from typing import List
 
 from dataclasses import dataclass
 
@@ -29,14 +31,35 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementPhrase import StatementPhrase
+    from .TypePhrase import (
+        DiagnosticsError,
+        Error,
+        MutabilityModifierRequiredError,
+        TypePhrase,
+    )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class PassStatement(StatementPhrase):
-    """Noop statement"""
+class TupleType(TypePhrase):
+    types: List[TypePhrase]
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(PassStatement, self).__post_init__(regions)
+        super(TupleType, self).__post_init__(regions)
+
+        # Validate
+        errors: List[Error] = []
+
+        for contained_type in self.types:
+            if contained_type.mutability_modifier is None:
+                errors.append(
+                    MutabilityModifierRequiredError.Create(
+                        region=contained_type.regions__.self__,
+                    ),
+                )
+
+        if errors:
+            raise DiagnosticsError(
+                errors=errors,
+            )

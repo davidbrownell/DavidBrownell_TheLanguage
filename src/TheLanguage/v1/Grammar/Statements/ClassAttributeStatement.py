@@ -31,11 +31,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ClassStatement import ClassStatement
+    from .FuncDefinitionStatement import FuncDefinitionStatement
 
     from ..GrammarPhrase import AST, GrammarPhrase
 
-    from ..Common import ConcreteTypeFragment
-    from ..Common import MutabilityModifier
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
@@ -63,12 +62,8 @@ InvalidClassAttributeError                  = CreateError(
 
 # ----------------------------------------------------------------------
 class ClassAttributeStatement(GrammarPhrase):
-    PHRASE_NAME                             = "Class Member Statement"
+    PHRASE_NAME                             = "Class Attribute Statement"
 
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
     # ----------------------------------------------------------------------
     def __init__(self):
         super(ClassAttributeStatement, self).__init__(
@@ -84,11 +79,8 @@ class ClassAttributeStatement(GrammarPhrase):
                         item=VisibilityModifier.CreatePhraseItem(),
                     ),
 
-                    # <concrete_type>
-                    ConcreteTypeFragment.Create(),
-
-                    # <mutability_modifier>
-                    MutabilityModifier.CreatePhraseItem(),
+                    # <type>
+                    DynamicPhrasesType.Types,
 
                     # <name>
                     CommonTokens.RuntimeVariableName,
@@ -120,7 +112,7 @@ class ClassAttributeStatement(GrammarPhrase):
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
-            assert len(nodes) == 6 # TODO: 7
+            assert len(nodes) == 5 # TODO: 6
 
             errors: List[Error] = []
 
@@ -147,20 +139,16 @@ class ClassAttributeStatement(GrammarPhrase):
             else:
                 visibility_info = VisibilityModifier.Extract(visibility_node)
 
-            # <concrete_type>
-            concrete_type_node = cast(AST.Node, nodes[1])
-            concrete_type_info = ConcreteTypeFragment.Extract(concrete_type_node)
-
-            # <mutability_modifier>
-            mutability_modifier_node = cast(AST.Node, nodes[2])
-            mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
+            # <type>
+            type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
+            type_info = cast(ParserClassAttributeStatementModule.TypePhrase, GetPhrase(type_node))
 
             # <name>
-            name_node = cast(AST.Leaf, nodes[3])
+            name_node = cast(AST.Leaf, nodes[4])
             name_info = ExtractToken(name_node)
 
             # ('=' <expression>)?
-            initializer_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[4])))
+            initializer_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[3])))
             if initializer_node is None:
                 initializer_info = None
             else:
@@ -170,10 +158,7 @@ class ClassAttributeStatement(GrammarPhrase):
                 initializer_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, initializer_nodes[2])))
                 initializer_info = GetPhrase(initializer_node)
 
-            class_capabilities = ClassStatement.GetParentClassCapabilities(
-                node,
-                str, # TODO
-            )
+            class_capabilities = ClassStatement.GetParentClassCapabilities(node, FuncDefinitionStatement)
 
             if class_capabilities is None:
                 errors.append(
@@ -188,12 +173,10 @@ class ClassAttributeStatement(GrammarPhrase):
                 )
 
             return ParserClassAttributeStatementModule.ClassAttributeStatement.Create(
-                class_capabilities,
                 CreateRegions(
                     node,
                     visibility_node,
-                    concrete_type_node,
-                    mutability_modifier_node,
+                    type_node,
                     name_node,
                     None, # documentation
                     initializer_node,
@@ -203,9 +186,9 @@ class ClassAttributeStatement(GrammarPhrase):
                     no_compare_node,
                     is_override_node,
                 ),
+                class_capabilities,
                 visibility_info,
-                concrete_type_info,
-                mutability_modifier_info,
+                type_info,
                 name_info,
                 None, # documentation
                 initializer_info,

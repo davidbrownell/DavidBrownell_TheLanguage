@@ -445,7 +445,7 @@ class _NamespaceVisitor(object):
         self,
         phrase: Phrase,
     ) -> None:
-        assert phrase.has_children__, phrase
+        assert phrase.introduces_scope__, phrase
 
         new_node = _NamespaceVisitor.Node(phrase)
 
@@ -462,7 +462,7 @@ class _NamespaceVisitor(object):
         self,
         phrase: Phrase,
     ) -> None:
-        assert phrase.has_children__, phrase
+        assert phrase.introduces_scope__, phrase
 
         assert self._node_stack, phrase
         self._node_stack.pop()

@@ -34,12 +34,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
-    from ..Common import ConcreteTypeFragment
     from ..Common import StatementsFragment
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
     from ..Common.Impl import ModifierImpl
+
+    from ..Types.StandardType import StandardType
 
     from ...Common.Diagnostics import CreateError, Diagnostics, Error
     from ...Common.Region import Region
@@ -100,11 +101,9 @@ class ClassStatement(GrammarPhrase):
     PHRASE_NAME                             = "Class Statement"
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
-    # ----------------------------------------------------------------------
     def __init__(self):
+        self._standard_type                 = StandardType()
+
         dependency_element = PhraseItem(
             name="Class Dependency Element",
             item=[
@@ -114,8 +113,8 @@ class ClassStatement(GrammarPhrase):
                     item=VisibilityModifier.CreatePhraseItem(),
                 ),
 
-                # <concrete_type>
-                ConcreteTypeFragment.Create(),
+                # <standard_type>
+                self._standard_type.phrase,
             ],
         )
 
@@ -216,7 +215,7 @@ class ClassStatement(GrammarPhrase):
     def GetParentClassCapabilities(
         cls,
         node: AST.Node,
-        function_defintion_statement: Type, # "FuncDefinitionStatement",
+        function_defintion_statement: Type[GrammarPhrase],
     ) -> Optional[ClassCapabilities]:
 
         walking_node = node.parent
@@ -240,10 +239,9 @@ class ClassStatement(GrammarPhrase):
     _CLASS_CAPABILITIES_ATTRIBUTE_NAME      = "_class_capabilities"
 
     # ----------------------------------------------------------------------
-    @classmethod
     @Interface.override
     def _ExtractParserPhraseImpl(
-        cls,
+        self,
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserPhraseReturnType:
 
@@ -309,7 +307,7 @@ class ClassStatement(GrammarPhrase):
             )
 
         # This information will be used when children call `GetParentClassCapabilities`
-        object.__setattr__(node, cls._CLASS_CAPABILITIES_ATTRIBUTE_NAME, class_capabilities)
+        object.__setattr__(node, self.__class__._CLASS_CAPABILITIES_ATTRIBUTE_NAME, class_capabilities)
 
         # ----------------------------------------------------------------------
         def Callback():
@@ -360,7 +358,7 @@ class ClassStatement(GrammarPhrase):
                     [these_dependency_nodes[0]],
                     (
                         ExtractSequence(delimited_node)[1]
-                        for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, these_dependency_nodes[1])))
+                        for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(Optional[AST.Node], these_dependency_nodes[1])))
                     ),
                 ):
                     this_dependency_nodes = ExtractSequence(cast(AST.Node, this_dependency_node))
@@ -373,16 +371,16 @@ class ClassStatement(GrammarPhrase):
                     else:
                         this_visibility_info = VisibilityModifier.Extract(this_visibility_node)
 
-                    # <concrete_type>
-                    this_concrete_type_node = cast(AST.Node, this_dependency_nodes[1])
-                    this_concrete_type_info = ConcreteTypeFragment.Extract(this_concrete_type_node)
+                    # <standard_type>
+                    standard_type_node = cast(AST.Node, this_dependency_nodes[1])
+                    standard_type_info = self._standard_type.ExtractParserPhrase(standard_type_node)
 
                     # Add it
                     these_dependencies.append(
                         ParserClassStatementModule.ClassStatementDependency.Create(
-                            CreateRegions(this_dependency_node, this_visibility_node, this_concrete_type_node),
+                            CreateRegions(this_dependency_node, this_visibility_node, standard_type_node),
                             this_visibility_info,
-                            this_concrete_type_info,
+                            standard_type_info,
                         ),
                     )
 

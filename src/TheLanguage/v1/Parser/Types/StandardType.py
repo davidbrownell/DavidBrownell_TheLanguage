@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PassStatement.py
+# |  StandardType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-01 12:29:33
+# |      2022-04-12 10:46:35
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the PassStatement object"""
+"""Contains the StandardType object"""
 
 import os
 
-from dataclasses import dataclass
+from typing import List, Optional
+
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 
@@ -29,14 +31,38 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementPhrase import StatementPhrase
+    from .TypePhrase import Phrase, Region, TypePhrase
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class PassStatement(StatementPhrase):
-    """Noop statement"""
+class StandardTypeItemPhrase(Phrase):
+    regions: InitVar[List[Optional[Region]]]
+
+    name: str
+
+    # TODO: Templates
+    # TODO: Constraints
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(PassStatement, self).__post_init__(regions)
+        super(StandardTypeItemPhrase, self).__init__(regions)
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class StandardType(TypePhrase):
+    items: List[StandardTypeItemPhrase]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(StandardType, self).__post_init__(regions)

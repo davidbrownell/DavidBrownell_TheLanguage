@@ -81,6 +81,7 @@ def Create() -> PhraseItem:
 
 
 # ----------------------------------------------------------------------
+# TODO: Fix this return value as it is wonky!
 def Extract(
     node: AST.Node,
 ) -> Union[
@@ -118,8 +119,8 @@ def Extract(
     is_first_statement = True
 
     for statement_node in statement_nodes:
-        statement_info = GetPhraseNoThrow(cast(AST.Node, statement_node))
-        if statement_info is None:
+        statement_phrase = GetPhraseNoThrow(cast(AST.Node, statement_node))
+        if statement_phrase is None:
             continue
 
         if False: # TODO: Remove this and uncomment the code below once DocstringStatement is implemented
@@ -142,10 +143,10 @@ def Extract(
         #            )
         #
         #     docstring_leaf = cast(AST.Leaf, statement_node)
-        #     docstring_info = statement_info
+        #     docstring_info = statement_phrase
 
         else:
-            phrases.append(statement_info)
+            phrases.append(statement_phrase)
 
         is_first_statement = False
 

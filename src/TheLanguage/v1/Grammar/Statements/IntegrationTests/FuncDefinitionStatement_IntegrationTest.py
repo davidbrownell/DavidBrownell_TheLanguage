@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PassStatement.py
+# |  FuncDefinitionStatement_IntegrationTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-01 12:29:33
+# |      2022-04-12 14:47:49
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the PassStatement object"""
+"""Automated tests for FuncDefinitionStatement.py"""
 
 import os
-
-from dataclasses import dataclass
+import textwrap
 
 import CommonEnvironment
 
@@ -29,14 +28,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementPhrase import StatementPhrase
+    from ....IntegrationTestHelpers import *
+    from ..FuncDefinitionStatement import *
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class PassStatement(StatementPhrase):
-    """Noop statement"""
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(PassStatement, self).__post_init__(regions)
+def test_Simple():
+    CompareResultsFromFile(str(ExecuteParserPhrase(
+        textwrap.dedent(
+            """\
+            Int val Func1(): pass
+            (Int val, ) var Func2(Char val a, Bool var b): pass
+            """,
+        ),
+    )))

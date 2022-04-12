@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConcreteTypePhrase.py
+# |  VariableNamePhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 09:47:36
+# |      2022-04-11 16:50:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ConcreteTypePhrase"""
+"""Contains the VariableNamePhrase object"""
 
 import os
 
@@ -22,7 +22,6 @@ from typing import List, Optional
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -39,14 +38,10 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ConcreteTypeItemPhrase(Phrase):
+class VariableNamePhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
-
     name: str
 
-    # TODO: Templates
-    # TODO: Constraints
-
     # ----------------------------------------------------------------------
     @classmethod
     def Create(cls, *args, **kwargs):
@@ -58,26 +53,4 @@ class ConcreteTypeItemPhrase(Phrase):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(ConcreteTypeItemPhrase, self).__init__(regions)
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ConcreteTypePhrase(Phrase):
-    has_children__                          = True
-
-    regions: InitVar[List[Optional[Region]]]
-    items: List[ConcreteTypeItemPhrase]
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(ConcreteTypePhrase, self).__init__(regions)
+        super(VariableNamePhrase, self).__init__(regions)
