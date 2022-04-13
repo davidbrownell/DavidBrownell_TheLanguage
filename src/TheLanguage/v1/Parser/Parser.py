@@ -201,7 +201,7 @@ def Validate(
 ) -> Optional[
     Dict[str, Union[RootPhrase, List[Error]]]
 ]:
-    return roots
+    return roots  # type: ignore
 
     # TODO: # Extract names
     # TODO:
@@ -267,12 +267,12 @@ def CreateRegionNoThrow(
     elif isinstance(node, Region):
         return node
     elif isinstance(node, LexerPhrase.NormalizedIteratorRange):
-        return Region(node.begin.ToLocation(), node.end.ToLocation())
+        return Region.Create(node.begin.ToLocation(), node.end.ToLocation())
     elif isinstance(node, (AST.Leaf, AST.Node)):
         if node.iter_range is None:
             return None
 
-        return Region(node.iter_range.begin.ToLocation(), node.iter_range.end.ToLocation())
+        return Region.Create(node.iter_range.begin.ToLocation(), node.iter_range.end.ToLocation())
     else:
         assert False, node  # pragma: no cover
 
