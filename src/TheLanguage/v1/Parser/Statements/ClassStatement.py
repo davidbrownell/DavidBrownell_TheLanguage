@@ -130,6 +130,8 @@ class ClassStatement(StatementPhrase):
     # ----------------------------------------------------------------------
 
     # TODO: Named tuple as a capability?
+    # TODO: Exception as a capability
+
     capabilities: ClassCapabilities
 
     visibility_param: InitVar[Optional[VisibilityModifier]]
@@ -150,8 +152,14 @@ class ClassStatement(StatementPhrase):
 
     statements: List[StatementPhrase]
 
+    constructor_visibility_param: InitVar[Optional[VisibilityModifier]]
+    constructor_visibility: VisibilityModifier          = field(init=False)
+
+    is_abstract: Optional[bool]
+    is_final: Optional[bool]
+
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, visibility_param, class_modifier_param):
+    def __post_init__(self, regions, visibility_param, class_modifier_param, constructor_visibility_param):
         super(ClassStatement, self).__post_init__(
             regions,
             regionless_attributes=[
@@ -173,6 +181,12 @@ class ClassStatement(StatementPhrase):
             object.__setattr__(self.regions__, "class_modifier", self.regions__.self__)
 
         object.__setattr__(self, "class_modifier", class_modifier_param)
+
+        if constructor_visibility_param is None:
+            constructor_visibility_param = VisibilityModifier.public
+            object.__setattr__(self.regions__, "constructor_visibility", self.regions__.self__)
+
+        object.__setattr__(self, "constructor_visibility", constructor_visibility_param)
 
         for dependencies, default_visibility in [
             (self.extends, self.capabilities.default_extends_visibility),
@@ -272,7 +286,4 @@ class ClassStatement(StatementPhrase):
     def Accept(self, *args, **kwargs):
         return self._ScopedAcceptImpl(cast(List[Phrase], self.statements), *args, **kwargs)
 
-# TODO: Not valid to have a protected class at root
-# TODO: Constructor Visibility
-# TODO: Ensure that attributes are valid
-# TODO: Is abstract/final
+# TODO: Not valid to have a protected class without a class ancestor

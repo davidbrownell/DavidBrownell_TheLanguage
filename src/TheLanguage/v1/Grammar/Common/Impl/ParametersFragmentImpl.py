@@ -220,7 +220,6 @@ def Extract(
     bool,
     ExtractReturnType,
 ]:
-
     nodes = ExtractSequence(node)
     assert len(nodes) == 5
 

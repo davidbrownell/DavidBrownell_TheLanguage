@@ -24,6 +24,7 @@ statements:
     is_generator: None
     is_reentrant: None
     is_scoped: None
+    is_static: None
     method_modifier: None
     mutability: None
     name: "Func1"
@@ -125,6 +126,7 @@ statements:
     is_generator: None
     is_reentrant: None
     is_scoped: None
+    is_static: None
     method_modifier: None
     mutability: None
     name: "Func2"
