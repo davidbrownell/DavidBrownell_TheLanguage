@@ -166,11 +166,13 @@ class Phrase(ObjectReprImplBase):
         """Implementation of Accept for phrases that introduce new scopes"""
 
         # Get the visitor's dynamic methods
-        enter_method = getattr(visitor, "OnEnter{}".format(self.__class__.__name__), None)
-        assert enter_method is not None
+        enter_method_name = "OnEnter{}".format(self.__class__.__name__)
+        enter_method = getattr(visitor, enter_method_name, None)
+        assert enter_method is not None, enter_method_name
 
-        exit_method = getattr(visitor, "OnExit{}".format(self.__class__.__name__), None)
-        assert exit_method is not None
+        exit_method_name = "OnExit{}".format(self.__class__.__name__)
+        exit_method = getattr(visitor, exit_method_name, None)
+        assert exit_method is not None, exit_method_name
 
         # Invoke the visitor
         visit_control = enter_method(self)

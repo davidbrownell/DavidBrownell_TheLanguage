@@ -201,7 +201,7 @@ class OrPhrase(Phrase):
                             """,
                         ).format(
                             -index,
-                            "\n\n\n".join([str(results[-sort_data[index][-1]]) for index in range(-1, index - 1, -1)]),
+                            "\n\n\n".join(str(results[-sort_data[index][-1]]) for index in range(-1, index - 1, -1)),
                         )  # pragma: no cover
 
             else:
