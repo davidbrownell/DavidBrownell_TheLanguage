@@ -19,9 +19,12 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
     implements: None
+    is_abstract: None
+    is_final: None
     name: "More"
     regions__: # <class 'types.ClassStatementRegions'>
       name: # <class 'v1.Parser.Region.Region'>
@@ -51,18 +54,18 @@ statements:
         initialized_value: None
         is_override: None
         keyword_initialization: None
-        name: "Newline+"
+        name: "value1"
         no_compare: None
         no_initialization: None
         no_serialize: None
         regions__: # <class 'types.ClassAttributeStatementRegions'>
           name: # <class 'v1.Parser.Region.Region'>
             begin: # <class 'v1.Lexer.Location.Location'>
-              column: 24
+              column: 18
               line: 2
             end: # <class 'v1.Lexer.Location.Location'>
-              column: 1
-              line: 3
+              column: 24
+              line: 2
           self__: # <class 'v1.Parser.Region.Region'>
             begin: # <class 'v1.Lexer.Location.Location'>
               column: 5
@@ -125,18 +128,18 @@ statements:
         initialized_value: None
         is_override: None
         keyword_initialization: None
-        name: "Newline+"
+        name: "value2"
         no_compare: None
         no_initialization: None
         no_serialize: None
         regions__: # <class 'types.ClassAttributeStatementRegions'>
           name: # <class 'v1.Parser.Region.Region'>
             begin: # <class 'v1.Lexer.Location.Location'>
-              column: 24
+              column: 18
               line: 3
             end: # <class 'v1.Lexer.Location.Location'>
-              column: 1
-              line: 4
+              column: 24
+              line: 3
           self__: # <class 'v1.Parser.Region.Region'>
             begin: # <class 'v1.Lexer.Location.Location'>
               column: 5

@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that helps when processing parameters"""
+"""Contains functionality that helps when processing function parameters"""
 
 import os
 
@@ -104,7 +104,7 @@ def Extract(
 ]:
     return ParametersFragmentImpl.Extract(
         FuncParametersPhrase,
-        _ExtractFuncParametersItemPhrase,
+        _ExtractFuncParametersElementPhrase,
         node,
         allow_empty=True,
     )
@@ -113,7 +113,7 @@ def Extract(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-def _ExtractFuncParametersItemPhrase(
+def _ExtractFuncParametersElementPhrase(
     node: AST.Node,
 ) -> Tuple[Phrase, bool]:
     nodes = ExtractSequence(node)

@@ -19,9 +19,12 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
     implements: None
+    is_abstract: None
+    is_final: None
     name: "PublicClass"
     regions__: # <class 'types.ClassStatementRegions'>
       name: # <class 'v1.Parser.Region.Region'>
@@ -67,9 +70,12 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
     implements: None
+    is_abstract: None
+    is_final: None
     name: "InternalClass"
     regions__: # <class 'types.ClassStatementRegions'>
       name: # <class 'v1.Parser.Region.Region'>
@@ -115,9 +121,12 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
     implements: None
+    is_abstract: None
+    is_final: None
     name: "ProtectedClass"
     regions__: # <class 'types.ClassStatementRegions'>
       name: # <class 'v1.Parser.Region.Region'>
@@ -163,9 +172,12 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
     implements: None
+    is_abstract: None
+    is_final: None
     name: "PrivateClass"
     regions__: # <class 'types.ClassStatementRegions'>
       name: # <class 'v1.Parser.Region.Region'>

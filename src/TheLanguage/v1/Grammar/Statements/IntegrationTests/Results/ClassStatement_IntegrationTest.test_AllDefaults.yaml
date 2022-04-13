@@ -19,9 +19,12 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
     implements: None
+    is_abstract: None
+    is_final: None
     name: "Simple"
     regions__: # <class 'types.ClassStatementRegions'>
       name: # <class 'v1.Parser.Region.Region'>
@@ -60,6 +63,7 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends:
       - # <class 'v1.Parser.Statements.ClassStatement.ClassStatementDependency'>
@@ -115,6 +119,8 @@ statements:
                 line: 5
         visibility: "VisibilityModifier.private"
     implements: None
+    is_abstract: None
+    is_final: None
     name: "WithExtends"
     regions__: # <class 'types.ClassStatementRegions'>
       extends: # <class 'v1.Parser.Region.Region'>
@@ -160,9 +166,12 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
     implements: None
+    is_abstract: None
+    is_final: None
     name: "WithUses"
     regions__: # <class 'types.ClassStatementRegions'>
       name: # <class 'v1.Parser.Region.Region'>
@@ -260,6 +269,7 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
     implements:
@@ -315,6 +325,8 @@ statements:
                 column: 27
                 line: 15
         visibility: "VisibilityModifier.private"
+    is_abstract: None
+    is_final: None
     name: "WithImplements"
     regions__: # <class 'types.ClassStatementRegions'>
       implements: # <class 'v1.Parser.Region.Region'>

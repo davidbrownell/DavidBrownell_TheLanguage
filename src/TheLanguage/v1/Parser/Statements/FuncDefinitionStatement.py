@@ -77,6 +77,10 @@ InvalidMethodCapturedVariableError          = CreateError(
     "Methods may not capture variables",
 )
 
+InvalidStaticMethodMutabilityError          = CreateError(
+    "Static methods may not include a mutability modifier",
+)
+
 InvalidMethodMutabilityError                = CreateError(
     "'{mutability_str}' is not a valid mutability for '{type}' types;' valid mutabilities are {valid_mutabilities_str}",
     type=str,
@@ -154,6 +158,9 @@ class FuncDefinitionStatement(StatementPhrase):
     is_reentrant: Optional[bool]
     is_scoped: Optional[bool]
 
+    # Valid only for methods
+    is_static: Optional[bool]
+
     # ----------------------------------------------------------------------
     def __post_init__(self, regions, class_capabilities, visibility_param, mutability_param, method_modifier_param):
         super(FuncDefinitionStatement, self).__post_init__(
@@ -175,7 +182,7 @@ class FuncDefinitionStatement(StatementPhrase):
             capabilities_name = "functions"
 
         else:
-            if mutability_param is None:
+            if not self.is_static and mutability_param is None:
                 mutability_param = class_capabilities.default_method_mutability
                 object.__setattr__(self.regions__, "mutability", self.regions__.self__)
 
@@ -184,8 +191,8 @@ class FuncDefinitionStatement(StatementPhrase):
                 object.__setattr__(self.regions__, "method_modifier", self.regions__.self__)
 
             valid_method_visibilities = class_capabilities.valid_method_visibilities
-            default_method_visibility = class_capabilities.default_method_visibility
 
+            default_method_visibility = class_capabilities.default_method_visibility
             capabilities_name = "{} methods".format(class_capabilities.name)
 
         object.__setattr__(self, "mutability", mutability_param)
@@ -246,19 +253,27 @@ class FuncDefinitionStatement(StatementPhrase):
                     ),
                 )
 
-            assert self.mutability is not None
+            if self.is_static:
+                if self.mutability is not None:
+                    errors.append(
+                        InvalidStaticMethodMutabilityError.Create(
+                            region=self.regions__.mutability,
+                        ),
+                    )
+            else:
+                assert self.mutability is not None
 
-            if self.mutability not in class_capabilities.valid_method_mutabilities:
-                errors.append(
-                    InvalidMethodMutabilityError.Create(
-                        region=self.regions__.mutability,
-                        type=class_capabilities.name,
-                        mutability=self.mutability,
-                        valid_mutabilities=class_capabilities.valid_method_mutabilities,
-                        mutability_str=self.mutability.name,
-                        valid_mutabilities_str=", ".join("'{}'".format(m.name) for m in class_capabilities.valid_method_mutabilities),
-                    ),
-                )
+                if self.mutability not in class_capabilities.valid_method_mutabilities:
+                    errors.append(
+                        InvalidMethodMutabilityError.Create(
+                            region=self.regions__.mutability,
+                            type=class_capabilities.name,
+                            mutability=self.mutability,
+                            valid_mutabilities=class_capabilities.valid_method_mutabilities,
+                            mutability_str=self.mutability.name,
+                            valid_mutabilities_str=", ".join("'{}'".format(m.name) for m in class_capabilities.valid_method_mutabilities),
+                        ),
+                    )
 
             assert self.method_modifier is not None
 
@@ -315,4 +330,4 @@ class FuncDefinitionStatement(StatementPhrase):
     def Accept(self, *args, **kwargs):
         return self._ScopedAcceptImpl(cast(List[Phrase], self.statements or []), *args, **kwargs)
 
-# TODO: Is final
+# TODO: static method

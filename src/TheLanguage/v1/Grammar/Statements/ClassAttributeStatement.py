@@ -35,6 +35,7 @@ with InitRelativeImports():
 
     from ..GrammarPhrase import AST, GrammarPhrase
 
+    from ..Common import AttributesFragment
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
@@ -70,7 +71,10 @@ class ClassAttributeStatement(GrammarPhrase):
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # TODO: <attributes>?
+                    # <attributes>?
+                    OptionalPhraseItem(
+                        AttributesFragment.Create(),
+                    ),
 
                     # <visibility>?
                     OptionalPhraseItem(
@@ -109,11 +113,11 @@ class ClassAttributeStatement(GrammarPhrase):
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
-            assert len(nodes) == 5 # TODO: 6
+            assert len(nodes) == 6
 
             errors: List[Error] = []
 
-            # TODO: <attributes>?
+            # <attributes>?
             keyword_initialization_node = None
             keyword_initialization_info = None
 
@@ -129,23 +133,69 @@ class ClassAttributeStatement(GrammarPhrase):
             is_override_node = None
             is_override_info = None
 
+            attributes_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
+            if attributes_node is not None:
+                result = AttributesFragment.Extract(attributes_node)
+
+                assert isinstance(result, list)
+                assert result
+
+                if isinstance(result[0], Error):
+                    errors += cast(List[Error], result)
+                else:
+                    for attribute in cast(List[AttributesFragment.AttributeData], result):
+                        supports_arguments = False
+
+                        if attribute.name == "KeywordInit":
+                            keyword_initialization_node = attribute.leaf
+                            keyword_initialization_info = True
+                        elif attribute.name == "NoInit":
+                            no_initialization_node = attribute.leaf
+                            no_initialization_info = True
+                        elif attribute.name == "NoSerialize":
+                            no_serialize_node = attribute.leaf
+                            no_serialize_info = True
+                        elif attribute.name == "NoCompare":
+                            no_compare_node = attribute.leaf
+                            no_compare_info = True
+                        elif attribute.name == "Override":
+                            is_override_node = attribute.leaf
+                            is_override_info = True
+                        else:
+                            errors.append(
+                                AttributesFragment.UnsupportedAttributeError.Create(
+                                    region=CreateRegion(attribute.leaf),
+                                    name=attribute.name,
+                                ),
+                            )
+
+                            continue
+
+                        if not supports_arguments and attribute.arguments_node is not None:
+                            errors.append(
+                                AttributesFragment.UnsupportedArgumentsError.Create(
+                                    region=CreateRegion(attribute.arguments_node),
+                                    name=attribute.name,
+                                ),
+                            )
+
             # <visibility>?
-            visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[0])))
+            visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[1])))
             if visibility_node is None:
                 visibility_info = None
             else:
                 visibility_info = VisibilityModifier.Extract(visibility_node)
 
             # <type>
-            type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
+            type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
             type_info = cast(ParserClassAttributeStatementModule.TypePhrase, GetPhrase(type_node))
 
             # <name>
-            name_node = cast(AST.Leaf, nodes[4])
+            name_node = cast(AST.Leaf, nodes[3])
             name_info = ExtractToken(name_node)
 
             # ('=' <expression>)?
-            initializer_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[3])))
+            initializer_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[4])))
             if initializer_node is None:
                 initializer_info = None
             else:
