@@ -325,7 +325,7 @@ def ExtractOr(
 
 # ----------------------------------------------------------------------
 def ExtractRepeat(
-    node: Node,
+    node: Optional[Node],
 ) -> List[Union[Leaf, Node]]:
     if node is None:
         return []
@@ -338,7 +338,7 @@ def ExtractRepeat(
 
 # ----------------------------------------------------------------------
 def ExtractOptional(
-    node: Node,
+    node: Optional[Node],
 ) -> Optional[Union[Leaf, Node]]:
     result = ExtractRepeat(node)
 

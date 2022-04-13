@@ -35,6 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Region import Region
 
+# TODO: Move this to ./Parser
 
 # ----------------------------------------------------------------------
 # |
@@ -90,45 +91,26 @@ class Info(_Diagnostic):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
 class Diagnostics(ObjectReprImplBase):
-    errors: List[Error]                     = field(default_factory=list)
-    warnings: List[Warning]                 = field(default_factory=list)
-    infos: List[Info]                       = field(default_factory=list)
-
     # ----------------------------------------------------------------------
-    def HasErrorsOnly(self) -> bool:
-        return bool(self.errors) and not self.warnings and not self.infos
+    def __init__(self):
+        self.errors: List[Error]            = []
+        self.warnings: List[Warning]        = []
+        self.infos: List[Info]              = []
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
         ObjectReprImplBase.__init__(self)
-
-    # ----------------------------------------------------------------------
-    def __bool__(self) -> bool:
-        return bool(self.errors) or bool(self.warnings) or bool(self.infos)
-
-    # ----------------------------------------------------------------------
-    def Combine(
-        self,
-        other: Optional["Diagnostics"],
-    ) -> "Diagnostics":
-        if other is None or not other:
-            return self
-
-        return self.__class__(  # <Too many constructor args> pylint: disable=E1121
-            self.errors + other.errors,
-            self.warnings + other.warnings,
-            self.infos + other.infos,
-        )
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class DiagnosticsError(Diagnostics, Exception):
+class DiagnosticsError(Exception):
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        Diagnostics.__post_init__(self)
+    def __init__(
+        self,
+        diagnostics: Diagnostics,
+    ):
+        super(DiagnosticsError, self).__init__("\n".join([str(diagnostic) for diagnostic in diagnostics]))
+
+        self.diagnostics                    = diagnostics
 
 
 # ----------------------------------------------------------------------

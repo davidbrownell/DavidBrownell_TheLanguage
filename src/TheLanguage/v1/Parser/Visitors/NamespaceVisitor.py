@@ -72,7 +72,7 @@ class NamespaceVisitor(object):
 
     # ----------------------------------------------------------------------
     def OnEnterScope(self, phrase):
-        if not phrase.has_children__:
+        if not phrase.introduces_scope__:
             return
 
         new_node = NamespaceVisitor.Node(phrase)

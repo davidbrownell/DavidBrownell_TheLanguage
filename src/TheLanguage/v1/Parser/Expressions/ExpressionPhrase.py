@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Region.py
+# |  ExpressionPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-03-01 09:12:33
+# |      2022-04-12 08:28:34
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Region object"""
+"""Contains the ExpressionPhrase object"""
 
 import os
 
-from dataclasses import dataclass
+from typing import Any, Callable, List, Optional
+
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import ComparisonOperators
-from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,20 +30,21 @@ _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-# TODO: Move this to ./Parser
-
 with InitRelativeImports():
-    from .Location import Location
+    from ..Phrase import Phrase
+
+    from ...Common.Diagnostics import Diagnostics
+    from ...Common.Region import Region
 
 
 # ----------------------------------------------------------------------
-@ComparisonOperators
 @dataclass(frozen=True, repr=False)
-class Region(ObjectReprImplBase):
-    """Begining and ending for interesting blocks of code within a source file"""
+class ExpressionPhrase(Phrase):
+    """Abstract base class for all expressions"""
 
-    begin: Location
-    end: Location
+    # ----------------------------------------------------------------------
+    diagnostics: InitVar[Diagnostics]
+    regions: InitVar[List[Optional[Region]]]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -55,24 +56,12 @@ class Region(ObjectReprImplBase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        ObjectReprImplBase.__init__(self)
-
-        assert self.begin <= self.end       # type: ignore (operator is added dynamically)
-
-    # ----------------------------------------------------------------------
-    def __contains__(self, other):
-        return other.begin >= self.begin and other.end <= self.end
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def Compare(value1, value2):
-        result = Location.Compare(value1.begin, value2.begin)
-        if result != 0:
-            return result
-
-        result = Location.Compare(value1.end, value2.end)
-        if result != 0:
-            return result
-
-        return 0
+    def __post_init__(
+        self,
+        diagnostics,
+        regions,
+        regionless_attributes: Optional[List[str]]=None,
+        validate=True,
+        **custom_display_funcs: Callable[[Any], Optional[Any]],
+    ):
+        super(ExpressionPhrase, self).__init__(diagnostics, regions, regionless_attributes, validate, **custom_display_funcs)

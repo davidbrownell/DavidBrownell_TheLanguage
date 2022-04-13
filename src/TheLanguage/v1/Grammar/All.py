@@ -29,7 +29,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Statements.ClassAttributeStatement import ClassAttributeStatement
     from .Statements.ClassStatement import ClassStatement
+    from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
     from .Statements.PassStatement import PassStatement
+
+    from .Types.StandardType import StandardType
+    from .Types.TupleType import TupleType
+    from .Types.VariantType import VariantType
 
 
 # ----------------------------------------------------------------------
@@ -37,5 +42,11 @@ GrammarPhrases                              = [
     # Statements
     ClassAttributeStatement(),
     ClassStatement(),
+    FuncDefinitionStatement(),
     PassStatement(),
+
+    # Types
+    StandardType(),
+    TupleType(),
+    VariantType(),
 ]

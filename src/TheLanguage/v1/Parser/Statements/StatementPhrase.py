@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConcreteTypePhrase.py
+# |  StatementPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 09:47:36
+# |      2022-04-12 08:28:34
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ConcreteTypePhrase"""
+"""Contains the StatementPhrase object"""
 
 import os
 
-from typing import List, Optional
+from typing import Any, Callable, List, Optional
 
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -33,19 +32,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Phrase import Phrase
-
+    from ...Common.Diagnostics import Diagnostics
     from ...Common.Region import Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ConcreteTypeItemPhrase(Phrase):
+class StatementPhrase(Phrase):
+    """Abstract base class for all statements"""
+
+    # ----------------------------------------------------------------------
+    diagnostics: InitVar[Diagnostics]
     regions: InitVar[List[Optional[Region]]]
-
-    name: str
-
-    # TODO: Templates
-    # TODO: Constraints
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -57,27 +55,12 @@ class ConcreteTypeItemPhrase(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(ConcreteTypeItemPhrase, self).__init__(regions)
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ConcreteTypePhrase(Phrase):
-    has_children__                          = True
-
-    regions: InitVar[List[Optional[Region]]]
-    items: List[ConcreteTypeItemPhrase]
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(ConcreteTypePhrase, self).__init__(regions)
+    def __post_init__(
+        self,
+        diagnostics,
+        regions,
+        regionless_attributes: Optional[List[str]]=None,
+        validate=True,
+        **custom_display_funcs: Callable[[Any], Optional[Any]],
+    ):
+        super(StatementPhrase, self).__init__(diagnostics, regions, regionless_attributes, validate, **custom_display_funcs)
