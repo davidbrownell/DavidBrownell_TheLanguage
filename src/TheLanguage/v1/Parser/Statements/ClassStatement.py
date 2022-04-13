@@ -35,13 +35,13 @@ with InitRelativeImports():
     from .StatementPhrase import Phrase, Region, StatementPhrase
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
+    from ..Error import CreateError, Error, ErrorException
+
     from ..Common.ClassModifier import ClassModifier
     from ..Common.VisibilityModifier import VisibilityModifier
 
     from ..Types.StandardType import StandardType
     from ..Types.TypePhrase import MutabilityModifierNotAllowedError
-
-    from ...Common.Diagnostics import CreateError, Diagnostics
 
 
 # ----------------------------------------------------------------------
@@ -81,7 +81,6 @@ InvalidDependencyVisibilityError            = CreateError(
 class ClassStatementDependency(Phrase):
     """Dependency of a class"""
 
-    diagnostics: InitVar[Diagnostics]
     regions: InitVar[List[Region]]
 
     visibility: Optional[VisibilityModifier]            # Note that instances may be created with this value as None,
@@ -99,16 +98,21 @@ class ClassStatementDependency(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions):
-        super(ClassStatementDependency, self).__init__(diagnostics, regions)
+    def __post_init__(self, regions):
+        super(ClassStatementDependency, self).__init__(regions)
 
         # Validate
+        errors: List[Error] = []
+
         if self.type.mutability_modifier is not None:
-            diagnostics.errors.append(
+            errors.append(
                 MutabilityModifierNotAllowedError.Create(
                     region=self.type.regions__.mutability_modifier,
                 ),
             )
+
+        if errors:
+            raise ErrorException(*errors)
 
 
 # ----------------------------------------------------------------------
@@ -147,9 +151,8 @@ class ClassStatement(StatementPhrase):
     statements: List[StatementPhrase]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions, visibility_param, class_modifier_param):
+    def __post_init__(self, regions, visibility_param, class_modifier_param):
         super(ClassStatement, self).__post_init__(
-            diagnostics,
             regions,
             regionless_attributes=[
                 "capabilities",
@@ -187,8 +190,10 @@ class ClassStatement(StatementPhrase):
         self.ValidateRegions()
 
         # Validate
+        errors: List[Error] = []
+
         if self.visibility not in self.capabilities.valid_visibilities:
-            diagnostics.errors.append(
+            errors.append(
                 InvalidVisibilityError.Create(
                     region=self.regions__.visibility,
                     type=self.capabilities.name,
@@ -200,7 +205,7 @@ class ClassStatement(StatementPhrase):
             )
 
         if self.extends and len(self.extends) > 1:
-            diagnostics.errors.append(
+            errors.append(
                 MultipleExtendsError.Create(
                     region=Region.Create(
                         self.extends[1].regions__.self__.begin,
@@ -234,7 +239,7 @@ class ClassStatement(StatementPhrase):
                 continue
 
             if default_visibility is None:
-                diagnostics.errors.append(
+                errors.append(
                     InvalidDependencyError.Create(
                         region=Region.Create(
                             dependencies[0].regions__.self__.begin,
@@ -247,7 +252,7 @@ class ClassStatement(StatementPhrase):
 
             for dependency in dependencies:
                 if dependency.visibility not in valid_visibilities:
-                    diagnostics.errors.append(
+                    errors.append(
                         InvalidDependencyVisibilityError.Create(
                             region=dependency.regions__.visibility,
                             type=self.capabilities.name,
@@ -258,6 +263,9 @@ class ClassStatement(StatementPhrase):
                             valid_visibilities_str=", ".join("'{}'".format(v.name) for v in valid_visibilities),
                         ),
                     )
+
+        if errors:
+            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     @Interface.override

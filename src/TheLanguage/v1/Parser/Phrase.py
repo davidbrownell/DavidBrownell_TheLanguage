@@ -35,8 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.Diagnostics import Diagnostics
-    from ..Common.Region import Region
+    from .Region import Region
 
 
 # ----------------------------------------------------------------------
@@ -58,7 +57,6 @@ class Phrase(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        diagnostics: Diagnostics,  # pylint: disable=unused-argument
         regions: List[Optional[Region]],
         regionless_attributes: Optional[List[str]]=None,
         validate=True,
@@ -263,7 +261,6 @@ class Phrase(ObjectReprImplBase):
 class RootPhrase(Phrase):
     introduces_scope__                      = True
 
-    diagnostics: InitVar[Diagnostics]
     regions: InitVar[List[Optional[Region]]]
 
     statements: Optional[List[Phrase]]
@@ -279,8 +276,8 @@ class RootPhrase(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions):
-        super(RootPhrase, self).__init__(diagnostics, regions)
+    def __post_init__(self, regions):
+        super(RootPhrase, self).__init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override

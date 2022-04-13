@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .. import Tokens as CommonTokens
 
-    from ...GrammarPhrase import AST, Diagnostics
+    from ...GrammarPhrase import AST
 
     from ....Lexer.Phrases.DSL import (
         DynamicPhrasesType,
@@ -111,7 +111,6 @@ def Create(
 # ----------------------------------------------------------------------
 def Extract(
     node: AST.Node,
-    diagnostics: Diagnostics,  # pylint: disable=unused-argument
 ) -> List[ParserPhrase]:
     node = cast(AST.Node, ExtractOr(node))
     nodes = ExtractSequence(node)

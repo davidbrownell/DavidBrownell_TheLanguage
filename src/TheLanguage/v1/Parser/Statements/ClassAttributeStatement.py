@@ -34,13 +34,13 @@ with InitRelativeImports():
     from .StatementPhrase import StatementPhrase
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
+    from ..Error import CreateError, Error, ErrorException
+
     from ..Common.MutabilityModifier import MutabilityModifier
     from ..Common.VisibilityModifier import VisibilityModifier
 
     from ..Expressions.ExpressionPhrase import ExpressionPhrase
     from ..Types.TypePhrase import MutabilityModifierRequiredError, TypePhrase
-
-    from ...Common.Diagnostics import CreateError, DiagnosticsError, Error
 
 
 # ----------------------------------------------------------------------
@@ -97,9 +97,8 @@ class ClassAttributeStatement(StatementPhrase):
     is_override: Optional[bool]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions, class_capabilities, visibility_param):
+    def __post_init__(self, regions, class_capabilities, visibility_param):
         super(ClassAttributeStatement, self).__post_init__(
-            diagnostics,
             regions,
             validate=False,
         )
@@ -114,8 +113,10 @@ class ClassAttributeStatement(StatementPhrase):
         self.ValidateRegions()
 
         # Validate
+        errors: List[Error] = []
+
         if not class_capabilities.valid_attribute_visibilities:
-            diagnostics.errors.append(
+            errors.append(
                 InvalidAttributeError.Create(
                     region=self.regions__.self__,
                     type=class_capabilities.name,
@@ -124,7 +125,7 @@ class ClassAttributeStatement(StatementPhrase):
 
         else:
             if self.visibility not in class_capabilities.valid_attribute_visibilities:
-                diagnostics.errors.append(
+                errors.append(
                     InvalidVisibilityError.Create(
                         region=self.regions__.visibility,
                         type=class_capabilities.name,
@@ -135,33 +136,36 @@ class ClassAttributeStatement(StatementPhrase):
                     ),
                 )
 
-            if self.type.mutability_modifier is None:
-                diagnostics.errors.append(
-                    MutabilityModifierRequiredError.Create(
-                        region=self.type.regions__.self__,
+        if self.type.mutability_modifier is None:
+            errors.append(
+                MutabilityModifierRequiredError.Create(
+                    region=self.type.regions__.self__,
+                ),
+            )
+        else:
+            if self.type.mutability_modifier not in class_capabilities.valid_attribute_mutabilities:
+                errors.append(
+                    InvalidMutabilityError.Create(
+                        region=self.type.regions__.mutability_modifier,
+                        type=class_capabilities.name,
+                        mutability=self.type.mutability_modifier,
+                        valid_mutabilities=class_capabilities.valid_attribute_mutabilities,
+                        mutability_str=self.type.mutability_modifier.name,
+                        valid_mutabilities_str=", ".join("'{}'".format(m.name) for m in class_capabilities.valid_attribute_mutabilities),
                     ),
                 )
-            else:
-                if self.type.mutability_modifier not in class_capabilities.valid_attribute_mutabilities:
-                    diagnostics.errors.append(
-                        InvalidMutabilityError.Create(
-                            region=self.type.regions__.mutability_modifier,
-                            type=class_capabilities.name,
-                            mutability=self.type.mutability_modifier,
-                            valid_mutabilities=class_capabilities.valid_attribute_mutabilities,
-                            mutability_str=self.type.mutability_modifier.name,
-                            valid_mutabilities_str=", ".join("'{}'".format(m.name) for m in class_capabilities.valid_attribute_mutabilities),
-                        ),
-                    )
 
-                if (
-                    self.visibility == VisibilityModifier.public
-                    and self.type.mutability_modifier & MutabilityModifier.mutable
-                    and not class_capabilities.allow_mutable_public_attributes
-                ):
-                    diagnostics.errors.append(
-                        InvalidMutablePublicAttributeError.Create(
-                            region=self.regions__.self__,
-                            type=class_capabilities.name,
-                        ),
-                    )
+            if (
+                self.visibility == VisibilityModifier.public
+                and self.type.mutability_modifier & MutabilityModifier.mutable
+                and not class_capabilities.allow_mutable_public_attributes
+            ):
+                errors.append(
+                    InvalidMutablePublicAttributeError.Create(
+                        region=self.regions__.self__,
+                        type=class_capabilities.name,
+                    ),
+                )
+
+        if errors:
+            raise ErrorException(*errors)
