@@ -47,7 +47,7 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions, Diagnostics
+    from ...Parser.Parser import CreateRegions
 
     from ...Parser.Types.StandardType import (
         StandardType as ParserStandardType,
@@ -117,7 +117,6 @@ class StandardType(GrammarPhrase):
     @Interface.override
     def ExtractParserPhrase(
         node: AST.Node,
-        diagnostics: Diagnostics,
     ) -> GrammarPhrase.ExtractParserPhraseReturnType:
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
@@ -165,7 +164,6 @@ class StandardType(GrammarPhrase):
 
             items.append(
                 ParserStandardTypeItemPhrase.Create(
-                    diagnostics,
                     CreateRegions(this_element_node, name_leaf),
                     name_info,
                 ),
@@ -179,7 +177,6 @@ class StandardType(GrammarPhrase):
             mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
 
         return ParserStandardType.Create(
-            diagnostics,
             CreateRegions(node, mutability_modifier_node, elements_node),
             mutability_modifier_info,
             items,

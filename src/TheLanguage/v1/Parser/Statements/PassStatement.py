@@ -38,5 +38,5 @@ class PassStatement(StatementPhrase):
     """Noop statement"""
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions):
-        super(PassStatement, self).__post_init__(diagnostics, regions)
+    def __post_init__(self, regions):
+        super(PassStatement, self).__post_init__(regions)

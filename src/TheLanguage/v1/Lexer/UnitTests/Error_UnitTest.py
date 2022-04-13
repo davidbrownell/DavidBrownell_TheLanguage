@@ -42,7 +42,7 @@ MyError                                     = CreateError(
 def test_Standard():
     assert str(MyError.Create(value="foo", location=Location.Create(1, 2))) == textwrap.dedent(
         """\
-        The error value is: foo [# <class 'v1.Common.Location.Location'>
+        The error value is: foo [# <class 'v1.Lexer.Location.Location'>
         column: 2
         line: 1
         ]
@@ -51,7 +51,7 @@ def test_Standard():
 
     assert str(MyError.Create(value="bar_and_baz", location=Location.Create(100, 200))) == textwrap.dedent(
         """\
-        The error value is: bar_and_baz [# <class 'v1.Common.Location.Location'>
+        The error value is: bar_and_baz [# <class 'v1.Lexer.Location.Location'>
         column: 200
         line: 100
         ]

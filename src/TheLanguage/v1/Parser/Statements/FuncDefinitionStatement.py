@@ -36,6 +36,8 @@ with InitRelativeImports():
     from .StatementPhrase import Phrase, StatementPhrase
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
+    from ..Error import CreateError, Error, ErrorException
+
     from ..Common.FuncParametersPhrase import (  # pylint: disable=unused-import
         FuncParametersPhrase,
         FuncParametersItemPhrase,           # Convenience import
@@ -47,8 +49,6 @@ with InitRelativeImports():
     from ..Common.VisibilityModifier import VisibilityModifier
 
     from ..Types.TypePhrase import MutabilityModifierRequiredError, TypePhrase
-
-    from ...Common.Diagnostics import CreateError, DiagnosticsError, Error
 
 
 # ----------------------------------------------------------------------
@@ -155,9 +155,8 @@ class FuncDefinitionStatement(StatementPhrase):
     is_scoped: Optional[bool]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions, class_capabilities, visibility_param, mutability_param, method_modifier_param):
+    def __post_init__(self, regions, class_capabilities, visibility_param, mutability_param, method_modifier_param):
         super(FuncDefinitionStatement, self).__post_init__(
-            diagnostics,
             regions,
             validate=False,
         )
@@ -201,8 +200,10 @@ class FuncDefinitionStatement(StatementPhrase):
         self.ValidateRegions()
 
         # Validate
+        errors: List[Error] = []
+
         if self.return_type.mutability_modifier is None:
-            diagnostics.errors.append(
+            errors.append(
                 MutabilityModifierRequiredError.Create(
                     region=self.return_type.regions__.self__,
                 ),
@@ -210,28 +211,28 @@ class FuncDefinitionStatement(StatementPhrase):
 
         if class_capabilities is None:
             if self.mutability is not None:
-                diagnostics.errors.append(
+                errors.append(
                     InvalidFunctionMutabilityError.Create(
                         region=self.regions__.mutability,
                     ),
                 )
 
             if self.method_modifier is not None:
-                diagnostics.errors.append(
+                errors.append(
                     InvalidFunctionMethodModifierError.Create(
                         region=self.regions__.method_modifier,
                     ),
                 )
 
             if not isinstance(self.name, str):
-                diagnostics.errors.append(
+                errors.append(
                     InvalidFunctionOperatorError.Create(
                         region=self.regions__.name,
                     ),
                 )
 
             if not self.is_deferred and not self.statements:
-                diagnostics.errors.append(
+                errors.append(
                     InvalidFunctionDeferredStatementsError.Create(
                         region=self.regions__.self__,
                     ),
@@ -239,7 +240,7 @@ class FuncDefinitionStatement(StatementPhrase):
 
         else:
             if self.captured_variables:
-                diagnostics.errors.append(
+                errors.append(
                     InvalidMethodCapturedVariableError.Create(
                         region=self.regions__.captured_variables,
                     ),
@@ -248,7 +249,7 @@ class FuncDefinitionStatement(StatementPhrase):
             assert self.mutability is not None
 
             if self.mutability not in class_capabilities.valid_method_mutabilities:
-                diagnostics.errors.append(
+                errors.append(
                     InvalidMethodMutabilityError.Create(
                         region=self.regions__.mutability,
                         type=class_capabilities.name,
@@ -262,7 +263,7 @@ class FuncDefinitionStatement(StatementPhrase):
             assert self.method_modifier is not None
 
             if self.method_modifier not in class_capabilities.valid_method_modifiers:
-                diagnostics.errors.append(
+                errors.append(
                     InvalidMethodModifierError.Create(
                         region=self.regions__.method_modifier,
                         type=class_capabilities.name,
@@ -274,20 +275,20 @@ class FuncDefinitionStatement(StatementPhrase):
                 )
 
             if self.method_modifier == MethodModifier.abstract and self.statements:
-                diagnostics.errors.append(
+                errors.append(
                     InvalidMethodAbstractStatementsError.Create(
                         region=self.regions__.statements,
                     ),
                 )
             elif self.method_modifier != MethodModifier.abstract and not self.is_deferred and not self.statements:
-                diagnostics.errors.append(
+                errors.append(
                     InvalidMethodStatementsRequiredError.Create(
                         region=self.regions__.self__,
                     ),
                 )
 
         if self.visibility not in valid_method_visibilities:
-            diagnostics.errors.append(
+            errors.append(
                 InvalidVisibilityError.Create(
                     region=self.regions__.visibility,
                     type=capabilities_name,
@@ -299,12 +300,15 @@ class FuncDefinitionStatement(StatementPhrase):
             )
 
         if self.is_deferred and self.statements:
-            diagnostics.errors.append(
+            errors.append(
                 StatementsRequiredError.Create(
                     region=self.regions__.statements,
                     type=capabilities_name,
                 ),
             )
+
+        if errors:
+            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     @Interface.override
