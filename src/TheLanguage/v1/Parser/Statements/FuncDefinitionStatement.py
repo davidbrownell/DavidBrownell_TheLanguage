@@ -256,7 +256,7 @@ class FuncDefinitionStatement(StatementPhrase):
                         mutability=self.mutability,
                         valid_mutabilities=class_capabilities.valid_method_mutabilities,
                         mutability_str=self.mutability.name,
-                        valid_mutabilities_str=", ".join(["'{}'".format(m.name) for m in class_capabilities.valid_method_mutabilities]),
+                        valid_mutabilities_str=", ".join("'{}'".format(m.name) for m in class_capabilities.valid_method_mutabilities),
                     ),
                 )
 
@@ -270,7 +270,7 @@ class FuncDefinitionStatement(StatementPhrase):
                         modifier=self.method_modifier,
                         valid_modifiers=class_capabilities.valid_method_modifiers,
                         modifier_str=self.method_modifier.name,
-                        valid_modifiers_str=", ".join(["'{}'".format(m.name) for m in class_capabilities.valid_method_modifiers]),
+                        valid_modifiers_str=", ".join("'{}'".format(m.name) for m in class_capabilities.valid_method_modifiers),
                     ),
                 )
 
@@ -295,7 +295,7 @@ class FuncDefinitionStatement(StatementPhrase):
                     visibility=self.visibility,
                     valid_visibilities=valid_method_visibilities,
                     visibility_str=self.visibility.name,
-                    valid_visibilities_str=", ".join(["'{}'".format(v.name) for v in valid_method_visibilities]),
+                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in valid_method_visibilities),
                 ),
             )
 

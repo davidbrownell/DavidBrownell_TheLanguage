@@ -52,6 +52,8 @@ with InitRelativeImports():
         Validate,
     )
 
+    from .Targets.Python.PythonTarget import PythonTarget
+
 
 # ----------------------------------------------------------------------
 class PatchAndExecuteFlag(Flag):
@@ -232,3 +234,26 @@ def ExecuteParserPhrase(
         raise ParserErrorException(*result)
 
     return cast(ParserRootPhrase, result)
+
+
+# ----------------------------------------------------------------------
+def ExecutePythonTarget(
+    content: str,
+    *,
+    max_num_threads: Optional[int]=None,
+) -> str:
+    result = ExecuteParserPhrase(
+        content,
+        max_num_threads=max_num_threads,
+    )
+
+    target = PythonTarget([])
+
+    target.PreInvoke(["filename"])
+    target.Invoke("filename", result)
+    target.PostInvoke(["filename"])
+
+    outputs = list(target.EnumOutputs())
+
+    assert len(outputs) == 1
+    return outputs[0].content

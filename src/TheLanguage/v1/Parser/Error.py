@@ -77,7 +77,7 @@ class ErrorException(Exception):
     ):
         self.errors                         = list(errors)
 
-        super(ErrorException, self).__init__("\n".join([str(error) for error in self.errors]))
+        super(ErrorException, self).__init__("\n".join(str(error) for error in self.errors))
 
 
 # ----------------------------------------------------------------------
