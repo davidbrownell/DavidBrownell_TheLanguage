@@ -43,7 +43,7 @@ with InitRelativeImports():
         OneOrMorePhraseItem,
     )
 
-    from ...Parser.Parser import GetPhraseNoThrow, Phrase
+    from ...Parser.Parser import Error, GetPhraseNoThrow, Phrase
 
 
 # ----------------------------------------------------------------------
@@ -82,9 +82,12 @@ def Create() -> PhraseItem:
 # TODO: Fix this return value as it is wonky!
 def Extract(
     node: AST.Node,
-) -> Tuple[
-    List[Phrase],
-    Optional[Tuple[AST.Leaf, str]],
+) -> Union[
+    List[Error],
+    Tuple[
+        List[Phrase],
+        Optional[Tuple[AST.Leaf, str]],
+    ],
 ]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 2
