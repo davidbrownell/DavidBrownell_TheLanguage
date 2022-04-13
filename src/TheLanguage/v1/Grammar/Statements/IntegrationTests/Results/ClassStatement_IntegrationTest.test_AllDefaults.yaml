@@ -78,11 +78,11 @@ statements:
             end: # <class 'v1.Common.Location.Location'>
               column: 21
               line: 5
-        type: # <class 'v1.Parser.Common.ConcreteTypePhrase.ConcreteTypePhrase'>
+        type: # <class 'v1.Parser.Types.StandardType.StandardType'>
           items:
-            - # <class 'v1.Parser.Common.ConcreteTypePhrase.ConcreteTypeItemPhrase'>
+            - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
               name: "Extends1"
-              regions__: # <class 'types.ConcreteTypeItemPhraseRegions'>
+              regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                 name: # <class 'v1.Common.Region.Region'>
                   begin: # <class 'v1.Common.Location.Location'>
                     column: 13
@@ -97,7 +97,8 @@ statements:
                   end: # <class 'v1.Common.Location.Location'>
                     column: 21
                     line: 5
-          regions__: # <class 'types.ConcreteTypePhraseRegions'>
+          mutability_modifier: None
+          regions__: # <class 'types.StandardTypeRegions'>
             items: # <class 'v1.Common.Region.Region'>
               begin: # <class 'v1.Common.Location.Location'>
                 column: 13
@@ -219,11 +220,11 @@ statements:
             end: # <class 'v1.Common.Location.Location'>
               column: 15
               line: 10
-        type: # <class 'v1.Parser.Common.ConcreteTypePhrase.ConcreteTypePhrase'>
+        type: # <class 'v1.Parser.Types.StandardType.StandardType'>
           items:
-            - # <class 'v1.Parser.Common.ConcreteTypePhrase.ConcreteTypeItemPhrase'>
+            - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
               name: "Uses1"
-              regions__: # <class 'types.ConcreteTypeItemPhraseRegions'>
+              regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                 name: # <class 'v1.Common.Region.Region'>
                   begin: # <class 'v1.Common.Location.Location'>
                     column: 10
@@ -238,7 +239,8 @@ statements:
                   end: # <class 'v1.Common.Location.Location'>
                     column: 15
                     line: 10
-          regions__: # <class 'types.ConcreteTypePhraseRegions'>
+          mutability_modifier: None
+          regions__: # <class 'types.StandardTypeRegions'>
             items: # <class 'v1.Common.Region.Region'>
               begin: # <class 'v1.Common.Location.Location'>
                 column: 10
@@ -277,11 +279,11 @@ statements:
             end: # <class 'v1.Common.Location.Location'>
               column: 27
               line: 15
-        type: # <class 'v1.Parser.Common.ConcreteTypePhrase.ConcreteTypePhrase'>
+        type: # <class 'v1.Parser.Types.StandardType.StandardType'>
           items:
-            - # <class 'v1.Parser.Common.ConcreteTypePhrase.ConcreteTypeItemPhrase'>
+            - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
               name: "Implements1"
-              regions__: # <class 'types.ConcreteTypeItemPhraseRegions'>
+              regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                 name: # <class 'v1.Common.Region.Region'>
                   begin: # <class 'v1.Common.Location.Location'>
                     column: 16
@@ -296,7 +298,8 @@ statements:
                   end: # <class 'v1.Common.Location.Location'>
                     column: 27
                     line: 15
-          regions__: # <class 'types.ConcreteTypePhraseRegions'>
+          mutability_modifier: None
+          regions__: # <class 'types.StandardTypeRegions'>
             items: # <class 'v1.Common.Region.Region'>
               begin: # <class 'v1.Common.Location.Location'>
                 column: 16

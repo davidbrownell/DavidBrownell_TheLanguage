@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import cast, List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -32,15 +32,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .StatementPhrase import Phrase, Region, StatementPhrase
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
-    from ..Phrase import Phrase, Region
-
     from ..Common.ClassModifier import ClassModifier
-    from ..Common.ConcreteTypePhrase import ConcreteTypePhrase
     from ..Common.VisibilityModifier import VisibilityModifier
 
-    from ...Common.Diagnostics import CreateError, DiagnosticsError, Error
+    from ..Types.StandardType import StandardType
+    from ..Types.TypePhrase import MutabilityModifierNotAllowedError
+
+    from ...Common.Diagnostics import CreateError, Diagnostics
 
 
 # ----------------------------------------------------------------------
@@ -80,11 +81,13 @@ InvalidDependencyVisibilityError            = CreateError(
 class ClassStatementDependency(Phrase):
     """Dependency of a class"""
 
+    diagnostics: InitVar[Diagnostics]
     regions: InitVar[List[Region]]
+
     visibility: Optional[VisibilityModifier]            # Note that instances may be created with this value as None,
                                                         # but a default will be provided once the instance is associated
                                                         # with a ClassStatement instance.
-    type: ConcreteTypePhrase
+    type: StandardType
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -96,22 +99,31 @@ class ClassStatementDependency(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(ClassStatementDependency, self).__init__(regions)
+    def __post_init__(self, diagnostics, regions):
+        super(ClassStatementDependency, self).__init__(diagnostics, regions)
+
+        # Validate
+        if self.type.mutability_modifier is not None:
+            diagnostics.errors.append(
+                MutabilityModifierNotAllowedError.Create(
+                    region=self.type.regions__.mutability_modifier,
+                ),
+            )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassStatement(Phrase):
+class ClassStatement(StatementPhrase):
     """\
     Statement that defines a class-like object. The capabilities provided during instantiation
     control many aspects of what is an isn't valid for a particular class type (e.g. class vs.
     struct vs. interface).
     """
 
-    has_children__                          = True
+    # ----------------------------------------------------------------------
+    introduces_scope__                      = True
 
-    regions: InitVar[List[Optional[Region]]]
+    # ----------------------------------------------------------------------
 
     # TODO: Named tuple as a capability?
     capabilities: ClassCapabilities
@@ -132,20 +144,12 @@ class ClassStatement(Phrase):
     implements: Optional[List[ClassStatementDependency]]
     uses: Optional[List[ClassStatementDependency]]
 
-    statements: List[Phrase]
+    statements: List[StatementPhrase]
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions, visibility_param, class_modifier_param):
-        super(ClassStatement, self).__init__(
+    def __post_init__(self, diagnostics, regions, visibility_param, class_modifier_param):
+        super(ClassStatement, self).__post_init__(
+            diagnostics,
             regions,
             regionless_attributes=[
                 "capabilities",
@@ -183,10 +187,8 @@ class ClassStatement(Phrase):
         self.ValidateRegions()
 
         # Validate
-        errors: List[Error] = []
-
         if self.visibility not in self.capabilities.valid_visibilities:
-            errors.append(
+            diagnostics.errors.append(
                 InvalidVisibilityError.Create(
                     region=self.regions__.visibility,
                     type=self.capabilities.name,
@@ -198,7 +200,7 @@ class ClassStatement(Phrase):
             )
 
         if self.extends and len(self.extends) > 1:
-            errors.append(
+            diagnostics.errors.append(
                 MultipleExtendsError.Create(
                     region=Region.Create(
                         self.extends[1].regions__.self__.begin,
@@ -232,7 +234,7 @@ class ClassStatement(Phrase):
                 continue
 
             if default_visibility is None:
-                errors.append(
+                diagnostics.errors.append(
                     InvalidDependencyError.Create(
                         region=Region.Create(
                             dependencies[0].regions__.self__.begin,
@@ -245,7 +247,7 @@ class ClassStatement(Phrase):
 
             for dependency in dependencies:
                 if dependency.visibility not in valid_visibilities:
-                    errors.append(
+                    diagnostics.errors.append(
                         InvalidDependencyVisibilityError.Create(
                             region=dependency.regions__.visibility,
                             type=self.capabilities.name,
@@ -257,18 +259,12 @@ class ClassStatement(Phrase):
                         ),
                     )
 
-        if errors:
-            raise DiagnosticsError(
-                errors=errors,
-            )
-
-
-
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, *args, **kwargs):
-        return self._ScopedAcceptImpl(self.statements, *args, **kwargs)
+        return self._ScopedAcceptImpl(cast(List[Phrase], self.statements), *args, **kwargs)
 
 # TODO: Not valid to have a protected class at root
 # TODO: Constructor Visibility
 # TODO: Ensure that attributes are valid
+# TODO: Is abstract/final

@@ -22,7 +22,6 @@ from typing import List, Optional
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,13 +31,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .StatementPhrase import StatementPhrase
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
-    from ..Common.ConcreteTypePhrase import ConcreteTypePhrase
     from ..Common.MutabilityModifier import MutabilityModifier
     from ..Common.VisibilityModifier import VisibilityModifier
 
-    from ..Phrase import Phrase, Region
+    from ..Expressions.ExpressionPhrase import ExpressionPhrase
+    from ..Types.TypePhrase import MutabilityModifierRequiredError, TypePhrase
 
     from ...Common.Diagnostics import CreateError, DiagnosticsError, Error
 
@@ -75,22 +75,20 @@ InvalidMutablePublicAttributeError          = CreateError(
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassAttributeStatement(Phrase):
+class ClassAttributeStatement(StatementPhrase):
     """Attribute of a class"""
 
     class_capabilities: InitVar[ClassCapabilities]
-    regions: InitVar[List[Optional[Region]]]
 
     visibility_param: InitVar[Optional[VisibilityModifier]]
     visibility: VisibilityModifier          = field(init=False)
 
-    type: ConcreteTypePhrase
-    mutability: MutabilityModifier
+    type: TypePhrase
 
     name: str
     documentation: Optional[str]
 
-    initialized_value: Optional[Phrase]
+    initialized_value: Optional[ExpressionPhrase]
 
     keyword_initialization: Optional[bool]
     no_initialization: Optional[bool]
@@ -99,17 +97,9 @@ class ClassAttributeStatement(Phrase):
     is_override: Optional[bool]
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, class_capabilities, regions, visibility_param):
-        super(ClassAttributeStatement, self).__init__(
+    def __post_init__(self, diagnostics, regions, class_capabilities, visibility_param):
+        super(ClassAttributeStatement, self).__post_init__(
+            diagnostics,
             regions,
             validate=False,
         )
@@ -124,10 +114,8 @@ class ClassAttributeStatement(Phrase):
         self.ValidateRegions()
 
         # Validate
-        errors: List[Error] = []
-
         if not class_capabilities.valid_attribute_visibilities:
-            errors.append(
+            diagnostics.errors.append(
                 InvalidAttributeError.Create(
                     region=self.regions__.self__,
                     type=class_capabilities.name,
@@ -136,7 +124,7 @@ class ClassAttributeStatement(Phrase):
 
         else:
             if self.visibility not in class_capabilities.valid_attribute_visibilities:
-                errors.append(
+                diagnostics.errors.append(
                     InvalidVisibilityError.Create(
                         region=self.regions__.visibility,
                         type=class_capabilities.name,
@@ -147,31 +135,33 @@ class ClassAttributeStatement(Phrase):
                     ),
                 )
 
-            if self.mutability not in class_capabilities.valid_attribute_mutabilities:
-                errors.append(
-                    InvalidMutabilityError.Create(
-                        region=self.regions__.mutability,
-                        type=class_capabilities.name,
-                        mutability=self.mutability,
-                        valid_mutabilities=class_capabilities.valid_attribute_mutabilities,
-                        mutability_str=self.mutability.name,
-                        valid_mutabilities_str=", ".join("'{}'".format(m.name) for m in class_capabilities.valid_attribute_mutabilities),
+            if self.type.mutability_modifier is None:
+                diagnostics.errors.append(
+                    MutabilityModifierRequiredError.Create(
+                        region=self.type.regions__.self__,
                     ),
                 )
+            else:
+                if self.type.mutability_modifier not in class_capabilities.valid_attribute_mutabilities:
+                    diagnostics.errors.append(
+                        InvalidMutabilityError.Create(
+                            region=self.type.regions__.mutability_modifier,
+                            type=class_capabilities.name,
+                            mutability=self.type.mutability_modifier,
+                            valid_mutabilities=class_capabilities.valid_attribute_mutabilities,
+                            mutability_str=self.type.mutability_modifier.name,
+                            valid_mutabilities_str=", ".join("'{}'".format(m.name) for m in class_capabilities.valid_attribute_mutabilities),
+                        ),
+                    )
 
-            if (
-                self.visibility == VisibilityModifier.public
-                and self.mutability & MutabilityModifier.mutable
-                and not class_capabilities.allow_mutable_public_attributes
-            ):
-                errors.append(
-                    InvalidMutablePublicAttributeError.Create(
-                        region=self.regions__.self__,
-                        type=class_capabilities.name,
-                    ),
-                )
-
-        if errors:
-            raise DiagnosticsError(
-                errors=errors
-            )
+                if (
+                    self.visibility == VisibilityModifier.public
+                    and self.type.mutability_modifier & MutabilityModifier.mutable
+                    and not class_capabilities.allow_mutable_public_attributes
+                ):
+                    diagnostics.errors.append(
+                        InvalidMutablePublicAttributeError.Create(
+                            region=self.regions__.self__,
+                            type=class_capabilities.name,
+                        ),
+                    )

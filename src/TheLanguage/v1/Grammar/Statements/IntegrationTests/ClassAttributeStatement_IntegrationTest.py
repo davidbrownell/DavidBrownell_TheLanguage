@@ -43,3 +43,30 @@ def test_Simple():
             """,
         ),
     )))
+
+
+# ----------------------------------------------------------------------
+def test_Tuples():
+    CompareResultsFromFile(str(ExecuteParserPhrase(
+        textwrap.dedent(
+            """\
+            class MyClass:
+                (Type1 val, ) var single_value
+                (Type2 var, Type.Three val) var double_value
+                (Type.Four val, Type5 var, ) var double_value_trailing_comma
+            """,
+        ),
+    )))
+
+
+# ----------------------------------------------------------------------
+def test_Variants():
+    CompareResultsFromFile(str(ExecuteParserPhrase(
+        textwrap.dedent(
+            """\
+            class MyClass:
+                (Type1 | Type2) var value1
+                (Type3 | Type4 | Type5) var value2
+            """,
+        ),
+    )))

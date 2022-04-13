@@ -93,6 +93,6 @@ class ClassCapabilities(ObjectReprImplBase):
 
         assert (self.valid_attribute_visibilities and self.valid_attribute_mutabilities) or (not self.valid_attribute_visibilities and not self.valid_attribute_mutabilities)
         assert self.default_attribute_visibility is None or self.default_attribute_visibility in self.valid_attribute_visibilities
-        assert not self.allow_mutable_public_attributes or self.valid_attribute_visibilities
+        assert not self.allow_mutable_public_attributes or (VisibilityModifier.public in self.valid_attribute_visibilities and MutabilityModifier.var in self.valid_attribute_mutabilities)
 
         ObjectReprImplBase.__init__(self)

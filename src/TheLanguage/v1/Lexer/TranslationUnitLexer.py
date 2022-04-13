@@ -838,6 +838,9 @@ def _CreateSyntaxInvalidError(
 
     # ----------------------------------------------------------------------
 
+    # TODO: This code needs some work; it will get the location correct but doesn't provide good
+    #       enough error messages.
+
     # Find the nodes that represents the furthest valid thing that was lexed
     best_nodes: List[
         Tuple[
