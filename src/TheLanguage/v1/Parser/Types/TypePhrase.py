@@ -100,7 +100,7 @@ class TypePhrase(Phrase):
                     modifier=self.mutability_modifier,
                     valid_modifiers=valid_modifiers,
                     modifier_str=self.mutability_modifier.name,
-                    valid_modifiers_str=", ".join(["'{}'".format(v.name) for v in valid_modifiers]),  # pylint: disable=no-member
+                    valid_modifiers_str=", ".join("'{}'".format(v.name) for v in valid_modifiers),  # pylint: disable=no-member
                 ),
             )
 
