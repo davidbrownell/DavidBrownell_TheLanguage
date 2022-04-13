@@ -42,8 +42,6 @@ with InitRelativeImports():
 
     from ..Common.Impl import ModifierImpl
 
-    from ...Common.Diagnostics import Diagnostics
-
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
@@ -123,7 +121,6 @@ class FuncDefinitionStatement(GrammarPhrase):
     def ExtractParserPhrase(  # pylint: disable=too-many-statements
         cls,
         node: AST.Node,
-        diagnostics: Diagnostics,
     ) -> GrammarPhrase.ExtractParserPhraseReturnType:
         # ----------------------------------------------------------------------
         def Callback():  # pylint: disable=too-many-locals
@@ -173,7 +170,7 @@ class FuncDefinitionStatement(GrammarPhrase):
 
             # <parameters>
             parameters_node = cast(AST.Node, nodes[6])
-            parameters_info = FuncParametersFragment.Extract(parameters_node, diagnostics)
+            parameters_info = FuncParametersFragment.Extract(parameters_node)
 
             # <mutability_modifier>?
             mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
@@ -192,23 +189,14 @@ class FuncDefinitionStatement(GrammarPhrase):
                 docstring_leaf = None
                 docstring_info = None
             else:
-                result = StatementsFragment.Extract(statements_node, diagnostics)
-                if result is None:
-                    assert diagnostics.errors
+                statements_info, docstring_info = StatementsFragment.Extract(statements_node)
 
-                    statements_info = None
-                    docstring_info = None
+                if docstring_info is None:
                     docstring_leaf = None
                 else:
-                    statements_info, docstring_info = result
-
-                    if docstring_info is None:
-                        docstring_leaf = None
-                    else:
-                        docstring_leaf, docstring_info = docstring_info
+                    docstring_leaf, docstring_info = docstring_info
 
             return FuncDefinitionStatementModule.FuncDefinitionStatement.Create(
-                diagnostics,
                 CreateRegions(
                     node,
                     visibility_node,

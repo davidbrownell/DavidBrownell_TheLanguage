@@ -35,8 +35,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.Diagnostics import Diagnostics
-
     from ..Lexer.Components import AST
 
     from ..Lexer.Phrases.DSL import (       # pylint: disable=unused-import
@@ -118,7 +116,6 @@ class GrammarPhrase(Interface.Interface, ObjectReprImplBase):
     @Interface.abstractmethod
     def ExtractParserPhrase(
         node: AST.Node,
-        diagnostics: Diagnostics,
     ) -> "GrammarPhrase.ExtractParserPhraseReturnType":
         raise Exception("Abstract method")  # pragma: no cover
 

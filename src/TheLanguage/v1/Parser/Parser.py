@@ -33,9 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .Error import CreateError, Error, ErrorException
     from .Phrase import Phrase, Region, RootPhrase
 
-    from ..Common.Diagnostics import CreateError, Diagnostics
     from ..Lexer.Lexer import AST, Phrase as LexerPhrase
 
 
@@ -49,25 +49,37 @@ DuplicateDocInfoError                       = CreateError(
 class ParseObserver(Interface.Interface):
     # ----------------------------------------------------------------------
     ExtractParserPhraseReturnType           = Union[
-        Optional[Phrase],
-        Callable[[], Optional[Phrase]],
+        None,
+        Phrase,
+        List[Error],
+        Callable[
+            [],
+            Union[
+                Phrase,
+                List[Error],
+            ]
+        ],
     ]
 
     @staticmethod
     @Interface.abstractmethod
     def ExtractParserPhrase(
         node: AST.Node,
-        diagnostics: Diagnostics,
     ) -> "ParseObserver.ExtractParserPhraseReturnType":
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
+    ExtractPotentialDocInfoReturnType       = Union[
+        None,
+        Tuple[Union[AST.Leaf, AST.Node], str],
+        List[Error],
+    ]
+
     @staticmethod
     @Interface.abstractmethod
-    def GetPotentialDocInfo(
+    def ExtractPotentialDocInfo(
         node: Union[AST.Leaf, AST.Node],
-        diagnostics: Diagnostics,
-    ) -> Optional[Tuple[AST.Leaf, str]]:
+    ) -> "ParseObserver.ExtractPotentialDocInfoReturnType":
         raise Exception("Abstract method")  # pragma: no cover
 
 
@@ -78,81 +90,99 @@ def Parse(
     *,
     max_num_threads: Optional[int]=None,
 ) -> Optional[
-    Dict[
-        str,
-        Tuple[RootPhrase, Diagnostics],
-    ]
+    Dict[str, Union[RootPhrase, List[Error]]]
 ]:
     # ----------------------------------------------------------------------
     def CreateAndExtract(
         fully_qualified_name: str,  # pylint: disable=unused-argument
         root: AST.Node,
-    ) -> Optional[Tuple[RootPhrase, Diagnostics]]:
-        diagnostics = Diagnostics()
+    ) -> Optional[Union[RootPhrase, List[Error]]]:
+        errors: List[Error] = []
 
         callback_funcs: List[Tuple[AST.Node, Callable[[], Any]]] = []
 
         for node in root.Enum(nodes_only=True):
             assert isinstance(node, AST.Node), node
 
-            result = observer.ExtractParserPhrase(node, diagnostics)
-            if result is None:
-                continue
+            try:
+                result = observer.ExtractParserPhrase(node)
 
-            if callable(result):
-                callback_funcs.append((node, result))
-                continue
+                if result is None:
+                    continue
+                elif callable(result):
+                    callback_funcs.append((node, result))
+                elif isinstance(result, list):
+                    errors += result
+                elif isinstance(result, Phrase):
+                    _SetPhrase(node, result)
+                else:
+                    assert False, result  # pragma: no cover
 
-            elif isinstance(result, Phrase):
-                _SetPhrase(node, result)
-
-            else:
-                assert False, result  # pragma: no cover
+            except ErrorException as ex:
+                errors += ex.errors
 
         for node, callback in reversed(callback_funcs):
-            result = callback()
+            try:
+                result = callback()
 
-            if result is None:
-                assert diagnostics.errors
+                if isinstance(result, list):
+                    errors += result
+                elif isinstance(result, Phrase):
+                    _SetPhrase(node, result)
+                else:
+                    assert False, result  # pragma: no cover
 
-            assert isinstance(result, Phrase)
-            _SetPhrase(node, result)
+            except ErrorException as ex:
+                errors += ex.errors
 
         # Extract the root information
-        doc_info: Optional[Tuple[AST.Leaf, str]] = None
+        existing_doc_info: Optional[Tuple[Union[AST.Leaf, AST.Node], str]] = None
         statements: List[Phrase] = []
 
         for child in root.children:
-            potential_doc_info = observer.GetPotentialDocInfo(child, diagnostics)
-            if potential_doc_info is not None:
-                if doc_info is not None:
-                    diagnostics.errors.append(
-                        DuplicateDocInfoError.Create(
-                            CreateRegions(potential_doc_info[0]),
-                        ),
-                    )
+            try:
+                result = observer.ExtractPotentialDocInfo(child)
 
-                else:
-                    doc_info = potential_doc_info
+                if result is not None:
+                    if isinstance(result, list):
+                        errors += result
+                    elif isinstance(result, tuple):
+                        if existing_doc_info is not None:
+                            errors.append(
+                                DuplicateDocInfoError(
+                                    region=CreateRegion(result[0]),
+                                ),
+                            )
+                        else:
+                            existing_doc_info = result
+                    else:
+                        assert False, result  # pragma: no cover
 
-                continue
+            except ErrorException as ex:
+                errors += ex.errors
 
             if isinstance(child, AST.Node):
                 phrase = _ExtractPhrase(child)
-                if phrase is None:
-                    continue
+                if phrase is not None:
+                    statements.append(phrase)
 
-                statements.append(phrase)
+        if errors:
+            return errors
 
-        return (
-            RootPhrase.Create(
-                diagnostics,
-                CreateRegions(root, root, None if doc_info is None else doc_info[0]),
+        if existing_doc_info is None:
+            docstring_node = None
+            docstring_info = None
+        else:
+            docstring_node, docstring_info = existing_doc_info
+
+        try:
+            return RootPhrase.Create(
+                CreateRegions(root, root, docstring_node),
                 statements or None,
-                None if doc_info is None else doc_info[1],
-            ),
-            diagnostics,
-        )
+                docstring_info,
+            )
+        except ErrorException as ex:
+            return ex.errors
 
     # ----------------------------------------------------------------------
 
@@ -165,42 +195,44 @@ def Parse(
 
 # ----------------------------------------------------------------------
 def Validate(
-    roots: Dict[str, Tuple[RootPhrase, Diagnostics]],
+    roots: Dict[str, RootPhrase],
     *,
     max_num_threads: Optional[int]=None,
-) -> Optional[Dict[str, Tuple[RootPhrase, Diagnostics]]]:
-    # Extract names
-
-    # ----------------------------------------------------------------------
-    def ValidateNames(
-        fully_qualified_name: str,  # pylint: disable=unused-argument
-        input_value: Tuple[RootPhrase, Diagnostics],
-    ) -> _NamespaceVisitor.ReturnType:
-        root, diagnostics = input_value
-
-        visitor = _NamespaceVisitor(diagnostics)
-
-        root.Accept(visitor)
-
-        return visitor.root
-
-    # ----------------------------------------------------------------------
-
-    namespace_values = _Execute(
-        roots,
-        ValidateNames,
-        max_num_threads=max_num_threads,
-    )
-
-    if namespace_values is None:
-        return None
-
-    if any(diagnostics.errors for (_, diagnostics) in roots.values()):
-        return roots
-
-    # TODO: Validate types
-
+) -> Optional[
+    Dict[str, Union[RootPhrase, List[Error]]]
+]:
     return roots
+
+    # TODO: # Extract names
+    # TODO:
+    # TODO: # ----------------------------------------------------------------------
+    # TODO: def ValidateNames(
+    # TODO:     fully_qualified_name: str,  # pylint: disable=unused-argument
+    # TODO:     root: RootPhrase,
+    # TODO: ) -> _NamespaceVisitor.ReturnType:
+    # TODO:     visitor = _NamespaceVisitor()
+    # TODO:
+    # TODO:     root.Accept(visitor)
+    # TODO:
+    # TODO:     return visitor.root
+    # TODO:
+    # TODO: # ----------------------------------------------------------------------
+    # TODO:
+    # TODO: namespace_values = _Execute(
+    # TODO:     roots,
+    # TODO:     ValidateNames,
+    # TODO:     max_num_threads=max_num_threads,
+    # TODO: )
+    # TODO:
+    # TODO: if namespace_values is None:
+    # TODO:     return None
+    # TODO:
+    # TODO: if any(diagnostics.errors for (_, diagnostics) in roots.values()):
+    # TODO:     return roots
+    # TODO:
+    # TODO: # TODO: Validate types
+    # TODO:
+    # TODO: return roots
 
 
 # ----------------------------------------------------------------------
@@ -383,11 +415,7 @@ class _NamespaceVisitor(object):
 
     # ----------------------------------------------------------------------
     # |  Public Methods
-    def __init__(
-        self,
-        diagnostics: Diagnostics,
-    ):
-        self._diagnostics                               = diagnostics
+    def __init__(self):
         self._node_stack: List[_NamespaceVisitor.Node]  = [_NamespaceVisitor.Node(None)]
 
     # ----------------------------------------------------------------------

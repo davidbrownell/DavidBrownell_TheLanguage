@@ -42,7 +42,6 @@ with InitRelativeImports():
 
     from ..Types.StandardType import StandardType
 
-    from ...Common.Diagnostics import CreateError, Diagnostics
     from ...Common.Region import Region
 
     from ...Lexer.Phrases.DSL import (
@@ -58,6 +57,7 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
+    from ...Parser.Error import CreateError, Error, ErrorException
     from ...Parser.Parser import CreateRegion, CreateRegions
     from ...Parser.Common.ClassModifier import ClassModifier
 
@@ -238,7 +238,6 @@ class ClassStatement(GrammarPhrase):
     def ExtractParserPhrase(
         self,
         node: AST.Node,
-        diagnostics: Diagnostics,
     ) -> GrammarPhrase.ExtractParserPhraseReturnType:
 
         # Construct the ParserPhrase in 2 passes. The first will contain information that contained
@@ -246,6 +245,8 @@ class ClassStatement(GrammarPhrase):
         # and create the class statement parser phrase.
         nodes = ExtractSequence(node)
         assert len(nodes) == 8 # TODO: 11
+
+        errors: List[Error] = []
 
         # Detect early errors and get information necessary for child statements; the rest will be
         # done later.
@@ -285,7 +286,7 @@ class ClassStatement(GrammarPhrase):
 
             prev_dependencies_node = all_dependency_nodes.get(dependency_type_info, None)
             if prev_dependencies_node is not None:
-                diagnostics.errors.append(
+                errors.append(
                     DuplicateBaseTypeError.Create(
                         region=CreateRegion(dependency_type_node),
                         type=dependency_type_info.value,
@@ -297,6 +298,9 @@ class ClassStatement(GrammarPhrase):
 
         # This information will be used when children call `GetParentClassCapabilities`
         object.__setattr__(node, self.__class__._CLASS_CAPABILITIES_ATTRIBUTE_NAME, class_capabilities)
+
+        if errors:
+            return errors
 
         # ----------------------------------------------------------------------
         def Callback():
@@ -360,12 +364,11 @@ class ClassStatement(GrammarPhrase):
 
                     # <standard_type>
                     standard_type_node = cast(AST.Node, this_dependency_nodes[1])
-                    standard_type_info = self._standard_type.ExtractParserPhrase(standard_type_node, diagnostics)
+                    standard_type_info = self._standard_type.ExtractParserPhrase(standard_type_node)
 
                     # Add it
                     these_dependencies.append(
                         ParserClassStatementModule.ClassStatementDependency.Create(
-                            diagnostics,
                             CreateRegions(this_dependency_node, this_visibility_node, standard_type_node),
                             this_visibility_info,
                             standard_type_info,
@@ -376,16 +379,11 @@ class ClassStatement(GrammarPhrase):
 
             # <statements>
             statements_node = cast(AST.Node, nodes[7])
-            statements_info = None
-            docstring_info = None
 
-            statements_fragments_result = StatementsFragment.Extract(statements_node, diagnostics)
-            if statements_fragments_result is not None:
-                statements_info, docstring_info = statements_fragments_result
+            statements_info, docstring_info = StatementsFragment.Extract(statements_node)
 
             # Commit
             return ParserClassStatementModule.ClassStatement.Create(
-                diagnostics,
                 CreateRegions(
                     node,
                     visibility_node,

@@ -31,10 +31,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Phrase import Phrase, Diagnostics
-
     from ..Expressions.ExpressionPhrase import ExpressionPhrase
-    from ..Types.TypePhrase import TypePhrase
+    from ..Types.TypePhrase import Phrase, TypePhrase
 
     from ...Common.Region import Region
 
@@ -42,7 +40,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncParametersItemPhrase(Phrase):
-    diagnostics: InitVar[Diagnostics]
     regions: InitVar[List[Optional[Region]]]
 
     type: TypePhrase
@@ -60,14 +57,13 @@ class FuncParametersItemPhrase(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions):
-        super(FuncParametersItemPhrase, self).__init__(diagnostics, regions)
+    def __post_init__(self, regions):
+        super(FuncParametersItemPhrase, self).__init__(regions)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncParametersPhrase(Phrase):
-    diagnostics: InitVar[Diagnostics]
     regions: InitVar[List[Optional[Region]]]
 
     positional: Optional[List[FuncParametersItemPhrase]]
@@ -84,6 +80,6 @@ class FuncParametersPhrase(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions):
-        super(FuncParametersPhrase, self).__init__(diagnostics, regions)
+    def __post_init__(self, regions):
+        super(FuncParametersPhrase, self).__init__(regions)
         assert self.positional or self.any or self.keyword
