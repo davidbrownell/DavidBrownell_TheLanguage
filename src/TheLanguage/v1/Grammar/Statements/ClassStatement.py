@@ -34,14 +34,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
-    from ..Common import ConcreteTypeFragment
     from ..Common import StatementsFragment
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
     from ..Common.Impl import ModifierImpl
 
-    from ...Common.Diagnostics import CreateError, Diagnostics, Error
+    from ..Types.StandardType import StandardType
+
+    from ...Common.Diagnostics import CreateError, Diagnostics
     from ...Common.Region import Region
 
     from ...Lexer.Phrases.DSL import (
@@ -100,11 +101,9 @@ class ClassStatement(GrammarPhrase):
     PHRASE_NAME                             = "Class Statement"
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
-    # ----------------------------------------------------------------------
     def __init__(self):
+        self._standard_type                 = StandardType()
+
         dependency_element = PhraseItem(
             name="Class Dependency Element",
             item=[
@@ -114,8 +113,8 @@ class ClassStatement(GrammarPhrase):
                     item=VisibilityModifier.CreatePhraseItem(),
                 ),
 
-                # <concrete_type>
-                ConcreteTypeFragment.Create(),
+                # <standard_type>
+                self._standard_type.phrase,
             ],
         )
 
@@ -216,7 +215,7 @@ class ClassStatement(GrammarPhrase):
     def GetParentClassCapabilities(
         cls,
         node: AST.Node,
-        function_defintion_statement: Type, # "FuncDefinitionStatement",
+        function_defintion_statement: Type[GrammarPhrase],
     ) -> Optional[ClassCapabilities]:
 
         walking_node = node.parent
@@ -235,16 +234,11 @@ class ClassStatement(GrammarPhrase):
         return None
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    _CLASS_CAPABILITIES_ATTRIBUTE_NAME      = "_class_capabilities"
-
-    # ----------------------------------------------------------------------
-    @classmethod
     @Interface.override
-    def _ExtractParserPhraseImpl(
-        cls,
+    def ExtractParserPhrase(
+        self,
         node: AST.Node,
+        diagnostics: Diagnostics,
     ) -> GrammarPhrase.ExtractParserPhraseReturnType:
 
         # Construct the ParserPhrase in 2 passes. The first will contain information that contained
@@ -255,7 +249,6 @@ class ClassStatement(GrammarPhrase):
 
         # Detect early errors and get information necessary for child statements; the rest will be
         # done later.
-        errors: List[Error] = []
 
         # <class_type>
         class_type_node = cast(AST.Node, nodes[2])
@@ -292,7 +285,7 @@ class ClassStatement(GrammarPhrase):
 
             prev_dependencies_node = all_dependency_nodes.get(dependency_type_info, None)
             if prev_dependencies_node is not None:
-                errors.append(
+                diagnostics.errors.append(
                     DuplicateBaseTypeError.Create(
                         region=CreateRegion(dependency_type_node),
                         type=dependency_type_info.value,
@@ -302,19 +295,11 @@ class ClassStatement(GrammarPhrase):
 
             all_dependency_nodes[dependency_type_info] = (dependency_type_node, dependencies_node)
 
-        # Commit
-        if errors:
-            return Diagnostics(
-                errors=errors,
-            )
-
         # This information will be used when children call `GetParentClassCapabilities`
-        object.__setattr__(node, cls._CLASS_CAPABILITIES_ATTRIBUTE_NAME, class_capabilities)
+        object.__setattr__(node, self.__class__._CLASS_CAPABILITIES_ATTRIBUTE_NAME, class_capabilities)
 
         # ----------------------------------------------------------------------
         def Callback():
-            errors: List[Error] = []
-
             # TODO: <attributes>?
 
             # <visibility>?
@@ -360,7 +345,7 @@ class ClassStatement(GrammarPhrase):
                     [these_dependency_nodes[0]],
                     (
                         ExtractSequence(delimited_node)[1]
-                        for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, these_dependency_nodes[1])))
+                        for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(Optional[AST.Node], these_dependency_nodes[1])))
                     ),
                 ):
                     this_dependency_nodes = ExtractSequence(cast(AST.Node, this_dependency_node))
@@ -373,16 +358,17 @@ class ClassStatement(GrammarPhrase):
                     else:
                         this_visibility_info = VisibilityModifier.Extract(this_visibility_node)
 
-                    # <concrete_type>
-                    this_concrete_type_node = cast(AST.Node, this_dependency_nodes[1])
-                    this_concrete_type_info = ConcreteTypeFragment.Extract(this_concrete_type_node)
+                    # <standard_type>
+                    standard_type_node = cast(AST.Node, this_dependency_nodes[1])
+                    standard_type_info = self._standard_type.ExtractParserPhrase(standard_type_node, diagnostics)
 
                     # Add it
                     these_dependencies.append(
                         ParserClassStatementModule.ClassStatementDependency.Create(
-                            CreateRegions(this_dependency_node, this_visibility_node, this_concrete_type_node),
+                            diagnostics,
+                            CreateRegions(this_dependency_node, this_visibility_node, standard_type_node),
                             this_visibility_info,
-                            this_concrete_type_info,
+                            standard_type_info,
                         ),
                     )
 
@@ -393,22 +379,13 @@ class ClassStatement(GrammarPhrase):
             statements_info = None
             docstring_info = None
 
-            statements_fragments_result = StatementsFragment.Extract(statements_node)
-            if isinstance(statements_fragments_result, Diagnostics):
-                assert statements_fragments_result.HasErrorsOnly()
-
-                errors += statements_fragments_result.errors
-
-            else:
+            statements_fragments_result = StatementsFragment.Extract(statements_node, diagnostics)
+            if statements_fragments_result is not None:
                 statements_info, docstring_info = statements_fragments_result
 
             # Commit
-            if errors:
-                return Diagnostics(
-                    errors=errors,
-                )
-
             return ParserClassStatementModule.ClassStatement.Create(
+                diagnostics,
                 CreateRegions(
                     node,
                     visibility_node,
@@ -434,6 +411,11 @@ class ClassStatement(GrammarPhrase):
         # ----------------------------------------------------------------------
 
         return Callback  # type: ignore
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    _CLASS_CAPABILITIES_ATTRIBUTE_NAME      = "_class_capabilities"
 
 
 # ----------------------------------------------------------------------

@@ -68,7 +68,6 @@ RuntimeTypeName                             = RegexToken(
     ),
 )
 
-
 RuntimeVariableName                         = RegexToken(
     "<variable name>",
     re.compile(
@@ -76,8 +75,37 @@ RuntimeVariableName                         = RegexToken(
             r"""(?P<value>(?#
             Initial Underscores [optional]  )_*(?#
             Lower                           )[a-z](?#
+            Alphanumeric                    )[A-Za-z0-9_]*(?#
+            Trailing Underscores [optional] )_*(?#
+            ))""",
+        ),
+    ),
+)
+
+
+# TODO: This needs some work
+RuntimeFuncName                             = RegexToken(
+    "<func name>",
+    re.compile(
+        textwrap.dedent(
+            r"""(?P<value>(?#
+            Initial Underscores [optional]  )_*(?#
+            Upper                           )[A-Z](?#
             Alphanumeric                    )[A-Za-z0-9_]+(?#
             Trailing Underscores [optional] )_*(?#
+            ))""",
+        ),
+    ),
+)
+
+
+RuntimeParameterName                        = RegexToken(
+    "<parameter name>",
+    re.compile(
+        textwrap.dedent(
+            r"""(?P<value>(?#
+            Lower                           )[a-z](?#
+            Alphanumeric                    )[A-Za-z0-9_]*(?#
             ))""",
         ),
     ),

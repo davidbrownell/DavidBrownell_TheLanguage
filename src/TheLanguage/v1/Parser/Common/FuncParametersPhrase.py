@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Region.py
+# |  FuncParametersPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-03-01 09:12:33
+# |      2022-04-11 16:43:15
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Region object"""
+"""Contains information about function parameters"""
 
 import os
 
-from dataclasses import dataclass
+from typing import List, Optional
+
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import ComparisonOperators
-from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,20 +30,25 @@ _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
-# TODO: Move this to ./Parser
-
 with InitRelativeImports():
-    from .Location import Location
+    from ..Phrase import Phrase, Diagnostics
+
+    from ..Expressions.ExpressionPhrase import ExpressionPhrase
+    from ..Types.TypePhrase import TypePhrase
+
+    from ...Common.Region import Region
 
 
 # ----------------------------------------------------------------------
-@ComparisonOperators
 @dataclass(frozen=True, repr=False)
-class Region(ObjectReprImplBase):
-    """Begining and ending for interesting blocks of code within a source file"""
+class FuncParametersItemPhrase(Phrase):
+    diagnostics: InitVar[Diagnostics]
+    regions: InitVar[List[Optional[Region]]]
 
-    begin: Location
-    end: Location
+    type: TypePhrase
+    is_variadic: Optional[bool]
+    name: str
+    default_value: Optional[ExpressionPhrase]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -55,24 +60,30 @@ class Region(ObjectReprImplBase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        ObjectReprImplBase.__init__(self)
+    def __post_init__(self, diagnostics, regions):
+        super(FuncParametersItemPhrase, self).__init__(diagnostics, regions)
 
-        assert self.begin <= self.end       # type: ignore (operator is added dynamically)
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class FuncParametersPhrase(Phrase):
+    diagnostics: InitVar[Diagnostics]
+    regions: InitVar[List[Optional[Region]]]
+
+    positional: Optional[List[FuncParametersItemPhrase]]
+    any: Optional[List[FuncParametersItemPhrase]]
+    keyword: Optional[List[FuncParametersItemPhrase]]
 
     # ----------------------------------------------------------------------
-    def __contains__(self, other):
-        return other.begin >= self.begin and other.end <= self.end
+    @classmethod
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    def Compare(value1, value2):
-        result = Location.Compare(value1.begin, value2.begin)
-        if result != 0:
-            return result
-
-        result = Location.Compare(value1.end, value2.end)
-        if result != 0:
-            return result
-
-        return 0
+    def __post_init__(self, diagnostics, regions):
+        super(FuncParametersPhrase, self).__init__(diagnostics, regions)
+        assert self.positional or self.any or self.keyword

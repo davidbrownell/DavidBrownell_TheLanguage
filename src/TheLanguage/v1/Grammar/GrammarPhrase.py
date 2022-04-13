@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.Diagnostics import DiagnosticsError
+    from ..Common.Diagnostics import Diagnostics
 
     from ..Lexer.Components import AST
 
@@ -114,22 +114,11 @@ class GrammarPhrase(Interface.Interface, ObjectReprImplBase):
     # ----------------------------------------------------------------------
     ExtractParserPhraseReturnType           = ParseObserver.ExtractParserPhraseReturnType
 
-    def ExtractParserPhrase(
-        self,
-        node: AST.Node,
-    ) -> "GrammarPhrase.ExtractParserPhraseReturnType":
-        try:
-            return self._ExtractParserPhraseImpl(node)
-        except DiagnosticsError as ex:
-            return ex
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def _ExtractParserPhraseImpl(
+    def ExtractParserPhrase(
         node: AST.Node,
+        diagnostics: Diagnostics,
     ) -> "GrammarPhrase.ExtractParserPhraseReturnType":
         raise Exception("Abstract method")  # pragma: no cover
 

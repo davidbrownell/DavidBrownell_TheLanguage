@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PassStatement.py
+# |  VariableNamePhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-01 12:29:33
+# |      2022-04-11 16:50:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the PassStatement object"""
+"""Contains the VariableNamePhrase object"""
 
 import os
 
-from dataclasses import dataclass
+from typing import List, Optional
+
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 
@@ -29,14 +31,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementPhrase import StatementPhrase
+    from ..Phrase import Phrase
+
+    from ...Common.Region import Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class PassStatement(StatementPhrase):
-    """Noop statement"""
+class VariableNamePhrase(Phrase):
+    regions: InitVar[List[Optional[Region]]]
+    name: str
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions):
-        super(PassStatement, self).__post_init__(diagnostics, regions)
+    @classmethod
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(VariableNamePhrase, self).__init__(regions)
