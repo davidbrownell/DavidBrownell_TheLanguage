@@ -42,8 +42,6 @@ with InitRelativeImports():
 
     from ..Types.StandardType import StandardType
 
-    from ...Common.Region import Region
-
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
@@ -57,8 +55,9 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ...Parser.Error import CreateError, Error, ErrorException
+    from ...Parser.Error import CreateError, Error, Region
     from ...Parser.Parser import CreateRegion, CreateRegions
+
     from ...Parser.Common.ClassModifier import ClassModifier
 
     from ...Parser.Statements import ClassStatement as ParserClassStatementModule

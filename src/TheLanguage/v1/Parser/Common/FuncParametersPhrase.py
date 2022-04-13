@@ -32,9 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Expressions.ExpressionPhrase import ExpressionPhrase
-    from ..Types.TypePhrase import Phrase, TypePhrase
-
-    from ...Common.Region import Region
+    from ..Types.TypePhrase import Phrase, Region, TypePhrase
 
 
 # ----------------------------------------------------------------------

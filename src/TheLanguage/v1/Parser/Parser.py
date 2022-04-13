@@ -33,8 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Error import CreateError, Error, ErrorException
-    from .Phrase import Phrase, Region, RootPhrase
+    from .Error import CreateError, Error, ErrorException, Region
+    from .Phrase import Phrase, RootPhrase
 
     from ..Lexer.Lexer import AST, Phrase as LexerPhrase
 
@@ -267,12 +267,12 @@ def CreateRegionNoThrow(
     elif isinstance(node, Region):
         return node
     elif isinstance(node, LexerPhrase.NormalizedIteratorRange):
-        return node.ToRegion()
+        return Region(node.begin.ToLocation(), node.end.ToLocation())
     elif isinstance(node, (AST.Leaf, AST.Node)):
         if node.iter_range is None:
             return None
 
-        return node.iter_range.ToRegion()
+        return Region(node.iter_range.begin.ToLocation(), node.iter_range.end.ToLocation())
     else:
         assert False, node  # pragma: no cover
 

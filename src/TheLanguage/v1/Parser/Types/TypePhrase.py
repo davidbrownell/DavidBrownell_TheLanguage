@@ -32,11 +32,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Error import CreateError, Error, ErrorException
-    from ..Phrase import Phrase
+    from ..Phrase import Phrase, Region
 
     from ..Common.MutabilityModifier import MutabilityModifier
-
-    from ...Common.Region import Region
 
 
 # ----------------------------------------------------------------------

@@ -1,14 +1,14 @@
 # <class 'v1.Parser.Phrase.RootPhrase'>
 documentation: None
 regions__: # <class 'types.RootPhraseRegions'>
-  self__: # <class 'v1.Common.Region.Region'>
+  self__: # <class 'v1.Parser.Region.Region'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
     end: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 2
-  statements: # <class 'v1.Common.Region.Region'>
+  statements: # <class 'v1.Parser.Region.Region'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
@@ -18,7 +18,7 @@ regions__: # <class 'types.RootPhraseRegions'>
 statements:
   - # <class 'v1.Parser.Statements.PassStatement.PassStatement'>
     regions__: # <class 'types.PassStatementRegions'>
-      self__: # <class 'v1.Common.Region.Region'>
+      self__: # <class 'v1.Parser.Region.Region'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 1

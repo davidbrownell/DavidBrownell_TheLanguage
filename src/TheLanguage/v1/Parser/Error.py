@@ -32,8 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Lexer.Location import Location
-    from ..Common.Region import Region
+    from .Region import Region
 
 
 # ----------------------------------------------------------------------
