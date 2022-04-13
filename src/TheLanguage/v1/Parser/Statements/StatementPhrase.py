@@ -32,6 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Phrase import Phrase
+    from ...Common.Diagnostics import Diagnostics
     from ...Common.Region import Region
 
 
@@ -41,6 +42,7 @@ class StatementPhrase(Phrase):
     """Abstract base class for all statements"""
 
     # ----------------------------------------------------------------------
+    diagnostics: InitVar[Diagnostics]
     regions: InitVar[List[Optional[Region]]]
 
     # ----------------------------------------------------------------------
@@ -55,9 +57,10 @@ class StatementPhrase(Phrase):
     # ----------------------------------------------------------------------
     def __post_init__(
         self,
+        diagnostics,
         regions,
         regionless_attributes: Optional[List[str]]=None,
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        super(StatementPhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
+        super(StatementPhrase, self).__init__(diagnostics, regions, regionless_attributes, validate, **custom_display_funcs)

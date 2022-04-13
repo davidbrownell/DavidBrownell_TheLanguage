@@ -34,7 +34,7 @@ with InitRelativeImports():
     from ..Phrase import Phrase
     from ..Common.MutabilityModifier import MutabilityModifier
 
-    from ...Common.Diagnostics import CreateError, DiagnosticsError, Error
+    from ...Common.Diagnostics import CreateError, Diagnostics
     from ...Common.Region import Region
 
 
@@ -62,6 +62,7 @@ class TypePhrase(Phrase):
     """Abstract base class for all types"""
 
     # ----------------------------------------------------------------------
+    diagnostics: InitVar[Diagnostics]
     regions: InitVar[List[Optional[Region]]]
 
     mutability_modifier: Optional[MutabilityModifier]
@@ -78,14 +79,13 @@ class TypePhrase(Phrase):
     # ----------------------------------------------------------------------
     def __post_init__(
         self,
+        diagnostics,
         regions,
         regionless_attributes: Optional[List[str]]=None,
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        super(TypePhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
-
-        errors: List[Error] = []
+        super(TypePhrase, self).__init__(diagnostics, regions, regionless_attributes, validate, **custom_display_funcs)
 
         valid_modifiers = [
             MutabilityModifier.var,
@@ -94,7 +94,7 @@ class TypePhrase(Phrase):
         ]
 
         if self.mutability_modifier is not None and self.mutability_modifier not in valid_modifiers:
-            errors.append(
+            diagnostics.errors.append(
                 InvalidMutabilityModifierError.Create(
                     region=self.regions__.mutability_modifier,
                     modifier=self.mutability_modifier,
@@ -102,9 +102,4 @@ class TypePhrase(Phrase):
                     modifier_str=self.mutability_modifier.name,
                     valid_modifiers_str=", ".join(["'{}'".format(v.name) for v in valid_modifiers]),
                 ),
-            )
-
-        if errors:
-            raise DiagnosticsError(
-                errors=errors,
             )

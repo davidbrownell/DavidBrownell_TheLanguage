@@ -28,7 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GrammarPhrase import AST, GrammarPhrase
+    from ..GrammarPhrase import AST, Diagnostics, GrammarPhrase
 
     from ..Common import Tokens as CommonTokens
 
@@ -63,13 +63,13 @@ class PassStatement(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def _ExtractParserPhraseImpl(
+    def ExtractParserPhrase(
         node: AST.Node,
+        diagnostics: Diagnostics,
     ) -> GrammarPhrase.ExtractParserPhraseReturnType:
         return ParserPassStatement.Create(
+            diagnostics,
             CreateRegions(node),
         )

@@ -49,18 +49,15 @@ DuplicateDocInfoError                       = CreateError(
 class ParseObserver(Interface.Interface):
     # ----------------------------------------------------------------------
     ExtractParserPhraseReturnType           = Union[
-        Phrase,
-        Diagnostics,
-        Tuple[Phrase, Diagnostics],
-        Callable[[], Phrase],
-        Callable[[], Diagnostics],
-        Callable[[], Tuple[Phrase, Diagnostics]],
+        Optional[Phrase],
+        Callable[[], Optional[Phrase]],
     ]
 
     @staticmethod
     @Interface.abstractmethod
     def ExtractParserPhrase(
         node: AST.Node,
+        diagnostics: Diagnostics,
     ) -> "ParseObserver.ExtractParserPhraseReturnType":
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -69,6 +66,7 @@ class ParseObserver(Interface.Interface):
     @Interface.abstractmethod
     def GetPotentialDocInfo(
         node: Union[AST.Leaf, AST.Node],
+        diagnostics: Diagnostics,
     ) -> Optional[Tuple[AST.Leaf, str]]:
         raise Exception("Abstract method")  # pragma: no cover
 
@@ -97,7 +95,7 @@ def Parse(
         for node in root.Enum(nodes_only=True):
             assert isinstance(node, AST.Node), node
 
-            result = observer.ExtractParserPhrase(node)
+            result = observer.ExtractParserPhrase(node, diagnostics)
             if result is None:
                 continue
 
@@ -105,76 +103,35 @@ def Parse(
                 callback_funcs.append((node, result))
                 continue
 
-            if isinstance(result, Diagnostics):
-                assert result.errors, result
-                diagnostics = diagnostics.Combine(result)
-
-                continue
-
-            this_phrase: Optional[Phrase] = None
-
-            if isinstance(result, tuple):
-                assert len(result) == 2, result
-
-                this_phrase, this_diagnostics = result
-
-                assert not this_diagnostics.errors, this_diagnostics
-                diagnostics = diagnostics.Combine(this_diagnostics)
-
             elif isinstance(result, Phrase):
-                this_phrase = result
+                _SetPhrase(node, result)
 
             else:
                 assert False, result  # pragma: no cover
-
-            assert this_phrase is not None
-            _SetPhrase(node, this_phrase)
 
         for node, callback in reversed(callback_funcs):
             result = callback()
 
-            if isinstance(result, Diagnostics):
-                assert result.errors, result
-                diagnostics = diagnostics.Combine(result)
+            if result is None:
+                assert diagnostics.errors
 
-                continue
-
-            this_phrase: Optional[Phrase] = None
-
-            if isinstance(result, tuple):
-                assert len(result) == 2, result
-
-                this_phrase, this_diagnostics = result
-
-                assert not this_diagnostics.errors, this_diagnostics
-                diagnostics = diagnostics.Combine(this_diagnostics)
-
-            elif isinstance(result, Phrase):
-                this_phrase = result
-
-            else:
-                assert False, result  # pragma: no cover
-
-            assert this_phrase is not None
-            _SetPhrase(node, this_phrase)
+            assert isinstance(result, Phrase)
+            _SetPhrase(node, result)
 
         # Extract the root information
         doc_info: Optional[Tuple[AST.Leaf, str]] = None
         statements: List[Phrase] = []
 
         for child in root.children:
-            potential_doc_info = observer.GetPotentialDocInfo(child)
+            potential_doc_info = observer.GetPotentialDocInfo(child, diagnostics)
             if potential_doc_info is not None:
                 if doc_info is not None:
-                    diagnostics = diagnostics.Combine(
-                        Diagnostics(
-                            errors=[
-                                DuplicateDocInfoError.Create(
-                                    CreateRegions(potential_doc_info[0]),
-                                ),
-                            ],
+                    diagnostics.errors.append(
+                        DuplicateDocInfoError.Create(
+                            CreateRegions(potential_doc_info[0]),
                         ),
                     )
+
                 else:
                     doc_info = potential_doc_info
 
@@ -189,6 +146,7 @@ def Parse(
 
         return (
             RootPhrase.Create(
+                diagnostics,
                 CreateRegions(root, root, None if doc_info is None else doc_info[0]),
                 statements or None,
                 None if doc_info is None else doc_info[1],

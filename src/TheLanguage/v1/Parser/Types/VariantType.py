@@ -31,12 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypePhrase import (
-        CreateError,
-        DiagnosticsError,
-        Error,
-        TypePhrase
-    )
+    from .TypePhrase import CreateError, TypePhrase
 
 
 # ----------------------------------------------------------------------
@@ -52,27 +47,21 @@ class VariantType(TypePhrase):
     flattened_types: List[TypePhrase]       = field(init=False)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
+    def __post_init__(self, diagnostics, regions):
         super(VariantType, self).__post_init__(
+            diagnostics,
             regions,
             regionless_attributes=["flattened_types"],
         )
 
         # Validate
-        errors: List[Error] = []
-
         for contained_type in self.types:
             if contained_type.mutability_modifier is not None:
-                errors.append(
+                diagnostics.errors.append(
                     UnsupportedMutabilityModifierError.Create(
                         region=contained_type.regions__.mutability_modifier,
                     ),
                 )
-
-        if errors:
-            raise DiagnosticsError(
-                errors=errors,
-            )
 
         # Flatten the types
         flattened_types: List[TypePhrase] = []

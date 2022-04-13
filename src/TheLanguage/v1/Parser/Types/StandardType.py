@@ -31,12 +31,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypePhrase import Phrase, Region, TypePhrase
+    from .TypePhrase import Diagnostics, Phrase, Region, TypePhrase
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class StandardTypeItemPhrase(Phrase):
+    diagnostics: InitVar[Diagnostics]
     regions: InitVar[List[Optional[Region]]]
 
     name: str
@@ -54,8 +55,8 @@ class StandardTypeItemPhrase(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(StandardTypeItemPhrase, self).__init__(regions)
+    def __post_init__(self, diagnostics, regions):
+        super(StandardTypeItemPhrase, self).__init__(diagnostics, regions)
 
 
 # ----------------------------------------------------------------------
@@ -64,5 +65,5 @@ class StandardType(TypePhrase):
     items: List[StandardTypeItemPhrase]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(StandardType, self).__post_init__(regions)
+    def __post_init__(self, diagnostics, regions):
+        super(StandardType, self).__post_init__(diagnostics, regions)

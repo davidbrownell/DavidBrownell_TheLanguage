@@ -35,7 +35,7 @@ with InitRelativeImports():
 
     from .. import Tokens as CommonTokens
 
-    from ...GrammarPhrase import AST
+    from ...GrammarPhrase import AST, Diagnostics
 
     from ....Lexer.Phrases.DSL import (
         ExtractOptional,
@@ -48,7 +48,7 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ....Common.Diagnostics import CreateError, DiagnosticsError
+    from ....Common.Diagnostics import CreateError
     from ....Parser.Parser import CreateRegion, CreateRegions, Phrase, Region
 
 
@@ -211,8 +211,9 @@ ExtractReturnType                           = TypeVar("ExtractReturnType", bound
 
 def Extract(
     phrase_type: Type[ExtractReturnType],
-    extract_element_func: Callable[[AST.Node], Tuple[Phrase, bool]],
+    extract_element_func: Callable[[AST.Node, Diagnostics], Tuple[Phrase, bool]],
     node: AST.Node,
+    diagnostics: Diagnostics,
     *,
     allow_empty: bool,
 ) -> Union[bool, ExtractReturnType]:
@@ -241,22 +242,20 @@ def Extract(
     initial_default_param: Optional[AST.Node] = None
     parameters_phrases: Dict[ParametersType, Tuple[AST.Node, List[Phrase]]] = {}
 
-    for parameters_type, parameters_node, parameter_nodes in enum_func(all_parameters_node):
+    for parameters_type, parameters_node, parameter_nodes in enum_func(all_parameters_node, diagnostics):
         phrases: List[Phrase] = []
 
         for parameter_node in parameter_nodes:
-            phrase, has_default = extract_element_func(parameter_node)
+            phrase, has_default = extract_element_func(parameter_node, diagnostics)
 
             if has_default:
                 initial_default_param = parameter_node
-            elif initial_default_param:
-                raise DiagnosticsError(
-                    errors=[
-                        RequiredParameterAfterDefaultError.Create(
-                            region=CreateRegion(parameter_node),
-                            prev_region=CreateRegion(initial_default_param),
-                        ),
-                    ],
+            elif initial_default_param is not None:
+                diagnostics.errors.append(
+                    RequiredParameterAfterDefaultError.Create(
+                        region=CreateRegion(parameter_node),
+                        prev_region=CreateRegion(initial_default_param),
+                    ),
                 )
 
             phrases.append(phrase)
@@ -267,6 +266,7 @@ def Extract(
         parameters_phrases[parameters_type] = (parameters_node, phrases)
 
     return phrase_type.Create(  # type: ignore
+        diagnostics,
         CreateRegions(
             node,
             parameters_phrases.get(ParametersType.pos, [None])[0],
@@ -284,6 +284,7 @@ def Extract(
 # ----------------------------------------------------------------------
 def _EnumNewStyle(
     node: AST.Node,
+    diagnostics: Diagnostics,
 ) -> Generator[
     Tuple[ParametersType, AST.Node, List[AST.Node]],
     None,
@@ -301,13 +302,11 @@ def _EnumNewStyle(
 
         prev_parameters_type = encountered.get(parameters_type_info, None)
         if prev_parameters_type is not None:
-            raise DiagnosticsError(
-                errors=[
-                    NewStyleParameterGroupDuplicateError.Create(
-                        region=CreateRegion(parameters_type_node),
-                        prev_region=CreateRegion(prev_parameters_type),
-                    ),
-                ],
+            diagnostics.errors.append(
+                NewStyleParameterGroupDuplicateError.Create(
+                    region=CreateRegion(parameters_type_node),
+                    prev_region=CreateRegion(prev_parameters_type),
+                ),
             )
 
         encountered[parameters_type_info] = parameters_type_node
@@ -328,6 +327,7 @@ def _EnumNewStyle(
 # ----------------------------------------------------------------------
 def _EnumTraditional(
     node: AST.Node,
+    diagnostics: Diagnostics,
 ) -> Generator[
     Tuple[ParametersType, AST.Node, List[AST.Node]],
     None,
@@ -363,34 +363,28 @@ def _EnumTraditional(
         if delimiter_value == TraditionalParameterDelimiter.positional:
             # This should never be the first parameter
             if parameter_node_index == 0:
-                raise DiagnosticsError(
-                    errors=[
-                        TraditionalDelimiterPositionalError.Create(
-                            region=CreateRegion(parameter_node),
-                        ),
-                    ],
+                diagnostics.errors.append(
+                    TraditionalDelimiterPositionalError.Create(
+                        region=CreateRegion(parameter_node),
+                    ),
                 )
 
             # We shouldn't see this more than once
             if positional_delimiter_node is not None:
-                raise DiagnosticsError(
-                    errors=[
-                        TraditionalDelimiterDuplicatePositionalError.Create(
-                            region=CreateRegion(parameter_node),
-                            prev_region=CreateRegion(positional_delimiter_node),
-                        ),
-                    ],
+                diagnostics.errors.append(
+                    TraditionalDelimiterDuplicatePositionalError.Create(
+                        region=CreateRegion(parameter_node),
+                        prev_region=CreateRegion(positional_delimiter_node),
+                    ),
                 )
 
             # We shouldn't see this after a keyword parameter
             if keyword_delimiter_node is not None:
-                raise DiagnosticsError(
-                    errors=[
-                        TraditionalDelimiterOrderError.Create(
-                            region=CreateRegion(parameter_node),
-                            keyword_region=CreateRegion(keyword_delimiter_node),
-                        ),
-                    ],
+                diagnostics.errors.append(
+                    TraditionalDelimiterOrderError.Create(
+                        region=CreateRegion(parameter_node),
+                        keyword_region=CreateRegion(keyword_delimiter_node),
+                    ),
                 )
 
             positional_delimiter_node = parameter_node
@@ -401,13 +395,11 @@ def _EnumTraditional(
         elif delimiter_value == TraditionalParameterDelimiter.keyword:
             # We shouldn't see this more than once
             if keyword_delimiter_node is not None:
-                raise DiagnosticsError(
-                    errors=[
-                        TraditionalDelimiterDuplicateKeywordError.Create(
-                            region=CreateRegion(parameter_node),
-                            prev_region=CreateRegion(keyword_delimiter_node),
-                        ),
-                    ],
+                diagnostics.errors.append(
+                    TraditionalDelimiterDuplicateKeywordError.Create(
+                        region=CreateRegion(parameter_node),
+                        prev_region=CreateRegion(keyword_delimiter_node),
+                    ),
                 )
 
             keyword_delimiter_node = parameter_node
@@ -422,12 +414,10 @@ def _EnumTraditional(
 
     # The keyword delimiter should never be the last parameter
     if keyword_delimiter_node == parameter_nodes[len(parameter_nodes) - 1]:
-        raise DiagnosticsError(
-            errors=[
-                TraditionalDelimiterKeywordError.Create(
-                    region=CreateRegion(keyword_delimiter_node),
-                ),
-            ],
+        diagnostics.errors.append(
+            TraditionalDelimiterKeywordError.Create(
+                region=CreateRegion(keyword_delimiter_node),
+            ),
         )
 
     if parameters:

@@ -33,7 +33,7 @@ with InitRelativeImports():
     from ..Common import MutabilityModifier
     from ..Common.Impl import VariantPhraseImpl
 
-    from ..GrammarPhrase import AST, GrammarPhrase
+    from ..GrammarPhrase import AST, GrammarPhrase, Diagnostics
 
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
@@ -75,13 +75,12 @@ class VariantType(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def _ExtractParserPhraseImpl(
+    def ExtractParserPhrase(
         cls,
         node: AST.Node,
+        diagnostics: Diagnostics,
     ) -> GrammarPhrase.ExtractParserPhraseReturnType:
         # ----------------------------------------------------------------------
         def Callback():
@@ -90,7 +89,7 @@ class VariantType(GrammarPhrase):
 
             # Elements
             elements_node = cast(AST.Node, nodes[0])
-            elements_info = cast(List[ParserTypePhrase], VariantPhraseImpl.Extract(elements_node))
+            elements_info = cast(List[ParserTypePhrase], VariantPhraseImpl.Extract(elements_node, diagnostics))
 
             # <mutability_modifier>?
             mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -100,6 +99,7 @@ class VariantType(GrammarPhrase):
                 mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
 
             return ParserVariantType(
+                diagnostics,  # type: ignore
                 CreateRegions(node, mutability_modifier_node, elements_node),  # type: ignore
                 mutability_modifier_info,
                 elements_info,

@@ -33,7 +33,7 @@ with InitRelativeImports():
 
     from .Impl import ParametersFragmentImpl
 
-    from ..GrammarPhrase import AST
+    from ..GrammarPhrase import AST, Diagnostics
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
@@ -96,11 +96,13 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def Extract(
     node: AST.Node,
+    diagnostics: Diagnostics,
 ) -> Union[bool, FuncParametersPhrase]:
     return ParametersFragmentImpl.Extract(
         FuncParametersPhrase,
         _ExtractFuncParametersItemPhrase,
         node,
+        diagnostics,
         allow_empty=True,
     )
 
@@ -110,6 +112,7 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractFuncParametersItemPhrase(
     node: AST.Node,
+    diagnostics: Diagnostics,  # pylint: disable=unused-argument
 ) -> Tuple[Phrase, bool]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 4
@@ -142,6 +145,7 @@ def _ExtractFuncParametersItemPhrase(
 
     return (
         FuncParametersItemPhrase.Create(
+            diagnostics,
             CreateRegions(node, type_node, is_variadic_node, name_leaf, default_node),
             type_info,
             is_variadic_info,

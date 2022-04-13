@@ -215,6 +215,6 @@ def ExecuteParserPhrase(
 
     root, diagnostics = result
 
-    assert not diagnostics, diagnostics
+    assert not diagnostics.errors, diagnostics.errors
 
     return root

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -38,7 +38,7 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
-    from ...Common.Diagnostics import CreateError, Diagnostics, Error
+    from ...Common.Diagnostics import CreateError, Diagnostics
 
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
@@ -102,19 +102,16 @@ class ClassAttributeStatement(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def _ExtractParserPhraseImpl(
+    def ExtractParserPhrase(
         node: AST.Node,
+        diagnostics: Diagnostics,
     ) -> GrammarPhrase.ExtractParserPhraseReturnType:
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
             assert len(nodes) == 5 # TODO: 6
-
-            errors: List[Error] = []
 
             # TODO: <attributes>?
             keyword_initialization_node = None
@@ -161,18 +158,14 @@ class ClassAttributeStatement(GrammarPhrase):
             class_capabilities = ClassStatement.GetParentClassCapabilities(node, FuncDefinitionStatement)
 
             if class_capabilities is None:
-                errors.append(
+                diagnostics.errors.append(
                     InvalidClassAttributeError.Create(
                         region=CreateRegion(node),
                     ),
                 )
 
-            if errors:
-                return Diagnostics(
-                    errors=errors,
-                )
-
             return ParserClassAttributeStatementModule.ClassAttributeStatement.Create(
+                diagnostics,
                 CreateRegions(
                     node,
                     visibility_node,

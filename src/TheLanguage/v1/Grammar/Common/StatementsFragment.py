@@ -84,12 +84,12 @@ def Create() -> PhraseItem:
 # TODO: Fix this return value as it is wonky!
 def Extract(
     node: AST.Node,
-) -> Union[
-    Diagnostics,
+    diagnostics: Diagnostics,
+) -> Optional[
     Tuple[
         List[Phrase],
         Optional[Tuple[AST.Leaf, str]],
-    ],
+    ]
 ]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 2
@@ -110,8 +110,6 @@ def Extract(
         statement_nodes = [ExtractDynamic(statements_node)]
 
     # Extract phrases and process docstrings (if any)
-    errors: List[Error] = []
-
     phrases: List[Phrase] = []
     docstring_leaf: Optional[AST.Leaf] = None
     docstring_info: Optional[Phrase] = None
@@ -149,11 +147,6 @@ def Extract(
             phrases.append(statement_phrase)
 
         is_first_statement = False
-
-    if errors:
-        return Diagnostics(
-            errors=errors,
-        )
 
     # Note that the phrases may be empty; this is valid in some cases, so it is a condition that needs
     # to be handled by the caller if necessary.
