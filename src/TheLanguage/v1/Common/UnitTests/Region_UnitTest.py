@@ -67,10 +67,10 @@ def test_Repr():
     assert str(Region(Location(1, 2), Location(3, 4))) == textwrap.dedent(
         """\
         # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 2
           line: 1
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 4
           line: 3
         """,

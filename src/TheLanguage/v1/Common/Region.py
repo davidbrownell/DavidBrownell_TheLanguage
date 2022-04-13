@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # TODO: Move this to ./Parser
 
 with InitRelativeImports():
-    from .Location import Location
+    from ..Lexer.Location import Location
 
 
 # ----------------------------------------------------------------------

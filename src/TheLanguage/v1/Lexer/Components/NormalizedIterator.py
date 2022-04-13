@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Normalize import LineInfo, NormalizedContent, OffsetRange
-    from ...Common.Location import Location
+    from ..Location import Location
 
 
 # ----------------------------------------------------------------------

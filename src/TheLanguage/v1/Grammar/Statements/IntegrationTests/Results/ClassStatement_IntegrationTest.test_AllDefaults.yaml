@@ -2,17 +2,17 @@
 documentation: None
 regions__: # <class 'types.RootPhraseRegions'>
   self__: # <class 'v1.Common.Region.Region'>
-    begin: # <class 'v1.Common.Location.Location'>
+    begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
-    end: # <class 'v1.Common.Location.Location'>
+    end: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 18
   statements: # <class 'v1.Common.Region.Region'>
-    begin: # <class 'v1.Common.Location.Location'>
+    begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
-    end: # <class 'v1.Common.Location.Location'>
+    end: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 18
 statements:
@@ -25,34 +25,34 @@ statements:
     name: "Simple"
     regions__: # <class 'types.ClassStatementRegions'>
       name: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 7
           line: 1
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 13
           line: 1
       self__: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 1
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 4
       statements: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 13
           line: 1
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 4
     statements:
       - # <class 'v1.Parser.Statements.PassStatement.PassStatement'>
         regions__: # <class 'types.PassStatementRegions'>
           self__: # <class 'v1.Common.Region.Region'>
-            begin: # <class 'v1.Common.Location.Location'>
+            begin: # <class 'v1.Lexer.Location.Location'>
               column: 5
               line: 2
-            end: # <class 'v1.Common.Location.Location'>
+            end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 4
     uses: None
@@ -65,17 +65,17 @@ statements:
       - # <class 'v1.Parser.Statements.ClassStatement.ClassStatementDependency'>
         regions__: # <class 'types.ClassStatementDependencyRegions'>
           self__: # <class 'v1.Common.Region.Region'>
-            begin: # <class 'v1.Common.Location.Location'>
+            begin: # <class 'v1.Lexer.Location.Location'>
               column: 13
               line: 5
-            end: # <class 'v1.Common.Location.Location'>
+            end: # <class 'v1.Lexer.Location.Location'>
               column: 21
               line: 5
           type: # <class 'v1.Common.Region.Region'>
-            begin: # <class 'v1.Common.Location.Location'>
+            begin: # <class 'v1.Lexer.Location.Location'>
               column: 13
               line: 5
-            end: # <class 'v1.Common.Location.Location'>
+            end: # <class 'v1.Lexer.Location.Location'>
               column: 21
               line: 5
         type: # <class 'v1.Parser.Types.StandardType.StandardType'>
@@ -84,33 +84,33 @@ statements:
               name: "Extends1"
               regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                 name: # <class 'v1.Common.Region.Region'>
-                  begin: # <class 'v1.Common.Location.Location'>
+                  begin: # <class 'v1.Lexer.Location.Location'>
                     column: 13
                     line: 5
-                  end: # <class 'v1.Common.Location.Location'>
+                  end: # <class 'v1.Lexer.Location.Location'>
                     column: 21
                     line: 5
                 self__: # <class 'v1.Common.Region.Region'>
-                  begin: # <class 'v1.Common.Location.Location'>
+                  begin: # <class 'v1.Lexer.Location.Location'>
                     column: 13
                     line: 5
-                  end: # <class 'v1.Common.Location.Location'>
+                  end: # <class 'v1.Lexer.Location.Location'>
                     column: 21
                     line: 5
           mutability_modifier: None
           regions__: # <class 'types.StandardTypeRegions'>
             items: # <class 'v1.Common.Region.Region'>
-              begin: # <class 'v1.Common.Location.Location'>
+              begin: # <class 'v1.Lexer.Location.Location'>
                 column: 13
                 line: 5
-              end: # <class 'v1.Common.Location.Location'>
+              end: # <class 'v1.Lexer.Location.Location'>
                 column: 21
                 line: 5
             self__: # <class 'v1.Common.Region.Region'>
-              begin: # <class 'v1.Common.Location.Location'>
+              begin: # <class 'v1.Lexer.Location.Location'>
                 column: 13
                 line: 5
-              end: # <class 'v1.Common.Location.Location'>
+              end: # <class 'v1.Lexer.Location.Location'>
                 column: 21
                 line: 5
         visibility: "VisibilityModifier.private"
@@ -118,41 +118,41 @@ statements:
     name: "WithExtends"
     regions__: # <class 'types.ClassStatementRegions'>
       extends: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 13
           line: 5
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 21
           line: 5
       name: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 7
           line: 4
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 18
           line: 4
       self__: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 4
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 9
       statements: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 6
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 9
     statements:
       - # <class 'v1.Parser.Statements.PassStatement.PassStatement'>
         regions__: # <class 'types.PassStatementRegions'>
           self__: # <class 'v1.Common.Region.Region'>
-            begin: # <class 'v1.Common.Location.Location'>
+            begin: # <class 'v1.Lexer.Location.Location'>
               column: 5
               line: 7
-            end: # <class 'v1.Common.Location.Location'>
+            end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 9
     uses: None
@@ -166,58 +166,58 @@ statements:
     name: "WithUses"
     regions__: # <class 'types.ClassStatementRegions'>
       name: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 7
           line: 9
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 15
           line: 9
       self__: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 9
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 14
       statements: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 11
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 14
       uses: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 10
           line: 10
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 15
           line: 10
     statements:
       - # <class 'v1.Parser.Statements.PassStatement.PassStatement'>
         regions__: # <class 'types.PassStatementRegions'>
           self__: # <class 'v1.Common.Region.Region'>
-            begin: # <class 'v1.Common.Location.Location'>
+            begin: # <class 'v1.Lexer.Location.Location'>
               column: 5
               line: 12
-            end: # <class 'v1.Common.Location.Location'>
+            end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 14
     uses:
       - # <class 'v1.Parser.Statements.ClassStatement.ClassStatementDependency'>
         regions__: # <class 'types.ClassStatementDependencyRegions'>
           self__: # <class 'v1.Common.Region.Region'>
-            begin: # <class 'v1.Common.Location.Location'>
+            begin: # <class 'v1.Lexer.Location.Location'>
               column: 10
               line: 10
-            end: # <class 'v1.Common.Location.Location'>
+            end: # <class 'v1.Lexer.Location.Location'>
               column: 15
               line: 10
           type: # <class 'v1.Common.Region.Region'>
-            begin: # <class 'v1.Common.Location.Location'>
+            begin: # <class 'v1.Lexer.Location.Location'>
               column: 10
               line: 10
-            end: # <class 'v1.Common.Location.Location'>
+            end: # <class 'v1.Lexer.Location.Location'>
               column: 15
               line: 10
         type: # <class 'v1.Parser.Types.StandardType.StandardType'>
@@ -226,33 +226,33 @@ statements:
               name: "Uses1"
               regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                 name: # <class 'v1.Common.Region.Region'>
-                  begin: # <class 'v1.Common.Location.Location'>
+                  begin: # <class 'v1.Lexer.Location.Location'>
                     column: 10
                     line: 10
-                  end: # <class 'v1.Common.Location.Location'>
+                  end: # <class 'v1.Lexer.Location.Location'>
                     column: 15
                     line: 10
                 self__: # <class 'v1.Common.Region.Region'>
-                  begin: # <class 'v1.Common.Location.Location'>
+                  begin: # <class 'v1.Lexer.Location.Location'>
                     column: 10
                     line: 10
-                  end: # <class 'v1.Common.Location.Location'>
+                  end: # <class 'v1.Lexer.Location.Location'>
                     column: 15
                     line: 10
           mutability_modifier: None
           regions__: # <class 'types.StandardTypeRegions'>
             items: # <class 'v1.Common.Region.Region'>
-              begin: # <class 'v1.Common.Location.Location'>
+              begin: # <class 'v1.Lexer.Location.Location'>
                 column: 10
                 line: 10
-              end: # <class 'v1.Common.Location.Location'>
+              end: # <class 'v1.Lexer.Location.Location'>
                 column: 15
                 line: 10
             self__: # <class 'v1.Common.Region.Region'>
-              begin: # <class 'v1.Common.Location.Location'>
+              begin: # <class 'v1.Lexer.Location.Location'>
                 column: 10
                 line: 10
-              end: # <class 'v1.Common.Location.Location'>
+              end: # <class 'v1.Lexer.Location.Location'>
                 column: 15
                 line: 10
         visibility: "VisibilityModifier.private"
@@ -266,17 +266,17 @@ statements:
       - # <class 'v1.Parser.Statements.ClassStatement.ClassStatementDependency'>
         regions__: # <class 'types.ClassStatementDependencyRegions'>
           self__: # <class 'v1.Common.Region.Region'>
-            begin: # <class 'v1.Common.Location.Location'>
+            begin: # <class 'v1.Lexer.Location.Location'>
               column: 16
               line: 15
-            end: # <class 'v1.Common.Location.Location'>
+            end: # <class 'v1.Lexer.Location.Location'>
               column: 27
               line: 15
           type: # <class 'v1.Common.Region.Region'>
-            begin: # <class 'v1.Common.Location.Location'>
+            begin: # <class 'v1.Lexer.Location.Location'>
               column: 16
               line: 15
-            end: # <class 'v1.Common.Location.Location'>
+            end: # <class 'v1.Lexer.Location.Location'>
               column: 27
               line: 15
         type: # <class 'v1.Parser.Types.StandardType.StandardType'>
@@ -285,74 +285,74 @@ statements:
               name: "Implements1"
               regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                 name: # <class 'v1.Common.Region.Region'>
-                  begin: # <class 'v1.Common.Location.Location'>
+                  begin: # <class 'v1.Lexer.Location.Location'>
                     column: 16
                     line: 15
-                  end: # <class 'v1.Common.Location.Location'>
+                  end: # <class 'v1.Lexer.Location.Location'>
                     column: 27
                     line: 15
                 self__: # <class 'v1.Common.Region.Region'>
-                  begin: # <class 'v1.Common.Location.Location'>
+                  begin: # <class 'v1.Lexer.Location.Location'>
                     column: 16
                     line: 15
-                  end: # <class 'v1.Common.Location.Location'>
+                  end: # <class 'v1.Lexer.Location.Location'>
                     column: 27
                     line: 15
           mutability_modifier: None
           regions__: # <class 'types.StandardTypeRegions'>
             items: # <class 'v1.Common.Region.Region'>
-              begin: # <class 'v1.Common.Location.Location'>
+              begin: # <class 'v1.Lexer.Location.Location'>
                 column: 16
                 line: 15
-              end: # <class 'v1.Common.Location.Location'>
+              end: # <class 'v1.Lexer.Location.Location'>
                 column: 27
                 line: 15
             self__: # <class 'v1.Common.Region.Region'>
-              begin: # <class 'v1.Common.Location.Location'>
+              begin: # <class 'v1.Lexer.Location.Location'>
                 column: 16
                 line: 15
-              end: # <class 'v1.Common.Location.Location'>
+              end: # <class 'v1.Lexer.Location.Location'>
                 column: 27
                 line: 15
         visibility: "VisibilityModifier.private"
     name: "WithImplements"
     regions__: # <class 'types.ClassStatementRegions'>
       implements: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 16
           line: 15
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 27
           line: 15
       name: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 7
           line: 14
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 21
           line: 14
       self__: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 14
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 18
       statements: # <class 'v1.Common.Region.Region'>
-        begin: # <class 'v1.Common.Location.Location'>
+        begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 16
-        end: # <class 'v1.Common.Location.Location'>
+        end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 18
     statements:
       - # <class 'v1.Parser.Statements.PassStatement.PassStatement'>
         regions__: # <class 'types.PassStatementRegions'>
           self__: # <class 'v1.Common.Region.Region'>
-            begin: # <class 'v1.Common.Location.Location'>
+            begin: # <class 'v1.Lexer.Location.Location'>
               column: 5
               line: 17
-            end: # <class 'v1.Common.Location.Location'>
+            end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 18
     uses: None
