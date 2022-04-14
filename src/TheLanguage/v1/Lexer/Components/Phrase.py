@@ -42,8 +42,6 @@ with InitRelativeImports():
     from .ThreadPool import EnqueueFuncInfoType, EnqueueReturnType
     from .Tokens import Token
 
-    from ...Common.Region import Region
-
 
 # ----------------------------------------------------------------------
 class DynamicPhrasesType(Enum):
@@ -85,10 +83,6 @@ class Phrase(Interface.Interface, ObjectReprImplBase):
             assert self.begin.offset <= self.end.offset
 
             ObjectReprImplBase.__init__(self)
-
-        # ----------------------------------------------------------------------
-        def ToRegion(self) -> Region:
-            return Region.Create(self.begin.ToLocation(), self.end.ToLocation())
 
         # ----------------------------------------------------------------------
         @staticmethod

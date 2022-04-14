@@ -709,7 +709,7 @@ class TestWords(object):
 
         assert iter.AtEnd()
 
-        assert "\n".join([str(result) for result in results]) == textwrap.dedent(
+        assert "\n".join(str(result) for result in results) == textwrap.dedent(
             """\
             # <class 'v1.Lexer.Components.Phrase.Phrase.LexResult'>
             data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>

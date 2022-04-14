@@ -35,13 +35,13 @@ with InitRelativeImports():
     from .StatementPhrase import Phrase, Region, StatementPhrase
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
+    from ..Error import CreateError, Error, ErrorException
+
     from ..Common.ClassModifier import ClassModifier
     from ..Common.VisibilityModifier import VisibilityModifier
 
     from ..Types.StandardType import StandardType
     from ..Types.TypePhrase import MutabilityModifierNotAllowedError
-
-    from ...Common.Diagnostics import CreateError, Diagnostics
 
 
 # ----------------------------------------------------------------------
@@ -81,7 +81,6 @@ InvalidDependencyVisibilityError            = CreateError(
 class ClassStatementDependency(Phrase):
     """Dependency of a class"""
 
-    diagnostics: InitVar[Diagnostics]
     regions: InitVar[List[Region]]
 
     visibility: Optional[VisibilityModifier]            # Note that instances may be created with this value as None,
@@ -99,16 +98,21 @@ class ClassStatementDependency(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions):
-        super(ClassStatementDependency, self).__init__(diagnostics, regions)
+    def __post_init__(self, regions):
+        super(ClassStatementDependency, self).__init__(regions)
 
         # Validate
+        errors: List[Error] = []
+
         if self.type.mutability_modifier is not None:
-            diagnostics.errors.append(
+            errors.append(
                 MutabilityModifierNotAllowedError.Create(
                     region=self.type.regions__.mutability_modifier,
                 ),
             )
+
+        if errors:
+            raise ErrorException(*errors)
 
 
 # ----------------------------------------------------------------------
@@ -126,6 +130,8 @@ class ClassStatement(StatementPhrase):
     # ----------------------------------------------------------------------
 
     # TODO: Named tuple as a capability?
+    # TODO: Exception as a capability
+
     capabilities: ClassCapabilities
 
     visibility_param: InitVar[Optional[VisibilityModifier]]
@@ -146,10 +152,15 @@ class ClassStatement(StatementPhrase):
 
     statements: List[StatementPhrase]
 
+    constructor_visibility_param: InitVar[Optional[VisibilityModifier]]
+    constructor_visibility: VisibilityModifier          = field(init=False)
+
+    is_abstract: Optional[bool]
+    is_final: Optional[bool]
+
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions, visibility_param, class_modifier_param):
+    def __post_init__(self, regions, visibility_param, class_modifier_param, constructor_visibility_param):
         super(ClassStatement, self).__post_init__(
-            diagnostics,
             regions,
             regionless_attributes=[
                 "capabilities",
@@ -171,6 +182,12 @@ class ClassStatement(StatementPhrase):
 
         object.__setattr__(self, "class_modifier", class_modifier_param)
 
+        if constructor_visibility_param is None:
+            constructor_visibility_param = VisibilityModifier.public
+            object.__setattr__(self.regions__, "constructor_visibility", self.regions__.self__)
+
+        object.__setattr__(self, "constructor_visibility", constructor_visibility_param)
+
         for dependencies, default_visibility in [
             (self.extends, self.capabilities.default_extends_visibility),
             (self.implements, self.capabilities.default_implements_visibility),
@@ -187,8 +204,10 @@ class ClassStatement(StatementPhrase):
         self.ValidateRegions()
 
         # Validate
+        errors: List[Error] = []
+
         if self.visibility not in self.capabilities.valid_visibilities:
-            diagnostics.errors.append(
+            errors.append(
                 InvalidVisibilityError.Create(
                     region=self.regions__.visibility,
                     type=self.capabilities.name,
@@ -200,7 +219,7 @@ class ClassStatement(StatementPhrase):
             )
 
         if self.extends and len(self.extends) > 1:
-            diagnostics.errors.append(
+            errors.append(
                 MultipleExtendsError.Create(
                     region=Region.Create(
                         self.extends[1].regions__.self__.begin,
@@ -234,7 +253,7 @@ class ClassStatement(StatementPhrase):
                 continue
 
             if default_visibility is None:
-                diagnostics.errors.append(
+                errors.append(
                     InvalidDependencyError.Create(
                         region=Region.Create(
                             dependencies[0].regions__.self__.begin,
@@ -247,7 +266,7 @@ class ClassStatement(StatementPhrase):
 
             for dependency in dependencies:
                 if dependency.visibility not in valid_visibilities:
-                    diagnostics.errors.append(
+                    errors.append(
                         InvalidDependencyVisibilityError.Create(
                             region=dependency.regions__.visibility,
                             type=self.capabilities.name,
@@ -259,12 +278,12 @@ class ClassStatement(StatementPhrase):
                         ),
                     )
 
+        if errors:
+            raise ErrorException(*errors)
+
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, *args, **kwargs):
         return self._ScopedAcceptImpl(cast(List[Phrase], self.statements), *args, **kwargs)
 
-# TODO: Not valid to have a protected class at root
-# TODO: Constructor Visibility
-# TODO: Ensure that attributes are valid
-# TODO: Is abstract/final
+# TODO: Not valid to have a protected class without a class ancestor

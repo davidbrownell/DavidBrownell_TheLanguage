@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Diagnostics_UnitTest.py
+# |  FuncArgumentPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 11:38:30
+# |      2022-04-13 13:21:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Unit tests for Diagnostics.py"""
+"""Contains information about a function argument"""
 
 import os
+
+from typing import List, Optional
+
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 
@@ -27,23 +31,27 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Diagnostics import *
-    from ..Location import *
+    from ..Expressions.ExpressionPhrase import ExpressionPhrase
+    from ..Phrase import Phrase, Region
 
 
 # ----------------------------------------------------------------------
-MyError                                     = CreateError(
-    "Here is the {adj} error",
-    adj=str,
-)
+@dataclass(frozen=True, repr=False)
+class FuncArgumentPhrase(Phrase):
+    regions: InitVar[List[Optional[Region]]]
 
+    expression: ExpressionPhrase
+    keyword: Optional[str]
 
-# ----------------------------------------------------------------------
-def test_Standard():
-    e = MyError.Create(
-        region=Region(Location(1, 2), Location(3, 4)),
-        adj="groovy",
-    )
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
 
-    assert str(e) == "Here is the groovy error"
-    assert e.region == Region(Location(1, 2), Location(3, 4))
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(FuncArgumentPhrase, self).__init__(regions)

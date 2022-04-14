@@ -33,8 +33,6 @@ with InitRelativeImports():
 
     from ..GrammarPhrase import AST
 
-    from ...Common.Diagnostics import CreateError, Diagnostics, Error
-
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
         ExtractDynamic,
@@ -45,7 +43,7 @@ with InitRelativeImports():
         OneOrMorePhraseItem,
     )
 
-    from ...Parser.Parser import GetPhraseNoThrow, Phrase
+    from ...Parser.Parser import Error, GetPhraseNoThrow, Phrase
 
 
 # ----------------------------------------------------------------------
@@ -84,12 +82,12 @@ def Create() -> PhraseItem:
 # TODO: Fix this return value as it is wonky!
 def Extract(
     node: AST.Node,
-    diagnostics: Diagnostics,
-) -> Optional[
+) -> Union[
+    List[Error],
     Tuple[
         List[Phrase],
         Optional[Tuple[AST.Leaf, str]],
-    ]
+    ],
 ]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 2

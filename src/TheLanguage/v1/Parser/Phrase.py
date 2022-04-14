@@ -35,8 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.Diagnostics import Diagnostics
-    from ..Common.Region import Region
+    from .Region import Region
 
 
 # ----------------------------------------------------------------------
@@ -58,7 +57,6 @@ class Phrase(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        diagnostics: Diagnostics,  # pylint: disable=unused-argument
         regions: List[Optional[Region]],
         regionless_attributes: Optional[List[str]]=None,
         validate=True,
@@ -168,11 +166,13 @@ class Phrase(ObjectReprImplBase):
         """Implementation of Accept for phrases that introduce new scopes"""
 
         # Get the visitor's dynamic methods
-        enter_method = getattr(visitor, "OnEnter{}".format(self.__class__.__name__), None)
-        assert enter_method is not None
+        enter_method_name = "OnEnter{}".format(self.__class__.__name__)
+        enter_method = getattr(visitor, enter_method_name, None)
+        assert enter_method is not None, enter_method_name
 
-        exit_method = getattr(visitor, "OnExit{}".format(self.__class__.__name__), None)
-        assert exit_method is not None
+        exit_method_name = "OnExit{}".format(self.__class__.__name__)
+        exit_method = getattr(visitor, exit_method_name, None)
+        assert exit_method is not None, exit_method_name
 
         # Invoke the visitor
         visit_control = enter_method(self)
@@ -263,7 +263,6 @@ class Phrase(ObjectReprImplBase):
 class RootPhrase(Phrase):
     introduces_scope__                      = True
 
-    diagnostics: InitVar[Diagnostics]
     regions: InitVar[List[Optional[Region]]]
 
     statements: Optional[List[Phrase]]
@@ -279,8 +278,8 @@ class RootPhrase(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, diagnostics, regions):
-        super(RootPhrase, self).__init__(diagnostics, regions)
+    def __post_init__(self, regions):
+        super(RootPhrase, self).__init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override

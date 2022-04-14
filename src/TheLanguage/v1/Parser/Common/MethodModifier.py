@@ -30,6 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 class MethodModifier(Enum):
     abstract                                = auto()
+    final                                   = auto()
     override                                = auto()
     standard                                = auto()
     virtual                                 = auto()

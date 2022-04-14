@@ -50,7 +50,6 @@ with InitRelativeImports():
     )
 
     from .Parser.Parser import (
-        Diagnostics as Diagnostics,
         ParseObserver as ParseObserverBase,
         RootPhrase as ParserRootPhrase,
     )
@@ -158,21 +157,19 @@ class ParseObserver(ParseObserverBase):
     @Interface.override
     def ExtractParserPhrase(
         node: AST.Node,
-        diagnostics: Diagnostics,
     ) -> Optional[ParseObserverBase.ExtractParserPhraseReturnType]:
         if isinstance(node.type, LexerPhrase):
             grammar_phrase = GrammarPhraseLookup.get(node.type, None)
             if grammar_phrase is not None:
-                return grammar_phrase.ExtractParserPhrase(node, diagnostics)
+                return grammar_phrase.ExtractParserPhrase(node)
 
         return None
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def GetPotentialDocInfo(
+    def ExtractPotentialDocInfo(
         node: Union[AST.Leaf, AST.Node],
-        diagnostics: Diagnostics,
     ) -> Optional[Tuple[AST.Leaf, str]]:
         return None # TODO
         if isinstance(node.type, LexerPhrase):

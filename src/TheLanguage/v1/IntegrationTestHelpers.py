@@ -44,12 +44,15 @@ with InitRelativeImports():
     from .Lexer.Lexer import AST, Lex, Prune
 
     from .Parser.Parser import (
-        Diagnostics,
+        Error as ParserError,
+        ErrorException as ParserErrorException,
         Parse,
         Phrase as ParserPhrase,
         RootPhrase as ParserRootPhrase,
         Validate,
     )
+
+    from .Targets.Python.PythonTarget import PythonTarget
 
 
 # ----------------------------------------------------------------------
@@ -76,9 +79,14 @@ def PatchAndExecute(
     fully_qualified_names: Optional[List[str]]=None,
     max_num_threads: Optional[int]=None,
 ) -> Union[
-    Dict[str, AST.Node],                                # PatchAndExecuteFlag.Lex
-    List[Exception],                                    # PatchAndExecuteFlag.Lex
-    Dict[str, Tuple[ParserRootPhrase, Diagnostics]],    # PatchAndExecuteFlag.Parse
+    Dict[str, AST.Node],                    # PatchAndExecuteFlag.Lex
+    List[Exception],                        # PatchAndExecuteFlag.Lex
+    Dict[str,                               # PatchAndExecuteFlag.Parse
+        Union[
+            ParserRootPhrase,
+            List[ParserError],
+        ],
+    ],
 ]:
     """\
     Patches file system methods invoked by systems under tests and replaces them
@@ -147,19 +155,35 @@ def PatchAndExecute(
                 max_num_threads=max_num_threads,
             )
 
-        if flag & PatchAndExecuteFlag.parse_flag:
-            result = Parse(
-                result,
-                ParseObserver(),
+        if not flag & PatchAndExecuteFlag.parse_flag:
+            return result
+
+        result = Parse(
+            result,
+            ParseObserver(),
+            max_num_threads=max_num_threads,
+        )
+
+        assert result is not None
+
+        roots: Dict[str, ParserRootPhrase] = {}
+
+        for key, value in result.items():
+            if isinstance(value, list):
+                return result
+
+            roots[key] = value
+
+        if flag & PatchAndExecuteFlag.validate_flag:
+            result = Validate(
+                roots,
                 max_num_threads=max_num_threads,
             )
 
             assert result is not None
 
-            if flag & PatchAndExecuteFlag.validate_flag:
-                result = Validate(result)
+            # TODO: Check return value
 
-        assert result is not None
         return result
 
 
@@ -190,11 +214,7 @@ def ExecuteParserPhrase(
     content: str,
     *,
     max_num_threads: Optional[int]=None,
-    with_diagnostics=False,
-) -> Union[
-    ParserRootPhrase,
-    Tuple[ParserRootPhrase, Diagnostics],
-]:
+) -> ParserRootPhrase:
     result = PatchAndExecute(
         {
             "filename": content,
@@ -208,13 +228,32 @@ def ExecuteParserPhrase(
     assert len(result) == 1, result
     assert "filename" in result
 
-    result = cast(Tuple[ParserRootPhrase, Diagnostics], result["filename"])
+    result = result["filename"]
 
-    if with_diagnostics:
-        return result
+    if isinstance(result, list):
+        raise ParserErrorException(*result)
 
-    root, diagnostics = result
+    return cast(ParserRootPhrase, result)
 
-    assert not diagnostics.errors, diagnostics.errors
 
-    return root
+# ----------------------------------------------------------------------
+def ExecutePythonTarget(
+    content: str,
+    *,
+    max_num_threads: Optional[int]=None,
+) -> str:
+    result = ExecuteParserPhrase(
+        content,
+        max_num_threads=max_num_threads,
+    )
+
+    target = PythonTarget([])
+
+    target.PreInvoke(["filename"])
+    target.Invoke("filename", result)
+    target.PostInvoke(["filename"])
+
+    outputs = list(target.EnumOutputs())
+
+    assert len(outputs) == 1
+    return outputs[0].content

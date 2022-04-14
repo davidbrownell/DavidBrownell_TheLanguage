@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that helps when processing parameters"""
+"""Contains functionality that helps when processing function parameters"""
 
 import os
 
-from typing import cast, Optional, Tuple, Union
+from typing import cast, List, Optional, Tuple, Union
 
 import CommonEnvironment
 
@@ -33,7 +33,7 @@ with InitRelativeImports():
 
     from .Impl import ParametersFragmentImpl
 
-    from ..GrammarPhrase import AST, Diagnostics
+    from ..GrammarPhrase import AST
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
@@ -52,6 +52,7 @@ with InitRelativeImports():
         TypePhrase,
     )
 
+    from ...Parser.Error import Error
     from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
 
 
@@ -96,13 +97,15 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def Extract(
     node: AST.Node,
-    diagnostics: Diagnostics,
-) -> Union[bool, FuncParametersPhrase]:
+) -> Union[
+    List[Error],
+    bool,
+    FuncParametersPhrase,
+]:
     return ParametersFragmentImpl.Extract(
         FuncParametersPhrase,
-        _ExtractFuncParametersItemPhrase,
+        _ExtractFuncParametersElementPhrase,
         node,
-        diagnostics,
         allow_empty=True,
     )
 
@@ -110,9 +113,8 @@ def Extract(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-def _ExtractFuncParametersItemPhrase(
+def _ExtractFuncParametersElementPhrase(
     node: AST.Node,
-    diagnostics: Diagnostics,  # pylint: disable=unused-argument
 ) -> Tuple[Phrase, bool]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 4
@@ -145,7 +147,6 @@ def _ExtractFuncParametersItemPhrase(
 
     return (
         FuncParametersItemPhrase.Create(
-            diagnostics,
             CreateRegions(node, type_node, is_variadic_node, name_leaf, default_node),
             type_info,
             is_variadic_info,
