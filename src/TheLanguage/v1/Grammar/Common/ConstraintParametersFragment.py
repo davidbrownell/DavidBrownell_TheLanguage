@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncParametersFragment.py
+# |  ConstraintParametersFragment.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 16:30:43
+# |      2022-04-14 10:19:59
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that helps when processing function parameters"""
+"""Contains functionality that helps when processing constraint parameters"""
 
 import os
 
@@ -45,11 +45,11 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Common.FuncParametersPhrase import (
-        ExpressionPhrase,
-        FuncParametersPhrase,
-        FuncParameterPhrase,
-        TypePhrase,
+    from ...Parser.Common.ConstraintParametersPhrase import (
+        ConstraintExpressionPhrase,
+        ConstraintParametersPhrase,
+        ConstraintParameterPhrase,
+        ConstraintTypePhrase,
     )
 
     from ...Parser.Error import Error
@@ -59,27 +59,21 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 def Create() -> PhraseItem:
     parameter_element = PhraseItem(
-        name="Function Parameter",
+        name="Constraint Parameter",
         item=[
-            # <type>
-            DynamicPhrasesType.Types,
-
-            # '...'?
-            OptionalPhraseItem(
-                name="Variadic",
-                item="...",
-            ),
+            # <constraint_type>
+            DynamicPhrasesType.ConstraintTypes,
 
             # <name>
-            CommonTokens.RuntimeParameterName,
+            CommonTokens.ConstraintParameterName,
 
-            # ('=' <expression>)?
+            # ('=' <constraint_expression>)?
             OptionalPhraseItem(
                 name="Default",
                 item=[
                     "=",
                     CommonTokens.PushIgnoreWhitespaceControl,
-                    DynamicPhrasesType.Expressions,
+                    DynamicPhrasesType.ConstraintExpressions,
                     CommonTokens.PopIgnoreWhitespaceControl,
                 ],
             ),
@@ -87,10 +81,10 @@ def Create() -> PhraseItem:
     )
 
     return ParametersFragmentImpl.Create(
-        "Function Parameters",
-        "(", ")",
+        "Constraint Parameters",
+        "{", "}",
         parameter_element,
-        allow_empty=True,
+        allow_empty=False,
     )
 
 
@@ -99,15 +93,17 @@ def Extract(
     node: AST.Node,
 ) -> Union[
     List[Error],
-    bool,
-    FuncParametersPhrase,
+    ConstraintParametersPhrase,
 ]:
-    return ParametersFragmentImpl.Extract(
-        FuncParametersPhrase,
+    result = ParametersFragmentImpl.Extract(
+        ConstraintParametersPhrase,
         _ExtractElement,
         node,
-        allow_empty=True,
+        allow_empty=False,
     )
+
+    assert not isinstance(result, bool)
+    return result
 
 
 # ----------------------------------------------------------------------
@@ -117,25 +113,18 @@ def _ExtractElement(
     node: AST.Node,
 ) -> Tuple[Phrase, bool]:
     nodes = ExtractSequence(node)
-    assert len(nodes) == 4
+    assert len(nodes) == 3
 
-    # <type>
+    # <constraint_type>
     type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-    type_info = cast(TypePhrase, GetPhrase(type_node))
-
-    # '...'?
-    is_variadic_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
-    if is_variadic_node is None:
-        is_variadic_info = None
-    else:
-        is_variadic_info = True
+    type_info = cast(ConstraintTypePhrase, GetPhrase(type_node))
 
     # <name>
-    name_leaf = cast(AST.Leaf, nodes[2])
+    name_leaf = cast(AST.Leaf, nodes[1])
     name_info = ExtractToken(name_leaf)
 
-    # ('=' <expression>)?
-    default_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[3])))
+    # ('=' <constraint_expression>)?
+    default_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[2])))
     if default_node is None:
         default_info = None
     else:
@@ -143,13 +132,12 @@ def _ExtractElement(
         assert len(default_nodes) == 4
 
         default_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, default_nodes[2])))
-        default_info = cast(ExpressionPhrase, GetPhrase(default_node))
+        default_info = cast(ConstraintExpressionPhrase, GetPhrase(default_node))
 
     return (
-        FuncParameterPhrase.Create(
-            CreateRegions(node, type_node, is_variadic_node, name_leaf, default_node),
+        ConstraintParameterPhrase.Create(
+            CreateRegions(node, type_node, name_leaf, default_node),
             type_info,
-            is_variadic_info,
             name_info,
             default_info,
         ),

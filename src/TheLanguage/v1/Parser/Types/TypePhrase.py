@@ -85,6 +85,7 @@ class TypePhrase(Phrase):
         super(TypePhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
 
         # Validate
+        # TODO: Move this; different modifiers are allowed in different scenarios
         errors: List[Error] = []
 
         valid_modifiers = [

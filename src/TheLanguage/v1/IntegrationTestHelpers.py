@@ -20,7 +20,7 @@ import textwrap
 
 from enum import auto, Flag
 from io import StringIO
-from typing import cast, Dict, List, Optional, Tuple, Union
+from typing import cast, Dict, List, Optional, Union
 from unittest.mock import patch
 
 import pytest
@@ -74,7 +74,7 @@ def PatchAndExecute(
         str                                 # content
     ],
     source_roots: List[str],
-    flag=PatchAndExecuteFlag.Parse,
+    flag=PatchAndExecuteFlag.Validate,
     *,
     fully_qualified_names: Optional[List[str]]=None,
     max_num_threads: Optional[int]=None,

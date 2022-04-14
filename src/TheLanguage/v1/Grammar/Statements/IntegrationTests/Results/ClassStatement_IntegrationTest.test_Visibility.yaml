@@ -19,6 +19,7 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constraints: None
     constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
@@ -65,11 +66,13 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 2
+    templates: None
     uses: None
     visibility: "VisibilityModifier.public"
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constraints: None
     constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
@@ -116,11 +119,13 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 3
+    templates: None
     uses: None
     visibility: "VisibilityModifier.internal"
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constraints: None
     constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
@@ -167,11 +172,13 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 4
+    templates: None
     uses: None
     visibility: "VisibilityModifier.protected"
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constraints: None
     constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
@@ -218,5 +225,6 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 5
+    templates: None
     uses: None
     visibility: "VisibilityModifier.private"

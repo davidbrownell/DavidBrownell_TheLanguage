@@ -46,11 +46,13 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class DynamicPhrasesType(Enum):
     Attributes                              = auto()
+    ConstraintExpressions                   = auto()
+    ConstraintTypes                         = auto()
     Expressions                             = auto()
     Names                                   = auto()
     Statements                              = auto()
-    TemplateExpressions                     = auto()
-    TemplateTypes                           = auto()
+    TemplateDecoratorExpressions            = auto()
+    TemplateDecoratorTypes                  = auto()
     Types                                   = auto()
 
 
