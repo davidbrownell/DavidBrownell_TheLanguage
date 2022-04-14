@@ -38,6 +38,8 @@ with InitRelativeImports():
     from ..Error import CreateError, Error, ErrorException
 
     from ..Common.ClassModifier import ClassModifier
+    from ..Common.ConstraintParametersPhrase import ConstraintParameterPhrase
+    from ..Common.TemplateParametersPhrase import TemplateParametersPhrase
     from ..Common.VisibilityModifier import VisibilityModifier
 
     from ..Types.StandardType import StandardType
@@ -143,8 +145,8 @@ class ClassStatement(StatementPhrase):
     name: str
     documentation: Optional[str]
 
-    # TODO: templates
-    # TODO: constraints
+    templates: Optional[TemplateParametersPhrase]
+    constraints: Optional[ConstraintParameterPhrase]
 
     extends: Optional[List[ClassStatementDependency]]
     implements: Optional[List[ClassStatementDependency]]

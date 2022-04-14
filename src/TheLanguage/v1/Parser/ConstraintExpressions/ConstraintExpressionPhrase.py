@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncArgumentPhrase.py
+# |  ConstraintExpressionPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-13 13:21:12
+# |      2022-04-14 10:04:59
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains information about a function argument"""
+"""Contains the ConstraintExpressionPhrase object"""
 
 import os
 
-from typing import List, Optional
+from typing import Any, Callable, List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -31,17 +31,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Expressions.ExpressionPhrase import ExpressionPhrase
     from ..Phrase import Phrase, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncArgumentPhrase(Phrase):
-    regions: InitVar[List[Optional[Region]]]
+class ConstraintExpressionPhrase(Phrase):
+    """Abstract base class for all constraint expressions"""
 
-    expression: ExpressionPhrase
-    keyword: Optional[str]
+    # ----------------------------------------------------------------------
+    regions: InitVar[List[Optional[Region]]]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -53,5 +52,11 @@ class FuncArgumentPhrase(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(FuncArgumentPhrase, self).__init__(regions)
+    def __post_init__(
+        self,
+        regions,
+        regionless_attributes: Optional[List[str]]=None,
+        validate=True,
+        **custom_display_funcs: Callable[[Any], Optional[Any]],
+    ):
+        super(ConstraintExpressionPhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)

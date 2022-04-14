@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncParametersPhrase.py
+# |  ConstraintParametersPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 16:43:15
+# |      2022-04-14 09:58:23
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains information about function parameters"""
+"""Contains information about constraint parameters"""
 
 import itertools
 import os
@@ -34,32 +34,27 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Error import CreateError, Error, ErrorException
 
-    from ..Expressions.ExpressionPhrase import ExpressionPhrase
+    from ..ConstraintExpressions.ConstraintExpressionPhrase import ConstraintExpressionPhrase
+    from ..ConstraintTypes.ConstraintTypePhrase import ConstraintTypePhrase
     from ..Types.TypePhrase import Phrase, Region, TypePhrase
 
 
 # ----------------------------------------------------------------------
 DuplicateNameError                          = CreateError(
-    "The parameter name '{name}' has already been defined",
+    "The constraint parameter '{name}' has already been defined",
     name=str,
     prev_region=Region,
 )
 
-DuplicateVariadicError                      = CreateError(
-    "A variadic parameter has already been defined",
-    prev_region=Region,
-)
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncParameterPhrase(Phrase):
+class ConstraintParameterPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
 
-    type: TypePhrase
-    is_variadic: Optional[bool]
+    type: ConstraintTypePhrase
     name: str
-    default_value: Optional[ExpressionPhrase]
+    default_type: Optional[ConstraintExpressionPhrase]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -72,17 +67,18 @@ class FuncParameterPhrase(Phrase):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncParameterPhrase, self).__init__(regions)
+        super(ConstraintParameterPhrase, self).__init__(regions)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncParametersPhrase(Phrase):
+class ConstraintParametersPhrase(Phrase):
+    # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
 
-    positional: Optional[List[FuncParameterPhrase]]
-    any: Optional[List[FuncParameterPhrase]]
-    keyword: Optional[List[FuncParameterPhrase]]
+    positional: Optional[List[ConstraintParameterPhrase]]
+    any: Optional[List[ConstraintParameterPhrase]]
+    keyword: Optional[List[ConstraintParameterPhrase]]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -95,16 +91,14 @@ class FuncParametersPhrase(Phrase):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncParametersPhrase, self).__init__(regions)
+        super(ConstraintParametersPhrase, self).__init__(regions)
         assert self.positional or self.any or self.keyword
 
         # Validate
         errors: List[Error] = []
 
-        name_lookup: Dict[str, FuncParameterPhrase] = {}
-        prev_variadic_parameter: Optional[FuncParameterPhrase] = None
+        name_lookup: Dict[str, ConstraintParameterPhrase] = {}
 
-        # Check for duplicate names and multiple variadic parameters
         for parameter in itertools.chain(
             self.positional or [],
             self.any or [],
@@ -122,18 +116,6 @@ class FuncParametersPhrase(Phrase):
                 )
             else:
                 name_lookup[parameter.name] = parameter
-
-            # Check for multiple variadic parameters
-            if parameter.is_variadic:
-                if prev_variadic_parameter is not None:
-                    errors.append(
-                        DuplicateVariadicError.Create(
-                            region=parameter.regions__.is_variadic,
-                            prev_region=prev_variadic_parameter.regions__.is_variadic,
-                        ),
-                    )
-                else:
-                    prev_variadic_parameter = parameter
 
         if errors:
             raise ErrorException(*errors)

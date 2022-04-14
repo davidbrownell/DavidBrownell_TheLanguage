@@ -19,6 +19,7 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constraints: None
     constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
@@ -109,6 +110,7 @@ statements:
             - # <class 'v1.Parser.Types.StandardType.StandardType'>
               items:
                 - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+                  constraints: None
                   name: "Type1"
                   regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                     name: # <class 'v1.Parser.Region.Region'>
@@ -125,6 +127,7 @@ statements:
                       end: # <class 'v1.Lexer.Location.Location'>
                         column: 11
                         line: 2
+                  templates: None
               mutability_modifier: None
               regions__: # <class 'types.StandardTypeRegions'>
                 items: # <class 'v1.Parser.Region.Region'>
@@ -144,6 +147,7 @@ statements:
             - # <class 'v1.Parser.Types.StandardType.StandardType'>
               items:
                 - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+                  constraints: None
                   name: "Type2"
                   regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                     name: # <class 'v1.Parser.Region.Region'>
@@ -160,6 +164,7 @@ statements:
                       end: # <class 'v1.Lexer.Location.Location'>
                         column: 19
                         line: 2
+                  templates: None
               mutability_modifier: None
               regions__: # <class 'types.StandardTypeRegions'>
                 items: # <class 'v1.Parser.Region.Region'>
@@ -237,6 +242,7 @@ statements:
             - # <class 'v1.Parser.Types.StandardType.StandardType'>
               items:
                 - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+                  constraints: None
                   name: "Type3"
                   regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                     name: # <class 'v1.Parser.Region.Region'>
@@ -253,6 +259,7 @@ statements:
                       end: # <class 'v1.Lexer.Location.Location'>
                         column: 11
                         line: 3
+                  templates: None
               mutability_modifier: None
               regions__: # <class 'types.StandardTypeRegions'>
                 items: # <class 'v1.Parser.Region.Region'>
@@ -272,6 +279,7 @@ statements:
             - # <class 'v1.Parser.Types.StandardType.StandardType'>
               items:
                 - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+                  constraints: None
                   name: "Type4"
                   regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                     name: # <class 'v1.Parser.Region.Region'>
@@ -288,6 +296,7 @@ statements:
                       end: # <class 'v1.Lexer.Location.Location'>
                         column: 19
                         line: 3
+                  templates: None
               mutability_modifier: None
               regions__: # <class 'types.StandardTypeRegions'>
                 items: # <class 'v1.Parser.Region.Region'>
@@ -307,6 +316,7 @@ statements:
             - # <class 'v1.Parser.Types.StandardType.StandardType'>
               items:
                 - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+                  constraints: None
                   name: "Type5"
                   regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                     name: # <class 'v1.Parser.Region.Region'>
@@ -323,6 +333,7 @@ statements:
                       end: # <class 'v1.Lexer.Location.Location'>
                         column: 27
                         line: 3
+                  templates: None
               mutability_modifier: None
               regions__: # <class 'types.StandardTypeRegions'>
                 items: # <class 'v1.Parser.Region.Region'>
@@ -340,5 +351,6 @@ statements:
                     column: 27
                     line: 3
         visibility: "VisibilityModifier.private"
+    templates: None
     uses: None
     visibility: "VisibilityModifier.private"

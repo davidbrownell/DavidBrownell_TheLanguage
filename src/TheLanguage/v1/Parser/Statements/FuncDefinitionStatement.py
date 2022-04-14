@@ -40,11 +40,18 @@ with InitRelativeImports():
 
     from ..Common.FuncParametersPhrase import (  # pylint: disable=unused-import
         FuncParametersPhrase,
-        FuncParametersItemPhrase,           # Convenience import
+        FuncParameterPhrase,                # Convenience import
     )
 
     from ..Common.MethodModifier import MethodModifier
     from ..Common.MutabilityModifier import MutabilityModifier
+
+    from ..Common.TemplateParametersPhrase import (  # pylint: disable=unused-import
+        TemplateDecoratorParameterPhrase,   # Convenience import
+        TemplateParametersPhrase,
+        TemplateTypeParameterPhrase,        # Convenience import
+    )
+
     from ..Common.VariableNamePhrase import VariableNamePhrase
     from ..Common.VisibilityModifier import VisibilityModifier
 
@@ -53,7 +60,23 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
-    TODO = auto()
+    # Compile-time methods
+    CompileTimeEvalTemplates                = auto()
+    CompileTimeEvalConstraints              = auto()
+
+    # Methods only implemented for fundamental types
+    GetBytes                                = auto()
+
+    # Methods required by fundamental types; will be generated for others
+    Deserialize                             = auto()    # public static <type> Deserialize?<ArchiveT>(ArchiveT ref archive);
+    Serialize                               = auto()    # public None Serialize?<ArchiveT>(ArchiveT ref archive) immutable;
+    Clone                                   = auto()
+    Accept                                  = auto()
+    ToBool                                  = auto()
+    ToString                                = auto()
+    Compare                                 = auto()
+
+    # TODO: More here
 
 
 # ----------------------------------------------------------------------
@@ -145,7 +168,7 @@ class FuncDefinitionStatement(StatementPhrase):
     name: Union[str, OperatorType]
     documentation: Optional[str]
 
-    # TODO: Templates
+    templates: Optional[TemplateParametersPhrase]
 
     captured_variables: Optional[List[VariableNamePhrase]]
     parameters: Union[bool, FuncParametersPhrase]
@@ -329,5 +352,3 @@ class FuncDefinitionStatement(StatementPhrase):
     @Interface.override
     def Accept(self, *args, **kwargs):
         return self._ScopedAcceptImpl(cast(List[Phrase], self.statements or []), *args, **kwargs)
-
-# TODO: static method

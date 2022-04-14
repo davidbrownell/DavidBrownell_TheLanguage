@@ -38,6 +38,7 @@ with InitRelativeImports():
     from ..Common import FuncParametersFragment
     from ..Common import MutabilityModifier
     from ..Common import StatementsFragment
+    from ..Common import TemplateParametersFragment
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
@@ -87,7 +88,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                         item=CreateMethodModifierPhraseItem(),
                     ),
 
-                    # <type>
+                    # <return_type>
                     DynamicPhrasesType.Types,
 
                     # <name>
@@ -96,7 +97,11 @@ class FuncDefinitionStatement(GrammarPhrase):
                     # Template Parameters, Captures
                     CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # TODO: <template_parameters>?
+                    # <template_parameters>?
+                    OptionalPhraseItem(
+                        TemplateParametersFragment.Create(),
+                    ),
+
                     # TODO: <captured_variables>?
 
                     CommonTokens.PopIgnoreWhitespaceControl,
@@ -129,7 +134,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         # ----------------------------------------------------------------------
         def Callback():  # pylint: disable=too-many-locals
             nodes = ExtractSequence(node)
-            assert len(nodes) == 10 # TODO: 12
+            assert len(nodes) == 11 # TODO: 12
 
             errors: List[Error] = []
 
@@ -223,25 +228,38 @@ class FuncDefinitionStatement(GrammarPhrase):
             name_leaf = cast(AST.Leaf, nodes[4])
             name_info = ExtractToken(name_leaf)
 
-            # TODO: <template_parameters>?
+            # <template_parameters>?
+            template_parameters_info = None
+
+            template_parameters_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[6])))
+            if template_parameters_node is not None:
+                result = TemplateParametersFragment.Extract(template_parameters_node)
+
+                if isinstance(result, list):
+                    errors += result
+                else:
+                    template_parameters_info = result
+
             # TODO: <captured_variables>?
+            captured_variables_node = None
+            captured_variables_info = None
 
             # <parameters>
-            parameters_node = cast(AST.Node, nodes[7])
+            parameters_node = cast(AST.Node, nodes[8])
             parameters_info = FuncParametersFragment.Extract(parameters_node)
 
             if isinstance(parameters_info, list):
                 errors += parameters_info
 
             # <mutability_modifier>?
-            mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[8])))
+            mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[9])))
             if mutability_modifier_node is None:
                 mutability_modifier_info = None
             else:
                 mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
 
             # Statements or None
-            statements_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[9])))
+            statements_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[10])))
             statements_info = None
 
             docstring_leaf = None
@@ -272,7 +290,8 @@ class FuncDefinitionStatement(GrammarPhrase):
                     return_type_node,
                     name_leaf,
                     docstring_leaf,
-                    None, # captured_variables
+                    template_parameters_node,
+                    captured_variables_node,
                     parameters_node,
                     statements_node,
                     is_deferred_node,
@@ -289,7 +308,8 @@ class FuncDefinitionStatement(GrammarPhrase):
                 return_type_info,
                 name_info,
                 docstring_info,
-                None, # captured_variables
+                template_parameters_info,
+                captured_variables_info,
                 parameters_info,
                 statements_info,
                 is_deferred_info,

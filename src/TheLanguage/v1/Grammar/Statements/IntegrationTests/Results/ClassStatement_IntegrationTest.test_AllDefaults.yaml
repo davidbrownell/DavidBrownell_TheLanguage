@@ -19,6 +19,7 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constraints: None
     constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
@@ -58,11 +59,13 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 4
+    templates: None
     uses: None
     visibility: "VisibilityModifier.private"
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constraints: None
     constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends:
@@ -85,6 +88,7 @@ statements:
         type: # <class 'v1.Parser.Types.StandardType.StandardType'>
           items:
             - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+              constraints: None
               name: "Extends1"
               regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                 name: # <class 'v1.Parser.Region.Region'>
@@ -101,6 +105,7 @@ statements:
                   end: # <class 'v1.Lexer.Location.Location'>
                     column: 21
                     line: 5
+              templates: None
           mutability_modifier: None
           regions__: # <class 'types.StandardTypeRegions'>
             items: # <class 'v1.Parser.Region.Region'>
@@ -161,11 +166,13 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 9
+    templates: None
     uses: None
     visibility: "VisibilityModifier.private"
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constraints: None
     constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
@@ -212,6 +219,7 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 14
+    templates: None
     uses:
       - # <class 'v1.Parser.Statements.ClassStatement.ClassStatementDependency'>
         regions__: # <class 'types.ClassStatementDependencyRegions'>
@@ -232,6 +240,7 @@ statements:
         type: # <class 'v1.Parser.Types.StandardType.StandardType'>
           items:
             - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+              constraints: None
               name: "Uses1"
               regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                 name: # <class 'v1.Parser.Region.Region'>
@@ -248,6 +257,7 @@ statements:
                   end: # <class 'v1.Lexer.Location.Location'>
                     column: 15
                     line: 10
+              templates: None
           mutability_modifier: None
           regions__: # <class 'types.StandardTypeRegions'>
             items: # <class 'v1.Parser.Region.Region'>
@@ -269,6 +279,7 @@ statements:
   - # <class 'v1.Parser.Statements.ClassStatement.ClassStatement'>
     capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
+    constraints: None
     constructor_visibility: "VisibilityModifier.public"
     documentation: None
     extends: None
@@ -292,6 +303,7 @@ statements:
         type: # <class 'v1.Parser.Types.StandardType.StandardType'>
           items:
             - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+              constraints: None
               name: "Implements1"
               regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                 name: # <class 'v1.Parser.Region.Region'>
@@ -308,6 +320,7 @@ statements:
                   end: # <class 'v1.Lexer.Location.Location'>
                     column: 27
                     line: 15
+              templates: None
           mutability_modifier: None
           regions__: # <class 'types.StandardTypeRegions'>
             items: # <class 'v1.Parser.Region.Region'>
@@ -367,5 +380,6 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 18
+    templates: None
     uses: None
     visibility: "VisibilityModifier.private"
