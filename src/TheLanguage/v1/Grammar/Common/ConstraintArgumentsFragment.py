@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncArgumentsFragment.py
+# |  ConstraintArgumentsFragment.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-13 13:15:07
+# |      2022-04-14 10:32:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that helps when processing function arguments"""
+"""Contains functionality that helps when processing constraint arguments"""
 
 import os
 
@@ -45,10 +45,10 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Common.FuncArgumentsPhrase import (
-        ExpressionPhrase,
-        FuncArgumentPhrase,
-        FuncArgumentsPhrase,
+    from ...Parser.Common.ConstraintArgumentsPhrase import (
+        ConstraintArgumentPhrase,
+        ConstraintArgumentsPhrase,
+        ConstraintExpressionPhrase,
     )
 
     from ...Parser.Error import Error
@@ -64,19 +64,19 @@ def Create() -> PhraseItem:
             OptionalPhraseItem(
                 name="Keyword",
                 item=[
-                    CommonTokens.RuntimeParameterName,
+                    CommonTokens.ConstraintParameterName,
                     "=",
                 ],
             ),
 
-            # <expression>
-            DynamicPhrasesType.Expressions,
+            # <constraint_expression>
+            DynamicPhrasesType.ConstraintExpressions,
         ],
     )
 
     return ArgumentsFragmentImpl.Create(
-        "Function Arguments",
-        "(", ")",
+        "Constraint Arguments",
+        "{", "}",
         argument_element,
         allow_empty=True,
     )
@@ -88,10 +88,10 @@ def Extract(
 ) -> Union[
     List[Error],
     bool,
-    FuncArgumentsPhrase,
+    ConstraintArgumentsPhrase,
 ]:
     return ArgumentsFragmentImpl.Extract(
-        FuncArgumentsPhrase,
+        ConstraintArgumentsPhrase,
         _ExtractElement,
         node,
         allow_empty=True,
@@ -118,12 +118,12 @@ def _ExtractElement(
         keyword_node = cast(AST.Leaf, keyword_nodes[0])
         keyword_info = ExtractToken(keyword_node)
 
-    # <expression>
+    # <constraint_expression>
     expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
-    expression_info = cast(ExpressionPhrase, GetPhrase(expression_node))
+    expression_info = cast(ConstraintExpressionPhrase, GetPhrase(expression_node))
 
     return (
-        FuncArgumentPhrase.Create(
+        ConstraintArgumentPhrase.Create(
             CreateRegions(node, expression_node, keyword_node),
             expression_info,
             keyword_info,

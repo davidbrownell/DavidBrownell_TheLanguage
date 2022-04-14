@@ -48,7 +48,7 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ....Parser.Error import CreateError, Error, Region
+    from ....Parser.Error import CreateError, Error, ErrorException, Region
     from ....Parser.Parser import CreateRegion, CreateRegions, Phrase
 
 
@@ -244,22 +244,26 @@ def Extract(
     initial_default_param: Optional[AST.Node] = None
 
     parameters_phrases: Dict[ParametersType, Tuple[AST.Node, List[Phrase]]] = {}
-    all_errors: List[Error] = []
+    errors: List[Error] = []
 
-    for parameters_type, parameters_node, parameter_nodes, errors in enum_func(all_parameters_node):
-        if errors:
-            all_errors += errors
+    for parameters_type, parameters_node, parameter_nodes, parameter_errors in enum_func(all_parameters_node):
+        if parameter_errors:
+            errors += parameter_errors
             continue
 
         phrases: List[Phrase] = []
 
         for parameter_node in parameter_nodes:
-            phrase, has_default = extract_element_func(parameter_node)
+            try:
+                phrase, has_default = extract_element_func(parameter_node)
+            except ErrorException as ex:
+                errors += ex.errors
+                continue
 
             if has_default:
                 initial_default_param = parameter_node
             elif initial_default_param is not None:
-                all_errors.append(
+                errors.append(
                     RequiredParameterAfterDefaultError.Create(
                         region=CreateRegion(parameter_node),
                         prev_region=CreateRegion(initial_default_param),
@@ -273,20 +277,24 @@ def Extract(
 
         parameters_phrases[parameters_type] = (parameters_node, phrases)
 
-    if all_errors:
-        return all_errors
+    if not errors:
+        try:
+            return phrase_type.Create(  # type: ignore
+                CreateRegions(
+                    node,
+                    parameters_phrases.get(ParametersType.pos, [None])[0],
+                    parameters_phrases.get(ParametersType.any, [None])[0],
+                    parameters_phrases.get(ParametersType.key, [None])[0],
+                ),
+                parameters_phrases.get(ParametersType.pos, [None, None])[1],
+                parameters_phrases.get(ParametersType.any, [None, None])[1],
+                parameters_phrases.get(ParametersType.key, [None, None])[1],
+            )
+        except ErrorException as ex:
+            errors += ex.errors
 
-    return phrase_type.Create(  # type: ignore
-        CreateRegions(
-            node,
-            parameters_phrases.get(ParametersType.pos, [None])[0],
-            parameters_phrases.get(ParametersType.any, [None])[0],
-            parameters_phrases.get(ParametersType.key, [None])[0],
-        ),
-        parameters_phrases.get(ParametersType.pos, [None, None])[1],
-        parameters_phrases.get(ParametersType.any, [None, None])[1],
-        parameters_phrases.get(ParametersType.key, [None, None])[1],
-    )
+    assert errors
+    return errors
 
 
 # ----------------------------------------------------------------------

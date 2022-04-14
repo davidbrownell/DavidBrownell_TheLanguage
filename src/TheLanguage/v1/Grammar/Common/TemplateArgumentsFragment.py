@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncArgumentsFragment.py
+# |  TemplateArgumentsFragment.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-13 13:15:07
+# |      2022-04-14 09:37:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality that helps when processing function arguments"""
+"""Contains functionality that helps when processing template arguments"""
 
 import os
 
@@ -39,16 +39,19 @@ with InitRelativeImports():
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
+        ExtractOr,
         ExtractSequence,
         ExtractToken,
         PhraseItem,
         OptionalPhraseItem,
     )
 
-    from ...Parser.Common.FuncArgumentsPhrase import (
-        ExpressionPhrase,
-        FuncArgumentPhrase,
-        FuncArgumentsPhrase,
+    from ...Parser.Common.TemplateArgumentsPhrase import (
+        TemplateArgumentsPhrase,
+        TemplateDecoratorArgumentPhrase,
+        TemplateDecoratorExpressionPhrase,
+        TemplateTypeArgumentPhrase,
+        TypePhrase,
     )
 
     from ...Parser.Error import Error
@@ -58,25 +61,49 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 def Create() -> PhraseItem:
     argument_element = PhraseItem(
-        name="Argument",
-        item=[
-            # (<parameter_name> '=')?
-            OptionalPhraseItem(
-                name="Keyword",
+        name="Template Argument",
+        item=(
+            # (<parameter_name> '=')? <type>
+            PhraseItem(
+                name="Template Type",
                 item=[
-                    CommonTokens.RuntimeParameterName,
-                    "=",
+                    # (<parameter_name> '=')?
+                    OptionalPhraseItem(
+                        name="Keyword",
+                        item=[
+                            CommonTokens.TemplateTypeName,
+                            "=",
+                        ],
+                    ),
+
+                    # <type>
+                    DynamicPhrasesType.Types,
                 ],
             ),
 
-            # <expression>
-            DynamicPhrasesType.Expressions,
-        ],
+            # (<parameter_name> '=')? <template_expression>
+            PhraseItem(
+                name="Template Decorator",
+                item=[
+                    # (<parameter_name> '=')?
+                    OptionalPhraseItem(
+                        name="Keyword",
+                        item=[
+                            CommonTokens.TemplateDecoratorParameterName,
+                            "=",
+                        ],
+                    ),
+
+                    # <template_expression>
+                    DynamicPhrasesType.TemplateDecoratorExpressions,
+                ],
+            ),
+        ),
     )
 
     return ArgumentsFragmentImpl.Create(
-        "Function Arguments",
-        "(", ")",
+        "Template Arguments",
+        "<", ">",
         argument_element,
         allow_empty=True,
     )
@@ -88,10 +115,10 @@ def Extract(
 ) -> Union[
     List[Error],
     bool,
-    FuncArgumentsPhrase,
+    TemplateArgumentsPhrase,
 ]:
     return ArgumentsFragmentImpl.Extract(
-        FuncArgumentsPhrase,
+        TemplateArgumentsPhrase,
         _ExtractElement,
         node,
         allow_empty=True,
@@ -104,6 +131,20 @@ def Extract(
 def _ExtractElement(
     node: AST.Node,
 ) -> Tuple[Phrase, bool]:
+    node = cast(AST.Node, ExtractOr(node))
+    assert node.type is not None
+
+    if node.type.name == "Template Type":
+        dynamic_phrase_type = TypePhrase
+        element_type = TemplateTypeArgumentPhrase
+
+    elif node.type.name == "Template Decorator":
+        dynamic_phrase_type = TemplateDecoratorExpressionPhrase
+        element_type = TemplateDecoratorArgumentPhrase
+
+    else:
+        assert False, node.type  # pragma: no cover
+
     nodes = ExtractSequence(node)
     assert len(nodes) == 2
 
@@ -118,14 +159,14 @@ def _ExtractElement(
         keyword_node = cast(AST.Leaf, keyword_nodes[0])
         keyword_info = ExtractToken(keyword_node)
 
-    # <expression>
-    expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
-    expression_info = cast(ExpressionPhrase, GetPhrase(expression_node))
+    # <type> | <template_expression>
+    value_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
+    value_info = cast(dynamic_phrase_type, GetPhrase(value_node))
 
     return (
-        FuncArgumentPhrase.Create(
-            CreateRegions(node, expression_node, keyword_node),
-            expression_info,
+        element_type.Create(
+            CreateRegions(node, value_node, keyword_node),
+            value_info,
             keyword_info,
         ),
         keyword_info is not None,

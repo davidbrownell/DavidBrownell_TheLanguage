@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import Callable, cast, List, Optional, Union, Tuple
+from typing import Callable, cast, List, Optional, Union, Type, TypeVar, Tuple
 
 import CommonEnvironment
 
@@ -43,8 +43,8 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ....Parser.Error import CreateError, Error, Region
-    from ....Parser.Parser import CreateRegion, Phrase
+    from ....Parser.Error import CreateError, Error, ErrorException, Region
+    from ....Parser.Parser import CreateRegion, CreateRegions, Phrase
 
 
 # ----------------------------------------------------------------------
@@ -102,7 +102,10 @@ def Create(
 
 
 # ----------------------------------------------------------------------
+ExtractReturnType                           = TypeVar("ExtractReturnType", bound=Phrase)
+
 def Extract(
+    phrase_type: Type[ExtractReturnType],
     extract_element_func: Callable[[AST.Node], Tuple[Phrase, bool]],
     node: AST.Node,
     *,
@@ -110,7 +113,7 @@ def Extract(
 ) -> Union[
     List[Error],
     bool,
-    List[Phrase],
+    ExtractReturnType,
 ]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 5
@@ -137,7 +140,11 @@ def Extract(
             for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, all_arguments_nodes[1])))
         ),
     ):
-        this_phrase, is_keyword = extract_element_func(element_node)
+        try:
+            this_phrase, is_keyword = extract_element_func(element_node)
+        except ErrorException as ex:
+            errors += ex.errors
+            continue
 
         if is_keyword:
             if first_keyword_node is not None:
@@ -152,4 +159,14 @@ def Extract(
 
         phrases.append(this_phrase)
 
-    return errors or phrases
+    if not errors:
+        try:
+            return phrase_type.Create(  # type: ignore
+                CreateRegions(node, node),
+                phrases,
+            )
+        except ErrorException as ex:
+            errors += ex.errors
+
+    assert errors
+    return errors

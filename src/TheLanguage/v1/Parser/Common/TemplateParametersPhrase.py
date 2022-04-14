@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncParametersPhrase.py
+# |  TemplateParametersPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 16:43:15
+# |      2022-04-13 17:41:07
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains information about function parameters"""
+"""Contains information about template parameters"""
 
 import itertools
 import os
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 from dataclasses import dataclass, InitVar
 
@@ -34,32 +34,32 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Error import CreateError, Error, ErrorException
 
-    from ..Expressions.ExpressionPhrase import ExpressionPhrase
+    from ..TemplateDecoratorExpressions.TemplateDecoratorExpressionPhrase import TemplateDecoratorExpressionPhrase
+    from ..TemplateDecoratorTypes.TemplateDecoratorTypePhrase import TemplateDecoratorTypePhrase
     from ..Types.TypePhrase import Phrase, Region, TypePhrase
 
 
 # ----------------------------------------------------------------------
 DuplicateNameError                          = CreateError(
-    "The parameter name '{name}' has already been defined",
+    "The template parameter '{name}' has already been defined",
     name=str,
     prev_region=Region,
 )
 
 DuplicateVariadicError                      = CreateError(
-    "A variadic parameter has already been defined",
+    "A variadic template parameter has already been defined",
     prev_region=Region,
 )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncParameterPhrase(Phrase):
+class TemplateTypeParameterPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
 
-    type: TypePhrase
-    is_variadic: Optional[bool]
     name: str
-    default_value: Optional[ExpressionPhrase]
+    is_variadic: Optional[bool]
+    default_type: Optional[TypePhrase]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -72,17 +72,17 @@ class FuncParameterPhrase(Phrase):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncParameterPhrase, self).__init__(regions)
+        super(TemplateTypeParameterPhrase, self).__init__(regions)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncParametersPhrase(Phrase):
+class TemplateDecoratorParameterPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
 
-    positional: Optional[List[FuncParameterPhrase]]
-    any: Optional[List[FuncParameterPhrase]]
-    keyword: Optional[List[FuncParameterPhrase]]
+    type: TemplateDecoratorTypePhrase
+    name: str
+    default_value: Optional[TemplateDecoratorExpressionPhrase]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -95,16 +95,48 @@ class FuncParametersPhrase(Phrase):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncParametersPhrase, self).__init__(regions)
+        super(TemplateDecoratorParameterPhrase, self).__init__(regions)
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class TemplateParametersPhrase(Phrase):
+    # ----------------------------------------------------------------------
+    # |  Public Types
+    ParameterType                           = Union[
+        TemplateTypeParameterPhrase,
+        TemplateDecoratorParameterPhrase,
+    ]
+
+    # ----------------------------------------------------------------------
+    # |  Public Data
+    regions: InitVar[List[Optional[Region]]]
+
+    positional: Optional[List["TemplateParametersPhrase.ParameterType"]]
+    any: Optional[List["TemplateParametersPhrase.ParameterType"]]
+    keyword: Optional[List["TemplateParametersPhrase.ParameterType"]]
+
+    # ----------------------------------------------------------------------
+    # |  Public Methods
+    @classmethod
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(TemplateParametersPhrase, self).__init__(regions)
         assert self.positional or self.any or self.keyword
 
         # Validate
         errors: List[Error] = []
 
-        name_lookup: Dict[str, FuncParameterPhrase] = {}
-        prev_variadic_parameter: Optional[FuncParameterPhrase] = None
+        name_lookup: Dict[str, TemplateParametersPhrase.ParameterType] = {}
+        prev_variadic_parameter: Optional[TemplateParametersPhrase.ParameterType] = None
 
-        # Check for duplicate names and multiple variadic parameters
         for parameter in itertools.chain(
             self.positional or [],
             self.any or [],
@@ -124,7 +156,7 @@ class FuncParametersPhrase(Phrase):
                 name_lookup[parameter.name] = parameter
 
             # Check for multiple variadic parameters
-            if parameter.is_variadic:
+            if getattr(parameter, "is_variadic", False):
                 if prev_variadic_parameter is not None:
                     errors.append(
                         DuplicateVariadicError.Create(

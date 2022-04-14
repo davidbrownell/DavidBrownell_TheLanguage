@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncParametersPhrase.py
+# |  FuncArgumentsPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 16:43:15
+# |      2022-04-13 13:21:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,8 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains information about function parameters"""
+"""Contains information about a function argument"""
 
-import itertools
 import os
 
 from typing import Dict, List, Optional
@@ -33,33 +32,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Error import CreateError, Error, ErrorException
+    from ..Phrase import Phrase, Region
 
     from ..Expressions.ExpressionPhrase import ExpressionPhrase
-    from ..Types.TypePhrase import Phrase, Region, TypePhrase
 
 
 # ----------------------------------------------------------------------
 DuplicateNameError                          = CreateError(
-    "The parameter name '{name}' has already been defined",
+    "The keyword argument '{name}' has already been provided",
     name=str,
     prev_region=Region,
 )
 
-DuplicateVariadicError                      = CreateError(
-    "A variadic parameter has already been defined",
-    prev_region=Region,
-)
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncParameterPhrase(Phrase):
+class FuncArgumentPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
 
-    type: TypePhrase
-    is_variadic: Optional[bool]
-    name: str
-    default_value: Optional[ExpressionPhrase]
+    expression: ExpressionPhrase
+    keyword: Optional[str]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -72,17 +64,15 @@ class FuncParameterPhrase(Phrase):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncParameterPhrase, self).__init__(regions)
+        super(FuncArgumentPhrase, self).__init__(regions)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncParametersPhrase(Phrase):
+class FuncArgumentsPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
 
-    positional: Optional[List[FuncParameterPhrase]]
-    any: Optional[List[FuncParameterPhrase]]
-    keyword: Optional[List[FuncParameterPhrase]]
+    arguments: List[FuncArgumentPhrase]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -95,45 +85,27 @@ class FuncParametersPhrase(Phrase):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncParametersPhrase, self).__init__(regions)
-        assert self.positional or self.any or self.keyword
+        super(FuncArgumentsPhrase, self).__init__(regions)
 
         # Validate
         errors: List[Error] = []
 
-        name_lookup: Dict[str, FuncParameterPhrase] = {}
-        prev_variadic_parameter: Optional[FuncParameterPhrase] = None
+        keyword_lookup: Dict[str, FuncArgumentPhrase] = {}
 
-        # Check for duplicate names and multiple variadic parameters
-        for parameter in itertools.chain(
-            self.positional or [],
-            self.any or [],
-            self.keyword or [],
-        ):
-            # Check for duplicated names
-            prev_parameter = name_lookup.get(parameter.name, None)
-            if prev_parameter is not None:
-                errors.append(
-                    DuplicateNameError.Create(
-                        region=parameter.regions__.name,
-                        name=parameter.name,
-                        prev_region=prev_parameter.regions__.name,
-                    ),
-                )
-            else:
-                name_lookup[parameter.name] = parameter
+        for argument in self.arguments:
+            if argument.keyword is not None:
+                prev_argument = keyword_lookup.get(argument.keyword, None)
 
-            # Check for multiple variadic parameters
-            if parameter.is_variadic:
-                if prev_variadic_parameter is not None:
+                if prev_argument is not None:
                     errors.append(
-                        DuplicateVariadicError.Create(
-                            region=parameter.regions__.is_variadic,
-                            prev_region=prev_variadic_parameter.regions__.is_variadic,
+                        DuplicateNameError.Create(
+                            region=argument.regions__.keyword,
+                            name=argument.keyword,
+                            prev_region=prev_argument.regions__.keyword,
                         ),
                     )
                 else:
-                    prev_variadic_parameter = parameter
+                    keyword_lookup[argument.keyword] = argument
 
         if errors:
             raise ErrorException(*errors)

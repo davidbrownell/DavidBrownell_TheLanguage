@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  StandardType.py
+# |  TemplateDecoratorExpressionPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-12 10:46:35
+# |      2022-04-14 08:21:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the StandardType object"""
+"""Contains the TemplateDecoratorExpressionPhrase object"""
 
 import os
 
-from typing import List, Optional
+from typing import Any, Callable, List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -31,21 +31,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypePhrase import Phrase, Region, TypePhrase
-
-    from ..Common.ConstraintArgumentsPhrase import ConstraintArgumentsPhrase
-    from ..Common.TemplateArgumentsPhrase import TemplateArgumentsPhrase
+    from ..Phrase import Phrase, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class StandardTypeItemPhrase(Phrase):
+class TemplateDecoratorExpressionPhrase(Phrase):
+    """Abstract base class for all template decorator expressions"""
+
+    # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
-
-    name: str
-
-    templates: Optional[TemplateArgumentsPhrase]
-    constraints: Optional[ConstraintArgumentsPhrase]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -57,15 +52,11 @@ class StandardTypeItemPhrase(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(StandardTypeItemPhrase, self).__init__(regions)
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class StandardType(TypePhrase):
-    items: List[StandardTypeItemPhrase]
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(StandardType, self).__post_init__(regions)
+    def __post_init__(
+        self,
+        regions,
+        regionless_attributes: Optional[List[str]]=None,
+        validate=True,
+        **custom_display_funcs: Callable[[Any], Optional[Any]],
+    ):
+        super(TemplateDecoratorExpressionPhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)

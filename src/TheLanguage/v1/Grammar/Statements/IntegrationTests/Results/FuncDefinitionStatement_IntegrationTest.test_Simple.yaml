@@ -68,6 +68,7 @@ statements:
     return_type: # <class 'v1.Parser.Types.StandardType.StandardType'>
       items:
         - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+          constraints: None
           name: "Int"
           regions__: # <class 'types.StandardTypeItemPhraseRegions'>
             name: # <class 'v1.Parser.Region.Region'>
@@ -84,6 +85,7 @@ statements:
               end: # <class 'v1.Lexer.Location.Location'>
                 column: 4
                 line: 1
+          templates: None
       mutability_modifier: "MutabilityModifier.val"
       regions__: # <class 'types.StandardTypeRegions'>
         items: # <class 'v1.Parser.Region.Region'>
@@ -117,6 +119,7 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 2
+    templates: None
     visibility: "VisibilityModifier.private"
   - # <class 'v1.Parser.Statements.FuncDefinitionStatement.FuncDefinitionStatement'>
     captured_variables: None
@@ -132,11 +135,11 @@ statements:
     name: "Func2"
     parameters: # <class 'v1.Parser.Common.FuncParametersPhrase.FuncParametersPhrase'>
       any:
-        - # <class 'v1.Parser.Common.FuncParametersPhrase.FuncParametersItemPhrase'>
+        - # <class 'v1.Parser.Common.FuncParametersPhrase.FuncParameterPhrase'>
           default_value: None
           is_variadic: None
           name: "a"
-          regions__: # <class 'types.FuncParametersItemPhraseRegions'>
+          regions__: # <class 'types.FuncParameterPhraseRegions'>
             name: # <class 'v1.Parser.Region.Region'>
               begin: # <class 'v1.Lexer.Location.Location'>
                 column: 32
@@ -161,6 +164,7 @@ statements:
           type: # <class 'v1.Parser.Types.StandardType.StandardType'>
             items:
               - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+                constraints: None
                 name: "Char"
                 regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                   name: # <class 'v1.Parser.Region.Region'>
@@ -177,6 +181,7 @@ statements:
                     end: # <class 'v1.Lexer.Location.Location'>
                       column: 27
                       line: 2
+                templates: None
             mutability_modifier: "MutabilityModifier.val"
             regions__: # <class 'types.StandardTypeRegions'>
               items: # <class 'v1.Parser.Region.Region'>
@@ -200,11 +205,11 @@ statements:
                 end: # <class 'v1.Lexer.Location.Location'>
                   column: 31
                   line: 2
-        - # <class 'v1.Parser.Common.FuncParametersPhrase.FuncParametersItemPhrase'>
+        - # <class 'v1.Parser.Common.FuncParametersPhrase.FuncParameterPhrase'>
           default_value: None
           is_variadic: None
           name: "b"
-          regions__: # <class 'types.FuncParametersItemPhraseRegions'>
+          regions__: # <class 'types.FuncParameterPhraseRegions'>
             name: # <class 'v1.Parser.Region.Region'>
               begin: # <class 'v1.Lexer.Location.Location'>
                 column: 44
@@ -229,6 +234,7 @@ statements:
           type: # <class 'v1.Parser.Types.StandardType.StandardType'>
             items:
               - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+                constraints: None
                 name: "Bool"
                 regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                   name: # <class 'v1.Parser.Region.Region'>
@@ -245,6 +251,7 @@ statements:
                     end: # <class 'v1.Lexer.Location.Location'>
                       column: 39
                       line: 2
+                templates: None
             mutability_modifier: "MutabilityModifier.var"
             regions__: # <class 'types.StandardTypeRegions'>
               items: # <class 'v1.Parser.Region.Region'>
@@ -349,6 +356,7 @@ statements:
         - # <class 'v1.Parser.Types.StandardType.StandardType'>
           items:
             - # <class 'v1.Parser.Types.StandardType.StandardTypeItemPhrase'>
+              constraints: None
               name: "Int"
               regions__: # <class 'types.StandardTypeItemPhraseRegions'>
                 name: # <class 'v1.Parser.Region.Region'>
@@ -365,6 +373,7 @@ statements:
                   end: # <class 'v1.Lexer.Location.Location'>
                     column: 5
                     line: 2
+              templates: None
           mutability_modifier: "MutabilityModifier.val"
           regions__: # <class 'types.StandardTypeRegions'>
             items: # <class 'v1.Parser.Region.Region'>
@@ -398,4 +407,5 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 3
+    templates: None
     visibility: "VisibilityModifier.private"
