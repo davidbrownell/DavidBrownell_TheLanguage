@@ -35,7 +35,9 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ..Common import AttributesFragment
+    from ..Common import ConstraintParametersFragment
     from ..Common import StatementsFragment
+    from ..Common import TemplateParametersFragment
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
@@ -172,8 +174,15 @@ class ClassStatement(GrammarPhrase):
                     # Template Parameters, Constraints, Dependencies
                     CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # TODO: <template_parameters>?
-                    # TODO: <constraints>?
+                    # <template_parameters>?
+                    OptionalPhraseItem(
+                        TemplateParametersFragment.Create(),
+                    ),
+
+                    # <constraints>?
+                    OptionalPhraseItem(
+                        ConstraintParametersFragment.Create(),
+                    ),
 
                     # <dependencies>?
                     ZeroOrMorePhraseItem(
@@ -246,7 +255,7 @@ class ClassStatement(GrammarPhrase):
         # statements need to create their parser phrases. The second will collect that information
         # and create the class statement parser phrase.
         nodes = ExtractSequence(node)
-        assert len(nodes) == 9 # TODO: 11
+        assert len(nodes) == 11
 
         errors: List[Error] = []
 
@@ -275,7 +284,7 @@ class ClassStatement(GrammarPhrase):
         # <dependencies>?
         all_dependency_nodes: Dict[DependencyType, Tuple[AST.Node, AST.Node]] = {}
 
-        all_dependencies_node = cast(AST.Node, nodes[6])
+        all_dependencies_node = cast(AST.Node, nodes[8])
 
         for dependency_node in cast(List[AST.Node], ExtractRepeat(all_dependencies_node)):
             dependency_nodes = ExtractSequence(dependency_node)
@@ -384,12 +393,35 @@ class ClassStatement(GrammarPhrase):
             else:
                 class_modifier_info = ExtractClassModifier(class_modifier_node)
 
+            # <class_type> is extracted above
+
             # <type_name>
             type_name_node = cast(AST.Leaf, nodes[4])
             type_name_info = ExtractToken(type_name_node)
 
-            # TODO: <template_parameters>?
-            # TODO: <constraints>?
+            # <template_parameters>?
+            templates_info = None
+
+            templates_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[6])))
+            if templates_node is not None:
+                result = TemplateParametersFragment.Extract(templates_node)
+
+                if isinstance(result, list):
+                    errors += result
+                else:
+                    templates_info = result
+
+            # <constraints>?
+            constraints_info = None
+
+            constraints_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
+            if constraints_node is not None:
+                result = ConstraintParametersFragment.Extract(constraints_node)
+
+                if isinstance(result, list):
+                    errors += result
+                else:
+                    constraints_info = result
 
             # <dependencies>?
             all_dependencies_info: Dict[DependencyType, Tuple[AST.Node, List[ParserClassStatementModule.ClassStatementDependency]]] = {}
@@ -442,7 +474,7 @@ class ClassStatement(GrammarPhrase):
                 all_dependencies_info[dependency_type] = (dependencies_node, these_dependencies)
 
             # <statements>
-            statements_node = cast(AST.Node, nodes[8])
+            statements_node = cast(AST.Node, nodes[10])
             statements_info = None
 
             docstring_node = None
@@ -468,6 +500,8 @@ class ClassStatement(GrammarPhrase):
                     class_modifier_node,
                     type_name_node,
                     docstring_node,
+                    templates_node,
+                    constraints_node,
                     all_dependencies_info.get(DependencyType.extends, [None])[0],
                     all_dependencies_info.get(DependencyType.implements, [None])[0],
                     all_dependencies_info.get(DependencyType.uses, [None])[0],
@@ -481,6 +515,8 @@ class ClassStatement(GrammarPhrase):
                 class_modifier_info,
                 type_name_info,
                 docstring_info,
+                templates_info,
+                constraints_info,
                 all_dependencies_info.get(DependencyType.extends, [None, None])[1],
                 all_dependencies_info.get(DependencyType.implements, [None, None])[1],
                 all_dependencies_info.get(DependencyType.uses, [None, None])[1],

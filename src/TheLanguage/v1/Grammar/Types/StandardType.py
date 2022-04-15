@@ -33,7 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
+    from ..Common import ConstraintArgumentsFragment
     from ..Common import MutabilityModifier
+    from ..Common import TemplateArgumentsFragment
     from ..Common import Tokens as CommonTokens
 
     from ...Lexer.Phrases.DSL import (
@@ -47,6 +49,7 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
+    from ...Parser.Error import Error, ErrorException
     from ...Parser.Parser import CreateRegions
 
     from ...Parser.Types.StandardType import (
@@ -67,8 +70,15 @@ class StandardType(GrammarPhrase):
                 # <name>
                 CommonTokens.RuntimeTypeName,
 
-                # TODO: <template_arguments>?
-                # TODO: <constraint_arguments>?
+                # <template_arguments>?
+                OptionalPhraseItem(
+                    TemplateArgumentsFragment.Create(),
+                ),
+
+                # <constraint_arguments>?
+                OptionalPhraseItem(
+                    ConstraintArgumentsFragment.Create(),
+                ),
             ],
         )
 
@@ -121,6 +131,8 @@ class StandardType(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
+        errors: List[Error] = []
+
         # Elements
         elements_node = cast(AST.Node, nodes[0])
         elements_nodes = ExtractSequence(elements_node)
@@ -153,21 +165,51 @@ class StandardType(GrammarPhrase):
 
         for this_element_node in itertools.chain(*all_element_nodes):
             these_element_nodes = ExtractSequence(this_element_node)
-            assert len(these_element_nodes) == 1 # TODO: 3
+            assert len(these_element_nodes) == 3
 
             # <name>
             name_leaf = cast(AST.Leaf, these_element_nodes[0])
             name_info = ExtractToken(name_leaf)
 
-            # TODO: <template_arguments>?
-            # TODO: <constraint_arguments>?
+            # <template_arguments>?
+            template_info = None
 
-            items.append(
-                ParserStandardTypeItemPhrase.Create(
-                    CreateRegions(this_element_node, name_leaf),
-                    name_info,
-                ),
-            )
+            template_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], these_element_nodes[1])))
+            if template_node is not None:
+                result = TemplateArgumentsFragment.Extract(template_node)
+
+                if isinstance(result, list):
+                    errors += result
+                elif isinstance(result, bool):
+                    template_node = None
+                else:
+                    template_info = result
+
+            # <constraint_arguments>?
+            constraint_info = None
+
+            constraint_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], these_element_nodes[2])))
+            if constraint_node is not None:
+                result = ConstraintArgumentsFragment.Extract(constraint_node)
+
+                if isinstance(result, list):
+                    errors += result
+                elif isinstance(result, bool):
+                    constraint_node = None
+                else:
+                    constraint_info = result
+
+            try:
+                items.append(
+                    ParserStandardTypeItemPhrase.Create(
+                        CreateRegions(this_element_node, name_leaf, template_node, constraint_node),
+                        name_info,
+                        template_info,
+                        constraint_info,
+                    ),
+                )
+            except ErrorException as ex:
+                errors += ex.errors
 
         # <mutability_modifier>?
         mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -175,6 +217,9 @@ class StandardType(GrammarPhrase):
             mutability_modifier_info = None
         else:
             mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
+
+        if errors:
+            return errors
 
         return ParserStandardType.Create(
             CreateRegions(node, mutability_modifier_node, elements_node),

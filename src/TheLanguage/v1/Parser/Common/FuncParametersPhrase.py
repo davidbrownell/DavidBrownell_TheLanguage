@@ -15,9 +15,10 @@
 # ----------------------------------------------------------------------
 """Contains information about function parameters"""
 
+import itertools
 import os
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -31,13 +32,34 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Error import CreateError, Error, ErrorException
+
     from ..Expressions.ExpressionPhrase import ExpressionPhrase
-    from ..Types.TypePhrase import Phrase, Region, TypePhrase
+
+    from ..Types.TypePhrase import (
+        MutabilityModifierRequiredError,
+        Phrase,
+        Region,
+        TypePhrase,
+    )
+
+
+# ----------------------------------------------------------------------
+DuplicateNameError                          = CreateError(
+    "The parameter name '{name}' has already been defined",
+    name=str,
+    prev_region=Region,
+)
+
+DuplicateVariadicError                      = CreateError(
+    "A variadic parameter has already been defined",
+    prev_region=Region,
+)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncParametersItemPhrase(Phrase):
+class FuncParameterPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
 
     type: TypePhrase
@@ -56,7 +78,20 @@ class FuncParametersItemPhrase(Phrase):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncParametersItemPhrase, self).__init__(regions)
+        super(FuncParameterPhrase, self).__init__(regions)
+
+        # Validate
+        errors: List[Error] = []
+
+        if self.type.mutability_modifier is None:
+            errors.append(
+                MutabilityModifierRequiredError.Create(
+                    region=self.type.regions__.self__,
+                ),
+            )
+
+        if errors:
+            raise ErrorException(*errors)
 
 
 # ----------------------------------------------------------------------
@@ -64,9 +99,9 @@ class FuncParametersItemPhrase(Phrase):
 class FuncParametersPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
 
-    positional: Optional[List[FuncParametersItemPhrase]]
-    any: Optional[List[FuncParametersItemPhrase]]
-    keyword: Optional[List[FuncParametersItemPhrase]]
+    positional: Optional[List[FuncParameterPhrase]]
+    any: Optional[List[FuncParameterPhrase]]
+    keyword: Optional[List[FuncParameterPhrase]]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -81,3 +116,43 @@ class FuncParametersPhrase(Phrase):
     def __post_init__(self, regions):
         super(FuncParametersPhrase, self).__init__(regions)
         assert self.positional or self.any or self.keyword
+
+        # Validate
+        errors: List[Error] = []
+
+        name_lookup: Dict[str, FuncParameterPhrase] = {}
+        prev_variadic_parameter: Optional[FuncParameterPhrase] = None
+
+        # Check for duplicate names and multiple variadic parameters
+        for parameter in itertools.chain(
+            self.positional or [],
+            self.any or [],
+            self.keyword or [],
+        ):
+            # Check for duplicated names
+            prev_parameter = name_lookup.get(parameter.name, None)
+            if prev_parameter is not None:
+                errors.append(
+                    DuplicateNameError.Create(
+                        region=parameter.regions__.name,
+                        name=parameter.name,
+                        prev_region=prev_parameter.regions__.name,
+                    ),
+                )
+            else:
+                name_lookup[parameter.name] = parameter
+
+            # Check for multiple variadic parameters
+            if parameter.is_variadic:
+                if prev_variadic_parameter is not None:
+                    errors.append(
+                        DuplicateVariadicError.Create(
+                            region=parameter.regions__.is_variadic,
+                            prev_region=prev_variadic_parameter.regions__.is_variadic,
+                        ),
+                    )
+                else:
+                    prev_variadic_parameter = parameter
+
+        if errors:
+            raise ErrorException(*errors)

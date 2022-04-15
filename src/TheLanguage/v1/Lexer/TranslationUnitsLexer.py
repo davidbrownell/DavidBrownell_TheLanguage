@@ -364,11 +364,11 @@ class _TranslationUnitObserver(TranslationUnitObserver):
         self,
         fully_qualified_name: str,
         observer: Observer,
-        async_lex_func: Callable[[str], Optional[DynamicPhrasesInfo]],
+        lex_func: Callable[[str], Optional[DynamicPhrasesInfo]],
     ):
         self._fully_qualified_name          = fully_qualified_name
         self._observer                      = observer
-        self._async_lex_func                = async_lex_func
+        self._lex_func                      = lex_func
         self._prev_line                     = None
 
     # ----------------------------------------------------------------------
@@ -428,7 +428,7 @@ class _TranslationUnitObserver(TranslationUnitObserver):
                     source_name=result.source_name,
                 )
 
-            result = self._async_lex_func(result.fully_qualified_name)
+            result = self._lex_func(result.fully_qualified_name)
             if result is None:
                 return False
 

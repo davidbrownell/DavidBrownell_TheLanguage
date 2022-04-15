@@ -31,7 +31,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Error import CreateError, Error, ErrorException
+    from ..Error import (  # pylint: disable=unused-import
+        CreateError,
+        Error,                              # Convenience import
+        ErrorException,                     # Convenience import
+    )
+
     from ..Phrase import Phrase, Region
 
     from ..Common.MutabilityModifier import MutabilityModifier
@@ -39,19 +44,11 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 MutabilityModifierRequiredError             = CreateError(
-    "A mutability modifier is required",
+    "A mutability modifier is required in this context",
 )
 
 MutabilityModifierNotAllowedError           = CreateError(
     "A mutability modifier is not allowed in this context",
-)
-
-InvalidMutabilityModifierError              = CreateError(
-    "'{modifier_str}' is not a valid mutability modifier in this context; valid modifiers are {valid_modifiers_str}",
-    modifier=MutabilityModifier,
-    valid_modifiers=List[MutabilityModifier],
-    modifier_str=str,
-    valid_modifiers_str=str,
 )
 
 
@@ -83,26 +80,3 @@ class TypePhrase(Phrase):
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
         super(TypePhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
-
-        # Validate
-        errors: List[Error] = []
-
-        valid_modifiers = [
-            MutabilityModifier.var,
-            MutabilityModifier.ref,
-            MutabilityModifier.val,
-        ]
-
-        if self.mutability_modifier is not None and self.mutability_modifier not in valid_modifiers:
-            errors.append(
-                InvalidMutabilityModifierError.Create(
-                    region=self.regions__.mutability_modifier,
-                    modifier=self.mutability_modifier,
-                    valid_modifiers=valid_modifiers,
-                    modifier_str=self.mutability_modifier.name,
-                    valid_modifiers_str=", ".join("'{}'".format(v.name) for v in valid_modifiers),  # pylint: disable=no-member
-                ),
-            )
-
-        if errors:
-            raise ErrorException(*errors)

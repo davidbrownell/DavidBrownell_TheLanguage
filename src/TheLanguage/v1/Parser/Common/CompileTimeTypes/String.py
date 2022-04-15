@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncArgumentPhrase.py
+# |  String.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-13 13:21:12
+# |      2022-04-14 16:16:47
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains information about a function argument"""
+"""Contains the String object"""
 
 import os
 
-from typing import List, Optional
-
-from dataclasses import dataclass, InitVar
+from typing import Any
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,27 +30,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Expressions.ExpressionPhrase import ExpressionPhrase
-    from ..Phrase import Phrase, Region
+    from .CompileTimeType import CompileTimeType
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class FuncArgumentPhrase(Phrase):
-    regions: InitVar[List[Optional[Region]]]
-
-    expression: ExpressionPhrase
-    keyword: Optional[str]
+class String(CompileTimeType):
+    name                                    = Interface.DerivedProperty("String")  # type: ignore
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+    @staticmethod
+    @Interface.override
+    def IsSupported(
+        value: Any,
+    ) -> bool:
+        return isinstance(value, str)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(FuncArgumentPhrase, self).__init__(regions)
+    @staticmethod
+    @Interface.override
+    def ToBool(
+        value: Any,
+    ) -> bool:
+        return bool(value)

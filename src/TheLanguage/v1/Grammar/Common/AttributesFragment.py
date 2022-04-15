@@ -83,7 +83,7 @@ class AttributeData(object):
     name: str
 
     arguments_node: Optional[AST.Node]
-    arguments: Optional[Union[bool, List[FuncArgumentsFragment.FuncArgumentPhrase]]]
+    arguments: Optional[Union[bool, FuncArgumentsFragment.FuncArgumentsPhrase]]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -174,15 +174,11 @@ def Extract(
         function_arguments_info = None
 
         function_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], attribute_nodes[2])))
-        if function_arguments_node is None:
-            function_arguments_info = None
-        else:
-            result = FuncArgumentsFragment.Extract(function_arguments_node)
-            if isinstance(result, list) and isinstance(result[0], Error):
-                errors += cast(List[Error], result)
-                function_arguments_node = None
-            else:
-                function_arguments_info = result
+        if function_arguments_node is not None:
+            func_arguments_info = FuncArgumentsFragment.Extract(function_arguments_node)
+            if isinstance(func_arguments_info, list):
+                errors += func_arguments_info
+                continue
 
         results.append(
             AttributeData.Create(

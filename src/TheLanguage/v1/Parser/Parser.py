@@ -194,6 +194,7 @@ def Parse(
 
 
 # ----------------------------------------------------------------------
+# TODO: Deferred types
 def Validate(
     roots: Dict[str, RootPhrase],
     *,
@@ -201,38 +202,34 @@ def Validate(
 ) -> Optional[
     Dict[str, Union[RootPhrase, List[Error]]]
 ]:
-    return roots  # type: ignore
+    # Extract names
 
-    # TODO: # Extract names
-    # TODO:
-    # TODO: # ----------------------------------------------------------------------
-    # TODO: def ValidateNames(
-    # TODO:     fully_qualified_name: str,  # pylint: disable=unused-argument
-    # TODO:     root: RootPhrase,
-    # TODO: ) -> _NamespaceVisitor.ReturnType:
-    # TODO:     visitor = _NamespaceVisitor()
-    # TODO:
-    # TODO:     root.Accept(visitor)
-    # TODO:
-    # TODO:     return visitor.root
-    # TODO:
-    # TODO: # ----------------------------------------------------------------------
-    # TODO:
-    # TODO: namespace_values = _Execute(
-    # TODO:     roots,
-    # TODO:     ValidateNames,
-    # TODO:     max_num_threads=max_num_threads,
-    # TODO: )
-    # TODO:
-    # TODO: if namespace_values is None:
-    # TODO:     return None
-    # TODO:
-    # TODO: if any(diagnostics.errors for (_, diagnostics) in roots.values()):
-    # TODO:     return roots
-    # TODO:
-    # TODO: # TODO: Validate types
-    # TODO:
-    # TODO: return roots
+    # ----------------------------------------------------------------------
+    def ExtractNamespaces(
+        fully_qualified_name: str,  # pylint: disable=unused-argument
+        root: RootPhrase,
+    ) -> _NamespaceVisitor.ReturnType:
+        visitor = _NamespaceVisitor()
+
+        root.Accept(visitor)
+
+        result = visitor.root
+        return result
+
+    # ----------------------------------------------------------------------
+
+    namespace_values = _Execute(
+        roots,
+        ExtractNamespaces,
+        max_num_threads=max_num_threads,
+    )
+
+    if namespace_values is None:
+        return None
+
+    # TODO: Validate types
+
+    return roots
 
 
 # ----------------------------------------------------------------------
@@ -423,8 +420,9 @@ class _NamespaceVisitor(object):
     def root(self) -> "_NamespaceVisitor.ReturnType":
         assert len(self._node_stack) == 1, self._node_stack
         assert self._node_stack[0].phrase is None, self._node_stack[0]
+        assert len(self._node_stack[0].unnamed) == 1, self._node_stack[0].unnamed
 
-        return self._node_stack[0].namespaces
+        return self._node_stack[0].unnamed[0]
 
     # ----------------------------------------------------------------------
     def OnEnterScope(
@@ -468,6 +466,5 @@ class _NamespaceVisitor(object):
     def _NoopMethod(*args, **kwargs):
         return None
 
-    # TODO: ClassStatement
     # TODO: Aliases
     # TODO: Compile-time statements populate parent namespace

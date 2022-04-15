@@ -48,7 +48,7 @@ with InitRelativeImports():
     from ...Parser.Common.FuncParametersPhrase import (
         ExpressionPhrase,
         FuncParametersPhrase,
-        FuncParametersItemPhrase,
+        FuncParameterPhrase,
         TypePhrase,
     )
 
@@ -104,7 +104,7 @@ def Extract(
 ]:
     return ParametersFragmentImpl.Extract(
         FuncParametersPhrase,
-        _ExtractFuncParametersElementPhrase,
+        _ExtractElement,
         node,
         allow_empty=True,
     )
@@ -113,7 +113,7 @@ def Extract(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-def _ExtractFuncParametersElementPhrase(
+def _ExtractElement(
     node: AST.Node,
 ) -> Tuple[Phrase, bool]:
     nodes = ExtractSequence(node)
@@ -146,7 +146,7 @@ def _ExtractFuncParametersElementPhrase(
         default_info = cast(ExpressionPhrase, GetPhrase(default_node))
 
     return (
-        FuncParametersItemPhrase.Create(
+        FuncParameterPhrase.Create(
             CreateRegions(node, type_node, is_variadic_node, name_leaf, default_node),
             type_info,
             is_variadic_info,

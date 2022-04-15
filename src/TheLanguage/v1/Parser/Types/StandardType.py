@@ -33,6 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .TypePhrase import Phrase, Region, TypePhrase
 
+    from ..Common.ConstraintArgumentsPhrase import ConstraintArgumentsPhrase
+    from ..Common.TemplateArgumentsPhrase import TemplateArgumentsPhrase
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -41,8 +44,8 @@ class StandardTypeItemPhrase(Phrase):
 
     name: str
 
-    # TODO: Templates
-    # TODO: Constraints
+    templates: Optional[TemplateArgumentsPhrase]
+    constraints: Optional[ConstraintArgumentsPhrase]
 
     # ----------------------------------------------------------------------
     @classmethod

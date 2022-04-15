@@ -45,9 +45,10 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Common.FuncArgumentPhrase import (
+    from ...Parser.Common.FuncArgumentsPhrase import (
         ExpressionPhrase,
         FuncArgumentPhrase,
+        FuncArgumentsPhrase,
     )
 
     from ...Parser.Error import Error
@@ -87,10 +88,11 @@ def Extract(
 ) -> Union[
     List[Error],
     bool,
-    List[Phrase],
+    FuncArgumentsPhrase,
 ]:
     return ArgumentsFragmentImpl.Extract(
-        _ExtractFuncArgumentsElementPhrase,
+        FuncArgumentsPhrase,
+        _ExtractElement,
         node,
         allow_empty=True,
     )
@@ -99,7 +101,7 @@ def Extract(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-def _ExtractFuncArgumentsElementPhrase(
+def _ExtractElement(
     node: AST.Node,
 ) -> Tuple[Phrase, bool]:
     nodes = ExtractSequence(node)
@@ -126,5 +128,5 @@ def _ExtractFuncArgumentsElementPhrase(
             expression_info,
             keyword_info,
         ),
-        keyword_node is not None,
+        keyword_info is not None,
     )
