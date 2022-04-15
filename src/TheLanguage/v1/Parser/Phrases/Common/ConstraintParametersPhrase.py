@@ -23,7 +23,6 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,9 +34,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Error import CreateError, Error, ErrorException
 
-    from ..ConstraintExpressions.ConstraintExpressionPhrase import ConstraintExpressionPhrase
-    from ..ConstraintTypes.ConstraintTypePhrase import ConstraintTypePhrase
-    from ..Types.TypePhrase import Phrase, Region, TypePhrase
+    from ..CompileTypes.CompileTypePhrase import CompileTypePhrase
+    from ..CompileExpressions.CompileExpressionPhrase import CompileExpressionPhrase
+    from ..Types.TypePhrase import Phrase, Region
 
 
 # ----------------------------------------------------------------------
@@ -53,9 +52,9 @@ DuplicateNameError                          = CreateError(
 class ConstraintParameterPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
 
-    type: ConstraintTypePhrase
+    type: CompileTypePhrase
     name: str
-    default_type: Optional[ConstraintExpressionPhrase]
+    default_type: Optional[CompileExpressionPhrase]
 
     # ----------------------------------------------------------------------
     @classmethod

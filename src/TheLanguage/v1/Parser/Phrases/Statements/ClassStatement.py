@@ -131,9 +131,6 @@ class ClassStatement(StatementPhrase):
 
     # ----------------------------------------------------------------------
 
-    # TODO: Named tuple as a capability?
-    # TODO: Exception as a capability
-
     capabilities: ClassCapabilities
 
     visibility_param: InitVar[Optional[VisibilityModifier]]
@@ -289,3 +286,4 @@ class ClassStatement(StatementPhrase):
         return self._ScopedAcceptImpl(cast(List[Phrase], self.statements), *args, **kwargs)
 
 # TODO: Not valid to have a protected class without a class ancestor
+# TODO: Ensure that all contents have mutability values consistent with the class decoration

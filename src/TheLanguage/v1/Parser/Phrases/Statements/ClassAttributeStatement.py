@@ -104,7 +104,7 @@ class ClassAttributeStatement(StatementPhrase):
         )
 
         # Set defaults
-        if visibility_param is None:
+        if visibility_param is None and class_capabilities.default_attribute_visibility is not None:
             visibility_param = class_capabilities.default_attribute_visibility
             object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 

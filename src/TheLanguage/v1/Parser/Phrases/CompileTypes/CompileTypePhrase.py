@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Integer.py
+# |  CompileTypePhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 16:16:47
+# |      2022-04-15 10:28:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Integer object"""
+"""Contains the CompileTypePhrase object"""
 
 import os
 
-from typing import Any
+from typing import Any, Callable, List, Optional
+
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,25 +31,32 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileTimeType import CompileTimeType
+    from ..Phrase import Phrase, Region
+    from ...CompileTypes.CompileType import CompileType
 
 
 # ----------------------------------------------------------------------
-class Integer(CompileTimeType):
-    name                                    = Interface.DerivedProperty("Integer")  # type: ignore
+@dataclass(frozen=True, repr=False)
+class CompileTypePhrase(Phrase):
+    # ----------------------------------------------------------------------
+    regions: InitVar[List[Optional[Region]]]
+    type: CompileType
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def IsSupported(
-        value: Any,
-    ) -> bool:
-        return isinstance(value, int)
+    @classmethod
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def ToBool(
-        value: Any,
-    ) -> bool:
-        return value != 0
+    def __post_init__(
+        self,
+        regions,
+        regionless_attributes: Optional[List[str]]=None,
+        validate=True,
+        **custom_display_funcs: Callable[[Any], Optional[Any]],
+    ):
+        super(CompileTypePhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)

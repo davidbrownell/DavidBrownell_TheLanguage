@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  IsConstraintExpression.py
+# |  IsCompileExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 12:36:58
@@ -32,27 +32,27 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ConstraintExpressionPhrase import CompileTimeType, ConstraintExpressionPhrase
-    from ...CompileTimeTypes.Boolean import Boolean
+    from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
+    from ...CompileTypes.Boolean import Boolean
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class IsConstraintExpression(ConstraintExpressionPhrase):
-    expression: ConstraintExpressionPhrase
-    check_type: CompileTimeType
+class IsCompileExpression(CompileExpressionPhrase):
+    expression: CompileExpressionPhrase
+    check_type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(IsConstraintExpression, self).__post_init__(regions)
+        super(IsCompileExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, CompileTimeType],
-    ) -> ConstraintExpressionPhrase.EvalResult:
+        type_overloads: Dict[str, CompileType],
+    ) -> CompileExpressionPhrase.EvalResult:
         result = self.expression.Eval(args, type_overloads)
 
         type_check_result = result.type.IsSupportedAndOfType(result.value, self.check_type)
@@ -63,7 +63,7 @@ class IsConstraintExpression(ConstraintExpressionPhrase):
         if type_check_result[0]:
             return result
 
-        return ConstraintExpressionPhrase.EvalResult(False, Boolean(), None)
+        return CompileExpressionPhrase.EvalResult(False, Boolean(), None)
 
     # ----------------------------------------------------------------------
     @Interface.override

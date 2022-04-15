@@ -34,7 +34,7 @@ with InitRelativeImports():
     from ..Error import CreateError, Error, ErrorException
     from ..Phrase import Phrase, Region
 
-    from ..ConstraintExpressions.ConstraintExpressionPhrase import ConstraintExpressionPhrase
+    from ..CompileExpressions.CompileExpressionPhrase import CompileExpressionPhrase
 
 
 # ----------------------------------------------------------------------
@@ -49,7 +49,7 @@ DuplicateNameError                          = CreateError(
 class ConstraintArgumentPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
 
-    expression: ConstraintExpressionPhrase
+    expression: CompileExpressionPhrase
     keyword: Optional[str]
 
     # ----------------------------------------------------------------------

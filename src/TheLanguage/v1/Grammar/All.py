@@ -27,6 +27,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .CompileTypes.StandardCompileType import StandardCompileType
+    from .CompileTypes.VariantCompileType import VariantCompileType
+
     from .Statements.ClassAttributeStatement import ClassAttributeStatement
     from .Statements.ClassStatement import ClassStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
@@ -39,6 +42,10 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 GrammarPhrases                              = [
+    # CompileTypes
+    StandardCompileType(),
+    VariantCompileType(),
+
     # Statements
     ClassAttributeStatement(),
     ClassStatement(),

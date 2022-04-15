@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConstraintTypePhrase.py
+# |  CapturedVariablesPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 10:04:59
+# |      2022-04-15 08:35:00
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ConstraintTypePhrase object"""
+"""Contains the CapturedVariablesPhrase object"""
 
 import os
 
-from typing import Any, Callable, List, Optional
+from typing import List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -31,16 +31,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Phrase import Phrase, Region
-    from ...CompileTimeTypes.CompileTimeType import CompileTimeType
+    from ..Expressions.ExpressionPhrase import ExpressionPhrase, Phrase, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ConstraintTypePhrase(Phrase):
-    # ----------------------------------------------------------------------
+class CapturedVariablesPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
-    type: CompileTimeType
+    variables: List[ExpressionPhrase]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -52,16 +50,8 @@ class ConstraintTypePhrase(Phrase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(
-        self,
-        regions,
-        regionless_attributes: Optional[List[str]]=None,
-        validate=True,
-        **custom_display_funcs: Callable[[Any], Optional[Any]],
-    ):
-        super(ConstraintTypePhrase, self).__init__(
-            regions,
-            regionless_attributes,
-            validate,
-            **custom_display_funcs,
-        )
+    def __post_init__(self, regions):
+        super(CapturedVariablesPhrase, self).__init__(regions)
+
+        # TODO: Validate that all variables are ultimately variable expressions (dotted notation is OK)
+        # TODO: Is dotted notation OK? Capturing variables is a bit like adding a ref; need to think about this more

@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Number.py
+# |  NoneCompileType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 16:16:47
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Number object"""
+"""Contains the NoneCompileType object"""
 
 import os
 
@@ -30,12 +30,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileTimeType import CompileTimeType
+    from .CompileType import CompileType
 
 
 # ----------------------------------------------------------------------
-class Number(CompileTimeType):
-    name                                    = Interface.DerivedProperty("Number")  # type: ignore
+class NoneCompileType(CompileType):
+    name                                    = Interface.DerivedProperty("None")  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -43,7 +43,7 @@ class Number(CompileTimeType):
     def IsSupported(
         value: Any,
     ) -> bool:
-        return isinstance(value, float)
+        return value is None
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -51,4 +51,4 @@ class Number(CompileTimeType):
     def ToBool(
         value: Any,
     ) -> bool:
-        return value != 0
+        return False

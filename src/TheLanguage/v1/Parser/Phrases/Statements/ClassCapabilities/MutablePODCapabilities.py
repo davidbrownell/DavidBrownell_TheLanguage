@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  StructCapabilities.py
+# |  MutablePODCapabilities.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-03-31 10:23:36
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the definition for "Struct" class capabilities"""
+"""Contains the definition for a mutable Plain-Old-Data (PDO) class capabilities"""
 
 import os
 
@@ -37,9 +37,9 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-StructCapabilities                          = _ClassCapabilities(
-    name="Struct",
-    default_class_modifier=ClassModifier.immutable,
+MutablePODCapabilities                      = _ClassCapabilities(
+    name="Mutable POD",
+    default_class_modifier=ClassModifier.mutable,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
@@ -58,22 +58,33 @@ StructCapabilities                          = _ClassCapabilities(
     valid_method_modifiers=[
         MethodModifier.standard,
     ],
+    default_method_modifier=MethodModifier.standard,
     valid_method_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
         VisibilityModifier.private,
     ],
-    default_method_modifier=MethodModifier.standard,
     default_method_visibility=VisibilityModifier.private,
+    valid_method_mutabilities=[
+        MutabilityModifier.var,
+        MutabilityModifier.ref,
+        MutabilityModifier.val,
+        MutabilityModifier.mutable,
+        MutabilityModifier.immutable,
+    ],
+    default_method_mutability=None,
     allow_static_methods=True,
     valid_attribute_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.private,
     ],
+    default_attribute_visibility=VisibilityModifier.public,
     valid_attribute_mutabilities=[
         MutabilityModifier.var,
+        MutabilityModifier.ref,
         MutabilityModifier.val,
+        MutabilityModifier.mutable,
+        MutabilityModifier.immutable,
     ],
-    default_attribute_visibility=VisibilityModifier.public,
     allow_mutable_public_attributes=True,
 )

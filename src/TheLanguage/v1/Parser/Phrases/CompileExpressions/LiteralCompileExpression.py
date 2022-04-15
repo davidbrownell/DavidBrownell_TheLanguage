@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableConstraintExpression.py
+# |  LiteralCompileExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 12:15:48
+# |      2022-04-14 14:34:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableConstraintExpression object"""
+"""Contains the LiteralCompileExpression object"""
 
 import os
 
@@ -32,46 +32,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ConstraintExpressionPhrase import CompileTimeType, ConstraintExpressionPhrase
-    from ..Error import CreateError, ErrorException
-
-
-# ----------------------------------------------------------------------
-InvalidNameError                            = CreateError(
-    "The constraint name '{name}' is not valid",
-    name=str,
-)
+    from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableConstraintExpression(ConstraintExpressionPhrase):
-    type: CompileTimeType
-    name: str
+class LiteralCompileExpression(CompileExpressionPhrase):
+    type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
+    value: Any
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(VariableConstraintExpression, self).__post_init__(regions)
+        super(LiteralCompileExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, CompileTimeType],
-    ) -> ConstraintExpressionPhrase.EvalResult:
-        if self.name not in args:
-            raise ErrorException(
-                InvalidNameError.Create(
-                    region=self.regions__.name,
-                    name=self.name,
-                ),
-            )
-
-        return ConstraintExpressionPhrase.EvalResult(
-            args[self.name],
-            type_overloads.get(self.name, self.type),
-            self.name,
+        type_overloads: Dict[str, CompileType],
+    ) -> CompileExpressionPhrase.EvalResult:
+        return CompileExpressionPhrase.EvalResult(
+            self.value,
+            self.type,
+            None,
         )
 
     # ----------------------------------------------------------------------
@@ -80,4 +64,4 @@ class VariableConstraintExpression(ConstraintExpressionPhrase):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "<<<{}: {}>>>".format(self.name, args[self.name])
+        return "<<<{}>>>".format(self.value)
