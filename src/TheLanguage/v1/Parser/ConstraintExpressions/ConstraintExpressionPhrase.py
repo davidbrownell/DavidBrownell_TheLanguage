@@ -17,11 +17,12 @@
 
 import os
 
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,11 +33,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Phrase import Phrase, Region
+    from ..Common.CompileTimeTypes.CompileTimeType import CompileTimeType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ConstraintExpressionPhrase(Phrase):
+class ConstraintExpressionPhrase(Phrase, Interface.Interface):
     """Abstract base class for all constraint expressions"""
 
     # ----------------------------------------------------------------------
@@ -59,4 +61,33 @@ class ConstraintExpressionPhrase(Phrase):
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        super(ConstraintExpressionPhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
+        super(ConstraintExpressionPhrase, self).__init__(
+            regions,
+            regionless_attributes,
+            validate,
+            expression_type=None,  # type: ignore
+            **custom_display_funcs,
+        )
+
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class EvalResult(object):
+        value: Any
+        type: CompileTimeType
+        name: Optional[str]                 # None if the value is a temporary
+
+    @staticmethod
+    @Interface.abstractmethod
+    def Eval(
+        args: Dict[str, Any],
+        type_overloads: Dict[str, CompileTimeType],
+    ) -> "ConstraintExpressionPhrase.EvalResult":
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def ToString(
+        args: Dict[str, Any],
+    ) -> str:
+        raise Exception("Abstract method")  # pragma: no cover
