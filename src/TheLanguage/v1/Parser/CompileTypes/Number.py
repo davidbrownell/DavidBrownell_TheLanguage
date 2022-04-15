@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Character.py
+# |  Number.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 16:16:47
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Character object"""
+"""Contains the Number object"""
 
 import os
 
@@ -30,12 +30,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileTimeType import CompileTimeType
+    from .CompileType import CompileType
 
 
 # ----------------------------------------------------------------------
-class Character(CompileTimeType):
-    name                                    = Interface.DerivedProperty("Character")  # type: ignore
+class Number(CompileType):
+    name                                    = Interface.DerivedProperty("Number")  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -43,7 +43,7 @@ class Character(CompileTimeType):
     def IsSupported(
         value: Any,
     ) -> bool:
-        return isinstance(value, int)
+        return isinstance(value, float)
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -51,4 +51,4 @@ class Character(CompileTimeType):
     def ToBool(
         value: Any,
     ) -> bool:
-        return value > 0
+        return value != 0

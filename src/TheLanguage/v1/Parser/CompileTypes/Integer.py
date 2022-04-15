@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoneCompileTimeType.py
+# |  Integer.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 16:16:47
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NoneCompileTimeType object"""
+"""Contains the Integer object"""
 
 import os
 
@@ -30,12 +30,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileTimeType import CompileTimeType
+    from .CompileType import CompileType
 
 
 # ----------------------------------------------------------------------
-class NoneCompileTimeType(CompileTimeType):
-    name                                    = Interface.DerivedProperty("None")  # type: ignore
+class Integer(CompileType):
+    name                                    = Interface.DerivedProperty("Integer")  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -43,7 +43,7 @@ class NoneCompileTimeType(CompileTimeType):
     def IsSupported(
         value: Any,
     ) -> bool:
-        return value is None
+        return isinstance(value, int)
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -51,4 +51,4 @@ class NoneCompileTimeType(CompileTimeType):
     def ToBool(
         value: Any,
     ) -> bool:
-        return False
+        return value != 0

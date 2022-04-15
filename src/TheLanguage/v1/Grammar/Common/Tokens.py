@@ -54,13 +54,13 @@ PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken
 
 
 # ----------------------------------------------------------------------
-ConstraintTypeName                          = RegexToken(
-    "<constraint type name>",
+CompileTypeName                             = RegexToken(
+    "<compile type name>",
     re.compile(
         textwrap.dedent(
             r"""(?P<value>(?#
             Upper                           )[A-Z](?#
-            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
+            Alphanumeric [optional]         )[A-Za-z0-9_]+(?#
             Does not end with a 'T'         )(?<!T)(?#
             Bang                            )!(?#
             ))""",

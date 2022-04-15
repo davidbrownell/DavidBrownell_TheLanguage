@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConstraintTypePhrase.py
+# |  CompileExpressionPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 10:04:59
@@ -13,15 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ConstraintTypePhrase object"""
+"""Contains the CompileExpressionPhrase object"""
 
 import os
 
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,15 +33,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Phrase import Phrase, Region
-    from ...CompileTimeTypes.CompileTimeType import CompileTimeType
+    from ...CompileTypes.CompileType import CompileType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ConstraintTypePhrase(Phrase):
+class CompileExpressionPhrase(Phrase, Interface.Interface):
+    """Abstract base class for all compile-time expressions"""
+
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
-    type: CompileTimeType
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -59,9 +61,33 @@ class ConstraintTypePhrase(Phrase):
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        super(ConstraintTypePhrase, self).__init__(
+        super(CompileExpressionPhrase, self).__init__(
             regions,
             regionless_attributes,
             validate,
+            expression_type=None,  # type: ignore
             **custom_display_funcs,
         )
+
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class EvalResult(object):
+        value: Any
+        type: CompileType
+        name: Optional[str]                 # None if the value is a temporary
+
+    @staticmethod
+    @Interface.abstractmethod
+    def Eval(
+        args: Dict[str, Any],
+        type_overloads: Dict[str, CompileType],
+    ) -> "CompileExpressionPhrase.EvalResult":
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def ToString(
+        args: Dict[str, Any],
+    ) -> str:
+        raise Exception("Abstract method")  # pragma: no cover

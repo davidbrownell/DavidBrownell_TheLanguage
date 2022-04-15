@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableConstraintExpression.py
+# |  UnaryConstraintExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 12:15:48
+# |      2022-04-14 15:03:16
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableConstraintExpression object"""
+"""Contains the UnaryConstraintExpression object"""
 
 import os
 
+from enum import auto, Enum
 from typing import Any, Dict
 
 from dataclasses import dataclass
@@ -32,47 +33,42 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ConstraintExpressionPhrase import CompileTimeType, ConstraintExpressionPhrase
-    from ..Error import CreateError, ErrorException
+    from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
+    from ...CompileTypes.Boolean import Boolean
 
 
 # ----------------------------------------------------------------------
-InvalidNameError                            = CreateError(
-    "The constraint name '{name}' is not valid",
-    name=str,
-)
+class OperatorType(Enum):
+    Not                                     = auto()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableConstraintExpression(ConstraintExpressionPhrase):
-    type: CompileTimeType
-    name: str
+class UnaryConstraintExpression(CompileExpressionPhrase):
+    operator: OperatorType
+    expression: CompileExpressionPhrase
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(VariableConstraintExpression, self).__post_init__(regions)
+        super(UnaryConstraintExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, CompileTimeType],
-    ) -> ConstraintExpressionPhrase.EvalResult:
-        if self.name not in args:
-            raise ErrorException(
-                InvalidNameError.Create(
-                    region=self.regions__.name,
-                    name=self.name,
-                ),
+        type_overloads: Dict[str, CompileType],
+    ) -> CompileExpressionPhrase.EvalResult:
+        result = self.expression.Eval(args, type_overloads)
+
+        if self.operator == OperatorType.Not:
+            return CompileExpressionPhrase.EvalResult(
+                not result.type.ToBool(result.value),
+                Boolean(),
+                None,
             )
 
-        return ConstraintExpressionPhrase.EvalResult(
-            args[self.name],
-            type_overloads.get(self.name, self.type),
-            self.name,
-        )
+        assert False, self.operator  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -80,4 +76,9 @@ class VariableConstraintExpression(ConstraintExpressionPhrase):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "<<<{}: {}>>>".format(self.name, args[self.name])
+        value = self.expression.ToString(args)
+
+        if self.operator == OperatorType.Not:
+            return "not {}".format(value)
+
+        assert False, self.operator  # pragma: no cover

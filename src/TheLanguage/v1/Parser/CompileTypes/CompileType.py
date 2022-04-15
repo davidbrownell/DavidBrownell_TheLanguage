@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  CompileTimeType.py
+# |  CompileType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 16:08:48
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CompileTimeType object"""
+"""Contains the CompileType object"""
 
 import os
 
@@ -29,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 
 # ----------------------------------------------------------------------
-class CompileTimeType(Interface.Interface):
+class CompileType(Interface.Interface):
     """\
     Abstract base class for types that can be used at compile time by the compiler.
 
@@ -48,7 +48,7 @@ class CompileTimeType(Interface.Interface):
     def IsSupported(
         value: Any,
     ) -> bool:
-        """Returns True if this CompileTimeType supports the value"""
+        """Returns True if this CompileType supports the value"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -65,8 +65,8 @@ class CompileTimeType(Interface.Interface):
     def IsSupportedAndOfType(
         self,
         value: Any,
-        query_type: "CompileTimeType",
-    ) -> Tuple[bool, Optional["CompileTimeType"]]:
+        query_type: "CompileType",
+    ) -> Tuple[bool, Optional["CompileType"]]:
         """\
         Returns True if the value is supported and of the query_type.
 
@@ -84,8 +84,8 @@ class CompileTimeType(Interface.Interface):
     def IsNotSupportedAndOfType(
         self,
         value: Any,
-        query_type: "CompileTimeType",
-    ) -> Tuple[bool, Optional["CompileTimeType"]]:
+        query_type: "CompileType",
+    ) -> Tuple[bool, Optional["CompileType"]]:
         """\
         Returns True if the value is not supported and of the query_type.
 

@@ -95,8 +95,8 @@ def Create() -> PhraseItem:
                         ],
                     ),
 
-                    # <template_expression>
-                    DynamicPhrasesType.TemplateDecoratorExpressions,
+                    # <compile_expression>
+                    DynamicPhrasesType.CompileExpressions,
                 ],
             ),
         ),

@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Boolean.py
+# |  Character.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 16:16:47
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Boolean object"""
+"""Contains the Character object"""
 
 import os
 
@@ -30,12 +30,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileTimeType import CompileTimeType
+    from .CompileType import CompileType
 
 
 # ----------------------------------------------------------------------
-class Boolean(CompileTimeType):
-    name                                    = Interface.DerivedProperty("Boolean")  # type: ignore
+class Character(CompileType):
+    name                                    = Interface.DerivedProperty("Character")  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -43,7 +43,7 @@ class Boolean(CompileTimeType):
     def IsSupported(
         value: Any,
     ) -> bool:
-        return value is True or value is False
+        return isinstance(value, int)
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -51,4 +51,4 @@ class Boolean(CompileTimeType):
     def ToBool(
         value: Any,
     ) -> bool:
-        return value
+        return value > 0

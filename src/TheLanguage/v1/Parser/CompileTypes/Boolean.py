@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  LiteralConstraintExpression.py
+# |  Boolean.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 14:34:06
+# |      2022-04-14 16:16:47
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the LiteralConstraintExpression object"""
+"""Contains the Boolean object"""
 
 import os
 
-from typing import Any, Dict
-
-from dataclasses import dataclass
+from typing import Any
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,36 +30,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ConstraintExpressionPhrase import CompileTimeType, ConstraintExpressionPhrase
+    from .CompileType import CompileType
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class LiteralConstraintExpression(ConstraintExpressionPhrase):
-    type: CompileTimeType
-    value: Any
+class Boolean(CompileType):
+    name                                    = Interface.DerivedProperty("Boolean")  # type: ignore
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(LiteralConstraintExpression, self).__post_init__(regions)
-
-    # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
-    def Eval(
-        self,
-        args: Dict[str, Any],
-        type_overloads: Dict[str, CompileTimeType],
-    ) -> ConstraintExpressionPhrase.EvalResult:
-        return ConstraintExpressionPhrase.EvalResult(
-            self.value,
-            self.type,
-            None,
-        )
+    def IsSupported(
+        value: Any,
+    ) -> bool:
+        return value is True or value is False
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
-    def ToString(
-        self,
-        args: Dict[str, Any],
-    ) -> str:
-        return "<<<{}>>>".format(self.value)
+    def ToBool(
+        value: Any,
+    ) -> bool:
+        return value
