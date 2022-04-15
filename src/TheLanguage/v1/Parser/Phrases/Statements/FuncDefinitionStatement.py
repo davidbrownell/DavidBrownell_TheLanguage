@@ -205,11 +205,11 @@ class FuncDefinitionStatement(StatementPhrase):
             capabilities_name = "functions"
 
         else:
-            if not self.is_static and mutability_param is None:
+            if not self.is_static and mutability_param is None and class_capabilities.default_method_mutability is not None:
                 mutability_param = class_capabilities.default_method_mutability
                 object.__setattr__(self.regions__, "mutability", self.regions__.self__)
 
-            if method_modifier_param is None:
+            if method_modifier_param is None and class_capabilities.default_method_modifier is not None:
                 method_modifier_param = class_capabilities.default_method_modifier
                 object.__setattr__(self.regions__, "method_modifier", self.regions__.self__)
 
@@ -221,7 +221,7 @@ class FuncDefinitionStatement(StatementPhrase):
         object.__setattr__(self, "mutability", mutability_param)
         object.__setattr__(self, "method_modifier", method_modifier_param)
 
-        if visibility_param is None:
+        if visibility_param is None and default_method_visibility is not None:
             visibility_param = default_method_visibility
             object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
@@ -267,6 +267,8 @@ class FuncDefinitionStatement(StatementPhrase):
                         region=self.regions__.self__,
                     ),
                 )
+
+            # TODO: Captures only when nested
 
         else:
             if self.captured_variables:

@@ -37,7 +37,6 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-# TODO: This needs some work. For example, I'm not sure how to think about a mixin that uses a mixin
 MixinCapabilities                           = _ClassCapabilities(
     name="Mixin",
     default_class_modifier=ClassModifier.immutable,
@@ -60,25 +59,42 @@ MixinCapabilities                           = _ClassCapabilities(
         VisibilityModifier.public,
         VisibilityModifier.internal,
         VisibilityModifier.protected,
+        VisibilityModifier.private,
     ],
-    default_implements_visibility=VisibilityModifier.protected,
-    valid_uses_types=[],
-    valid_uses_visibilities=[],
+    default_implements_visibility=None,
+    valid_uses_types=[
+        "Mixin",
+    ],
+    valid_uses_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.internal,
+        VisibilityModifier.protected,
+        VisibilityModifier.private,
+    ],
     default_uses_visibility=None,
     valid_method_modifiers=[
         MethodModifier.abstract,
+        MethodModifier.final,
         MethodModifier.override,
         MethodModifier.standard,
         MethodModifier.virtual,
     ],
+    default_method_modifier=MethodModifier.standard,
     valid_method_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
         VisibilityModifier.protected,
         VisibilityModifier.private,
     ],
-    default_method_modifier=MethodModifier.standard,
     default_method_visibility=VisibilityModifier.private,
+    valid_method_mutabilities=[
+        MutabilityModifier.var,
+        MutabilityModifier.ref,
+        MutabilityModifier.val,
+        MutabilityModifier.mutable,
+        MutabilityModifier.immutable,
+    ],
+    default_method_mutability=None,
     allow_static_methods=True,
     valid_attribute_visibilities=[
         VisibilityModifier.public,
@@ -86,10 +102,10 @@ MixinCapabilities                           = _ClassCapabilities(
         VisibilityModifier.protected,
         VisibilityModifier.private,
     ],
+    default_attribute_visibility=VisibilityModifier.private,
     valid_attribute_mutabilities=[
         MutabilityModifier.var,
         MutabilityModifier.val,
     ],
-    default_attribute_visibility=VisibilityModifier.private,
     allow_mutable_public_attributes=False,
 )

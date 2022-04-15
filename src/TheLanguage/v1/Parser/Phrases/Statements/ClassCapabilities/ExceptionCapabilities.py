@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  InterfaceCapabilities.py
+# |  ExceptionCapabilities.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-03-31 10:23:36
+# |      2022-04-15 08:54:16
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the definition for "interface" class capabilities"""
+"""Contains the ExceptionCapabilities value"""
 
 import os
 
@@ -37,46 +37,63 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-InterfaceCapabilities                       = _ClassCapabilities(
-    name="Interface",
+ExceptionCapabilities                       = _ClassCapabilities(
+    name="Exception",
     default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,
-        VisibilityModifier.internal,
-        VisibilityModifier.protected,
-        # No private, as what does it mean to be a private and support runtime polymorphism;
-        # probably looking for a "concept" instead.
     ],
-    default_visibility=VisibilityModifier.protected,
+    default_visibility=VisibilityModifier.public,
     valid_extends_visibilities=[
         VisibilityModifier.public,
     ],
     default_extends_visibility=VisibilityModifier.public,
-    valid_implements_types=[],
-    valid_implements_visibilities=[],
-    default_implements_visibility=None,
-    valid_uses_types=[],
-    valid_uses_visibilities=[],
-    default_uses_visibility=None,
-    valid_method_modifiers=[
-        MethodModifier.abstract,
+    valid_implements_types=[
+        "Concept",
+        "Interface",
     ],
-    default_method_modifier=MethodModifier.abstract,
+    valid_implements_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.internal,
+        VisibilityModifier.protected,
+        VisibilityModifier.private,
+    ],
+    default_implements_visibility=VisibilityModifier.private,
+    valid_uses_types=[
+        "Mixin",
+    ],
+    valid_uses_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.internal,
+        VisibilityModifier.protected,
+        VisibilityModifier.private,
+    ],
+    default_uses_visibility=VisibilityModifier.private,
+    valid_method_modifiers=[
+        MethodModifier.final,
+        MethodModifier.override,
+        MethodModifier.standard,
+        MethodModifier.virtual,
+    ],
+    default_method_modifier=MethodModifier.standard,
     valid_method_visibilities=[
         VisibilityModifier.public,
+        VisibilityModifier.internal,
+        VisibilityModifier.protected,
+        VisibilityModifier.private,
     ],
-    default_method_visibility=VisibilityModifier.public,
+    default_method_visibility=VisibilityModifier.private,
     valid_method_mutabilities=[
-        MutabilityModifier.var,
-        MutabilityModifier.ref,
         MutabilityModifier.val,
-        MutabilityModifier.mutable,
-        MutabilityModifier.immutable,
     ],
-    default_method_mutability=None,
+    default_method_mutability=MutabilityModifier.val,
     allow_static_methods=True,
-    valid_attribute_visibilities=[],
-    default_attribute_visibility=None,
-    valid_attribute_mutabilities=[],
+    valid_attribute_visibilities=[
+        VisibilityModifier.public,
+    ],
+    default_attribute_visibility=VisibilityModifier.public,
+    valid_attribute_mutabilities=[
+        MutabilityModifier.val,
+    ],
     allow_mutable_public_attributes=False,
 )

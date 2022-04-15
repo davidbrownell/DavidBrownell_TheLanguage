@@ -64,10 +64,12 @@ with InitRelativeImports():
     from ...Parser.Phrases.Statements import ClassStatement as ParserClassStatementModule
     from ...Parser.Phrases.Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
     from ...Parser.Phrases.Statements.ClassCapabilities.ConceptCapabilities import ConceptCapabilities
+    from ...Parser.Phrases.Statements.ClassCapabilities.ExceptionCapabilities import ExceptionCapabilities
+    from ...Parser.Phrases.Statements.ClassCapabilities.ImmutablePODCapabilities import ImmutablePODCapabilities
     from ...Parser.Phrases.Statements.ClassCapabilities.InterfaceCapabilities import InterfaceCapabilities
     from ...Parser.Phrases.Statements.ClassCapabilities.MixinCapabilities import MixinCapabilities
+    from ...Parser.Phrases.Statements.ClassCapabilities.MutablePODCapabilities import MutablePODCapabilities
     from ...Parser.Phrases.Statements.ClassCapabilities.StandardCapabilities import StandardCapabilities
-    from ...Parser.Phrases.Statements.ClassCapabilities.StructCapabilities import StructCapabilities
 
 
 # ----------------------------------------------------------------------
@@ -259,6 +261,13 @@ class ClassStatement(GrammarPhrase):
         # Detect early errors and get information necessary for child statements; the rest will be
         # done later.
 
+        # <class_modifier>?
+        class_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[2])))
+        if class_modifier_node is None:
+            class_modifier_info = None
+        else:
+            class_modifier_info = ExtractClassModifier(class_modifier_node)
+
         # <class_type>
         class_type_node = cast(AST.Node, nodes[3])
         class_type_info = ExtractClassType(class_type_node)
@@ -267,14 +276,17 @@ class ClassStatement(GrammarPhrase):
             class_capabilities = StandardCapabilities
         elif class_type_info == ClassType.concept_value:
             class_capabilities = ConceptCapabilities
-        # TODO: elif class_type_info == ClassType.exception_value:
-        # TODO:     class_capabilities = ExceptionCapabilities
+        elif class_type_info == ClassType.exception_value:
+            class_capabilities = ExceptionCapabilities
         elif class_type_info == ClassType.interface_value:
             class_capabilities = InterfaceCapabilities
         elif class_type_info == ClassType.mixin_value:
             class_capabilities = MixinCapabilities
         elif class_type_info == ClassType.struct_value:
-            class_capabilities = StructCapabilities
+            if class_modifier_info == ClassModifier.mutable:
+                class_capabilities = MutablePODCapabilities
+            else:
+                class_capabilities = ImmutablePODCapabilities
         else:
             assert False, class_type_info  # pragma: no cover
 
@@ -383,13 +395,7 @@ class ClassStatement(GrammarPhrase):
             else:
                 visibility_info = VisibilityModifier.Extract(visibility_node)
 
-            # <class_modifier>?
-            class_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[2])))
-            if class_modifier_node is None:
-                class_modifier_info = None
-            else:
-                class_modifier_info = ExtractClassModifier(class_modifier_node)
-
+            # <class_modifier>? is extracted above
             # <class_type> is extracted above
 
             # <type_name>

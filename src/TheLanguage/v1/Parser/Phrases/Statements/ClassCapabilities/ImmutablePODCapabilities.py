@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  InterfaceCapabilities.py
+# |  ImmutablePODCapabilities.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-03-31 10:23:36
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the definition for "interface" class capabilities"""
+"""Contains the definition for an immutable Plain-Old-Data (PDO) class capabilities"""
 
 import os
 
@@ -37,21 +37,18 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-InterfaceCapabilities                       = _ClassCapabilities(
-    name="Interface",
+ImmutablePODCapabilities                    = _ClassCapabilities(
+    name="Immutable POD",
     default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
         VisibilityModifier.protected,
-        # No private, as what does it mean to be a private and support runtime polymorphism;
-        # probably looking for a "concept" instead.
+        VisibilityModifier.private,
     ],
-    default_visibility=VisibilityModifier.protected,
-    valid_extends_visibilities=[
-        VisibilityModifier.public,
-    ],
-    default_extends_visibility=VisibilityModifier.public,
+    default_visibility=VisibilityModifier.private,
+    valid_extends_visibilities=[],
+    default_extends_visibility=None,
     valid_implements_types=[],
     valid_implements_visibilities=[],
     default_implements_visibility=None,
@@ -59,24 +56,29 @@ InterfaceCapabilities                       = _ClassCapabilities(
     valid_uses_visibilities=[],
     default_uses_visibility=None,
     valid_method_modifiers=[
-        MethodModifier.abstract,
+        MethodModifier.standard,
     ],
-    default_method_modifier=MethodModifier.abstract,
+    default_method_modifier=MethodModifier.standard,
     valid_method_visibilities=[
         VisibilityModifier.public,
+        VisibilityModifier.internal,
+        VisibilityModifier.private,
     ],
-    default_method_visibility=VisibilityModifier.public,
+    default_method_visibility=VisibilityModifier.private,
     valid_method_mutabilities=[
-        MutabilityModifier.var,
-        MutabilityModifier.ref,
         MutabilityModifier.val,
-        MutabilityModifier.mutable,
         MutabilityModifier.immutable,
     ],
-    default_method_mutability=None,
+    default_method_mutability=MutabilityModifier.immutable,
     allow_static_methods=True,
-    valid_attribute_visibilities=[],
-    default_attribute_visibility=None,
-    valid_attribute_mutabilities=[],
-    allow_mutable_public_attributes=False,
+    valid_attribute_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.private,
+    ],
+    default_attribute_visibility=VisibilityModifier.public,
+    valid_attribute_mutabilities=[
+        MutabilityModifier.var,
+        MutabilityModifier.val,
+    ],
+    allow_mutable_public_attributes=True,
 )

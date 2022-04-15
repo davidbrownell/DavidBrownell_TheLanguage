@@ -94,7 +94,6 @@ RuntimeAttributeName                        = RegexToken(
     ),
 )
 
-# TODO: This needs some work
 RuntimeFuncName                             = RegexToken(
     "<func name>",
     re.compile(

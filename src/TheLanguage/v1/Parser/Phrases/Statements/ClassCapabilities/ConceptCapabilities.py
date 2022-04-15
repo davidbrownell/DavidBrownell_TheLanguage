@@ -31,6 +31,7 @@ with InitRelativeImports():
         ClassCapabilities as _ClassCapabilities,
         ClassModifier,
         MethodModifier,
+        MutabilityModifier,
         VisibilityModifier,
     )
 
@@ -59,14 +60,22 @@ ConceptCapabilities                         = _ClassCapabilities(
     valid_method_modifiers=[
         MethodModifier.abstract,
     ],
+    default_method_modifier=MethodModifier.abstract,
     valid_method_visibilities=[
         VisibilityModifier.public,
     ],
-    default_method_modifier=MethodModifier.abstract,
     default_method_visibility=VisibilityModifier.public,
-    allow_static_methods=False,
+    valid_method_mutabilities=[
+        MutabilityModifier.var,
+        MutabilityModifier.ref,
+        MutabilityModifier.val,
+        MutabilityModifier.mutable,
+        MutabilityModifier.immutable,
+    ],
+    default_method_mutability=None,
+    allow_static_methods=True,
     valid_attribute_visibilities=[],
-    valid_attribute_mutabilities=[],
     default_attribute_visibility=None,
+    valid_attribute_mutabilities=[],
     allow_mutable_public_attributes=False,
 )
