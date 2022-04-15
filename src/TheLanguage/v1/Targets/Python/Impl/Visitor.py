@@ -35,10 +35,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ....Parser.Parser import Phrase, RootPhrase
 
-    from ....Parser.Statements.ClassStatement import ClassStatement
-    from ....Parser.Statements.PassStatement import PassStatement
+    from ....Parser.Phrases.Statements.ClassStatement import ClassStatement
+    from ....Parser.Phrases.Statements.PassStatement import PassStatement
 
-    from ....Parser.Types.StandardType import StandardType
+    from ....Parser.Phrases.Types.StandardType import StandardType
 
 
 # ----------------------------------------------------------------------

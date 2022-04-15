@@ -45,7 +45,7 @@ with InitRelativeImports():
 
     from ...Parser.Parser import CreateRegions
 
-    from ...Parser.Types.TupleType import (
+    from ...Parser.Phrases.Types.TupleType import (
         TupleType as ParserTupleType,
         TypePhrase as ParserTypePhrase,
     )

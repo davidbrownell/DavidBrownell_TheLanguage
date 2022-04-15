@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IsConstraintExpression.py
+# |  UnaryConstraintExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 12:36:58
+# |      2022-04-14 15:03:16
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IsConstraintException object"""
+"""Contains the UnaryConstraintExpression object"""
 
 import os
 
+from enum import auto, Enum
 from typing import Any, Dict
 
 from dataclasses import dataclass
@@ -33,18 +34,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ConstraintExpressionPhrase import CompileTimeType, ConstraintExpressionPhrase
-    from ..Common.CompileTimeTypes.Boolean import Boolean
+    from ...CompileTimeTypes.Boolean import Boolean
+
+
+# ----------------------------------------------------------------------
+class OperatorType(Enum):
+    Not                                     = auto()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class IsConstraintExpression(ConstraintExpressionPhrase):
+class UnaryConstraintExpression(ConstraintExpressionPhrase):
+    operator: OperatorType
     expression: ConstraintExpressionPhrase
-    check_type: CompileTimeType
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(IsConstraintExpression, self).__post_init__(regions)
+        super(UnaryConstraintExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -55,15 +61,14 @@ class IsConstraintExpression(ConstraintExpressionPhrase):
     ) -> ConstraintExpressionPhrase.EvalResult:
         result = self.expression.Eval(args, type_overloads)
 
-        type_check_result = result.type.IsSupportedAndOfType(result.value, self.check_type)
+        if self.operator == OperatorType.Not:
+            return ConstraintExpressionPhrase.EvalResult(
+                not result.type.ToBool(result.value),
+                Boolean(),
+                None,
+            )
 
-        if result.name is not None and type_check_result[1] is not None:
-            type_overloads[result.name] = type_check_result[1]
-
-        if type_check_result[0]:
-            return result
-
-        return ConstraintExpressionPhrase.EvalResult(False, Boolean(), None)
+        assert False, self.operator  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -71,7 +76,9 @@ class IsConstraintExpression(ConstraintExpressionPhrase):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "{} is {}".format(
-            self.expression.ToString(args),
-            self.check_type.name,
-        )
+        value = self.expression.ToString(args)
+
+        if self.operator == OperatorType.Not:
+            return "not {}".format(value)
+
+        assert False, self.operator  # pragma: no cover

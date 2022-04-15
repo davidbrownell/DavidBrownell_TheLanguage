@@ -49,10 +49,10 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Error import Error, ErrorException
     from ...Parser.Parser import CreateRegions
+    from ...Parser.Phrases.Error import Error, ErrorException
 
-    from ...Parser.Types.StandardType import (
+    from ...Parser.Phrases.Types.StandardType import (
         StandardType as ParserStandardType,
         StandardTypeItemPhrase as ParserStandardTypeItemPhrase,
     )

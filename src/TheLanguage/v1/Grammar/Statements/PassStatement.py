@@ -38,7 +38,7 @@ with InitRelativeImports():
     )
 
     from ...Parser.Parser import CreateRegions
-    from ...Parser.Statements.PassStatement import PassStatement as ParserPassStatement
+    from ...Parser.Phrases.Statements.PassStatement import PassStatement as ParserPassStatement
 
 
 # ----------------------------------------------------------------------

@@ -45,15 +45,16 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Common.ConstraintParametersPhrase import (
+    from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
+
+    from ...Parser.Phrases.Common.ConstraintParametersPhrase import (
         ConstraintExpressionPhrase,
         ConstraintParametersPhrase,
         ConstraintParameterPhrase,
         ConstraintTypePhrase,
     )
 
-    from ...Parser.Error import Error
-    from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
+    from ...Parser.Phrases.Error import Error
 
 
 # ----------------------------------------------------------------------

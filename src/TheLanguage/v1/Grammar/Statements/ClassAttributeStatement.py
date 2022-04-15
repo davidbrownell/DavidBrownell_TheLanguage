@@ -49,9 +49,9 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Error import CreateError, Error, ErrorException
     from ...Parser.Parser import CreateRegion, CreateRegions, GetPhrase
-    from ...Parser.Statements import ClassAttributeStatement as ParserClassAttributeStatementModule
+    from ...Parser.Phrases.Error import CreateError, Error, ErrorException
+    from ...Parser.Phrases.Statements import ClassAttributeStatement as ParserClassAttributeStatementModule
 
 
 # ----------------------------------------------------------------------
