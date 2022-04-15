@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TypePhrase.py
+# |  LiteralPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-12 08:28:34
+# |      2022-04-14 10:04:59
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TypePhrase object"""
+"""Contains the LiteralPhrase object"""
 
 import os
 
@@ -31,36 +31,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Error import (  # pylint: disable=unused-import
-        CreateError,
-        Error,                              # Convenience import
-        ErrorException,                     # Convenience import
-    )
-
     from ..Phrase import Phrase, Region
-
-    from ..Common.MutabilityModifier import MutabilityModifier
-
-
-# ----------------------------------------------------------------------
-MutabilityModifierRequiredError             = CreateError(
-    "A mutability modifier is required in this context",
-)
-
-MutabilityModifierNotAllowedError           = CreateError(
-    "A mutability modifier is not allowed in this context",
-)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TypePhrase(Phrase):
-    """Abstract base class for all types"""
+class LiteralPhrase(Phrase):
+    """Abstract base class for all literal types"""
 
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
-
-    mutability_modifier: Optional[MutabilityModifier]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -79,4 +59,4 @@ class TypePhrase(Phrase):
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        super(TypePhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
+        super(LiteralPhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)

@@ -35,7 +35,13 @@ with InitRelativeImports():
     from ..Error import CreateError, Error, ErrorException
 
     from ..Expressions.ExpressionPhrase import ExpressionPhrase
-    from ..Types.TypePhrase import Phrase, Region, TypePhrase
+
+    from ..Types.TypePhrase import (
+        MutabilityModifierRequiredError,
+        Phrase,
+        Region,
+        TypePhrase,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -73,6 +79,19 @@ class FuncParameterPhrase(Phrase):
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
         super(FuncParameterPhrase, self).__init__(regions)
+
+        # Validate
+        errors: List[Error] = []
+
+        if self.type.mutability_modifier is None:
+            errors.append(
+                MutabilityModifierRequiredError.Create(
+                    region=self.type.regions__.self__,
+                ),
+            )
+
+        if errors:
+            raise ErrorException(*errors)
 
 
 # ----------------------------------------------------------------------

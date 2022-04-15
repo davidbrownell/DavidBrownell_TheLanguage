@@ -58,8 +58,8 @@ InvalidVisibilityError                      = CreateError(
     valid_visibilities_str=str,
 )
 
-InvalidMutabilityError                      = CreateError(
-    "'{mutability_str}' is not a valid mutability for '{type}' attributes; valid mutabilities are {valid_mutabilities_str}",
+InvalidMutabilityModifierError              = CreateError(
+    "'{mutability_str}' is not a valid mutability modifier for '{type}' attributes; valid mutabilities are {valid_mutabilities_str}",
     type=str,
     mutability=MutabilityModifier,
     valid_mutabilities=List[MutabilityModifier],
@@ -145,7 +145,7 @@ class ClassAttributeStatement(StatementPhrase):
         else:
             if self.type.mutability_modifier not in class_capabilities.valid_attribute_mutabilities:
                 errors.append(
-                    InvalidMutabilityError.Create(
+                    InvalidMutabilityModifierError.Create(
                         region=self.type.regions__.mutability_modifier,
                         type=class_capabilities.name,
                         mutability=self.type.mutability_modifier,

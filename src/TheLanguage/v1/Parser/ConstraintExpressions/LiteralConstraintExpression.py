@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConstraintTypePhrase.py
+# |  LiteralConstraintExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 10:04:59
+# |      2022-04-14 14:34:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ConstraintTypePhrase object"""
+"""Contains the LiteralConstraintExpression object"""
 
 import os
 
-from typing import Any, Callable, List, Optional
+from typing import Any, Dict
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,37 +32,36 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Phrase import Phrase, Region
-    from ..Common.CompileTimeTypes.CompileTimeType import CompileTimeType
+    from .ConstraintExpressionPhrase import CompileTimeType, ConstraintExpressionPhrase
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ConstraintTypePhrase(Phrase):
-    # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+class LiteralConstraintExpression(ConstraintExpressionPhrase):
     type: CompileTimeType
+    value: Any
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+    def __post_init__(self, regions):
+        super(LiteralConstraintExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
-    def __post_init__(
+    @Interface.override
+    def Eval(
         self,
-        regions,
-        regionless_attributes: Optional[List[str]]=None,
-        validate=True,
-        **custom_display_funcs: Callable[[Any], Optional[Any]],
-    ):
-        super(ConstraintTypePhrase, self).__init__(
-            regions,
-            regionless_attributes,
-            validate,
-            **custom_display_funcs,
+        args: Dict[str, Any],
+        type_overloads: Dict[str, CompileTimeType],
+    ) -> ConstraintExpressionPhrase.EvalResult:
+        return ConstraintExpressionPhrase.EvalResult(
+            self.value,
+            self.type,
+            None,
         )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ToString(
+        self,
+        args: Dict[str, Any],
+    ) -> str:
+        return "<<<{}>>>".format(self.value)
