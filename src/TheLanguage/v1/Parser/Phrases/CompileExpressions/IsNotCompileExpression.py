@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  IsNotConstraintExpression.py
+# |  IsNotCompileExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 14:56:15
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IsNotConstraintExpression object"""
+"""Contains the IsNotCompileExpression object"""
 
 import os
 
@@ -38,13 +38,13 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class IsNotConstraintExpression(CompileExpressionPhrase):
+class IsNotCompileExpression(CompileExpressionPhrase):
     expression: CompileExpressionPhrase
     check_type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(IsNotConstraintExpression, self).__post_init__(regions)
+        super(IsNotCompileExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override

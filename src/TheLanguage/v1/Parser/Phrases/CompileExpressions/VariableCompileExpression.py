@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IsConstraintExpression.py
+# |  VariableCompileExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 12:36:58
+# |      2022-04-14 12:15:48
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IsConstraintException object"""
+"""Contains the VariableCompileExpression object"""
 
 import os
 
@@ -33,18 +33,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
-    from ...CompileTypes.Boolean import Boolean
+    from ..Error import CreateError, ErrorException
+
+
+# ----------------------------------------------------------------------
+InvalidNameError                            = CreateError(
+    "The constraint name '{name}' is not valid",
+    name=str,
+)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class IsConstraintExpression(CompileExpressionPhrase):
-    expression: CompileExpressionPhrase
-    check_type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
+class VariableCompileExpression(CompileExpressionPhrase):
+    type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
+    name: str
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(IsConstraintExpression, self).__post_init__(regions)
+        super(VariableCompileExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -53,17 +60,19 @@ class IsConstraintExpression(CompileExpressionPhrase):
         args: Dict[str, Any],
         type_overloads: Dict[str, CompileType],
     ) -> CompileExpressionPhrase.EvalResult:
-        result = self.expression.Eval(args, type_overloads)
+        if self.name not in args:
+            raise ErrorException(
+                InvalidNameError.Create(
+                    region=self.regions__.name,
+                    name=self.name,
+                ),
+            )
 
-        type_check_result = result.type.IsSupportedAndOfType(result.value, self.check_type)
-
-        if result.name is not None and type_check_result[1] is not None:
-            type_overloads[result.name] = type_check_result[1]
-
-        if type_check_result[0]:
-            return result
-
-        return CompileExpressionPhrase.EvalResult(False, Boolean(), None)
+        return CompileExpressionPhrase.EvalResult(
+            args[self.name],
+            type_overloads.get(self.name, self.type),
+            self.name,
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -71,7 +80,4 @@ class IsConstraintExpression(CompileExpressionPhrase):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "{} is {}".format(
-            self.expression.ToString(args),
-            self.check_type.name,
-        )
+        return "<<<{}: {}>>>".format(self.name, args[self.name])

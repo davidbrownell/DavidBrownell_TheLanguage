@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  BinaryConstraintExpression.py
+# |  BinaryCompileExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 15:10:28
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the BinaryConstraintExpression object"""
+"""Contains the BinaryCompileExpression object"""
 
 import os
 
@@ -100,14 +100,14 @@ class OperatorType(Enum):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class BinaryConstraintExpression(CompileExpressionPhrase):
+class BinaryCompileExpression(CompileExpressionPhrase):
     left: CompileExpressionPhrase
     operator: OperatorType
     right: CompileExpressionPhrase
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(BinaryConstraintExpression, self).__post_init__(regions)
+        super(BinaryCompileExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override

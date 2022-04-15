@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  LiteralConstraintExpression.py
+# |  IsCompileExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 14:34:06
+# |      2022-04-14 12:36:58
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the LiteralConstraintExpression object"""
+"""Contains the IsConstraintException object"""
 
 import os
 
@@ -33,17 +33,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
+    from ...CompileTypes.Boolean import Boolean
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class LiteralConstraintExpression(CompileExpressionPhrase):
-    type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
-    value: Any
+class IsCompileExpression(CompileExpressionPhrase):
+    expression: CompileExpressionPhrase
+    check_type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(LiteralConstraintExpression, self).__post_init__(regions)
+        super(IsCompileExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -52,11 +53,17 @@ class LiteralConstraintExpression(CompileExpressionPhrase):
         args: Dict[str, Any],
         type_overloads: Dict[str, CompileType],
     ) -> CompileExpressionPhrase.EvalResult:
-        return CompileExpressionPhrase.EvalResult(
-            self.value,
-            self.type,
-            None,
-        )
+        result = self.expression.Eval(args, type_overloads)
+
+        type_check_result = result.type.IsSupportedAndOfType(result.value, self.check_type)
+
+        if result.name is not None and type_check_result[1] is not None:
+            type_overloads[result.name] = type_check_result[1]
+
+        if type_check_result[0]:
+            return result
+
+        return CompileExpressionPhrase.EvalResult(False, Boolean(), None)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -64,4 +71,7 @@ class LiteralConstraintExpression(CompileExpressionPhrase):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "<<<{}>>>".format(self.value)
+        return "{} is {}".format(
+            self.expression.ToString(args),
+            self.check_type.name,
+        )

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryConstraintExpression.py
+# |  LiteralCompileExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 15:03:16
+# |      2022-04-14 14:34:06
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,10 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryConstraintExpression object"""
+"""Contains the LiteralCompileExpression object"""
 
 import os
 
-from enum import auto, Enum
 from typing import Any, Dict
 
 from dataclasses import dataclass
@@ -34,23 +33,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
-    from ...CompileTypes.Boolean import Boolean
-
-
-# ----------------------------------------------------------------------
-class OperatorType(Enum):
-    Not                                     = auto()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class UnaryConstraintExpression(CompileExpressionPhrase):
-    operator: OperatorType
-    expression: CompileExpressionPhrase
+class LiteralCompileExpression(CompileExpressionPhrase):
+    type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
+    value: Any
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(UnaryConstraintExpression, self).__post_init__(regions)
+        super(LiteralCompileExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -59,16 +52,11 @@ class UnaryConstraintExpression(CompileExpressionPhrase):
         args: Dict[str, Any],
         type_overloads: Dict[str, CompileType],
     ) -> CompileExpressionPhrase.EvalResult:
-        result = self.expression.Eval(args, type_overloads)
-
-        if self.operator == OperatorType.Not:
-            return CompileExpressionPhrase.EvalResult(
-                not result.type.ToBool(result.value),
-                Boolean(),
-                None,
-            )
-
-        assert False, self.operator  # pragma: no cover
+        return CompileExpressionPhrase.EvalResult(
+            self.value,
+            self.type,
+            None,
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -76,9 +64,4 @@ class UnaryConstraintExpression(CompileExpressionPhrase):
         self,
         args: Dict[str, Any],
     ) -> str:
-        value = self.expression.ToString(args)
-
-        if self.operator == OperatorType.Not:
-            return "not {}".format(value)
-
-        assert False, self.operator  # pragma: no cover
+        return "<<<{}>>>".format(self.value)
