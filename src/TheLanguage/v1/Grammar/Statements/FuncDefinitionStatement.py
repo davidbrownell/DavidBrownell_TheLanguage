@@ -35,6 +35,7 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ..Common import AttributesFragment
+    from ..Common import CapturedVariablesFragment
     from ..Common import FuncParametersFragment
     from ..Common import MutabilityModifier
     from ..Common import StatementsFragment
@@ -102,7 +103,10 @@ class FuncDefinitionStatement(GrammarPhrase):
                         TemplateParametersFragment.Create(),
                     ),
 
-                    # TODO: <captured_variables>?
+                    # <captured_variables>?
+                    OptionalPhraseItem(
+                        CapturedVariablesFragment.Create(),
+                    ),
 
                     CommonTokens.PopIgnoreWhitespaceControl,
 
@@ -134,7 +138,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         # ----------------------------------------------------------------------
         def Callback():  # pylint: disable=too-many-locals
             nodes = ExtractSequence(node)
-            assert len(nodes) == 11 # TODO: 12
+            assert len(nodes) == 12
 
             errors: List[Error] = []
 
@@ -240,26 +244,34 @@ class FuncDefinitionStatement(GrammarPhrase):
                 else:
                     template_parameters_info = result
 
-            # TODO: <captured_variables>?
-            captured_variables_node = None
+            # <captured_variables>?
             captured_variables_info = None
 
+            captured_variables_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
+            if captured_variables_node is not None:
+                result = CapturedVariablesFragment.Extract(captured_variables_node)
+
+                if isinstance(result, list):
+                    errors += result
+                else:
+                    captured_variables_info = result
+
             # <parameters>
-            parameters_node = cast(AST.Node, nodes[8])
+            parameters_node = cast(AST.Node, nodes[9])
             parameters_info = FuncParametersFragment.Extract(parameters_node)
 
             if isinstance(parameters_info, list):
                 errors += parameters_info
 
             # <mutability_modifier>?
-            mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[9])))
+            mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[10])))
             if mutability_modifier_node is None:
                 mutability_modifier_info = None
             else:
                 mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
 
             # Statements or None
-            statements_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[10])))
+            statements_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[11])))
             statements_info = None
 
             docstring_leaf = None

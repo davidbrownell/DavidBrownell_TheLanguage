@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConstraintExpressionPhrase.py
+# |  CompileExpressionPhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 10:04:59
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ConstraintExpressionPhrase object"""
+"""Contains the CompileExpressionPhrase object"""
 
 import os
 
@@ -33,13 +33,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Phrase import Phrase, Region
-    from ...CompileTimeTypes.CompileTimeType import CompileTimeType
+    from ...CompileTypes.CompileType import CompileType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ConstraintExpressionPhrase(Phrase, Interface.Interface):
-    """Abstract base class for all constraint expressions"""
+class CompileExpressionPhrase(Phrase, Interface.Interface):
+    """Abstract base class for all compile-time expressions"""
 
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
@@ -61,7 +61,7 @@ class ConstraintExpressionPhrase(Phrase, Interface.Interface):
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        super(ConstraintExpressionPhrase, self).__init__(
+        super(CompileExpressionPhrase, self).__init__(
             regions,
             regionless_attributes,
             validate,
@@ -73,15 +73,15 @@ class ConstraintExpressionPhrase(Phrase, Interface.Interface):
     @dataclass(frozen=True)
     class EvalResult(object):
         value: Any
-        type: CompileTimeType
+        type: CompileType
         name: Optional[str]                 # None if the value is a temporary
 
     @staticmethod
     @Interface.abstractmethod
     def Eval(
         args: Dict[str, Any],
-        type_overloads: Dict[str, CompileTimeType],
-    ) -> "ConstraintExpressionPhrase.EvalResult":
+        type_overloads: Dict[str, CompileType],
+    ) -> "CompileExpressionPhrase.EvalResult":
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------

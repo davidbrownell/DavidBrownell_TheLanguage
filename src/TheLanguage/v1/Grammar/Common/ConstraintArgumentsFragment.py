@@ -48,9 +48,9 @@ with InitRelativeImports():
     from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
 
     from ...Parser.Phrases.Common.ConstraintArgumentsPhrase import (
+        CompileExpressionPhrase,
         ConstraintArgumentPhrase,
         ConstraintArgumentsPhrase,
-        ConstraintExpressionPhrase,
     )
 
     from ...Parser.Phrases.Error import Error
@@ -70,8 +70,8 @@ def Create() -> PhraseItem:
                 ],
             ),
 
-            # <constraint_expression>
-            DynamicPhrasesType.ConstraintExpressions,
+            # <compile_expression>
+            DynamicPhrasesType.CompileExpressions,
         ],
     )
 
@@ -119,9 +119,9 @@ def _ExtractElement(
         keyword_node = cast(AST.Leaf, keyword_nodes[0])
         keyword_info = ExtractToken(keyword_node)
 
-    # <constraint_expression>
+    # <compile_expression>
     expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
-    expression_info = cast(ConstraintExpressionPhrase, GetPhrase(expression_node))
+    expression_info = cast(CompileExpressionPhrase, GetPhrase(expression_node))
 
     return (
         ConstraintArgumentPhrase.Create(

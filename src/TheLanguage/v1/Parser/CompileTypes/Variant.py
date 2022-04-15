@@ -30,15 +30,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileTimeType import CompileTimeType
+    from .CompileType import CompileType
 
 
 # ----------------------------------------------------------------------
-class Variant(CompileTimeType):
+class Variant(CompileType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        types: List[CompileTimeType],
+        types: List[CompileType],
     ):
         assert types
 
@@ -80,14 +80,14 @@ class Variant(CompileTimeType):
     def IsSupportedAndOfType(
         self,
         value: Any,
-        query_type: CompileTimeType,
-    ) -> Tuple[bool, Optional[CompileTimeType]]:
+        query_type: CompileType,
+    ) -> Tuple[bool, Optional[CompileType]]:
         query_type_type = type(query_type)
 
         if self.__class__ == query_type_type:
             return super(Variant, self).IsSupportedAndOfType(value, query_type)
 
-        matched_type: Optional[CompileTimeType] = None
+        matched_type: Optional[CompileType] = None
 
         for the_type in self.types:
             if the_type.__class__ == query_type_type:
@@ -112,14 +112,14 @@ class Variant(CompileTimeType):
     def IsNotSupportedAndOfType(
         self,
         value: Any,
-        query_type: CompileTimeType,
-    ) -> Tuple[bool, Optional[CompileTimeType]]:
+        query_type: CompileType,
+    ) -> Tuple[bool, Optional[CompileType]]:
         query_type_type = type(query_type)
 
         if self.__class__ == query_type_type:
             return super(Variant, self).IsNotSupportedAndOfType(value, query_type)
 
-        matched_type: Optional[CompileTimeType] = None
+        matched_type: Optional[CompileType] = None
 
         for the_type in self.types:
             if the_type.__class__ == query_type_type:

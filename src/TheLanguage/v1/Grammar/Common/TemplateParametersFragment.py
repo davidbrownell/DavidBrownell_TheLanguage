@@ -96,19 +96,19 @@ def Create() -> PhraseItem:
             PhraseItem(
                 name="Template Decorator",
                 item=[
-                    # <template_decorator_type>
-                    DynamicPhrasesType.TemplateDecoratorTypes,
+                    # <compile_type>
+                    DynamicPhrasesType.CompileTypes,
 
                     # <template_decorator_name>
                     CommonTokens.TemplateDecoratorParameterName,
 
-                    # ('=' <template_decorator_expression>)?
+                    # ('=' <compile_expression>)?
                     OptionalPhraseItem(
                         name="Default",
                         item=[
                             "=",
                             CommonTokens.PushIgnoreWhitespaceControl,
-                            DynamicPhrasesType.TemplateDecoratorExpressions,
+                            DynamicPhrasesType.CompileExpressions,
                             CommonTokens.PopIgnoreWhitespaceControl,
                         ],
                     ),

@@ -30,11 +30,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileTimeType import CompileTimeType
+    from .CompileType import CompileType
 
 
 # ----------------------------------------------------------------------
-class String(CompileTimeType):
+class String(CompileType):
     name                                    = Interface.DerivedProperty("String")  # type: ignore
 
     # ----------------------------------------------------------------------

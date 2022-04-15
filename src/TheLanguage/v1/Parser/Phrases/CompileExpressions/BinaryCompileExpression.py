@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  BinaryConstraintExpression.py
+# |  BinaryCompileExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 15:10:28
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the BinaryConstraintExpression object"""
+"""Contains the BinaryCompileExpression object"""
 
 import os
 
@@ -33,11 +33,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ConstraintExpressionPhrase import CompileTimeType, ConstraintExpressionPhrase
+    from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
 
-    from ...CompileTimeTypes.Boolean import Boolean
-    from ...CompileTimeTypes.Integer import Integer
-    from ...CompileTimeTypes.Number import Number
+    from ...CompileTypes.Boolean import Boolean
+    from ...CompileTypes.Integer import Integer
+    from ...CompileTypes.Number import Number
 
     from ..Error import CreateError, Error, ErrorException
 
@@ -100,29 +100,29 @@ class OperatorType(Enum):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class BinaryConstraintExpression(ConstraintExpressionPhrase):
-    left: ConstraintExpressionPhrase
+class BinaryCompileExpression(CompileExpressionPhrase):
+    left: CompileExpressionPhrase
     operator: OperatorType
-    right: ConstraintExpressionPhrase
+    right: CompileExpressionPhrase
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(BinaryConstraintExpression, self).__post_init__(regions)
+        super(BinaryCompileExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, CompileTimeType],
-    ) -> ConstraintExpressionPhrase.EvalResult:
+        type_overloads: Dict[str, CompileType],
+    ) -> CompileExpressionPhrase.EvalResult:
         errors: List[Error] = []
 
         left_result = self.left.Eval(args, type_overloads)
 
         if self.operator == OperatorType.LogicalAnd:
             if not left_result.type.ToBool(left_result.value):
-                return ConstraintExpressionPhrase.EvalResult(False, Boolean(), None)
+                return CompileExpressionPhrase.EvalResult(False, Boolean(), None)
 
             return self.right.Eval(args, type_overloads)
 
@@ -151,35 +151,35 @@ class BinaryConstraintExpression(ConstraintExpressionPhrase):
                 if left_result.value < right_result.value:
                     return left_result
 
-                return ConstraintExpressionPhrase.EvalResult(False, Boolean(), None)
+                return CompileExpressionPhrase.EvalResult(False, Boolean(), None)
 
             elif self.operator == OperatorType.LessEqual:
                 if left_result.value <= right_result.value:
                     return left_result
 
-                return ConstraintExpressionPhrase.EvalResult(False, Boolean(), None)
+                return CompileExpressionPhrase.EvalResult(False, Boolean(), None)
 
             elif self.operator == OperatorType.Greater:
                 if left_result.value > right_result.value:
                     return right_result
 
-                return ConstraintExpressionPhrase.EvalResult(False, Boolean(), None)
+                return CompileExpressionPhrase.EvalResult(False, Boolean(), None)
 
             elif self.operator == OperatorType.GreaterEqual:
                 if left_result.value >= right_result.value:
                     return right_result
 
-                return ConstraintExpressionPhrase.EvalResult(False, Boolean(), None)
+                return CompileExpressionPhrase.EvalResult(False, Boolean(), None)
 
             elif self.operator == OperatorType.Equal:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value == right_result.value,
                     Boolean(),
                     None,
                 )
 
             elif self.operator == OperatorType.NotEqual:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value != right_result.value,
                     Boolean(),
                     None,
@@ -195,28 +195,28 @@ class BinaryConstraintExpression(ConstraintExpressionPhrase):
                 )
 
             elif self.operator == OperatorType.Multiply:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value * right_result.value,
                     left_result.type,
                     None,
                 )
 
             elif self.operator == OperatorType.Divide:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value / right_result.value,
                     left_result.type,
                     None,
                 )
 
             elif self.operator == OperatorType.Add:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value + right_result.value,
                     left_result.type,
                     None,
                 )
 
             elif self.operator == OperatorType.Subtract:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value - right_result.value,
                     left_result.type,
                     None,
@@ -232,49 +232,49 @@ class BinaryConstraintExpression(ConstraintExpressionPhrase):
                 )
 
             elif self.operator == OperatorType.DivideFloor:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value // right_result.value,
                     left_result.type,
                     None,
                 )
 
             elif self.operator == OperatorType.Modulus:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value % right_result.value,
                     left_result.type,
                     None,
                 )
 
             elif self.operator == OperatorType.BitShiftLeft:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value << right_result.value,
                     left_result.type,
                     None,
                 )
 
             elif self.operator == OperatorType.BitShiftRight:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value >> right_result.value,
                     left_result.type,
                     None,
                 )
 
             elif self.operator == OperatorType.BitwiseAnd:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value & right_result.value,
                     left_result.type,
                     None,
                 )
 
             elif self.operator == OperatorType.BitwiseXor:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value ^ right_result.value,
                     left_result.type,
                     None,
                 )
 
             elif self.operator == OperatorType.BitwiseOr:
-                return ConstraintExpressionPhrase.EvalResult(
+                return CompileExpressionPhrase.EvalResult(
                     left_result.value | right_result.value,
                     left_result.type,
                     None,

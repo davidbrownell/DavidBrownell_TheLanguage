@@ -80,18 +80,27 @@ StandardCapabilities                        = _ClassCapabilities(
     default_uses_visibility=VisibilityModifier.private,
     valid_method_modifiers=[
         MethodModifier.abstract,
+        MethodModifier.final,
         MethodModifier.override,
         MethodModifier.standard,
         MethodModifier.virtual,
     ],
+    default_method_modifier=MethodModifier.standard,
     valid_method_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
         VisibilityModifier.protected,
         VisibilityModifier.private,
     ],
-    default_method_modifier=MethodModifier.standard,
     default_method_visibility=VisibilityModifier.private,
+    valid_method_mutabilities=[
+        MutabilityModifier.var,
+        MutabilityModifier.ref,
+        MutabilityModifier.val,
+        MutabilityModifier.mutable,
+        MutabilityModifier.immutable,
+    ],
+    default_method_mutability=None,
     allow_static_methods=True,
     valid_attribute_visibilities=[
         VisibilityModifier.public,
@@ -99,10 +108,10 @@ StandardCapabilities                        = _ClassCapabilities(
         VisibilityModifier.protected,
         VisibilityModifier.private,
     ],
+    default_attribute_visibility=VisibilityModifier.private,
     valid_attribute_mutabilities=[
         MutabilityModifier.var,
         MutabilityModifier.val,
     ],
-    default_attribute_visibility=VisibilityModifier.private,
     allow_mutable_public_attributes=False,
 )
