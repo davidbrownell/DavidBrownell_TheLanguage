@@ -58,19 +58,16 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ...Parser.Error import CreateError, Error, Region
     from ...Parser.Parser import CreateRegion, CreateRegions
-
-    from ...Parser.Common.ClassModifier import ClassModifier
-
-    from ...Parser.Statements import ClassStatement as ParserClassStatementModule
-
-    from ...Parser.Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
-    from ...Parser.Statements.ClassCapabilities.ConceptCapabilities import ConceptCapabilities
-    from ...Parser.Statements.ClassCapabilities.InterfaceCapabilities import InterfaceCapabilities
-    from ...Parser.Statements.ClassCapabilities.MixinCapabilities import MixinCapabilities
-    from ...Parser.Statements.ClassCapabilities.StandardCapabilities import StandardCapabilities
-    from ...Parser.Statements.ClassCapabilities.StructCapabilities import StructCapabilities
+    from ...Parser.Phrases.Error import CreateError, Error, Region
+    from ...Parser.Phrases.Common.ClassModifier import ClassModifier
+    from ...Parser.Phrases.Statements import ClassStatement as ParserClassStatementModule
+    from ...Parser.Phrases.Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
+    from ...Parser.Phrases.Statements.ClassCapabilities.ConceptCapabilities import ConceptCapabilities
+    from ...Parser.Phrases.Statements.ClassCapabilities.InterfaceCapabilities import InterfaceCapabilities
+    from ...Parser.Phrases.Statements.ClassCapabilities.MixinCapabilities import MixinCapabilities
+    from ...Parser.Phrases.Statements.ClassCapabilities.StandardCapabilities import StandardCapabilities
+    from ...Parser.Phrases.Statements.ClassCapabilities.StructCapabilities import StructCapabilities
 
 
 # ----------------------------------------------------------------------

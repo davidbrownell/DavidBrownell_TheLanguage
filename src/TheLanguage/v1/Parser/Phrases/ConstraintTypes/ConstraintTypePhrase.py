@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Region.py
+# |  ConstraintTypePhrase.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-03-01 09:12:33
+# |      2022-04-14 10:04:59
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Region object"""
+"""Contains the ConstraintTypePhrase object"""
 
 import os
 
-from dataclasses import dataclass
+from typing import Any, Callable, List, Optional
+
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import ComparisonOperators
-from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,17 +31,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Lexer.Location import Location
+    from ..Phrase import Phrase, Region
+    from ...CompileTimeTypes.CompileTimeType import CompileTimeType
 
 
 # ----------------------------------------------------------------------
-@ComparisonOperators
 @dataclass(frozen=True, repr=False)
-class Region(ObjectReprImplBase):
-    """Begining and ending for interesting blocks of code within a source file"""
-
-    begin: Location
-    end: Location
+class ConstraintTypePhrase(Phrase):
+    # ----------------------------------------------------------------------
+    regions: InitVar[List[Optional[Region]]]
+    type: CompileTimeType
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -53,24 +52,16 @@ class Region(ObjectReprImplBase):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        ObjectReprImplBase.__init__(self)
-
-        assert self.begin <= self.end       # type: ignore (operator is added dynamically)
-
-    # ----------------------------------------------------------------------
-    def __contains__(self, other):
-        return other.begin >= self.begin and other.end <= self.end
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def Compare(value1, value2):
-        result = Location.Compare(value1.begin, value2.begin)
-        if result != 0:
-            return result
-
-        result = Location.Compare(value1.end, value2.end)
-        if result != 0:
-            return result
-
-        return 0
+    def __post_init__(
+        self,
+        regions,
+        regionless_attributes: Optional[List[str]]=None,
+        validate=True,
+        **custom_display_funcs: Callable[[Any], Optional[Any]],
+    ):
+        super(ConstraintTypePhrase, self).__init__(
+            regions,
+            regionless_attributes,
+            validate,
+            **custom_display_funcs,
+        )

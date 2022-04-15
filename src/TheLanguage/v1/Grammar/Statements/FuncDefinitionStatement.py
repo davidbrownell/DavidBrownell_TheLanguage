@@ -56,8 +56,8 @@ with InitRelativeImports():
     )
 
     from ...Parser.Parser import CreateRegion, CreateRegions, Error, GetPhrase
-    from ...Parser.Common.MethodModifier import MethodModifier
-    from ...Parser.Statements import FuncDefinitionStatement as FuncDefinitionStatementModule
+    from ...Parser.Phrases.Common.MethodModifier import MethodModifier
+    from ...Parser.Phrases.Statements import FuncDefinitionStatement as FuncDefinitionStatementModule
 
 
 # ----------------------------------------------------------------------
