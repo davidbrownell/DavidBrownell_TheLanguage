@@ -48,8 +48,8 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ....Parser.Error import CreateError, Error, ErrorException, Region
     from ....Parser.Parser import CreateRegion, CreateRegions, Phrase
+    from ....Parser.Phrases.Error import CreateError, Error, ErrorException, Region
 
 
 # ----------------------------------------------------------------------

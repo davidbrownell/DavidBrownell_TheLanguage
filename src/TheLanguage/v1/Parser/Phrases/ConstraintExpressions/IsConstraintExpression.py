@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IsNotConstraintExpression.py
+# |  IsConstraintExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 14:56:15
+# |      2022-04-14 12:36:58
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IsNotConstraintExpression object"""
+"""Contains the IsConstraintException object"""
 
 import os
 
@@ -33,18 +33,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ConstraintExpressionPhrase import CompileTimeType, ConstraintExpressionPhrase
-    from ..Common.CompileTimeTypes.Boolean import Boolean
+    from ...CompileTimeTypes.Boolean import Boolean
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class IsNotConstraintExpression(ConstraintExpressionPhrase):
+class IsConstraintExpression(ConstraintExpressionPhrase):
     expression: ConstraintExpressionPhrase
     check_type: CompileTimeType
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(IsNotConstraintExpression, self).__post_init__(regions)
+        super(IsConstraintExpression, self).__post_init__(regions)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -55,7 +55,7 @@ class IsNotConstraintExpression(ConstraintExpressionPhrase):
     ) -> ConstraintExpressionPhrase.EvalResult:
         result = self.expression.Eval(args, type_overloads)
 
-        type_check_result = result.type.IsNotSupportedAndOfType(result.value, self.check_type)
+        type_check_result = result.type.IsSupportedAndOfType(result.value, self.check_type)
 
         if result.name is not None and type_check_result[1] is not None:
             type_overloads[result.name] = type_check_result[1]
@@ -71,7 +71,7 @@ class IsNotConstraintExpression(ConstraintExpressionPhrase):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "{} is not {}".format(
+        return "{} is {}".format(
             self.expression.ToString(args),
             self.check_type.name,
         )

@@ -35,9 +35,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ConstraintExpressionPhrase import CompileTimeType, ConstraintExpressionPhrase
 
-    from ..Common.CompileTimeTypes.Boolean import Boolean
-    from ..Common.CompileTimeTypes.Integer import Integer
-    from ..Common.CompileTimeTypes.Number import Number
+    from ...CompileTimeTypes.Boolean import Boolean
+    from ...CompileTimeTypes.Integer import Integer
+    from ...CompileTimeTypes.Number import Number
 
     from ..Error import CreateError, Error, ErrorException
 

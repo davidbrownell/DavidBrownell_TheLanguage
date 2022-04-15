@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Phrase import Phrase, Region
-    from ..Common.CompileTimeTypes.CompileTimeType import CompileTimeType
+    from ...CompileTimeTypes.CompileTimeType import CompileTimeType
 
 
 # ----------------------------------------------------------------------

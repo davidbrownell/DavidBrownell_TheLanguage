@@ -47,7 +47,7 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ...Parser.Error import CreateError, Error
+    from ...Parser.Phrases.Error import CreateError, Error
 
 
 # ----------------------------------------------------------------------
