@@ -46,7 +46,9 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Common.TemplateArgumentsPhrase import (
+    from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
+
+    from ...Parser.Phrases.Common.TemplateArgumentsPhrase import (
         TemplateArgumentsPhrase,
         TemplateDecoratorArgumentPhrase,
         TemplateDecoratorExpressionPhrase,
@@ -54,8 +56,7 @@ with InitRelativeImports():
         TypePhrase,
     )
 
-    from ...Parser.Error import Error
-    from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
+    from ...Parser.Phrases.Error import Error
 
 
 # ----------------------------------------------------------------------
@@ -94,8 +95,8 @@ def Create() -> PhraseItem:
                         ],
                     ),
 
-                    # <template_expression>
-                    DynamicPhrasesType.TemplateDecoratorExpressions,
+                    # <compile_expression>
+                    DynamicPhrasesType.CompileExpressions,
                 ],
             ),
         ),

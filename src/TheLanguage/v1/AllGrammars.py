@@ -54,7 +54,7 @@ with InitRelativeImports():
         RootPhrase as ParserRootPhrase,
     )
 
-    from .Parser.Phrase import (
+    from .Parser.Phrases.Phrase import (
         Phrase as ParserPhrase,
         VisitControl as PhraseVisitControl,
     )

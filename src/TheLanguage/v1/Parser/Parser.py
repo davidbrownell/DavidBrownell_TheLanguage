@@ -33,8 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Error import CreateError, Error, ErrorException, Region
-    from .Phrase import Phrase, RootPhrase
+    from .Phrases.Error import CreateError, Error, ErrorException, Region
+    from .Phrases.Phrase import Phrase, RootPhrase
 
     from ..Lexer.Lexer import AST, Phrase as LexerPhrase
 

@@ -46,18 +46,19 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Error import Error
     from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
 
-    from ...Parser.Common.TemplateParametersPhrase import (
+    from ...Parser.Phrases.Error import Error
+
+    from ...Parser.Phrases.Common.TemplateParametersPhrase import (
         TemplateDecoratorParameterPhrase,
         TemplateParametersPhrase,
         TemplateTypeParameterPhrase,
         TypePhrase,
     )
 
-    from ...Parser.TemplateDecoratorExpressions.TemplateDecoratorExpressionPhrase import TemplateDecoratorExpressionPhrase
-    from ...Parser.TemplateDecoratorTypes.TemplateDecoratorTypePhrase import TemplateDecoratorTypePhrase
+    from ...Parser.Phrases.TemplateDecoratorExpressions.TemplateDecoratorExpressionPhrase import TemplateDecoratorExpressionPhrase
+    from ...Parser.Phrases.TemplateDecoratorTypes.TemplateDecoratorTypePhrase import TemplateDecoratorTypePhrase
 
 
 # ----------------------------------------------------------------------
@@ -95,19 +96,19 @@ def Create() -> PhraseItem:
             PhraseItem(
                 name="Template Decorator",
                 item=[
-                    # <template_decorator_type>
-                    DynamicPhrasesType.TemplateDecoratorTypes,
+                    # <compile_type>
+                    DynamicPhrasesType.CompileTypes,
 
                     # <template_decorator_name>
                     CommonTokens.TemplateDecoratorParameterName,
 
-                    # ('=' <template_decorator_expression>)?
+                    # ('=' <compile_expression>)?
                     OptionalPhraseItem(
                         name="Default",
                         item=[
                             "=",
                             CommonTokens.PushIgnoreWhitespaceControl,
-                            DynamicPhrasesType.TemplateDecoratorExpressions,
+                            DynamicPhrasesType.CompileExpressions,
                             CommonTokens.PopIgnoreWhitespaceControl,
                         ],
                     ),
