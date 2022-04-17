@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  LiteralCompileExpression.py
+# |  StringType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 14:34:06
+# |      2022-04-14 16:16:47
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the LiteralCompileExpression object"""
+"""Contains the StringType object"""
 
 import os
 
-from typing import Any, Dict
-
-from dataclasses import dataclass
+from typing import Any
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,36 +30,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
+    from .Type import Type
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class LiteralCompileExpression(CompileExpressionPhrase):
-    type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
-    value: Any
+class StringType(Type):
+    name                                    = Interface.DerivedProperty("StringType")  # type: ignore
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(LiteralCompileExpression, self).__post_init__(regions)
-
-    # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
-    def Eval(
-        self,
-        args: Dict[str, Any],
-        type_overloads: Dict[str, CompileType],
-    ) -> CompileExpressionPhrase.EvalResult:
-        return CompileExpressionPhrase.EvalResult(
-            self.value,
-            self.type,
-            None,
-        )
+    def IsSupportedValue(
+        value: Any,
+    ) -> bool:
+        return isinstance(value, str)
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
-    def ToString(
-        self,
-        args: Dict[str, Any],
-    ) -> str:
-        return "<<<{}>>>".format(self.value)
+    def ToBoolValue(
+        value: Any,
+    ) -> bool:
+        return bool(value)

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Character.py
+# |  Expression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 16:16:47
+# |      2022-04-15 13:19:36
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,17 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Character object"""
+"""Contains the Expression object"""
 
 import os
 
-from typing import Any
+from typing import Any, Dict, Optional
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,25 +33,35 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileType import CompileType
+    from ..Types.Type import Type
 
 
 # ----------------------------------------------------------------------
-class Character(CompileType):
-    name                                    = Interface.DerivedProperty("Character")  # type: ignore
+class Expression(Interface.Interface, ObjectReprImplBase):
+    """Abstract base class for all expressions"""
+
+    # ----------------------------------------------------------------------
+    # |  Public Types
+    @dataclass
+    class EvalResult(object):
+        value: Any
+        type: Type
+        name: Optional[str]                 # None if the result is a temporary value
+
+    # ----------------------------------------------------------------------
+    # |  Public Methods
+    @staticmethod
+    @Interface.abstractmethod
+    def Eval(
+        args: Dict[str, Any],
+        type_overloads: Dict[str, Type],
+    ) -> "Expression.EvalResult":
+        raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
-    @Interface.override
-    def IsSupported(
-        value: Any,
-    ) -> bool:
-        return isinstance(value, int)
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def ToBool(
-        value: Any,
-    ) -> bool:
-        return value > 0
+    @Interface.abstractmethod
+    def ToString(
+        args: Dict[str, Any],
+    ) -> str:
+        raise Exception("Abstract method")  # pragma: no cover

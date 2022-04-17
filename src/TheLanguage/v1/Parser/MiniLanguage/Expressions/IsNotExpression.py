@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IsNotCompileExpression.py
+# |  IsNotExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 14:56:15
+# |      2022-04-15 13:49:29
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IsNotCompileExpression object"""
+"""Contains the IsExpression object"""
 
 import os
 
@@ -32,45 +32,48 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
-    from ...CompileTypes.Boolean import Boolean
+    from .Expression import Expression, Type
+    from ..Types.BooleanType import BooleanType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class IsNotCompileExpression(CompileExpressionPhrase):
-    expression: CompileExpressionPhrase
-    check_type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
+class IsNotExpression(Expression):
+    expression: Expression
+    check_type: Type
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(IsNotCompileExpression, self).__post_init__(regions)
+    def __post_init__(self):
+        super(IsNotExpression, self).__init__()
 
     # ----------------------------------------------------------------------
     @Interface.override
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, CompileType],
-    ) -> CompileExpressionPhrase.EvalResult:
-        result = self.expression.Eval(args, type_overloads)
+        type_overloads: Dict[str, Type],
+    ) -> Expression.EvalResult:
+        eval_result = self.expression.Eval(args, type_overloads)
 
-        type_check_result = result.type.IsNotSupportedAndOfType(result.value, self.check_type)
+        result, inferred_type = eval_result.type.IsNotSupportedValueOfType(eval_result.value, self.check_type)
 
-        if result.name is not None and type_check_result[1] is not None:
-            type_overloads[result.name] = type_check_result[1]
+        if inferred_type is not None:
+            eval_result.type = inferred_type
 
-        if type_check_result[0]:
-            return result
+            if eval_result.name is not None:
+                type_overloads[eval_result.name] = inferred_type
 
-        return CompileExpressionPhrase.EvalResult(False, Boolean(), None)
+        if result:
+            return eval_result
+
+        return Expression.EvalResult(False, BooleanType(), None)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def ToString(
         self,
         args: Dict[str, Any],
-    ) -> str:
+    ):
         return "{} is not {}".format(
             self.expression.ToString(args),
             self.check_type.name,

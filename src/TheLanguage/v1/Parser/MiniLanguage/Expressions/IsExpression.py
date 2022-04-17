@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CompileExpressionPhrase.py
+# |  IsExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 10:04:59
+# |      2022-04-15 13:41:31
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CompileExpressionPhrase object"""
+"""Contains the IsExpression object"""
 
 import os
 
-from typing import Any, Callable, List, Optional
+from typing import Any, Dict
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,40 +32,49 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Phrase import Phrase, Region
-    from ...MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
+    from .Expression import Expression, Type
+    from ..Types.BooleanType import BooleanType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class CompileExpressionPhrase(Phrase, Interface.Interface):
-    """Abstract base class for all compile-time expressions"""
+class IsExpression(Expression):
+    expression: Expression
+    check_type: Type
 
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
-    expression: MiniLanguageExpression
+    def __post_init__(self):
+        super(IsExpression, self).__init__()
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(
+    @Interface.override
+    def Eval(
         self,
-        regions,
-        regionless_attributes: Optional[List[str]]=None,
-        validate=True,
-        **custom_display_funcs: Callable[[Any], Optional[Any]],
-    ):
-        super(CompileExpressionPhrase, self).__init__(
-            regions,
-            regionless_attributes,
-            validate,
-            expression_type=None,  # type: ignore
-            **custom_display_funcs,
+        args: Dict[str, Any],
+        type_overloads: Dict[str, Type],
+    ) -> Expression.EvalResult:
+        eval_result = self.expression.Eval(args, type_overloads)
+
+        result, inferred_type = eval_result.type.IsSupportedValueOfType(eval_result.value, self.check_type)
+
+        if inferred_type is not None:
+            eval_result.type = inferred_type
+
+            if eval_result.name is not None:
+                type_overloads[eval_result.name] = inferred_type
+
+        if result:
+            return eval_result
+
+        return Expression.EvalResult(False, BooleanType(), None)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ToString(
+        self,
+        args: Dict[str, Any],
+    ) -> str:
+        return "{} is {}".format(
+            self.expression.ToString(args),
+            self.check_type.name,
         )

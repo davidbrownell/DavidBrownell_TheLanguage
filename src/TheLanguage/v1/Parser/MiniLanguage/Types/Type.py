@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  CompileType.py
+# |  Type.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 16:08:48
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CompileType object"""
+"""Contains the Type object"""
 
 import os
 
@@ -29,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 
 # ----------------------------------------------------------------------
-class CompileType(Interface.Interface):
+class Type(Interface.Interface):
     """\
     Abstract base class for types that can be used at compile time by the compiler.
 
@@ -45,16 +45,16 @@ class CompileType(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def IsSupported(
+    def IsSupportedValue(
         value: Any,
     ) -> bool:
-        """Returns True if this CompileType supports the value"""
+        """Returns True if this Type supports the value"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def ToBool(
+    def ToBoolValue(
         value: Any,
     ) -> bool:
         """Convert the value to a boolean value"""
@@ -62,11 +62,11 @@ class CompileType(Interface.Interface):
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def IsSupportedAndOfType(
+    def IsSupportedValueOfType(
         self,
         value: Any,
-        query_type: "CompileType",
-    ) -> Tuple[bool, Optional["CompileType"]]:
+        query_type: "Type",
+    ) -> Tuple[bool, Optional["Type"]]:
         """\
         Returns True if the value is supported and of the query_type.
 
@@ -74,18 +74,18 @@ class CompileType(Interface.Interface):
         based on this information.
         """
 
-        if query_type.__class__ == self.__class__ and self.IsSupported(value):
+        if query_type.__class__ == self.__class__ and self.IsSupportedValue(value):
             return True, self
 
         return False, None
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def IsNotSupportedAndOfType(
+    def IsNotSupportedValueOfType(
         self,
         value: Any,
-        query_type: "CompileType",
-    ) -> Tuple[bool, Optional["CompileType"]]:
+        query_type: "Type",
+    ) -> Tuple[bool, Optional["Type"]]:
         """\
         Returns True if the value is not supported and of the query_type.
 
@@ -93,7 +93,7 @@ class CompileType(Interface.Interface):
         based on this information.
         """
 
-        if query_type.__class__ != self.__class__ or not self.IsSupported(value):
+        if query_type.__class__ != self.__class__ or not self.IsSupportedValue(value):
             return True, self
 
         return False, None

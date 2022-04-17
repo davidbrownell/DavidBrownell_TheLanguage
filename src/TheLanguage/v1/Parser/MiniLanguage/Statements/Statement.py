@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoneCompileType.py
+# |  Statement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 16:16:47
+# |      2022-04-17 09:14:49
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,17 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NoneCompileType object"""
+"""Contains the Statement object"""
 
 import os
 
-from typing import Any
+from typing import Any, Dict, List
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,25 +33,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileType import CompileType
+    from ..Types.Type import Type
 
 
 # ----------------------------------------------------------------------
-class NoneCompileType(CompileType):
-    name                                    = Interface.DerivedProperty("None")  # type: ignore
+class Statement(Interface.Interface, ObjectReprImplBase):
+    """Abstract base class for all statements"""
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def IsSupported(
-        value: Any,
-    ) -> bool:
-        return value is None
+    # |  Public Types
+    @dataclass
+    class ExecuteResult(object):
+        errors: List[str]
+        warnings: List[str]
+        infos: List[str]
+
+        should_continue: bool
 
     # ----------------------------------------------------------------------
+    # |  Public Methods
+    # ----------------------------------------------------------------------
     @staticmethod
-    @Interface.override
-    def ToBool(
-        value: Any,
-    ) -> bool:
-        return False
+    @Interface.abstractmethod
+    def Execute(
+        args: Dict[str, Any],
+        type_overloads: Dict[str, Type],
+    ) -> "Statement.ExecuteResult":
+        raise Exception("Abstract method")  # pragma: no cover

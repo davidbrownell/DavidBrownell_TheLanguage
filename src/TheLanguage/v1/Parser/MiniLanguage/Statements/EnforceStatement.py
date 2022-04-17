@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IsCompileExpression.py
+# |  EnforceStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 12:36:58
+# |      2022-04-17 09:21:42
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IsConstraintException object"""
+"""Contains the EnforceStatement object"""
 
 import os
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from dataclasses import dataclass
 
@@ -32,46 +32,48 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
-    from ...CompileTypes.Boolean import Boolean
+    from .Statement import Statement, Type
+    from ..Expressions.Expression import Expression
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class IsCompileExpression(CompileExpressionPhrase):
-    expression: CompileExpressionPhrase
-    check_type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
+class EnforceStatement(Statement):
+    expression: Expression
+    message: Optional[str]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(IsCompileExpression, self).__post_init__(regions)
+    def __post_init__(self):
+        super(EnforceStatement, self).__init__()
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Eval(
+    def Execute(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, CompileType],
-    ) -> CompileExpressionPhrase.EvalResult:
+        type_overloads: Dict[str, Type],
+    ) -> Statement.ExecuteResult:
         result = self.expression.Eval(args, type_overloads)
 
-        type_check_result = result.type.IsSupportedAndOfType(result.value, self.check_type)
+        if not result.type.ToBoolValue(result.value):
+            return Statement.ExecuteResult(
+                errors=[
+                    "Expression '{}' failed{}".format(
+                        self.expression.ToString(args),
+                        "" if self.message is None else ": {}".format(self.message),
+                    ),
+                ],
+                warnings=[],
+                infos=[],
+                should_continue=False,
+            )
 
-        if result.name is not None and type_check_result[1] is not None:
-            type_overloads[result.name] = type_check_result[1]
+        if result.name is not None:
+            type_overloads[result.name] = result.type
 
-        if type_check_result[0]:
-            return result
-
-        return CompileExpressionPhrase.EvalResult(False, Boolean(), None)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def ToString(
-        self,
-        args: Dict[str, Any],
-    ) -> str:
-        return "{} is {}".format(
-            self.expression.ToString(args),
-            self.check_type.name,
+        return Statement.ExecuteResult(
+            errors=[],
+            warnings=[],
+            infos=[],
+            should_continue=True,
         )
