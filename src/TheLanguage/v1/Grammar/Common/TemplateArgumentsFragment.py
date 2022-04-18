@@ -49,9 +49,9 @@ with InitRelativeImports():
     from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
 
     from ...Parser.Phrases.Common.TemplateArgumentsPhrase import (
+        CompileExpressionPhrase,
         TemplateArgumentsPhrase,
         TemplateDecoratorArgumentPhrase,
-        TemplateDecoratorExpressionPhrase,
         TemplateTypeArgumentPhrase,
         TypePhrase,
     )
@@ -140,7 +140,7 @@ def _ExtractElement(
         element_type = TemplateTypeArgumentPhrase
 
     elif node.type.name == "Template Decorator":
-        dynamic_phrase_type = TemplateDecoratorExpressionPhrase
+        dynamic_phrase_type = CompileExpressionPhrase
         element_type = TemplateDecoratorArgumentPhrase
 
     else:
