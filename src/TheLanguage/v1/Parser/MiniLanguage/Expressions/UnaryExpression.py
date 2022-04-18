@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryCompileExpression.py
+# |  UnaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 15:03:16
+# |      2022-04-15 13:35:27
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryCompileExpression object"""
+"""Contains the UnaryExpression object"""
 
 import os
+import types
 
-from enum import auto, Enum
+from enum import Enum
 from typing import Any, Dict
 
 from dataclasses import dataclass
@@ -33,42 +34,40 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
-    from ...CompileTypes.Boolean import Boolean
+    from .Expression import Expression, Type
+    from ..Types.BooleanType import BooleanType
 
 
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
-    Not                                     = auto()
+    Not                                     = "not"
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class UnaryCompileExpression(CompileExpressionPhrase):
+class UnaryExpression(Expression):
     operator: OperatorType
-    expression: CompileExpressionPhrase
+    expression: Expression
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(UnaryCompileExpression, self).__post_init__(regions)
+    def __post_init__(self):
+        super(UnaryExpression, self).__init__()
+
+        if self.operator == OperatorType.Not:
+            eval_impl = self._EvalNotImpl
+        else:
+            assert False, self.operator
+
+        object.__setattr__(self, "Eval", types.MethodType(eval_impl, self))
 
     # ----------------------------------------------------------------------
     @Interface.override
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, CompileType],
-    ) -> CompileExpressionPhrase.EvalResult:
-        result = self.expression.Eval(args, type_overloads)
-
-        if self.operator == OperatorType.Not:
-            return CompileExpressionPhrase.EvalResult(
-                not result.type.ToBool(result.value),
-                Boolean(),
-                None,
-            )
-
-        assert False, self.operator  # pragma: no cover
+        type_overloads: Dict[str, Type],
+    ) -> Expression.EvalResult:
+        raise Exception("This should never be invoked directly, as the implementation will be replaced during instane construction")
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -76,9 +75,19 @@ class UnaryCompileExpression(CompileExpressionPhrase):
         self,
         args: Dict[str, Any],
     ) -> str:
-        value = self.expression.ToString(args)
+        return "{} {}".format(
+            self.operator.value,
+            self.expression.ToString(args),
+        )
 
-        if self.operator == OperatorType.Not:
-            return "not {}".format(value)
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    def _EvalNotImpl(self, args, type_overloads):
+        result = self.expression.Eval(args, type_overloads)
 
-        assert False, self.operator  # pragma: no cover
+        return Expression.EvalResult(
+            not result.type.ToBoolValue(result.value),
+            BooleanType(),
+            None,
+        )

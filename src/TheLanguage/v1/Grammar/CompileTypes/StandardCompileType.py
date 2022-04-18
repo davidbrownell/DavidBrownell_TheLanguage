@@ -42,12 +42,12 @@ with InitRelativeImports():
 
     from ...Parser.Parser import CreateRegion, CreateRegions
 
-    from ...Parser.CompileTypes.Boolean import Boolean
-    from ...Parser.CompileTypes.Character import Character
-    from ...Parser.CompileTypes.Integer import Integer
-    from ...Parser.CompileTypes.NoneCompileType import NoneCompileType
-    from ...Parser.CompileTypes.Number import Number
-    from ...Parser.CompileTypes.String import String
+    from ...Parser.MiniLanguage.Types.BooleanType import BooleanType
+    from ...Parser.MiniLanguage.Types.CharacterType import CharacterType
+    from ...Parser.MiniLanguage.Types.IntegerType import IntegerType
+    from ...Parser.MiniLanguage.Types.NoneType import NoneType
+    from ...Parser.MiniLanguage.Types.NumberType import NumberType
+    from ...Parser.MiniLanguage.Types.StringType import StringType
 
     from ...Parser.Phrases.CompileTypes.CompileTypePhrase import CompileTypePhrase
     from ...Parser.Phrases.Error import CreateError
@@ -83,17 +83,17 @@ class StandardCompileType(GrammarPhrase):
         value = ExtractToken(cast(AST.Leaf, node))
 
         if value == "Bool!":
-            the_type = Boolean()
+            the_type = BooleanType()
         elif value == "Char!":
-            the_type = Character()
+            the_type = CharacterType()
         elif value == "Int!":
-            the_type = Integer()
+            the_type = IntegerType()
         elif value == "None!":
-            the_type = NoneCompileType()
+            the_type = NoneType()
         elif value == "Num!":
-            the_type = Number()
+            the_type = NumberType()
         elif value == "Str!":
-            the_type = String()
+            the_type = StringType()
         else:
             return [
                 InvalidTypeError.Create(

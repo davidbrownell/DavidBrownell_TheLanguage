@@ -34,8 +34,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..Error import CreateError, Error, ErrorException
 
-    from ..TemplateDecoratorExpressions.TemplateDecoratorExpressionPhrase import TemplateDecoratorExpressionPhrase
-    from ..TemplateDecoratorTypes.TemplateDecoratorTypePhrase import TemplateDecoratorTypePhrase
+    from ..CompileExpressions.CompileExpressionPhrase import CompileExpressionPhrase
+    from ..CompileTypes.CompileTypePhrase import CompileTypePhrase
     from ..Types.TypePhrase import Phrase, Region, TypePhrase
 
 
@@ -80,9 +80,9 @@ class TemplateTypeParameterPhrase(Phrase):
 class TemplateDecoratorParameterPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
 
-    type: TemplateDecoratorTypePhrase
+    type: CompileTypePhrase
     name: str
-    default_value: Optional[TemplateDecoratorExpressionPhrase]
+    default_value: Optional[CompileExpressionPhrase]
 
     # ----------------------------------------------------------------------
     @classmethod
