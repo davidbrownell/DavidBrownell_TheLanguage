@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  String.py
+# |  NumberType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 16:16:47
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the String object"""
+"""Contains the NumberType object"""
 
 import os
 
@@ -30,25 +30,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileType import CompileType
+    from .Type import Type
 
 
 # ----------------------------------------------------------------------
-class String(CompileType):
-    name                                    = Interface.DerivedProperty("String")  # type: ignore
+class NumberType(Type):
+    name                                    = Interface.DerivedProperty("NumberType")  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def IsSupported(
+    def IsSupportedValue(
         value: Any,
     ) -> bool:
-        return isinstance(value, str)
+        return isinstance(value, float)
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ToBool(
+    def ToBoolValue(
         value: Any,
     ) -> bool:
-        return bool(value)
+        return value != 0

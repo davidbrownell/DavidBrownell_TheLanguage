@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Number.py
+# |  IntegerType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 16:16:47
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Number object"""
+"""Contains the IntegerType object"""
 
 import os
 
@@ -30,25 +30,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileType import CompileType
+    from .Type import Type
 
 
 # ----------------------------------------------------------------------
-class Number(CompileType):
-    name                                    = Interface.DerivedProperty("Number")  # type: ignore
+class IntegerType(Type):
+    name                                    = Interface.DerivedProperty("IntegerType")  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def IsSupported(
+    def IsSupportedValue(
         value: Any,
     ) -> bool:
-        return isinstance(value, float)
+        return isinstance(value, int)
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ToBool(
+    def ToBoolValue(
         value: Any,
     ) -> bool:
         return value != 0

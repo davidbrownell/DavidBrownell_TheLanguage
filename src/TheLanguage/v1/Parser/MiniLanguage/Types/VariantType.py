@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Variant.py
+# |  VariantType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 16:16:47
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Variant object"""
+"""Contains the VariantType object"""
 
 import os
 
@@ -30,20 +30,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileType import CompileType
+    from .Type import Type
 
 
 # ----------------------------------------------------------------------
-class Variant(CompileType):
+class VariantType(Type):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        types: List[CompileType],
+        types: List[Type],
     ):
         assert types
 
         self.types                          = types
-        self._name                          = "Variant({})".format(" | ".join(the_type.name for the_type in self.types))
+        self._name                          = "VariantType({})".format(" | ".join(the_type.name for the_type in self.types))
 
     # ----------------------------------------------------------------------
     @property
@@ -53,45 +53,45 @@ class Variant(CompileType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def IsSupported(
+    def IsSupportedValue(
         self,
         value: Any,
     ) -> bool:
         for the_type in self.types:
-            if the_type.IsSupported(value):
+            if the_type.IsSupportedValue(value):
                 return True
 
         return False
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ToBool(
+    def ToBoolValue(
         self,
         value: Any,
     ) -> bool:
         for the_type in self.types:
-            if the_type.IsSupported(value):
-                return the_type.ToBool(value)
+            if the_type.IsSupportedValue(value):
+                return the_type.ToBoolValue(value)
 
         assert False, value  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def IsSupportedAndOfType(
+    def IsSupportedValueOfType(
         self,
         value: Any,
-        query_type: CompileType,
-    ) -> Tuple[bool, Optional[CompileType]]:
+        query_type: Type,
+    ) -> Tuple[bool, Optional[Type]]:
         query_type_type = type(query_type)
 
         if self.__class__ == query_type_type:
-            return super(Variant, self).IsSupportedAndOfType(value, query_type)
+            return super(VariantType, self).IsSupportedValueOfType(value, query_type)
 
-        matched_type: Optional[CompileType] = None
+        matched_type: Optional[Type] = None
 
         for the_type in self.types:
             if the_type.__class__ == query_type_type:
-                if the_type.IsSupported(value):
+                if the_type.IsSupportedValue(value):
                     return True, the_type
 
                 matched_type = the_type
@@ -105,25 +105,25 @@ class Variant(CompileType):
         if len(remaining_types) == 1:
             return False, remaining_types[0]
 
-        return False, Variant(remaining_types)
+        return False, VariantType(remaining_types)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def IsNotSupportedAndOfType(
+    def IsNotSupportedValueOfType(
         self,
         value: Any,
-        query_type: CompileType,
-    ) -> Tuple[bool, Optional[CompileType]]:
+        query_type: Type,
+    ) -> Tuple[bool, Optional[Type]]:
         query_type_type = type(query_type)
 
         if self.__class__ == query_type_type:
-            return super(Variant, self).IsNotSupportedAndOfType(value, query_type)
+            return super(VariantType, self).IsNotSupportedValueOfType(value, query_type)
 
-        matched_type: Optional[CompileType] = None
+        matched_type: Optional[Type] = None
 
         for the_type in self.types:
             if the_type.__class__ == query_type_type:
-                if the_type.IsSupported(value):
+                if the_type.IsSupportedValue(value):
                     return False, None
 
                 matched_type = the_type
@@ -137,4 +137,4 @@ class Variant(CompileType):
         if len(remaining_types) == 1:
             return True, remaining_types[0]
 
-        return True, Variant(remaining_types)
+        return True, VariantType(remaining_types)

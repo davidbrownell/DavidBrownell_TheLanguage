@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CompileTypePhrase.py
+# |  ErrorStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-15 10:28:28
+# |      2022-04-17 09:18:48
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CompileTypePhrase object"""
+"""Contains the ErrorStatement object"""
 
 import os
 
-from typing import Any, Callable, List, Optional
+from typing import Any, Dict
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,32 +32,28 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Phrase import Phrase, Region
-    from ...MiniLanguage.Types.Type import Type as MiniLanguageType
+    from .Statement import Statement, Type
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class CompileTypePhrase(Phrase):
-    # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
-    type: MiniLanguageType
+class ErrorStatement(Statement):
+    message: str
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+    def __post_init__(self):
+        super(ErrorStatement, self).__init__()
 
     # ----------------------------------------------------------------------
-    def __post_init__(
+    @Interface.override
+    def Execute(
         self,
-        regions,
-        regionless_attributes: Optional[List[str]]=None,
-        validate=True,
-        **custom_display_funcs: Callable[[Any], Optional[Any]],
-    ):
-        super(CompileTypePhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
+        args: Dict[str, Any],
+        type_overloads: Dict[str, Type],
+    ) -> Statement.ExecuteResult:
+        return Statement.ExecuteResult(
+            errors=[self.message],
+            warnings=[],
+            infos=[],
+            should_continue=False,
+        )
