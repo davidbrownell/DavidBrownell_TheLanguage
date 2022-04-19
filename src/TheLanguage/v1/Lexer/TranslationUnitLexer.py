@@ -957,110 +957,110 @@ def _CreateSyntaxInvalidError(
 
     error_context: Optional[str] = None
 
-    if is_error_ambiguous:
-        error_context = "No statements matched this content"
-
-    else:
-        # Navigate up the tree until we have a node that can provide good contextual information
-        while True:
-            if isinstance(error_node, AST.Node) and error_node.type is not None:
-                if isinstance(error_node.type, SequencePhrase):
-                    meaningful_children: List[Union[AST.Leaf, AST.Node]] = []
-
-                    for child in error_node.children:
-                        if isinstance(child, AST.Leaf):
-                            if child.is_ignored:
-                                continue
-                        elif child.iter_range is None:
-                            continue
-
-                        meaningful_children.append(child)
-
-                    # Sometimes, the problem isn't due to the phrase that failed but rather the
-                    # phrase that came right before it. See if there is error information associated
-                    # with the second-to-last phrase.
-                    if len(meaningful_children) > 1:
-                        potential_error_node = getattr(
-                            meaningful_children[-2],
-                            _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME,
-                            None,
-                        )
-
-                        if potential_error_node is not None and potential_error_node.iter_range is None:
-                            error_context = "{} evaluated but not matched; therefore ".format(
-                                GeneratePrefix(potential_error_node.type.name),
-                            )
-
-                    phrase_index = len(meaningful_children)
-
-                    if (
-                        phrase_index == len(error_node.type.phrases) - 1
-                        and DynamicPhrase.IsRightRecursivePhrase(error_node.type)
-                    ):
-                        expected_phrase_name = cast(DynamicPhrase, error_node.type.phrases[-1]).DisplayName
-                    else:
-                        assert phrase_index < len(error_node.type.phrases)
-
-                        if (
-                            isinstance(error_node.type.phrases[phrase_index], TokenPhrase)
-                            and error_node.type.phrases[phrase_index].token.is_control_token  # type: ignore
-                            and phrase_index + 1 < len(error_node.type.phrases)
-                        ):
-                            phrase_index += 1
-
-                        expected_phrase_name = error_node.type.phrases[phrase_index].name
-
-                    error_context = "{}{} expected in '{}'".format(
-                        error_context or "",
-                        GeneratePrefix(
-                            expected_phrase_name,
-                            make_singular=True,
-                        ),
-                        error_node.type.name,
-                    )
-
-                    break
-
-                elif isinstance(error_node.type, RepeatPhrase):
-                    if error_node.children[-1].iter_range is None:
-                        error_context = "{} expected".format(
-                            GeneratePrefix(
-                                error_node.type.name,
-                                make_singular=True,
-                            ),
-                        )
-
-                        break
-
-                elif isinstance(error_node.type, (DynamicPhrase, OrPhrase)):
-                    # Keep walking
-                    pass
-
-                else:
-                    assert False, error_node.type  # pragma: no cover
-
-            assert error_node is not None
-
-            if error_node.parent is None:
-                assert isinstance(error_node, AST.Node)
-                assert error_node.children
-                assert error_node.children[-1].type is not None
-
-                if isinstance(error_node.children[-1].type, DynamicPhrase):
-                    expected_phrase_name = error_node.children[-1].type.DisplayName
-                else:
-                    expected_phrase_name = error_node.children[-1].type.name
-
-                error_context = "{} expected".format(
-                    GeneratePrefix(
-                        expected_phrase_name,
-                        make_singular=True,
-                    ),
-                )
-
-                break
-
-            error_node = error_node.parent  # type: ignore
+    # TODO if is_error_ambiguous:
+    # TODO     error_context = "No statements matched this content"
+    # TODO
+    # TODO else:
+    # TODO     # Navigate up the tree until we have a node that can provide good contextual information
+    # TODO     while True:
+    # TODO         if isinstance(error_node, AST.Node) and error_node.type is not None:
+    # TODO             if isinstance(error_node.type, SequencePhrase):
+    # TODO                 meaningful_children: List[Union[AST.Leaf, AST.Node]] = []
+    # TODO
+    # TODO                 for child in error_node.children:
+    # TODO                     if isinstance(child, AST.Leaf):
+    # TODO                         if child.is_ignored:
+    # TODO                             continue
+    # TODO                     elif child.iter_range is None:
+    # TODO                         continue
+    # TODO
+    # TODO                     meaningful_children.append(child)
+    # TODO
+    # TODO                 # Sometimes, the problem isn't due to the phrase that failed but rather the
+    # TODO                 # phrase that came right before it. See if there is error information associated
+    # TODO                 # with the second-to-last phrase.
+    # TODO                 if len(meaningful_children) > 1:
+    # TODO                     potential_error_node = getattr(
+    # TODO                         meaningful_children[-2],
+    # TODO                         _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME,
+    # TODO                         None,
+    # TODO                     )
+    # TODO
+    # TODO                     if potential_error_node is not None and potential_error_node.iter_range is None:
+    # TODO                         error_context = "{} evaluated but not matched; therefore ".format(
+    # TODO                             GeneratePrefix(potential_error_node.type.name),
+    # TODO                         )
+    # TODO
+    # TODO                 phrase_index = len(meaningful_children)
+    # TODO
+    # TODO                 if (
+    # TODO                     phrase_index == len(error_node.type.phrases) - 1
+    # TODO                     and DynamicPhrase.IsRightRecursivePhrase(error_node.type)
+    # TODO                 ):
+    # TODO                     expected_phrase_name = cast(DynamicPhrase, error_node.type.phrases[-1]).DisplayName
+    # TODO                 else:
+    # TODO                     assert phrase_index < len(error_node.type.phrases)
+    # TODO
+    # TODO                     if (
+    # TODO                         isinstance(error_node.type.phrases[phrase_index], TokenPhrase)
+    # TODO                         and error_node.type.phrases[phrase_index].token.is_control_token  # type: ignore
+    # TODO                         and phrase_index + 1 < len(error_node.type.phrases)
+    # TODO                     ):
+    # TODO                         phrase_index += 1
+    # TODO
+    # TODO                     expected_phrase_name = error_node.type.phrases[phrase_index].name
+    # TODO
+    # TODO                 error_context = "{}{} expected in '{}'".format(
+    # TODO                     error_context or "",
+    # TODO                     GeneratePrefix(
+    # TODO                         expected_phrase_name,
+    # TODO                         make_singular=True,
+    # TODO                     ),
+    # TODO                     error_node.type.name,
+    # TODO                 )
+    # TODO
+    # TODO                 break
+    # TODO
+    # TODO             elif isinstance(error_node.type, RepeatPhrase):
+    # TODO                 if error_node.children[-1].iter_range is None:
+    # TODO                     error_context = "{} expected".format(
+    # TODO                         GeneratePrefix(
+    # TODO                             error_node.type.name,
+    # TODO                             make_singular=True,
+    # TODO                         ),
+    # TODO                     )
+    # TODO
+    # TODO                     break
+    # TODO
+    # TODO             elif isinstance(error_node.type, (DynamicPhrase, OrPhrase)):
+    # TODO                 # Keep walking
+    # TODO                 pass
+    # TODO
+    # TODO             else:
+    # TODO                 assert False, error_node.type  # pragma: no cover
+    # TODO
+    # TODO         assert error_node is not None
+    # TODO
+    # TODO         if error_node.parent is None:
+    # TODO             assert isinstance(error_node, AST.Node)
+    # TODO             assert error_node.children
+    # TODO             assert error_node.children[-1].type is not None
+    # TODO
+    # TODO             if isinstance(error_node.children[-1].type, DynamicPhrase):
+    # TODO                 expected_phrase_name = error_node.children[-1].type.DisplayName
+    # TODO             else:
+    # TODO                 expected_phrase_name = error_node.children[-1].type.name
+    # TODO
+    # TODO             error_context = "{} expected".format(
+    # TODO                 GeneratePrefix(
+    # TODO                     expected_phrase_name,
+    # TODO                     make_singular=True,
+    # TODO                 ),
+    # TODO             )
+    # TODO
+    # TODO             break
+    # TODO
+    # TODO         error_node = error_node.parent  # type: ignore
 
     if error_context is None:
         error_context = error_node.ToYamlString().rstrip()

@@ -241,12 +241,10 @@ def Extract(
 
     assert all_parameters_node.type is not None
 
-    if all_parameters_node.type.name == "New Style":
-        enum_func = _EnumNewStyle
-    elif all_parameters_node.type.name == "Traditional":
+    if all_parameters_node.type.name == "Traditional":
         enum_func = _EnumTraditional
     else:
-        assert False, all_parameters_node.type  # pragma: no cover
+        enum_func = _EnumNewStyle
 
     initial_default_param: Optional[AST.Node] = None
 

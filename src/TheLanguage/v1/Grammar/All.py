@@ -38,6 +38,7 @@ with InitRelativeImports():
     from .Statements.ImportStatement import ImportStatement
     from .Statements.PassStatement import PassStatement
     from .Statements.SpecialMethodStatement import SpecialMethodStatement
+    from .Statements.TypeAliasStatement import TypeAliasStatement
 
     from .Types.StandardType import StandardType
     from .Types.TupleType import TupleType
@@ -62,6 +63,7 @@ GrammarPhrases                              = [
     ),
     PassStatement(),
     SpecialMethodStatement(),
+    TypeAliasStatement(),
 
     # Types
     StandardType(),
