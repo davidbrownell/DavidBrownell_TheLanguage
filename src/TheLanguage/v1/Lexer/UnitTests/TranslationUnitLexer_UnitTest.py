@@ -246,7 +246,8 @@ class TestNewPhrases(object):
 
         ex = ex.value
 
-        assert str(ex) == "The syntax is not recognized [Ln 1, Col 5]: '(Upper Phrase)' was expected."
+        # assert str(ex) == "The syntax is not recognized [Ln 1, Col 5]: '(Upper Phrase)' was expected."
+        assert str(ex) == "The syntax is not recognized [Ln 1, Col 5]: Error context is not available at this time"
         assert ex.line == 1
         assert ex.column == 5
 
@@ -349,7 +350,8 @@ class TestNewScopedPhrases(object):
 
         ex = ex.value
 
-        assert str(ex) == "The syntax is not recognized [Ln 4, Col 1]: '(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase)' was expected."
+        # assert str(ex) == "The syntax is not recognized [Ln 4, Col 1]: '(Upper Phrase | Newline Phrase | Indent Phrase | Dedent Phrase)' was expected."
+        assert str(ex) == "The syntax is not recognized [Ln 4, Col 1]: Error context is not available at this time"
         assert ex.line == 4
         assert ex.column == 1
 
@@ -627,10 +629,12 @@ class TestPreventParentTraversal(object):
 
         ex = ex.value
 
-        assert str(ex) == "The syntax is not recognized [Ln 6, Col 1]: '(Upper Phrase | Indent Phrase | Dedent Phrase)' was expected."
+        # assert str(ex) == "The syntax is not recognized [Ln 6, Col 1]: '(Upper Phrase | Indent Phrase | Dedent Phrase)' was expected."
+        assert str(ex) == "The syntax is not recognized [Ln 6, Col 1]: Error context is not available at this time"
         assert ex.location.line == 6
         assert ex.location.column == 1
-        assert ex.error_context == "'(Upper Phrase | Indent Phrase | Dedent Phrase)' was expected."
+        # assert ex.error_context == "'(Upper Phrase | Indent Phrase | Dedent Phrase)' was expected."
+        assert ex.error_context == "Error context is not available at this time"
 
 
 # ----------------------------------------------------------------------

@@ -49,12 +49,15 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions
-    from ...Parser.Phrases.Error import Error, ErrorException
+    from ...Parser.Parser import (
+        CreateRegions,
+        Error,
+        ErrorException,
+    )
 
-    from ...Parser.Phrases.Types.StandardType import (
-        StandardType as ParserStandardType,
-        StandardTypeItemPhrase as ParserStandardTypeItemPhrase,
+    from ...Parser.ParserInfos.Types.StandardTypeParserInfo import (
+        StandardTypeItemParserInfo,
+        StandardTypeParserInfo,
     )
 
 
@@ -125,9 +128,9 @@ class StandardType(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         node: AST.Node,
-    ) -> GrammarPhrase.ExtractParserPhraseReturnType:
+    ) -> GrammarPhrase.ExtractParserInfoReturnType:
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
@@ -161,7 +164,7 @@ class StandardType(GrammarPhrase):
                 ),
             )
 
-        items: List[ParserStandardTypeItemPhrase] = []
+        items: List[StandardTypeItemParserInfo] = []
 
         for this_element_node in itertools.chain(*all_element_nodes):
             these_element_nodes = ExtractSequence(this_element_node)
@@ -201,7 +204,7 @@ class StandardType(GrammarPhrase):
 
             try:
                 items.append(
-                    ParserStandardTypeItemPhrase.Create(
+                    StandardTypeItemParserInfo.Create(
                         CreateRegions(this_element_node, name_leaf, template_node, constraint_node),
                         name_info,
                         template_info,
@@ -221,7 +224,7 @@ class StandardType(GrammarPhrase):
         if errors:
             return errors
 
-        return ParserStandardType.Create(
+        return StandardTypeParserInfo.Create(
             CreateRegions(node, mutability_modifier_node, elements_node),
             mutability_modifier_info,
             items,

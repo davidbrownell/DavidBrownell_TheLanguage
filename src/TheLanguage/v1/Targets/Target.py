@@ -33,12 +33,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Parser.Parser import RootPhrase
+    from ..Parser.Parser import RootParserInfo
 
 
 # ----------------------------------------------------------------------
 class Target(Interface.Interface):
-    """Abstract base class for an object that can process verified phrases"""
+    """Abstract base class for an object that can process verified ParserInfo objects"""
 
     # ----------------------------------------------------------------------
     # |
@@ -91,7 +91,7 @@ class Target(Interface.Interface):
     @Interface.abstractmethod
     def Invoke(
         fully_qualified_name: str,
-        root: RootPhrase,
+        root: RootParserInfo,
     ) -> None:
         raise Exception("Abstract method")  # pragma: no cover
 

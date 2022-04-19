@@ -47,8 +47,7 @@ with InitRelativeImports():
         Error as ParserError,
         ErrorException as ParserErrorException,
         Parse,
-        Phrase as ParserPhrase,
-        RootPhrase as ParserRootPhrase,
+        RootParserInfo,
         Validate,
     )
 
@@ -83,7 +82,7 @@ def PatchAndExecute(
     List[Exception],                        # PatchAndExecuteFlag.Lex
     Dict[str,                               # PatchAndExecuteFlag.Parse
         Union[
-            ParserRootPhrase,
+            RootParserInfo,
             List[ParserError],
         ],
     ],
@@ -166,7 +165,7 @@ def PatchAndExecute(
 
         assert result is not None
 
-        roots: Dict[str, ParserRootPhrase] = {}
+        roots: Dict[str, RootParserInfo] = {}
 
         for key, value in result.items():
             if isinstance(value, list):
@@ -210,11 +209,11 @@ def ExecuteNode(
 
 
 # ----------------------------------------------------------------------
-def ExecuteParserPhrase(
+def ExecuteParserInfo(
     content: str,
     *,
     max_num_threads: Optional[int]=None,
-) -> ParserRootPhrase:
+) -> RootParserInfo:
     result = PatchAndExecute(
         {
             "filename": content,
@@ -233,7 +232,7 @@ def ExecuteParserPhrase(
     if isinstance(result, list):
         raise ParserErrorException(*result)
 
-    return cast(ParserRootPhrase, result)
+    return cast(RootParserInfo, result)
 
 
 # ----------------------------------------------------------------------
@@ -242,7 +241,7 @@ def ExecutePythonTarget(
     *,
     max_num_threads: Optional[int]=None,
 ) -> str:
-    result = ExecuteParserPhrase(
+    result = ExecuteParserInfo(
         content,
         max_num_threads=max_num_threads,
     )

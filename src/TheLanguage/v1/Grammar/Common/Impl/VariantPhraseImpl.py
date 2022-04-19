@@ -43,7 +43,7 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ....Parser.Parser import GetPhrase, Phrase as ParserPhrase
+    from ....Parser.Parser import GetParserInfo, ParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -80,11 +80,11 @@ def Create(
 # ----------------------------------------------------------------------
 def Extract(
     node: AST.Node,
-) -> List[ParserPhrase]:
+) -> List[ParserInfo]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 8
 
-    results: List[ParserPhrase] = []
+    results: List[ParserInfo] = []
 
     for enumeration_item in  itertools.chain(
         [cast(AST.Node, nodes[2]), ],
@@ -94,6 +94,6 @@ def Extract(
         ),
         [cast(AST.Node, nodes[5]), ],
     ):
-        results.append(GetPhrase(cast(AST.Node, ExtractDynamic(enumeration_item))))
+        results.append(GetParserInfo(cast(AST.Node, ExtractDynamic(enumeration_item))))
 
     return results

@@ -43,8 +43,15 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ....Parser.Parser import CreateRegion, CreateRegions, Phrase
-    from ....Parser.Phrases.Error import CreateError, Error, ErrorException, Region
+    from ....Parser.Parser import (
+        CreateError,
+        CreateRegion,
+        CreateRegions,
+        Error,
+        ErrorException,
+        ParserInfo,
+        Region,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -102,11 +109,11 @@ def Create(
 
 
 # ----------------------------------------------------------------------
-ExtractReturnType                           = TypeVar("ExtractReturnType", bound=Phrase)
+ExtractReturnType                           = TypeVar("ExtractReturnType", bound=ParserInfo)
 
 def Extract(
-    phrase_type: Type[ExtractReturnType],
-    extract_element_func: Callable[[AST.Node], Tuple[Phrase, bool]],
+    parser_info_type: Type[ExtractReturnType],
+    extract_element_func: Callable[[AST.Node], Tuple[ParserInfo, bool]],
     node: AST.Node,
     *,
     allow_empty: bool,
@@ -130,7 +137,7 @@ def Extract(
 
     first_keyword_node: Optional[AST.Node] = None
 
-    phrases: List[Phrase] = []
+    parser_infos: List[ParserInfo] = []
     errors: List[Error] = []
 
     for element_node in itertools.chain(
@@ -141,7 +148,7 @@ def Extract(
         ),
     ):
         try:
-            this_phrase, is_keyword = extract_element_func(element_node)
+            this_parser_info, is_keyword = extract_element_func(element_node)
         except ErrorException as ex:
             errors += ex.errors
             continue
@@ -157,13 +164,13 @@ def Extract(
             elif first_keyword_node is None:
                 first_keyword_node = element_node
 
-        phrases.append(this_phrase)
+        parser_infos.append(this_parser_info)
 
     if not errors:
         try:
-            return phrase_type.Create(  # type: ignore
+            return parser_info_type.Create(  # type: ignore
                 CreateRegions(node, node),
-                phrases,
+                parser_infos,
             )
         except ErrorException as ex:
             errors += ex.errors

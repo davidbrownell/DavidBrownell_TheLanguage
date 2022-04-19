@@ -45,9 +45,9 @@ with InitRelativeImports():
 
     from ...Parser.Parser import CreateRegions
 
-    from ...Parser.Phrases.Types.VariantType import (
-        TypePhrase as ParserTypePhrase,
-        VariantType as ParserVariantType,
+    from ...Parser.ParserInfos.Types.VariantTypeParserInfo import (
+        TypeParserInfo,
+        VariantTypeParserInfo,
     )
 
 
@@ -77,10 +77,10 @@ class VariantType(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         cls,
         node: AST.Node,
-    ) -> GrammarPhrase.ExtractParserPhraseReturnType:
+    ) -> GrammarPhrase.ExtractParserInfoReturnType:
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
@@ -88,7 +88,7 @@ class VariantType(GrammarPhrase):
 
             # Elements
             elements_node = cast(AST.Node, nodes[0])
-            elements_info = cast(List[ParserTypePhrase], VariantPhraseImpl.Extract(elements_node))
+            elements_info = cast(List[TypeParserInfo], VariantPhraseImpl.Extract(elements_node))
 
             # <mutability_modifier>?
             mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -97,7 +97,7 @@ class VariantType(GrammarPhrase):
             else:
                 mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
 
-            return ParserVariantType(
+            return VariantTypeParserInfo.Create(
                 CreateRegions(node, mutability_modifier_node, elements_node),  # type: ignore
                 mutability_modifier_info,
                 elements_info,

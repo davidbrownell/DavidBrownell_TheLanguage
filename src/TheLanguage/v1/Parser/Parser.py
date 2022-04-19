@@ -33,10 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Phrases.Error import CreateError, Error, ErrorException, Region
-    from .Phrases.Phrase import Phrase, RootPhrase
-
-    from ..Lexer.Lexer import AST, Phrase as LexerPhrase
+    from .Error import CreateError, Error, ErrorException, Region
+    from .ParserInfos.ParserInfo import ParserInfo, RootParserInfo
+    from ..Lexer.Lexer import AST, Phrase as LexPhrase
 
 
 # ----------------------------------------------------------------------
@@ -48,14 +47,14 @@ DuplicateDocInfoError                       = CreateError(
 # ----------------------------------------------------------------------
 class ParseObserver(Interface.Interface):
     # ----------------------------------------------------------------------
-    ExtractParserPhraseReturnType           = Union[
+    ExtractParserInfoReturnType             = Union[
         None,
-        Phrase,
+        ParserInfo,
         List[Error],
         Callable[
             [],
             Union[
-                Phrase,
+                ParserInfo,
                 List[Error],
             ]
         ],
@@ -63,9 +62,9 @@ class ParseObserver(Interface.Interface):
 
     @staticmethod
     @Interface.abstractmethod
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         node: AST.Node,
-    ) -> "ParseObserver.ExtractParserPhraseReturnType":
+    ) -> "ParseObserver.ExtractParserInfoReturnType":
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -90,13 +89,13 @@ def Parse(
     *,
     max_num_threads: Optional[int]=None,
 ) -> Optional[
-    Dict[str, Union[RootPhrase, List[Error]]]
+    Dict[str, Union[RootParserInfo, List[Error]]]
 ]:
     # ----------------------------------------------------------------------
     def CreateAndExtract(
         fully_qualified_name: str,  # pylint: disable=unused-argument
         root: AST.Node,
-    ) -> Optional[Union[RootPhrase, List[Error]]]:
+    ) -> Optional[Union[RootParserInfo, List[Error]]]:
         errors: List[Error] = []
 
         callback_funcs: List[Tuple[AST.Node, Callable[[], Any]]] = []
@@ -105,7 +104,7 @@ def Parse(
             assert isinstance(node, AST.Node), node
 
             try:
-                result = observer.ExtractParserPhrase(node)
+                result = observer.ExtractParserInfo(node)
 
                 if result is None:
                     continue
@@ -113,8 +112,8 @@ def Parse(
                     callback_funcs.append((node, result))
                 elif isinstance(result, list):
                     errors += result
-                elif isinstance(result, Phrase):
-                    _SetPhrase(node, result)
+                elif isinstance(result, ParserInfo):
+                    _SetParserInfo(node, result)
                 else:
                     assert False, result  # pragma: no cover
 
@@ -127,8 +126,8 @@ def Parse(
 
                 if isinstance(result, list):
                     errors += result
-                elif isinstance(result, Phrase):
-                    _SetPhrase(node, result)
+                elif isinstance(result, ParserInfo):
+                    _SetParserInfo(node, result)
                 else:
                     assert False, result  # pragma: no cover
 
@@ -137,7 +136,7 @@ def Parse(
 
         # Extract the root information
         existing_doc_info: Optional[Tuple[Union[AST.Leaf, AST.Node], str]] = None
-        statements: List[Phrase] = []
+        statements: List[ParserInfo] = []
 
         for child in root.children:
             try:
@@ -162,9 +161,9 @@ def Parse(
                 errors += ex.errors
 
             if isinstance(child, AST.Node):
-                phrase = _ExtractPhrase(child)
-                if phrase is not None:
-                    statements.append(phrase)
+                parser_info = _ExtractParserInfo(child)
+                if parser_info is not None:
+                    statements.append(parser_info)
 
         if errors:
             return errors
@@ -176,7 +175,7 @@ def Parse(
             docstring_node, docstring_info = existing_doc_info
 
         try:
-            return RootPhrase.Create(
+            return RootParserInfo.Create(
                 CreateRegions(root, root, docstring_node),
                 statements or None,
                 docstring_info,
@@ -196,18 +195,18 @@ def Parse(
 # ----------------------------------------------------------------------
 # TODO: Deferred types
 def Validate(
-    roots: Dict[str, RootPhrase],
+    roots: Dict[str, RootParserInfo],
     *,
     max_num_threads: Optional[int]=None,
 ) -> Optional[
-    Dict[str, Union[RootPhrase, List[Error]]]
+    Dict[str, Union[RootParserInfo, List[Error]]]
 ]:
     # Extract names
 
     # ----------------------------------------------------------------------
     def ExtractNamespaces(
         fully_qualified_name: str,  # pylint: disable=unused-argument
-        root: RootPhrase,
+        root: RootParserInfo,
     ) -> _NamespaceVisitor.ReturnType:
         visitor = _NamespaceVisitor()
 
@@ -233,17 +232,17 @@ def Validate(
 
 
 # ----------------------------------------------------------------------
-def GetPhraseNoThrow(
+def GetParserInfoNoThrow(
     node: AST.Node,
-) -> Optional[Phrase]:
-    return  getattr(node, _PHRASE_ATTRIBUTE_NAME, None)
+) -> Optional[ParserInfo]:
+    return  getattr(node, _PARSER_INFO_ATTRIBUTE_NAME, None)
 
 
 # ----------------------------------------------------------------------
-def GetPhrase(
+def GetParserInfo(
     node: AST.Node,
-) -> Phrase:
-    result = GetPhraseNoThrow(node)
+) -> ParserInfo:
+    result = GetParserInfoNoThrow(node)
     assert result is not None
 
     return result
@@ -254,7 +253,7 @@ def CreateRegionNoThrow(
     node: Union[
         None,
         Region,
-        LexerPhrase.NormalizedIteratorRange,
+        LexPhrase.NormalizedIteratorRange,
         AST.Leaf,
         AST.Node,
     ],
@@ -263,7 +262,7 @@ def CreateRegionNoThrow(
         return None
     elif isinstance(node, Region):
         return node
-    elif isinstance(node, LexerPhrase.NormalizedIteratorRange):
+    elif isinstance(node, LexPhrase.NormalizedIteratorRange):
         return Region.Create(node.begin.ToLocation(), node.end.ToLocation())
     elif isinstance(node, (AST.Leaf, AST.Node)):
         if node.iter_range is None:
@@ -294,40 +293,40 @@ def CreateRegions(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-_PHRASE_ATTRIBUTE_NAME                      = "parser_phrase"
+_PARSER_INFO_ATTRIBUTE_NAME                 = "parser_info"
 
 
 # ----------------------------------------------------------------------
-def _SetPhrase(
+def _SetParserInfo(
     node: AST.Node,
-    phrase: Phrase,
+    parser_info: ParserInfo,
 ) -> None:
-    object.__setattr__(node, _PHRASE_ATTRIBUTE_NAME, phrase)
+    object.__setattr__(node, _PARSER_INFO_ATTRIBUTE_NAME, parser_info)
 
 
 # ----------------------------------------------------------------------
-def _ExtractPhrase(
+def _ExtractParserInfo(
     node: AST.Node,
-) -> Optional[Phrase]:
-    phrase = GetPhraseNoThrow(node)
-    if phrase is not None:
-        return phrase
+) -> Optional[ParserInfo]:
+    parser_info = GetParserInfoNoThrow(node)
+    if parser_info is not None:
+        return parser_info
 
-    child_phrases: List[Phrase] = []
+    child_parser_infos: List[ParserInfo] = []
 
     for child in node.children:
         if isinstance(child, AST.Leaf):
             continue
 
-        child_phrase = _ExtractPhrase(child)
-        if child_phrase is not None:
-            child_phrases.append(child_phrase)
+        child_parser_info = _ExtractParserInfo(child)
+        if child_parser_info is not None:
+            child_parser_infos.append(child_parser_info)
 
-    if not child_phrases:
+    if not child_parser_infos:
         return None
 
-    assert len(child_phrases) == 1, child_phrases
-    return child_phrases[0]
+    assert len(child_parser_infos) == 1, child_parser_infos
+    return child_parser_infos[0]
 
 
 # ----------------------------------------------------------------------
@@ -399,9 +398,9 @@ class _NamespaceVisitor(object):
         # ----------------------------------------------------------------------
         def __init__(
             self,
-            phrase: Optional[Phrase],
+            parser_info: Optional[ParserInfo],
         ):
-            self.phrase                                                     = phrase
+            self.parser_info                                                = parser_info
             self.namespaces: Dict[str, List["_NamespaceVisitor.Node"]]      = {}
             self.unnamed: List["_NamespaceVisitor.Node"]                    = []
 
@@ -419,7 +418,7 @@ class _NamespaceVisitor(object):
     @property
     def root(self) -> "_NamespaceVisitor.ReturnType":
         assert len(self._node_stack) == 1, self._node_stack
-        assert self._node_stack[0].phrase is None, self._node_stack[0]
+        assert self._node_stack[0].parser_info is None, self._node_stack[0]
         assert len(self._node_stack[0].unnamed) == 1, self._node_stack[0].unnamed
 
         return self._node_stack[0].unnamed[0]
@@ -427,13 +426,13 @@ class _NamespaceVisitor(object):
     # ----------------------------------------------------------------------
     def OnEnterScope(
         self,
-        phrase: Phrase,
+        parser_info: ParserInfo,
     ) -> None:
-        assert phrase.introduces_scope__, phrase
+        assert parser_info.introduces_scope__, parser_info
 
-        new_node = _NamespaceVisitor.Node(phrase)
+        new_node = _NamespaceVisitor.Node(parser_info)
 
-        name = getattr(phrase, "name", None)
+        name = getattr(parser_info, "name", None)
         if name is not None:
             self._node_stack[-1].namespaces.setdefault(name, []).append(new_node)
         else:
@@ -444,19 +443,19 @@ class _NamespaceVisitor(object):
     # ----------------------------------------------------------------------
     def OnExitScope(
         self,
-        phrase: Phrase,
+        parser_info: ParserInfo,
     ) -> None:
-        assert phrase.introduces_scope__, phrase
+        assert parser_info.introduces_scope__, parser_info
 
-        assert self._node_stack, phrase
+        assert self._node_stack, parser_info
         self._node_stack.pop()
-        assert self._node_stack, phrase
+        assert self._node_stack, parser_info
 
     # ----------------------------------------------------------------------
     def __getattr__(
         self,
         attribute: str,
-    ) -> Callable[[Phrase], None]:
+    ) -> Callable[[ParserInfo], None]:
         return self._NoopMethod
 
     # ----------------------------------------------------------------------

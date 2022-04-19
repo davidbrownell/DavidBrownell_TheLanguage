@@ -56,9 +56,15 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegion, CreateRegions, Error, GetPhrase
-    from ...Parser.Phrases.Common.MethodModifier import MethodModifier
-    from ...Parser.Phrases.Statements import FuncDefinitionStatement as FuncDefinitionStatementModule
+    from ...Parser.Parser import CreateRegion, CreateRegions, Error, GetParserInfo
+    from ...Parser.ParserInfos.Common.MethodModifier import MethodModifier
+
+    from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import (
+        FuncDefinitionStatementParserInfo,
+        TypeParserInfo,
+    )
+
+    from ...Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -131,10 +137,10 @@ class FuncDefinitionStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @classmethod
     @Interface.override
-    def ExtractParserPhrase(  # pylint: disable=too-many-statements
+    def ExtractParserInfo(  # pylint: disable=too-many-statements
         cls,
         node: AST.Node,
-    ) -> GrammarPhrase.ExtractParserPhraseReturnType:
+    ) -> GrammarPhrase.ExtractParserInfoReturnType:
         # ----------------------------------------------------------------------
         def Callback():  # pylint: disable=too-many-locals
             nodes = ExtractSequence(node)
@@ -226,11 +232,25 @@ class FuncDefinitionStatement(GrammarPhrase):
 
             # <return_type>
             return_type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
-            return_type_info = cast(FuncDefinitionStatementModule.TypePhrase, GetPhrase(return_type_node))
+            return_type_info = cast(TypeParserInfo, GetParserInfo(return_type_node))
+
+            if (
+                isinstance(return_type_info, StandardTypeParserInfo)
+                and len(return_type_info.items) == 1
+                and return_type_info.items[0].name == "None"
+            ):
+                # We are looking at a None type - clear all info
+                return_type_info = None
+                return_type_node = None
 
             # <name>
             name_leaf = cast(AST.Leaf, nodes[4])
-            name_info = ExtractToken(name_leaf)
+            name_info = ExtractToken(
+                name_leaf,
+                return_match_contents=True,
+            )
+
+            # TODO: Get exceptional information from name
 
             # <template_parameters>?
             template_parameters_info = None
@@ -293,7 +313,7 @@ class FuncDefinitionStatement(GrammarPhrase):
             if errors:
                 return errors
 
-            return FuncDefinitionStatementModule.FuncDefinitionStatement.Create(
+            return FuncDefinitionStatementParserInfo.Create(
                 CreateRegions(
                     node,
                     visibility_node,

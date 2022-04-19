@@ -39,8 +39,12 @@ with InitRelativeImports():
         DynamicPhrasesType,
     )
 
-    from ...Parser.Phrases.CompileTypes import VariantCompileType as VariantCompileTypeModule
     from ...Parser.Parser import CreateRegions
+
+    from ...Parser.ParserInfos.CompileTypes.VariantCompileTypeParserInfo import (
+        CompileTypeParserInfo,
+        VariantCompileTypeParserInfo,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -60,14 +64,14 @@ class VariantCompileType(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         node: AST.Node,
-    ) -> GrammarPhrase.ExtractParserPhraseReturnType:
+    ) -> GrammarPhrase.ExtractParserInfoReturnType:
         # ----------------------------------------------------------------------
         def Callback():
-            return VariantCompileTypeModule.VariantCompileType.Create(
+            return VariantCompileTypeParserInfo.Create(
                 CreateRegions(node, node),
-                cast(List[VariantCompileTypeModule.CompileTypePhrase], VariantPhraseImpl.Extract(node)),
+                cast(List[CompileTypeParserInfo], VariantPhraseImpl.Extract(node)),
             )
 
         # ----------------------------------------------------------------------

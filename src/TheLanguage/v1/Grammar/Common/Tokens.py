@@ -54,28 +54,44 @@ PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken
 
 
 # ----------------------------------------------------------------------
-CompileTypeName                             = RegexToken(
-    "<compile type name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Upper                           )[A-Z](?#
-            Alphanumeric [optional]         )[A-Za-z0-9_]+(?#
-            Does not end with a 'T'         )(?<!T)(?#
-            Bang                            )!(?#
-            ))""",
-        ),
-    ),
-)
-
-ConstraintParameterName                     = RegexToken(
-    "<constraint parameter name>",
+CompileParameterName                        = RegexToken(
+    "<compile parameter name>",
     re.compile(
         textwrap.dedent(
             r"""(?P<value>(?#
             Lower                           )[a-z](?#
             Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
             Bang                            )!(?#
+            ))""",
+        ),
+    ),
+)
+
+# TODO: Auto-detect template types by looking for a 'T' suffix?
+CompileTemplateTypeName                     = RegexToken(
+    "<template type name>",
+    re.compile(
+        textwrap.dedent(
+            r"""(?P<value>(?#
+            Upper                           )[A-Z](?#
+            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
+            Ends with a 'T'                 )(?<=T)(?#
+            ))""",
+        ),
+    ),
+)
+
+CompileTypeName                             = RegexToken(
+    "<compile type name>",
+    re.compile(
+        textwrap.dedent(
+            r"""(?P<value>(?#
+                                            )Bool|(?#
+                                            )Char|(?#
+                                            )Int|(?#
+                                            )None|(?#
+                                            )Num|(?#
+                                            )Str(?#
             ))""",
         ),
     ),
@@ -102,6 +118,7 @@ RuntimeFuncName                             = RegexToken(
             Initial Underscores [optional]  )_*(?#
             Upper                           )[A-Z](?#
             Alphanumeric                    )[A-Za-z0-9_]+(?#
+            Is Exceptional [optional]       )(?P<is_exceptional>\?)?(?#
             Trailing Underscores [optional] )_*(?#
             ))""",
         ),
@@ -115,6 +132,21 @@ RuntimeParameterName                        = RegexToken(
             r"""(?P<value>(?#
             Lower                           )[a-z](?#
             Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
+            ))""",
+        ),
+    ),
+)
+
+RuntimeSpecialMethodName                    = RegexToken(
+    "<class method name>",
+    re.compile(
+        textwrap.dedent(
+            r"""(?P<value>(?#
+            Initial Underscores             )__(?#
+            Upper                           )[A-Z](?#
+            Alphanumeric                    )[A-Za-z0-9_]+(?#
+            Bang or Question                )(?:!|\?)?(?#
+            Trailing Underscores            )__(?#
             ))""",
         ),
     ),
@@ -143,48 +175,6 @@ RuntimeVariableName                         = RegexToken(
             Lower                           )[a-z](?#
             Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
             Trailing Underscores [optional] )_*(?#
-            ))""",
-        ),
-    ),
-)
-
-
-# ----------------------------------------------------------------------
-TemplateTypeName                            = RegexToken(
-    "<template type name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Upper                           )[A-Z](?#
-            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
-            Ends with a 'T'                 )(?<=T)(?#
-            Bang                            )!(?#
-            ))""",
-        ),
-    ),
-)
-
-TemplateDecoratorParameterName              = RegexToken(
-    "<template decorator parameter name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Lower                           )[a-z](?#
-            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
-            Bang                            )!(?#
-            ))""",
-        ),
-    ),
-)
-
-TemplateDecoratorTypeName                   = RegexToken(
-    "<template decorator type name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Upper                           )[A-Z](?#
-            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
-            Bang                            )!(?#
             ))""",
         ),
     ),

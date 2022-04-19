@@ -25,6 +25,7 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -40,40 +41,63 @@ with InitRelativeImports():
     from ..Types.IntegerType import IntegerType
     from ..Types.NumberType import NumberType
 
-    from ...Phrases.Error import CreateError, ErrorException
-    from ...Phrases.Region import Region
+    from ...Error import CreateError, ErrorException
+    from ...Region import Region
 
 
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
-    Multiply                                = "*"
-    Divide                                  = "/"
-    DivideFloor                             = "//"
-    Modulus                                 = "%"
+    # ----------------------------------------------------------------------
+    # |  Pubic Types
+    @dataclass(frozen=True, repr=False)
+    class Value(ObjectReprImplBase):
+        token: str
+        precedence: int
 
-    Add                                     = "+"
-    Subtract                                = "-"
+        # ----------------------------------------------------------------------
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            """\
+            This hack avoids pylint warnings associated with invoking dynamically
+            generated constructors with too many methods.
+            """
+            return cls(*args, **kwargs)
 
-    BitShiftLeft                            = "<<"
-    BitShiftRight                           = ">>"
+        # ----------------------------------------------------------------------
+        def __post_init__(self):
+            assert self.precedence > 0
+            ObjectReprImplBase.__init__(self)
 
-    Less                                    = "<"
-    LessEqual                               = "<="
-    Greater                                 = ">"
-    GreaterEqual                            = ">="
+    # ----------------------------------------------------------------------
+    # |  Public Data
+    Multiply                                = Value.Create("*", 1)
+    Divide                                  = Value.Create("/", 1)
+    DivideFloor                             = Value.Create("//", 1)
+    Modulus                                 = Value.Create("%", 1)
 
-    Equal                                   = "=="
-    NotEqual                                = "!="
+    Add                                     = Value.Create("+", 2)
+    Subtract                                = Value.Create("-", 2)
 
-    BitwiseAnd                              = "&"
+    BitShiftLeft                            = Value.Create("<<", 3)
+    BitShiftRight                           = Value.Create(">>", 3)
 
-    BitwiseXor                              = "^"
+    Less                                    = Value.Create("<", 4)
+    LessEqual                               = Value.Create("<=", 4)
+    Greater                                 = Value.Create(">", 4)
+    GreaterEqual                            = Value.Create(">=", 4)
 
-    BitwiseOr                               = "|"
+    Equal                                   = Value.Create("==", 5)
+    NotEqual                                = Value.Create("!=", 5)
 
-    LogicalAnd                              = "and"
+    BitwiseAnd                              = Value.Create("&", 6)
 
-    LogicalOr                               = "or"
+    BitwiseXor                              = Value.Create("^", 7)
+
+    BitwiseOr                               = Value.Create("|", 8)
+
+    LogicalAnd                              = Value.Create("and", 9)
+
+    LogicalOr                               = Value.Create("or", 10)
 
 
 # ----------------------------------------------------------------------
@@ -213,7 +237,7 @@ class BinaryExpression(Expression):
                         left_type=left_result.type.name,
                         right_value=str(right_result.value),
                         right_type=right_result.type.name,
-                        operator=self.operator.value,
+                        operator=self.operator.token,
                     ),
                 )
 
@@ -221,7 +245,7 @@ class BinaryExpression(Expression):
                 raise ErrorException(
                     IntegerOrNumberRequiredError.Create(
                         region=self.left_region,
-                        operator=self.operator.value,
+                        operator=self.operator.token,
                         left_type=left_result.type.name,
                     ),
                 )
@@ -254,7 +278,7 @@ class BinaryExpression(Expression):
                         left_type=left_result.type.name,
                         right_value=str(right_result.value),
                         right_type=right_result.type.name,
-                        operator=self.operator.value,
+                        operator=self.operator.token,
                     ),
                 )
 
@@ -262,7 +286,7 @@ class BinaryExpression(Expression):
                 raise ErrorException(
                     IntegerRequiredError.Create(
                         region=self.left_region,
-                        operator=self.operator.value,
+                        operator=self.operator.token,
                         left_type=left_result.type.name,
                     ),
                 )
@@ -299,7 +323,7 @@ class BinaryExpression(Expression):
                         left_type=left_result.type.name,
                         right_value=str(right_result.value),
                         right_type=right_result.type.name,
-                        operator=self.operator.value,
+                        operator=self.operator.token,
                     ),
                 )
 

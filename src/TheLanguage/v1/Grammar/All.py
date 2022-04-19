@@ -27,13 +27,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .CompileExpressions.LiteralCompileExpression import LiteralCompileExpression
+
     from .CompileTypes.StandardCompileType import StandardCompileType
     from .CompileTypes.VariantCompileType import VariantCompileType
 
     from .Statements.ClassAttributeStatement import ClassAttributeStatement
     from .Statements.ClassStatement import ClassStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
+    from .Statements.ImportStatement import ImportStatement
     from .Statements.PassStatement import PassStatement
+    from .Statements.SpecialMethodStatement import SpecialMethodStatement
+    from .Statements.TypeAliasStatement import TypeAliasStatement
 
     from .Types.StandardType import StandardType
     from .Types.TupleType import TupleType
@@ -42,6 +47,9 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 GrammarPhrases                              = [
+    # CompileExpressions
+    LiteralCompileExpression(),
+
     # CompileTypes
     StandardCompileType(),
     VariantCompileType(),
@@ -50,7 +58,12 @@ GrammarPhrases                              = [
     ClassAttributeStatement(),
     ClassStatement(),
     FuncDefinitionStatement(),
+    ImportStatement(
+        ".TheLanguage",
+    ),
     PassStatement(),
+    SpecialMethodStatement(),
+    TypeAliasStatement(),
 
     # Types
     StandardType(),

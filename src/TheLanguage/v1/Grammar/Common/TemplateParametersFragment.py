@@ -46,19 +46,21 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
-
-    from ...Parser.Phrases.Error import Error
-
-    from ...Parser.Phrases.Common.TemplateParametersPhrase import (
-        TemplateDecoratorParameterPhrase,
-        TemplateParametersPhrase,
-        TemplateTypeParameterPhrase,
-        TypePhrase,
+    from ...Parser.Parser import (
+        CreateRegions,
+        Error,
+        GetParserInfo,
+        ParserInfo,
     )
 
-    from ...Parser.Phrases.CompileExpressions.CompileExpressionPhrase import CompileExpressionPhrase
-    from ...Parser.Phrases.CompileTypes.CompileTypePhrase import CompileTypePhrase
+    from ...Parser.ParserInfos.Common.TemplateParametersParserInfo import (
+        CompileExpressionParserInfo,
+        CompileTypeParserInfo,
+        TemplateDecoratorParameterParserInfo,
+        TemplateParametersParserInfo,
+        TemplateTypeParameterParserInfo,
+        TypeParserInfo,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -71,7 +73,7 @@ def Create() -> PhraseItem:
                 name="Template Type",
                 item=[
                     # <template_type_name>
-                    CommonTokens.TemplateTypeName,
+                    CommonTokens.CompileTemplateTypeName,
 
                     # '...'?
                     OptionalPhraseItem(
@@ -100,7 +102,7 @@ def Create() -> PhraseItem:
                     DynamicPhrasesType.CompileTypes,
 
                     # <decorator_name>
-                    CommonTokens.TemplateDecoratorParameterName,
+                    CommonTokens.CompileParameterName,
 
                     # ('=' <compile_expression>)?
                     OptionalPhraseItem(
@@ -130,10 +132,10 @@ def Extract(
     node: AST.Node,
 ) -> Union[
     List[Error],
-    TemplateParametersPhrase,
+    TemplateParametersParserInfo,
 ]:
     result = ParametersFragmentImpl.Extract(
-        TemplateParametersPhrase,
+        TemplateParametersParserInfo,
         _ExtractElement,
         node,
         allow_empty=False,
@@ -148,7 +150,7 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractElement(
     node: AST.Node,
-) -> Tuple[Phrase, bool]:
+) -> Tuple[ParserInfo, bool]:
     node = cast(AST.Node, ExtractOr(node))
     assert node.type is not None
 
@@ -176,10 +178,10 @@ def _ExtractElement(
             assert len(default_nodes) == 4
 
             default_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, default_nodes[2])))
-            default_info = cast(TypePhrase, GetPhrase(default_node))
+            default_info = cast(TypeParserInfo, GetParserInfo(default_node))
 
         return (
-            TemplateTypeParameterPhrase.Create(
+            TemplateTypeParameterParserInfo.Create(
                 CreateRegions(node, type_leaf, variadic_node, default_node),
                 type_info,
                 variadic_info,
@@ -194,7 +196,7 @@ def _ExtractElement(
 
         # <compile_type>
         type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-        type_info = cast(CompileTypePhrase, GetPhrase(type_node))
+        type_info = cast(CompileTypeParserInfo, GetParserInfo(type_node))
 
         # <decorator_name>
         name_leaf = cast(AST.Leaf, nodes[1])
@@ -209,10 +211,10 @@ def _ExtractElement(
             assert len(default_nodes) == 4
 
             default_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, default_nodes[2])))
-            default_info = cast(CompileExpressionPhrase, GetPhrase(default_node))
+            default_info = cast(CompileExpressionParserInfo, GetParserInfo(default_node))
 
         return (
-            TemplateDecoratorParameterPhrase.Create(
+            TemplateDecoratorParameterParserInfo.Create(
                 CreateRegions(node, type_node, name_leaf, default_node),
                 type_info,
                 name_info,

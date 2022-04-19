@@ -28,7 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Impl import ModifierImpl
-    from ...Parser.Phrases.Common.VisibilityModifier import VisibilityModifier
+    from ...Parser.ParserInfos.Common.VisibilityModifier import VisibilityModifier
 
 
 # ----------------------------------------------------------------------
