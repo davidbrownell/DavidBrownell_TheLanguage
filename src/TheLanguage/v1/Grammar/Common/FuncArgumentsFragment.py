@@ -45,15 +45,18 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
-
-    from ...Parser.Phrases.Common.FuncArgumentsPhrase import (
-        ExpressionPhrase,
-        FuncArgumentPhrase,
-        FuncArgumentsPhrase,
+    from ...Parser.Parser import (
+        CreateRegions,
+        Error,
+        GetParserInfo,
+        ParserInfo,
     )
 
-    from ...Parser.Phrases.Error import Error
+    from ...Parser.ParserInfos.Common.FuncArgumentsParserInfo import (
+        ExpressionParserInfo,
+        FuncArgumentParserInfo,
+        FuncArgumentsParserInfo,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -89,10 +92,10 @@ def Extract(
 ) -> Union[
     List[Error],
     bool,
-    FuncArgumentsPhrase,
+    FuncArgumentsParserInfo,
 ]:
     return ArgumentsFragmentImpl.Extract(
-        FuncArgumentsPhrase,
+        FuncArgumentsParserInfo,
         _ExtractElement,
         node,
         allow_empty=True,
@@ -104,7 +107,7 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractElement(
     node: AST.Node,
-) -> Tuple[Phrase, bool]:
+) -> Tuple[ParserInfo, bool]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 2
 
@@ -121,10 +124,10 @@ def _ExtractElement(
 
     # <expression>
     expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
-    expression_info = cast(ExpressionPhrase, GetPhrase(expression_node))
+    expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
     return (
-        FuncArgumentPhrase.Create(
+        FuncArgumentParserInfo.Create(
             CreateRegions(node, expression_node, keyword_node),
             expression_info,
             keyword_info,

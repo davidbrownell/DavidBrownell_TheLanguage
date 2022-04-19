@@ -886,8 +886,10 @@ def _CreateSyntaxInvalidError(
 
         is_error_ambiguous = False
 
-        assert error_node.iter_range is not None
-        location = error_node.iter_range.end.ToLocation()
+        if error_node.iter_range is None:
+            location = normalized_iter.ToLocation()
+        else:
+            location = error_node.iter_range.end.ToLocation()
 
     else:
         # Sort by depth to get the node that is deepest in the tree

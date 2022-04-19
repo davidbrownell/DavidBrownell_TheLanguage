@@ -37,10 +37,11 @@ with InitRelativeImports():
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractSequence,
         ExtractToken,
     )
 
-    from ...Parser.Parser import CreateRegion, CreateRegions
+    from ...Parser.Parser import CreateError, CreateRegion, CreateRegions
 
     from ...Parser.MiniLanguage.Types.BooleanType import BooleanType
     from ...Parser.MiniLanguage.Types.CharacterType import CharacterType
@@ -49,8 +50,7 @@ with InitRelativeImports():
     from ...Parser.MiniLanguage.Types.NumberType import NumberType
     from ...Parser.MiniLanguage.Types.StringType import StringType
 
-    from ...Parser.Phrases.CompileTypes.CompileTypePhrase import CompileTypePhrase
-    from ...Parser.Phrases.Error import CreateError
+    from ...Parser.ParserInfos.CompileTypes.CompileTypeParserInfo import CompileTypeParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -70,39 +70,46 @@ class StandardCompileType(GrammarPhrase):
             DynamicPhrasesType.CompileTypes,
             CreatePhrase(
                 name=self.PHRASE_NAME,
-                item=CommonTokens.CompileTypeName,
+                item=[
+                    # Note that needs to be a sequence so that we can properly extract the value
+                    CommonTokens.CompileTypeName,
+                ],
             ),
         )
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         node: AST.Node,
-    ) -> GrammarPhrase.ExtractParserPhraseReturnType:
-        value = ExtractToken(cast(AST.Leaf, node))
+    ) -> GrammarPhrase.ExtractParserInfoReturnType:
+        nodes = ExtractSequence(node)
+        assert len(nodes) == 1
 
-        if value == "Bool!":
+        name_leaf = cast(AST.Leaf, nodes[0])
+        name_info = ExtractToken(name_leaf)
+
+        if name_info == "Bool":
             the_type = BooleanType()
-        elif value == "Char!":
+        elif name_info == "Char":
             the_type = CharacterType()
-        elif value == "Int!":
+        elif name_info == "Int":
             the_type = IntegerType()
-        elif value == "None!":
+        elif name_info == "None":
             the_type = NoneType()
-        elif value == "Num!":
+        elif name_info == "Num":
             the_type = NumberType()
-        elif value == "Str!":
+        elif name_info == "Str":
             the_type = StringType()
         else:
             return [
                 InvalidTypeError.Create(
-                    region=CreateRegion(node),
-                    type=value,
+                    region=CreateRegion(name_leaf),
+                    type=name_info,
                 ),
             ]
 
-        return CompileTypePhrase.Create(
-            CreateRegions(node, node),
+        return CompileTypeParserInfo.Create(
+            CreateRegions(node, name_leaf),
             the_type,
         )

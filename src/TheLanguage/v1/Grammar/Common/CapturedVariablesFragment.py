@@ -39,10 +39,13 @@ with InitRelativeImports():
         PhraseItem,
     )
 
-    from ...Parser.Parser import GetPhrase, Phrase
-    from ...Parser.Phrases.Common.CapturedVariablesPhrase import CapturedVariablesPhrase
+    from ...Parser.Parser import (
+        Error,
+        GetParserInfo,
+        ParserInfo,
+    )
 
-    from ...Parser.Phrases.Error import Error
+    from ...Parser.ParserInfos.Common.CapturedVariablesParserInfo import CapturedVariablesParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -65,10 +68,10 @@ def Extract(
     node: AST.Node,
 ) -> Union[
     List[Error],
-    CapturedVariablesPhrase,
+    CapturedVariablesParserInfo,
 ]:
     result = ArgumentsFragmentImpl.Extract(
-        CapturedVariablesPhrase,
+        CapturedVariablesParserInfo,
         _ExtractElement,
         node,
         allow_empty=False,
@@ -83,5 +86,5 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractElement(
     node: AST.Node,
-) -> Tuple[Phrase, bool]:
-    return GetPhrase(cast(AST.Node, ExtractDynamic(node))), False
+) -> Tuple[ParserInfo, bool]:
+    return GetParserInfo(cast(AST.Node, ExtractDynamic(node))), False

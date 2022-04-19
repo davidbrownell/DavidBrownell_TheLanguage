@@ -46,17 +46,20 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
-
-    from ...Parser.Phrases.Common.TemplateArgumentsPhrase import (
-        CompileExpressionPhrase,
-        TemplateArgumentsPhrase,
-        TemplateDecoratorArgumentPhrase,
-        TemplateTypeArgumentPhrase,
-        TypePhrase,
+    from ...Parser.Parser import (
+        CreateRegions,
+        Error,
+        GetParserInfo,
+        ParserInfo,
     )
 
-    from ...Parser.Phrases.Error import Error
+    from ...Parser.ParserInfos.Common.TemplateArgumentsParserInfo import (
+        CompileExpressionParserInfo,
+        TemplateArgumentsParserInfo,
+        TemplateDecoratorArgumentParserInfo,
+        TemplateTypeArgumentParserInfo,
+        TypeParserInfo,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -116,10 +119,10 @@ def Extract(
 ) -> Union[
     List[Error],
     bool,
-    TemplateArgumentsPhrase,
+    TemplateArgumentsParserInfo,
 ]:
     return ArgumentsFragmentImpl.Extract(
-        TemplateArgumentsPhrase,
+        TemplateArgumentsParserInfo,
         _ExtractElement,
         node,
         allow_empty=True,
@@ -131,17 +134,17 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractElement(
     node: AST.Node,
-) -> Tuple[Phrase, bool]:
+) -> Tuple[ParserInfo, bool]:
     node = cast(AST.Node, ExtractOr(node))
     assert node.type is not None
 
     if node.type.name == "Template Type":
-        dynamic_phrase_type = TypePhrase
-        element_type = TemplateTypeArgumentPhrase
+        dynamic_phrase_type = TypeParserInfo
+        element_type = TemplateTypeArgumentParserInfo
 
     elif node.type.name == "Template Decorator":
-        dynamic_phrase_type = CompileExpressionPhrase
-        element_type = TemplateDecoratorArgumentPhrase
+        dynamic_phrase_type = CompileExpressionParserInfo
+        element_type = TemplateDecoratorArgumentParserInfo
 
     else:
         assert False, node.type  # pragma: no cover
@@ -162,7 +165,7 @@ def _ExtractElement(
 
     # <type> | <template_expression>
     value_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
-    value_info = cast(dynamic_phrase_type, GetPhrase(value_node))
+    value_info = cast(dynamic_phrase_type, GetParserInfo(value_node))
 
     return (
         element_type.Create(

@@ -48,8 +48,15 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ....Parser.Parser import CreateRegion, CreateRegions, Phrase
-    from ....Parser.Phrases.Error import CreateError, Error, ErrorException, Region
+    from ....Parser.Parser import (
+        CreateError,
+        CreateRegion,
+        CreateRegions,
+        Error,
+        ErrorException,
+        ParserInfo,
+        Region,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -207,11 +214,11 @@ def Create(
 
 
 # ----------------------------------------------------------------------
-ExtractReturnType                           = TypeVar("ExtractReturnType", bound=Phrase)
+ExtractReturnType                           = TypeVar("ExtractReturnType", bound=ParserInfo)
 
 def Extract(
-    phrase_type: Type[ExtractReturnType],
-    extract_element_func: Callable[[AST.Node], Tuple[Phrase, bool]],
+    parser_info_type: Type[ExtractReturnType],
+    extract_element_func: Callable[[AST.Node], Tuple[ParserInfo, bool]],
     node: AST.Node,
     *,
     allow_empty: bool,
@@ -243,7 +250,7 @@ def Extract(
 
     initial_default_param: Optional[AST.Node] = None
 
-    parameters_phrases: Dict[ParametersType, Tuple[AST.Node, List[Phrase]]] = {}
+    parameters_parser_infos: Dict[ParametersType, Tuple[AST.Node, List[ParserInfo]]] = {}
     errors: List[Error] = []
 
     for parameters_type, parameters_node, parameter_nodes, parameter_errors in enum_func(all_parameters_node):
@@ -251,11 +258,11 @@ def Extract(
             errors += parameter_errors
             continue
 
-        phrases: List[Phrase] = []
+        parser_infos: List[ParserInfo] = []
 
         for parameter_node in parameter_nodes:
             try:
-                phrase, has_default = extract_element_func(parameter_node)
+                parser_info, has_default = extract_element_func(parameter_node)
             except ErrorException as ex:
                 errors += ex.errors
                 continue
@@ -270,25 +277,25 @@ def Extract(
                     ),
                 )
 
-            phrases.append(phrase)
+            parser_infos.append(parser_info)
 
-        assert phrases
-        assert parameters_type not in parameters_phrases
+        assert parser_infos
+        assert parameters_type not in parameters_parser_infos
 
-        parameters_phrases[parameters_type] = (parameters_node, phrases)
+        parameters_parser_infos[parameters_type] = (parameters_node, parser_infos)
 
     if not errors:
         try:
-            return phrase_type.Create(  # type: ignore
+            return parser_info_type.Create(  # type: ignore
                 CreateRegions(
                     node,
-                    parameters_phrases.get(ParametersType.pos, [None])[0],
-                    parameters_phrases.get(ParametersType.any, [None])[0],
-                    parameters_phrases.get(ParametersType.key, [None])[0],
+                    parameters_parser_infos.get(ParametersType.pos, [None])[0],
+                    parameters_parser_infos.get(ParametersType.any, [None])[0],
+                    parameters_parser_infos.get(ParametersType.key, [None])[0],
                 ),
-                parameters_phrases.get(ParametersType.pos, [None, None])[1],
-                parameters_phrases.get(ParametersType.any, [None, None])[1],
-                parameters_phrases.get(ParametersType.key, [None, None])[1],
+                parameters_parser_infos.get(ParametersType.pos, [None, None])[1],
+                parameters_parser_infos.get(ParametersType.any, [None, None])[1],
+                parameters_parser_infos.get(ParametersType.key, [None, None])[1],
             )
         except ErrorException as ex:
             errors += ex.errors

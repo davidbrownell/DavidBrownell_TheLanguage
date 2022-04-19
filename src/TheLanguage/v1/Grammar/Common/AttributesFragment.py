@@ -47,7 +47,7 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ...Parser.Phrases.Error import CreateError, Error
+    from ...Parser.Error import CreateError, Error
 
 
 # ----------------------------------------------------------------------
@@ -83,7 +83,7 @@ class AttributeData(object):
     name: str
 
     arguments_node: Optional[AST.Node]
-    arguments: Optional[Union[bool, FuncArgumentsFragment.FuncArgumentsPhrase]]
+    arguments: Optional[Union[bool, FuncArgumentsFragment.FuncArgumentsParserInfo]]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -164,7 +164,7 @@ def Extract(
         ),
     ):
         attribute_nodes = ExtractSequence(attribute_node)
-        assert len(attribute_nodes) == 1  # ODO: 2
+        assert len(attribute_nodes) == 2
 
         # <name>
         attribute_name_node = cast(AST.Leaf, attribute_nodes[0])
@@ -173,7 +173,7 @@ def Extract(
         # <function_arguments>?
         function_arguments_info = None
 
-        function_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], attribute_nodes[2])))
+        function_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], attribute_nodes[1])))
         if function_arguments_node is not None:
             func_arguments_info = FuncArgumentsFragment.Extract(function_arguments_node)
             if isinstance(func_arguments_info, list):

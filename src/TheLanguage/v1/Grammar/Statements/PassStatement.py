@@ -38,7 +38,7 @@ with InitRelativeImports():
     )
 
     from ...Parser.Parser import CreateRegions
-    from ...Parser.Phrases.Statements.PassStatement import PassStatement as ParserPassStatement
+    from ...Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -65,9 +65,9 @@ class PassStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         node: AST.Node,
-    ) -> GrammarPhrase.ExtractParserPhraseReturnType:
-        return ParserPassStatement.Create(
+    ) -> GrammarPhrase.ExtractParserInfoReturnType:
+        return PassStatementParserInfo.Create(
             CreateRegions(node),
         )
