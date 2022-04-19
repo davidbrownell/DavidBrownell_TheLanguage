@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TemplateDecoratorTypePhrase.py
+# |  StringType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 08:21:41
+# |      2022-04-14 16:16:47
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TemplateDecoratorTypePhrase object"""
+"""Contains the StringType object"""
 
 import os
 
-from typing import Any, Callable, List, Optional
-
-from dataclasses import dataclass, InitVar
+from typing import Any
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,32 +30,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Phrase import Phrase, Region
+    from .Type import Type
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TemplateDecoratorTypePhrase(Phrase):
-    """Abstract base class for all template decorator types"""
+class StringType(Type):
+    name                                    = Interface.DerivedProperty("StringType")  # type: ignore
 
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    @staticmethod
+    @Interface.override
+    def IsSupportedValue(
+        value: Any,
+    ) -> bool:
+        return isinstance(value, str)
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(
-        self,
-        regions,
-        regionless_attributes: Optional[List[str]]=None,
-        validate=True,
-        **custom_display_funcs: Callable[[Any], Optional[Any]],
-    ):
-        super(TemplateDecoratorTypePhrase, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
+    @staticmethod
+    @Interface.override
+    def ToBoolValue(
+        value: Any,
+    ) -> bool:
+        return bool(value)

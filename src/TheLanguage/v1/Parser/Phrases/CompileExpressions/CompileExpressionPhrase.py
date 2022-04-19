@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Phrase import Phrase, Region
-    from ...CompileTypes.CompileType import CompileType
+    from ...MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
 
 
 # ----------------------------------------------------------------------
@@ -43,6 +43,7 @@ class CompileExpressionPhrase(Phrase, Interface.Interface):
 
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
+    expression: MiniLanguageExpression
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -68,26 +69,3 @@ class CompileExpressionPhrase(Phrase, Interface.Interface):
             expression_type=None,  # type: ignore
             **custom_display_funcs,
         )
-
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class EvalResult(object):
-        value: Any
-        type: CompileType
-        name: Optional[str]                 # None if the value is a temporary
-
-    @staticmethod
-    @Interface.abstractmethod
-    def Eval(
-        args: Dict[str, Any],
-        type_overloads: Dict[str, CompileType],
-    ) -> "CompileExpressionPhrase.EvalResult":
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def ToString(
-        args: Dict[str, Any],
-    ) -> str:
-        raise Exception("Abstract method")  # pragma: no cover

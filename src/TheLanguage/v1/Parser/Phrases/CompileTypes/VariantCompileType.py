@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Character.py
+# |  VariantCompileType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 16:16:47
+# |      2022-04-17 12:25:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Character object"""
+"""Contains the VariantCompileType object"""
 
 import os
 
-from typing import Any
+from typing import List
+
+from dataclasses import dataclass, field
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,25 +31,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileType import CompileType
+    from .CompileTypePhrase import CompileTypePhrase
+    from ...MiniLanguage.Types.VariantType import (
+        Type as MiniLanguageType,
+        VariantType as MiniLanguageVariantType,
+    )
 
 
 # ----------------------------------------------------------------------
-class Character(CompileType):
-    name                                    = Interface.DerivedProperty("Character")  # type: ignore
+@dataclass(frozen=True, repr=False)
+class VariantCompileType(CompileTypePhrase):
+    items: List[CompileTypePhrase]
+    type: MiniLanguageType                  = field(init=False)
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def IsSupported(
-        value: Any,
-    ) -> bool:
-        return isinstance(value, int)
+    def __post_init__(self, regions):
+        super(VariantCompileType, self).__post_init__(regions)
 
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def ToBool(
-        value: Any,
-    ) -> bool:
-        return value > 0
+        object.__setattr__(self, "type", MiniLanguageVariantType([item.type for item in self.items]))

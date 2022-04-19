@@ -34,7 +34,7 @@ with InitRelativeImports():
     from ..Error import CreateError, Error, ErrorException
     from ..Phrase import Phrase, Region
 
-    from ..TemplateDecoratorExpressions.TemplateDecoratorExpressionPhrase import TemplateDecoratorExpressionPhrase
+    from ..CompileExpressions.CompileExpressionPhrase import CompileExpressionPhrase
     from ..Types.TypePhrase import TypePhrase
 
 
@@ -73,7 +73,7 @@ class TemplateTypeArgumentPhrase(Phrase):
 class TemplateDecoratorArgumentPhrase(Phrase):
     regions: InitVar[List[Optional[Region]]]
 
-    expression: TemplateDecoratorExpressionPhrase
+    expression: CompileExpressionPhrase
     keyword: Optional[str]
 
     # ----------------------------------------------------------------------

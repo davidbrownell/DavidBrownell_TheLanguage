@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  LiteralCompileExpression.py
+# |  IsExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 14:34:06
+# |      2022-04-15 13:41:31
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the LiteralCompileExpression object"""
+"""Contains the IsExpression object"""
 
 import os
 
@@ -32,31 +32,41 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
+    from .Expression import Expression, Type
+    from ..Types.BooleanType import BooleanType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class LiteralCompileExpression(CompileExpressionPhrase):
-    type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
-    value: Any
+class IsExpression(Expression):
+    expression: Expression
+    check_type: Type
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(LiteralCompileExpression, self).__post_init__(regions)
+    def __post_init__(self):
+        super(IsExpression, self).__init__()
 
     # ----------------------------------------------------------------------
     @Interface.override
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, CompileType],
-    ) -> CompileExpressionPhrase.EvalResult:
-        return CompileExpressionPhrase.EvalResult(
-            self.value,
-            self.type,
-            None,
-        )
+        type_overloads: Dict[str, Type],
+    ) -> Expression.EvalResult:
+        eval_result = self.expression.Eval(args, type_overloads)
+
+        result, inferred_type = eval_result.type.IsSupportedValueOfType(eval_result.value, self.check_type)
+
+        if inferred_type is not None:
+            eval_result.type = inferred_type
+
+            if eval_result.name is not None:
+                type_overloads[eval_result.name] = inferred_type
+
+        if result:
+            return eval_result
+
+        return Expression.EvalResult(False, BooleanType(), None)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -64,4 +74,7 @@ class LiteralCompileExpression(CompileExpressionPhrase):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "<<<{}>>>".format(self.value)
+        return "{} is {}".format(
+            self.expression.ToString(args),
+            self.check_type.name,
+        )

@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Integer.py
+# |  NoneType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-04-14 16:16:47
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Integer object"""
+"""Contains the NoneType object"""
 
 import os
 
@@ -30,25 +30,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileType import CompileType
+    from .Type import Type
 
 
 # ----------------------------------------------------------------------
-class Integer(CompileType):
-    name                                    = Interface.DerivedProperty("Integer")  # type: ignore
+class NoneType(Type):
+    name                                    = Interface.DerivedProperty("None")  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def IsSupported(
+    def IsSupportedValue(
         value: Any,
     ) -> bool:
-        return isinstance(value, int)
+        return value is None
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ToBool(
-        value: Any,
+    def ToBoolValue(
+        value: Any,  # pylint: disable=unused-argument
     ) -> bool:
-        return value != 0
+        return False

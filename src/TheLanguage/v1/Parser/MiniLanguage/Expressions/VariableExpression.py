@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableCompileExpression.py
+# |  VariableExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 12:15:48
+# |      2022-04-15 13:23:27
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableCompileExpression object"""
+"""Contains the VariableExpression object"""
 
 import os
 
@@ -32,43 +32,46 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileExpressionPhrase import CompileExpressionPhrase, CompileType
-    from ..Error import CreateError, ErrorException
+    from .Expression import Expression, Type
+
+    from ...Phrases.Error import CreateError, ErrorException
+    from ...Phrases.Region import Region
 
 
 # ----------------------------------------------------------------------
 InvalidNameError                            = CreateError(
-    "The constraint name '{name}' is not valid",
+    "The name '{name}' is not valid",
     name=str,
 )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableCompileExpression(CompileExpressionPhrase):
-    type: CompileType # TODO: Should this be CompileType or CompileTypePhrase?
+class VariableExpression(Expression):
+    type: Type
     name: str
+    name_region: Region
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(VariableCompileExpression, self).__post_init__(regions)
+    def __post_init__(self):
+        super(VariableExpression, self).__init__()
 
     # ----------------------------------------------------------------------
     @Interface.override
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, CompileType],
-    ) -> CompileExpressionPhrase.EvalResult:
+        type_overloads: Dict[str, Type],
+    ) -> Expression.EvalResult:
         if self.name not in args:
             raise ErrorException(
                 InvalidNameError.Create(
-                    region=self.regions__.name,
+                    region=self.name_region,
                     name=self.name,
                 ),
             )
 
-        return CompileExpressionPhrase.EvalResult(
+        return Expression.EvalResult(
             args[self.name],
             type_overloads.get(self.name, self.type),
             self.name,

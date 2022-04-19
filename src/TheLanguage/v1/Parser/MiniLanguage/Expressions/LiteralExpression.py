@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Region.py
+# |  LiteralExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-03-01 09:12:33
+# |      2022-04-15 13:32:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Region object"""
+"""Contains the LiteralExpression object"""
 
 import os
+
+from typing import Any, Dict
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import ComparisonOperators
-from CommonEnvironment.YamlRepr import ObjectReprImplBase
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,47 +32,36 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Lexer.Location import Location
+    from .Expression import Expression, Type
 
-# TODO: Move this to ../Region.py
 
 # ----------------------------------------------------------------------
-@ComparisonOperators
 @dataclass(frozen=True, repr=False)
-class Region(ObjectReprImplBase):
-    """Begining and ending for interesting blocks of code within a source file"""
-
-    begin: Location
-    end: Location
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+class LiteralExpression(Expression):
+    type: Type
+    value: Any
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        ObjectReprImplBase.__init__(self)
-
-        assert self.begin <= self.end       # type: ignore (operator is added dynamically)
+        super(LiteralExpression, self).__init__()
 
     # ----------------------------------------------------------------------
-    def __contains__(self, other):
-        return other.begin >= self.begin and other.end <= self.end
+    @Interface.override
+    def Eval(
+        self,
+        args: Dict[str, Any],
+        type_overloads: Dict[str, Type],
+    ):
+        return Expression.EvalResult(
+            self.value,
+            self.type,
+            None,
+        )
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    def Compare(value1, value2):
-        result = Location.Compare(value1.begin, value2.begin)
-        if result != 0:
-            return result
-
-        result = Location.Compare(value1.end, value2.end)
-        if result != 0:
-            return result
-
-        return 0
+    @Interface.override
+    def ToString(
+        self,
+        args: Dict[str, Any],
+    ) -> str:
+        return "<<<{}>>>".format(self.value)
