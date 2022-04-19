@@ -39,4 +39,7 @@ class IntegerLiteralParserInfo(LiteralParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(IntegerLiteralParserInfo, self).__post_init__(regions)
+        super(IntegerLiteralParserInfo, self).__post_init__(
+            regions,
+            regionless_attributes=["value", ],
+        )

@@ -85,7 +85,7 @@ def Extract(
         assert value_info == "True" or value_info == "False", value_info
 
         return BooleanLiteralParserInfo.Create(
-            CreateRegions(node, value_node),
+            CreateRegions(value_node),
             value_info == "True",
         )
 

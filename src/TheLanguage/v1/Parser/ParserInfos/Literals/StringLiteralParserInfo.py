@@ -39,4 +39,7 @@ class StringLiteralParserInfo(LiteralParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(StringLiteralParserInfo, self).__post_init__(regions)
+        super(StringLiteralParserInfo, self).__post_init__(
+            regions,
+            regionless_attributes=["value", ],
+        )

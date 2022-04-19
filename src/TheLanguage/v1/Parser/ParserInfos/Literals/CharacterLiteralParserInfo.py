@@ -39,4 +39,7 @@ class CharacterLiteralParserInfo(LiteralParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(CharacterLiteralParserInfo, self).__post_init__(regions)
+        super(CharacterLiteralParserInfo, self).__post_init__(
+            regions,
+            regionless_attributes=["value", ],
+        )

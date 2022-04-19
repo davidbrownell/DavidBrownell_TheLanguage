@@ -39,4 +39,7 @@ class BooleanLiteralParserInfo(LiteralParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(BooleanLiteralParserInfo, self).__post_init__(regions)
+        super(BooleanLiteralParserInfo, self).__post_init__(
+            regions,
+            regionless_attributes=["value", ],
+        )
