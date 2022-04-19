@@ -37,20 +37,22 @@ with InitRelativeImports():
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractSequence,
         ExtractToken,
     )
 
-    from ...Parser.Parser import CreateRegion, CreateRegions
+    from ...Parser.Parser import (
+        CreateError,
+        CreateRegion,
+        CreateRegions,
+    )
 
-    from ...Parser.MiniLanguage.Types.BooleanType import BooleanType
-    from ...Parser.MiniLanguage.Types.CharacterType import CharacterType
-    from ...Parser.MiniLanguage.Types.IntegerType import IntegerType
-    from ...Parser.MiniLanguage.Types.NoneType import NoneType
-    from ...Parser.MiniLanguage.Types.NumberType import NumberType
-    from ...Parser.MiniLanguage.Types.StringType import StringType
-
-    from ...Parser.Phrases.CompileTypes.CompileTypePhrase import CompileTypePhrase
-    from ...Parser.Phrases.Error import CreateError
+    from ...Parser.ParserInfos.CompileTypes.BooleanCompileTypeParserInfo import BooleanCompileTypeParserInfo
+    from ...Parser.ParserInfos.CompileTypes.CharacterCompileTypeParserInfo import CharacterCompileTypeParserInfo
+    from ...Parser.ParserInfos.CompileTypes.IntegerCompileTypeParserInfo import IntegerCompileTypeParserInfo
+    from ...Parser.ParserInfos.CompileTypes.NoneCompileTypeParserInfo import NoneCompileTypeParserInfo
+    from ...Parser.ParserInfos.CompileTypes.NumberCompileTypeParserInfo import NumberCompileTypeParserInfo
+    from ...Parser.ParserInfos.CompileTypes.StringCompileTypeParserInfo import StringCompileTypeParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -70,39 +72,48 @@ class StandardCompileType(GrammarPhrase):
             DynamicPhrasesType.CompileTypes,
             CreatePhrase(
                 name=self.PHRASE_NAME,
-                item=CommonTokens.CompileTypeName,
+                item=[
+                    # Note that needs to be a sequence so that we can properly extract the value
+
+                    # <compile_type>
+                    CommonTokens.CompileTypeName,
+                ],
             ),
         )
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         node: AST.Node,
-    ) -> GrammarPhrase.ExtractParserPhraseReturnType:
-        value = ExtractToken(cast(AST.Leaf, node))
+    ) -> GrammarPhrase.ExtractParserInfoReturnType:
+        nodes = ExtractSequence(node)
+        assert len(nodes) == 1
 
-        if value == "Bool!":
-            the_type = BooleanType()
-        elif value == "Char!":
-            the_type = CharacterType()
-        elif value == "Int!":
-            the_type = IntegerType()
-        elif value == "None!":
-            the_type = NoneType()
-        elif value == "Num!":
-            the_type = NumberType()
-        elif value == "Str!":
-            the_type = StringType()
+        # <compile_type>
+        name_leaf = cast(AST.Leaf, nodes[0])
+        name_info = ExtractToken(name_leaf)
+
+        if name_info == "Bool":
+            parser_info_type = BooleanCompileTypeParserInfo
+        elif name_info == "Char":
+            parser_info_type = CharacterCompileTypeParserInfo
+        elif name_info == "Int":
+            parser_info_type = IntegerCompileTypeParserInfo
+        elif name_info == "None":
+            parser_info_type = NoneCompileTypeParserInfo
+        elif name_info == "Num":
+            parser_info_type = NumberCompileTypeParserInfo
+        elif name_info == "Str":
+            parser_info_type = StringCompileTypeParserInfo
         else:
             return [
                 InvalidTypeError.Create(
-                    region=CreateRegion(node),
-                    type=value,
+                    region=CreateRegion(name_leaf),
+                    type=name_info,
                 ),
             ]
 
-        return CompileTypePhrase.Create(
-            CreateRegions(node, node),
-            the_type,
+        return parser_info_type.Create(
+            CreateRegions(node),
         )

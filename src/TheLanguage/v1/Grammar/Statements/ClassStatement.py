@@ -58,18 +58,29 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegion, CreateRegions
-    from ...Parser.Phrases.Error import CreateError, Error, Region
-    from ...Parser.Phrases.Common.ClassModifier import ClassModifier
-    from ...Parser.Phrases.Statements import ClassStatement as ParserClassStatementModule
-    from ...Parser.Phrases.Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
-    from ...Parser.Phrases.Statements.ClassCapabilities.ConceptCapabilities import ConceptCapabilities
-    from ...Parser.Phrases.Statements.ClassCapabilities.ExceptionCapabilities import ExceptionCapabilities
-    from ...Parser.Phrases.Statements.ClassCapabilities.ImmutablePODCapabilities import ImmutablePODCapabilities
-    from ...Parser.Phrases.Statements.ClassCapabilities.InterfaceCapabilities import InterfaceCapabilities
-    from ...Parser.Phrases.Statements.ClassCapabilities.MixinCapabilities import MixinCapabilities
-    from ...Parser.Phrases.Statements.ClassCapabilities.MutablePODCapabilities import MutablePODCapabilities
-    from ...Parser.Phrases.Statements.ClassCapabilities.StandardCapabilities import StandardCapabilities
+    from ...Parser.Parser import (
+        CreateError,
+        CreateRegion,
+        CreateRegions,
+        Error,
+        Region,
+    )
+
+    from ...Parser.ParserInfos.Common.ClassModifier import ClassModifier
+
+    from ...Parser.ParserInfos.Statements.ClassStatementParserInfo import (
+        ClassStatementParserInfo,
+        ClassStatementDependencyParserInfo,
+    )
+
+    from ...Parser.ParserInfos.Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
+    from ...Parser.ParserInfos.Statements.ClassCapabilities.ConceptCapabilities import ConceptCapabilities
+    from ...Parser.ParserInfos.Statements.ClassCapabilities.ExceptionCapabilities import ExceptionCapabilities
+    from ...Parser.ParserInfos.Statements.ClassCapabilities.ImmutablePODCapabilities import ImmutablePODCapabilities
+    from ...Parser.ParserInfos.Statements.ClassCapabilities.InterfaceCapabilities import InterfaceCapabilities
+    from ...Parser.ParserInfos.Statements.ClassCapabilities.MixinCapabilities import MixinCapabilities
+    from ...Parser.ParserInfos.Statements.ClassCapabilities.MutablePODCapabilities import MutablePODCapabilities
+    from ...Parser.ParserInfos.Statements.ClassCapabilities.StandardCapabilities import StandardCapabilities
 
 
 # ----------------------------------------------------------------------
@@ -245,10 +256,10 @@ class ClassStatement(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         self,
         node: AST.Node,
-    ) -> GrammarPhrase.ExtractParserPhraseReturnType:
+    ) -> GrammarPhrase.ExtractParserInfoReturnType:
 
         # Construct the ParserPhrase in 2 passes. The first will contain information that contained
         # statements need to create their parser phrases. The second will collect that information
@@ -427,7 +438,7 @@ class ClassStatement(GrammarPhrase):
                     constraints_info = result
 
             # <dependencies>?
-            all_dependencies_info: Dict[DependencyType, Tuple[AST.Node, List[ParserClassStatementModule.ClassStatementDependency]]] = {}
+            all_dependencies_info: Dict[DependencyType, Tuple[AST.Node, List[ClassStatementDependencyParserInfo]]] = {}
 
             for dependency_type, (_, these_dependencies_node) in all_dependency_nodes.items():
                 these_dependency_nodes = cast(AST.Node, ExtractOr(these_dependencies_node))
@@ -442,7 +453,7 @@ class ClassStatement(GrammarPhrase):
                 these_dependency_nodes = ExtractSequence(these_dependency_nodes)
                 assert len(these_dependency_nodes) == 3
 
-                these_dependencies: List[ParserClassStatementModule.ClassStatementDependency] = []
+                these_dependencies: List[ClassStatementDependencyParserInfo] = []
 
                 for this_dependency_node in itertools.chain(
                     [these_dependency_nodes[0]],
@@ -463,11 +474,11 @@ class ClassStatement(GrammarPhrase):
 
                     # <standard_type>
                     standard_type_node = cast(AST.Node, this_dependency_nodes[1])
-                    standard_type_info = self._standard_type.ExtractParserPhrase(standard_type_node)
+                    standard_type_info = self._standard_type.ExtractParserInfo(standard_type_node)
 
                     # Add it
                     these_dependencies.append(
-                        ParserClassStatementModule.ClassStatementDependency.Create(
+                        ClassStatementDependencyParserInfo.Create(
                             CreateRegions(this_dependency_node, this_visibility_node, standard_type_node),
                             this_visibility_info,
                             standard_type_info,
@@ -496,7 +507,7 @@ class ClassStatement(GrammarPhrase):
                 return errors
 
             # Commit
-            return ParserClassStatementModule.ClassStatement.Create(
+            return ClassStatementParserInfo.Create(
                 CreateRegions(
                     node,
                     visibility_node,

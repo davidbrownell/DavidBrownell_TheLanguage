@@ -45,9 +45,9 @@ with InitRelativeImports():
 
     from ...Parser.Parser import CreateRegions
 
-    from ...Parser.Phrases.Types.TupleType import (
-        TupleType as ParserTupleType,
-        TypePhrase as ParserTypePhrase,
+    from ...Parser.ParserInfos.Types.TupleTypeParserInfo import (
+        TupleTypeParserInfo,
+        TypeParserInfo,
     )
 
 
@@ -77,9 +77,9 @@ class TupleType(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         node: AST.Node,
-    ) -> GrammarPhrase.ExtractParserPhraseReturnType:
+    ) -> GrammarPhrase.ExtractParserInfoReturnType:
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
@@ -87,7 +87,7 @@ class TupleType(GrammarPhrase):
 
             # Elements
             elements_node = cast(AST.Node, nodes[0])
-            elements_info = cast(List[ParserTypePhrase], TuplePhraseImpl.Extract(elements_node))
+            elements_info = cast(List[TypeParserInfo], TuplePhraseImpl.Extract(elements_node))
 
             # <mutability_modifier>?
             mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -96,7 +96,7 @@ class TupleType(GrammarPhrase):
             else:
                 mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
 
-            return ParserTupleType(
+            return TupleTypeParserInfo.Create(
                 CreateRegions(node, mutability_modifier_node, elements_node),  # type: ignore
                 mutability_modifier_info,
                 elements_info,

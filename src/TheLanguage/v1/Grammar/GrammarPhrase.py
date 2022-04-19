@@ -110,13 +110,13 @@ class GrammarPhrase(Interface.Interface, ObjectReprImplBase):
         return None
 
     # ----------------------------------------------------------------------
-    ExtractParserPhraseReturnType           = ParseObserver.ExtractParserPhraseReturnType
+    ExtractParserInfoReturnType             = ParseObserver.ExtractParserInfoReturnType
 
     @staticmethod
     @Interface.abstractmethod
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         node: AST.Node,
-    ) -> "GrammarPhrase.ExtractParserPhraseReturnType":
+    ) -> "GrammarPhrase.ExtractParserInfoReturnType":
         raise Exception("Abstract method")  # pragma: no cover
 
 

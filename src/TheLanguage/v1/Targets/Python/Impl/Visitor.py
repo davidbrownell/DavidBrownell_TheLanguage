@@ -33,12 +33,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ....Parser.Parser import Phrase, RootPhrase
+    from ....Parser.Parser import ParserInfo, RootParserInfo
 
-    from ....Parser.Phrases.Statements.ClassStatement import ClassStatement
-    from ....Parser.Phrases.Statements.PassStatement import PassStatement
+    from ....Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ....Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+    from ....Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
+    from ....Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
+    from ....Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
 
-    from ....Parser.Phrases.Types.StandardType import StandardType
+    from ....Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -74,7 +77,7 @@ class Visitor(object):
     # ----------------------------------------------------------------------
     @staticmethod
     def OnEnterScope(
-        phrase: Phrase,
+        parser_info: ParserInfo,
     ) -> None:
         # Nothing to do here
         pass
@@ -82,15 +85,15 @@ class Visitor(object):
     # ----------------------------------------------------------------------
     @staticmethod
     def OnExitScope(
-        phrase: Phrase,
+        parser_info: ParserInfo,
     ) -> None:
         # Nothing to do here
         pass
 
     # ----------------------------------------------------------------------
-    def OnEnterRootPhrase(
+    def OnEnterRootParserInfo(
         self,
-        phrase: RootPhrase,
+        parser_info: RootParserInfo,
     ) -> None:
         self._stream.write(
             textwrap.dedent(
@@ -104,7 +107,7 @@ class Visitor(object):
             ),
         )
 
-        if phrase.documentation is not None:
+        if parser_info.documentation is not None:
             self._stream.write(
                 textwrap.dedent(
                     '''
@@ -113,13 +116,13 @@ class Visitor(object):
                     """
 
                     ''',
-                ).format(phrase.documentation),
+                ).format(parser_info.documentation),
             )
 
     # ----------------------------------------------------------------------
-    def OnExitRootPhrase(
+    def OnExitRootParserInfo(
         self,
-        phrase: RootPhrase,
+        parser_info: RootParserInfo,
     ) -> None:
         # Nothing to do here
         pass
@@ -129,42 +132,77 @@ class Visitor(object):
     # |  Statements
     # |
     # ----------------------------------------------------------------------
-    def OnEnterClassStatement(
+    def OnEnterClassStatementParserInfo(
         self,
-        phrase: ClassStatement,
+        parser_info: ClassStatementParserInfo,
     ):
-        self._stream.write("class {}(".format(phrase.name))
+        self._stream.write("class {}(".format(parser_info.name))
 
         self._stream.write(
             ", ".join(
                 self._GetStandardTypeName(dependency.type) for dependency in itertools.chain(
-                    phrase.extends or [],
-                    phrase.implements or [],
-                    phrase.uses or [],
+                    parser_info.extends or [],
+                    parser_info.implements or [],
+                    parser_info.uses or [],
                 )
             ),
         )
 
-        if not phrase.extends and not phrase.implements and not phrase.uses:
+        if not parser_info.extends and not parser_info.implements and not parser_info.uses:
             self._stream.write("object")
 
         self._stream.write("):\n")
         self._Indent()
 
     # ----------------------------------------------------------------------
-    def OnExitClassStatement(
+    def OnExitClassStatementParserInfo(
         self,
-        phrase: ClassStatement,
+        parser_info: ClassStatementParserInfo,
     ):
         self._Dedent()
         self._stream.write("\n")
 
     # ----------------------------------------------------------------------
-    def OnPassStatement(
+    def OnEnterFuncDefinitionStatementParserInfo(
         self,
-        phrase: PassStatement,  # pylint: disable=unused-argument
+        parser_info: FuncDefinitionStatementParserInfo,
+    ):
+        pass # TODO
+
+    # ----------------------------------------------------------------------
+    def OnExitFuncDefinitionStatementParserInfo(
+        self,
+        parser_info: FuncDefinitionStatementParserInfo,
+    ):
+        pass # TODO
+
+    # ----------------------------------------------------------------------
+    def OnImportStatementParserInfo(
+        self,
+        parser_info: ImportStatementParserInfo,
+    ) -> None:
+        pass
+
+    # ----------------------------------------------------------------------
+    def OnPassStatementParserInfo(
+        self,
+        parser_info: PassStatementParserInfo,  # pylint: disable=unused-argument
     ) -> None:
         self._stream.write("pass\n")
+
+    # ----------------------------------------------------------------------
+    def OnEnterSpecialMethodStatementParserInfo(
+        self,
+        parser_info: SpecialMethodStatementParserInfo,
+    ):
+        pass # TODO
+
+    # ----------------------------------------------------------------------
+    def OnExitSpecialMethodStatementParserInfo(
+        self,
+        parser_info: SpecialMethodStatementParserInfo,
+    ):
+        pass # TODO
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -209,6 +247,6 @@ class Visitor(object):
     # ----------------------------------------------------------------------
     @staticmethod
     def _GetStandardTypeName(
-        phrase: StandardType,
+        parser_info: StandardTypeParserInfo,
     ) -> str:
-        return ".".join(item.name for item in phrase.items)
+        return ".".join(item.name for item in parser_info.items)
