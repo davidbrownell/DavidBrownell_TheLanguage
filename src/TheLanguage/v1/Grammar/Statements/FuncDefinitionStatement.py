@@ -64,6 +64,8 @@ with InitRelativeImports():
         TypeParserInfo,
     )
 
+    from ...Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo
+
 
 # ----------------------------------------------------------------------
 class FuncDefinitionStatement(GrammarPhrase):
@@ -231,6 +233,15 @@ class FuncDefinitionStatement(GrammarPhrase):
             # <return_type>
             return_type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
             return_type_info = cast(TypeParserInfo, GetParserInfo(return_type_node))
+
+            if (
+                isinstance(return_type_info, StandardTypeParserInfo)
+                and len(return_type_info.items) == 1
+                and return_type_info.items[0].name == "None"
+            ):
+                # We are looking at a None type - clear all info
+                return_type_info = None
+                return_type_node = None
 
             # <name>
             name_leaf = cast(AST.Leaf, nodes[4])

@@ -58,6 +58,7 @@ class TupleTypeParserInfo(TypeParserInfo):
                         region=contained_type.regions__.self__,
                     ),
                 )
+            # TODO: InvalidNewMutabilityModifierError?
 
         if errors:
             raise ErrorException(*errors)

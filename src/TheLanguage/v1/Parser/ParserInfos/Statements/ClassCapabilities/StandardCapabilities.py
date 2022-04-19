@@ -42,6 +42,7 @@ with InitRelativeImports():
 # is a bit awkward.
 StandardCapabilities                        = _ClassCapabilities(
     name="Standard",
+    is_instantiable=True,
     default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,

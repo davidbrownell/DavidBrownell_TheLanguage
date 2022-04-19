@@ -38,7 +38,12 @@ with InitRelativeImports():
     from ..Common.VisibilityModifier import VisibilityModifier
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ..Types.TypeParserInfo import MutabilityModifierRequiredError, TypeParserInfo
+
+    from ..Types.TypeParserInfo import (
+        InvalidNewMutabilityModifierError,
+        MutabilityModifierRequiredError,
+        TypeParserInfo,
+    )
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -140,6 +145,12 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
             errors.append(
                 MutabilityModifierRequiredError.Create(
                     region=self.type.regions__.self__,
+                ),
+            )
+        elif self.type.mutability_modifier == MutabilityModifier.new:
+            errors.append(
+                InvalidNewMutabilityModifierError.Create(
+                    region=self.type.regions__.mutability_modifier,
                 ),
             )
         else:

@@ -284,7 +284,7 @@ class ClassStatementParserInfo(StatementParserInfo):
                     )
 
         # Create default special methods as necessary
-        # BugBug
+        # TODO
 
         if errors:
             raise ErrorException(*errors)

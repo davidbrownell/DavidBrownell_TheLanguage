@@ -51,6 +51,10 @@ MutabilityModifierNotAllowedError           = CreateError(
     "A mutability modifier is not allowed in this context",
 )
 
+InvalidNewMutabilityModifierError           = CreateError(
+    "The mutability modifier '{}' is not allowed in this context".format(MutabilityModifier.new.name),
+)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)

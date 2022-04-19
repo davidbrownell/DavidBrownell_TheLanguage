@@ -33,7 +33,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..ParserInfo import ParserInfo, Region
-    from ...MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
 
 
 # ----------------------------------------------------------------------
@@ -43,7 +42,6 @@ class CompileExpressionParserInfo(ParserInfo, Interface.Interface):
 
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
-    expression: MiniLanguageExpression
 
     # ----------------------------------------------------------------------
     @classmethod

@@ -37,14 +37,11 @@ with InitRelativeImports():
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractSequence,
         ExtractToken,
     )
 
     from ...Parser.Parser import CreateRegions
-
-    from ...Parser.MiniLanguage.Expressions.VariableExpression import (
-        VariableExpression as PhraseVariableExpression,
-    )
 
     from ...Parser.ParserInfos.CompileExpressions.CompileExpressionParserInfo import (
         CompileExpressionParserInfo,
@@ -60,7 +57,12 @@ class VariableCompileExpression(GrammarPhrase):
             DynamicPhrasesType.CompileExpressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
-                item=CommonTokens.CompileParameterName,
+                item=[
+                    # Note that needs to be a sequence so that we can properly extract the value
+
+                    # <parameter_name>
+                    CommonTokens.CompileParameterName,
+                ],
             ),
         )
 
@@ -70,14 +72,14 @@ class VariableCompileExpression(GrammarPhrase):
     def ExtractParserInfo(
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserInfoReturnType:
-        name_leaf = cast(AST.Leaf, node)
+        nodes = ExtractSequence(node)
+        assert len(nodes) == 1
+
+        # <parameter_name>
+        name_leaf = cast(AST.Leaf, nodes[0])
         name_info = ExtractToken(name_leaf)
 
+        # TODO: This should be using a variable-specific ParserInfo object
         return CompileExpressionParserInfo.Create(
-            CreateRegions(node, name_leaf),
-            PhraseVariableExpression.Create(
-                "BugBug",
-                name_info,
-                name_leaf,
-            ),
+            CreateRegions(node),
         )

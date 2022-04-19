@@ -39,6 +39,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 MutablePODCapabilities                      = _ClassCapabilities(
     name="Mutable POD",
+    is_instantiable=True,
     default_class_modifier=ClassModifier.mutable,
     valid_visibilities=[
         VisibilityModifier.public,

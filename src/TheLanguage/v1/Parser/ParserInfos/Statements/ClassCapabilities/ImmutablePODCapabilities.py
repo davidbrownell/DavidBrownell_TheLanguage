@@ -39,6 +39,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 ImmutablePODCapabilities                    = _ClassCapabilities(
     name="Immutable POD",
+    is_instantiable=True,
     default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,

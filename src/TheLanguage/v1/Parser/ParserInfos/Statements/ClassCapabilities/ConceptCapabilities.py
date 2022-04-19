@@ -39,6 +39,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 ConceptCapabilities                         = _ClassCapabilities(
     name="Concept",
+    is_instantiable=False,
     default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,

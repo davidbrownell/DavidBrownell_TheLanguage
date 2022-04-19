@@ -41,9 +41,4 @@ class VariantCompileTypeParserInfo(CompileTypeParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(VariantCompileTypeParserInfo, self).__post_init__(
-            regions,
-            regionless_attributes=[
-                "type",
-            ],
-        )
+        super(VariantCompileTypeParserInfo, self).__post_init__(regions)

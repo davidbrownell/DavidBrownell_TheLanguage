@@ -46,6 +46,8 @@ class ClassCapabilities(ObjectReprImplBase):
     """
 
     name: str
+    is_instantiable: bool
+
     default_class_modifier: ClassModifier
 
     valid_visibilities: List[VisibilityModifier]

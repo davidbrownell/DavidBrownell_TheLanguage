@@ -73,7 +73,7 @@ def Create() -> PhraseItem:
                 name="Template Type",
                 item=[
                     # <template_type_name>
-                    CommonTokens.TemplateTypeName,
+                    CommonTokens.CompileTemplateTypeName,
 
                     # '...'?
                     OptionalPhraseItem(
@@ -102,7 +102,7 @@ def Create() -> PhraseItem:
                     DynamicPhrasesType.CompileTypes,
 
                     # <decorator_name>
-                    CommonTokens.TemplateDecoratorParameterName,
+                    CommonTokens.CompileParameterName,
 
                     # ('=' <compile_expression>)?
                     OptionalPhraseItem(

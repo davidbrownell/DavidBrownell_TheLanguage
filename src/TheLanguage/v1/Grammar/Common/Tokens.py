@@ -54,19 +54,6 @@ PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken
 
 
 # ----------------------------------------------------------------------
-CompileTypeName                             = RegexToken(
-    "<compile type name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Upper                           )[A-Z](?#
-            Alphanumeric [optional]         )[A-Za-z0-9_]+(?#
-            Does not end with a 'T'         )(?<!T)(?#
-            ))""",
-        ),
-    ),
-)
-
 CompileParameterName                        = RegexToken(
     "<compile parameter name>",
     re.compile(
@@ -75,6 +62,36 @@ CompileParameterName                        = RegexToken(
             Lower                           )[a-z](?#
             Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
             Bang                            )!(?#
+            ))""",
+        ),
+    ),
+)
+
+# TODO: Auto-detect template types by looking for a 'T' suffix?
+CompileTemplateTypeName                     = RegexToken(
+    "<template type name>",
+    re.compile(
+        textwrap.dedent(
+            r"""(?P<value>(?#
+            Upper                           )[A-Z](?#
+            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
+            Ends with a 'T'                 )(?<=T)(?#
+            ))""",
+        ),
+    ),
+)
+
+CompileTypeName                             = RegexToken(
+    "<compile type name>",
+    re.compile(
+        textwrap.dedent(
+            r"""(?P<value>(?#
+                                            )Bool|(?#
+                                            )Char|(?#
+                                            )Int|(?#
+                                            )None|(?#
+                                            )Num|(?#
+                                            )Str(?#
             ))""",
         ),
     ),
@@ -158,35 +175,6 @@ RuntimeVariableName                         = RegexToken(
             Lower                           )[a-z](?#
             Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
             Trailing Underscores [optional] )_*(?#
-            ))""",
-        ),
-    ),
-)
-
-
-# ----------------------------------------------------------------------
-# TODO: Auto-detect template types by looking for a 'T' suffix?
-TemplateTypeName                            = RegexToken(
-    "<template type name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Upper                           )[A-Z](?#
-            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
-            Ends with a 'T'                 )(?<=T)(?#
-            ))""",
-        ),
-    ),
-)
-
-TemplateDecoratorParameterName              = RegexToken(
-    "<template decorator parameter name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Lower                           )[a-z](?#
-            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
-            Bang                            )!(?#
             ))""",
         ),
     ),

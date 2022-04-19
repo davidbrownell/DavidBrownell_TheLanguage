@@ -32,9 +32,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common.MutabilityModifier import MutabilityModifier
+
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
     from ..Types.TypeParserInfo import (
+        InvalidNewMutabilityModifierError,
         MutabilityModifierRequiredError,
         ParserInfo,
         Region,
@@ -87,6 +90,12 @@ class FuncParameterParserInfo(ParserInfo):
             errors.append(
                 MutabilityModifierRequiredError.Create(
                     region=self.type.regions__.self__,
+                ),
+            )
+        elif self.type.mutability_modifier == MutabilityModifier.new:
+            errors.append(
+                InvalidNewMutabilityModifierError.Create(
+                    region=self.type.regions__.mutability_modifier,
                 ),
             )
 

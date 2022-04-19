@@ -37,7 +37,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class CompileTypeParserInfo(ParserInfo):
-    # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
 
     # ----------------------------------------------------------------------

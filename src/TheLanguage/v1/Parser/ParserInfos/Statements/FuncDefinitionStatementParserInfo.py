@@ -36,7 +36,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import ParserInfo, StatementParserInfo
+
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
+    from .ClassCapabilities.ConceptCapabilities import ConceptCapabilities
+    from .ClassCapabilities.InterfaceCapabilities import InterfaceCapabilities
+    from .ClassCapabilities.MixinCapabilities import MixinCapabilities
 
     from ..Common.FuncParametersParserInfo import (  # pylint: disable=unused-import
         FuncParametersParserInfo,
@@ -55,7 +59,11 @@ with InitRelativeImports():
     from ..Common.VariableNameParserInfo import VariableNameParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier
 
-    from ..Types.TypeParserInfo import MutabilityModifierRequiredError, TypeParserInfo
+    from ..Types.TypeParserInfo import (
+        InvalidNewMutabilityModifierError,
+        MutabilityModifierRequiredError,
+        TypeParserInfo,
+    )
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -109,7 +117,7 @@ class OperatorType(Enum):
     GetAttribute                = Value.Create(_auto(), 2)  #                                                   N/A                             Yes             <visibility> <return_type> __GetAttribute?__(String immutable name) <ref|val>
     Index                       = Value.Create(_auto(), 2)  #                                                   N/A                             Yes             <visibility> <return_type> __Index?__(<args>) <ref|val>
     Iter                        = Value.Create(_auto(), 2)  #                                                   N/A                             Yes             <visibility> Iterator<type> __Iter?__() <ref|val>
-    Cast                        = Value.Create(_auto(), 2)  #                                                   N/A                             Yes             <visibility> <return_type> __Cast?__<OtherT>() ????BugBug????
+    Cast                        = Value.Create(_auto(), 2)  #                                                   N/A                             Yes             <visibility> <return_type> __Cast?__<OtherT>() TODO: This needs some work!
 
     Negative                    = Value.Create(_auto(), 3)  #                                                   N/A                             Yes             <visibility> <return_type> __Negative?__() immutable
     Positive                    = Value.Create(_auto(), 3)  #                                                   N/A                             Yes             <visibility> <return_type> __Positive?__() immutable
@@ -261,7 +269,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     method_modifier_param: InitVar[Optional[MethodModifier]]
     method_modifier: Optional[MethodModifier]           = field(init=False)
 
-    return_type: TypeParserInfo
+    return_type: Optional[TypeParserInfo]
     name: Union[str, OperatorType]
     documentation: Optional[str]
 
@@ -329,12 +337,24 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
         # Validate
         errors: List[Error] = []
 
-        if self.return_type.mutability_modifier is None:
-            errors.append(
-                MutabilityModifierRequiredError.Create(
-                    region=self.return_type.regions__.self__,
-                ),
-            )
+        if self.return_type is not None:
+            if self.return_type.mutability_modifier is None:
+                errors.append(
+                    MutabilityModifierRequiredError.Create(
+                        region=self.return_type.regions__.self__,
+                    ),
+                )
+            elif (
+                self.return_type.mutability_modifier == MutabilityModifier.new
+                and (
+                    class_capabilities is None or class_capabilities.is_instantiable
+                )
+            ):
+                errors.append(
+                    InvalidNewMutabilityModifierError.Create(
+                        region=self.return_type.regions__.mutability_modifier,
+                    ),
+                )
 
         if class_capabilities is None:
             if self.mutability is not None:

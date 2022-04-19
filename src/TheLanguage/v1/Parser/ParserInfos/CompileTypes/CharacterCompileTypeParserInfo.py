@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  MutabilityModifier.py
+# |  CharacterCompileTypeParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 12:26:51
+# |      2022-04-19 10:26:57
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,25 +13,28 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the MutabilityModifier object"""
+"""Contains the CharacterCompileTypeParserInfo object"""
 
 import os
 
-from enum import auto, Flag
+from dataclasses import dataclass
 
 import CommonEnvironment
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+with InitRelativeImports():
+    from .CompileTypeParserInfo import CompileTypeParserInfo
+
 
 # ----------------------------------------------------------------------
-class MutabilityModifier(Flag):
-    var                                     = auto()
-    ref                                     = auto()
-    val                                     = auto()
-    mutable                                 = auto()
-    immutable                               = auto()
-    new                                     = auto()
+@dataclass(frozen=True, repr=False)
+class CharacterCompileTypeParserInfo(CompileTypeParserInfo):
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):
+        super(CharacterCompileTypeParserInfo, self).__post_init__(regions)

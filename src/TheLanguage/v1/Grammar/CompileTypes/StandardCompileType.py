@@ -41,16 +41,18 @@ with InitRelativeImports():
         ExtractToken,
     )
 
-    from ...Parser.Parser import CreateError, CreateRegion, CreateRegions
+    from ...Parser.Parser import (
+        CreateError,
+        CreateRegion,
+        CreateRegions,
+    )
 
-    from ...Parser.MiniLanguage.Types.BooleanType import BooleanType
-    from ...Parser.MiniLanguage.Types.CharacterType import CharacterType
-    from ...Parser.MiniLanguage.Types.IntegerType import IntegerType
-    from ...Parser.MiniLanguage.Types.NoneType import NoneType
-    from ...Parser.MiniLanguage.Types.NumberType import NumberType
-    from ...Parser.MiniLanguage.Types.StringType import StringType
-
-    from ...Parser.ParserInfos.CompileTypes.CompileTypeParserInfo import CompileTypeParserInfo
+    from ...Parser.ParserInfos.CompileTypes.BooleanCompileTypeParserInfo import BooleanCompileTypeParserInfo
+    from ...Parser.ParserInfos.CompileTypes.CharacterCompileTypeParserInfo import CharacterCompileTypeParserInfo
+    from ...Parser.ParserInfos.CompileTypes.IntegerCompileTypeParserInfo import IntegerCompileTypeParserInfo
+    from ...Parser.ParserInfos.CompileTypes.NoneCompileTypeParserInfo import NoneCompileTypeParserInfo
+    from ...Parser.ParserInfos.CompileTypes.NumberCompileTypeParserInfo import NumberCompileTypeParserInfo
+    from ...Parser.ParserInfos.CompileTypes.StringCompileTypeParserInfo import StringCompileTypeParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -72,6 +74,8 @@ class StandardCompileType(GrammarPhrase):
                 name=self.PHRASE_NAME,
                 item=[
                     # Note that needs to be a sequence so that we can properly extract the value
+
+                    # <compile_type>
                     CommonTokens.CompileTypeName,
                 ],
             ),
@@ -86,21 +90,22 @@ class StandardCompileType(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
+        # <compile_type>
         name_leaf = cast(AST.Leaf, nodes[0])
         name_info = ExtractToken(name_leaf)
 
         if name_info == "Bool":
-            the_type = BooleanType()
+            parser_info_type = BooleanCompileTypeParserInfo
         elif name_info == "Char":
-            the_type = CharacterType()
+            parser_info_type = CharacterCompileTypeParserInfo
         elif name_info == "Int":
-            the_type = IntegerType()
+            parser_info_type = IntegerCompileTypeParserInfo
         elif name_info == "None":
-            the_type = NoneType()
+            parser_info_type = NoneCompileTypeParserInfo
         elif name_info == "Num":
-            the_type = NumberType()
+            parser_info_type = NumberCompileTypeParserInfo
         elif name_info == "Str":
-            the_type = StringType()
+            parser_info_type = StringCompileTypeParserInfo
         else:
             return [
                 InvalidTypeError.Create(
@@ -109,7 +114,6 @@ class StandardCompileType(GrammarPhrase):
                 ),
             ]
 
-        return CompileTypeParserInfo.Create(
-            CreateRegions(node, name_leaf),
-            the_type,
+        return parser_info_type.Create(
+            CreateRegions(node),
         )

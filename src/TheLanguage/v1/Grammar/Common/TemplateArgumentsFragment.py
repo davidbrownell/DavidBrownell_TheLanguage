@@ -75,7 +75,7 @@ def Create() -> PhraseItem:
                     OptionalPhraseItem(
                         name="Keyword",
                         item=[
-                            CommonTokens.TemplateTypeName,
+                            CommonTokens.CompileTemplateTypeName,
                             "=",
                         ],
                     ),
@@ -93,7 +93,7 @@ def Create() -> PhraseItem:
                     OptionalPhraseItem(
                         name="Keyword",
                         item=[
-                            CommonTokens.TemplateDecoratorParameterName,
+                            CommonTokens.CompileParameterName,
                             "=",
                         ],
                     ),

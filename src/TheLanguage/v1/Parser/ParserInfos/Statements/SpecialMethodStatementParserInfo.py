@@ -34,7 +34,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import ParserInfo, StatementParserInfo
+
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
+
+    from ...Parser import (
+        CreateError,
+        Error,
+        ErrorException,
+    )
+
+
+# ----------------------------------------------------------------------
+NoClassError                                = CreateError(
+    "Special methods may only be defined within a class-like object",
+)
 
 
 # ----------------------------------------------------------------------
@@ -87,7 +100,20 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
     def __post_init__(self, regions, class_capabilities):
         super(SpecialMethodStatementParserInfo, self).__post_init__(regions)
 
-        # BugBug: Validate class
+        # Validate
+        errors: List[Error] = []
+
+        if class_capabilities is None:
+            errors.append(
+                NoClassError.Create(
+                    region=self.regions__.self__,
+                ),
+            )
+        else:
+            pass
+
+        if errors:
+            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     @Interface.override

@@ -39,6 +39,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 InterfaceCapabilities                       = _ClassCapabilities(
     name="Interface",
+    is_instantiable=False,
     default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,

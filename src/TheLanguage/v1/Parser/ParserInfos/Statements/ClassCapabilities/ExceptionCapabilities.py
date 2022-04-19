@@ -39,6 +39,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 ExceptionCapabilities                       = _ClassCapabilities(
     name="Exception",
+    is_instantiable=True,
     default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,
