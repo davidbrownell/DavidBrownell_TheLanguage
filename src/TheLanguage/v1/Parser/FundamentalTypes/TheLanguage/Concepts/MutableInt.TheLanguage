@@ -17,8 +17,11 @@ from .Int import Int
 
 
 # ----------------------------------------------------------------------
-public concept MutableInt
-    extends Int
+public concept MutableInt {
+    (Int | None) min_value! = None,
+    (Int | None) max_value! = None,
+}
+    extends Int { min_value!, max_value! }
 :
     public None __Serialize?__<ArchiveT>(ArchiveT ref archive) mutable
     public None __Accept?__<VisitorT>(VisitorT ref visitor) mutable
