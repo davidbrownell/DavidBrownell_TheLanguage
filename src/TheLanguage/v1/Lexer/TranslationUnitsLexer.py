@@ -193,12 +193,20 @@ def Lex(
         final_result: Optional[DynamicPhrasesInfo] = None
 
         # ----------------------------------------------------------------------
+        class DoesNotExist(object):
+            pass
+
+        # ----------------------------------------------------------------------
         def OnExit():
             nonlocal final_result
 
             with thread_info_lock:
-                source_info = thread_info.source_lookup.get(fully_qualified_name, None)
-                if source_info is None:
+                source_info = thread_info.source_lookup.get(fully_qualified_name, DoesNotExist)
+
+                if source_info is DoesNotExist:
+                    final_result = DynamicPhrasesInfo.Create({})
+
+                elif source_info is None:
                     del thread_info.source_lookup[fully_qualified_name]
 
                     final_result = DynamicPhrasesInfo.Create({})
@@ -210,10 +218,6 @@ def Lex(
 
                 if thread_info.pending_ctr == 0:
                     is_complete.set()
-
-        # ----------------------------------------------------------------------
-        class DoesNotExist(object):
-            pass
 
         # ----------------------------------------------------------------------
 
