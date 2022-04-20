@@ -65,7 +65,10 @@ class FuncArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncArgumentParserInfo, self).__init__(regions)
+        super(FuncArgumentParserInfo, self).__init__(
+            regions,
+            regionless_attributes=["expression", ],
+        )
 
 
 # ----------------------------------------------------------------------

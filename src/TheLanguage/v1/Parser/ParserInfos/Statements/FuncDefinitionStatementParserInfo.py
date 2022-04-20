@@ -185,6 +185,10 @@ del _auto_ctr
 
 
 # ----------------------------------------------------------------------
+InvalidProtectedVisibilityError             = CreateError(
+    "Protected visibility is not valid for functions",
+)
+
 InvalidFunctionMutabilityError              = CreateError(
     "Mutability modifiers are not valid for functions",
 )
@@ -293,6 +297,10 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     def __post_init__(self, regions, class_capabilities, visibility_param, mutability_param, method_modifier_param):
         super(FuncDefinitionStatementParserInfo, self).__post_init__(
             regions,
+            regionless_attributes=[
+                "return_type",
+                "templates",
+            ],
             validate=False,
         )
 
@@ -357,6 +365,13 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                 )
 
         if class_capabilities is None:
+            if self.visibility == VisibilityModifier.protected:
+                errors.append(
+                    InvalidProtectedVisibilityError.Create(
+                        region=self.regions__.visibility,
+                    ),
+                )
+
             if self.mutability is not None:
                 errors.append(
                     InvalidFunctionMutabilityError.Create(

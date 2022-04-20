@@ -102,6 +102,16 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: True
       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+        begin: "[5, 1] (26)"
+        end: "[5, 5] (30)"
+      token: "HorizontalWhitespace"
+      value: # <class 'v1.Lexer.Components.Tokens.HorizontalWhitespaceToken.MatchResult'>
+        range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+          begin: 26
+          end: 30
+    - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
+      is_ignored: True
+      iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
         begin: "[5, 5] (30)"
         end: "[5, 65] (90)"
       token: "<comment>"

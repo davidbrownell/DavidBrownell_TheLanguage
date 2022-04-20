@@ -182,7 +182,7 @@ def _ExtractElement(
 
         return (
             TemplateTypeParameterParserInfo.Create(
-                CreateRegions(node, type_leaf, variadic_node, default_node),
+                CreateRegions(node, type_leaf, variadic_node),
                 type_info,
                 variadic_info,
                 default_info,
@@ -215,7 +215,7 @@ def _ExtractElement(
 
         return (
             TemplateDecoratorParameterParserInfo.Create(
-                CreateRegions(node, type_node, name_leaf, default_node),
+                CreateRegions(node, name_leaf),
                 type_info,
                 name_info,
                 default_info,

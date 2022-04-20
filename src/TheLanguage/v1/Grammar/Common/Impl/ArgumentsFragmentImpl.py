@@ -154,15 +154,15 @@ def Extract(
             continue
 
         if is_keyword:
-            if first_keyword_node is not None:
-                errors.append(
-                    KeywordRequiredError.Create(
-                        region=CreateRegion(element_node),
-                        prev_region=CreateRegion(first_keyword_node),
-                    ),
-                )
-            elif first_keyword_node is None:
+            if first_keyword_node is None:
                 first_keyword_node = element_node
+        elif first_keyword_node is not None:
+            errors.append(
+                KeywordRequiredError.Create(
+                    region=CreateRegion(element_node),
+                    prev_region=CreateRegion(first_keyword_node),
+                ),
+            )
 
         parser_infos.append(this_parser_info)
 

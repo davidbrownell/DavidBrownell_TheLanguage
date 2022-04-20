@@ -476,10 +476,17 @@ class ClassStatement(GrammarPhrase):
                     standard_type_node = cast(AST.Node, this_dependency_nodes[1])
                     standard_type_info = self._standard_type.ExtractParserInfo(standard_type_node)
 
+                    assert callable(standard_type_info)
+                    standard_type_info = standard_type_info()
+
+                    if isinstance(standard_type_info, list):
+                        errors += standard_type_info
+                        continue
+
                     # Add it
                     these_dependencies.append(
                         ClassStatementDependencyParserInfo.Create(
-                            CreateRegions(this_dependency_node, this_visibility_node, standard_type_node),
+                            CreateRegions(this_dependency_node, this_visibility_node),
                             this_visibility_info,
                             standard_type_info,
                         ),
@@ -514,8 +521,6 @@ class ClassStatement(GrammarPhrase):
                     class_modifier_node,
                     type_name_node,
                     docstring_node,
-                    templates_node,
-                    constraints_node,
                     all_dependencies_info.get(DependencyType.extends, [None])[0],
                     all_dependencies_info.get(DependencyType.implements, [None])[0],
                     all_dependencies_info.get(DependencyType.uses, [None])[0],

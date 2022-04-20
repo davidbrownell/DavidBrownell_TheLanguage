@@ -151,7 +151,7 @@ def _ExtractElement(
 
     return (
         FuncParameterParserInfo.Create(
-            CreateRegions(node, type_node, is_variadic_node, name_leaf, default_node),
+            CreateRegions(node, is_variadic_node, name_leaf),
             type_info,
             is_variadic_info,
             name_info,

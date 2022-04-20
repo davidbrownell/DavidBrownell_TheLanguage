@@ -128,7 +128,7 @@ def _ExtractElement(
 
     return (
         ConstraintArgumentParserInfo.Create(
-            CreateRegions(node, expression_node, keyword_node),
+            CreateRegions(node, keyword_node),
             expression_info,
             keyword_info,
         ),

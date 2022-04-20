@@ -44,13 +44,6 @@ statements:
         end: # <class 'v1.Lexer.Location.Location'>
           column: 16
           line: 1
-      return_type: # <class 'v1.Parser.Region.Region'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 1
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 8
-          line: 1
       self__: # <class 'v1.Parser.Region.Region'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
@@ -154,13 +147,6 @@ statements:
               end: # <class 'v1.Lexer.Location.Location'>
                 column: 33
                 line: 2
-            type: # <class 'v1.Parser.Region.Region'>
-              begin: # <class 'v1.Lexer.Location.Location'>
-                column: 23
-                line: 2
-              end: # <class 'v1.Lexer.Location.Location'>
-                column: 31
-                line: 2
           type: # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
             items:
               - # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeItemParserInfo'>
@@ -223,13 +209,6 @@ statements:
                 line: 2
               end: # <class 'v1.Lexer.Location.Location'>
                 column: 45
-                line: 2
-            type: # <class 'v1.Parser.Region.Region'>
-              begin: # <class 'v1.Lexer.Location.Location'>
-                column: 35
-                line: 2
-              end: # <class 'v1.Lexer.Location.Location'>
-                column: 43
                 line: 2
           type: # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
             items:
@@ -306,13 +285,6 @@ statements:
           line: 2
         end: # <class 'v1.Lexer.Location.Location'>
           column: 46
-          line: 2
-      return_type: # <class 'v1.Parser.Region.Region'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 2
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 16
           line: 2
       self__: # <class 'v1.Parser.Region.Region'>
         begin: # <class 'v1.Lexer.Location.Location'>
