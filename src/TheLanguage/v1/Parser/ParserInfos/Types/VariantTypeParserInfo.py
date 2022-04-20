@@ -35,6 +35,7 @@ with InitRelativeImports():
         CreateError,
         Error,
         ErrorException,
+        ParserInfoType,
         TypeParserInfo,
     )
 
@@ -52,8 +53,9 @@ class VariantTypeParserInfo(TypeParserInfo):
     flattened_types: List[TypeParserInfo]   = field(init=False)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
+    def __post_init__(self, parser_info_type__, regions):  # type: ignore
         super(VariantTypeParserInfo, self).__post_init__(
+            parser_info_type__,
             regions,
             regionless_attributes=["flattened_types"],
         )

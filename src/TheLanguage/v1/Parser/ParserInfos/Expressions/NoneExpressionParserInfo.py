@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryCompileExpressionParserInfo.py
+# |  NoneExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-19 14:30:32
+# |      2022-04-14 12:00:17
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryCompileExpressionParserInfo object"""
+"""Contains the NoneExpressionParserInfo object"""
 
 import os
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 
@@ -29,19 +29,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileExpressionParserInfo import CompileExpressionParserInfo
-    from ...MiniLanguage.Expressions.UnaryExpression import OperatorType
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class UnaryCompileExpressionParserInfo(CompileExpressionParserInfo):
-    operator: OperatorType
-    expression: CompileExpressionParserInfo
+class NoneExpressionParserInfo(ExpressionParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(UnaryCompileExpressionParserInfo, self).__post_init__(
-            regions,
-            regionless_attributes=["expression",],
-        )
+    def __post_init__(self, regions):  # type: ignore
+        super(NoneExpressionParserInfo, self).__post_init__(ParserInfoType.Unknown, regions)

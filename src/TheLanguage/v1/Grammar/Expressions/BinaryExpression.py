@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TypeCheckCompileExpression.py
+# |  BinaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-19 15:03:28
+# |      2022-04-20 16:35:00
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TypeCheckCompileExpression object"""
+"""Contains the BinaryExpression object"""
 
 import os
 
@@ -44,43 +44,60 @@ with InitRelativeImports():
 
     from ...Parser.Parser import CreateRegions, GetParserInfo
 
-    from ...Parser.ParserInfos.CompileExpressions.TypeCheckCompileExpressionParserInfo import (
-        CompileExpressionParserInfo,
-        CompileTypeParserInfo,
+    from ...Parser.ParserInfos.Expressions.BinaryExpressionParserInfo import (
+        BinaryExpressionParserInfo,
+        ExpressionParserInfo,
         OperatorType,
-        TypeCheckCompileExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class TypeCheckCompileExpression(GrammarPhrase):
-    PHRASE_NAME                             = "Type Check CompileExpression"
+class BinaryExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Binary Expression"
 
+    # TODO: Precedence
     OPERATOR_MAP                            = {
-        "is": OperatorType.Is,
-        "is not": OperatorType.IsNot,
+        "*": OperatorType.Multiply,
+        "/": OperatorType.Divide,
+        "//": OperatorType.DivideFloor,
+        "%": OperatorType.Modulus,
+        "+": OperatorType.Add,
+        "-": OperatorType.Subtract,
+        "<<": OperatorType.BitShiftLeft,
+        ">>": OperatorType.BitShiftRight,
+        "<": OperatorType.Less,
+        "<=": OperatorType.LessEqual,
+        ">": OperatorType.Greater,
+        ">=": OperatorType.GreaterEqual,
+        "==": OperatorType.Equal,
+        "!=": OperatorType.NotEqual,
+        "&": OperatorType.BitwiseAnd,
+        "^": OperatorType.BitwiseXor,
+        "|": OperatorType.BitwiseOr,
+        "and": OperatorType.LogicalAnd,
+        "or": OperatorType.LogicalOr,
     }
 
-    assert len(OPERATOR_MAP) == len(OperatorType)
+    assert len(OPERATOR_MAP) == len(OperatorType), (len(OPERATOR_MAP), len(OperatorType))
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TypeCheckCompileExpression, self).__init__(
-            DynamicPhrasesType.CompileExpressions,
+        super(BinaryExpression, self).__init__(
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     # <expression>
-                    DynamicPhrasesType.CompileExpressions,
+                    DynamicPhrasesType.Expressions,
 
                     # <operator>
                     PhraseItem(
                         name="Operator",
-                        item=tuple(self.__class__.OPERATOR_MAP.keys()),
+                        item=tuple(self.__class__.OPERATOR_MAP),
                     ),
 
-                    # <type>
-                    DynamicPhrasesType.CompileTypes,
+                    # <expression>
+                    DynamicPhrasesType.Expressions,
                 ],
             ),
         )
@@ -98,8 +115,8 @@ class TypeCheckCompileExpression(GrammarPhrase):
             assert len(nodes) == 3
 
             # <expression>
-            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-            expression_info = cast(CompileExpressionParserInfo, GetParserInfo(expression_node))
+            left_expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
+            left_expression_info = cast(ExpressionParserInfo, GetParserInfo(left_expression_node))
 
             # <operator>
             operator_node = cast(AST.Leaf, ExtractOr(cast(AST.Node, nodes[1])))
@@ -110,15 +127,15 @@ class TypeCheckCompileExpression(GrammarPhrase):
 
             operator_info = cls.OPERATOR_MAP[operator_info]
 
-            # <type>
-            type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
-            type_info = cast(CompileTypeParserInfo, GetParserInfo(type_node))
+            # <expression>
+            right_expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
+            right_expression_info = cast(ExpressionParserInfo, GetParserInfo(right_expression_node))
 
-            return TypeCheckCompileExpressionParserInfo.Create(
+            return BinaryExpressionParserInfo.Create(
                 CreateRegions(node, operator_node),
+                left_expression_info,
                 operator_info,
-                expression_info,
-                type_info,
+                right_expression_info,
             )
 
         # ----------------------------------------------------------------------

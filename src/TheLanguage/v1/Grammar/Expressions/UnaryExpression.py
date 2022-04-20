@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryCompileExpression.py
+# |  UnaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-19 14:11:19
+# |      2022-04-20 16:26:15
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryCompileExpression object"""
+"""Contains the UnaryExpression object"""
 
 import os
 
@@ -44,16 +44,16 @@ with InitRelativeImports():
 
     from ...Parser.Parser import CreateRegions, GetParserInfo
 
-    from ...Parser.ParserInfos.CompileExpressions.UnaryCompileExpressionParserInfo import (
-        CompileExpressionParserInfo,
+    from ...Parser.ParserInfos.Expressions.UnaryExpressionParserInfo import (
+        ExpressionParserInfo,
         OperatorType,
-        UnaryCompileExpressionParserInfo,
+        UnaryExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class UnaryCompileExpression(GrammarPhrase):
-    PHRASE_NAME                             = "Unary CompileExpression"
+class UnaryExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Unary Expression"
 
     # TODO: Precedence
     OPERATOR_MAP                            = {
@@ -67,8 +67,8 @@ class UnaryCompileExpression(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(UnaryCompileExpression, self).__init__(
-            DynamicPhrasesType.CompileExpressions,
+        super(UnaryExpression, self).__init__(
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
@@ -79,7 +79,7 @@ class UnaryCompileExpression(GrammarPhrase):
                     ),
 
                     # <expression>
-                    DynamicPhrasesType.CompileExpressions,
+                    DynamicPhrasesType.Expressions,
                 ],
             ),
         )
@@ -107,9 +107,9 @@ class UnaryCompileExpression(GrammarPhrase):
 
             # <expression>
             expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
-            expression_info = cast(CompileExpressionParserInfo, GetParserInfo(expression_node))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            return UnaryCompileExpressionParserInfo.Create(
+            return UnaryExpressionParserInfo.Create(
                 CreateRegions(node, operator_node),
                 operator_info,
                 expression_info,

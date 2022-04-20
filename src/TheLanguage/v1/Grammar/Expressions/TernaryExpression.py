@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  GroupCompileExpression.py
+# |  TernaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-19 14:37:39
+# |      2022-04-20 15:50:31
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the GroupCompileExpression object"""
+"""Contains the TernaryExpression object"""
 
 import os
 
@@ -38,37 +38,47 @@ with InitRelativeImports():
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
+        ExtractOr,
         ExtractSequence,
+        ExtractToken,
+        PhraseItem,
     )
 
-    from ...Parser.Parser import GetParserInfo
+    from ...Parser.Parser import CreateRegions, GetParserInfo
 
-    from ...Parser.ParserInfos.CompileExpressions.UnaryCompileExpressionParserInfo import (
-        CompileExpressionParserInfo,
+    from ...Parser.ParserInfos.Expressions.TernaryExpressionParserInfo import (
+        ExpressionParserInfo,
+        TernaryExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class GroupCompileExpression(GrammarPhrase):
-    PHRASE_NAME                             = "Group CompileExpression"
+class TernaryExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Ternary Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(GroupCompileExpression, self).__init__(
-            DynamicPhrasesType.CompileExpressions,
+        super(TernaryExpression, self).__init__(
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # '('
-                    "(",
+                    # <true_expression>
+                    DynamicPhrasesType.Expressions,
                     CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # <expression>
-                    DynamicPhrasesType.CompileExpressions,
+                    # 'if'
+                    "if",
 
-                    # ')'
+                    # <condition_expression>
+                    DynamicPhrasesType.Expressions,
+
+                    # 'else'
+                    "else",
+
+                    # <false_expression>
                     CommonTokens.PopIgnoreWhitespaceControl,
-                    ")",
+                    DynamicPhrasesType.Expressions,
                 ],
             ),
         )
@@ -82,13 +92,26 @@ class GroupCompileExpression(GrammarPhrase):
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
-            assert len(nodes) == 5
+            assert len(nodes) == 7
 
-            # <expression>
-            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
-            expression_info = cast(CompileExpressionParserInfo, GetParserInfo(expression_node))
+            # <true_expression>
+            true_expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
+            true_expression_info = cast(ExpressionParserInfo, GetParserInfo(true_expression_node))
 
-            return expression_info
+            # <condition_expression>
+            condition_expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
+            condition_expression_info = cast(ExpressionParserInfo, GetParserInfo(condition_expression_node))
+
+            # <false_expression>
+            false_expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[6])))
+            false_expression_info = cast(ExpressionParserInfo, GetParserInfo(false_expression_node))
+
+            return TernaryExpressionParserInfo.Create(
+                CreateRegions(node),
+                condition_expression_info,
+                true_expression_info,
+                false_expression_info,
+            )
 
         # ----------------------------------------------------------------------
 

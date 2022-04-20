@@ -20,7 +20,7 @@ import os
 
 from typing import Dict, List, Optional, Union
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 
@@ -32,9 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..CompileExpressions.CompileExpressionParserInfo import CompileExpressionParserInfo
-    from ..CompileTypes.CompileTypeParserInfo import CompileTypeParserInfo
-    from ..Types.TypeParserInfo import ParserInfo, Region, TypeParserInfo
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..Types.TypeParserInfo import ParserInfo, ParserInfoType, Region, TypeParserInfo
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -55,6 +54,9 @@ DuplicateVariadicError                      = CreateError(
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TemplateTypeParameterParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     name: str
@@ -73,6 +75,7 @@ class TemplateTypeParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
         super(TemplateTypeParameterParserInfo, self).__init__(
+            ParserInfoType.CompileTime,
             regions,
             regionless_attributes=["default_type", ],
         )
@@ -81,11 +84,14 @@ class TemplateTypeParameterParserInfo(ParserInfo):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TemplateDecoratorParameterParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
-    type: CompileTypeParserInfo
+    type: TypeParserInfo
     name: str
-    default_value: Optional[CompileExpressionParserInfo]
+    default_value: Optional[ExpressionParserInfo]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -99,9 +105,12 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
         super(TemplateDecoratorParameterParserInfo, self).__init__(
+            ParserInfoType.CompileTime,
             regions,
             regionless_attributes=["type", "default_value", ],
         )
+
+        # TODO: Verify that the expression is a compile-time expression
 
 
 # ----------------------------------------------------------------------
@@ -116,6 +125,8 @@ class TemplateParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     # |  Public Data
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     positional: Optional[List["TemplateParametersParserInfo.ParameterType"]]
@@ -134,7 +145,7 @@ class TemplateParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(TemplateParametersParserInfo, self).__init__(regions)
+        super(TemplateParametersParserInfo, self).__init__(ParserInfoType.CompileTime, regions)
         assert self.positional or self.any or self.keyword
 
         # Validate

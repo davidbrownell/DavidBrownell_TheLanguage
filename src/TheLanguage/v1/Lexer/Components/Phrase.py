@@ -47,14 +47,9 @@ with InitRelativeImports():
 class DynamicPhrasesType(Enum):
     Attributes                              = auto()
     Expressions                             = auto()
-    Literals                                = auto()
     Names                                   = auto()
     Statements                              = auto()
     Types                                   = auto()
-
-    CompileExpressions                      = auto()
-    CompileStatements                       = auto()
-    CompileTypes                            = auto()
 
 
 # ----------------------------------------------------------------------

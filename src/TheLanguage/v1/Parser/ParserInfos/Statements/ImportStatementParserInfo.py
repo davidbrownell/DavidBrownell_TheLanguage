@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, Region, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, StatementParserInfo
 
     from ..Common.VisibilityModifier import VisibilityModifier
 
@@ -47,6 +47,8 @@ class ImportType(Enum):
 @dataclass(frozen=True, repr=False)
 class ImportStatementItemParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     name: str
@@ -63,7 +65,7 @@ class ImportStatementItemParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(ImportStatementItemParserInfo, self).__init__(regions)
+        super(ImportStatementItemParserInfo, self).__init__(ParserInfoType.Standard, regions)
 
 
 # ----------------------------------------------------------------------

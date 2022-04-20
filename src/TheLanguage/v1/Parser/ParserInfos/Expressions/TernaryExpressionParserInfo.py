@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CompileExpressionParserInfo.py
+# |  TernaryExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 10:04:59
+# |      2022-04-20 15:47:39
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CompileExpressionParserInfo object"""
+"""Contains the TernaryExpressionParserInfo object"""
 
 import os
 
-from typing import Any, Callable, List, Optional
-
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,38 +29,33 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class CompileExpressionParserInfo(ParserInfo, Interface.Interface):
-    """Abstract base class for all compile-time expressions"""
+class TernaryExpressionParserInfo(ExpressionParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
+    condition_expression: ExpressionParserInfo
+    true_expression: ExpressionParserInfo
+    false_expression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(
-        self,
-        regions,
-        regionless_attributes: Optional[List[str]]=None,
-        validate=True,
-        **custom_display_funcs: Callable[[Any], Optional[Any]],
-    ):
-        super(CompileExpressionParserInfo, self).__init__(
+    def __post_init__(self, regions):  # type: ignore
+        super(TernaryExpressionParserInfo, self).__post_init__(
+            ParserInfoType(
+                max(
+                    self.condition_expression.parser_info_type__.value,  # type: ignore
+                    self.true_expression.parser_info_type__.value,  # type: ignore
+                    self.false_expression.parser_info_type__.value,  # type: ignore
+                ),
+            ),
             regions,
-            regionless_attributes,
-            validate,
-            expression_type=None,  # type: ignore
-            **custom_display_funcs,
+            regionless_attributes=[
+                "condition_expression",
+                "true_expression",
+                "false_expression",
+            ],
         )

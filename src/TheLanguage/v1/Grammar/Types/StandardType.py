@@ -56,6 +56,7 @@ with InitRelativeImports():
     )
 
     from ...Parser.ParserInfos.Types.StandardTypeParserInfo import (
+        ParserInfoType,
         StandardTypeItemParserInfo,
         StandardTypeParserInfo,
     )
@@ -229,6 +230,7 @@ class StandardType(GrammarPhrase):
                 return errors
 
             return StandardTypeParserInfo.Create(
+                ParserInfoType.Standard,
                 CreateRegions(node, mutability_modifier_node, elements_node),
                 mutability_modifier_info,
                 items,
