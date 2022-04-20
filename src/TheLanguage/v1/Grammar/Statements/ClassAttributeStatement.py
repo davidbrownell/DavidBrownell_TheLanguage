@@ -230,11 +230,9 @@ class ClassAttributeStatement(GrammarPhrase):
                 CreateRegions(
                     node,
                     visibility_node,
-                    type_node,
                     name_node,
                     None, # documentation
                     initializer_node,
-                    keyword_initialization_node,
                     no_initialization_node,
                     no_serialize_node,
                     no_compare_node,

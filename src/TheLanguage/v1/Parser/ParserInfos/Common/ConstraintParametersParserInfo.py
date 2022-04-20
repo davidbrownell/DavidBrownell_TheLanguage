@@ -67,7 +67,13 @@ class ConstraintParameterParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(ConstraintParameterParserInfo, self).__init__(regions)
+        super(ConstraintParameterParserInfo, self).__init__(
+            regions,
+            regionless_attributes=[
+                "type",
+                "default_type",
+            ],
+        )
 
 
 # ----------------------------------------------------------------------

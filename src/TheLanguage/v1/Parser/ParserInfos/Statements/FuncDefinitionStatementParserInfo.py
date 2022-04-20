@@ -297,6 +297,10 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     def __post_init__(self, regions, class_capabilities, visibility_param, mutability_param, method_modifier_param):
         super(FuncDefinitionStatementParserInfo, self).__post_init__(
             regions,
+            regionless_attributes=[
+                "return_type",
+                "templates",
+            ],
             validate=False,
         )
 

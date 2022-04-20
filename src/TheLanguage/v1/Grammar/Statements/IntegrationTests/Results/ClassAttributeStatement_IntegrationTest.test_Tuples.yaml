@@ -74,13 +74,6 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 3
-          type: # <class 'v1.Parser.Region.Region'>
-            begin: # <class 'v1.Lexer.Location.Location'>
-              column: 5
-              line: 2
-            end: # <class 'v1.Lexer.Location.Location'>
-              column: 22
-              line: 2
         type: # <class 'v1.Parser.ParserInfos.Types.TupleTypeParserInfo.TupleTypeParserInfo'>
           mutability_modifier: "MutabilityModifier.var"
           regions__: # <class 'types.TupleTypeParserInfoRegions'>
@@ -175,13 +168,6 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 4
-          type: # <class 'v1.Parser.Region.Region'>
-            begin: # <class 'v1.Lexer.Location.Location'>
-              column: 5
-              line: 3
-            end: # <class 'v1.Lexer.Location.Location'>
-              column: 36
-              line: 3
         type: # <class 'v1.Parser.ParserInfos.Types.TupleTypeParserInfo.TupleTypeParserInfo'>
           mutability_modifier: "MutabilityModifier.var"
           regions__: # <class 'types.TupleTypeParserInfoRegions'>
@@ -339,13 +325,6 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 5
-          type: # <class 'v1.Parser.Region.Region'>
-            begin: # <class 'v1.Lexer.Location.Location'>
-              column: 5
-              line: 4
-            end: # <class 'v1.Lexer.Location.Location'>
-              column: 37
-              line: 4
         type: # <class 'v1.Parser.ParserInfos.Types.TupleTypeParserInfo.TupleTypeParserInfo'>
           mutability_modifier: "MutabilityModifier.var"
           regions__: # <class 'types.TupleTypeParserInfoRegions'>

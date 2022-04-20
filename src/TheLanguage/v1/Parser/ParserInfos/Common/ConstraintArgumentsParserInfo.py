@@ -65,7 +65,10 @@ class ConstraintArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(ConstraintArgumentParserInfo, self).__init__(regions)
+        super(ConstraintArgumentParserInfo, self).__init__(
+            regions,
+            regionless_attributes=["expression", ],
+        )
 
 
 # ----------------------------------------------------------------------

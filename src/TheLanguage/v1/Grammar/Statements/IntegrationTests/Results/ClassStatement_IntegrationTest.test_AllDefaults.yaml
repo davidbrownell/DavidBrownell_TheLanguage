@@ -78,13 +78,6 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 21
               line: 5
-          type: # <class 'v1.Parser.Region.Region'>
-            begin: # <class 'v1.Lexer.Location.Location'>
-              column: 13
-              line: 5
-            end: # <class 'v1.Lexer.Location.Location'>
-              column: 21
-              line: 5
         type: # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           items:
             - # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeItemParserInfo'>
@@ -230,13 +223,6 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 15
               line: 10
-          type: # <class 'v1.Parser.Region.Region'>
-            begin: # <class 'v1.Lexer.Location.Location'>
-              column: 10
-              line: 10
-            end: # <class 'v1.Lexer.Location.Location'>
-              column: 15
-              line: 10
         type: # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
           items:
             - # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeItemParserInfo'>
@@ -287,13 +273,6 @@ statements:
       - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementDependencyParserInfo'>
         regions__: # <class 'types.ClassStatementDependencyParserInfoRegions'>
           self__: # <class 'v1.Parser.Region.Region'>
-            begin: # <class 'v1.Lexer.Location.Location'>
-              column: 16
-              line: 15
-            end: # <class 'v1.Lexer.Location.Location'>
-              column: 27
-              line: 15
-          type: # <class 'v1.Parser.Region.Region'>
             begin: # <class 'v1.Lexer.Location.Location'>
               column: 16
               line: 15

@@ -140,7 +140,7 @@ def _ExtractElement(
 
     return (
         ConstraintParameterParserInfo.Create(
-            CreateRegions(node, type_node, name_leaf, default_node),
+            CreateRegions(node, name_leaf),
             type_info,
             name_info,
             default_info,

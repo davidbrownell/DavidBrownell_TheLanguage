@@ -209,7 +209,7 @@ class StandardType(GrammarPhrase):
                 try:
                     items.append(
                         StandardTypeItemParserInfo.Create(
-                            CreateRegions(this_element_node, name_leaf, template_node, constraint_node),
+                            CreateRegions(this_element_node, name_leaf),
                             name_info,
                             template_info,
                             constraint_info,

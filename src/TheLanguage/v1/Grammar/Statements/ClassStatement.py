@@ -486,7 +486,7 @@ class ClassStatement(GrammarPhrase):
                     # Add it
                     these_dependencies.append(
                         ClassStatementDependencyParserInfo.Create(
-                            CreateRegions(this_dependency_node, this_visibility_node, standard_type_node),
+                            CreateRegions(this_dependency_node, this_visibility_node),
                             this_visibility_info,
                             standard_type_info,
                         ),
@@ -521,8 +521,6 @@ class ClassStatement(GrammarPhrase):
                     class_modifier_node,
                     type_name_node,
                     docstring_node,
-                    templates_node,
-                    constraints_node,
                     all_dependencies_info.get(DependencyType.extends, [None])[0],
                     all_dependencies_info.get(DependencyType.implements, [None])[0],
                     all_dependencies_info.get(DependencyType.uses, [None])[0],

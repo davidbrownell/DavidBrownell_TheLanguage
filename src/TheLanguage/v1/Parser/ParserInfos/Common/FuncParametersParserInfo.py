@@ -81,7 +81,13 @@ class FuncParameterParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncParameterParserInfo, self).__init__(regions)
+        super(FuncParameterParserInfo, self).__init__(
+            regions,
+            regionless_attributes=[
+                "type",
+                "default_value",
+            ],
+        )
 
         # Validate
         errors: List[Error] = []

@@ -50,7 +50,7 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
     def __post_init__(self, regions, visibility_param):
         super(TypeAliasStatementParserInfo, self).__post_init__(
             regions,
-            regionless_attributes=["type"],
+            regionless_attributes=["type", ],
             validate=False,
         )
 
