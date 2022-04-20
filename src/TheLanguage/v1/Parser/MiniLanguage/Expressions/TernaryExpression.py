@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IsNotExpression.py
+# |  TernaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-15 13:49:29
+# |      2022-04-19 15:22:57
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,8 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IsExpression object"""
+"""Contains the TernaryExpression object"""
 
+import copy
 import os
 
 from typing import Any, Dict
@@ -33,18 +34,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Expression import Expression, Type
-    from ..Types.BooleanType import BooleanType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class IsNotExpression(Expression):
-    expression: Expression
-    check_type: Type
+class TernaryExpression(Expression):
+    condition_expression: Expression
+    true_expression: Expression
+    false_expression: Expression
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(IsNotExpression, self).__init__()
+        super(TernaryExpression, self).__init__()
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -53,28 +54,26 @@ class IsNotExpression(Expression):
         args: Dict[str, Any],
         type_overloads: Dict[str, Type],
     ) -> Expression.EvalResult:
-        eval_result = self.expression.Eval(args, type_overloads)
+        condition_result = self.condition_expression.Eval(args, type_overloads)
 
-        result, inferred_type = eval_result.type.IsNotSupportedValueOfType(eval_result.value, self.check_type)
+        if condition_result.name is not None:
+            type_overloads = copy.deepcopy(type_overloads)
 
-        if inferred_type is not None:
-            eval_result.type = inferred_type
+            type_overloads[condition_result.name] = condition_result.type
 
-            if eval_result.name is not None:
-                type_overloads[eval_result.name] = inferred_type
+        if condition_result.type.ToBoolValue(condition_result.value):
+            return self.true_expression.Eval(args, type_overloads)
 
-        if result:
-            return eval_result
-
-        return Expression.EvalResult(False, BooleanType(), None)
+        return self.false_expression.Eval(args, type_overloads)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def ToString(
         self,
         args: Dict[str, Any],
-    ):
-        return "{} is not {}".format(
-            self.expression.ToString(args),
-            self.check_type.name,
+    ) -> str:
+        return "{} if {} else {}".format(
+            self.true_expression.ToString(args),
+            self.condition_expression.ToString(args),
+            self.false_expression.ToString(args),
         )

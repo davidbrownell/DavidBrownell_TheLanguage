@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TypeAliasStatement.py
+# |  TypeCheckCompileExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-19 12:50:47
+# |      2022-04-19 15:03:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TypeAliasStatement object"""
+"""Contains the TypeCheckCompileExpression object"""
 
 import os
 
-from typing import cast, Optional
+from typing import cast
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,88 +32,92 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
-    from ..Common import Tokens as CommonTokens
-    from ..Common import VisibilityModifier
-
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
-        ExtractOptional,
+        ExtractOr,
         ExtractSequence,
         ExtractToken,
-        OptionalPhraseItem,
+        PhraseItem,
     )
 
     from ...Parser.Parser import CreateRegions, GetParserInfo
 
-    from ...Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import (
-        TypeAliasStatementParserInfo,
-        TypeParserInfo,
+    from ...Parser.ParserInfos.CompileExpressions.TypeCheckCompileExpressionParserInfo import (
+        CompileExpressionParserInfo,
+        CompileTypeParserInfo,
+        OperatorType,
+        TypeCheckCompileExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class TypeAliasStatement(GrammarPhrase):
-    PHRASE_NAME                             = "Type Alias Statement"
+class TypeCheckCompileExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Type Check CompileExpression"
+
+    OPERATOR_MAP                            = {
+        "is": OperatorType.Is,
+        "is not": OperatorType.IsNot,
+    }
+
+    assert len(OPERATOR_MAP) == len(OperatorType)
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TypeAliasStatement, self).__init__(
-            DynamicPhrasesType.Statements,
+        super(TypeCheckCompileExpression, self).__init__(
+            DynamicPhrasesType.CompileExpressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # <visibility>?
-                    OptionalPhraseItem(
-                        name="Visibility",
-                        item=VisibilityModifier.CreatePhraseItem(),
+                    # <expression>
+                    DynamicPhrasesType.CompileExpressions,
+
+                    # <operator>
+                    PhraseItem(
+                        name="Operator",
+                        item=tuple(self.__class__.OPERATOR_MAP.keys()),
                     ),
 
-                    # <name>
-                    CommonTokens.RuntimeTypeName,
-
-                    # '='
-                    "=",
-
                     # <type>
-                    DynamicPhrasesType.Types,
-
-                    CommonTokens.Newline,
+                    DynamicPhrasesType.CompileTypes,
                 ],
             ),
         )
 
     # ----------------------------------------------------------------------
-    @staticmethod
+    @classmethod
     @Interface.override
     def ExtractParserInfo(
+        cls,
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserInfoReturnType:
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
-            assert len(nodes) == 5
+            assert len(nodes) == 3
 
-            # <visibility>?
-            visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
-            if visibility_node is None:
-                visibility_info = None
-            else:
-                visibility_info = VisibilityModifier.Extract(visibility_node)
+            # <expression>
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
+            expression_info = cast(CompileExpressionParserInfo, GetParserInfo(expression_node))
 
-            # <name>
-            name_leaf = cast(AST.Leaf, nodes[1])
-            name_info = ExtractToken(name_leaf)
+            # <operator>
+            operator_node = cast(AST.Leaf, ExtractOr(cast(AST.Node, nodes[1])))
+            operator_info = ExtractToken(
+                operator_node,
+                return_match_contents=True,
+            )
+
+            operator_info = cls.OPERATOR_MAP[operator_info]
 
             # <type>
-            type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
-            type_info = cast(TypeParserInfo, GetParserInfo(type_node))
+            type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
+            type_info = cast(CompileTypeParserInfo, GetParserInfo(type_node))
 
-            return TypeAliasStatementParserInfo.Create(
-                CreateRegions(node, visibility_node, name_leaf),
-                visibility_info,
-                name_info,
+            return TypeCheckCompileExpressionParserInfo.Create(
+                CreateRegions(node, operator_node),
+                operator_info,
+                expression_info,
                 type_info,
             )
 

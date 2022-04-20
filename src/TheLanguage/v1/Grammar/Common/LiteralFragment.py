@@ -16,6 +16,8 @@
 """Contains functionality that helps when working with literal values"""
 
 import os
+import re
+import textwrap
 
 from typing import cast
 
@@ -35,13 +37,18 @@ with InitRelativeImports():
         ExtractOr,
         ExtractToken,
         PhraseItem,
+        RegexToken,
     )
 
     from ...Parser.Parser import CreateRegions
 
     from ...Parser.ParserInfos.Literals.BooleanLiteralParserInfo import BooleanLiteralParserInfo
+    from ...Parser.ParserInfos.Literals.CharacterLiteralParserInfo import CharacterLiteralParserInfo
+    from ...Parser.ParserInfos.Literals.IntegerLiteralParserInfo import IntegerLiteralParserInfo
     from ...Parser.ParserInfos.Literals.LiteralParserInfo import LiteralParserInfo
     from ...Parser.ParserInfos.Literals.NoneLiteralParserInfo import NoneLiteralParserInfo
+    from ...Parser.ParserInfos.Literals.NumberLiteralParserInfo import NumberLiteralParserInfo
+    from ...Parser.ParserInfos.Literals.StringLiteralParserInfo import StringLiteralParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -51,6 +58,7 @@ def Create(
     return PhraseItem(
         name=phrase_name,
         item=(
+            # True|False
             PhraseItem(
                 name="Boolean",
                 item=(
@@ -58,14 +66,84 @@ def Create(
                     "False",
                 ),
             ),
-            # TODO: Character
-            # TODO: Integer
+
+            # <character>
+            # TODO: Unicode support doesn't seem to be working: 😀
+            PhraseItem(
+                RegexToken(
+                    "Character",
+                    re.compile(
+                        textwrap.dedent(
+                            r"""(?#
+                            Single Quote                )'(?#
+                            Content [begin]             )(?P<value>(?#
+                                Standard char           ).(?#
+                                Unicode 16-bit hex]     )|\\u\d{4}|(?#
+                                Unicode 32-bit hex]     )|\\U\d{8}(?#
+                            Content [end]               ))(?#
+                            Single Quote                )'(?#
+                            )""",
+                        ),
+                        re.UNICODE,
+                    ),
+                ),
+            ),
+
+            # <integer>
+            PhraseItem(
+                RegexToken(
+                    "Integer",
+                    re.compile(
+                        textwrap.dedent(
+                            r"""(?P<value>(?#
+                            +/-                         )[+-]?(?#
+                            Digits                      )\d+(?#
+                            ))""",
+                        ),
+                    ),
+                ),
+            ),
+
+            # None
             PhraseItem(
                 name="None",
                 item="None",
             ),
-            # TODO: Number
-            # TODO: String
+
+            # <number>
+            PhraseItem(
+                RegexToken(
+                    "Number",
+                    re.compile(
+                        textwrap.dedent(
+                            r"""(?P<value>(?#
+                            +/-                         )[+-]?(?#
+                            Leading Digits              )\d*(?#
+                            Decimal Point               )\.(?#
+                            Trailing Digits             )\d+(?#
+                            ))""",
+                        ),
+                    ),
+                ),
+            ),
+
+            # <string>
+            PhraseItem(
+                RegexToken(
+                    "String",
+                    re.compile(
+                        textwrap.dedent(
+                            r"""(?#
+                            Double Quote                )"(?#
+                            Content [begin]             )(?P<value>(?#
+                            Non-Quote Chars             )(?:\\\"|[^\n])*(?#
+                            Content [end]               ))(?#
+                            Double Quote                )"(?#
+                            )""",
+                        ),
+                    ),
+                ),
+            ),
         ),
     )
 
@@ -89,7 +167,45 @@ def Extract(
             value_info == "True",
         )
 
+    elif node.type.name == "Character":
+        value_node = cast(AST.Leaf, node)
+        value_info = ExtractToken(value_node)
+
+        # TODO: How do we want to store these values?
+
+        return CharacterLiteralParserInfo.Create(
+            CreateRegions(value_node),
+            value_info,
+        )
+
+    elif node.type.name == "Integer":
+        value_node = cast(AST.Leaf, node)
+        value_info = int(ExtractToken(value_node))
+
+        return IntegerLiteralParserInfo.Create(
+            CreateRegions(value_node),
+            value_info,
+        )
+
     elif node.type.name == "None":
         return NoneLiteralParserInfo.Create(CreateRegions(node))
+
+    elif node.type.name == "Number":
+        value_node = cast(AST.Leaf, node)
+        value_info = float(ExtractToken(value_node))
+
+        return NumberLiteralParserInfo.Create(
+            CreateRegions(value_node),
+            value_info,
+        )
+
+    elif node.type.name == "String":
+        value_node = cast(AST.Leaf, node)
+        value_info = ExtractToken(value_node).replace('\\"', '"')
+
+        return StringLiteralParserInfo.Create(
+            CreateRegions(value_node),
+            value_info,
+        )
 
     assert False, node.type  # pragma: no cover
