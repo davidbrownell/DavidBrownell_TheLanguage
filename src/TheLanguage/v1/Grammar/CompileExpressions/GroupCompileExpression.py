@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TypeAliasStatement.py
+# |  GroupCompileExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-19 12:50:47
+# |      2022-04-19 14:37:39
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TypeAliasStatement object"""
+"""Contains the GroupCompileExpression object"""
 
 import os
 
-from typing import cast, Optional
+from typing import cast
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,53 +33,42 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ..Common import Tokens as CommonTokens
-    from ..Common import VisibilityModifier
 
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
-        ExtractOptional,
         ExtractSequence,
-        ExtractToken,
-        OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions, GetParserInfo
+    from ...Parser.Parser import GetParserInfo
 
-    from ...Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import (
-        TypeAliasStatementParserInfo,
-        TypeParserInfo,
+    from ...Parser.ParserInfos.CompileExpressions.UnaryCompileExpressionParserInfo import (
+        CompileExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class TypeAliasStatement(GrammarPhrase):
-    PHRASE_NAME                             = "Type Alias Statement"
+class GroupCompileExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Group CompileExpression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TypeAliasStatement, self).__init__(
-            DynamicPhrasesType.Statements,
+        super(GroupCompileExpression, self).__init__(
+            DynamicPhrasesType.CompileExpressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # <visibility>?
-                    OptionalPhraseItem(
-                        name="Visibility",
-                        item=VisibilityModifier.CreatePhraseItem(),
-                    ),
+                    # '('
+                    "(",
+                    CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # <name>
-                    CommonTokens.RuntimeTypeName,
+                    # <expression>
+                    DynamicPhrasesType.CompileExpressions,
 
-                    # '='
-                    "=",
-
-                    # <type>
-                    DynamicPhrasesType.Types,
-
-                    CommonTokens.Newline,
+                    # ')'
+                    CommonTokens.PopIgnoreWhitespaceControl,
+                    ")",
                 ],
             ),
         )
@@ -95,27 +84,11 @@ class TypeAliasStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
-            # <visibility>?
-            visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
-            if visibility_node is None:
-                visibility_info = None
-            else:
-                visibility_info = VisibilityModifier.Extract(visibility_node)
+            # <expression>
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
+            expression_info = cast(CompileExpressionParserInfo, GetParserInfo(expression_node))
 
-            # <name>
-            name_leaf = cast(AST.Leaf, nodes[1])
-            name_info = ExtractToken(name_leaf)
-
-            # <type>
-            type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
-            type_info = cast(TypeParserInfo, GetParserInfo(type_node))
-
-            return TypeAliasStatementParserInfo.Create(
-                CreateRegions(node, visibility_node, name_leaf),
-                visibility_info,
-                name_info,
-                type_info,
-            )
+            return expression_info
 
         # ----------------------------------------------------------------------
 

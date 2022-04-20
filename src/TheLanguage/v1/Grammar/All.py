@@ -27,7 +27,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .CompileExpressions.BinaryCompileExpression import BinaryCompileExpression
+    from .CompileExpressions.GroupCompileExpression import GroupCompileExpression
     from .CompileExpressions.LiteralCompileExpression import LiteralCompileExpression
+    from .CompileExpressions.TernaryCompileExpression import TernaryCompileExpression
+    from .CompileExpressions.TypeCheckCompileExpression import TypeCheckCompileExpression
+    from .CompileExpressions.UnaryCompileExpression import UnaryCompileExpression
+    from .CompileExpressions.VariableCompileExpression import VariableCompileExpression
 
     from .CompileTypes.StandardCompileType import StandardCompileType
     from .CompileTypes.VariantCompileType import VariantCompileType
@@ -48,7 +54,13 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 GrammarPhrases                              = [
     # CompileExpressions
+    BinaryCompileExpression(),
+    GroupCompileExpression(),
     LiteralCompileExpression(),
+    TernaryCompileExpression(),
+    TypeCheckCompileExpression(),
+    UnaryCompileExpression(),
+    VariableCompileExpression(),
 
     # CompileTypes
     StandardCompileType(),

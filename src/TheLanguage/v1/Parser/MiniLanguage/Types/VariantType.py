@@ -69,6 +69,8 @@ class VariantType(Type):
         self,
         value: Any,
     ) -> bool:
+        # TODO: This should update the type
+
         for the_type in self.types:
             if the_type.IsSupportedValue(value):
                 return the_type.ToBoolValue(value)

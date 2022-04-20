@@ -45,29 +45,33 @@ with InitRelativeImports():
     from ...Region import Region
 
 
+# TODO: Adjust this
+
+# ----------------------------------------------------------------------
+# |  Pubic Types
+@dataclass(frozen=True, repr=False)
+class Value(ObjectReprImplBase):
+    token: str
+    precedence: int
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.precedence > 0
+        ObjectReprImplBase.__init__(self)
+
+
+
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
-    # ----------------------------------------------------------------------
-    # |  Pubic Types
-    @dataclass(frozen=True, repr=False)
-    class Value(ObjectReprImplBase):
-        token: str
-        precedence: int
-
-        # ----------------------------------------------------------------------
-        @classmethod
-        def Create(cls, *args, **kwargs):
-            """\
-            This hack avoids pylint warnings associated with invoking dynamically
-            generated constructors with too many methods.
-            """
-            return cls(*args, **kwargs)
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            assert self.precedence > 0
-            ObjectReprImplBase.__init__(self)
-
     # ----------------------------------------------------------------------
     # |  Public Data
     Multiply                                = Value.Create("*", 1)
@@ -174,7 +178,7 @@ class BinaryExpression(Expression):
         elif self.operator == OperatorType.LogicalOr:
             eval_impl = self._EvalOrImpl
         else:
-            assert False, self.operator
+            assert False, self.operator  # pragma: no cover
 
         object.__setattr__(self, "Eval", eval_impl)
 
