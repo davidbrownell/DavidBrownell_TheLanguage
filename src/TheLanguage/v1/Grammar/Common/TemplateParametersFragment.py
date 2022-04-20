@@ -54,8 +54,7 @@ with InitRelativeImports():
     )
 
     from ...Parser.ParserInfos.Common.TemplateParametersParserInfo import (
-        CompileExpressionParserInfo,
-        CompileTypeParserInfo,
+        ExpressionParserInfo,
         TemplateDecoratorParameterParserInfo,
         TemplateParametersParserInfo,
         TemplateTypeParameterParserInfo,
@@ -94,23 +93,23 @@ def Create() -> PhraseItem:
                 ],
             ),
 
-            # <compile_type> <decorator_name> ('=' <compile_expression>)?
+            # <type> <decorator_name> ('=' <expression>)?
             PhraseItem(
                 name="Template Decorator",
                 item=[
-                    # <compile_type>
-                    DynamicPhrasesType.CompileTypes,
+                    # <type>
+                    DynamicPhrasesType.Types,
 
                     # <decorator_name>
                     CommonTokens.CompileParameterName,
 
-                    # ('=' <compile_expression>)?
+                    # ('=' <expression>)?
                     OptionalPhraseItem(
                         name="Default",
                         item=[
                             "=",
                             CommonTokens.PushIgnoreWhitespaceControl,
-                            DynamicPhrasesType.CompileExpressions,
+                            DynamicPhrasesType.Expressions,
                             CommonTokens.PopIgnoreWhitespaceControl,
                         ],
                     ),
@@ -194,15 +193,15 @@ def _ExtractElement(
         nodes = ExtractSequence(node)
         assert len(nodes) == 3
 
-        # <compile_type>
+        # <type>
         type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-        type_info = cast(CompileTypeParserInfo, GetParserInfo(type_node))
+        type_info = cast(TypeParserInfo, GetParserInfo(type_node))
 
         # <decorator_name>
         name_leaf = cast(AST.Leaf, nodes[1])
         name_info = ExtractToken(name_leaf)
 
-        # ('=' <compile_expression>)?
+        # ('=' <expression>)?
         default_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[2])))
         if default_node is None:
             default_info = None
@@ -211,7 +210,7 @@ def _ExtractElement(
             assert len(default_nodes) == 4
 
             default_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, default_nodes[2])))
-            default_info = cast(CompileExpressionParserInfo, GetParserInfo(default_node))
+            default_info = cast(ExpressionParserInfo, GetParserInfo(default_node))
 
         return (
             TemplateDecoratorParameterParserInfo.Create(

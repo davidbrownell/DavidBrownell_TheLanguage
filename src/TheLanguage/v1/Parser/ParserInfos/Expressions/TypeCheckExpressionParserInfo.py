@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  BooleanCompileTypeParserInfo.py
+# |  TypeCheckExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-19 10:26:57
+# |      2022-04-20 14:50:35
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the BooleanCompileTypeParserInfo object"""
+"""Contains the TypeCheckExpressionParserInfo object"""
 
 import os
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 
@@ -29,12 +29,28 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileTypeParserInfo import CompileTypeParserInfo
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from ..Types.TypeParserInfo import TypeParserInfo
+    from ...MiniLanguage.Expressions.TypeCheckExpression import OperatorType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class BooleanCompileTypeParserInfo(CompileTypeParserInfo):
+class TypeCheckExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(BooleanCompileTypeParserInfo, self).__post_init__(regions)
+    parser_info_type__: ParserInfoType      = field(init=False)
+
+    operator: OperatorType
+    expression: ExpressionParserInfo
+    type: TypeParserInfo
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):  # type: ignore
+        super(TypeCheckExpressionParserInfo, self).__post_init__(
+            self.expression.parser_info_type__,  # type: ignore
+            regions,
+            regionless_attributes=[
+                "expression",
+                "type",
+            ],
+        )

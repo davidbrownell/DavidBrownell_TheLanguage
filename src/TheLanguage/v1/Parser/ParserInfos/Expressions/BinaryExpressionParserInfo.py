@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  LiteralParserInfo.py
+# |  BinaryExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 10:04:59
+# |      2022-04-20 16:22:43
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the LiteralParserInfo object"""
+"""Contains the BinaryExpressionParserInfo object"""
 
 import os
 
-from typing import Any, Callable, List, Optional
-
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 
@@ -31,32 +29,36 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from ...MiniLanguage.Expressions.BinaryExpression import OperatorType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class LiteralParserInfo(ParserInfo):
-    """Abstract base class for all literal types"""
+class BinaryExpressionParserInfo(ExpressionParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
+    left_expression: ExpressionParserInfo
+    operator: OperatorType
+    right_expression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    def __post_init__(self, regions):  # type: ignore
+        parser_info_type = ParserInfoType(
+            max(
+                self.left_expression.parser_info_type__.value,  # type: ignore
+                self.right_expression.parser_info_type__.value,  # type: ignore
+            ),
+        )
 
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+        super(BinaryExpressionParserInfo, self).__post_init__(
+            parser_info_type,
+            regions,
+            regionless_attributes=[
+                "left_expression",
+                "right_expression",
+            ],
+        )
 
-    # ----------------------------------------------------------------------
-    def __post_init__(
-        self,
-        regions,
-        regionless_attributes: Optional[List[str]]=None,
-        validate=True,
-        **custom_display_funcs: Callable[[Any], Optional[Any]],
-    ):
-        super(LiteralParserInfo, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
+        # TODO: Validate

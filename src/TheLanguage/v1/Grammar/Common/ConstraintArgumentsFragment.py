@@ -53,7 +53,7 @@ with InitRelativeImports():
     )
 
     from ...Parser.ParserInfos.Common.ConstraintArgumentsParserInfo import (
-        CompileExpressionParserInfo,
+        ExpressionParserInfo,
         ConstraintArgumentParserInfo,
         ConstraintArgumentsParserInfo,
     )
@@ -73,8 +73,8 @@ def Create() -> PhraseItem:
                 ],
             ),
 
-            # <compile_expression>
-            DynamicPhrasesType.CompileExpressions,
+            # <expression>
+            DynamicPhrasesType.Expressions,
         ],
     )
 
@@ -122,9 +122,9 @@ def _ExtractElement(
         keyword_node = cast(AST.Leaf, keyword_nodes[0])
         keyword_info = ExtractToken(keyword_node)
 
-    # <compile_expression>
+    # <expression>
     expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
-    expression_info = cast(CompileExpressionParserInfo, GetParserInfo(expression_node))
+    expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
     return (
         ConstraintArgumentParserInfo.Create(

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NumberCompileTypeParserInfo.py
+# |  IntegerExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-19 10:26:57
+# |      2022-04-14 12:00:17
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NumberCompileTypeParserInfo object"""
+"""Contains the IntegerExpressionParserInfo object"""
 
 import os
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 
@@ -29,12 +29,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileTypeParserInfo import CompileTypeParserInfo
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class NumberCompileTypeParserInfo(CompileTypeParserInfo):
+class IntegerExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(NumberCompileTypeParserInfo, self).__post_init__(regions)
+    parser_info_type__: ParserInfoType      = field(init=False)
+
+    value: int
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions):  # type: ignore
+        super(IntegerExpressionParserInfo, self).__post_init__(
+            ParserInfoType.Unknown,
+            regions,
+            regionless_attributes=["value", ],
+        )

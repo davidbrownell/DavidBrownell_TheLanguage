@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, Region
+    from ..ParserInfo import ParserInfo, ParserInfoType, Region
 
 
 # ----------------------------------------------------------------------
@@ -40,6 +40,8 @@ class ExpressionParserInfo(ParserInfo):
     """Abstract base class for all expressions"""
 
     # ----------------------------------------------------------------------
+    parser_info_type__: InitVar[ParserInfoType]
+
     regions: InitVar[List[Optional[Region]]]
 
     # ----------------------------------------------------------------------
@@ -54,9 +56,16 @@ class ExpressionParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(
         self,
+        parser_info_type__,
         regions,
         regionless_attributes: Optional[List[str]]=None,
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        super(ExpressionParserInfo, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
+        super(ExpressionParserInfo, self).__init__(
+            parser_info_type__,
+            regions,
+            regionless_attributes,
+            validate,
+            **custom_display_funcs,
+        )

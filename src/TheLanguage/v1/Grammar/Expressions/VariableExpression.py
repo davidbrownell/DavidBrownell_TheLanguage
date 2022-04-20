@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableCompileExpression.py
+# |  VariableExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-18 22:25:31
+# |      2022-04-20 15:02:15
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableCompileExpression object"""
+"""Contains the VariableExpression object"""
 
 import os
 
@@ -39,29 +39,31 @@ with InitRelativeImports():
         DynamicPhrasesType,
         ExtractSequence,
         ExtractToken,
+        ExtractTokenRangeNoThrow,
     )
 
     from ...Parser.Parser import CreateRegions
 
-    from ...Parser.ParserInfos.CompileExpressions.CompileExpressionParserInfo import (
-        CompileExpressionParserInfo,
+    from ...Parser.ParserInfos.Expressions.VariableExpressionParserInfo import (
+        VariableExpressionParserInfo,
     )
 
+
 # ----------------------------------------------------------------------
-class VariableCompileExpression(GrammarPhrase):
-    PHRASE_NAME                             = "Variable CompileExpression"
+class VariableExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Variable Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(VariableCompileExpression, self).__init__(
-            DynamicPhrasesType.CompileExpressions,
+        super(VariableExpression, self).__init__(
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     # Note that needs to be a sequence so that we can properly extract the value
 
-                    # <parameter_name>
-                    CommonTokens.CompileParameterName,
+                    # <name>
+                    CommonTokens.ParameterName,
                 ],
             ),
         )
@@ -75,11 +77,18 @@ class VariableCompileExpression(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 1
 
-        # <parameter_name>
+        # <name>
         name_leaf = cast(AST.Leaf, nodes[0])
-        name_info = ExtractToken(name_leaf)
+        name_info = ExtractToken(
+            name_leaf,
+            return_match_contents=True,
+        )
 
-        # TODO: This should be using a variable-specific ParserInfo object
-        return CompileExpressionParserInfo.Create(
-            CreateRegions(node),
+        # Determine if we are looking at a compile-time var
+        is_compile_time_range = ExtractTokenRangeNoThrow(name_leaf, "is_compile_time")
+
+        return VariableExpressionParserInfo.Create(
+            CreateRegions(name_leaf, is_compile_time_range),
+            True if is_compile_time_range else None,
+            name_info,
         )

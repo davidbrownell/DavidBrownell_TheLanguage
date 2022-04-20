@@ -20,7 +20,7 @@ import os
 
 from typing import Dict, List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 
@@ -32,9 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..CompileTypes.CompileTypeParserInfo import CompileTypeParserInfo
-    from ..CompileExpressions.CompileExpressionParserInfo import CompileExpressionParserInfo
-    from ..Types.TypeParserInfo import ParserInfo, Region
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..Types.TypeParserInfo import ParserInfo, ParserInfoType, Region, TypeParserInfo
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -50,11 +49,14 @@ DuplicateNameError                          = CreateError(
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ConstraintParameterParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
-    type: CompileTypeParserInfo
+    type: TypeParserInfo
     name: str
-    default_type: Optional[CompileExpressionParserInfo]
+    default_type: Optional[ExpressionParserInfo]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -68,6 +70,7 @@ class ConstraintParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
         super(ConstraintParameterParserInfo, self).__init__(
+            ParserInfoType.CompileTime,
             regions,
             regionless_attributes=[
                 "type",
@@ -75,11 +78,15 @@ class ConstraintParameterParserInfo(ParserInfo):
             ],
         )
 
+        # TODO: Verify that the expression is a compile-time expression
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ConstraintParametersParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     positional: Optional[List[ConstraintParameterParserInfo]]
@@ -97,7 +104,7 @@ class ConstraintParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(ConstraintParametersParserInfo, self).__init__(regions)
+        super(ConstraintParametersParserInfo, self).__init__(ParserInfoType.CompileTime, regions)
         assert self.positional or self.any or self.keyword
 
         # Validate
