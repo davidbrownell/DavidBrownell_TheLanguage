@@ -1,0 +1,52 @@
+# <class 'v1.Lexer.Components.AST.Node'>
+children:
+  - # <class 'v1.Lexer.Components.AST.Leaf'>
+    is_ignored: True
+    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+      begin: "[1, 1] (0)"
+      end: "[3, 1] (2)"
+    type: "Newline+ <class 'v1.Lexer.Components.Tokens.NewlineToken'>"
+    value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+      range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+        begin: 0
+        end: 2
+  - # <class 'v1.Lexer.Components.AST.Leaf'>
+    is_ignored: True
+    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+      begin: "[3, 1] (2)"
+      end: "[3, 12] (13)"
+    type: "<comment> <class 'v1.Lexer.Components.Tokens.RegexToken'>"
+    value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+      match: "<_sre.SRE_Match object; span=(2, 13), match='# Comment 1'>"
+  - # <class 'v1.Lexer.Components.AST.Leaf'>
+    is_ignored: True
+    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+      begin: "[3, 12] (13)"
+      end: "[4, 1] (14)"
+    type: "Newline+ <class 'v1.Lexer.Components.Tokens.NewlineToken'>"
+    value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+      range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+        begin: 13
+        end: 14
+  - # <class 'v1.Lexer.Components.AST.Leaf'>
+    is_ignored: True
+    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+      begin: "[4, 1] (14)"
+      end: "[4, 12] (25)"
+    type: "<comment> <class 'v1.Lexer.Components.Tokens.RegexToken'>"
+    value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+      match: "<_sre.SRE_Match object; span=(14, 25), match='# Comment 2'>"
+  - # <class 'v1.Lexer.Components.AST.Leaf'>
+    is_ignored: True
+    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+      begin: "[4, 12] (25)"
+      end: "[5, 1] (26)"
+    type: "Newline+ <class 'v1.Lexer.Components.Tokens.NewlineToken'>"
+    value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+      range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+        begin: 25
+        end: 26
+iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+  begin: "[1, 1] (0)"
+  end: "[5, 1] (26)"
+type: "<None>"

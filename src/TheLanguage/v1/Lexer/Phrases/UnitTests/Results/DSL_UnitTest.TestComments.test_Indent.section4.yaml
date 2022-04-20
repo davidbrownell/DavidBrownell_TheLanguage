@@ -34,7 +34,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: True
       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-        begin: "[10, 5] (127)"
+        begin: "[10, 17] (139)"
         end: "[10, 29] (151)"
       token: "<comment>"
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
@@ -89,7 +89,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
           is_ignored: True
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-            begin: "[11, 11] (162)"
+            begin: "[11, 17] (168)"
             end: "[11, 29] (180)"
           token: "<comment>"
           value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
@@ -132,7 +132,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
           is_ignored: True
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-            begin: "[12, 7] (187)"
+            begin: "[12, 17] (197)"
             end: "[12, 29] (209)"
           token: "<comment>"
           value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>

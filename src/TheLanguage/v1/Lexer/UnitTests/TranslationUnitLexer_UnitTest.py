@@ -51,7 +51,7 @@ with InitRelativeImports():
         parse_mock as parse_mock_impl,
     )
 
-    from ..Phrases.DSL import CreatePhrase, DefaultCommentToken, DynamicPhrasesType
+    from ..Phrases.DSL import CreatePhrase, DefaultCommentToken, DynamicPhrasesType, OneOrMorePhraseItem
 
 
 # ----------------------------------------------------------------------
@@ -658,13 +658,10 @@ def test_InvalidDynamicTraversalError(parse_mock):
                 },
             ),
             CreateIterator(
-                textwrap.dedent(
-                    """\
+                """\
 
 
-
-                    """,
-                ),
+                """,
             ),
             parse_mock,
         )
@@ -901,3 +898,204 @@ class TestCatastrophicInclude(object):
 
         CompareResultsFromFile(str(result))
         assert this_parse_mock.method_calls == []
+
+
+# ----------------------------------------------------------------------
+class TestUnusualScenarios(object):
+    _number_phrase                          = CreatePhrase(
+        name="Number Phrase",
+        item=[
+            _number_token,
+            NewlineToken(),
+        ],
+    )
+
+    _phrases                                = DynamicPhrasesInfo(
+        {
+            DynamicPhrasesType.Statements: [CreatePhrase(OneOrMorePhraseItem(_number_phrase))],
+        },
+    )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    def test_InitialWhitespace(self, parse_mock):
+        CompareResultsFromFile(str(Lex(
+            DefaultCommentToken,
+            self._phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+
+
+
+
+                    1234
+                    """,
+                ),
+            ),
+            parse_mock,
+        )))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    def test_TrailingWhitespace(self, parse_mock):
+        CompareResultsFromFile(str(Lex(
+            DefaultCommentToken,
+            self._phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    1234
+
+
+
+
+
+                    """,
+                ),
+            ),
+            parse_mock,
+        )))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    def test_InitialComment(self, parse_mock):
+        CompareResultsFromFile(str(Lex(
+            DefaultCommentToken,
+            self._phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+
+                    # Initial comment
+
+
+                    1234
+                    """,
+                ),
+            ),
+            parse_mock,
+        )))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    def test_TrailingComment(self, parse_mock):
+        CompareResultsFromFile(str(Lex(
+            DefaultCommentToken,
+            self._phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    1234
+
+                    # Trailing Comment 1
+                    # Trailing Comment 2
+
+
+                    """,
+                ),
+            ),
+            parse_mock,
+        )))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    def test_OnlyComments(self, parse_mock):
+        CompareResultsFromFile(str(Lex(
+            DefaultCommentToken,
+            self._phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    # Comment 1
+                    # Comment 2
+                    """,
+                ),
+            ),
+            parse_mock,
+        )))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    def test_OnlyCommentsWithPrefix(self, parse_mock):
+        CompareResultsFromFile(str(Lex(
+            DefaultCommentToken,
+            self._phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+
+
+                    # Comment 1
+                    # Comment 2
+                    """,
+                ),
+            ),
+            parse_mock,
+        )))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    def test_OnlyCommentsWithSuffix(self, parse_mock):
+        CompareResultsFromFile(str(Lex(
+            DefaultCommentToken,
+            self._phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                    # Comment 1
+                    # Comment 2
+
+
+                    """,
+                ),
+            ),
+            parse_mock,
+        )))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    def test_OnlyCommentsWithPrefixAndSuffix(self, parse_mock):
+        CompareResultsFromFile(str(Lex(
+            DefaultCommentToken,
+            self._phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+
+
+
+
+
+                    # Comment 1
+                    # Comment 2
+
+
+
+                    """,
+                ),
+            ),
+            parse_mock,
+        )))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    def test_CommentIndentation(self, parse_mock):
+        CompareResultsFromFile(str(Lex(
+            DefaultCommentToken,
+            self._phrases,
+            CreateIterator(
+                textwrap.dedent(
+                    """\
+                        # Comment 1
+                    # Comment 2
+
+                    1234
+
+                            # Comment 3
+
+                    """,
+                ),
+            ),
+            parse_mock,
+        )))
