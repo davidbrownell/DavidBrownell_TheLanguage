@@ -211,6 +211,7 @@ def Lex(
 
                     final_result = DynamicPhrasesInfo.Create({})
                 else:
+                    assert isinstance(source_info, SourceInfo), source_info
                     final_result = source_info.dynamic_info
 
                 for event in thread_info.source_pending.pop(fully_qualified_name, []):

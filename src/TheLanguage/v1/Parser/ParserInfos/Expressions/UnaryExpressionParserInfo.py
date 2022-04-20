@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariantCompileTypeParserInfo.py
+# |  UnaryExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-17 12:25:12
+# |      2022-04-20 16:19:33
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariantCompileTypeParserInfo object"""
+"""Contains the UnaryExpressionParserInfo object"""
 
 import os
 
-from typing import List
-
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 
@@ -31,14 +29,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileTypeParserInfo import CompileTypeParserInfo
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from ...MiniLanguage.Expressions.UnaryExpression import OperatorType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariantCompileTypeParserInfo(CompileTypeParserInfo):
-    items: List[CompileTypeParserInfo]
+class UnaryExpressionParserInfo(ExpressionParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
+    operator: OperatorType
+    expression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(VariantCompileTypeParserInfo, self).__post_init__(regions)
+    def __post_init__(self, regions):  # type: ignore
+        # At the moment, all unary operations are valid at compile time, so no need to check.
+
+        super(UnaryExpressionParserInfo, self).__post_init__(
+            self.expression.parser_info_type__,  # type: ignore
+            regions,
+            regionless_attributes=["expression", ],
+        )

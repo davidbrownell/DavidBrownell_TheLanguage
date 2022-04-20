@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  LiteralCompileExpression.py
+# |  StringExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-18 13:51:07
+# |      2022-04-14 12:00:17
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,12 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the LiteralCompileExpression object"""
+"""Contains the StringExpressionParserInfo object"""
 
 import os
 
+from dataclasses import dataclass, field
+
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -28,28 +29,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GrammarPhrase import AST, GrammarPhrase
-
-    from ..Common import LiteralFragment
-
-    from ...Lexer.Phrases.DSL import CreatePhrase, DynamicPhrasesType
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
 
 
 # ----------------------------------------------------------------------
-class LiteralCompileExpression(GrammarPhrase):
-    PHRASE_NAME                             = "Literal CompileExpression"
+@dataclass(frozen=True, repr=False)
+class StringExpressionParserInfo(ExpressionParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
+    value: str
 
     # ----------------------------------------------------------------------
-    def __init__(self):
-        super(LiteralCompileExpression, self).__init__(
-            DynamicPhrasesType.CompileExpressions,
-            CreatePhrase(LiteralFragment.Create(self.PHRASE_NAME)),
+    def __post_init__(self, regions):  # type: ignore
+        super(StringExpressionParserInfo, self).__post_init__(
+            ParserInfoType.Unknown,
+            regions,
+            regionless_attributes=["value", ],
         )
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def ExtractParserInfo(
-        node: AST.Node,
-    ) -> GrammarPhrase.ExtractParserInfoReturnType:
-        return LiteralFragment.Extract(node)

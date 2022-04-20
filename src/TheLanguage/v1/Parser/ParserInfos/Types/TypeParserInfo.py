@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, Region
+    from ..ParserInfo import ParserInfo, ParserInfoType, Region
 
     from ..Common.MutabilityModifier import MutabilityModifier
 
@@ -52,7 +52,7 @@ MutabilityModifierNotAllowedError           = CreateError(
 )
 
 InvalidNewMutabilityModifierError           = CreateError(
-    "The mutability modifier '{}' is not allowed in this context".format(MutabilityModifier.new.name),
+    "The mutability modifier 'new' is not allowed in this context",
 )
 
 
@@ -62,6 +62,7 @@ class TypeParserInfo(ParserInfo):
     """Abstract base class for all types"""
 
     # ----------------------------------------------------------------------
+    parser_info_type__: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
 
     mutability_modifier: Optional[MutabilityModifier]
@@ -78,9 +79,10 @@ class TypeParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(
         self,
+        parser_info_type__,
         regions,
         regionless_attributes: Optional[List[str]]=None,
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        super(TypeParserInfo, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
+        super(TypeParserInfo, self).__init__(parser_info_type__, regions, regionless_attributes, validate, **custom_display_funcs)

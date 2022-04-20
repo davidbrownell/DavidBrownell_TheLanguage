@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariantCompileType.py
+# |  GroupExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-15 10:10:26
+# |      2022-04-20 16:32:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariantCompileType object"""
+"""Contains the GroupExpression object"""
 
 import os
 
-from typing import cast, List
+from typing import cast
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,32 +33,44 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
-    from ..Common.Impl import VariantPhraseImpl
+    from ..Common import Tokens as CommonTokens
 
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractDynamic,
+        ExtractSequence,
     )
 
-    from ...Parser.Parser import CreateRegions
+    from ...Parser.Parser import GetParserInfo
 
-    from ...Parser.ParserInfos.CompileTypes.VariantCompileTypeParserInfo import (
-        CompileTypeParserInfo,
-        VariantCompileTypeParserInfo,
+    from ...Parser.ParserInfos.Expressions.ExpressionParserInfo import (
+        ExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class VariantCompileType(GrammarPhrase):
-    PHRASE_NAME                             = "Variant CompileType"
+class GroupExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Group Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(VariantCompileType, self).__init__(
-            DynamicPhrasesType.CompileTypes,
+        super(GroupExpression, self).__init__(
+            DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
-                item=VariantPhraseImpl.Create(DynamicPhrasesType.CompileTypes),
+                item=[
+                    # '('
+                    "(",
+                    CommonTokens.PushIgnoreWhitespaceControl,
+
+                    # <expression>
+                    DynamicPhrasesType.Expressions,
+
+                    # ')'
+                    CommonTokens.PopIgnoreWhitespaceControl,
+                    ")",
+                ],
             ),
         )
 
@@ -69,10 +82,14 @@ class VariantCompileType(GrammarPhrase):
     ) -> GrammarPhrase.ExtractParserInfoReturnType:
         # ----------------------------------------------------------------------
         def Callback():
-            return VariantCompileTypeParserInfo.Create(
-                CreateRegions(node, node),
-                cast(List[CompileTypeParserInfo], VariantPhraseImpl.Extract(node)),
-            )
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 5
+
+            # <expression>
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
+
+            return expression_info
 
         # ----------------------------------------------------------------------
 

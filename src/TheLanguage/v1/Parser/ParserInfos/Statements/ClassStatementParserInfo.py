@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, Region, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, StatementParserInfo
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
     from ..Common.ClassModifier import ClassModifier
@@ -83,6 +83,9 @@ InvalidDependencyVisibilityError            = CreateError(
 class ClassStatementDependencyParserInfo(ParserInfo):
     """Dependency of a class"""
 
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Region]]
 
     visibility: Optional[VisibilityModifier]            # Note that instances may be created with this value as None,
@@ -102,6 +105,7 @@ class ClassStatementDependencyParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
         super(ClassStatementDependencyParserInfo, self).__init__(
+            ParserInfoType.Standard,
             regions,
             regionless_attributes=["type", ],
         )

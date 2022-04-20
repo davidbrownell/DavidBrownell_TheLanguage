@@ -46,6 +46,7 @@ with InitRelativeImports():
     from ...Parser.Parser import CreateRegions
 
     from ...Parser.ParserInfos.Types.VariantTypeParserInfo import (
+        ParserInfoType,
         TypeParserInfo,
         VariantTypeParserInfo,
     )
@@ -98,6 +99,7 @@ class VariantType(GrammarPhrase):
                 mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
 
             return VariantTypeParserInfo.Create(
+                ParserInfoType.Standard,
                 CreateRegions(node, mutability_modifier_node, elements_node),  # type: ignore
                 mutability_modifier_info,
                 elements_info,

@@ -20,7 +20,7 @@ import os
 from enum import auto, Enum
 from typing import Any, Callable, Dict, List, Optional, Set, Union
 
-from dataclasses import dataclass, fields, make_dataclass, InitVar
+from dataclasses import dataclass, field, fields, make_dataclass, InitVar
 
 import CommonEnvironment
 from CommonEnvironment.CallOnExit import CallOnExit
@@ -49,6 +49,14 @@ class VisitControl(Enum):
 
 
 # ----------------------------------------------------------------------
+class ParserInfoType(Enum):
+    Unknown                                 = auto()    # Unknown (this value should only be applied for very low-level phrases (like types))
+    Literal                                 = auto()    # A literal value
+    CompileTime                             = auto()    # Evaluated at compile time
+    Standard                                = auto()    # Evaluated at runtime
+
+
+# ----------------------------------------------------------------------
 class ParserInfo(ObjectReprImplBase):
     """A collection of lexical tokens that may or may not be valid"""
 
@@ -57,15 +65,21 @@ class ParserInfo(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
+        parser_info_type: ParserInfoType,
         regions: List[Optional[Region]],
         regionless_attributes: Optional[List[str]]=None,
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
+        object.__setattr__(self, "parser_info_type__", parser_info_type)
+
         regionless_attributes_set = set(regionless_attributes or [])
 
         # Dynamically create the Regions type based on the fields of the class
         all_fields = {f.name : f for f in fields(self)}
+
+        if "parser_info_type__" in all_fields:
+            regionless_attributes_set.add("parser_info_type__")
 
         num_expected_regions = len(all_fields) - len(regionless_attributes_set)
         assert len(regions) == num_expected_regions + 1, (len(regions), num_expected_regions + 1, "The number of regions provided must match the number of attributes that require them")
@@ -118,6 +132,7 @@ class ParserInfo(ObjectReprImplBase):
         ObjectReprImplBase.__init__(
             self,
             introduces_scope__=None,
+            parser_info_type__=None,
             **custom_display_funcs,
         )
 
@@ -265,6 +280,8 @@ class ParserInfo(ObjectReprImplBase):
 class RootParserInfo(ParserInfo):
     introduces_scope__                      = True
 
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     statements: Optional[List[ParserInfo]]
@@ -281,7 +298,7 @@ class RootParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(RootParserInfo, self).__init__(regions)
+        super(RootParserInfo, self).__init__(ParserInfoType.Standard, regions)
 
     # ----------------------------------------------------------------------
     @Interface.override

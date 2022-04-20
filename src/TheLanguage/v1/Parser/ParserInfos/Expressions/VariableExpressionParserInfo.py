@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CompileTypeParserInfo.py
+# |  VariableExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-15 10:28:28
+# |      2022-04-20 15:06:33
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CompileTypeParserInfo object"""
+"""Contains the VariableExpressionParserInfo object"""
 
 import os
 
-from typing import Any, Callable, List, Optional
+from typing import Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 
@@ -31,29 +31,32 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class CompileTypeParserInfo(ParserInfo):
-    regions: InitVar[List[Optional[Region]]]
+class VariableExpressionParserInfo(ExpressionParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
+    is_compile_time_param: InitVar[bool]
+    is_compile_time: Optional[bool]         = field(init=False)
+
+    name: str
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+    def __post_init__(self, regions, is_compile_time_param):  # type: ignore
+        if is_compile_time_param:
+            parser_info_type = ParserInfoType.CompileTime
+        else:
+            parser_info_type = ParserInfoType.Standard
+            is_compile_time_param = None
 
-    # ----------------------------------------------------------------------
-    def __post_init__(
-        self,
-        regions,
-        regionless_attributes: Optional[List[str]]=None,
-        validate=True,
-        **custom_display_funcs: Callable[[Any], Optional[Any]],
-    ):
-        super(CompileTypeParserInfo, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
+        object.__setattr__(self, "is_compile_time", is_compile_time_param)
+
+        super(VariableExpressionParserInfo, self).__post_init__(
+            parser_info_type,
+            regions,
+            regionless_attributes=["name", ],
+        )
