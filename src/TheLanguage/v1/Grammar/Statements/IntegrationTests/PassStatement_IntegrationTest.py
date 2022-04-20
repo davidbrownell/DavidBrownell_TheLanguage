@@ -34,7 +34,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Standard():
-    CompareResultsFromFile(str(ExecuteParserPhrase(
+    CompareResultsFromFile(str(ExecuteParserInfo(
         textwrap.dedent(
             """\
             pass

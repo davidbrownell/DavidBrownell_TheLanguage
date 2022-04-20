@@ -42,6 +42,9 @@ with InitRelativeImports():
 class OperatorType(Enum):
     Not                                     = "not"
 
+    Positive                                = "+"
+    Negative                                = "-"
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)

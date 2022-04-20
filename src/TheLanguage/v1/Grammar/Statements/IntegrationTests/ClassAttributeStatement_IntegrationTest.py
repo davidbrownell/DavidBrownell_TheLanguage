@@ -34,7 +34,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Simple():
-    CompareResultsFromFile(str(ExecuteParserPhrase(
+    CompareResultsFromFile(str(ExecuteParserInfo(
         textwrap.dedent(
             """\
             class More:
@@ -47,7 +47,7 @@ def test_Simple():
 
 # ----------------------------------------------------------------------
 def test_Tuples():
-    CompareResultsFromFile(str(ExecuteParserPhrase(
+    CompareResultsFromFile(str(ExecuteParserInfo(
         textwrap.dedent(
             """\
             class MyClass:
@@ -61,7 +61,7 @@ def test_Tuples():
 
 # ----------------------------------------------------------------------
 def test_Variants():
-    CompareResultsFromFile(str(ExecuteParserPhrase(
+    CompareResultsFromFile(str(ExecuteParserInfo(
         textwrap.dedent(
             """\
             class MyClass:

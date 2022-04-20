@@ -34,7 +34,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_Simple():
-    CompareResultsFromFile(str(ExecuteParserPhrase(
+    CompareResultsFromFile(str(ExecuteParserInfo(
         textwrap.dedent(
             """\
             Int val Func1(): pass

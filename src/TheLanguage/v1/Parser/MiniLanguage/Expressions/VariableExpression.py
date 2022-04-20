@@ -34,8 +34,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Expression import Expression, Type
 
-    from ...Phrases.Error import CreateError, ErrorException
-    from ...Phrases.Region import Region
+    from ...Error import CreateError, ErrorException
+    from ...Region import Region
 
 
 # ----------------------------------------------------------------------
@@ -51,6 +51,15 @@ class VariableExpression(Expression):
     type: Type
     name: str
     name_region: Region
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     def __post_init__(self):

@@ -158,6 +158,9 @@ def Lex(
     Dict[str, AST.Node],
     List[Exception],
 ]:
+    if len(fully_qualified_names) == 1:
+        single_threaded = True
+
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class SourceInfo(object):

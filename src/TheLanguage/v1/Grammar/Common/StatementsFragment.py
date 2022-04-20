@@ -43,7 +43,7 @@ with InitRelativeImports():
         OneOrMorePhraseItem,
     )
 
-    from ...Parser.Parser import Error, GetPhraseNoThrow, Phrase
+    from ...Parser.Parser import Error, GetParserInfoNoThrow, ParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -85,7 +85,7 @@ def Extract(
 ) -> Union[
     List[Error],
     Tuple[
-        List[Phrase],
+        List[ParserInfo],
         Optional[Tuple[AST.Leaf, str]],
     ],
 ]:
@@ -108,14 +108,14 @@ def Extract(
         statement_nodes = [ExtractDynamic(statements_node)]
 
     # Extract phrases and process docstrings (if any)
-    phrases: List[Phrase] = []
+    phrases: List[ParserInfo] = []
     docstring_leaf: Optional[AST.Leaf] = None
-    docstring_info: Optional[Phrase] = None
+    docstring_info: Optional[ParserInfo] = None
 
     is_first_statement = True
 
     for statement_node in statement_nodes:
-        statement_phrase = GetPhraseNoThrow(cast(AST.Node, statement_node))
+        statement_phrase = GetParserInfoNoThrow(cast(AST.Node, statement_node))
         if statement_phrase is None:
             continue
 

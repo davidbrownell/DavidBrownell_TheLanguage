@@ -25,6 +25,7 @@ from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -40,40 +41,67 @@ with InitRelativeImports():
     from ..Types.IntegerType import IntegerType
     from ..Types.NumberType import NumberType
 
-    from ...Phrases.Error import CreateError, ErrorException
-    from ...Phrases.Region import Region
+    from ...Error import CreateError, ErrorException
+    from ...Region import Region
+
+
+# TODO: Adjust this
+
+# ----------------------------------------------------------------------
+# |  Pubic Types
+@dataclass(frozen=True, repr=False)
+class Value(ObjectReprImplBase):
+    token: str
+    precedence: int
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self.precedence > 0
+        ObjectReprImplBase.__init__(self)
+
 
 
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
-    Multiply                                = "*"
-    Divide                                  = "/"
-    DivideFloor                             = "//"
-    Modulus                                 = "%"
+    # ----------------------------------------------------------------------
+    # |  Public Data
+    Multiply                                = Value.Create("*", 1)
+    Divide                                  = Value.Create("/", 1)
+    DivideFloor                             = Value.Create("//", 1)
+    Modulus                                 = Value.Create("%", 1)
 
-    Add                                     = "+"
-    Subtract                                = "-"
+    Add                                     = Value.Create("+", 2)
+    Subtract                                = Value.Create("-", 2)
 
-    BitShiftLeft                            = "<<"
-    BitShiftRight                           = ">>"
+    BitShiftLeft                            = Value.Create("<<", 3)
+    BitShiftRight                           = Value.Create(">>", 3)
 
-    Less                                    = "<"
-    LessEqual                               = "<="
-    Greater                                 = ">"
-    GreaterEqual                            = ">="
+    Less                                    = Value.Create("<", 4)
+    LessEqual                               = Value.Create("<=", 4)
+    Greater                                 = Value.Create(">", 4)
+    GreaterEqual                            = Value.Create(">=", 4)
 
-    Equal                                   = "=="
-    NotEqual                                = "!="
+    Equal                                   = Value.Create("==", 5)
+    NotEqual                                = Value.Create("!=", 5)
 
-    BitwiseAnd                              = "&"
+    BitwiseAnd                              = Value.Create("&", 6)
 
-    BitwiseXor                              = "^"
+    BitwiseXor                              = Value.Create("^", 7)
 
-    BitwiseOr                               = "|"
+    BitwiseOr                               = Value.Create("|", 8)
 
-    LogicalAnd                              = "and"
+    LogicalAnd                              = Value.Create("and", 9)
 
-    LogicalOr                               = "or"
+    LogicalOr                               = Value.Create("or", 10)
 
 
 # ----------------------------------------------------------------------
@@ -150,7 +178,7 @@ class BinaryExpression(Expression):
         elif self.operator == OperatorType.LogicalOr:
             eval_impl = self._EvalOrImpl
         else:
-            assert False, self.operator
+            assert False, self.operator  # pragma: no cover
 
         object.__setattr__(self, "Eval", eval_impl)
 
@@ -213,7 +241,7 @@ class BinaryExpression(Expression):
                         left_type=left_result.type.name,
                         right_value=str(right_result.value),
                         right_type=right_result.type.name,
-                        operator=self.operator.value,
+                        operator=self.operator.token,
                     ),
                 )
 
@@ -221,7 +249,7 @@ class BinaryExpression(Expression):
                 raise ErrorException(
                     IntegerOrNumberRequiredError.Create(
                         region=self.left_region,
-                        operator=self.operator.value,
+                        operator=self.operator.token,
                         left_type=left_result.type.name,
                     ),
                 )
@@ -254,7 +282,7 @@ class BinaryExpression(Expression):
                         left_type=left_result.type.name,
                         right_value=str(right_result.value),
                         right_type=right_result.type.name,
-                        operator=self.operator.value,
+                        operator=self.operator.token,
                     ),
                 )
 
@@ -262,7 +290,7 @@ class BinaryExpression(Expression):
                 raise ErrorException(
                     IntegerRequiredError.Create(
                         region=self.left_region,
-                        operator=self.operator.value,
+                        operator=self.operator.token,
                         left_type=left_result.type.name,
                     ),
                 )
@@ -299,7 +327,7 @@ class BinaryExpression(Expression):
                         left_type=left_result.type.name,
                         right_value=str(right_result.value),
                         right_type=right_result.type.name,
-                        operator=self.operator.value,
+                        operator=self.operator.token,
                     ),
                 )
 

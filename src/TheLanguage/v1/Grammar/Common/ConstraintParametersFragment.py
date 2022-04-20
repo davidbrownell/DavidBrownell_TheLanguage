@@ -45,16 +45,19 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
-
-    from ...Parser.Phrases.Common.ConstraintParametersPhrase import (
-        CompileTypePhrase,
-        CompileExpressionPhrase,
-        ConstraintParametersPhrase,
-        ConstraintParameterPhrase,
+    from ...Parser.Parser import (
+        CreateRegions,
+        Error,
+        GetParserInfo,
+        ParserInfo,
     )
 
-    from ...Parser.Phrases.Error import Error
+    from ...Parser.ParserInfos.Common.ConstraintParametersParserInfo import (
+        CompileTypeParserInfo,
+        CompileExpressionParserInfo,
+        ConstraintParameterParserInfo,
+        ConstraintParametersParserInfo,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -66,7 +69,7 @@ def Create() -> PhraseItem:
             DynamicPhrasesType.CompileTypes,
 
             # <name>
-            CommonTokens.ConstraintParameterName,
+            CommonTokens.CompileParameterName,
 
             # ('=' <compile_expression>)?
             OptionalPhraseItem(
@@ -94,10 +97,10 @@ def Extract(
     node: AST.Node,
 ) -> Union[
     List[Error],
-    ConstraintParametersPhrase,
+    ConstraintParametersParserInfo,
 ]:
     result = ParametersFragmentImpl.Extract(
-        ConstraintParametersPhrase,
+        ConstraintParametersParserInfo,
         _ExtractElement,
         node,
         allow_empty=False,
@@ -112,13 +115,13 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractElement(
     node: AST.Node,
-) -> Tuple[Phrase, bool]:
+) -> Tuple[ParserInfo, bool]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 3
 
     # <compile_type>
     type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-    type_info = cast(CompileTypePhrase, GetPhrase(type_node))
+    type_info = cast(CompileTypeParserInfo, GetParserInfo(type_node))
 
     # <name>
     name_leaf = cast(AST.Leaf, nodes[1])
@@ -133,10 +136,10 @@ def _ExtractElement(
         assert len(default_nodes) == 4
 
         default_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, default_nodes[2])))
-        default_info = cast(CompileExpressionPhrase, GetPhrase(default_node))
+        default_info = cast(CompileExpressionParserInfo, GetParserInfo(default_node))
 
     return (
-        ConstraintParameterPhrase.Create(
+        ConstraintParameterParserInfo.Create(
             CreateRegions(node, type_node, name_leaf, default_node),
             type_info,
             name_info,

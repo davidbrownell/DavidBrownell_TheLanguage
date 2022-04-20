@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -45,19 +45,11 @@ with InitRelativeImports():
         AST,
         DynamicPhrasesInfo,
         Observer as LexObserverBase,
-        Phrase as LexerPhrase,
+        Phrase as LexerPhrase, # BuBug: Change to Phrase
         TranslationUnitsObserver,
     )
 
-    from .Parser.Parser import (
-        ParseObserver as ParseObserverBase,
-        RootPhrase as ParserRootPhrase,
-    )
-
-    from .Parser.Phrases.Phrase import (
-        Phrase as ParserPhrase,
-        VisitControl as PhraseVisitControl,
-    )
+    from .Parser.Parser import ParseObserver as ParseObserverBase
 
 
 # ----------------------------------------------------------------------
@@ -155,13 +147,13 @@ class ParseObserver(ParseObserverBase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         node: AST.Node,
-    ) -> Optional[ParseObserverBase.ExtractParserPhraseReturnType]:
+    ) -> Optional[ParseObserverBase.ExtractParserInfoReturnType]:
         if isinstance(node.type, LexerPhrase):
             grammar_phrase = GrammarPhraseLookup.get(node.type, None)
             if grammar_phrase is not None:
-                return grammar_phrase.ExtractParserPhrase(node)
+                return grammar_phrase.ExtractParserInfo(node)
 
         return None
 
@@ -172,6 +164,6 @@ class ParseObserver(ParseObserverBase):
         node: Union[AST.Leaf, AST.Node],
     ) -> Optional[Tuple[AST.Leaf, str]]:
         return None # TODO
-        if isinstance(node.type, LexerPhrase):
-            if isinstance(node.type, DynamicPhrase):
-                node = ExtractDynamic(node)
+        # TODO: if isinstance(node.type, LexerPhrase):
+        # TODO:     if isinstance(node.type, DynamicPhrase):
+        # TODO:         node = ExtractDynamic(node)

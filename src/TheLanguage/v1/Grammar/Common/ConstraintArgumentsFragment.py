@@ -45,15 +45,18 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
-
-    from ...Parser.Phrases.Common.ConstraintArgumentsPhrase import (
-        CompileExpressionPhrase,
-        ConstraintArgumentPhrase,
-        ConstraintArgumentsPhrase,
+    from ...Parser.Parser import (
+        CreateRegions,
+        Error,
+        GetParserInfo,
+        ParserInfo,
     )
 
-    from ...Parser.Phrases.Error import Error
+    from ...Parser.ParserInfos.Common.ConstraintArgumentsParserInfo import (
+        CompileExpressionParserInfo,
+        ConstraintArgumentParserInfo,
+        ConstraintArgumentsParserInfo,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -65,7 +68,7 @@ def Create() -> PhraseItem:
             OptionalPhraseItem(
                 name="Keyword",
                 item=[
-                    CommonTokens.ConstraintParameterName,
+                    CommonTokens.CompileParameterName,
                     "=",
                 ],
             ),
@@ -89,10 +92,10 @@ def Extract(
 ) -> Union[
     List[Error],
     bool,
-    ConstraintArgumentsPhrase,
+    ConstraintArgumentsParserInfo,
 ]:
     return ArgumentsFragmentImpl.Extract(
-        ConstraintArgumentsPhrase,
+        ConstraintArgumentsParserInfo,
         _ExtractElement,
         node,
         allow_empty=True,
@@ -104,7 +107,7 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractElement(
     node: AST.Node,
-) -> Tuple[Phrase, bool]:
+) -> Tuple[ParserInfo, bool]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 2
 
@@ -121,10 +124,10 @@ def _ExtractElement(
 
     # <compile_expression>
     expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
-    expression_info = cast(CompileExpressionPhrase, GetPhrase(expression_node))
+    expression_info = cast(CompileExpressionParserInfo, GetParserInfo(expression_node))
 
     return (
-        ConstraintArgumentPhrase.Create(
+        ConstraintArgumentParserInfo.Create(
             CreateRegions(node, expression_node, keyword_node),
             expression_info,
             keyword_info,

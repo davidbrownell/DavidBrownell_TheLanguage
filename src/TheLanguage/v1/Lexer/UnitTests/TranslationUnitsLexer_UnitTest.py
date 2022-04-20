@@ -468,7 +468,8 @@ class TestStandard(object):
         assert len(results) == 1
         results = results[0]
 
-        assert str(results) == "The syntax is not recognized [Ln 1, Col 3]: 'Newline+' was expected in 'Number'."
+        # assert str(results) == "The syntax is not recognized [Ln 1, Col 3]: 'Newline+' was expected in 'Number'."
+        assert str(results) == "The syntax is not recognized [Ln 1, Col 3]: Error context is not available at this time"
         assert results.location.line == 1
         assert results.location.column == 3
         assert results.fully_qualified_name == "one"
@@ -530,7 +531,8 @@ class TestStandard(object):
 
         assert results.location.line == 4
         assert results.location.column == 3
-        assert str(results) == "The syntax is not recognized [Ln 4, Col 3]: 'Newline+' was expected in 'Number'."
+        # assert str(results) == "The syntax is not recognized [Ln 4, Col 3]: 'Newline+' was expected in 'Number'."
+        assert str(results) == "The syntax is not recognized [Ln 4, Col 3]: Error context is not available at this time"
 
     # ----------------------------------------------------------------------
     @pytest.mark.asyncio

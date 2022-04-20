@@ -45,16 +45,19 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions, GetPhrase, Phrase
-
-    from ...Parser.Phrases.Common.FuncParametersPhrase import (
-        ExpressionPhrase,
-        FuncParametersPhrase,
-        FuncParameterPhrase,
-        TypePhrase,
+    from ...Parser.Parser import (
+        CreateRegions,
+        Error,
+        GetParserInfo,
+        ParserInfo,
     )
 
-    from ...Parser.Phrases.Error import Error
+    from ...Parser.ParserInfos.Common.FuncParametersParserInfo import (
+        ExpressionParserInfo,
+        FuncParameterParserInfo,
+        FuncParametersParserInfo,
+        TypeParserInfo,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -101,10 +104,10 @@ def Extract(
 ) -> Union[
     List[Error],
     bool,
-    FuncParametersPhrase,
+    FuncParametersParserInfo,
 ]:
     return ParametersFragmentImpl.Extract(
-        FuncParametersPhrase,
+        FuncParametersParserInfo,
         _ExtractElement,
         node,
         allow_empty=True,
@@ -116,13 +119,13 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractElement(
     node: AST.Node,
-) -> Tuple[Phrase, bool]:
+) -> Tuple[ParserInfo, bool]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 4
 
     # <type>
     type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-    type_info = cast(TypePhrase, GetPhrase(type_node))
+    type_info = cast(TypeParserInfo, GetParserInfo(type_node))
 
     # '...'?
     is_variadic_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -144,10 +147,10 @@ def _ExtractElement(
         assert len(default_nodes) == 4
 
         default_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, default_nodes[2])))
-        default_info = cast(ExpressionPhrase, GetPhrase(default_node))
+        default_info = cast(ExpressionParserInfo, GetParserInfo(default_node))
 
     return (
-        FuncParameterPhrase.Create(
+        FuncParameterParserInfo.Create(
             CreateRegions(node, type_node, is_variadic_node, name_leaf, default_node),
             type_info,
             is_variadic_info,

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Generator, List, Optional, Tuple
+from typing import Generator, List, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Impl.Visitor import Visitor
 
-    from ..Target import RootPhrase, Target
+    from ..Target import RootParserInfo, Target
 
 
 # ----------------------------------------------------------------------
@@ -65,7 +65,7 @@ class PythonTarget(Target):
     def Invoke(
         self,
         fully_qualified_name: str,
-        root: RootPhrase,
+        root: RootParserInfo,
     ) -> None:
         visitor = Visitor(
             indent_spaces=self._indent_spaces,

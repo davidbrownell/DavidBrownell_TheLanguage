@@ -241,6 +241,9 @@ class DynamicPhrase(Phrase):
                     ignore_whitespace=ignore_whitespace,
                 )
 
+            else:
+                assert False, self  # pragma: no cover
+
             if result is None:
                 return None
 

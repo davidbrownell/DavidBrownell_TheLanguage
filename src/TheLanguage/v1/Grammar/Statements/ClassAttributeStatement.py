@@ -49,9 +49,18 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegion, CreateRegions, GetPhrase
-    from ...Parser.Phrases.Error import CreateError, Error, ErrorException
-    from ...Parser.Phrases.Statements import ClassAttributeStatement as ParserClassAttributeStatementModule
+    from ...Parser.Parser import (
+        CreateError,
+        CreateRegion,
+        CreateRegions,
+        Error,
+        GetParserInfo,
+    )
+
+    from ...Parser.ParserInfos.Statements.ClassAttributeStatementParserInfo import (
+        ClassAttributeStatementParserInfo,
+        TypeParserInfo,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -107,9 +116,9 @@ class ClassAttributeStatement(GrammarPhrase):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ExtractParserPhrase(
+    def ExtractParserInfo(
         node: AST.Node,
-    ) -> GrammarPhrase.ExtractParserPhraseReturnType:
+    ) -> GrammarPhrase.ExtractParserInfoReturnType:
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
@@ -188,7 +197,7 @@ class ClassAttributeStatement(GrammarPhrase):
 
             # <type>
             type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
-            type_info = cast(ParserClassAttributeStatementModule.TypePhrase, GetPhrase(type_node))
+            type_info = cast(TypeParserInfo, GetParserInfo(type_node))
 
             # <name>
             name_node = cast(AST.Leaf, nodes[3])
@@ -203,7 +212,7 @@ class ClassAttributeStatement(GrammarPhrase):
                 assert len(initializer_nodes) == 4
 
                 initializer_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, initializer_nodes[2])))
-                initializer_info = GetPhrase(initializer_node)
+                initializer_info = GetParserInfo(initializer_node)
 
             class_capabilities = ClassStatement.GetParentClassCapabilities(node, FuncDefinitionStatement)
 
@@ -217,7 +226,7 @@ class ClassAttributeStatement(GrammarPhrase):
             if errors:
                 return errors
 
-            return ParserClassAttributeStatementModule.ClassAttributeStatement.Create(
+            return ClassAttributeStatementParserInfo.Create(
                 CreateRegions(
                     node,
                     visibility_node,

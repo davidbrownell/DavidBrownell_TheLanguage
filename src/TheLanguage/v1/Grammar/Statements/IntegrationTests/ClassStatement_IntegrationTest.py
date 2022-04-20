@@ -34,7 +34,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def test_AllDefaults():
-    CompareResultsFromFile(str(ExecuteParserPhrase(
+    CompareResultsFromFile(str(ExecuteParserInfo(
         textwrap.dedent(
             """\
             class Simple:
@@ -61,7 +61,7 @@ def test_AllDefaults():
 
 # ----------------------------------------------------------------------
 def test_Visibility():
-    CompareResultsFromFile(str(ExecuteParserPhrase(
+    CompareResultsFromFile(str(ExecuteParserInfo(
         textwrap.dedent(
             """\
             public class PublicClass: pass

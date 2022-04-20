@@ -50,10 +50,10 @@ with InitRelativeImports():
     from .Components.Tokens import RegexToken
 
     from .Phrases.DSL import CreatePhrase, DynamicPhrasesType
-    from .Phrases.DynamicPhrase import DynamicPhrase
-    from .Phrases.OrPhrase import OrPhrase
-    from .Phrases.RepeatPhrase import RepeatPhrase
-    from .Phrases.SequencePhrase import SequencePhrase
+    # TODO: from .Phrases.DynamicPhrase import DynamicPhrase
+    # TODO: from .Phrases.OrPhrase import OrPhrase
+    # TODO: from .Phrases.RepeatPhrase import RepeatPhrase
+    # TODO: from .Phrases.SequencePhrase import SequencePhrase
     from .Phrases.TokenPhrase import TokenPhrase
 
 
@@ -886,8 +886,10 @@ def _CreateSyntaxInvalidError(
 
         is_error_ambiguous = False
 
-        assert error_node.iter_range is not None
-        location = error_node.iter_range.end.ToLocation()
+        if error_node.iter_range is None:
+            location = normalized_iter.ToLocation()
+        else:
+            location = error_node.iter_range.end.ToLocation()
 
     else:
         # Sort by depth to get the node that is deepest in the tree
@@ -922,162 +924,165 @@ def _CreateSyntaxInvalidError(
 
         location = error_iter.ToLocation()
 
-    # Generate contextual information about the error
+    # TODO: This is more difficult than I thought that it would be. Need to revisit.
+    error_context = "Error context is not available at this time"
 
-    # Ideally, we would use inflect here to better handle plural/singular detection and conversion.
-    # Unfortunately, inflect gets confused by strings such as "(One | Two | Three)" and we
-    # therefore have to take matters into our own hands.
-
-    # ----------------------------------------------------------------------
-    def MakeSingular(
-        phrase_name: str,
-    ) -> str:
-        if phrase_name.endswith("s"):
-            return phrase_name[:-1]
-
-        return phrase_name
-
-    # ----------------------------------------------------------------------
-    def GeneratePrefix(
-        phrase_name: str,
-        *,
-        make_singular: bool=False,
-    ) -> str:
-        is_plural = phrase_name.endswith("s")
-
-        if make_singular and is_plural:
-            phrase_name = phrase_name[:-1]
-            is_plural = False
-
-        return "'{}' {}".format(phrase_name, "were" if is_plural else "was")
-
-    # ----------------------------------------------------------------------
-
-    error_context: Optional[str] = None
-
-    if is_error_ambiguous:
-        error_context = "No statements matched this content"
-
-    else:
-        # Navigate up the tree until we have a node that can provide good contextual information
-        while True:
-            if isinstance(error_node, AST.Node) and error_node.type is not None:
-                if isinstance(error_node.type, SequencePhrase):
-                    meaningful_children: List[Union[AST.Leaf, AST.Node]] = []
-
-                    for child in error_node.children:
-                        if isinstance(child, AST.Leaf):
-                            if child.is_ignored:
-                                continue
-                        elif child.iter_range is None:
-                            continue
-
-                        meaningful_children.append(child)
-
-                    # Sometimes, the problem isn't due to the phrase that failed but rather the
-                    # phrase that came right before it. See if there is error information associated
-                    # with the second-to-last phrase.
-                    if len(meaningful_children) > 1:
-                        potential_error_node = getattr(
-                            meaningful_children[-2],
-                            _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME,
-                            None,
-                        )
-
-                        if potential_error_node is not None and potential_error_node.iter_range is None:
-                            error_context = "{} evaluated but not matched; therefore ".format(
-                                GeneratePrefix(potential_error_node.type.name),
-                            )
-
-                    phrase_index = len(meaningful_children)
-
-                    if (
-                        phrase_index == len(error_node.type.phrases) - 1
-                        and DynamicPhrase.IsRightRecursivePhrase(error_node.type)
-                    ):
-                        expected_phrase_name = cast(DynamicPhrase, error_node.type.phrases[-1]).DisplayName
-                    else:
-                        assert phrase_index < len(error_node.type.phrases)
-
-                        if (
-                            isinstance(error_node.type.phrases[phrase_index], TokenPhrase)
-                            and error_node.type.phrases[phrase_index].token.is_control_token  # type: ignore
-                            and phrase_index + 1 < len(error_node.type.phrases)
-                        ):
-                            phrase_index += 1
-
-                        expected_phrase_name = error_node.type.phrases[phrase_index].name
-
-                    error_context = "{}{} expected in '{}'".format(
-                        error_context or "",
-                        GeneratePrefix(
-                            expected_phrase_name,
-                            make_singular=True,
-                        ),
-                        error_node.type.name,
-                    )
-
-                    break
-
-                elif isinstance(error_node.type, RepeatPhrase):
-                    if error_node.children[-1].iter_range is None:
-                        error_context = "{} expected".format(
-                            GeneratePrefix(
-                                error_node.type.name,
-                                make_singular=True,
-                            ),
-                        )
-
-                        break
-
-                elif isinstance(error_node.type, (DynamicPhrase, OrPhrase)):
-                    # Keep walking
-                    pass
-
-                else:
-                    assert False, error_node.type  # pragma: no cover
-
-            assert error_node is not None
-
-            if error_node.parent is None:
-                assert isinstance(error_node, AST.Node)
-                assert error_node.children
-                assert error_node.children[-1].type is not None
-
-                if isinstance(error_node.children[-1].type, DynamicPhrase):
-                    expected_phrase_name = error_node.children[-1].type.DisplayName
-                else:
-                    expected_phrase_name = error_node.children[-1].type.name
-
-                error_context = "{} expected".format(
-                    GeneratePrefix(
-                        expected_phrase_name,
-                        make_singular=True,
-                    ),
-                )
-
-                break
-
-            error_node = error_node.parent  # type: ignore
-
-    if error_context is None:
-        error_context = error_node.ToYamlString().rstrip()
-    else:
-        assert isinstance(error_node, AST.Node), error_node
-
-        error_statement = get_parent_statement_node_func(error_node)
-        if error_statement is None:
-            assert isinstance(error_reference_node, AST.Node), error_reference_node
-            error_statement = get_parent_statement_node_func(error_reference_node)
-
-        if (
-            error_statement is not None
-            and error_statement != error_node
-            and error_statement.type is not None
-        ):
-            error_context += " for '{}'".format(MakeSingular(error_statement.type.name))
-
-        error_context += "."
+    # # Generate contextual information about the error
+    #
+    # # Ideally, we would use inflect here to better handle plural/singular detection and conversion.
+    # # Unfortunately, inflect gets confused by strings such as "(One | Two | Three)" and we
+    # # therefore have to take matters into our own hands.
+    #
+    # # ----------------------------------------------------------------------
+    # def MakeSingular(
+    #     phrase_name: str,
+    # ) -> str:
+    #     if phrase_name.endswith("s"):
+    #         return phrase_name[:-1]
+    #
+    #     return phrase_name
+    #
+    # # ----------------------------------------------------------------------
+    # def GeneratePrefix(
+    #     phrase_name: str,
+    #     *,
+    #     make_singular: bool=False,
+    # ) -> str:
+    #     is_plural = phrase_name.endswith("s")
+    #
+    #     if make_singular and is_plural:
+    #         phrase_name = phrase_name[:-1]
+    #         is_plural = False
+    #
+    #     return "'{}' {}".format(phrase_name, "were" if is_plural else "was")
+    #
+    # # ----------------------------------------------------------------------
+    #
+    # error_context: Optional[str] = None
+    #
+    # if is_error_ambiguous:
+    #     error_context = "No statements matched this content"
+    #
+    # else:
+    #     # Navigate up the tree until we have a node that can provide good contextual information
+    #     while True:
+    #         if isinstance(error_node, AST.Node) and error_node.type is not None:
+    #             if isinstance(error_node.type, SequencePhrase):
+    #                 meaningful_children: List[Union[AST.Leaf, AST.Node]] = []
+    #
+    #                 for child in error_node.children:
+    #                     if isinstance(child, AST.Leaf):
+    #                         if child.is_ignored:
+    #                             continue
+    #                     elif child.iter_range is None:
+    #                         continue
+    #
+    #                     meaningful_children.append(child)
+    #
+    #                 # Sometimes, the problem isn't due to the phrase that failed but rather the
+    #                 # phrase that came right before it. See if there is error information associated
+    #                 # with the second-to-last phrase.
+    #                 if len(meaningful_children) > 1:
+    #                     potential_error_node = getattr(
+    #                         meaningful_children[-2],
+    #                         _POTENTIAL_ERROR_NODE_ATTRIBUTE_NAME,
+    #                         None,
+    #                     )
+    #
+    #                     if potential_error_node is not None and potential_error_node.iter_range is None:
+    #                         error_context = "{} evaluated but not matched; therefore ".format(
+    #                             GeneratePrefix(potential_error_node.type.name),
+    #                         )
+    #
+    #                 phrase_index = len(meaningful_children)
+    #
+    #                 if (
+    #                     phrase_index == len(error_node.type.phrases) - 1
+    #                     and DynamicPhrase.IsRightRecursivePhrase(error_node.type)
+    #                 ):
+    #                     expected_phrase_name = cast(DynamicPhrase, error_node.type.phrases[-1]).DisplayName
+    #                 else:
+    #                     assert phrase_index < len(error_node.type.phrases)
+    #
+    #                     if (
+    #                         isinstance(error_node.type.phrases[phrase_index], TokenPhrase)
+    #                         and error_node.type.phrases[phrase_index].token.is_control_token  # type: ignore
+    #                         and phrase_index + 1 < len(error_node.type.phrases)
+    #                     ):
+    #                         phrase_index += 1
+    #
+    #                     expected_phrase_name = error_node.type.phrases[phrase_index].name
+    #
+    #                 error_context = "{}{} expected in '{}'".format(
+    #                     error_context or "",
+    #                     GeneratePrefix(
+    #                         expected_phrase_name,
+    #                         make_singular=True,
+    #                     ),
+    #                     error_node.type.name,
+    #                 )
+    #
+    #                 break
+    #
+    #             elif isinstance(error_node.type, RepeatPhrase):
+    #                 if error_node.children[-1].iter_range is None:
+    #                     error_context = "{} expected".format(
+    #                         GeneratePrefix(
+    #                             error_node.type.name,
+    #                             make_singular=True,
+    #                         ),
+    #                     )
+    #
+    #                     break
+    #
+    #             elif isinstance(error_node.type, (DynamicPhrase, OrPhrase)):
+    #                 # Keep walking
+    #                 pass
+    #
+    #             else:
+    #                 assert False, error_node.type  # pragma: no cover
+    #
+    #         assert error_node is not None
+    #
+    #         if error_node.parent is None:
+    #             assert isinstance(error_node, AST.Node)
+    #             assert error_node.children
+    #             assert error_node.children[-1].type is not None
+    #
+    #             if isinstance(error_node.children[-1].type, DynamicPhrase):
+    #                 expected_phrase_name = error_node.children[-1].type.DisplayName
+    #             else:
+    #                 expected_phrase_name = error_node.children[-1].type.name
+    #
+    #             error_context = "{} expected".format(
+    #                 GeneratePrefix(
+    #                     expected_phrase_name,
+    #                     make_singular=True,
+    #                 ),
+    #             )
+    #
+    #             break
+    #
+    #         error_node = error_node.parent  # type: ignore
+    #
+    # if error_context is None:
+    #     error_context = error_node.ToYamlString().rstrip()
+    # else:
+    #     assert isinstance(error_node, AST.Node), error_node
+    #
+    #     error_statement = get_parent_statement_node_func(error_node)
+    #     if error_statement is None:
+    #         assert isinstance(error_reference_node, AST.Node), error_reference_node
+    #         error_statement = get_parent_statement_node_func(error_reference_node)
+    #
+    #     if (
+    #         error_statement is not None
+    #         and error_statement != error_node
+    #         and error_statement.type is not None
+    #     ):
+    #         error_context += " for '{}'".format(MakeSingular(error_statement.type.name))
+    #
+    #     error_context += "."
 
     return SyntaxInvalidError.Create(
         location=location,

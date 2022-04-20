@@ -27,13 +27,24 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .CompileExpressions.BinaryCompileExpression import BinaryCompileExpression
+    from .CompileExpressions.GroupCompileExpression import GroupCompileExpression
+    from .CompileExpressions.LiteralCompileExpression import LiteralCompileExpression
+    from .CompileExpressions.TernaryCompileExpression import TernaryCompileExpression
+    from .CompileExpressions.TypeCheckCompileExpression import TypeCheckCompileExpression
+    from .CompileExpressions.UnaryCompileExpression import UnaryCompileExpression
+    from .CompileExpressions.VariableCompileExpression import VariableCompileExpression
+
     from .CompileTypes.StandardCompileType import StandardCompileType
     from .CompileTypes.VariantCompileType import VariantCompileType
 
     from .Statements.ClassAttributeStatement import ClassAttributeStatement
     from .Statements.ClassStatement import ClassStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
+    from .Statements.ImportStatement import ImportStatement
     from .Statements.PassStatement import PassStatement
+    from .Statements.SpecialMethodStatement import SpecialMethodStatement
+    from .Statements.TypeAliasStatement import TypeAliasStatement
 
     from .Types.StandardType import StandardType
     from .Types.TupleType import TupleType
@@ -42,6 +53,15 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 GrammarPhrases                              = [
+    # CompileExpressions
+    BinaryCompileExpression(),
+    GroupCompileExpression(),
+    LiteralCompileExpression(),
+    TernaryCompileExpression(),
+    TypeCheckCompileExpression(),
+    UnaryCompileExpression(),
+    VariableCompileExpression(),
+
     # CompileTypes
     StandardCompileType(),
     VariantCompileType(),
@@ -50,7 +70,12 @@ GrammarPhrases                              = [
     ClassAttributeStatement(),
     ClassStatement(),
     FuncDefinitionStatement(),
+    ImportStatement(
+        ".TheLanguage",
+    ),
     PassStatement(),
+    SpecialMethodStatement(),
+    TypeAliasStatement(),
 
     # Types
     StandardType(),
