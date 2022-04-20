@@ -159,7 +159,11 @@ def Extract(
     if node.type.name == "Boolean":
         value_node = cast(AST.Leaf, ExtractOr(node))
 
-        value_info = ExtractToken(value_node)
+        value_info = ExtractToken(
+            value_node,
+            return_match_contents=True,
+        )
+
         assert value_info == "True" or value_info == "False", value_info
 
         return BooleanLiteralParserInfo.Create(

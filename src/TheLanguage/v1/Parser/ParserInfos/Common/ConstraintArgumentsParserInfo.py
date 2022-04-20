@@ -47,6 +47,7 @@ DuplicateNameError                          = CreateError(
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
 class ConstraintArgumentParserInfo(ParserInfo):
     regions: InitVar[List[Optional[Region]]]
 

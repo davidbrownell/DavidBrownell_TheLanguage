@@ -197,10 +197,8 @@ class DynamicPhrase(Phrase):
 
         observer.StartPhrase(unique_id, self)
         with CallOnExit(lambda: observer.EndPhrase(unique_id, self, result is not None and result.success)):
-            # TODO: Cache results and only re-evaluate if a unique_id returned by _get_dynamic_phrase_func changes
-
             # Get the dynamic phrases
-            dynamic_id, dynamic_phrases, dynamic_name = self._get_dynamic_phrases_func(
+            dynamic_phrases_id, dynamic_phrases, dynamic_name = self._get_dynamic_phrases_func(
                 unique_id,
                 self.dynamic_phrases_type,
                 observer,
@@ -208,7 +206,7 @@ class DynamicPhrase(Phrase):
 
             assert isinstance(dynamic_phrases, list)
 
-            if self._executor is None or dynamic_id != self._executor.id:
+            if self._executor is None or dynamic_phrases_id != self._executor.dynamic_phrases_id:
                 # Filter the list by those that have been explicitly included on excluded
                 dynamic_phrases = [
                     phrase for phrase in dynamic_phrases if self._pre_phrase_filter_func(phrase)
@@ -225,17 +223,17 @@ class DynamicPhrase(Phrase):
                         standard_phrases.append(phrase)
 
                 if left_recursive_phrases:
-                    self._executor = self.__class__._LeftRecursiveExecutor(
+                    self._executor = self.__class__._LeftRecursiveExecutor(  # pylint: disable=protected-access
                         self,
-                        dynamic_id,
+                        dynamic_phrases_id,
                         dynamic_name,
                         left_recursive_phrases,
                         standard_phrases,
                     )
                 elif standard_phrases:
-                    self._executor = self.__class__._StandardExecutor(
+                    self._executor = self.__class__._StandardExecutor(  # pylint: disable=protected-access
                         self,
-                        dynamic_id,
+                        dynamic_phrases_id,
                         dynamic_name,
                         standard_phrases,
                     )
@@ -281,12 +279,12 @@ class DynamicPhrase(Phrase):
         def __init__(
             self,
             dynamic_phrase: "DynamicPhrase",
-            id: int,
+            dynamic_phrases_id: int,
             dynamic_name: Optional[str],
             phrases: List[Phrase],
         ):
             self.dynamic_phrase             = dynamic_phrase
-            self.id                         = id
+            self.dynamic_phrases_id         = dynamic_phrases_id
 
             self._or_phrase                 = OrPhrase(
                 phrases,
@@ -326,13 +324,13 @@ class DynamicPhrase(Phrase):
         def __init__(
             self,
             dynamic_phrase: "DynamicPhrase",
-            id: int,
+            dynamic_phrases_id: int,
             dynamic_name: Optional[str],
             left_recursive_phrases: List[Phrase],
             standard_phrases: List[Phrase],
         ):
             self.dynamic_phrase             = dynamic_phrase
-            self.id                         = id
+            self.dynamic_phrases_id         = dynamic_phrases_id
 
             self._prefix_phrase             = OrPhrase(
                 standard_phrases,
@@ -341,7 +339,7 @@ class DynamicPhrase(Phrase):
 
             self._suffix_phrase             = OrPhrase(
                 [
-                    self.__class__._SequenceSuffixWrapper(cast(SequencePhrase, phrase))
+                    self.__class__._SequenceSuffixWrapper(cast(SequencePhrase, phrase))  # pylint: disable=protected-access
                     for phrase in left_recursive_phrases
                 ],
                 name="{} <Suffix>".format(dynamic_name or ""),

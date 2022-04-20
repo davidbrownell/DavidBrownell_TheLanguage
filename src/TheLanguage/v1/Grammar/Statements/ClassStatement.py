@@ -476,6 +476,13 @@ class ClassStatement(GrammarPhrase):
                     standard_type_node = cast(AST.Node, this_dependency_nodes[1])
                     standard_type_info = self._standard_type.ExtractParserInfo(standard_type_node)
 
+                    assert callable(standard_type_info)
+                    standard_type_info = standard_type_info()
+
+                    if isinstance(standard_type_info, list):
+                        errors += standard_type_info
+                        continue
+
                     # Add it
                     these_dependencies.append(
                         ClassStatementDependencyParserInfo.Create(
