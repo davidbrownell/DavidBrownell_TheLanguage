@@ -101,7 +101,10 @@ class ClassStatementDependencyParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(ClassStatementDependencyParserInfo, self).__init__(regions)
+        super(ClassStatementDependencyParserInfo, self).__init__(
+            regions,
+            regionless_attributes=["type", ],
+        )
 
         # Validate
         errors: List[Error] = []
@@ -169,6 +172,8 @@ class ClassStatementParserInfo(StatementParserInfo):
             regions,
             regionless_attributes=[
                 "capabilities",
+                "templates",
+                "constraints",
             ],
             validate=False,
             capabilities=lambda value: value.name,

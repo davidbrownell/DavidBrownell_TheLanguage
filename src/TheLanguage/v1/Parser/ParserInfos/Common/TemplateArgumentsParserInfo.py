@@ -65,7 +65,10 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(TemplateTypeArgumentParserInfo, self).__init__(regions)
+        super(TemplateTypeArgumentParserInfo, self).__init__(
+            regions,
+            regionless_attributes=["type", ],
+        )
 
 
 # ----------------------------------------------------------------------
@@ -87,7 +90,10 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(TemplateDecoratorArgumentParserInfo, self).__init__(regions)
+        super(TemplateDecoratorArgumentParserInfo, self).__init__(
+            regions,
+            regionless_attributes=["expression", ],
+        )
 
 
 # ----------------------------------------------------------------------

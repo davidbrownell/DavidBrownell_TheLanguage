@@ -153,6 +153,181 @@ class SequencePhrase(Phrase):
         output_stream.write("{}]]]\n".format(indentation))
 
     # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class GetIgnoredTokensResult(object):
+        results: List[Phrase.TokenLexResultData]
+        iter_range: Phrase.NormalizedIteratorRange
+        ignored_indentation_level: Optional[int]
+
+
+    @classmethod
+    def GetIgnoredTokens(
+        cls,
+        comment_token: RegexToken,
+        normalized_iter: NormalizedIterator,
+        ignore_meaningful_whitespace: bool,
+        ignored_indentation_level: Optional[int],
+    ) -> "SequencePhrase.GetIgnoredTokensResult":
+        start_iter = normalized_iter.Clone()
+        normalized_iter = start_iter.Clone()
+
+        eat_next_newline = False
+        results: List[Phrase.TokenLexResultData] = []
+
+        while True:
+            next_token_type = normalized_iter.GetNextTokenType()
+
+            if next_token_type == NormalizedIterator.TokenType.EndOfFile:
+                break
+
+            elif next_token_type == NormalizedIterator.TokenType.Indent:
+                if not ignore_meaningful_whitespace and ignored_indentation_level is None:
+                    break
+
+                prev_iter = normalized_iter.Clone()
+
+                result = cls._indent_token.Match(normalized_iter)
+                assert result is not None
+
+                results.append(
+                    Phrase.TokenLexResultData.Create(
+                        cls._indent_token,
+                        result,
+                        Phrase.NormalizedIteratorRange.Create(prev_iter, normalized_iter.Clone()),
+                        is_ignored=True,
+                    ),
+                )
+
+                if ignored_indentation_level is not None:
+                    ignored_indentation_level += 1
+
+            elif next_token_type == NormalizedIterator.TokenType.Dedent:
+                if not ignore_meaningful_whitespace and ignored_indentation_level is None:
+                    break
+
+                if (
+                    ignore_meaningful_whitespace
+                    and ignored_indentation_level is not None
+                    and ignored_indentation_level == 0
+                ):
+                    break
+
+                prev_iter = normalized_iter.Clone()
+
+                result = cls._dedent_token.Match(normalized_iter)
+                assert result is not None
+
+                results.append(
+                    Phrase.TokenLexResultData.Create(
+                        cls._dedent_token,
+                        result,
+                        Phrase.NormalizedIteratorRange.Create(prev_iter, normalized_iter.Clone()),
+                        is_ignored=True,
+                    ),
+                )
+
+                if ignored_indentation_level is not None:
+                    assert ignored_indentation_level != 0
+                    ignored_indentation_level -= 1
+
+            elif next_token_type == NormalizedIterator.TokenType.WhitespacePrefix:
+                # No content to add to the results, as this implies that the current line's
+                # indentation is at the same level as the previous line's indentation.
+                normalized_iter.SkipWhitespacePrefix()
+
+            elif next_token_type == NormalizedIterator.TokenType.Content:
+                prev_num_results = len(results)
+                at_beginning_of_line = normalized_iter.offset == normalized_iter.line_info.content_begin
+
+                # Are we looking at horizontal whitespace?
+                prev_iter = normalized_iter.Clone()
+
+                result = cls._horizontal_whitespace_token.Match(normalized_iter)
+
+                if result is not None:
+                    results.append(
+                        Phrase.TokenLexResultData.Create(
+                            cls._horizontal_whitespace_token,
+                            result,
+                            Phrase.NormalizedIteratorRange.Create(prev_iter, normalized_iter.Clone()),
+                            is_ignored=True,
+                        ),
+                    )
+
+                    prev_iter = normalized_iter.Clone()
+
+                # Are we looking at a comment?
+                result = comment_token.Match(normalized_iter)
+
+                if result is not None:
+                    results.append(
+                        Phrase.TokenLexResultData.Create(
+                            comment_token,
+                            result,
+                            Phrase.NormalizedIteratorRange.Create(prev_iter, normalized_iter.Clone()),
+                            is_ignored=True,
+                        ),
+                    )
+
+                    # Uncomment this line if we end up adding additional clauses under this one
+                    # prev_iter = normalized_iter.Clone()
+
+                    eat_next_newline = at_beginning_of_line
+
+                if len(results) == prev_num_results:
+                    break
+
+            elif next_token_type == NormalizedIterator.TokenType.WhitespaceSuffix:
+                prev_iter = normalized_iter.Clone()
+
+                result = cls._horizontal_whitespace_token.Match(normalized_iter)
+                assert result is not None
+
+                results.append(
+                    Phrase.TokenLexResultData.Create(
+                        cls._horizontal_whitespace_token,
+                        result,
+                        Phrase.NormalizedIteratorRange.Create(prev_iter, normalized_iter.Clone()),
+                        is_ignored=True,
+                    ),
+                )
+
+            elif next_token_type == NormalizedIterator.TokenType.EndOfLine:
+                # Newlines are meaningful, unless they fall at the beginning of the file
+                if (
+                    normalized_iter.offset != 0
+                    and not eat_next_newline
+                    and not ignore_meaningful_whitespace
+                    and ignored_indentation_level is None
+                ):
+                    break
+
+                prev_iter = normalized_iter.Clone()
+
+                result = cls._newline_token.Match(normalized_iter)
+                assert result is not None
+
+                results.append(
+                    Phrase.TokenLexResultData.Create(
+                        cls._newline_token,
+                        result,
+                        Phrase.NormalizedIteratorRange.Create(prev_iter, normalized_iter.Clone()),
+                        is_ignored=True,
+                    ),
+                )
+
+                eat_next_newline = False
+
+            else:
+                assert False, next_token_type  # pragma: no cover
+
+        return SequencePhrase.GetIgnoredTokensResult(
+            results,
+            Phrase.NormalizedIteratorRange.Create(start_iter, normalized_iter),
+            ignored_indentation_level,
+        )
+
+    # ----------------------------------------------------------------------
     def LexSuffix(
         self,
         unique_id: Tuple[str, ...],
@@ -241,170 +416,9 @@ class SequencePhrase(Phrase):
     ) -> Optional[Phrase.LexResult]:
         working_iter = normalized_iter.Clone()
 
-        # ----------------------------------------------------------------------
-        @dataclass(frozen=True)
-        class IgnoredDataInfo(object):
-            data_items: List[Phrase.TokenLexResultData]
-            iter_range: Phrase.NormalizedIteratorRange
-
-        # ----------------------------------------------------------------------
-        def GetIgnoredDataInfo() -> IgnoredDataInfo:
-            nonlocal ignored_indentation_level
-            nonlocal working_iter
-
-            at_content_begin = working_iter.offset == 0
-            eat_next_newline = False
-
-            data_items: List[Phrase.TokenLexResultData] = []
-            start_iter = working_iter.Clone()
-
-            while not working_iter.AtEnd():
-                next_token_type = working_iter.GetNextTokenType()
-
-                if next_token_type == NormalizedIterator.TokenType.Indent:
-                    if ignore_whitespace_ctr == 0 and ignored_indentation_level is None:
-                        break
-
-                    prev_iter = working_iter.Clone()
-
-                    result = self._indent_token.Match(working_iter)
-                    assert result is not None
-
-                    data_items.append(
-                        Phrase.TokenLexResultData.Create(
-                            self._indent_token,
-                            result,
-                            Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
-                            is_ignored=True,
-                        ),
-                    )
-
-                    if ignored_indentation_level is not None:
-                        ignored_indentation_level += 1
-
-                elif next_token_type == NormalizedIterator.TokenType.Dedent:
-                    if ignore_whitespace_ctr == 0 and ignored_indentation_level is None:
-                        break
-                    elif ignore_whitespace_ctr != 0 and ignored_indentation_level == 0:
-                        break
-
-                    prev_iter = working_iter.Clone()
-
-                    result = self._dedent_token.Match(working_iter)
-                    assert result is not None
-
-                    data_items.append(
-                        Phrase.TokenLexResultData.Create(
-                            self._dedent_token,
-                            result,
-                            Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
-                            is_ignored=True,
-                        ),
-                    )
-
-                    if ignored_indentation_level is not None:
-                        assert ignored_indentation_level
-                        ignored_indentation_level -= 1
-
-                elif next_token_type == NormalizedIterator.TokenType.WhitespacePrefix:
-                    # No content to add to data_items, as this implies that the current line's
-                    # indentation is at the same level as the previous line's indentation.
-                    working_iter.SkipWhitespacePrefix()
-
-                elif next_token_type == NormalizedIterator.TokenType.Content:
-                    num_data_items = len(data_items)
-
-                    prev_iter = working_iter.Clone()
-
-                    # Are we looking at horizontal whitespace?
-                    result = self._horizontal_whitespace_token.Match(working_iter)
-
-                    if result is not None:
-                        data_items.append(
-                            Phrase.TokenLexResultData.Create(
-                                self._horizontal_whitespace_token,
-                                result,
-                                Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
-                                is_ignored=True,
-                            ),
-                        )
-
-                    # Are we looking at a comment?
-                    at_beginning_of_line = working_iter.offset == working_iter.line_info.content_begin
-
-                    result = self.comment_token.Match(working_iter)
-
-                    if result is not None:
-                        data_items.append(
-                            Phrase.TokenLexResultData.Create(
-                                self.comment_token,
-                                result,
-                                Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
-                                is_ignored=True,
-                            ),
-                        )
-
-                        eat_next_newline = at_beginning_of_line
-
-                    if len(data_items) != num_data_items:
-                        continue
-
-                    break
-
-                elif next_token_type == NormalizedIterator.TokenType.WhitespaceSuffix:
-                    prev_iter = working_iter.Clone()
-
-                    result = self._horizontal_whitespace_token.Match(working_iter)
-                    assert result is not None
-
-                    data_items.append(
-                        Phrase.TokenLexResultData.Create(
-                            self._horizontal_whitespace_token,
-                            result,
-                            Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
-                            is_ignored=True,
-                        ),
-                    )
-
-                elif next_token_type == NormalizedIterator.TokenType.EndOfLine:
-                    # Newlines are meaningful, unless they fall at the beginning of the file
-                    if (
-                        not eat_next_newline
-                        and not at_content_begin
-                        and ignore_whitespace_ctr == 0
-                        and ignored_indentation_level is None
-                    ):
-                        break
-
-                    prev_iter = working_iter.Clone()
-
-                    result = self._newline_token.Match(working_iter)
-                    assert result is not None
-
-                    data_items.append(
-                        Phrase.TokenLexResultData.Create(
-                            self._newline_token,
-                            result,
-                            Phrase.NormalizedIteratorRange.Create(prev_iter, working_iter.Clone()),
-                            is_ignored=True,
-                        ),
-                    )
-
-                    eat_next_newline = False
-
-                else:
-                    assert False, next_token_type  # pragma: no cover
-
-            return IgnoredDataInfo(
-                data_items,
-                Phrase.NormalizedIteratorRange.Create(start_iter, working_iter.Clone()),
-            )
-
-        # ----------------------------------------------------------------------
-
         success = False
         data_items: List[Union[Phrase.LexResultData, Phrase.TokenLexResultData]] = []
-        ignored_data_info: Optional[IgnoredDataInfo] = None
+        ignored_tokens_info: Optional[SequencePhrase.GetIgnoredTokensResult] = None
         preserved_ignore_whitespace_ctr: Optional[int] = None
         prev_token_was_pop_control = False
 
@@ -413,8 +427,15 @@ class SequencePhrase(Phrase):
 
             is_control_token = isinstance(phrase, TokenPhrase) and phrase.token.is_control_token
 
-            if ignored_data_info is None:
-                ignored_data_info = GetIgnoredDataInfo()
+            if ignored_tokens_info is None:
+                ignored_tokens_info = self.__class__.GetIgnoredTokens(
+                    self.comment_token,
+                    working_iter,
+                    ignore_whitespace_ctr != 0,
+                    ignored_indentation_level,
+                )
+
+                working_iter = ignored_tokens_info.iter_range.end.Clone()
 
                 if working_iter.AtEnd() and not is_control_token:
                     success = False
@@ -451,9 +472,9 @@ class SequencePhrase(Phrase):
                 # consumed.
                 prev_token_was_pop_control = phrase.token.opening_token is not None
 
-                if not prev_token_was_pop_control and ignored_data_info is not None:
-                    working_iter = ignored_data_info.iter_range.begin
-                    ignored_data_info = None
+                if not prev_token_was_pop_control and ignored_tokens_info is not None:
+                    working_iter = ignored_tokens_info.iter_range.begin
+                    ignored_tokens_info = None
 
                 continue
 
@@ -472,10 +493,12 @@ class SequencePhrase(Phrase):
             if (
                 result.success
                 and result.iter_range.begin != result.iter_range.end
-                and ignored_data_info is not None
+                and ignored_tokens_info is not None
             ):
-                data_items += ignored_data_info.data_items
-                ignored_data_info = None
+                data_items += ignored_tokens_info.results
+                ignored_indentation_level = ignored_tokens_info.ignored_indentation_level
+
+                ignored_tokens_info = None
 
             data_items.append(result.data)
 
@@ -487,16 +510,16 @@ class SequencePhrase(Phrase):
 
             success = True
 
-        if ignored_data_info is not None:
+        if ignored_tokens_info is not None:
             # If the previous token as a pop, we should consider the ignored output as part of the current phrase.
             # Otherwise, we should consider the tokens as part of the next phrase.
             if prev_token_was_pop_control:
-                data_items += ignored_data_info.data_items
-                working_iter = ignored_data_info.iter_range.end
+                data_items += ignored_tokens_info.results
+                working_iter = ignored_tokens_info.iter_range.end
             else:
-                working_iter = ignored_data_info.iter_range.begin
+                working_iter = ignored_tokens_info.iter_range.begin
 
-            ignored_data_info = None
+            ignored_tokens_info = None
 
         return Phrase.LexResult.Create(
             success,

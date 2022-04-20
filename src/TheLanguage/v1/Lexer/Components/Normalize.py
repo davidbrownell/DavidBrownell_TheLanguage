@@ -385,18 +385,24 @@ def Normalize(
                 content_end = offset_end
 
         # Calculate new dedentation- and indentation-values
+        suppress_indentation = suppress_indentation_func(
+            offset_begin,
+            offset_end,
+            content_begin,
+            content_end,
+        )
+
         if (
             content_begin == content_end
             or multiline_token_info is not None
-            or suppress_indentation_func(
-                offset_begin,
-                offset_end,
-                content_begin,
-                content_end,
-            )
+            or suppress_indentation
         ):
             num_dedents = None
             new_indent_value = None
+
+            if suppress_indentation:
+                content_begin = offset_begin
+
         else:
             # Does the detected indentation for this line represent a dedent and/or indent?
             this_num_chars = content_begin - offset_begin

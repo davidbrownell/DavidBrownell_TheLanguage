@@ -53,7 +53,7 @@ with InitRelativeImports():
     # TODO: from .Phrases.DynamicPhrase import DynamicPhrase
     # TODO: from .Phrases.OrPhrase import OrPhrase
     # TODO: from .Phrases.RepeatPhrase import RepeatPhrase
-    # TODO: from .Phrases.SequencePhrase import SequencePhrase
+    from .Phrases.SequencePhrase import SequencePhrase
     from .Phrases.TokenPhrase import TokenPhrase
 
 
@@ -199,6 +199,9 @@ def Lex(
 
     assert normalized_iter.offset == 0, normalized_iter
 
+    root_node = AST.Node(None)
+
+    # Process the content
     phrase_observer = _PhraseObserver(
         observer,
         normalized_iter,
@@ -211,11 +214,35 @@ def Lex(
         comment_token=comment_token,
     )
 
-    root_node = AST.Node(None)
-
     while not normalized_iter.AtEnd():
         phrase_observer.ClearNodeCache()
 
+        # Eat potential comments and newlines
+        ignored_tokens = SequencePhrase.GetIgnoredTokens(
+            comment_token,
+            normalized_iter,
+            ignore_meaningful_whitespace=False,
+            ignored_indentation_level=None,
+        )
+
+        if ignored_tokens.results:
+            for ignored_token_data_index, ignored_token_data in enumerate(ignored_tokens.results):
+                data = Phrase.LexResultData.Create(
+                    CreatePhrase(ignored_token_data.token),
+                    ("root", "ignored_content: {} {}".format(normalized_iter.line, ignored_token_data_index), ),
+                    ignored_token_data,
+                    None,
+                )
+
+                if not phrase_observer.OnInternalPhrase(ignored_token_data.iter_range, data):
+                    return None
+
+                phrase_observer.CreateNode(data, root_node)
+
+            normalized_iter = ignored_tokens.iter_range.end.Clone()
+            continue
+
+        # Standard parse
         result = root_phrase.Lex(
             ("root", ),
             normalized_iter,
@@ -298,7 +325,7 @@ class _ScopeTracker(object):
             DynamicPhrasesType,
             Dict[
                 Tuple[str, ...],            # unique_id
-                Tuple[List[Phrase], Optional[str]]
+                Tuple[int, List[Phrase], Optional[str]]
             ]
         ] = {}
 
@@ -406,9 +433,6 @@ class _ScopeTracker(object):
             if tracker_node.scope_items:
                 last_scope_item = tracker_node.scope_items[-1]
 
-        assert this_tracker_node is not None
-        assert this_tracker_node.unique_id_part == unique_id[-1], (this_tracker_node.unique_id_part, unique_id[-1])
-
         if (
             not dynamic_phrases_info.allow_parent_traversal
             and last_scope_item is not None
@@ -418,6 +442,9 @@ class _ScopeTracker(object):
                 location=iter_range.end.ToLocation(),
                 existing_dynamic_phrases=last_scope_item.iter_end.ToLocation(),
             )
+
+        assert this_tracker_node is not None
+        assert this_tracker_node.unique_id_part == unique_id[-1], (this_tracker_node.unique_id_part, unique_id[-1])
 
         this_tracker_node.scope_items.append(
             _ScopeTracker._ScopeItem(
@@ -464,7 +491,7 @@ class _ScopeTracker(object):
         self,
         unique_id: Tuple[str, ...],
         dynamic_phrases_type: DynamicPhrasesType,
-    ) -> Tuple[List[Phrase], Optional[str]]:
+    ) -> Tuple[int, List[Phrase], Optional[str]]:
         # Find a cached value (if any)
         cache = self._cache.setdefault(dynamic_phrases_type, {})
 
@@ -536,7 +563,11 @@ class _ScopeTracker(object):
             if not should_continue:
                 break
 
-        result = (all_phrases, " / ".join(all_names))
+        result = (
+            id(all_phrases),
+            all_phrases,
+            " / ".join(all_names),
+        )
 
         # Update the cache
         cache[unique_id] = result
@@ -719,7 +750,7 @@ class _PhraseObserver(Phrase.Observer):
         self,
         unique_id: Tuple[str, ...],
         phrases_type: DynamicPhrasesType,
-    ) -> Tuple[List[Phrase], Optional[str]]:
+    ) -> Tuple[int, List[Phrase], Optional[str]]:
         with self._scope_tracker_lock:
             return self._scope_tracker.GetDynamicPhrases(unique_id, phrases_type)
 

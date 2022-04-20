@@ -169,7 +169,7 @@ def _ExtractElement(
 
     return (
         element_type.Create(
-            CreateRegions(node, value_node, keyword_node),
+            CreateRegions(node, keyword_node),
             value_info,
             keyword_info,
         ),

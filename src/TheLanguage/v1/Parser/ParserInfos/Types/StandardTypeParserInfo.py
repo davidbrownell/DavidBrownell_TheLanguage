@@ -58,7 +58,13 @@ class StandardTypeItemParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(StandardTypeItemParserInfo, self).__init__(regions)
+        super(StandardTypeItemParserInfo, self).__init__(
+            regions,
+            regionless_attributes=[
+                "templates",
+                "constraints",
+            ],
+        )
 
 
 # ----------------------------------------------------------------------

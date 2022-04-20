@@ -72,7 +72,10 @@ class TemplateTypeParameterParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(TemplateTypeParameterParserInfo, self).__init__(regions)
+        super(TemplateTypeParameterParserInfo, self).__init__(
+            regions,
+            regionless_attributes=["default_type", ],
+        )
 
 
 # ----------------------------------------------------------------------
@@ -95,7 +98,10 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(TemplateDecoratorParameterParserInfo, self).__init__(regions)
+        super(TemplateDecoratorParameterParserInfo, self).__init__(
+            regions,
+            regionless_attributes=["type", "default_value", ],
+        )
 
 
 # ----------------------------------------------------------------------
