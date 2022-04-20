@@ -154,9 +154,9 @@ class OperatorType(Enum):
 
     Not                         = Value.Create(_auto(), 13) #                                                   N/A                             No              <visibility> <return_type> __Not__() immutable
 
-    And                         = Value.Create(_auto(), 14) #                                                   N/A                             No              <visibility> <return_type> __And__(<type> immutable value) immutable
+    LogicalAnd                  = Value.Create(_auto(), 14) #                                                   N/A                             No              <visibility> <return_type> __LogicalAnd__(<type> immutable value) immutable
 
-    Or                          = Value.Create(_auto(), 15) #                                                   N/A                             No              <visibility> <return_type> __Or__(<type> immutable value) immutable
+    LogicalOr                   = Value.Create(_auto(), 15) #                                                   N/A                             No              <visibility> <return_type> __LogicalOr__(<type> immutable value) immutable
 
     BitFlipInplace              = Value.Create(_auto(), 16) #                                                   N/A                             Yes             <visibility> None __BitFlipInplace?__() mutable
 

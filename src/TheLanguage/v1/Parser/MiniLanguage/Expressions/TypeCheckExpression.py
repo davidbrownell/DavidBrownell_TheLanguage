@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  UnaryExpression.py
+# |  TypeCheckExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-15 13:35:27
+# |      2022-04-19 14:50:00
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the UnaryExpression object"""
+"""Contains the TypeCheckExpression object"""
 
 import os
 import types
 
 from enum import Enum
-from typing import Any, Dict
+from typing import Any, Callable, Dict, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -40,28 +40,29 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
-    Not                                     = "not"
-
-    Positive                                = "+"
-    Negative                                = "-"
+    Is                                      = "is"
+    IsNot                                   = "is not"
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class UnaryExpression(Expression):
+class TypeCheckExpression(Expression):
     operator: OperatorType
     expression: Expression
+    check_type: Type
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(UnaryExpression, self).__init__()
+        super(TypeCheckExpression, self).__init__()
 
-        if self.operator == OperatorType.Not:
-            eval_impl = self._EvalNotImpl
+        if self.operator == OperatorType.Is:
+            eval_impl = lambda eval_result: eval_result.type.IsSupportedValueOfType
+        elif self.operator == OperatorType.IsNot:
+            eval_impl = lambda eval_result: eval_result.type.IsNotSupportedValueOfType
         else:
-            assert False, self.operator
+            assert False, self.operator  # pragma: no cover
 
-        object.__setattr__(self, "Eval", types.MethodType(eval_impl, self))
+        object.__setattr__(self, "Eval", eval_impl)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -78,19 +79,36 @@ class UnaryExpression(Expression):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "{} {}".format(
-            self.operator.value,
+        return "{} {} {}".format(
             self.expression.ToString(args),
+            self.operator.value,
+            self.check_type.name,
         )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
-    def _EvalNotImpl(self, args, type_overloads):
-        result = self.expression.Eval(args, type_overloads)
+    def _EvalImplFactory(
+        self,
+        eval_func: Callable[[Type], Callable[[Any, Type], Tuple[Any, Optional[Type]]]]
+    ):
+        # ----------------------------------------------------------------------
+        def Impl(self, args, type_overloads):
+            eval_result = self.expression.Eval(args, type_overloads)
 
-        return Expression.EvalResult(
-            not result.type.ToBoolValue(result.value),
-            BooleanType(),
-            None,
-        )
+            result, inferred_type = eval_func(eval_result.type)(eval_result.value, self.checked_type)
+
+            if inferred_type is not None:
+                eval_result.type = inferred_type
+
+                if eval_result.name is not None:
+                    type_overloads[eval_result.name] = inferred_type
+
+            if result:
+                return eval_result
+
+            return Expression.EvalResult(False, BooleanType(), None)
+
+        # ----------------------------------------------------------------------
+
+        return types.MethodType(Impl, self)
