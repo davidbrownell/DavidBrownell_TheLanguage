@@ -54,7 +54,7 @@ class TestStandard(object):
     async def test_Single(self, parse_mock):
         phrase = DynamicPhrase(
             DynamicPhrasesType.Statements,
-            lambda *args, **kwargs: ([self._lower_phrase], None),
+            lambda *args, **kwargs: (0, [self._lower_phrase], None),
         )
 
         result = phrase.Lex(("root", ), CreateIterator("word"), parse_mock)
@@ -89,7 +89,7 @@ class TestStandard(object):
     async def test_SingleNoMatch(self, parse_mock):
         phrase = DynamicPhrase(
             DynamicPhrasesType.Statements,
-            lambda *args, **kwargs: ([self._lower_phrase], None),
+            lambda *args, **kwargs: (0, [self._lower_phrase], None),
         )
 
         result = phrase.Lex(("root", ), CreateIterator("1234"), parse_mock)
@@ -118,7 +118,7 @@ class TestStandard(object):
     async def test_MultipleNumber(self, parse_mock):
         phrase = DynamicPhrase(
             DynamicPhrasesType.Statements,
-            lambda *args, **kwargs: ([self._lower_phrase, self._number_phrase], None),
+            lambda *args, **kwargs: (0, [self._lower_phrase, self._number_phrase], None),
         )
 
         result = phrase.Lex(("root", ), CreateIterator("1234"), parse_mock)
@@ -153,7 +153,7 @@ class TestStandard(object):
     async def test_MultipleLower(self, parse_mock):
         phrase = DynamicPhrase(
             DynamicPhrasesType.Statements,
-            lambda *args, **kwargs: ([self._lower_phrase, self._number_phrase], None),
+            lambda *args, **kwargs: (0, [self._lower_phrase, self._number_phrase], None),
         )
 
         result = phrase.Lex(("root", ), CreateIterator("word"), parse_mock)
@@ -188,7 +188,7 @@ class TestStandard(object):
     async def test_MultipleNumberEvents(self, parse_mock):
         phrase = DynamicPhrase(
             DynamicPhrasesType.Statements,
-            lambda *args, **kwargs: ([self._lower_phrase, self._number_phrase], None),
+            lambda *args, **kwargs: (0, [self._lower_phrase, self._number_phrase], None),
         )
 
         result = phrase.Lex(
@@ -279,7 +279,7 @@ class TestStandard(object):
     async def test_SingleNoMatchEvents(self, parse_mock):
         phrase = DynamicPhrase(
             DynamicPhrasesType.Statements,
-            lambda *args, **kwargs: ([self._lower_phrase], None),
+            lambda *args, **kwargs: (0, [self._lower_phrase], None),
         )
 
         result = phrase.Lex(
@@ -342,7 +342,7 @@ class TestLeftRecursiveSemicolonSuffix(object):
     def parse_mock_ex(cls, parse_mock):
         # ----------------------------------------------------------------------
         def GetDynamicPhrases(*args, **kwargs):
-            return cls._phrases, "All Phrases"
+            return 0, cls._phrases, "All Phrases"
 
         # ----------------------------------------------------------------------
 
@@ -437,7 +437,7 @@ class TestLeftRecursive(object):
     def parse_mock_ex(cls, parse_mock):
         # ----------------------------------------------------------------------
         def GetDynamicPhrases(*args, **kwargs):
-            return cls._phrases, "All Phrases"
+            return 0, cls._phrases, "All Phrases"
 
         # ----------------------------------------------------------------------
 

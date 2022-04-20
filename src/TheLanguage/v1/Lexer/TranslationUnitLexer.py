@@ -325,7 +325,7 @@ class _ScopeTracker(object):
             DynamicPhrasesType,
             Dict[
                 Tuple[str, ...],            # unique_id
-                Tuple[List[Phrase], Optional[str]]
+                Tuple[int, List[Phrase], Optional[str]]
             ]
         ] = {}
 
@@ -491,7 +491,7 @@ class _ScopeTracker(object):
         self,
         unique_id: Tuple[str, ...],
         dynamic_phrases_type: DynamicPhrasesType,
-    ) -> Tuple[List[Phrase], Optional[str]]:
+    ) -> Tuple[int, List[Phrase], Optional[str]]:
         # Find a cached value (if any)
         cache = self._cache.setdefault(dynamic_phrases_type, {})
 
@@ -563,7 +563,11 @@ class _ScopeTracker(object):
             if not should_continue:
                 break
 
-        result = (all_phrases, " / ".join(all_names))
+        result = (
+            id(all_phrases),
+            all_phrases,
+            " / ".join(all_names),
+        )
 
         # Update the cache
         cache[unique_id] = result
@@ -746,7 +750,7 @@ class _PhraseObserver(Phrase.Observer):
         self,
         unique_id: Tuple[str, ...],
         phrases_type: DynamicPhrasesType,
-    ) -> Tuple[List[Phrase], Optional[str]]:
+    ) -> Tuple[int, List[Phrase], Optional[str]]:
         with self._scope_tracker_lock:
             return self._scope_tracker.GetDynamicPhrases(unique_id, phrases_type)
 
