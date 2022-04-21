@@ -17,9 +17,9 @@
 
 import os
 
-from typing import Optional
+from typing import List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -31,32 +31,44 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class VariableExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
-    is_compile_time_param: InitVar[bool]
-    is_compile_time: Optional[bool]         = field(init=False)
-
+    is_compile_time: Optional[bool]
     name: str
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, is_compile_time_param):  # type: ignore
-        if is_compile_time_param:
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        is_compile_time: bool,
+        *args,
+        **kwargs,
+    ):
+        if is_compile_time:
             parser_info_type = ParserInfoType.CompileTime
+            is_compile_time_value = True
         else:
             parser_info_type = ParserInfoType.Standard
-            is_compile_time_param = None
+            is_compile_time_value = None
 
-        object.__setattr__(self, "is_compile_time", is_compile_time_param)
+        return cls(
+            parser_info_type,               # type: ignore
+            regions,                        # type: ignore
+            is_compile_time_value,
+            *args,
+            **kwargs,
+        )
 
+    # ----------------------------------------------------------------------
+    def __post_init__(self, *args, **kwargs):
         super(VariableExpressionParserInfo, self).__post_init__(
-            parser_info_type,
-            regions,
+            *args,
+            **kwargs,
             regionless_attributes=["name", ],
         )

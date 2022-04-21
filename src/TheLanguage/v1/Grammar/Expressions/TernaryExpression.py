@@ -38,10 +38,7 @@ with InitRelativeImports():
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
-        ExtractOr,
         ExtractSequence,
-        ExtractToken,
-        PhraseItem,
     )
 
     from ...Parser.Parser import CreateRegions, GetParserInfo

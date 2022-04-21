@@ -40,8 +40,7 @@ class StatementParserInfo(ParserInfo):
     """Abstract base class for all statements"""
 
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
+    parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
 
     # ----------------------------------------------------------------------
@@ -56,13 +55,14 @@ class StatementParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(
         self,
+        parser_info_type,
         regions,
         regionless_attributes: Optional[List[str]]=None,
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
         super(StatementParserInfo, self).__init__(
-            ParserInfoType.Unknown, # TODO: Need to be more intelligent about this
+            parser_info_type,
             regions,
             regionless_attributes,
             validate,

@@ -35,3 +35,5 @@ class MutabilityModifier(Flag):
     mutable                                 = auto()
     immutable                               = auto()
     new                                     = auto()
+
+    # TODO: Validate that new is used appropriately

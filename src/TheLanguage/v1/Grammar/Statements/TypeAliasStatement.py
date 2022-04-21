@@ -41,7 +41,6 @@ with InitRelativeImports():
         ExtractDynamic,
         ExtractOptional,
         ExtractSequence,
-        ExtractToken,
         OptionalPhraseItem,
     )
 
@@ -71,7 +70,7 @@ class TypeAliasStatement(GrammarPhrase):
                     ),
 
                     # <name>
-                    CommonTokens.RuntimeTypeName,
+                    CommonTokens.TypeName,
 
                     # '='
                     "=",
@@ -104,7 +103,7 @@ class TypeAliasStatement(GrammarPhrase):
 
             # <name>
             name_leaf = cast(AST.Leaf, nodes[1])
-            name_info = ExtractToken(name_leaf)
+            name_info = CommonTokens.TypeName.Extract(name_leaf)  # type: ignore
 
             # <type>
             type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))

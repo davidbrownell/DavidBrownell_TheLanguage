@@ -40,12 +40,13 @@ with InitRelativeImports():
         ExtractDynamic,
         ExtractOptional,
         ExtractSequence,
-        ExtractToken,
         PhraseItem,
         OptionalPhraseItem,
     )
 
     from ...Parser.Parser import (
+        CreateError,
+        CreateRegion,
         CreateRegions,
         Error,
         GetParserInfo,
@@ -61,6 +62,13 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+InvalidParameterNameError                   = CreateError(
+    "'{name}' is not a valid constraint parameter name",
+    name=str,
+)
+
+
+# ----------------------------------------------------------------------
 def Create() -> PhraseItem:
     parameter_element = PhraseItem(
         name="Constraint Parameter",
@@ -69,7 +77,7 @@ def Create() -> PhraseItem:
             DynamicPhrasesType.Types,
 
             # <name>
-            CommonTokens.CompileParameterName,
+            CommonTokens.ParameterName,
 
             # ('=' <expression>)?
             OptionalPhraseItem(
@@ -115,9 +123,14 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractElement(
     node: AST.Node,
-) -> Tuple[ParserInfo, bool]:
+) -> Union[
+    List[Error],
+    Tuple[ParserInfo, bool],
+]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 3
+
+    errors: List[Error] = []
 
     # <type>
     type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
@@ -125,7 +138,15 @@ def _ExtractElement(
 
     # <name>
     name_leaf = cast(AST.Leaf, nodes[1])
-    name_info = ExtractToken(name_leaf)
+    name_info = CommonTokens.ParameterName.Extract(name_leaf)  # type: ignore
+
+    if not CommonTokens.ParameterName.IsCompileTime(name_info):  # type: ignore
+        errors.append(
+            InvalidParameterNameError.Create(
+                region=CreateRegion(name_leaf),
+                name=name_info,
+            ),
+        )
 
     # ('=' <expression>)?
     default_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[2])))
@@ -137,6 +158,9 @@ def _ExtractElement(
 
         default_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, default_nodes[2])))
         default_info = cast(ExpressionParserInfo, GetParserInfo(default_node))
+
+    if errors:
+        return errors
 
     return (
         ConstraintParameterParserInfo.Create(

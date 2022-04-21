@@ -42,7 +42,6 @@ with InitRelativeImports():
         CreatePhrase,
         DynamicPhrasesType,
         ExtractSequence,
-        ExtractToken,
     )
 
     from ...Parser.Parser import (
@@ -79,7 +78,7 @@ class SpecialMethodStatement(GrammarPhrase):
                 name=self.PHRASE_NAME,
                 item=[
                     # <method_name>
-                    CommonTokens.RuntimeSpecialMethodName,
+                    CommonTokens.SpecialMethodName,
 
                     # '('
                     "(",
@@ -110,7 +109,7 @@ class SpecialMethodStatement(GrammarPhrase):
 
             # <method_name>
             name_leaf = cast(AST.Leaf, nodes[0])
-            name_info = ExtractToken(name_leaf)
+            name_info = CommonTokens.SpecialMethodName.Extract(name_leaf)  # type: ignore
 
             if name_info == "__EvalTemplates!__":
                 name_info = SpecialMethodType.CompileTimeEvalTemplates

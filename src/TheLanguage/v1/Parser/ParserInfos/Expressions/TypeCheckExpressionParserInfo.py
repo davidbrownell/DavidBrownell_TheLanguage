@@ -17,7 +17,8 @@
 
 import os
 
-from dataclasses import dataclass, field
+from typing import List, Optional
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -29,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from .ExpressionParserInfo import ExpressionParserInfo, Region
     from ..Types.TypeParserInfo import TypeParserInfo
     from ...MiniLanguage.Expressions.TypeCheckExpression import OperatorType
 
@@ -38,17 +39,34 @@ with InitRelativeImports():
 @dataclass(frozen=True, repr=False)
 class TypeCheckExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
     operator: OperatorType
     expression: ExpressionParserInfo
     type: TypeParserInfo
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):  # type: ignore
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        operator: OperatorType,
+        expression: ExpressionParserInfo,
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            expression.parser_info_type__,  # type: ignore
+            regions,                        # type: ignore
+            operator,
+            expression,
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, *args, **kwargs):
         super(TypeCheckExpressionParserInfo, self).__post_init__(
-            self.expression.parser_info_type__,  # type: ignore
-            regions,
+            *args,
+            **kwargs,
             regionless_attributes=[
                 "expression",
                 "type",

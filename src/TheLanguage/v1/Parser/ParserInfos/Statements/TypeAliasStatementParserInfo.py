@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional
+from typing import List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import StatementParserInfo
+    from .StatementParserInfo import ParserInfoType, Region, StatementParserInfo
 
     from ..Common.VisibilityModifier import VisibilityModifier
     from ..Types.TypeParserInfo import TypeParserInfo
@@ -47,8 +47,24 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
     type: TypeParserInfo
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, visibility_param):
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            ParserInfoType.CompileTime,     # type: ignore
+            regions,                        # type: ignore
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, parser_info_type, regions, visibility_param):
         super(TypeAliasStatementParserInfo, self).__post_init__(
+            parser_info_type,
             regions,
             regionless_attributes=["type", ],
             validate=False,
@@ -62,3 +78,7 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
         object.__setattr__(self, "visibility", visibility_param)
 
         self.ValidateRegions()
+
+        # Validate
+
+        # TODO: protected visibility only valid when nested within class
