@@ -1,0 +1,48 @@
+# <class 'v1.Lexer.Components.AST.Node'>
+children:
+  - # <class 'v1.Lexer.Components.AST.Node'>
+    children:
+      - # <class 'v1.Lexer.Components.AST.Node'>
+        children:
+          - # <class 'v1.Lexer.Components.AST.Node'>
+            children:
+              - # <class 'v1.Lexer.Components.AST.Node'>
+                children:
+                  - # <class 'v1.Lexer.Components.AST.Leaf'>
+                    is_ignored: False
+                    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                      begin: "[1, 1] (0)"
+                      end: "[1, 5] (4)"
+                    type: "Number <class 'v1.Lexer.Components.Tokens.RegexToken'>"
+                    value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
+                      match: "<_sre.SRE_Match object; span=(0, 4), match='1234'>"
+                  - # <class 'v1.Lexer.Components.AST.Leaf'>
+                    is_ignored: False
+                    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                      begin: "[1, 5] (4)"
+                      end: "[7, 1] (10)"
+                    type: "Newline+ <class 'v1.Lexer.Components.Tokens.NewlineToken'>"
+                    value: # <class 'v1.Lexer.Components.Tokens.NewlineToken.MatchResult'>
+                      range: # <class 'v1.Lexer.Components.Normalize.OffsetRange'>
+                        begin: 4
+                        end: 10
+                iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+                  begin: "[1, 1] (0)"
+                  end: "[7, 1] (10)"
+                type: "Number Phrase <class 'v1.Lexer.Phrases.SequencePhrase.SequencePhrase'>"
+            iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+              begin: "[1, 1] (0)"
+              end: "[7, 1] (10)"
+            type: "{Number Phrase, 1, None} <class 'v1.Lexer.Phrases.RepeatPhrase.RepeatPhrase'>"
+        iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+          begin: "[1, 1] (0)"
+          end: "[7, 1] (10)"
+        type: "({Number Phrase, 1, None}) <class 'v1.Lexer.Phrases.OrPhrase.OrPhrase'>"
+    iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+      begin: "[1, 1] (0)"
+      end: "[7, 1] (10)"
+    type: "DynamicPhrasesType.Statements <class 'v1.Lexer.Phrases.DynamicPhrase.DynamicPhrase'>"
+iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
+  begin: "[1, 1] (0)"
+  end: "[7, 1] (10)"
+type: "<None>"

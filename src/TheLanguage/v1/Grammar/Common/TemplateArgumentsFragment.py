@@ -54,7 +54,7 @@ with InitRelativeImports():
     )
 
     from ...Parser.ParserInfos.Common.TemplateArgumentsParserInfo import (
-        CompileExpressionParserInfo,
+        ExpressionParserInfo,
         TemplateArgumentsParserInfo,
         TemplateDecoratorArgumentParserInfo,
         TemplateTypeArgumentParserInfo,
@@ -98,8 +98,8 @@ def Create() -> PhraseItem:
                         ],
                     ),
 
-                    # <compile_expression>
-                    DynamicPhrasesType.CompileExpressions,
+                    # <expression>
+                    DynamicPhrasesType.Expressions,
                 ],
             ),
         ),
@@ -143,7 +143,7 @@ def _ExtractElement(
         element_type = TemplateTypeArgumentParserInfo
 
     elif node.type.name == "Template Decorator":
-        dynamic_phrase_type = CompileExpressionParserInfo
+        dynamic_phrase_type = ExpressionParserInfo
         element_type = TemplateDecoratorArgumentParserInfo
 
     else:
@@ -169,7 +169,7 @@ def _ExtractElement(
 
     return (
         element_type.Create(
-            CreateRegions(node, value_node, keyword_node),
+            CreateRegions(node, keyword_node),
             value_info,
             keyword_info,
         ),

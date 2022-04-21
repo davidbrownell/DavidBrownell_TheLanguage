@@ -47,14 +47,9 @@ with InitRelativeImports():
 class DynamicPhrasesType(Enum):
     Attributes                              = auto()
     Expressions                             = auto()
-    Literals                                = auto()
     Names                                   = auto()
     Statements                              = auto()
     Types                                   = auto()
-
-    CompileExpressions                      = auto()
-    CompileStatements                       = auto()
-    CompileTypes                            = auto()
 
 
 # ----------------------------------------------------------------------
@@ -265,7 +260,7 @@ class Phrase(Interface.Interface, ObjectReprImplBase):
         def GetDynamicPhrases(
             unique_id: Tuple[str, ...],
             phrases_type: DynamicPhrasesType,
-        ) -> Tuple[List["Phrase"], Optional[str]]:
+        ) -> Tuple[int, List["Phrase"], Optional[str]]:
             """Returns a list of dyanmic phrases and a name to refer to them by"""
             raise Exception("Abstract method")  # pragma: no cover
 

@@ -20,7 +20,7 @@ import os
 
 from typing import Dict, List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 
@@ -40,6 +40,7 @@ with InitRelativeImports():
         InvalidNewMutabilityModifierError,
         MutabilityModifierRequiredError,
         ParserInfo,
+        ParserInfoType,
         Region,
         TypeParserInfo,
     )
@@ -63,6 +64,9 @@ DuplicateVariadicError                      = CreateError(
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncParameterParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     type: TypeParserInfo
@@ -81,7 +85,14 @@ class FuncParameterParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncParameterParserInfo, self).__init__(regions)
+        super(FuncParameterParserInfo, self).__init__(
+            ParserInfoType.Standard,
+            regions,
+            regionless_attributes=[
+                "type",
+                "default_value",
+            ],
+        )
 
         # Validate
         errors: List[Error] = []
@@ -106,6 +117,9 @@ class FuncParameterParserInfo(ParserInfo):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncParametersParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     positional: Optional[List[FuncParameterParserInfo]]
@@ -123,7 +137,7 @@ class FuncParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncParametersParserInfo, self).__init__(regions)
+        super(FuncParametersParserInfo, self).__init__(ParserInfoType.Standard, regions)
         assert self.positional or self.any or self.keyword
 
         # Validate

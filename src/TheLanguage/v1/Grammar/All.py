@@ -27,16 +27,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CompileExpressions.BinaryCompileExpression import BinaryCompileExpression
-    from .CompileExpressions.GroupCompileExpression import GroupCompileExpression
-    from .CompileExpressions.LiteralCompileExpression import LiteralCompileExpression
-    from .CompileExpressions.TernaryCompileExpression import TernaryCompileExpression
-    from .CompileExpressions.TypeCheckCompileExpression import TypeCheckCompileExpression
-    from .CompileExpressions.UnaryCompileExpression import UnaryCompileExpression
-    from .CompileExpressions.VariableCompileExpression import VariableCompileExpression
-
-    from .CompileTypes.StandardCompileType import StandardCompileType
-    from .CompileTypes.VariantCompileType import VariantCompileType
+    from .Expressions.BinaryExpression import BinaryExpression
+    from .Expressions.GroupExpression import GroupExpression
+    from .Expressions.LiteralExpression import LiteralExpression
+    from .Expressions.TernaryExpression import TernaryExpression
+    from .Expressions.TypeCheckExpression import TypeCheckExpression
+    from .Expressions.UnaryExpression import UnaryExpression
+    from .Expressions.VariableExpression import VariableExpression
 
     from .Statements.ClassAttributeStatement import ClassAttributeStatement
     from .Statements.ClassStatement import ClassStatement
@@ -53,18 +50,14 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 GrammarPhrases                              = [
-    # CompileExpressions
-    BinaryCompileExpression(),
-    GroupCompileExpression(),
-    LiteralCompileExpression(),
-    TernaryCompileExpression(),
-    TypeCheckCompileExpression(),
-    UnaryCompileExpression(),
-    VariableCompileExpression(),
-
-    # CompileTypes
-    StandardCompileType(),
-    VariantCompileType(),
+    # Expressions
+    BinaryExpression(),
+    GroupExpression(),
+    LiteralExpression(),
+    TernaryExpression(),
+    TypeCheckExpression(),
+    UnaryExpression(),
+    VariableExpression(),
 
     # Statements
     ClassAttributeStatement(),

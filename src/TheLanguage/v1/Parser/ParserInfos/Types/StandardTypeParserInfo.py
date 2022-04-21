@@ -19,7 +19,7 @@ import os
 
 from typing import List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 
@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeParserInfo import ParserInfo, Region, TypeParserInfo
+    from .TypeParserInfo import ParserInfo, ParserInfoType, Region, TypeParserInfo
 
     from ..Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
@@ -40,6 +40,8 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class StandardTypeItemParserInfo(ParserInfo):
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     name: str
@@ -58,7 +60,14 @@ class StandardTypeItemParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(StandardTypeItemParserInfo, self).__init__(regions)
+        super(StandardTypeItemParserInfo, self).__init__(
+            ParserInfoType.Unknown,
+            regions,
+            regionless_attributes=[
+                "templates",
+                "constraints",
+            ],
+        )
 
 
 # ----------------------------------------------------------------------
@@ -67,5 +76,5 @@ class StandardTypeParserInfo(TypeParserInfo):
     items: List[StandardTypeItemParserInfo]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(StandardTypeParserInfo, self).__post_init__(regions)
+    def __post_init__(self, parser_info_type__, regions):  # type: ignore
+        super(StandardTypeParserInfo, self).__post_init__(parser_info_type__, regions)

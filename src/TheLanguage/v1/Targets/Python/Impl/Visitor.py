@@ -40,6 +40,7 @@ with InitRelativeImports():
     from ....Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
     from ....Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
     from ....Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
+    from ....Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
     from ....Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo
 
@@ -141,9 +142,9 @@ class Visitor(object):
         self._stream.write(
             ", ".join(
                 self._GetStandardTypeName(dependency.type) for dependency in itertools.chain(
-                    parser_info.extends or [],
-                    parser_info.implements or [],
-                    parser_info.uses or [],
+                    (parser_info.extends or []),
+                    (parser_info.implements or []),
+                    (parser_info.uses or []),
                 )
             ),
         )
@@ -201,6 +202,13 @@ class Visitor(object):
     def OnExitSpecialMethodStatementParserInfo(
         self,
         parser_info: SpecialMethodStatementParserInfo,
+    ):
+        pass # TODO
+
+    # ----------------------------------------------------------------------
+    def OnTypeAliasStatementParserInfo(
+        self,
+        parser_info: TypeAliasStatementParserInfo,
     ):
         pass # TODO
 

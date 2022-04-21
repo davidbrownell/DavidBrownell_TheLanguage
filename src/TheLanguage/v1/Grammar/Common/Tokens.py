@@ -54,6 +54,30 @@ PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken
 
 
 # ----------------------------------------------------------------------
+ParameterName                               = RegexToken(
+    "<parameter name>",
+    re.compile(
+        textwrap.dedent(
+            r"""(?P<value>(?#
+            Lower                           )[a-z](?#
+            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
+            Bang [optional]                 )(?P<is_compile_time>!)?(?#
+            ))""",
+        ),
+    ),
+)
+
+
+
+
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
 CompileParameterName                        = RegexToken(
     "<compile parameter name>",
     re.compile(

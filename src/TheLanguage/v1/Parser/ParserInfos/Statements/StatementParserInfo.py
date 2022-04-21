@@ -19,7 +19,7 @@ import os
 
 from typing import Any, Callable, List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 
@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, Region
+    from ..ParserInfo import ParserInfo, ParserInfoType, Region
 
 
 # ----------------------------------------------------------------------
@@ -40,6 +40,8 @@ class StatementParserInfo(ParserInfo):
     """Abstract base class for all statements"""
 
     # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     # ----------------------------------------------------------------------
@@ -59,4 +61,10 @@ class StatementParserInfo(ParserInfo):
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        super(StatementParserInfo, self).__init__(regions, regionless_attributes, validate, **custom_display_funcs)
+        super(StatementParserInfo, self).__init__(
+            ParserInfoType.Unknown, # TODO: Need to be more intelligent about this
+            regions,
+            regionless_attributes,
+            validate,
+            **custom_display_funcs,
+        )

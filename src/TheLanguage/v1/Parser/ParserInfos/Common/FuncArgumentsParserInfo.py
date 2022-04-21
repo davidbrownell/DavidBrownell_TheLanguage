@@ -19,7 +19,7 @@ import os
 
 from typing import Dict, List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 
@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, Region
+    from ..ParserInfo import ParserInfo, ParserInfoType, Region
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
@@ -49,6 +49,9 @@ DuplicateNameError                          = CreateError(
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncArgumentParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     expression: ExpressionParserInfo
@@ -65,12 +68,19 @@ class FuncArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncArgumentParserInfo, self).__init__(regions)
+        super(FuncArgumentParserInfo, self).__init__(
+            ParserInfoType.Standard,
+            regions,
+            regionless_attributes=["expression", ],
+        )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncArgumentsParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     arguments: List[FuncArgumentParserInfo]
@@ -86,7 +96,7 @@ class FuncArgumentsParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncArgumentsParserInfo, self).__init__(regions)
+        super(FuncArgumentsParserInfo, self).__init__(ParserInfoType.Standard, regions)
 
         # Validate
         errors: List[Error] = []

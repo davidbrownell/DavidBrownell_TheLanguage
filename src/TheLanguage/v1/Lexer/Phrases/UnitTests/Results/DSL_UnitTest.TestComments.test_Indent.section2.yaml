@@ -71,7 +71,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
           is_ignored: True
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
-            begin: "[5, 9] (46)"
+            begin: "[5, 10] (47)"
             end: "[5, 21] (58)"
           token: "<comment>"
           value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>

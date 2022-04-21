@@ -105,6 +105,10 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
     def __post_init__(self, regions, class_capabilities, visibility_param):
         super(ClassAttributeStatementParserInfo, self).__post_init__(
             regions,
+            regionless_attributes=[
+                "type",
+                "initialized_value",
+            ],
             validate=False,
         )
 

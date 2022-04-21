@@ -19,7 +19,7 @@ import os
 
 from typing import Dict, List, Optional, Union
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 
@@ -31,9 +31,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, Region
+    from ..ParserInfo import ParserInfo, ParserInfoType, Region
 
-    from ..CompileExpressions.CompileExpressionParserInfo import CompileExpressionParserInfo
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Types.TypeParserInfo import TypeParserInfo
 
     from ...Error import CreateError, Error, ErrorException
@@ -49,6 +49,9 @@ DuplicateNameError                          = CreateError(
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TemplateTypeArgumentParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     type: TypeParserInfo
@@ -65,15 +68,22 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(TemplateTypeArgumentParserInfo, self).__init__(regions)
+        super(TemplateTypeArgumentParserInfo, self).__init__(
+            ParserInfoType.CompileTime,
+            regions,
+            regionless_attributes=["type", ],
+        )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TemplateDecoratorArgumentParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
-    expression: CompileExpressionParserInfo
+    expression: ExpressionParserInfo
     keyword: Optional[str]
 
     # ----------------------------------------------------------------------
@@ -87,7 +97,13 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(TemplateDecoratorArgumentParserInfo, self).__init__(regions)
+        super(TemplateDecoratorArgumentParserInfo, self).__init__(
+            ParserInfoType.CompileTime,
+            regions,
+            regionless_attributes=["expression", ],
+        )
+
+        # TODO: Verify that the expression is a compile-time expression
 
 
 # ----------------------------------------------------------------------
@@ -102,6 +118,8 @@ class TemplateArgumentsParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     # |  Public Data
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     arguments: List["TemplateArgumentsParserInfo.ArgumentType"]
@@ -118,7 +136,7 @@ class TemplateArgumentsParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(TemplateArgumentsParserInfo, self).__init__(regions)
+        super(TemplateArgumentsParserInfo, self).__init__(ParserInfoType.CompileTime, regions)
 
         # Validate
         errors: List[Error] = []

@@ -19,7 +19,7 @@ import os
 
 from typing import Dict, List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 
@@ -31,9 +31,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, Region
+    from ..ParserInfo import ParserInfo, ParserInfoType, Region
 
-    from ..CompileExpressions.CompileExpressionParserInfo import CompileExpressionParserInfo
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -47,10 +47,13 @@ DuplicateNameError                          = CreateError(
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
 class ConstraintArgumentParserInfo(ParserInfo):
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
-    expression: CompileExpressionParserInfo
+    expression: ExpressionParserInfo
     keyword: Optional[str]
 
     # ----------------------------------------------------------------------
@@ -64,12 +67,20 @@ class ConstraintArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(ConstraintArgumentParserInfo, self).__init__(regions)
+        super(ConstraintArgumentParserInfo, self).__init__(
+            ParserInfoType.CompileTime,
+            regions,
+            regionless_attributes=["expression", ],
+        )
+
+        # TODO: Verify that the expression is a compile-time expression
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ConstraintArgumentsParserInfo(ParserInfo):
+    parser_info_type__: ParserInfoType      = field(init=False)
+
     regions: InitVar[List[Optional[Region]]]
 
     arguments: List[ConstraintArgumentParserInfo]
@@ -85,7 +96,7 @@ class ConstraintArgumentsParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(ConstraintArgumentsParserInfo, self).__init__(regions)
+        super(ConstraintArgumentsParserInfo, self).__init__(ParserInfoType.CompileTime, regions)
 
         # Validate
         errors: List[Error] = []

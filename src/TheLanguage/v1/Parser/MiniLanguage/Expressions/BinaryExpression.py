@@ -45,7 +45,7 @@ with InitRelativeImports():
     from ...Region import Region
 
 
-# TODO: Adjust this
+# TODO: Adjust this, as it isn't clear what is the best way to handle precedence
 
 # ----------------------------------------------------------------------
 # |  Pubic Types
