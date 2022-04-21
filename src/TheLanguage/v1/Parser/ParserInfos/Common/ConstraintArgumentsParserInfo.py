@@ -19,7 +19,7 @@ import os
 
 from typing import Dict, List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 
@@ -53,8 +53,7 @@ InvalidConstraintExpressionError            = CreateError(
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ConstraintArgumentParserInfo(ParserInfo):
-    parser_info_type__: ParserInfoType      = field(init=False)
-
+    # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
 
     expression: ExpressionParserInfo
@@ -70,10 +69,11 @@ class ConstraintArgumentParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
+    def __post_init__(self, *args, **kwargs):
         super(ConstraintArgumentParserInfo, self).__init__(
             ParserInfoType.CompileTime,
-            regions,
+            *args,
+            **kwargs,
             regionless_attributes=["expression", ],
         )
 
@@ -94,8 +94,7 @@ class ConstraintArgumentParserInfo(ParserInfo):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ConstraintArgumentsParserInfo(ParserInfo):
-    parser_info_type__: ParserInfoType      = field(init=False)
-
+    # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
 
     arguments: List[ConstraintArgumentParserInfo]
@@ -110,8 +109,8 @@ class ConstraintArgumentsParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(ConstraintArgumentsParserInfo, self).__init__(ParserInfoType.CompileTime, regions)
+    def __post_init__(self, *args, **kwargs):
+        super(ConstraintArgumentsParserInfo, self).__init__(ParserInfoType.CompileTime, *args, **kwargs)
 
         # Validate
         errors: List[Error] = []

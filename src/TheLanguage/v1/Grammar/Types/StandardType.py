@@ -229,7 +229,6 @@ class StandardType(GrammarPhrase):
                 return errors
 
             return StandardTypeParserInfo.Create(
-                ParserInfoType.Standard,
                 CreateRegions(node, mutability_modifier_node, elements_node),
                 mutability_modifier_info,
                 items,

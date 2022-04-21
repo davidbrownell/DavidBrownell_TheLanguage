@@ -40,8 +40,7 @@ class ExpressionParserInfo(ParserInfo):
     """Abstract base class for all expressions"""
 
     # ----------------------------------------------------------------------
-    parser_info_type__: InitVar[ParserInfoType]
-
+    parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
 
     # ----------------------------------------------------------------------
@@ -56,14 +55,14 @@ class ExpressionParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(
         self,
-        parser_info_type__,
+        parser_info_type,
         regions,
         regionless_attributes: Optional[List[str]]=None,
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
         super(ExpressionParserInfo, self).__init__(
-            parser_info_type__,
+            parser_info_type,
             regions,
             regionless_attributes,
             validate,

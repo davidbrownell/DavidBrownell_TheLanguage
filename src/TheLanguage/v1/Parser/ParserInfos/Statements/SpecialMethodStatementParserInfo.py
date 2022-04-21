@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import cast, List
+from typing import cast, List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, StatementParserInfo
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
@@ -97,8 +97,32 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
     statements: List[StatementParserInfo]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, class_capabilities):
-        super(SpecialMethodStatementParserInfo, self).__post_init__(regions)
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        class_capabilities: ClassCapabilities,
+        the_type: SpecialMethodType,
+        *args,
+        **kwargs,
+    ):
+        if the_type in cls._CompileTimeMethods:
+            parser_info_type = ParserInfoType.CompileTime
+        else:
+            parser_info_type = ParserInfoType.Standard
+
+        return cls(
+            parser_info_type,               # type: ignore
+            regions,                        # type: ignore
+            class_capabilities,             # type: ignore
+            the_type,
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, parser_info_type, regions, class_capabilities):
+        super(SpecialMethodStatementParserInfo, self).__post_init__(parser_info_type, regions)
 
         # Validate
         errors: List[Error] = []
@@ -119,3 +143,14 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
     @Interface.override
     def Accept(self, *args, **kwargs):
         return self._ScopedAcceptImpl(cast(List[ParserInfo], self.statements), *args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    _CompileTimeMethods                     = set(
+        [
+            SpecialMethodType.CompileTimeEvalTemplates,
+            SpecialMethodType.CompileTimeEvalConstraints,
+            SpecialMethodType.CompileTimeConvert,
+        ],
+    )

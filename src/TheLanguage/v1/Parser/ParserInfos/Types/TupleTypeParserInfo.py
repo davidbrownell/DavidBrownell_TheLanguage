@@ -17,9 +17,9 @@
 
 import os
 
-from typing import List
+from typing import List, Optional
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -36,6 +36,7 @@ with InitRelativeImports():
         ErrorException,
         MutabilityModifierRequiredError,
         ParserInfoType,
+        Region,
         TypeParserInfo,
     )
 
@@ -43,16 +44,26 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TupleTypeParserInfo(TypeParserInfo):
-    parser_info_type__: ParserInfoType      = field(init=False)
-
     types: List[TypeParserInfo]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):  # type: ignore
-        super(TupleTypeParserInfo, self).__post_init__(
-            ParserInfoType.Standard,        # tuples are not supported at compile time
-            regions,
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            ParserInfoType.Standard,        # type: ignore
+            regions,                        # type: ignore
+            *args,
+            **kwargs,
         )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, *args, **kwargs):  # type: ignore
+        super(TupleTypeParserInfo, self).__post_init__(*args, **kwargs)
 
         # Validate
         errors: List[Error] = []

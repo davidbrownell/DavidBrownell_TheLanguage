@@ -19,7 +19,7 @@ import os
 
 from typing import Dict, List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 
@@ -50,8 +50,7 @@ DuplicateNameError                          = CreateError(
 @dataclass(frozen=True, repr=False)
 class FuncArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
+    parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
 
     expression: ExpressionParserInfo
@@ -67,10 +66,10 @@ class FuncArgumentParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
+    def __post_init__(self, *args, **kwargs):
         super(FuncArgumentParserInfo, self).__init__(
-            ParserInfoType.Standard,
-            regions,
+            *args,
+            **kwargs,
             regionless_attributes=["expression", ],
         )
 
@@ -79,31 +78,36 @@ class FuncArgumentParserInfo(ParserInfo):
 @dataclass(frozen=True, repr=False)
 class FuncArgumentsParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
+    parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
 
     arguments: List[FuncArgumentParserInfo]
 
     # ----------------------------------------------------------------------
     @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        arguments: List[FuncArgumentParserInfo],
+        *args,
+        **kwargs,
+    ):
+        parser_info_type = cls._GetDominantExpressionType(*arguments)
+
+        if isinstance(parser_info_type, list):
+            raise ErrorException(*parser_info_type)
+
+        return cls(
+            parser_info_type,               # type: ignore
+            regions,                        # type: ignore
+            arguments,
+            *args,
+            **kwargs,
+        )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        result = self.__class__._GetDominantExpressionType(*self.arguments)  # pylint: disable=protected-access
-
-        if isinstance(result, list):
-            raise ErrorException(*result)
-
-        parser_info_type = result
-
-        super(FuncArgumentsParserInfo, self).__init__(parser_info_type, regions)
+    def __post_init__(self, *args, **kwargs):
+        super(FuncArgumentsParserInfo, self).__init__(*args, **kwargs)
 
         # Validate
         errors: List[Error] = []

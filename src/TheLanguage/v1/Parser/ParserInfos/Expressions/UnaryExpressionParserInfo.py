@@ -17,7 +17,9 @@
 
 import os
 
-from dataclasses import dataclass, field
+from typing import List, Optional
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -29,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from .ExpressionParserInfo import ExpressionParserInfo, Region
     from ...MiniLanguage.Expressions.UnaryExpression import OperatorType
 
 
@@ -37,17 +39,32 @@ with InitRelativeImports():
 @dataclass(frozen=True, repr=False)
 class UnaryExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
     operator: OperatorType
     expression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):  # type: ignore
-        # At the moment, all unary operations are valid at compile time, so no need to check.
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        operator: OperatorType,
+        expression: ExpressionParserInfo,
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            expression.parser_info_type__,  # type: ignore
+            regions,                        # type: ignore
+            operator,
+            expression,
+            *args,
+            **kwargs,
+        )
 
+    # ----------------------------------------------------------------------
+    def __post_init__(self, *args, **kwargs):
         super(UnaryExpressionParserInfo, self).__post_init__(
-            self.expression.parser_info_type__,  # type: ignore
-            regions,
+            *args,
+            **kwargs,
             regionless_attributes=["expression", ],
         )

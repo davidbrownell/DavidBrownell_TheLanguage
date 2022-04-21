@@ -35,12 +35,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, StatementParserInfo
+    from .StatementParserInfo import (  # pylint: disable=unused-import
+        ParserInfo,
+        ParserInfoType,                     # Convenience import
+        StatementParserInfo,
+    )
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
-    from .ClassCapabilities.ConceptCapabilities import ConceptCapabilities
-    from .ClassCapabilities.InterfaceCapabilities import InterfaceCapabilities
-    from .ClassCapabilities.MixinCapabilities import MixinCapabilities
 
     from ..Common.FuncParametersParserInfo import (  # pylint: disable=unused-import
         FuncParametersParserInfo,
@@ -299,8 +300,17 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     is_static: Optional[bool]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, class_capabilities, visibility_param, mutability_param, method_modifier_param):
+    def __post_init__(
+        self,
+        parser_info_type,
+        regions,
+        class_capabilities,
+        visibility_param,
+        mutability_param,
+        method_modifier_param,
+    ):
         super(FuncDefinitionStatementParserInfo, self).__post_init__(
+            parser_info_type,
             regions,
             regionless_attributes=[
                 "return_type",

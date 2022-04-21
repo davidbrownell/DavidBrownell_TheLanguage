@@ -17,7 +17,9 @@
 
 import os
 
-from dataclasses import dataclass, field
+from typing import List, Optional
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -29,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from .ExpressionParserInfo import ExpressionParserInfo, Region
 
     from ...Error import ErrorException
 
@@ -40,23 +42,40 @@ with InitRelativeImports():
 @dataclass(frozen=True, repr=False)
 class BinaryExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
     left_expression: ExpressionParserInfo
     operator: OperatorType
     right_expression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):  # type: ignore
-        result = self.__class__._GetDominantExpressionType(self.left_expression, self.right_expression)  # pylint: disable=protected-access
-        if isinstance(result, list):
-            raise ErrorException(*result)
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        left_expression: ExpressionParserInfo,
+        operator: OperatorType,
+        right_expression: ExpressionParserInfo,
+        *args,
+        **kwargs,
+    ):
+        parser_info_type = cls._GetDominantExpressionType(left_expression, right_expression)
+        if isinstance(parser_info_type, list):
+            raise ErrorException(*parser_info_type)
 
-        parser_info_type = result
+        return cls(                         # pylint: disable=too-many-function-args
+            parser_info_type,               # type: ignore
+            regions,                        # type: ignore
+            left_expression,
+            operator,
+            right_expression,
+            *args,
+            **kwargs,
+        )
 
+    # ----------------------------------------------------------------------
+    def __post_init__(self, *args, **kwargs):  # type: ignore
         super(BinaryExpressionParserInfo, self).__post_init__(
-            parser_info_type,
-            regions,
+            *args,
+            **kwargs,
             regionless_attributes=[
                 "left_expression",
                 "right_expression",

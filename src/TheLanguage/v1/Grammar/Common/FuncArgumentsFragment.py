@@ -53,6 +53,7 @@ with InitRelativeImports():
 
     from ...Parser.ParserInfos.Common.FuncArgumentsParserInfo import (
         ExpressionParserInfo,
+        ParserInfoType,
         FuncArgumentParserInfo,
         FuncArgumentsParserInfo,
     )
@@ -127,6 +128,7 @@ def _ExtractElement(
 
     return (
         FuncArgumentParserInfo.Create(
+            ParserInfoType.Standard, # TODO
             CreateRegions(node, keyword_node),
             expression_info,
             keyword_info,

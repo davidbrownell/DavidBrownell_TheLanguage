@@ -20,7 +20,7 @@ import os
 
 from typing import Dict, List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 
@@ -65,12 +65,10 @@ DuplicateVariadicError                      = CreateError(
 @dataclass(frozen=True, repr=False)
 class FuncParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
+    parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
 
-    parser_info_type__: ParserInfoType      = field(init=False)
-
-    is_compile_time_param: InitVar[bool]
-    is_compile_time: Optional[bool]         = field(init=False)
+    is_compile_time: Optional[bool]
 
     type: TypeParserInfo
     is_variadic: Optional[bool]
@@ -79,26 +77,33 @@ class FuncParameterParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions, is_compile_time_param):
-        if is_compile_time_param:
+    def Create(
+        cls,
+        regions: InitVar[List[Optional[Region]]],
+        is_compile_time: bool,
+        *args,
+        **kwargs,
+    ):
+        if is_compile_time:
             parser_info_type = ParserInfoType.CompileTime
+            is_compile_time_value = True
         else:
             parser_info_type = ParserInfoType.Standard
-            is_compile_time_param = None
+            is_compile_time_value = None
 
-        object.__setattr__(self, "is_compile_time", is_compile_time_param)
-
-        super(FuncParameterParserInfo, self).__init__(
-            parser_info_type,
+        return cls(
+            parser_info_type,               # type: ignore
             regions,
+            is_compile_time_value,
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, *args, **kwargs):
+        super(FuncParameterParserInfo, self).__init__(
+            *args,
+            **kwargs,
             regionless_attributes=[
                 "type",
                 "default_value",
@@ -129,8 +134,7 @@ class FuncParameterParserInfo(ParserInfo):
 @dataclass(frozen=True, repr=False)
 class FuncParametersParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
+    parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
 
     positional: Optional[List[FuncParameterParserInfo]]
@@ -139,29 +143,39 @@ class FuncParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        result = self.__class__._GetDominantExpressionType(  # pylint: disable=protected-access
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        positional: Optional[List[FuncParameterParserInfo]],
+        any_args: Optional[List[FuncParameterParserInfo]],
+        keyword: Optional[List[FuncParameterParserInfo]],
+        *args,
+        **kwargs,
+    ):
+        parser_info_type = cls._GetDominantExpressionType(
             *itertools.chain(
-                self.positional or [],
-                self.any or [],
-                self.keyword or [],
+                positional or [],
+                any_args or [],
+                keyword or [],
             ),
         )
 
-        if isinstance(result, list):
-            raise ErrorException(*result)
+        if isinstance(parser_info_type, list):
+            raise ErrorException(*parser_info_type)
 
-        parser_info_type = result
+        return cls(                         # pylint: disable=too-many-function-args
+            parser_info_type,               # type: ignore
+            regions,                        # type: ignore
+            positional,
+            any_args,
+            keyword,
+            *args,
+            **kwargs,
+        )
 
-        super(FuncParametersParserInfo, self).__init__(parser_info_type, regions)
+    # ----------------------------------------------------------------------
+    def __post_init__(self, *args, **kwargs):
+        super(FuncParametersParserInfo, self).__init__(*args, **kwargs)
         assert self.positional or self.any or self.keyword
 
         # Validate

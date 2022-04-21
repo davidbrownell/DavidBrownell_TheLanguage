@@ -19,7 +19,7 @@ import os
 
 from typing import List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 
@@ -37,8 +37,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class CapturedVariablesParserInfo(ParserInfo):
-    parser_info_type__: ParserInfoType      = field(init=False)
-
     regions: InitVar[List[Optional[Region]]]
     variables: List[ExpressionParserInfo]
 
@@ -52,8 +50,8 @@ class CapturedVariablesParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(CapturedVariablesParserInfo, self).__init__(ParserInfoType.Standard, regions)
+    def __post_init__(self, *args, **kwargs):
+        super(CapturedVariablesParserInfo, self).__init__(ParserInfoType.Standard, *args, **kwargs)
 
         # TODO: Validate that all variables are ultimately variable expressions (dotted notation is OK)
         # TODO: Is dotted notation OK? Capturing variables is a bit like adding a ref; need to think about this more

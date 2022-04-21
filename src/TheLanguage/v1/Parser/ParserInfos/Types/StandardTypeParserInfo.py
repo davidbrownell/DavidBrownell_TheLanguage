@@ -19,7 +19,7 @@ import os
 
 from typing import List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 
@@ -40,8 +40,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class StandardTypeItemParserInfo(ParserInfo):
-    parser_info_type__: ParserInfoType      = field(init=False)
-
+    # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
 
     name: str
@@ -59,10 +58,11 @@ class StandardTypeItemParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
+    def __post_init__(self, *args, **kwargs):
         super(StandardTypeItemParserInfo, self).__init__(
             ParserInfoType.Unknown,
-            regions,
+            *args,
+            **kwargs,
             regionless_attributes=[
                 "templates",
                 "constraints",
@@ -73,8 +73,20 @@ class StandardTypeItemParserInfo(ParserInfo):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class StandardTypeParserInfo(TypeParserInfo):
+    # ----------------------------------------------------------------------
     items: List[StandardTypeItemParserInfo]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, parser_info_type__, regions):  # type: ignore
-        super(StandardTypeParserInfo, self).__post_init__(parser_info_type__, regions)
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            ParserInfoType.Unknown,         # type: ignore
+            regions,                        # type: ignore
+            *args,
+            **kwargs,
+        )

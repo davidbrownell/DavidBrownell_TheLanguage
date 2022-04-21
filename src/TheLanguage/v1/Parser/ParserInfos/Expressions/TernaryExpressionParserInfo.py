@@ -17,7 +17,9 @@
 
 import os
 
-from dataclasses import dataclass, field
+from typing import List, Optional
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -29,30 +31,53 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from .ExpressionParserInfo import ExpressionParserInfo, Region
+    from ...Error import ErrorException
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TernaryExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
     condition_expression: ExpressionParserInfo
     true_expression: ExpressionParserInfo
     false_expression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):  # type: ignore
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        condition_expression: ExpressionParserInfo,
+        true_expression: ExpressionParserInfo,
+        false_expression: ExpressionParserInfo,
+        *args,
+        **kwargs,
+    ):
+        parser_info_type = cls._GetDominantExpressionType(
+            condition_expression,
+            true_expression,
+            false_expression,
+        )
+
+        if isinstance(parser_info_type, list):
+            raise ErrorException(*parser_info_type)
+
+        return cls(                         # pylint: disable=too-many-function-args
+            parser_info_type,               # type: ignore
+            regions,                        # type: ignore
+            condition_expression,
+            true_expression,
+            false_expression,
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, *args, **kwargs):
         super(TernaryExpressionParserInfo, self).__post_init__(
-            ParserInfoType(
-                max(
-                    self.condition_expression.parser_info_type__.value,  # type: ignore
-                    self.true_expression.parser_info_type__.value,  # type: ignore
-                    self.false_expression.parser_info_type__.value,  # type: ignore
-                ),
-            ),
-            regions,
+            *args,
+            **kwargs,
             regionless_attributes=[
                 "condition_expression",
                 "true_expression",

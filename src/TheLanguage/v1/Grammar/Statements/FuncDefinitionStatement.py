@@ -60,6 +60,7 @@ with InitRelativeImports():
 
     from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import (
         FuncDefinitionStatementParserInfo,
+        ParserInfoType,
         TypeParserInfo,
     )
 
@@ -311,6 +312,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                 return errors
 
             return FuncDefinitionStatementParserInfo.Create(
+                ParserInfoType.Standard, # TODO
                 CreateRegions(
                     node,
                     visibility_node,
