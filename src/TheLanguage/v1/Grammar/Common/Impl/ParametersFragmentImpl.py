@@ -218,7 +218,7 @@ ExtractReturnType                           = TypeVar("ExtractReturnType", bound
 
 def Extract(
     parser_info_type: Type[ExtractReturnType],
-    extract_element_func: Callable[[AST.Node], Tuple[ParserInfo, bool]],
+    extract_element_func: Callable[[AST.Node], Union[List[Error], Tuple[ParserInfo, bool]]],
     node: AST.Node,
     *,
     allow_empty: bool,
@@ -260,7 +260,12 @@ def Extract(
 
         for parameter_node in parameter_nodes:
             try:
-                parser_info, has_default = extract_element_func(parameter_node)
+                result = extract_element_func(parameter_node)
+                if isinstance(result, list):
+                    errors += result
+                    continue
+
+                parser_info, has_default = result
             except ErrorException as ex:
                 errors += ex.errors
                 continue

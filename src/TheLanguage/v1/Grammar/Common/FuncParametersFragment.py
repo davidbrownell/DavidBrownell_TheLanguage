@@ -40,7 +40,6 @@ with InitRelativeImports():
         ExtractDynamic,
         ExtractOptional,
         ExtractSequence,
-        ExtractToken,
         PhraseItem,
         OptionalPhraseItem,
     )
@@ -75,7 +74,7 @@ def Create() -> PhraseItem:
             ),
 
             # <name>
-            CommonTokens.RuntimeParameterName,
+            CommonTokens.ParameterName,
 
             # ('=' <expression>)?
             OptionalPhraseItem(
@@ -136,7 +135,9 @@ def _ExtractElement(
 
     # <name>
     name_leaf = cast(AST.Leaf, nodes[2])
-    name_info = ExtractToken(name_leaf)
+    name_info = CommonTokens.ParameterName.Extract(name_leaf)  # type: ignore
+
+    is_compile_time_region = CommonTokens.ParameterName.GetIsCompileTimeRegion(name_leaf)  # type: ignore  # pylint: disable=not-callable
 
     # ('=' <expression>)?
     default_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[3])))
@@ -151,7 +152,8 @@ def _ExtractElement(
 
     return (
         FuncParameterParserInfo.Create(
-            CreateRegions(node, is_variadic_node, name_leaf),
+            CreateRegions(node, is_compile_time_region, is_variadic_node, name_leaf),
+            bool(is_compile_time_region),
             type_info,
             is_variadic_info,
             name_info,

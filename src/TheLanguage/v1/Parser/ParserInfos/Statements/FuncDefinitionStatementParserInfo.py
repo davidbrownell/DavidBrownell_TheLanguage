@@ -35,12 +35,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, StatementParserInfo
+    from .StatementParserInfo import (  # pylint: disable=unused-import
+        ParserInfo,
+        ParserInfoType,                     # Convenience import
+        StatementParserInfo,
+    )
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
-    from .ClassCapabilities.ConceptCapabilities import ConceptCapabilities
-    from .ClassCapabilities.InterfaceCapabilities import InterfaceCapabilities
-    from .ClassCapabilities.MixinCapabilities import MixinCapabilities
 
     from ..Common.FuncParametersParserInfo import (  # pylint: disable=unused-import
         FuncParametersParserInfo,
@@ -222,6 +223,11 @@ InvalidMethodMutabilityError                = CreateError(
     valid_mutabilities_str=str,
 )
 
+InvalidMethodParameterNameError             = CreateError(
+    "The parameter name '{name}' cannot be overridden",
+    name=str,
+)
+
 InvalidMethodModifierError                  = CreateError(
     "'{modifier_str}' is not a valid modifier for '{type}' types; valid modifiers are {valid_modifiers_str}",
     type=str,
@@ -294,8 +300,17 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     is_static: Optional[bool]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, class_capabilities, visibility_param, mutability_param, method_modifier_param):
+    def __post_init__(
+        self,
+        parser_info_type,
+        regions,
+        class_capabilities,
+        visibility_param,
+        mutability_param,
+        method_modifier_param,
+    ):
         super(FuncDefinitionStatementParserInfo, self).__post_init__(
+            parser_info_type,
             regions,
             regionless_attributes=[
                 "return_type",
@@ -431,6 +446,21 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                             valid_mutabilities_str=", ".join("'{}'".format(m.name) for m in class_capabilities.valid_method_mutabilities),
                         ),
                     )
+
+                # 'this' and 'self' can't be used as parameter names
+                if isinstance(self.parameters, FuncParametersParserInfo):
+                    for parameter in itertools.chain(
+                        self.parameters.positional or [],
+                        self.parameters.any or [],
+                        self.parameters.keyword or [],
+                    ):
+                        if parameter.name in ["self", "this"]:
+                            errors.append(
+                                InvalidMethodParameterNameError.Create(
+                                    region=parameter.regions__.name,
+                                    name=parameter.name,
+                                ),
+                            )
 
             assert self.method_modifier is not None
 

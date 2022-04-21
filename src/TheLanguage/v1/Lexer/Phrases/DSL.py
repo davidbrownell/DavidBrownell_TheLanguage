@@ -267,11 +267,13 @@ def ExtractTokenRangeNoThrow(
         start = leaf.value.match.start(group_dict_name)
         end = leaf.value.match.end(group_dict_name)
 
-        assert start >= leaf.iter_range.begin.offset
-        assert end >= leaf.iter_range.begin.offset
+        if start != -1:
+            assert start >= leaf.iter_range.begin.offset
+            start -= leaf.iter_range.begin.offset
 
-        start -= leaf.iter_range.begin.offset
-        end -= leaf.iter_range.begin.offset
+        if end != -1:
+            assert end >= leaf.iter_range.begin.offset
+            end -= leaf.iter_range.begin.offset
 
     if start == end:
         return None

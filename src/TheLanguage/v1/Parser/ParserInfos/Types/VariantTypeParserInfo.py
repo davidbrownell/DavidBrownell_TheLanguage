@@ -17,9 +17,9 @@
 
 import os
 
-from typing import Generator, List, Set
+from typing import Generator, List
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -31,11 +31,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeParserInfo import (
+    from .TypeParserInfo import (           # pylint: disable=unused-import
         CreateError,
         Error,
         ErrorException,
-        ParserInfoType,
+        ParserInfoType,                     # convenience import
         TypeParserInfo,
     )
 
@@ -49,16 +49,12 @@ UnsupportedMutabilityModifierError          = CreateError(
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class VariantTypeParserInfo(TypeParserInfo):
+    # ----------------------------------------------------------------------
     types: List[TypeParserInfo]
-    flattened_types: List[TypeParserInfo]   = field(init=False)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, parser_info_type__, regions):  # type: ignore
-        super(VariantTypeParserInfo, self).__post_init__(
-            parser_info_type__,
-            regions,
-            regionless_attributes=["flattened_types"],
-        )
+    def __post_init__(self, *args, **kwargs):
+        super(VariantTypeParserInfo, self).__post_init__(*args, **kwargs)
 
         # Validate
         errors: List[Error] = []
@@ -73,17 +69,6 @@ class VariantTypeParserInfo(TypeParserInfo):
 
         if errors:
             raise ErrorException(*errors)
-
-        # Flatten the types
-        flattened_types: List[TypeParserInfo] = []
-        flattened_types_lookup: Set[TypeParserInfo] = set()
-
-        # TODO: for the_type in self._EnumTypes():
-        # TODO:     if the_type not in flattened_types_lookup:
-        # TODO:         flattened_types.append(the_type)
-        # TODO:         flattened_types_lookup.add(the_type)
-
-        object.__setattr__(self, "flattened_types", flattened_types)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

@@ -17,7 +17,7 @@ regions__: # <class 'types.RootParserInfoRegions'>
       line: 4
 statements:
   - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    capabilities: "Standard"
+    class_capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
     constraints: None
     constructor_visibility: "VisibilityModifier.public"
@@ -75,7 +75,6 @@ statements:
               column: 1
               line: 3
         type: # <class 'v1.Parser.ParserInfos.Types.VariantTypeParserInfo.VariantTypeParserInfo'>
-          flattened_types: []
           mutability_modifier: "MutabilityModifier.var"
           regions__: # <class 'types.VariantTypeParserInfoRegions'>
             mutability_modifier: # <class 'v1.Parser.Region.Region'>
@@ -200,7 +199,6 @@ statements:
               column: 1
               line: 4
         type: # <class 'v1.Parser.ParserInfos.Types.VariantTypeParserInfo.VariantTypeParserInfo'>
-          flattened_types: []
           mutability_modifier: "MutabilityModifier.var"
           regions__: # <class 'types.VariantTypeParserInfoRegions'>
             mutability_modifier: # <class 'v1.Parser.Region.Region'>

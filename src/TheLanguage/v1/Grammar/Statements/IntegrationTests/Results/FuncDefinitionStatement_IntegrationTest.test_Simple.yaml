@@ -130,6 +130,7 @@ statements:
       any:
         - # <class 'v1.Parser.ParserInfos.Common.FuncParametersParserInfo.FuncParameterParserInfo'>
           default_value: None
+          is_compile_time: None
           is_variadic: None
           name: "a"
           regions__: # <class 'types.FuncParameterParserInfoRegions'>
@@ -193,6 +194,7 @@ statements:
                   line: 2
         - # <class 'v1.Parser.ParserInfos.Common.FuncParametersParserInfo.FuncParameterParserInfo'>
           default_value: None
+          is_compile_time: None
           is_variadic: None
           name: "b"
           regions__: # <class 'types.FuncParameterParserInfoRegions'>

@@ -17,7 +17,7 @@ regions__: # <class 'types.RootParserInfoRegions'>
       line: 4
 statements:
   - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    capabilities: "Standard"
+    class_capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
     constraints: None
     constructor_visibility: "VisibilityModifier.public"

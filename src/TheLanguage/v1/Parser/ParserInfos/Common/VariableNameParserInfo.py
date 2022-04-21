@@ -19,7 +19,7 @@ import os
 
 from typing import List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 
@@ -38,23 +38,36 @@ with InitRelativeImports():
 @dataclass(frozen=True, repr=False)
 class VariableNameParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
+    parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
+
+    is_compile_time: Optional[bool]
     name: str
 
     # ----------------------------------------------------------------------
     @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        is_compile_time: bool,
+        *args,
+        **kwargs,
+    ):
+        if is_compile_time:
+            parser_info_type = ParserInfoType.CompileTime
+            is_compile_time_value = True
+        else:
+            parser_info_type = ParserInfoType.Standard
+            is_compile_time_value = None
+
+        return cls(
+            parser_info_type,               # type: ignore
+            regions,                        # type: ignore
+            is_compile_time_value,
+            *args,
+            **kwargs,
+        )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(VariableNameParserInfo, self).__init__(
-            ParserInfoType.Unknown,
-            regions,
-        )
+    def __post_init__(self, *args, **kwargs):
+        super(VariableNameParserInfo, self).__init__(*args, **kwargs)

@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import StatementParserInfo
+    from .StatementParserInfo import ParserInfoType, Region, StatementParserInfo
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
     from ..Common.MutabilityModifier import MutabilityModifier
@@ -83,6 +83,7 @@ InvalidMutablePublicAttributeError          = CreateError(
 class ClassAttributeStatementParserInfo(StatementParserInfo):
     """Attribute of a class"""
 
+    # ----------------------------------------------------------------------
     class_capabilities: InitVar[ClassCapabilities]
 
     visibility_param: InitVar[Optional[VisibilityModifier]]
@@ -102,8 +103,24 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
     is_override: Optional[bool]
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, class_capabilities, visibility_param):
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            ParserInfoType.Standard,        # type: ignore
+            regions,                        # type: ignore
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, parser_info_type, regions, class_capabilities, visibility_param):
         super(ClassAttributeStatementParserInfo, self).__post_init__(
+            parser_info_type,
             regions,
             regionless_attributes=[
                 "type",
