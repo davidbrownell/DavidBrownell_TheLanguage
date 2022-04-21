@@ -35,6 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Error import Error, CreateError
     from ..Region import Region
 
 
@@ -54,6 +55,15 @@ class ParserInfoType(Enum):
     Literal                                 = auto()    # A literal value
     CompileTime                             = auto()    # Evaluated at compile time
     Standard                                = auto()    # Evaluated at runtime
+
+
+# ----------------------------------------------------------------------
+InconsistentParserInfoTypeError             = CreateError(
+    "The '{type}' expression is not consistent with the '{dominant_type}' expression",
+    type=str,
+    dominant_type=str,
+    dominant_region=Region,
+)
 
 
 # ----------------------------------------------------------------------
@@ -220,6 +230,50 @@ class ParserInfo(ObjectReprImplBase):
 
         assert visit_control in [VisitControl.Continue, VisitControl.Terminate], visit_control
         return visit_control
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def _GetDominantExpressionType(
+        cls,
+        *expressions: "ParserInfo"
+    ) -> Union[
+        ParserInfoType,
+        List[Error],
+    ]:
+        dominant_expression: Optional[ParserInfo] = None
+
+        for expression in expressions:
+            if (
+                dominant_expression is None
+                or expression.parser_info_type__.value > dominant_expression.parser_info_type__.value  # type: ignore
+            ):
+                dominant_expression = expression
+
+        if dominant_expression is None:
+            return ParserInfoType.Unknown
+
+        if dominant_expression.parser_info_type__.value >= ParserInfoType.CompileTime.value:  # type: ignore
+            errors: List[Error] = []
+
+            # Ensure that the types are consistent
+            for expression in expressions:
+                if expression.parser_info_type__.value < ParserInfoType.CompileTime.value:  # type: ignore
+                    continue
+
+                if expression.parser_info_type__.value < dominant_expression.parser_info_type__.value:  # type: ignore
+                    errors.append(
+                        InconsistentParserInfoTypeError.Create(
+                            region=expression.regions__.self__,
+                            type=expression.parser_info_type__.name,                    # type: ignore
+                            dominant_type=dominant_expression.parser_info_type__.name,  # type: ignore
+                            dominant_region=dominant_expression.regions__.self__,
+                        )
+                    )
+
+            if errors:
+                return errors
+
+        return dominant_expression.parser_info_type__  # type: ignore
 
     # ----------------------------------------------------------------------
     # |

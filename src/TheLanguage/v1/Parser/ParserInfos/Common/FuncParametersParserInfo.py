@@ -65,9 +65,12 @@ DuplicateVariadicError                      = CreateError(
 @dataclass(frozen=True, repr=False)
 class FuncParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
+    regions: InitVar[List[Optional[Region]]]
+
     parser_info_type__: ParserInfoType      = field(init=False)
 
-    regions: InitVar[List[Optional[Region]]]
+    is_compile_time_param: InitVar[bool]
+    is_compile_time: Optional[bool]         = field(init=False)
 
     type: TypeParserInfo
     is_variadic: Optional[bool]
@@ -84,9 +87,17 @@ class FuncParameterParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
+    def __post_init__(self, regions, is_compile_time_param):
+        if is_compile_time_param:
+            parser_info_type = ParserInfoType.CompileTime
+        else:
+            parser_info_type = ParserInfoType.Standard
+            is_compile_time_param = None
+
+        object.__setattr__(self, "is_compile_time", is_compile_time_param)
+
         super(FuncParameterParserInfo, self).__init__(
-            ParserInfoType.Standard,
+            parser_info_type,
             regions,
             regionless_attributes=[
                 "type",
@@ -137,7 +148,20 @@ class FuncParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncParametersParserInfo, self).__init__(ParserInfoType.Standard, regions)
+        result = self.__class__._GetDominantExpressionType(  # pylint: disable=protected-access
+            *itertools.chain(
+                self.positional or [],
+                self.any or [],
+                self.keyword or [],
+            ),
+        )
+
+        if isinstance(result, list):
+            raise ErrorException(*result)
+
+        parser_info_type = result
+
+        super(FuncParametersParserInfo, self).__init__(parser_info_type, regions)
         assert self.positional or self.any or self.keyword
 
         # Validate

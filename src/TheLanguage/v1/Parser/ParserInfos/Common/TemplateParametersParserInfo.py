@@ -50,6 +50,10 @@ DuplicateVariadicError                      = CreateError(
     prev_region=Region,
 )
 
+InvalidTemplateExpressionError              = CreateError(
+    "Template decorator parameters must be compile-time expressions",
+)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -110,7 +114,21 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
             regionless_attributes=["type", "default_value", ],
         )
 
-        # TODO: Verify that the expression is a compile-time expression
+        # Validate
+        errors: List[Error] = []
+
+        if (
+            self.default_value is not None
+            and self.default_value.parser_info_type__.value > ParserInfoType.CompileTime.value  # type: ignore
+        ):
+            errors.append(
+                InvalidTemplateExpressionError.Create(
+                    region=self.default_value.regions__.self__,
+                ),
+            )
+
+        if errors:
+            raise ErrorException(*errors)
 
 
 # ----------------------------------------------------------------------

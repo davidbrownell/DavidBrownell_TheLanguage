@@ -33,3 +33,5 @@ class VisibilityModifier(Enum):
     protected                               = auto()
     internal                                = auto()
     public                                  = auto()
+
+    # TODO: Validate the protected is used appropriately

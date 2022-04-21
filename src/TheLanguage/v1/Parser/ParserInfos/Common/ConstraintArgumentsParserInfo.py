@@ -45,6 +45,10 @@ DuplicateNameError                          = CreateError(
     prev_region=Region,
 )
 
+InvalidConstraintExpressionError            = CreateError(
+    "Constraint arguments must be compile-time expressions",
+)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -73,7 +77,18 @@ class ConstraintArgumentParserInfo(ParserInfo):
             regionless_attributes=["expression", ],
         )
 
-        # TODO: Verify that the expression is a compile-time expression
+        # Validate
+        errors: List[Error] = []
+
+        if self.expression.parser_info_type__.value > ParserInfoType.CompileTime.value:  # type: ignore
+            errors.append(
+                InvalidConstraintExpressionError.Create(
+                    region=self.expression.regions__.self__,
+                ),
+            )
+
+        if errors:
+            raise ErrorException(*errors)
 
 
 # ----------------------------------------------------------------------

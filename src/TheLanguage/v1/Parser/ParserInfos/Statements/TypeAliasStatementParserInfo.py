@@ -62,3 +62,7 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
         object.__setattr__(self, "visibility", visibility_param)
 
         self.ValidateRegions()
+
+        # Validate
+
+        # TODO: protected visibility only valid when nested within class

@@ -30,6 +30,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+
+    from ...Error import ErrorException
+
     from ...MiniLanguage.Expressions.BinaryExpression import OperatorType
 
 
@@ -45,12 +48,11 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):  # type: ignore
-        parser_info_type = ParserInfoType(
-            max(
-                self.left_expression.parser_info_type__.value,  # type: ignore
-                self.right_expression.parser_info_type__.value,  # type: ignore
-            ),
-        )
+        result = self.__class__._GetDominantExpressionType(self.left_expression, self.right_expression)  # pylint: disable=protected-access
+        if isinstance(result, list):
+            raise ErrorException(*result)
+
+        parser_info_type = result
 
         super(BinaryExpressionParserInfo, self).__post_init__(
             parser_info_type,
@@ -60,5 +62,3 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
                 "right_expression",
             ],
         )
-
-        # TODO: Validate

@@ -232,6 +232,8 @@ class ClassStatementParserInfo(StatementParserInfo):
                 ),
             )
 
+        # TODO: protected visibility only valid when nested within class
+
         if self.extends and len(self.extends) > 1:
             errors.append(
                 MultipleExtendsError.Create(
@@ -292,8 +294,8 @@ class ClassStatementParserInfo(StatementParserInfo):
                         ),
                     )
 
-        # Create default special methods as necessary
-        # TODO
+        # TODO: Create default special methods as necessary
+        # TODO: Create a static 'Create' method if one does not already exist
 
         if errors:
             raise ErrorException(*errors)

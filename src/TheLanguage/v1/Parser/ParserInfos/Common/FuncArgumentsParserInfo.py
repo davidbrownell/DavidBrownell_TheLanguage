@@ -96,7 +96,14 @@ class FuncArgumentsParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, regions):
-        super(FuncArgumentsParserInfo, self).__init__(ParserInfoType.Standard, regions)
+        result = self.__class__._GetDominantExpressionType(*self.arguments)  # pylint: disable=protected-access
+
+        if isinstance(result, list):
+            raise ErrorException(*result)
+
+        parser_info_type = result
+
+        super(FuncArgumentsParserInfo, self).__init__(parser_info_type, regions)
 
         # Validate
         errors: List[Error] = []

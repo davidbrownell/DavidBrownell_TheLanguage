@@ -40,7 +40,6 @@ with InitRelativeImports():
         ExtractDynamic,
         ExtractOptional,
         ExtractSequence,
-        ExtractToken,
         PhraseItem,
         OptionalPhraseItem,
     )
@@ -68,7 +67,7 @@ def Create() -> PhraseItem:
             OptionalPhraseItem(
                 name="Keyword",
                 item=[
-                    CommonTokens.RuntimeParameterName,
+                    CommonTokens.ParameterName,
                     "=",
                 ],
             ),
@@ -120,7 +119,7 @@ def _ExtractElement(
         assert len(keyword_nodes) == 2
 
         keyword_node = cast(AST.Leaf, keyword_nodes[0])
-        keyword_info = ExtractToken(keyword_node)
+        keyword_info = CommonTokens.ParameterName.Extract(keyword_node)  # type: ignore
 
     # <expression>
     expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))

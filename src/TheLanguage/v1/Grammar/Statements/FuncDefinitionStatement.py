@@ -52,7 +52,6 @@ with InitRelativeImports():
         ExtractOptional,
         ExtractOr,
         ExtractSequence,
-        ExtractToken,
         OptionalPhraseItem,
     )
 
@@ -99,7 +98,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                     DynamicPhrasesType.Types,
 
                     # <name>
-                    CommonTokens.RuntimeFuncName,
+                    CommonTokens.FuncName,
 
                     # Template Parameters, Captures
                     CommonTokens.PushIgnoreWhitespaceControl,
@@ -245,12 +244,10 @@ class FuncDefinitionStatement(GrammarPhrase):
 
             # <name>
             name_leaf = cast(AST.Leaf, nodes[4])
-            name_info = ExtractToken(
-                name_leaf,
-                return_match_contents=True,
-            )
+            name_info = CommonTokens.FuncName.Extract(name_leaf)  # type: ignore
 
             # TODO: Get exceptional information from name
+            # TODO: Get visibility information from name
 
             # <template_parameters>?
             template_parameters_info = None

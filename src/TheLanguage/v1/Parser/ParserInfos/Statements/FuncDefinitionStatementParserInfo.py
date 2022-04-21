@@ -222,6 +222,11 @@ InvalidMethodMutabilityError                = CreateError(
     valid_mutabilities_str=str,
 )
 
+InvalidMethodParameterNameError             = CreateError(
+    "The parameter name '{name}' cannot be overridden",
+    name=str,
+)
+
 InvalidMethodModifierError                  = CreateError(
     "'{modifier_str}' is not a valid modifier for '{type}' types; valid modifiers are {valid_modifiers_str}",
     type=str,
@@ -431,6 +436,21 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                             valid_mutabilities_str=", ".join("'{}'".format(m.name) for m in class_capabilities.valid_method_mutabilities),
                         ),
                     )
+
+                # 'this' and 'self' can't be used as parameter names
+                if isinstance(self.parameters, FuncParametersParserInfo):
+                    for parameter in itertools.chain(
+                        self.parameters.positional or [],
+                        self.parameters.any or [],
+                        self.parameters.keyword or [],
+                    ):
+                        if parameter.name in ["self", "this"]:
+                            errors.append(
+                                InvalidMethodParameterNameError.Create(
+                                    region=parameter.regions__.name,
+                                    name=parameter.name,
+                                ),
+                            )
 
             assert self.method_modifier is not None
 

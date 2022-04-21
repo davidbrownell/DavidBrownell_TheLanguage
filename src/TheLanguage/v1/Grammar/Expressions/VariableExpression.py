@@ -38,8 +38,6 @@ with InitRelativeImports():
         CreatePhrase,
         DynamicPhrasesType,
         ExtractSequence,
-        ExtractToken,
-        ExtractTokenRangeNoThrow,
     )
 
     from ...Parser.Parser import CreateRegions
@@ -79,16 +77,13 @@ class VariableExpression(GrammarPhrase):
 
         # <name>
         name_leaf = cast(AST.Leaf, nodes[0])
-        name_info = ExtractToken(
-            name_leaf,
-            return_match_contents=True,
-        )
+        name_info = CommonTokens.ParameterName.Extract(name_leaf)  # type: ignore
 
         # Determine if we are looking at a compile-time var
-        is_compile_time_range = ExtractTokenRangeNoThrow(name_leaf, "is_compile_time")
+        is_compile_time_region = CommonTokens.ParameterName.GetIsCompileTimeRegion(name_leaf)  # type: ignore  # pylint: disable=not-callable
 
         return VariableExpressionParserInfo.Create(
-            CreateRegions(name_leaf, is_compile_time_range),
-            True if is_compile_time_range else None,
+            CreateRegions(name_leaf, is_compile_time_region),
+            bool(is_compile_time_region),
             name_info,
         )

@@ -41,7 +41,6 @@ with InitRelativeImports():
         ExtractOptional,
         ExtractRepeat,
         ExtractSequence,
-        ExtractToken,
         PhraseItem,
         OptionalPhraseItem,
         ZeroOrMorePhraseItem,
@@ -101,7 +100,7 @@ def Create() -> PhraseItem:
         name="Attribute Element",
         item=[
             # <name>
-            CommonTokens.RuntimeAttributeName,
+            CommonTokens.AttributeName,
 
             # <function_arguments>?
             OptionalPhraseItem(
@@ -168,7 +167,7 @@ def Extract(
 
         # <name>
         attribute_name_node = cast(AST.Leaf, attribute_nodes[0])
-        attribute_name_info = ExtractToken(attribute_name_node)
+        attribute_name_info = CommonTokens.AttributeName.Extract(attribute_name_node)  # type: ignore
 
         # <function_arguments>?
         function_arguments_info = None

@@ -52,7 +52,6 @@ with InitRelativeImports():
         ExtractOr,
         ExtractRepeat,
         ExtractSequence,
-        ExtractToken,
         OptionalPhraseItem,
         PhraseItem,
         ZeroOrMorePhraseItem,
@@ -178,8 +177,8 @@ class ClassStatement(GrammarPhrase):
                     # <class_type>
                     CreateClassTypePhraseItem(),
 
-                    # <type_name>
-                    CommonTokens.RuntimeTypeName,
+                    # <name>
+                    CommonTokens.TypeName,
 
                     # Template Parameters, Constraints, Dependencies
                     CommonTokens.PushIgnoreWhitespaceControl,
@@ -409,9 +408,11 @@ class ClassStatement(GrammarPhrase):
             # <class_modifier>? is extracted above
             # <class_type> is extracted above
 
-            # <type_name>
-            type_name_node = cast(AST.Leaf, nodes[4])
-            type_name_info = ExtractToken(type_name_node)
+            # <name>
+            name_node = cast(AST.Leaf, nodes[4])
+            name_info = CommonTokens.TypeName.Extract(name_node)  # type: ignore
+
+            # TODO: Get visibility information from name
 
             # <template_parameters>?
             templates_info = None
@@ -519,7 +520,7 @@ class ClassStatement(GrammarPhrase):
                     node,
                     visibility_node,
                     class_modifier_node,
-                    type_name_node,
+                    name_node,
                     docstring_node,
                     all_dependencies_info.get(DependencyType.extends, [None])[0],
                     all_dependencies_info.get(DependencyType.implements, [None])[0],
@@ -532,7 +533,7 @@ class ClassStatement(GrammarPhrase):
                 class_capabilities,
                 visibility_info,
                 class_modifier_info,
-                type_name_info,
+                name_info,
                 docstring_info,
                 templates_info,
                 constraints_info,

@@ -44,7 +44,6 @@ with InitRelativeImports():
         ExtractOptional,
         ExtractRepeat,
         ExtractSequence,
-        ExtractToken,
         OneOrMorePhraseItem,
         OptionalPhraseItem,
     )
@@ -72,7 +71,7 @@ class StandardType(GrammarPhrase):
             name="Element",
             item=[
                 # <name>
-                CommonTokens.RuntimeTypeName,
+                CommonTokens.TypeName,
 
                 # <template_arguments>?
                 OptionalPhraseItem(
@@ -175,7 +174,7 @@ class StandardType(GrammarPhrase):
 
                 # <name>
                 name_leaf = cast(AST.Leaf, these_element_nodes[0])
-                name_info = ExtractToken(name_leaf)
+                name_info = CommonTokens.TypeName.Extract(name_leaf)  # type: ignore
 
                 # <template_arguments>?
                 template_info = None
