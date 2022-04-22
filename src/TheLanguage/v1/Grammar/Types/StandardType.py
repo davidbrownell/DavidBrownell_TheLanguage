@@ -87,18 +87,7 @@ class StandardType(GrammarPhrase):
             ],
         )
 
-        # TODO: Only supporting inline right now. Eventually, we want to support a format that allows
-        #       for:
-        #
-        #           var.one.two
-        #               .three.four
-        #                   .five
-        #               .six
-        #                   .seven
-        #                       .eight.nine.ten.eleven
-        #               .twelve
-        #
-        #       Likely needs to be recursive.
+        # TODO: This should not include dots; that should be handled by a different operator.
 
         super(StandardType, self).__init__(
             DynamicPhrasesType.Types,

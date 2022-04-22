@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableExpression.py
+# |  FuncOrTypeExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-20 15:02:15
+# |      2022-04-22 08:05:30
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableExpression object"""
+"""Contains the FuncOrTypeExpression object"""
 
 import os
 
@@ -42,26 +42,29 @@ with InitRelativeImports():
 
     from ...Parser.Parser import CreateRegions
 
-    from ...Parser.ParserInfos.Expressions.VariableExpressionParserInfo import (
-        VariableExpressionParserInfo,
+    from ...Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import (
+        FuncOrTypeExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class VariableExpression(GrammarPhrase):
-    PHRASE_NAME                             = "Variable Expression"
+class FuncOrTypeExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Func or Type Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(VariableExpression, self).__init__(
+        super(FuncOrTypeExpression, self).__init__(
             DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
                     # Note that needs to be a sequence so that we can properly extract the value
 
+                    # Note that the definition of a type is a subset of the definition of a function,
+                    # so using function here.
+
                     # <name>
-                    CommonTokens.VariableName,
+                    CommonTokens.FuncName,
                 ],
             ),
         )
@@ -77,12 +80,11 @@ class VariableExpression(GrammarPhrase):
 
         # <name>
         name_leaf = cast(AST.Leaf, nodes[0])
-        name_info = CommonTokens.VariableName.Extract(name_leaf)  # type: ignore
+        name_info = CommonTokens.FuncName.Extract(name_leaf)  # type: ignore
 
-        # Determine if we are looking at a compile-time var
-        is_compile_time_region = CommonTokens.VariableName.GetIsCompileTimeRegion(name_leaf)  # type: ignore  # pylint: disable=not-callable
+        is_compile_time_region = CommonTokens.FuncName.GetIsCompileTimeRegion(name_leaf)  # type: ignore
 
-        return VariableExpressionParserInfo.Create(
+        return FuncOrTypeExpressionParserInfo.Create(
             CreateRegions(node, is_compile_time_region, name_leaf),
             bool(is_compile_time_region),
             name_info,

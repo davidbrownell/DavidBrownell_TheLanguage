@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableExpressionParserInfo.py
+# |  FuncOrTypeExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-20 15:06:33
+# |      2022-04-22 08:02:03
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableExpressionParserInfo object"""
+"""Contains the FuncOrTypeExpressionParserInfo object"""
 
 import os
 
@@ -36,7 +36,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableExpressionParserInfo(ExpressionParserInfo):
+class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     is_compile_time: Optional[bool]
     name: str

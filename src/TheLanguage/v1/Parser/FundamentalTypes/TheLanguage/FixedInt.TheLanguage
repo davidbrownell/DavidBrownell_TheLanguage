@@ -1,0 +1,163 @@
+# ----------------------------------------------------------------------
+# |
+# |  FixedInt.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2022-04-18 10:27:42
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2022
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Concepts.MutableInt import MutableInt
+
+
+# ----------------------------------------------------------------------
+public class FixedInt <
+    Int num_bytes!,                         # 1, 2, 4, 8, 16
+    Bool is_checked!,
+> {
+    key:
+        Bool is_signed!,
+        Int min_value! = -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0,
+        Int max_value! = (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1),
+}
+    implements MutableInt { min_value!, max_value! }
+:
+    __EvalTemplates!__():
+        Enforce!(
+            num_bytes! == 1
+            or num_bytes! == 2
+            or num_bytes! == 4
+            or num_bytes! == 8
+            or num_bytes! == 16
+        )
+
+    __EvalConstraints!__():
+        # Enforce that the min and max values are valid given the number of bytes
+        # TODO: Enforce!(min_value! >= -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0)
+        # TODO: Enforce!(max_value! <= (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1))
+        Enforce!(min_value! >= (-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0))
+        Enforce!(max_value! <= ((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1)))
+
+        # Ensure that the range between the min and the max can be contained within the bytes
+        # TODO: Enforce!(max_value! - min_value! <= ((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1)))
+        # TODO: Enforce!(min_value! - max_value! >= (-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0))
+        Enforce!(max_value! - min_value! <= (((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1))))
+        Enforce!(min_value! - max_value! >= ((-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0)))
+
+    [Deferred] public ArchInt val GetBytes() immutable
+
+    [Deferred, Static] public override ThisType var __Deserialize?__<ArchiveT>(ArchiveT ref archive)
+    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) immutable
+
+    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) immutable
+    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) mutable
+
+    [Deferred] public override ThisType var __Clone?__() immutable
+
+    [Deferred] public override Bool val __ToBool__() immutable               # value != 0
+    [Deferred] public override Str val __ToString?__() immutable
+
+    [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, Integer immutable that)
+
+    [Deferred] public override Bool val __Equal__(Integer immutable that) immutable
+    [Deferred] public override Bool val __NotEqual__(Integer immutable that) immutable
+    [Deferred] public override Bool val __Less__(Integer immutable that) immutable
+    [Deferred] public override Bool val __LessEqual__(Integer immutable that) immutable
+    [Deferred] public override Bool val __Greater__(Integer immutable that) immutable
+    [Deferred] public override Bool val __GreaterEqual__(Integer immutable that) immutable
+
+    [Deferred] public override ThisType var __Negative?__() immutable
+    [Deferred] public override ThisType var __Positive?__() immutable
+    [Deferred] public override ThisType var __BitFlip?__() immutable
+
+    [Deferred] public override Num var __Divide?__(Integer immutable divisor) immutable
+    [Deferred] public override ThisType var __DivideFloor?__(Integer immutable divisor) immutable
+    [Deferred] public override ThisType var __Modulo?__(Integer immutable divisor) immutable
+    [Deferred] public override ThisType var __Multiply?__(Integer immutable multiplier) immutable
+    [Deferred] public override ThisType var __Power?__(Integer immutable exponent) immutable
+
+    [Deferred] public override ThisType var __Add?__(Integer immutable value) immutable
+    [Deferred] public override ThisType var __Subtract?__(Integer immutable value) immutable
+
+    [Deferred] public override ThisType var __BitShiftLeft?__(Integer immutable places) immutable
+    [Deferred] public override ThisType var __BitShiftRight?__(Integer immutable places) immutable
+
+    [Deferred] public override ThisType var __BitAnd?__(Integer immutable value) immutable
+    [Deferred] public override ThisType var __BitXOr?__(Integer immutable value) immutable
+    [Deferred] public override ThisType var __BitOr?__(Integer immutable value) immutable
+
+    [Deferred] public None __BitFlipInplace?__() mutable
+
+    [Deferred] public None __DivideFloorInplace?__(Integer immutable divisor) mutable
+    [Deferred] public None __ModuloInplace?__(Integer immutable divisor) mutable
+    [Deferred] public None __MultiplyInplace?__(Integer immutable multiplier) mutable
+    [Deferred] public None __PowerInplace?__(Integer immutable exponent) mutable
+
+    [Deferred] public None __AddInplace?__(Integer immutable value) mutable
+    [Deferred] public None __SubtractInplace?__(Integer immutable value) mutable
+
+    [Deferred] public None __BitShiftLeftInplace?__(Integer immutable places) mutable
+    [Deferred] public None __BitShiftRightInplace?__(Integer immutable places) mutable
+
+    [Deferred] public None __BitAndInplace?__(Integer immutable value) mutable
+    [Deferred] public None __BitXOrInplace?__(Integer immutable value) mutable
+    [Deferred] public None __BitOrInplace?__(Integer immutable value) mutable
+
+
+# ----------------------------------------------------------------------
+public Int8                                 = FixedInt{1, is_signed! = True, is_checked! = False}
+public CheckedInt8                          = FixedInt{1, is_signed! = True, is_checked! = True}
+
+public UInt8                                = FixedInt{1, is_signed! = False, is_checked! = False}
+public CheckedUInt8                         = FixedInt{1, is_signed! = False, is_checked! = True}
+
+
+# ----------------------------------------------------------------------
+public Int16                                = FixedInt{2, is_signed! = True, is_checked! = False}
+public CheckedInt16                         = FixedInt{2, is_signed! = True, is_checked! = True}
+
+public UInt16                               = FixedInt{2, is_signed! = False, is_checked! = False}
+public CheckedUInt16                        = FixedInt{2, is_signed! = False, is_checked! = True}
+
+
+# ----------------------------------------------------------------------
+public Int32                                = FixedInt{4, is_signed! = True, is_checked! = False}
+public CheckedInt32                         = FixedInt{4, is_signed! = True, is_checked! = True}
+
+public UInt32                               = FixedInt{4, is_signed! = False, is_checked! = False}
+public CheckedUInt32                        = FixedInt{4, is_signed! = False, is_checked! = True}
+
+
+# ----------------------------------------------------------------------
+public Int64                                = FixedInt{8, is_signed! = True, is_checked! = False}
+public CheckedInt64                         = FixedInt{8, is_signed! = True, is_checked! = True}
+
+public UInt64                               = FixedInt{8, is_signed! = False, is_checked! = False}
+public CheckedUInt64                        = FixedInt{8, is_signed! = False, is_checked! = True}
+
+
+# ----------------------------------------------------------------------
+public Int128                               = FixedInt{16, is_signed! = True, is_checked! = False}
+public CheckedInt128                        = FixedInt{16, is_signed! = True, is_checked! = True}
+
+public UInt128                              = FixedInt{16, is_signed! = False, is_checked! = False}
+public CheckedUInt128                       = FixedInt{16, is_signed! = False, is_checked! = True}
+
+
+# ----------------------------------------------------------------------
+if __architecture_bytes! == 4:
+    public ArchInt                          = UInt32
+    public CheckedArchInt                   = CheckedUInt32
+
+elif __architecture_bytes! == 8:
+    public ArchInt                          = UInt64
+    public CheckedArchInt                   = CheckedUInt64
+
+else:
+    Error(False, "Unsupported architecture", __architecture_bytes!)
