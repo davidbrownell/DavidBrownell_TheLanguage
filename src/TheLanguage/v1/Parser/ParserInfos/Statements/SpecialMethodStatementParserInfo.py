@@ -101,7 +101,7 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
     def Create(
         cls,
         regions: List[Optional[Region]],
-        class_capabilities: ClassCapabilities,
+        class_capabilities: Optional[ClassCapabilities],
         the_type: SpecialMethodType,
         *args,
         **kwargs,
