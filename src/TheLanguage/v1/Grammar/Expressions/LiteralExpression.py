@@ -35,7 +35,6 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractOr,
         ExtractToken,
@@ -61,92 +60,88 @@ class LiteralExpression(GrammarPhrase):
     def __init__(self):
         super(LiteralExpression, self).__init__(
             DynamicPhrasesType.Expressions,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=(
-                    # <Boolean>
-                    PhraseItem(
-                        name="Boolean",
-                        item=(
-                            "True",
-                            "False",
+            self.PHRASE_NAME,
+            (
+                # <Boolean>
+                PhraseItem(
+                    name="Boolean",
+                    item=(
+                        "True",
+                        "False",
+                    ),
+                ),
+
+                # <Character>
+                # TODO: Unicode support doesn't seem to be working: 😀
+                PhraseItem(
+                    RegexToken(
+                        "Character",
+                        re.compile(
+                            textwrap.dedent(
+                                r"""(?#
+                                Single Quote                )'(?#
+                                Content [begin]             )(?P<value>(?#
+                                    Standard char           ).(?#
+                                    Unicode 16-bit hex]     )|\\u\d{4}|(?#
+                                    Unicode 32-bit hex]     )|\\U\d{8}(?#
+                                Content [end]               ))(?#
+                                Single Quote                )'(?#
+                                )""",
+                            ),
+                            re.UNICODE,
                         ),
                     ),
+                ),
 
-                    # <Character>
-                    # TODO: Unicode support doesn't seem to be working: 😀
-                    PhraseItem(
-                        RegexToken(
-                            "Character",
-                            re.compile(
-                                textwrap.dedent(
-                                    r"""(?#
-                                    Single Quote                )'(?#
-                                    Content [begin]             )(?P<value>(?#
-                                        Standard char           ).(?#
-                                        Unicode 16-bit hex]     )|\\u\d{4}|(?#
-                                        Unicode 32-bit hex]     )|\\U\d{8}(?#
-                                    Content [end]               ))(?#
-                                    Single Quote                )'(?#
-                                    )""",
-                                ),
-                                re.UNICODE,
+                # <Integer>
+                PhraseItem(
+                    RegexToken(
+                        "Integer",
+                        re.compile(
+                            textwrap.dedent(
+                                r"""(?P<value>(?#
+                                Digits                      )\d+(?#
+                                ))""",
                             ),
                         ),
                     ),
+                ),
 
-                    # <Integer>
-                    PhraseItem(
-                        RegexToken(
-                            "Integer",
-                            re.compile(
-                                textwrap.dedent(
-                                    r"""(?P<value>(?#
-                                    +/-                         )[+-]?(?#
-                                    Digits                      )\d+(?#
-                                    ))""",
-                                ),
+                # None
+                PhraseItem(
+                    name="None",
+                    item="None",
+                ),
+
+                # <Number>
+                PhraseItem(
+                    RegexToken(
+                        "Number",
+                        re.compile(
+                            textwrap.dedent(
+                                r"""(?P<value>(?#
+                                Leading Digits              )\d*(?#
+                                Decimal Point               )\.(?#
+                                Trailing Digits             )\d+(?#
+                                ))""",
                             ),
                         ),
                     ),
+                ),
 
-                    # None
-                    PhraseItem(
-                        name="None",
-                        item="None",
-                    ),
-
-                    # <Number>
-                    PhraseItem(
-                        RegexToken(
-                            "Number",
-                            re.compile(
-                                textwrap.dedent(
-                                    r"""(?P<value>(?#
-                                    +/-                         )[+-]?(?#
-                                    Leading Digits              )\d*(?#
-                                    Decimal Point               )\.(?#
-                                    Trailing Digits             )\d+(?#
-                                    ))""",
-                                ),
-                            ),
-                        ),
-                    ),
-
-                    # <String>
-                    PhraseItem(
-                        RegexToken(
-                            "String",
-                            re.compile(
-                                textwrap.dedent(
-                                    r"""(?#
-                                    Double Quote                )"(?#
-                                    Content [begin]             )(?P<value>(?#
-                                    Non-Quote Chars             )(?:\\\"|[^\n])*(?#
-                                    Content [end]               ))(?#
-                                    Double Quote                )"(?#
-                                    )""",
-                                ),
+                # <String>
+                PhraseItem(
+                    RegexToken(
+                        "String",
+                        re.compile(
+                            textwrap.dedent(
+                                r"""(?#
+                                Double Quote                )"(?#
+                                Content [begin]             )(?P<value>(?#
+                                Non-Quote Chars             )(?:\\\"|[^\n])*(?#
+                                Content [end]               ))(?#
+                                Double Quote                )"(?#
+                                )""",
                             ),
                         ),
                     ),

@@ -36,7 +36,6 @@ with InitRelativeImports():
     from ..Expressions.CallExpression import CallExpression
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractSequence,
@@ -70,18 +69,16 @@ class FuncInvocationStatement(GrammarPhrase):
 
         super(FuncInvocationStatement, self).__init__(
             DynamicPhrasesType.Statements,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <expression>
-                    PhraseItem(
-                        item=DynamicPhrasesType.Expressions,
-                        is_valid_data_func=IsValidData,
-                    ),
+            self.PHRASE_NAME,
+            [
+                # <expression>
+                PhraseItem(
+                    item=DynamicPhrasesType.Expressions,
+                    is_valid_data_func=IsValidData,
+                ),
 
-                    CommonTokens.Newline,
-                ],
-            ),
+                CommonTokens.Newline,
+            ],
         )
 
     # ----------------------------------------------------------------------

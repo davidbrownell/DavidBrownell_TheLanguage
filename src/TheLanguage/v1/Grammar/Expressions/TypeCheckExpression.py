@@ -33,7 +33,6 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOr,
@@ -67,22 +66,20 @@ class TypeCheckExpression(GrammarPhrase):
     def __init__(self):
         super(TypeCheckExpression, self).__init__(
             DynamicPhrasesType.Expressions,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <expression>
-                    DynamicPhrasesType.Expressions,
+            self.PHRASE_NAME,
+            [
+                # <expression>
+                DynamicPhrasesType.Expressions,
 
-                    # <operator>
-                    PhraseItem(
-                        name="Operator",
-                        item=tuple(self.__class__.OPERATOR_MAP.keys()),
-                    ),
+                # <operator>
+                PhraseItem(
+                    name="Operator",
+                    item=tuple(self.__class__.OPERATOR_MAP.keys()),
+                ),
 
-                    # <type>
-                    DynamicPhrasesType.Types,
-                ],
-            ),
+                # <type>
+                DynamicPhrasesType.Types,
+            ],
         )
 
     # ----------------------------------------------------------------------

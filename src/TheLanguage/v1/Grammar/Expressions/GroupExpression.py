@@ -36,7 +36,6 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractSequence,
@@ -57,21 +56,19 @@ class GroupExpression(GrammarPhrase):
     def __init__(self):
         super(GroupExpression, self).__init__(
             DynamicPhrasesType.Expressions,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # '('
-                    "(",
-                    CommonTokens.PushIgnoreWhitespaceControl,
+            self.PHRASE_NAME,
+            [
+                # '('
+                "(",
+                CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # <expression>
-                    DynamicPhrasesType.Expressions,
+                # <expression>
+                DynamicPhrasesType.Expressions,
 
-                    # ')'
-                    CommonTokens.PopIgnoreWhitespaceControl,
-                    ")",
-                ],
-            ),
+                # ')'
+                CommonTokens.PopIgnoreWhitespaceControl,
+                ")",
+            ],
         )
 
     # ----------------------------------------------------------------------
