@@ -94,6 +94,8 @@ def Execute(
     max_num_threads=None,
     output_stream=sys.stdout,
 ):
+    max_num_threads = 1
+
     with StreamDecorator(output_stream).DoneManager(
         line_prefix="",
         prefix="\nResults: ",
