@@ -107,8 +107,24 @@ def _GetRegionFuncFactory(
     return types.MethodType(Impl, regex_token)
 
 
-# TODO: Update these so that forward lookahead doesn't contain any of these chars
-# TODO: Don't allow literals or fundamental type names
+# ----------------------------------------------------------------------
+ReservedUpperNames                          = [
+    # Fundamental Types
+    "Bool",
+    "Char",
+    "Int",
+    "None",
+    "Num",
+    "Str",
+
+    # Fundamental Type Values
+    "True",
+    "False",
+]
+
+ReservedLowerNames                          = [
+]
+
 
 # ----------------------------------------------------------------------
 AttributeName                               = RegexToken(
@@ -121,6 +137,7 @@ AttributeName                               = RegexToken(
             ))""",
         ),
     ),
+    exclude_matches=ReservedLowerNames,
 )
 
 AttributeName.Extract                       = _ExtractFuncFactory(False)  # type: ignore
@@ -135,17 +152,21 @@ FuncName                                    = RegexToken(
             Initial Underscores [optional]  )_*(?#
             Upper                           )[A-Z](?#
             Alphanumeric                    )[A-Za-z0-9_]+(?#
-            Is Exceptional [optional]       )(?P<is_exceptional>\?)?(?#
-            Bang [optional]                 )(?P<is_compile_time>!)?(?#
+            Is compile time [optional]      )(?P<is_compile_time>!)?(?#
+            Is exceptional [optional]       )(?P<is_exceptional>\?)?(?#
             Trailing Underscores [optional] )_*(?#
+            Whole match only                )(?![A-Za-z0-9_!\?])(?#
             ))""",
         ),
     ),
+    exclude_matches=ReservedUpperNames,
 )
 
-FuncName.Extract                            = _ExtractFuncFactory(True)  # type: ignore
-FuncName.IsExceptional                      = _IsFuncFactory(FuncName, "is_exceptional")  # type: ignore
-FuncName.IsCompileTime                      = _IsFuncFactory(FuncName, "is_compile_time")  # type: ignore
+FuncName.Extract                            = _ExtractFuncFactory(True)                             # type: ignore
+FuncName.IsCompileTime                      = _IsFuncFactory(FuncName, "is_compile_time")           # type: ignore
+FuncName.GetIsCompileTimeRegion             = _GetRegionFuncFactory(FuncName, "is_compile_time")    # type: ignore
+FuncName.IsExceptional                      = _IsFuncFactory(FuncName, "is_exceptional")            # type: ignore
+FuncName.GetIsCompileTimeRegion             = _GetRegionFuncFactory(FuncName, "is_exceptional")     # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -160,11 +181,12 @@ ParameterName                               = RegexToken(
             ))""",
         ),
     ),
+    exclude_matches=ReservedLowerNames,
 )
 
-ParameterName.Extract                       = _ExtractFuncFactory(True)  # type: ignore
-ParameterName.IsCompileTime                 = _IsFuncFactory(ParameterName, "is_compile_time")  # type: ignore
-ParameterName.GetIsCompileTimeRegion        = _GetRegionFuncFactory(ParameterName, "is_compile_time")  # type: ignore
+ParameterName.Extract                       = _ExtractFuncFactory(True)                                 # type: ignore
+ParameterName.IsCompileTime                 = _IsFuncFactory(ParameterName, "is_compile_time")          # type: ignore
+ParameterName.GetIsCompileTimeRegion        = _GetRegionFuncFactory(ParameterName, "is_compile_time")   # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -177,14 +199,20 @@ SpecialMethodName                           = RegexToken(
             Initial Underscores             )__(?#
             Upper                           )[A-Z](?#
             Alphanumeric                    )[A-Za-z0-9_]+(?#
-            Bang or Question                )(?:!|\?)?(?#
+            Bang [optional]                 )(?P<is_compile_time>!)?(?#
+            Question mark [optional]        )(?P<is_exceptional>\?)?(?#
             Trailing Underscores            )__(?#
+            Whole match only                )(?![A-Za-z0-9_!\?])(?#
             ))""",
         ),
     ),
 )
 
-SpecialMethodName.Extract                   = _ExtractFuncFactory(False)  # type: ignore
+SpecialMethodName.Extract                   = _ExtractFuncFactory(True)                                     # type: ignore
+SpecialMethodName.IsCompileTime             = _IsFuncFactory(SpecialMethodName, "is_compile_time")          # type: ignore
+SpecialMethodName.GetIsCompileTimeRegion    = _GetRegionFuncFactory(SpecialMethodName, "is_compile_time")   # type: ignore
+SpecialMethodName.IsExceptional             = _IsFuncFactory(SpecialMethodName, "is_exceptional")           # type: ignore
+SpecialMethodName.GetIsExceptionalRegion    = _GetRegionFuncFactory(SpecialMethodName, "is_exceptional")    # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -200,6 +228,7 @@ TemplateTypeName                            = RegexToken(
             ))""",
         ),
     ),
+    exclude_matches=ReservedUpperNames,
 )
 
 TemplateTypeName.Extract                    = _ExtractFuncFactory(False)  # type: ignore
@@ -215,6 +244,7 @@ TypeName                                    = RegexToken(
             Upper                           )[A-Z](?#
             Alphanumeric                    )[A-Za-z0-9_]+(?#
             Trailing Underscores [optional] )_*(?#
+            Whole match only                )(?![A-Za-z0-9_])(?#
             ))""",
         ),
     ),
@@ -235,13 +265,18 @@ VariableName                                = RegexToken(
             Initial Underscores [optional]  )_*(?#
             Lower                           )[a-z](?#
             Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
+            Bang [optional]                 )(?P<is_compile_time>!)?(?#
             Trailing Underscores [optional] )_*(?#
+            Whole match only                )(?![A-Za-z0-9_!])(?#
             ))""",
         ),
     ),
+    exclude_matches=ReservedLowerNames,
 )
 
-VariableName.Extract                        = _ExtractFuncFactory(False)  # type: ignore
+VariableName.Extract                        = _ExtractFuncFactory(True)  # type: ignore
+VariableName.IsCompileTime                  = _IsFuncFactory(VariableName, "is_compile_time")  # type: ignore
+VariableName.GetIsCompileTimeRegion         = _GetRegionFuncFactory(VariableName, "is_compile_time")  # type: ignore
 
 
 # ----------------------------------------------------------------------

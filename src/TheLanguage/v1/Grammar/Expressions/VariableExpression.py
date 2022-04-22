@@ -61,7 +61,7 @@ class VariableExpression(GrammarPhrase):
                     # Note that needs to be a sequence so that we can properly extract the value
 
                     # <name>
-                    CommonTokens.ParameterName,
+                    CommonTokens.VariableName,
                 ],
             ),
         )
@@ -77,10 +77,10 @@ class VariableExpression(GrammarPhrase):
 
         # <name>
         name_leaf = cast(AST.Leaf, nodes[0])
-        name_info = CommonTokens.ParameterName.Extract(name_leaf)  # type: ignore
+        name_info = CommonTokens.VariableName.Extract(name_leaf)  # type: ignore
 
         # Determine if we are looking at a compile-time var
-        is_compile_time_region = CommonTokens.ParameterName.GetIsCompileTimeRegion(name_leaf)  # type: ignore  # pylint: disable=not-callable
+        is_compile_time_region = CommonTokens.VariableName.GetIsCompileTimeRegion(name_leaf)  # type: ignore  # pylint: disable=not-callable
 
         return VariableExpressionParserInfo.Create(
             CreateRegions(name_leaf, is_compile_time_region),
