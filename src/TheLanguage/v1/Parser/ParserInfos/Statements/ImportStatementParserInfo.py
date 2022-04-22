@@ -47,8 +47,6 @@ class ImportType(Enum):
 @dataclass(frozen=True, repr=False)
 class ImportStatementItemParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
     regions: InitVar[List[Optional[Region]]]
 
     name: str
@@ -64,13 +62,14 @@ class ImportStatementItemParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(ImportStatementItemParserInfo, self).__init__(ParserInfoType.Standard, regions)
+    def __post_init__(self, *args, **kwargs):
+        super(ImportStatementItemParserInfo, self).__init__(ParserInfoType.Standard, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ImportStatementParserInfo(StatementParserInfo):
+    # ----------------------------------------------------------------------
     visibility_param: InitVar[Optional[VisibilityModifier]]
     visibility: VisibilityModifier          = field(init=False)
 
@@ -80,8 +79,23 @@ class ImportStatementParserInfo(StatementParserInfo):
     import_type: ImportType
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, visibility_param):
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            ParserInfoType.Standard,        # type: ignore
+            regions,                        # type: ignore
+            *args,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, parser_info_type, regions, visibility_param):
         super(ImportStatementParserInfo, self).__post_init__(
+            parser_info_type,
             regions,
             regionless_attributes=[
                 "import_items",

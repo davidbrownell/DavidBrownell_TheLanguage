@@ -17,7 +17,7 @@ regions__: # <class 'types.RootParserInfoRegions'>
       line: 5
 statements:
   - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    capabilities: "Standard"
+    class_capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
     constraints: None
     constructor_visibility: "VisibilityModifier.public"
@@ -284,7 +284,7 @@ statements:
                     column: 17
                     line: 3
                   end: # <class 'v1.Lexer.Location.Location'>
-                    column: 28
+                    column: 27
                     line: 3
                 mutability_modifier: # <class 'v1.Parser.Region.Region'>
                   begin: # <class 'v1.Lexer.Location.Location'>
@@ -397,7 +397,7 @@ statements:
                     column: 6
                     line: 4
                   end: # <class 'v1.Lexer.Location.Location'>
-                    column: 16
+                    column: 15
                     line: 4
                 mutability_modifier: # <class 'v1.Parser.Region.Region'>
                   begin: # <class 'v1.Lexer.Location.Location'>

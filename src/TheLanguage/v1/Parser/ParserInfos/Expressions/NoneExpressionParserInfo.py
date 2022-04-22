@@ -17,7 +17,9 @@
 
 import os
 
-from dataclasses import dataclass, field
+from typing import List, Optional
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -29,15 +31,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class NoneExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions):  # type: ignore
-        super(NoneExpressionParserInfo, self).__post_init__(ParserInfoType.Unknown, regions)
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            ParserInfoType.Unknown,         # type: ignore
+            regions,                        # type: ignore
+            *args,
+            **kwargs,
+        )

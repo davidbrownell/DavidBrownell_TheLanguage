@@ -20,7 +20,7 @@ import os
 
 from typing import Dict, List, Optional, Union
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 
@@ -50,13 +50,15 @@ DuplicateVariadicError                      = CreateError(
     prev_region=Region,
 )
 
+InvalidTemplateExpressionError              = CreateError(
+    "Template decorator parameters must be compile-time expressions",
+)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TemplateTypeParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
     regions: InitVar[List[Optional[Region]]]
 
     name: str
@@ -73,10 +75,11 @@ class TemplateTypeParameterParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
+    def __post_init__(self, *args, **kwargs):
         super(TemplateTypeParameterParserInfo, self).__init__(
             ParserInfoType.CompileTime,
-            regions,
+            *args,
+            **kwargs,
             regionless_attributes=["default_type", ],
         )
 
@@ -85,8 +88,6 @@ class TemplateTypeParameterParserInfo(ParserInfo):
 @dataclass(frozen=True, repr=False)
 class TemplateDecoratorParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
     regions: InitVar[List[Optional[Region]]]
 
     type: TypeParserInfo
@@ -103,14 +104,29 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
+    def __post_init__(self, *args, **kwargs):
         super(TemplateDecoratorParameterParserInfo, self).__init__(
             ParserInfoType.CompileTime,
-            regions,
+            *args,
+            **kwargs,
             regionless_attributes=["type", "default_value", ],
         )
 
-        # TODO: Verify that the expression is a compile-time expression
+        # Validate
+        errors: List[Error] = []
+
+        if (
+            self.default_value is not None
+            and self.default_value.parser_info_type__.value > ParserInfoType.CompileTime.value  # type: ignore
+        ):
+            errors.append(
+                InvalidTemplateExpressionError.Create(
+                    region=self.default_value.regions__.self__,
+                ),
+            )
+
+        if errors:
+            raise ErrorException(*errors)
 
 
 # ----------------------------------------------------------------------
@@ -125,8 +141,6 @@ class TemplateParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     # |  Public Data
-    parser_info_type__: ParserInfoType      = field(init=False)
-
     regions: InitVar[List[Optional[Region]]]
 
     positional: Optional[List["TemplateParametersParserInfo.ParameterType"]]
@@ -144,8 +158,8 @@ class TemplateParametersParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(TemplateParametersParserInfo, self).__init__(ParserInfoType.CompileTime, regions)
+    def __post_init__(self, *args, **kwargs):
+        super(TemplateParametersParserInfo, self).__init__(ParserInfoType.CompileTime, *args, **kwargs)
         assert self.positional or self.any or self.keyword
 
         # Validate

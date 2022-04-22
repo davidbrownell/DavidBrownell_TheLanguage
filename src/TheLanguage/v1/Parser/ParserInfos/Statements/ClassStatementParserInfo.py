@@ -84,9 +84,7 @@ class ClassStatementDependencyParserInfo(ParserInfo):
     """Dependency of a class"""
 
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
-    regions: InitVar[List[Region]]
+    regions: InitVar[List[Optional[Region]]]
 
     visibility: Optional[VisibilityModifier]            # Note that instances may be created with this value as None,
                                                         # but a default will be provided once the instance is associated
@@ -137,8 +135,7 @@ class ClassStatementParserInfo(StatementParserInfo):
     introduces_scope__                      = True
 
     # ----------------------------------------------------------------------
-
-    capabilities: ClassCapabilities
+    class_capabilities: ClassCapabilities
 
     visibility_param: InitVar[Optional[VisibilityModifier]]
     visibility: VisibilityModifier          = field(init=False)
@@ -165,33 +162,50 @@ class ClassStatementParserInfo(StatementParserInfo):
     is_final: Optional[bool]
 
     # ----------------------------------------------------------------------
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            ParserInfoType.Standard,        # type: ignore
+            regions,                        # type: ignore
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
     def __post_init__(
         self,
+        parser_info_type,
         regions,
         visibility_param,
         class_modifier_param,
         constructor_visibility_param,
     ):
         super(ClassStatementParserInfo, self).__post_init__(
+            parser_info_type,
             regions,
             regionless_attributes=[
-                "capabilities",
+                "class_capabilities",
                 "templates",
                 "constraints",
             ],
             validate=False,
-            capabilities=lambda value: value.name,
+            class_capabilities=lambda value: value.name,
         )
 
         # Set defaults
         if visibility_param is None:
-            visibility_param = self.capabilities.default_visibility
+            visibility_param = self.class_capabilities.default_visibility
             object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
         object.__setattr__(self, "visibility", visibility_param)
 
         if class_modifier_param is None:
-            class_modifier_param = self.capabilities.default_class_modifier
+            class_modifier_param = self.class_capabilities.default_class_modifier
             object.__setattr__(self.regions__, "class_modifier", self.regions__.self__)
 
         object.__setattr__(self, "class_modifier", class_modifier_param)
@@ -203,9 +217,9 @@ class ClassStatementParserInfo(StatementParserInfo):
         object.__setattr__(self, "constructor_visibility", constructor_visibility_param)
 
         for dependencies, default_visibility in [
-            (self.extends, self.capabilities.default_extends_visibility),
-            (self.implements, self.capabilities.default_implements_visibility),
-            (self.uses, self.capabilities.default_uses_visibility),
+            (self.extends, self.class_capabilities.default_extends_visibility),
+            (self.implements, self.class_capabilities.default_implements_visibility),
+            (self.uses, self.class_capabilities.default_uses_visibility),
         ]:
             if dependencies is None:
                 continue
@@ -220,17 +234,19 @@ class ClassStatementParserInfo(StatementParserInfo):
         # Validate
         errors: List[Error] = []
 
-        if self.visibility not in self.capabilities.valid_visibilities:
+        if self.visibility not in self.class_capabilities.valid_visibilities:
             errors.append(
                 InvalidVisibilityError.Create(
                     region=self.regions__.visibility,
-                    type=self.capabilities.name,
+                    type=self.class_capabilities.name,
                     visibility=self.visibility,
-                    valid_visibilities=self.capabilities.valid_visibilities,
+                    valid_visibilities=self.class_capabilities.valid_visibilities,
                     visibility_str=self.visibility.name,
-                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.capabilities.valid_visibilities),
+                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.class_capabilities.valid_visibilities),
                 ),
             )
+
+        # TODO: protected visibility only valid when nested within class
 
         if self.extends and len(self.extends) > 1:
             errors.append(
@@ -239,7 +255,7 @@ class ClassStatementParserInfo(StatementParserInfo):
                         self.extends[1].regions__.self__.begin,
                         self.extends[-1].regions__.self__.end,
                     ),
-                    type=self.capabilities.name,
+                    type=self.class_capabilities.name,
                 ),
             )
 
@@ -247,20 +263,20 @@ class ClassStatementParserInfo(StatementParserInfo):
             (
                 "extend",
                 self.extends,
-                self.capabilities.default_extends_visibility,
-                self.capabilities.valid_extends_visibilities,
+                self.class_capabilities.default_extends_visibility,
+                self.class_capabilities.valid_extends_visibilities,
             ),
             (
                 "implement",
                 self.implements,
-                self.capabilities.default_implements_visibility,
-                self.capabilities.valid_implements_visibilities,
+                self.class_capabilities.default_implements_visibility,
+                self.class_capabilities.valid_implements_visibilities,
             ),
             (
                 "use",
                 self.uses,
-                self.capabilities.default_uses_visibility,
-                self.capabilities.valid_uses_visibilities,
+                self.class_capabilities.default_uses_visibility,
+                self.class_capabilities.valid_uses_visibilities,
             ),
         ]:
             if dependencies is None:
@@ -273,7 +289,7 @@ class ClassStatementParserInfo(StatementParserInfo):
                             dependencies[0].regions__.self__.begin,
                             dependencies[-1].regions__.self__.end,
                         ),
-                        type=self.capabilities.name,
+                        type=self.class_capabilities.name,
                         desc=desc,
                     ),
                 )
@@ -283,7 +299,7 @@ class ClassStatementParserInfo(StatementParserInfo):
                     errors.append(
                         InvalidDependencyVisibilityError.Create(
                             region=dependency.regions__.visibility,
-                            type=self.capabilities.name,
+                            type=self.class_capabilities.name,
                             desc=desc,
                             visibility=dependency.visibility,
                             valid_visibilities=valid_visibilities,
@@ -292,8 +308,8 @@ class ClassStatementParserInfo(StatementParserInfo):
                         ),
                     )
 
-        # Create default special methods as necessary
-        # TODO
+        # TODO: Create default special methods as necessary
+        # TODO: Create a static 'Create' method if one does not already exist
 
         if errors:
             raise ErrorException(*errors)

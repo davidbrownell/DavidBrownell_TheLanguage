@@ -17,7 +17,9 @@
 
 import os
 
-from dataclasses import dataclass, field
+from typing import List, Optional
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -29,21 +31,34 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class CharacterExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type__: ParserInfoType      = field(init=False)
-
     value: int
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):  # type: ignore
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            ParserInfoType.Unknown,         # type: ignore
+            regions,                        # type: ignore
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, *args, **kwargs):
         super(CharacterExpressionParserInfo, self).__post_init__(
-            ParserInfoType.Unknown,
-            regions,
+            *args,
+            **kwargs,
             regionless_attributes=["value", ],
         )

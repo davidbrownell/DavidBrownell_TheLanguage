@@ -45,7 +45,6 @@ with InitRelativeImports():
         ExtractDynamic,
         ExtractOptional,
         ExtractSequence,
-        ExtractToken,
         OptionalPhraseItem,
     )
 
@@ -95,7 +94,7 @@ class ClassAttributeStatement(GrammarPhrase):
                     DynamicPhrasesType.Types,
 
                     # <name>
-                    CommonTokens.RuntimeVariableName,
+                    CommonTokens.VariableName,
 
                     # ('=' <expression>)?
                     OptionalPhraseItem(
@@ -201,7 +200,9 @@ class ClassAttributeStatement(GrammarPhrase):
 
             # <name>
             name_node = cast(AST.Leaf, nodes[3])
-            name_info = ExtractToken(name_node)
+            name_info = CommonTokens.VariableName.Extract(name_node)  # type: ignore
+
+            # TODO: Get visibility information from name
 
             # ('=' <expression>)?
             initializer_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[4])))
@@ -232,7 +233,7 @@ class ClassAttributeStatement(GrammarPhrase):
                     visibility_node,
                     name_node,
                     None, # documentation
-                    initializer_node,
+                    keyword_initialization_node,
                     no_initialization_node,
                     no_serialize_node,
                     no_compare_node,

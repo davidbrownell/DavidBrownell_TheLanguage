@@ -17,6 +17,8 @@
 
 import os
 
+from typing import List, Optional
+
 from dataclasses import dataclass
 
 import CommonEnvironment
@@ -29,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import StatementParserInfo
+    from .StatementParserInfo import ParserInfoType, Region, StatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -38,5 +40,16 @@ class PassStatementParserInfo(StatementParserInfo):
     """Noop statement"""
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(PassStatementParserInfo, self).__post_init__(regions)
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            ParserInfoType.Unknown,         # type: ignore
+            regions,                        # type: ignore
+            *args,
+            **kwargs,
+        )

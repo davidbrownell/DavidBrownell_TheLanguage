@@ -41,7 +41,6 @@ with InitRelativeImports():
         ExtractOptional,
         ExtractOr,
         ExtractSequence,
-        ExtractToken,
         PhraseItem,
         OptionalPhraseItem,
     )
@@ -75,7 +74,7 @@ def Create() -> PhraseItem:
                     OptionalPhraseItem(
                         name="Keyword",
                         item=[
-                            CommonTokens.CompileTemplateTypeName,
+                            CommonTokens.TemplateTypeName,
                             "=",
                         ],
                     ),
@@ -93,7 +92,7 @@ def Create() -> PhraseItem:
                     OptionalPhraseItem(
                         name="Keyword",
                         item=[
-                            CommonTokens.CompileParameterName,
+                            CommonTokens.ParameterName,
                             "=",
                         ],
                     ),
@@ -139,10 +138,12 @@ def _ExtractElement(
     assert node.type is not None
 
     if node.type.name == "Template Type":
+        keyword_regex_token = CommonTokens.TemplateTypeName
         dynamic_phrase_type = TypeParserInfo
         element_type = TemplateTypeArgumentParserInfo
 
     elif node.type.name == "Template Decorator":
+        keyword_regex_token = CommonTokens.ParameterName
         dynamic_phrase_type = ExpressionParserInfo
         element_type = TemplateDecoratorArgumentParserInfo
 
@@ -161,7 +162,7 @@ def _ExtractElement(
         assert len(keyword_nodes) == 2
 
         keyword_node = cast(AST.Leaf, keyword_nodes[0])
-        keyword_info = ExtractToken(keyword_node)
+        keyword_info = keyword_regex_token.Extract(keyword_node)  # type: ignore
 
     # <type> | <template_expression>
     value_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))

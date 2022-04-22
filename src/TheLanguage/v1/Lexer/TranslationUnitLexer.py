@@ -50,9 +50,6 @@ with InitRelativeImports():
     from .Components.Tokens import RegexToken
 
     from .Phrases.DSL import CreatePhrase, DynamicPhrasesType
-    # TODO: from .Phrases.DynamicPhrase import DynamicPhrase
-    # TODO: from .Phrases.OrPhrase import OrPhrase
-    # TODO: from .Phrases.RepeatPhrase import RepeatPhrase
     from .Phrases.SequencePhrase import SequencePhrase
     from .Phrases.TokenPhrase import TokenPhrase
 

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Optional, Match, Pattern, Type
+from typing import List, Optional, Match, Pattern, Type
 
 from dataclasses import dataclass
 
@@ -327,6 +327,7 @@ class RegexToken(Token):
         regex: Pattern,
         is_multiline=False,
         is_always_ignored=False,
+        exclude_matches: Optional[List[str]]=None,
     ):
         assert name
 
@@ -359,6 +360,15 @@ class RegexToken(Token):
         self.is_multiline                   = is_multiline
         self.is_always_ignored              = is_always_ignored
 
+        if not exclude_matches:
+            is_excluded_func = lambda match: False
+        else:
+            exclude_matches_set = set(exclude_matches)
+
+            is_excluded_func = lambda match: match.group() in exclude_matches_set
+
+        self._is_excluded_func              = is_excluded_func
+
     # ----------------------------------------------------------------------
     @Interface.override
     def Match(
@@ -374,7 +384,7 @@ class RegexToken(Token):
             endpos=normalized_iter.content_length,
         )
 
-        if match:
+        if match and not self._is_excluded_func(match):
             match_length = match.end() - match.start()
 
             if self.is_multiline:

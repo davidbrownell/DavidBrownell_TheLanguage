@@ -17,7 +17,7 @@ regions__: # <class 'types.RootParserInfoRegions'>
       line: 18
 statements:
   - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    capabilities: "Standard"
+    class_capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
     constraints: None
     constructor_visibility: "VisibilityModifier.public"
@@ -63,7 +63,7 @@ statements:
     uses: None
     visibility: "VisibilityModifier.private"
   - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    capabilities: "Standard"
+    class_capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
     constraints: None
     constructor_visibility: "VisibilityModifier.public"
@@ -163,7 +163,7 @@ statements:
     uses: None
     visibility: "VisibilityModifier.private"
   - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    capabilities: "Standard"
+    class_capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
     constraints: None
     constructor_visibility: "VisibilityModifier.public"
@@ -263,7 +263,7 @@ statements:
         visibility: "VisibilityModifier.private"
     visibility: "VisibilityModifier.private"
   - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    capabilities: "Standard"
+    class_capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
     constraints: None
     constructor_visibility: "VisibilityModifier.public"
