@@ -378,57 +378,88 @@ class TestLeftRecursiveSemicolonSuffix(object):
 
 
 # ----------------------------------------------------------------------
+def TestLeftRecursivePrecedenceFunc(
+    data: Phrase.LexResultData,
+) -> int:
+    if data.phrase.name in ["Add", "Sub"]:
+        return 1000
+    if data.phrase.name in ["Mul", "Div"]:
+        return 100
+    if data.phrase.name in ["Ter"]:
+        return 10
+    if data.phrase.name in ["Index", "Neg"]:
+        return 1
+
+    assert False, data.phrase.name
+
+
+# ----------------------------------------------------------------------
 class TestLeftRecursive(object):
     _phrases                                = [
-        CreatePhrase(RegexToken("Lower", re.compile(r"(?P<value>[a-z_]+[0-9]*)"))),
-        CreatePhrase(RegexToken("Upper", re.compile(r"(?P<value>[A-Z_]+[0-9]*)"))),
+        CreatePhrase(
+            RegexToken("Lower", re.compile(r"(?P<value>[a-z_]+[0-9]*)")),
+            precedence_func=TestLeftRecursivePrecedenceFunc,
+        ),
+        CreatePhrase(
+            RegexToken("Upper", re.compile(r"(?P<value>[A-Z_]+[0-9]*)")),
+            precedence_func=TestLeftRecursivePrecedenceFunc,
+        ),
         CreatePhrase(
             PhraseItem(
                 name="Add",
                 item=[DynamicPhrasesType.Statements, "+", DynamicPhrasesType.Statements],
-                precedence_func=lambda *args, **kwargs: 1000,
             ),
+            precedence_func=TestLeftRecursivePrecedenceFunc,
         ),
         CreatePhrase(
             PhraseItem(
                 name="Sub",
                 item=[DynamicPhrasesType.Statements, "-", DynamicPhrasesType.Statements],
-                precedence_func=lambda *args, **kwargs: 1000,
             ),
+            precedence_func=TestLeftRecursivePrecedenceFunc,
         ),
         CreatePhrase(
             PhraseItem(
                 name="Mul",
                 item=[DynamicPhrasesType.Statements, "*", DynamicPhrasesType.Statements],
-                precedence_func=lambda *args, **kwargs: 100,
             ),
+            precedence_func=TestLeftRecursivePrecedenceFunc,
         ),
         CreatePhrase(
             PhraseItem(
                 name="Div",
                 item=[DynamicPhrasesType.Statements, "/", DynamicPhrasesType.Statements],
-                precedence_func=lambda *args, **kwargs: 100,
             ),
+            precedence_func=TestLeftRecursivePrecedenceFunc,
         ),
         CreatePhrase(
             PhraseItem(
                 name="Ter",
                 item=[DynamicPhrasesType.Statements, "if", DynamicPhrasesType.Statements, "else", DynamicPhrasesType.Statements],
-                precedence_func=lambda *args, **kwargs: 10,
             ),
+            precedence_func=TestLeftRecursivePrecedenceFunc,
         ),
         CreatePhrase(
             PhraseItem(
                 name="Index",
                 item=[DynamicPhrasesType.Statements, "[", DynamicPhrasesType.Statements, "]"],
-                precedence_func=lambda *args, **kwargs: 1,
             ),
+            precedence_func=TestLeftRecursivePrecedenceFunc,
+        ),
+        CreatePhrase(
+            PhraseItem(
+                name="Neg",
+                item=["-", DynamicPhrasesType.Statements],
+            ),
+            precedence_func=TestLeftRecursivePrecedenceFunc,
         ),
     ]
 
+    # ----------------------------------------------------------------------
     _phrase                                 = DynamicPhrase(
         DynamicPhrasesType.Statements,
-        lambda unique_id, dynamic_phrases_type, observer: observer.GetDynamicPhrases(unique_id, dynamic_phrases_type),
+        get_dynamic_phrases_func=lambda unique_id, dynamic_phrases_type, observer: observer.GetDynamicPhrases(unique_id, dynamic_phrases_type),
+        precedence_func=TestLeftRecursivePrecedenceFunc,
     )
 
     # ----------------------------------------------------------------------
@@ -696,4 +727,26 @@ class TestLeftRecursive(object):
                     single_threaded=True,
                 ),
             ),
+        )
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_NegativeTest(self, parse_mock_ex):
+        result = self._phrase.Lex(
+            ("root", ),
+            CreateIterator("-one + two"),
+            parse_mock_ex,
+            single_threaded=True,
+        )
+
+        CompareResultsFromFile(str(result))
+
+    # ----------------------------------------------------------------------
+    @pytest.mark.asyncio
+    async def test_NegativeTest2(self, parse_mock_ex):
+        result = self._phrase.Lex(
+            ("root", ),
+            CreateIterator("-one * two + three - -four"),
+            parse_mock_ex,
+            single_threaded=True,
         )

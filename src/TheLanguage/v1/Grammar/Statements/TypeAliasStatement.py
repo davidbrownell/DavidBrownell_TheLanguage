@@ -36,7 +36,6 @@ with InitRelativeImports():
     from ..Common import VisibilityModifier
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
@@ -60,27 +59,25 @@ class TypeAliasStatement(GrammarPhrase):
     def __init__(self):
         super(TypeAliasStatement, self).__init__(
             DynamicPhrasesType.Statements,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <visibility>?
-                    OptionalPhraseItem(
-                        name="Visibility",
-                        item=VisibilityModifier.CreatePhraseItem(),
-                    ),
+            self.PHRASE_NAME,
+            [
+                # <visibility>?
+                OptionalPhraseItem(
+                    name="Visibility",
+                    item=VisibilityModifier.CreatePhraseItem(),
+                ),
 
-                    # <name>
-                    CommonTokens.TypeName,
+                # <name>
+                CommonTokens.TypeName,
 
-                    # '='
-                    "=",
+                # '='
+                "=",
 
-                    # <type>
-                    DynamicPhrasesType.Types,
+                # <type>
+                DynamicPhrasesType.Types,
 
-                    CommonTokens.Newline,
-                ],
-            ),
+                CommonTokens.Newline,
+            ],
         )
 
     # ----------------------------------------------------------------------

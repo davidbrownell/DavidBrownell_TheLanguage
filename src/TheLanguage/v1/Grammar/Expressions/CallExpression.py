@@ -32,11 +32,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
-    from ..Common import Tokens as CommonTokens
     from ..Common import FuncArgumentsFragment
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractSequence,
@@ -58,16 +56,14 @@ class CallExpression(GrammarPhrase):
     def __init__(self):
         super(CallExpression, self).__init__(
             DynamicPhrasesType.Expressions,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <expression>
-                    DynamicPhrasesType.Expressions,
+            self.PHRASE_NAME,
+            [
+                # <expression>
+                DynamicPhrasesType.Expressions,
 
-                    # <FuncArgumentsFragment>
-                    FuncArgumentsFragment.Create(),
-                ],
-            ),
+                # <FuncArgumentsFragment>
+                FuncArgumentsFragment.Create(),
+            ],
         )
 
     # ----------------------------------------------------------------------

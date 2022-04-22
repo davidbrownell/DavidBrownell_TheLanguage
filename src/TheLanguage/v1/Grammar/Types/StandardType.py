@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import cast, Generator, List, Optional, Union
+from typing import cast, List, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -39,12 +39,10 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractOptional,
         ExtractRepeat,
         ExtractSequence,
-        OneOrMorePhraseItem,
         OptionalPhraseItem,
         PhraseItem,
         ZeroOrMorePhraseItem,
@@ -57,7 +55,6 @@ with InitRelativeImports():
     )
 
     from ...Parser.ParserInfos.Types.StandardTypeParserInfo import (
-        ParserInfoType,
         StandardTypeItemParserInfo,
         StandardTypeParserInfo,
     )
@@ -69,7 +66,7 @@ class StandardType(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        element_phrase_item = CreatePhrase(
+        element_phrase_item = PhraseItem(
             name="Element",
             item=[
                 # <name>
@@ -91,29 +88,27 @@ class StandardType(GrammarPhrase):
 
         super(StandardType, self).__init__(
             DynamicPhrasesType.Types,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # Elements
-                    CreatePhrase(
-                        name="Elements",
-                        item=[
-                            # <element_phrase_item>
-                            element_phrase_item,
+            self.PHRASE_NAME,
+            [
+                # Elements
+                PhraseItem(
+                    name="Elements",
+                    item=[
+                        # <element_phrase_item>
+                        element_phrase_item,
 
-                            ZeroOrMorePhraseItem(
-                                [".", element_phrase_item],
-                            ),
-                        ],
-                    ),
+                        ZeroOrMorePhraseItem(
+                            [".", element_phrase_item],
+                        ),
+                    ],
+                ),
 
-                    # <mutability_modifier>?
-                    OptionalPhraseItem(
-                        name="Mutability Modifier",
-                        item=MutabilityModifier.CreatePhraseItem(),
-                    ),
-                ],
-            ),
+                # <mutability_modifier>?
+                OptionalPhraseItem(
+                    name="Mutability Modifier",
+                    item=MutabilityModifier.CreatePhraseItem(),
+                ),
+            ],
         )
 
     # ----------------------------------------------------------------------

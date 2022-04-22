@@ -18,14 +18,13 @@
 import os
 import types
 
-from enum import Enum
+from enum import auto, Enum
 from typing import Any, Callable, Dict
 
 from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -45,63 +44,38 @@ with InitRelativeImports():
     from ...Region import Region
 
 
-# TODO: Adjust this, as it isn't clear what is the best way to handle precedence
-
-# ----------------------------------------------------------------------
-# |  Pubic Types
-@dataclass(frozen=True, repr=False)
-class Value(ObjectReprImplBase):
-    token: str
-    precedence: int
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert self.precedence > 0
-        ObjectReprImplBase.__init__(self)
-
-
-
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
     # ----------------------------------------------------------------------
     # |  Public Data
-    Multiply                                = Value.Create("*", 1)
-    Divide                                  = Value.Create("/", 1)
-    DivideFloor                             = Value.Create("//", 1)
-    Modulus                                 = Value.Create("%", 1)
+    Multiply                                = auto()
+    Divide                                  = auto()
+    DivideFloor                             = auto()
+    Modulus                                 = auto()
+    Power                                   = auto()
 
-    Add                                     = Value.Create("+", 2)
-    Subtract                                = Value.Create("-", 2)
+    Add                                     = auto()
+    Subtract                                = auto()
 
-    BitShiftLeft                            = Value.Create("<<", 3)
-    BitShiftRight                           = Value.Create(">>", 3)
+    BitShiftLeft                            = auto()
+    BitShiftRight                           = auto()
 
-    Less                                    = Value.Create("<", 4)
-    LessEqual                               = Value.Create("<=", 4)
-    Greater                                 = Value.Create(">", 4)
-    GreaterEqual                            = Value.Create(">=", 4)
+    BitwiseAnd                              = auto()
 
-    Equal                                   = Value.Create("==", 5)
-    NotEqual                                = Value.Create("!=", 5)
+    BitwiseXor                              = auto()
 
-    BitwiseAnd                              = Value.Create("&", 6)
+    BitwiseOr                               = auto()
 
-    BitwiseXor                              = Value.Create("^", 7)
+    Less                                    = auto()
+    LessEqual                               = auto()
+    Greater                                 = auto()
+    GreaterEqual                            = auto()
+    Equal                                   = auto()
+    NotEqual                                = auto()
 
-    BitwiseOr                               = Value.Create("|", 8)
+    LogicalAnd                              = auto()
 
-    LogicalAnd                              = Value.Create("and", 9)
-
-    LogicalOr                               = Value.Create("or", 10)
+    LogicalOr                               = auto()
 
 
 # ----------------------------------------------------------------------
@@ -147,14 +121,28 @@ class BinaryExpression(Expression):
             eval_impl = self._EvalIntegerImplFactory(lambda left, right: left // right)
         elif self.operator == OperatorType.Modulus:
             eval_impl = self._EvalIntegerImplFactory(lambda left, right: left % right)
+        elif self.operator == OperatorType.Power:
+            eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left ** right)
+
         elif self.operator == OperatorType.Add:
             eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left + right)
         elif self.operator == OperatorType.Subtract:
             eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left - right)
+
         elif self.operator == OperatorType.BitShiftLeft:
             eval_impl = self._EvalIntegerImplFactory(lambda left, right: left << right)
         elif self.operator == OperatorType.BitShiftRight:
             eval_impl = self._EvalIntegerImplFactory(lambda left, right: left >> right)
+
+        elif self.operator == OperatorType.BitwiseAnd:
+            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left & right)
+
+        elif self.operator == OperatorType.BitwiseXor:
+            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left ^ right)
+
+        elif self.operator == OperatorType.BitwiseOr:
+            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left | right)
+
         elif self.operator == OperatorType.Less:
             eval_impl = self._EvalBoolImplFactory(lambda left, right: left < right)
         elif self.operator == OperatorType.LessEqual:
@@ -167,14 +155,10 @@ class BinaryExpression(Expression):
             eval_impl = self._EvalBoolImplFactory(lambda left, right: left == right)
         elif self.operator == OperatorType.NotEqual:
             eval_impl = self._EvalBoolImplFactory(lambda left, right: left != right)
-        elif self.operator == OperatorType.BitwiseAnd:
-            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left & right)
-        elif self.operator == OperatorType.BitwiseXor:
-            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left ^ right)
-        elif self.operator == OperatorType.BitwiseOr:
-            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left | right)
+
         elif self.operator == OperatorType.LogicalAnd:
             eval_impl = self._EvalAndImpl
+
         elif self.operator == OperatorType.LogicalOr:
             eval_impl = self._EvalOrImpl
         else:

@@ -39,7 +39,6 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractSequence,
     )
@@ -74,24 +73,22 @@ class SpecialMethodStatement(GrammarPhrase):
     def __init__(self):
         super(SpecialMethodStatement, self).__init__(
             DynamicPhrasesType.Statements,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <method_name>
-                    CommonTokens.SpecialMethodName,
+            self.PHRASE_NAME,
+            [
+                # <method_name>
+                CommonTokens.SpecialMethodName,
 
-                    # '('
-                    "(",
-                    CommonTokens.PushIgnoreWhitespaceControl,
+                # '('
+                "(",
+                CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # ')'
-                    CommonTokens.PopIgnoreWhitespaceControl,
-                    ")",
+                # ')'
+                CommonTokens.PopIgnoreWhitespaceControl,
+                ")",
 
-                    # <statements>
-                    StatementsFragment.Create(),
-                ],
-            ),
+                # <statements>
+                StatementsFragment.Create(),
+            ],
         )
 
     # ----------------------------------------------------------------------

@@ -16,6 +16,7 @@
 """Contains the DynamicPhrase object"""
 
 import os
+import sys
 import uuid
 
 from typing import Callable, cast, Generator, List, Optional, TextIO, Tuple, Union
@@ -55,6 +56,29 @@ class DynamicPhrase(Phrase):
     """
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+
+    # Returns the precedence of this phrase.
+    #
+    # Values with lower values are considered to have higher precedence and will be grouped
+    # together when lexing left- and right-recursive phrases. For example, the statement:
+    #
+    #     1 + 2 * 3 - 4
+    #
+    # will be grouped as:
+    #
+    #     (1 + (2 * 3)) - 4
+    #
+    # because multiplication has higher precedence than addition.
+    PrecedenceFuncType                      = Callable[
+        [Phrase.LexResultData],
+        int,
+    ]
+
+    # ----------------------------------------------------------------------
     def __init__(
         self,
         phrases_type: DynamicPhrasesType,
@@ -70,6 +94,7 @@ class DynamicPhrase(Phrase):
         include_phrases: Optional[List[Union[str, Phrase]]]=None,
         exclude_phrases: Optional[List[Union[str, Phrase]]]=None,
         is_valid_data_func: Optional[Callable[[Phrase.LexResultData], bool]]=None,
+        precedence_func: Optional[PrecedenceFuncType]=None,
     ):
         assert get_dynamic_phrases_func
 
@@ -79,8 +104,9 @@ class DynamicPhrase(Phrase):
 
         self.dynamic_phrases_type           = phrases_type
         self.is_valid_data_func             = is_valid_data_func or (lambda *args, **kwargs: True)
-
         self._get_dynamic_phrases_func      = get_dynamic_phrases_func
+        self._precedence_func               = precedence_func or (lambda *args, **kwargs: sys.maxsize)
+
         self._display_name: Optional[str]   = None
 
         # ----------------------------------------------------------------------
@@ -445,79 +471,91 @@ class DynamicPhrase(Phrase):
             root = results[0]
 
             for result in results[1:]:
-                result_data = self.dynamic_phrase.__class__.GetDynamicData(result)
+                result_actual = self.dynamic_phrase.__class__.GetDynamicData(result)
 
-                assert isinstance(result_data, Phrase.LexResultData), result_data
-                assert isinstance(result_data.phrase, SequencePhrase), result_data.phrase
-                assert isinstance(result_data.data, list), result_data.data
+                assert isinstance(result_actual, Phrase.LexResultData), result_actual
+                assert isinstance(result_actual.phrase, SequencePhrase), result_actual.phrase
+                assert isinstance(result_actual.data, list), result_actual.data
 
                 if __debug__:
                     # The number of existing (non-ignored) data items should be 1 less than the number
                     # of expected (non-control-token) data items.
                     non_ignored_data_items = sum(
                         1 if not isinstance(di, Phrase.TokenLexResultData) or not di.is_ignored else 0
-                        for di in result_data.data
+                        for di in result_actual.data
                     )
 
                     non_control_token_phrases = sum(
                         1 if not isinstance(phrase, TokenPhrase) or not phrase.token.is_control_token else 0
-                        for phrase in result_data.phrase.phrases
+                        for phrase in result_actual.phrase.phrases
                     )
 
                     assert non_ignored_data_items == non_control_token_phrases - 1
 
-                result_data.data.insert(0, root)
+                result_actual.data.insert(0, root)
 
-                if self.dynamic_phrase.__class__.IsRightRecursivePhrase(result_data.phrase):
-                    right = result_data.data[-1]
-                    assert isinstance(right, Phrase.LexResultData)
+                # Rebalance the right-recursive phrase if necessary (within the context of this
+                # left-recursive phrase)
+                rr_info = self._GetRightRecursiveInfo(result_actual)
 
-                    right_data = self.dynamic_phrase.__class__.GetDynamicData(right)
+                if rr_info is not None:
+                    leftmost, leftmost_actual = rr_info
 
-                    leftmost_right: Optional[Phrase.LexResultData] = None
-                    leftmost_right_data: Optional[Phrase.LexResultData] = None
+                    result_precedence = self.dynamic_phrase._precedence_func(result_actual)  # pylint: disable=protected-access
 
-                    potential_leftmost_right: Phrase.LexResultData = right
-                    potential_leftmost_right_data: Phrase.LexResultData = right_data
+                    assert isinstance(leftmost_actual.phrase, SequencePhrase), leftmost_actual.phrase
+                    assert isinstance(leftmost_actual.data, list), leftmost_actual.data
+                    assert leftmost_actual.data
 
-                    while True:
-                        if not isinstance(potential_leftmost_right_data.phrase, SequencePhrase):
-                            break
+                    leftmost_precedence = self.dynamic_phrase._precedence_func(leftmost_actual)  # pylint: disable=protected-access
 
-                        if not self.dynamic_phrase.__class__.IsRightRecursivePhrase(potential_leftmost_right_data.phrase):
-                            break
+                    if result_precedence <= leftmost_precedence:
+                        assert isinstance(result_actual.data, list)
+                        assert result_actual.data
 
-                        leftmost_right = potential_leftmost_right
-                        leftmost_right_data = potential_leftmost_right_data
+                        data_to_move = result_actual.data[-1]
 
-                        assert isinstance(potential_leftmost_right_data.data, list)
-                        assert potential_leftmost_right_data.data
+                        result_actual.data[-1] = leftmost_actual.data[0]
+                        leftmost_actual.data[0] = result
 
-                        potential_leftmost_right = cast(Phrase.LexResultData, potential_leftmost_right_data.data[0])
-                        potential_leftmost_right_data = self.dynamic_phrase.__class__.GetDynamicData(potential_leftmost_right)
+                        if result_precedence == leftmost_precedence:
+                            root = data_to_move
+                        else:
+                            root = leftmost
 
-                    if leftmost_right is not None:
-                        result_precedence = result_data.phrase.CalcPrecedence(result_data.data)
-
-                        assert leftmost_right_data is not None
-                        assert isinstance(leftmost_right_data.phrase, SequencePhrase)
-                        assert isinstance(leftmost_right_data.data, list)
-                        assert leftmost_right_data.data
-
-                        leftmost_right_precedence = leftmost_right_data.phrase.CalcPrecedence(leftmost_right_data.data)
-
-                        if result_precedence <= leftmost_right_precedence:
-                            result_data.data[-1] = leftmost_right_data.data[0]
-                            leftmost_right_data.data[0] = result
-
-                            if result_precedence == leftmost_right_precedence:
-                                root = right
-                            else:
-                                root = leftmost_right
-
-                            continue
+                        continue
 
                 root = result
+
+            # Rebalance right-recursive phrases that aren't left-recursive
+            assert isinstance(root, Phrase.LexResultData)
+
+            root_actual = self.dynamic_phrase.__class__.GetDynamicData(root)
+
+            if not self.dynamic_phrase.__class__.IsLeftRecursivePhrase(root_actual.phrase):
+                rr_info = self._GetRightRecursiveInfo(root_actual)
+
+                if rr_info is not None:
+                    leftmost, leftmost_actual = rr_info
+
+                    result_precedence = self.dynamic_phrase._precedence_func(root_actual)  # pylint: disable=protected-access
+
+                    assert isinstance(leftmost_actual.phrase, SequencePhrase), leftmost_actual.phrase
+                    assert isinstance(leftmost_actual.data, list), leftmost_actual.data
+                    assert leftmost_actual.data
+
+                    leftmost_precedence = self.dynamic_phrase._precedence_func(leftmost_actual)  # pylint: disable=protected-access
+
+                    if result_precedence <= leftmost_precedence:
+                        assert isinstance(root_actual.data, list)
+                        assert root_actual.data
+
+                        data_to_move = root_actual.data[-1]
+
+                        root_actual.data[-1] = leftmost_actual.data[0]
+                        leftmost_actual.data[0] = root
+
+                        root = data_to_move
 
             # Should this data be considered as valid?
             assert isinstance(root, Phrase.LexResultData), root
@@ -582,7 +620,9 @@ class DynamicPhrase(Phrase):
             )
 
         # ----------------------------------------------------------------------
-        # ----------------------------------------------------------------------
+        # |
+        # |  Private Types
+        # |
         # ----------------------------------------------------------------------
         class _SequenceSuffixWrapper(Phrase):
             # ----------------------------------------------------------------------
@@ -630,6 +670,62 @@ class DynamicPhrase(Phrase):
                 new_phrase: Phrase,
             ) -> bool:
                 raise Exception("This should never be called, as this object should never be instantiated as part of a Phrase hierarchy")
+
+        # ----------------------------------------------------------------------
+        # |
+        # |  Private Methods
+        # |
+        # ----------------------------------------------------------------------
+        def _GetRightRecursiveInfo(
+            self,
+            actual: Phrase.LexResultData,
+        ) -> Optional[
+            Tuple[
+                Phrase.LexResultData,       # Data for the dynamic phrase
+                Phrase.LexResultData,       # Data for the actual (child) phrase
+            ]
+        ]:
+            if not self.dynamic_phrase.__class__.IsRightRecursivePhrase(actual.phrase):
+                return None
+
+            assert isinstance(actual.data, list)
+            assert actual.data
+
+            right = actual.data[-1]
+            assert isinstance(right, Phrase.LexResultData)
+
+            right_actual = self.dynamic_phrase.__class__.GetDynamicData(right)
+
+            leftmost: Optional[Phrase.LexResultData] = None
+            leftmost_actual: Optional[Phrase.LexResultData] = None
+
+            potential_leftmost: Phrase.LexResultData = right
+            potential_leftmost_actual: Phrase.LexResultData = right_actual
+
+            while True:
+                if not isinstance(potential_leftmost_actual.phrase, SequencePhrase):
+                    break
+
+                if not self.dynamic_phrase.__class__.IsRightRecursivePhrase(potential_leftmost_actual.phrase):
+                    break
+
+                leftmost = potential_leftmost
+                leftmost_actual = potential_leftmost_actual
+
+                if not self.dynamic_phrase.__class__.IsLeftRecursivePhrase(leftmost_actual.phrase):
+                    break
+
+                assert isinstance(leftmost_actual.data, list)
+                assert leftmost_actual.data
+
+                potential_leftmost = cast(Phrase.LexResultData, leftmost_actual.data[0])
+                potential_leftmost_actual = self.dynamic_phrase.__class__.GetDynamicData(potential_leftmost)
+
+            if leftmost is None:
+                return None
+
+            assert leftmost_actual is not None
+            return leftmost, leftmost_actual
 
     # ----------------------------------------------------------------------
     # |

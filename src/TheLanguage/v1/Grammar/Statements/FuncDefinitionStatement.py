@@ -46,7 +46,6 @@ with InitRelativeImports():
     from ..Common.Impl import ModifierImpl
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
@@ -75,63 +74,61 @@ class FuncDefinitionStatement(GrammarPhrase):
     def __init__(self):
         super(FuncDefinitionStatement, self).__init__(
             DynamicPhrasesType.Statements,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <attributes>?
-                    OptionalPhraseItem(
-                        AttributesFragment.Create(),
-                    ),
+            self.PHRASE_NAME,
+            [
+                # <attributes>?
+                OptionalPhraseItem(
+                    AttributesFragment.Create(),
+                ),
 
-                    # <visibility>?
-                    OptionalPhraseItem(
-                        name="Visibility",
-                        item=VisibilityModifier.CreatePhraseItem(),
-                    ),
+                # <visibility>?
+                OptionalPhraseItem(
+                    name="Visibility",
+                    item=VisibilityModifier.CreatePhraseItem(),
+                ),
 
-                    # <method_type_modifier>?
-                    OptionalPhraseItem(
-                        name="Method Modifier",
-                        item=CreateMethodModifierPhraseItem(),
-                    ),
+                # <method_type_modifier>?
+                OptionalPhraseItem(
+                    name="Method Modifier",
+                    item=CreateMethodModifierPhraseItem(),
+                ),
 
-                    # <return_type>
-                    DynamicPhrasesType.Types,
+                # <return_type>
+                DynamicPhrasesType.Types,
 
-                    # <name>
-                    CommonTokens.FuncName,
+                # <name>
+                CommonTokens.FuncName,
 
-                    # Template Parameters, Captures
-                    CommonTokens.PushIgnoreWhitespaceControl,
+                # Template Parameters, Captures
+                CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # <template_parameters>?
-                    OptionalPhraseItem(
-                        TemplateParametersFragment.Create(),
-                    ),
+                # <template_parameters>?
+                OptionalPhraseItem(
+                    TemplateParametersFragment.Create(),
+                ),
 
-                    # <captured_variables>?
-                    OptionalPhraseItem(
-                        CapturedVariablesFragment.Create(),
-                    ),
+                # <captured_variables>?
+                OptionalPhraseItem(
+                    CapturedVariablesFragment.Create(),
+                ),
 
-                    CommonTokens.PopIgnoreWhitespaceControl,
+                CommonTokens.PopIgnoreWhitespaceControl,
 
-                    # <parameters>
-                    FuncParametersFragment.Create(),
+                # <parameters>
+                FuncParametersFragment.Create(),
 
-                    # <mutability_modifier>?
-                    OptionalPhraseItem(
-                        name="Mutability Modifier",
-                        item=MutabilityModifier.CreatePhraseItem(),
-                    ),
+                # <mutability_modifier>?
+                OptionalPhraseItem(
+                    name="Mutability Modifier",
+                    item=MutabilityModifier.CreatePhraseItem(),
+                ),
 
-                    # Statements or None
-                    (
-                        StatementsFragment.Create(),
-                        CommonTokens.Newline,
-                    ),
-                ],
-            ),
+                # Statements or None
+                (
+                    StatementsFragment.Create(),
+                    CommonTokens.Newline,
+                ),
+            ],
         )
 
     # ----------------------------------------------------------------------
@@ -247,6 +244,7 @@ class FuncDefinitionStatement(GrammarPhrase):
             name_leaf = cast(AST.Leaf, nodes[4])
             name_info = CommonTokens.FuncName.Extract(name_leaf)  # type: ignore
 
+            # TODO: Get compile status from name
             # TODO: Get exceptional information from name
             # TODO: Get visibility information from name
 

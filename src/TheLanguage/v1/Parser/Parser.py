@@ -175,9 +175,15 @@ def Parse(
             docstring_node, docstring_info = existing_doc_info
 
         try:
+            if not statements:
+                statements_node = None
+                statements = None  # type: ignore
+            else:
+                statements_node = root
+
             return RootParserInfo.Create(
-                CreateRegions(root, root, docstring_node),
-                statements or None,
+                CreateRegions(root, statements_node, docstring_node),
+                statements,
                 docstring_info,
             )
         except ErrorException as ex:

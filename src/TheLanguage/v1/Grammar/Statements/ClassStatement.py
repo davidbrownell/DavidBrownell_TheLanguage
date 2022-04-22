@@ -46,7 +46,6 @@ with InitRelativeImports():
     from ..Types.StandardType import StandardType
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractOptional,
         ExtractOr,
@@ -154,80 +153,78 @@ class ClassStatement(GrammarPhrase):
 
         super(ClassStatement, self).__init__(
             DynamicPhrasesType.Statements,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <attributes>?
-                    OptionalPhraseItem(
-                        AttributesFragment.Create(),
-                    ),
+            self.PHRASE_NAME,
+            [
+                # <attributes>?
+                OptionalPhraseItem(
+                    AttributesFragment.Create(),
+                ),
 
-                    # <visibility>?
-                    OptionalPhraseItem(
-                        name="Visibility",
-                        item=VisibilityModifier.CreatePhraseItem(),
-                    ),
+                # <visibility>?
+                OptionalPhraseItem(
+                    name="Visibility",
+                    item=VisibilityModifier.CreatePhraseItem(),
+                ),
 
-                    # <class_modifier>?
-                    OptionalPhraseItem(
-                        name="Class Modifier",
-                        item=CreateClassModifierPhraseItem(),
-                    ),
+                # <class_modifier>?
+                OptionalPhraseItem(
+                    name="Class Modifier",
+                    item=CreateClassModifierPhraseItem(),
+                ),
 
-                    # <class_type>
-                    CreateClassTypePhraseItem(),
+                # <class_type>
+                CreateClassTypePhraseItem(),
 
-                    # <name>
-                    CommonTokens.TypeName,
+                # <name>
+                CommonTokens.TypeName,
 
-                    # Template Parameters, Constraints, Dependencies
-                    CommonTokens.PushIgnoreWhitespaceControl,
+                # Template Parameters, Constraints, Dependencies
+                CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # <template_parameters>?
-                    OptionalPhraseItem(
-                        TemplateParametersFragment.Create(),
-                    ),
+                # <template_parameters>?
+                OptionalPhraseItem(
+                    TemplateParametersFragment.Create(),
+                ),
 
-                    # <constraints>?
-                    OptionalPhraseItem(
-                        ConstraintParametersFragment.Create(),
-                    ),
+                # <constraints>?
+                OptionalPhraseItem(
+                    ConstraintParametersFragment.Create(),
+                ),
 
-                    # <dependencies>?
-                    ZeroOrMorePhraseItem(
-                        name="Dependencies",
-                        item=[
-                            # <dependency_type>
-                            CreateDependencyTypePhraseItem(),
+                # <dependencies>?
+                ZeroOrMorePhraseItem(
+                    name="Dependencies",
+                    item=[
+                        # <dependency_type>
+                        CreateDependencyTypePhraseItem(),
 
-                            # Items
-                            (
-                                # '(' <dependency_elements> ')'
-                                PhraseItem(
-                                    name="Grouped",
-                                    item=[
-                                        "(",
-                                        CommonTokens.PushIgnoreWhitespaceControl,
+                        # Items
+                        (
+                            # '(' <dependency_elements> ')'
+                            PhraseItem(
+                                name="Grouped",
+                                item=[
+                                    "(",
+                                    CommonTokens.PushIgnoreWhitespaceControl,
 
-                                        dependency_elements,
+                                    dependency_elements,
 
-                                        CommonTokens.PopIgnoreWhitespaceControl,
-                                        ")",
-                                    ],
-                                ),
-
-                                # <dependency_elements>
-                                dependency_elements,
+                                    CommonTokens.PopIgnoreWhitespaceControl,
+                                    ")",
+                                ],
                             ),
-                        ],
-                    ),
 
-                    CommonTokens.PopIgnoreWhitespaceControl,
+                            # <dependency_elements>
+                            dependency_elements,
+                        ),
+                    ],
+                ),
 
-                    # <statements>
-                    StatementsFragment.Create(),
-                ],
-            ),
+                CommonTokens.PopIgnoreWhitespaceControl,
+
+                # <statements>
+                StatementsFragment.Create(),
+            ],
         )
 
     # ----------------------------------------------------------------------
@@ -327,7 +324,11 @@ class ClassStatement(GrammarPhrase):
             all_dependency_nodes[dependency_type_info] = (dependency_type_node, dependencies_node)
 
         # This information will be used when children call `GetParentClassCapabilities`
-        object.__setattr__(node, self.__class__._CLASS_CAPABILITIES_ATTRIBUTE_NAME, class_capabilities)
+        object.__setattr__(
+            node,
+            self.__class__._CLASS_CAPABILITIES_ATTRIBUTE_NAME,  # pylint: disable=protected-access
+            class_capabilities,
+        )
 
         if errors:
             return errors

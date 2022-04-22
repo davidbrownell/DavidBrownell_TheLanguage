@@ -16,14 +16,16 @@
 """Contains the GrammarPhrase object"""
 
 import os
+import sys
 
-from typing import Any, Callable, cast, Dict, List, Optional
+from typing import Any, Callable, cast, Dict, List, Optional, Tuple, Union
 
 import inflect as inflect_mod
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
 from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
@@ -36,11 +38,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Lexer.Components import AST
+    from ..Lexer.Components.Phrase import Phrase
 
     from ..Lexer.Phrases.DSL import (       # pylint: disable=unused-import
+        CreatePhrase,
         DefaultCommentToken,
         DynamicPhrasesType,
-        Phrase,
+        PhraseItem,
+        PhraseItemItemType,
         RegexToken,                         # Imported as a convenience
     )
 
@@ -81,9 +86,24 @@ class GrammarPhrase(Interface.Interface, ObjectReprImplBase):
     def __init__(
         self,
         type_param: DynamicPhrasesType,
-        phrase: Phrase,
+        phrase_name: str,
+        phrase_items: Union[
+            List[PhraseItemItemType],
+            Tuple[PhraseItemItemType, ...],
+        ],
         **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
     ):
+        # Note that we are importing here to avoid circular dependencies
+        sys.path.insert(0, _script_dir)
+        with CallOnExit(lambda: sys.path.pop(0)):
+            from PrecedenceFunc import PrecedenceFunc
+
+        phrase = CreatePhrase(
+            name=phrase_name,
+            item=phrase_items,
+            precedence_func=PrecedenceFunc,
+        )
+
         # Verify that the phrase name has the expected suffix
         singular_suffix = inflect.singular_noun(type_param.name)
         assert isinstance(singular_suffix, str), type_param.name
