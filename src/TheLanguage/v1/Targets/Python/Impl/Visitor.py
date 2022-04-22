@@ -37,6 +37,7 @@ with InitRelativeImports():
 
     from ....Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
     from ....Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+    from ....Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
     from ....Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
     from ....Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
     from ....Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
@@ -178,11 +179,18 @@ class Visitor(object):
         pass # TODO
 
     # ----------------------------------------------------------------------
+    def OnIfStatementParserInfo(
+        self,
+        parser_info: IfStatementParserInfo,
+    ) -> None:
+        pass # TODO
+
+    # ----------------------------------------------------------------------
     def OnImportStatementParserInfo(
         self,
         parser_info: ImportStatementParserInfo,
     ) -> None:
-        pass
+        pass # TODO
 
     # ----------------------------------------------------------------------
     def OnPassStatementParserInfo(

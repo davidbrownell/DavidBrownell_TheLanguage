@@ -46,6 +46,8 @@ with InitRelativeImports():
         ExtractSequence,
         OneOrMorePhraseItem,
         OptionalPhraseItem,
+        PhraseItem,
+        ZeroOrMorePhraseItem,
     )
 
     from ...Parser.Parser import (
@@ -85,6 +87,19 @@ class StandardType(GrammarPhrase):
             ],
         )
 
+        # TODO: Only supporting inline right now. Eventually, we want to support a format that allows
+        #       for:
+        #
+        #           var.one.two
+        #               .three.four
+        #                   .five
+        #               .six
+        #                   .seven
+        #                       .eight.nine.ten.eleven
+        #               .twelve
+        #
+        #       Likely needs to be recursive.
+
         super(StandardType, self).__init__(
             DynamicPhrasesType.Types,
             CreatePhrase(
@@ -97,21 +112,8 @@ class StandardType(GrammarPhrase):
                             # <element_phrase_item>
                             element_phrase_item,
 
-                            # ('.' <element_phrase_item>)*
-                            OptionalPhraseItem(
-                                item=[
-                                    CommonTokens.PushIgnoreWhitespaceControl,
-
-                                    OneOrMorePhraseItem(
-                                        name="Dot and Element",
-                                        item=[
-                                            ".",
-                                            element_phrase_item,
-                                        ],
-                                    ),
-
-                                    CommonTokens.PopIgnoreWhitespaceControl,
-                                ],
+                            ZeroOrMorePhraseItem(
+                                [".", element_phrase_item],
                             ),
                         ],
                     ),
@@ -138,48 +140,32 @@ class StandardType(GrammarPhrase):
 
             errors: List[Error] = []
 
-            # Elements
+            # <element_phrase_item>
             elements_node = cast(AST.Node, nodes[0])
+
             elements_nodes = ExtractSequence(elements_node)
             assert len(elements_nodes) == 2
 
-            # <element_phrase_item>
-            all_element_nodes: List[
-                Union[
-                    List[AST.Node],
-                    Generator[AST.Node, None, None],
-                ]
-            ] = [
-                [cast(AST.Node, elements_nodes[0]), ],
-            ]
-
-            # ('.' <element_phrase_item>)*
-            trailing_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], elements_nodes[1])))
-            if trailing_node is not None:
-                trailing_nodes = ExtractSequence(trailing_node)
-                assert len(trailing_nodes) == 3
-
-                all_element_nodes.append(
-                    (
-                        cast(AST.Node, ExtractSequence(delimited_node)[1])
-                        for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, trailing_nodes[1])))
-                    ),
-                )
-
             items: List[StandardTypeItemParserInfo] = []
 
-            for this_element_node in itertools.chain(*all_element_nodes):
-                these_element_nodes = ExtractSequence(this_element_node)
-                assert len(these_element_nodes) == 3
+            for element_node in itertools.chain(
+                [cast(AST.Node, elements_nodes[0]), ],
+                (
+                    cast(AST.Node, ExtractSequence(delimited_node)[1])
+                    for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, elements_nodes[1])))
+                )
+            ):
+                element_nodes = ExtractSequence(element_node)
+                assert len(element_nodes) == 3
 
                 # <name>
-                name_leaf = cast(AST.Leaf, these_element_nodes[0])
+                name_leaf = cast(AST.Leaf, element_nodes[0])
                 name_info = CommonTokens.TypeName.Extract(name_leaf)  # type: ignore
 
                 # <template_arguments>?
                 template_info = None
 
-                template_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], these_element_nodes[1])))
+                template_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], element_nodes[1])))
                 if template_node is not None:
                     result = TemplateArgumentsFragment.Extract(template_node)
 
@@ -194,7 +180,7 @@ class StandardType(GrammarPhrase):
                 # <constraint_arguments>?
                 constraint_info = None
 
-                constraint_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], these_element_nodes[2])))
+                constraint_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], element_nodes[2])))
                 if constraint_node is not None:
                     result = ConstraintArgumentsFragment.Extract(constraint_node)
 
@@ -209,7 +195,7 @@ class StandardType(GrammarPhrase):
                 try:
                     items.append(
                         StandardTypeItemParserInfo.Create(
-                            CreateRegions(this_element_node, name_leaf),
+                            CreateRegions(element_node, name_leaf),
                             name_info,
                             template_info,
                             constraint_info,
