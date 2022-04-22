@@ -39,16 +39,12 @@ public class FixedInt <
 
     __EvalConstraints!__():
         # Enforce that the min and max values are valid given the number of bytes
-        # TODO: Enforce!(min_value! >= -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0)
-        # TODO: Enforce!(max_value! <= (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1))
-        Enforce!(min_value! >= (-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0))
-        Enforce!(max_value! <= ((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1)))
+        Enforce!(min_value! >= -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0)
+        Enforce!(max_value! <= (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1))
 
         # Ensure that the range between the min and the max can be contained within the bytes
-        # TODO: Enforce!(max_value! - min_value! <= ((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1)))
-        # TODO: Enforce!(min_value! - max_value! >= (-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0))
-        Enforce!(max_value! - min_value! <= (((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1))))
-        Enforce!(min_value! - max_value! >= ((-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0)))
+        Enforce!(max_value! - min_value! <= ((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1)))
+        Enforce!(min_value! - max_value! >= (-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0))
 
     [Deferred] public ArchInt val GetBytes() immutable
 
@@ -60,7 +56,7 @@ public class FixedInt <
 
     [Deferred] public override ThisType var __Clone?__() immutable
 
-    [Deferred] public override Bool val __ToBool__() immutable               # value != 0
+    [Deferred] public override Bool val __ToBool__() immutable              # value != 0
     [Deferred] public override Str val __ToString?__() immutable
 
     [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, Integer immutable that)
