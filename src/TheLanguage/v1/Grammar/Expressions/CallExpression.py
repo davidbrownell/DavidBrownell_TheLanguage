@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableExpression.py
+# |  CallExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-20 15:02:15
+# |      2022-04-22 08:22:22
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableExpression object"""
+"""Contains the CallExpression object"""
 
 import os
 
@@ -33,35 +33,39 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ..Common import Tokens as CommonTokens
+    from ..Common import FuncArgumentsFragment
 
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
+        ExtractDynamic,
         ExtractSequence,
     )
 
-    from ...Parser.Parser import CreateRegions
+    from ...Parser.Parser import CreateRegions, GetParserInfo
 
-    from ...Parser.ParserInfos.Expressions.VariableExpressionParserInfo import (
-        VariableExpressionParserInfo,
+    from ...Parser.ParserInfos.Expressions.CallExpressionParserInfo import (
+        CallExpressionParserInfo,
+        ExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class VariableExpression(GrammarPhrase):
-    PHRASE_NAME                             = "Variable Expression"
+class CallExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Call Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(VariableExpression, self).__init__(
+        super(CallExpression, self).__init__(
             DynamicPhrasesType.Expressions,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # Note that needs to be a sequence so that we can properly extract the value
+                    # <expression>
+                    DynamicPhrasesType.Expressions,
 
-                    # <name>
-                    CommonTokens.VariableName,
+                    # <FuncArgumentsFragment>
+                    FuncArgumentsFragment.Create(),
                 ],
             ),
         )
@@ -72,18 +76,28 @@ class VariableExpression(GrammarPhrase):
     def ExtractParserInfo(
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserInfoReturnType:
-        nodes = ExtractSequence(node)
-        assert len(nodes) == 1
+        # ----------------------------------------------------------------------
+        def Callback():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 2
 
-        # <name>
-        name_leaf = cast(AST.Leaf, nodes[0])
-        name_info = CommonTokens.VariableName.Extract(name_leaf)  # type: ignore
+            # <expression>
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-        # Determine if we are looking at a compile-time var
-        is_compile_time_region = CommonTokens.VariableName.GetIsCompileTimeRegion(name_leaf)  # type: ignore  # pylint: disable=not-callable
+            # <FuncArgumentsFragment>
+            arguments_node = cast(AST.Node, cast(AST.Node, nodes[1]))
+            arguments_info = FuncArgumentsFragment.Extract(arguments_node)
 
-        return VariableExpressionParserInfo.Create(
-            CreateRegions(node, is_compile_time_region, name_leaf),
-            bool(is_compile_time_region),
-            name_info,
-        )
+            if isinstance(arguments_info, list):
+                return arguments_info
+
+            return CallExpressionParserInfo.Create(
+                CreateRegions(node, arguments_node),
+                expression_info,
+                arguments_info,
+            )
+
+        # ----------------------------------------------------------------------
+
+        return Callback

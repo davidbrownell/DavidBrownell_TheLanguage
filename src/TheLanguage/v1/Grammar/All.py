@@ -28,6 +28,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Expressions.BinaryExpression import BinaryExpression
+    from .Expressions.CallExpression import CallExpression
+    from .Expressions.FuncOrTypeExpression import FuncOrTypeExpression
     from .Expressions.GroupExpression import GroupExpression
     from .Expressions.LiteralExpression import LiteralExpression
     from .Expressions.TernaryExpression import TernaryExpression
@@ -38,6 +40,7 @@ with InitRelativeImports():
     from .Statements.ClassAttributeStatement import ClassAttributeStatement
     from .Statements.ClassStatement import ClassStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
+    from .Statements.FuncInvocationStatement import FuncInvocationStatement
     from .Statements.IfStatement import IfStatement
     from .Statements.ImportStatement import ImportStatement
     from .Statements.PassStatement import PassStatement
@@ -53,6 +56,8 @@ with InitRelativeImports():
 GrammarPhrases                              = [
     # Expressions
     BinaryExpression(),
+    CallExpression(),
+    FuncOrTypeExpression(),
     GroupExpression(),
     LiteralExpression(),
     TernaryExpression(),
@@ -64,6 +69,7 @@ GrammarPhrases                              = [
     ClassAttributeStatement(),
     ClassStatement(),
     FuncDefinitionStatement(),
+    FuncInvocationStatement(),
     IfStatement(),
     ImportStatement(
         ".TheLanguage",

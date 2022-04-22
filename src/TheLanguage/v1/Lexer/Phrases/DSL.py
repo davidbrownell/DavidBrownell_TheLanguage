@@ -502,10 +502,16 @@ def _PopulateItem(
         )
 
     if isinstance(item, str):
+        # Handle some common errors here
+        if item == "=":
+            regex = r"=(?!=)"  # Don't partially consume '=='
+        else:
+            regex = r"{}{}".format(re.escape(item), "\\b" if item.isalnum() else "")
+
         return TokenPhrase(
             RegexToken(
                 name or "'{}'".format(item),
-                re.compile(r"{}{}".format(re.escape(item), "\\b" if item.isalnum() else "")),
+                re.compile(regex),
             ),
         )
 
