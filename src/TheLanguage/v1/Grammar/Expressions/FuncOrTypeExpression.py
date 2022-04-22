@@ -35,7 +35,6 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractSequence,
     )
@@ -55,18 +54,16 @@ class FuncOrTypeExpression(GrammarPhrase):
     def __init__(self):
         super(FuncOrTypeExpression, self).__init__(
             DynamicPhrasesType.Expressions,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # Note that needs to be a sequence so that we can properly extract the value
+            self.PHRASE_NAME,
+            [
+                # Note that needs to be a sequence so that we can properly extract the value
 
-                    # Note that the definition of a type is a subset of the definition of a function,
-                    # so using function here.
+                # Note that the definition of a type is a subset of the definition of a function,
+                # so using function here.
 
-                    # <name>
-                    CommonTokens.FuncName,
-                ],
-            ),
+                # <name>
+                CommonTokens.FuncName,
+            ],
         )
 
     # ----------------------------------------------------------------------

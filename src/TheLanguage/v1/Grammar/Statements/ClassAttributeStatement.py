@@ -40,7 +40,6 @@ with InitRelativeImports():
     from ..Common import VisibilityModifier
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
@@ -76,40 +75,38 @@ class ClassAttributeStatement(GrammarPhrase):
     def __init__(self):
         super(ClassAttributeStatement, self).__init__(
             DynamicPhrasesType.Statements,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <attributes>?
-                    OptionalPhraseItem(
-                        AttributesFragment.Create(),
-                    ),
+            self.PHRASE_NAME,
+            [
+                # <attributes>?
+                OptionalPhraseItem(
+                    AttributesFragment.Create(),
+                ),
 
-                    # <visibility>?
-                    OptionalPhraseItem(
-                        name="Visibility",
-                        item=VisibilityModifier.CreatePhraseItem(),
-                    ),
+                # <visibility>?
+                OptionalPhraseItem(
+                    name="Visibility",
+                    item=VisibilityModifier.CreatePhraseItem(),
+                ),
 
-                    # <type>
-                    DynamicPhrasesType.Types,
+                # <type>
+                DynamicPhrasesType.Types,
 
-                    # <name>
-                    CommonTokens.VariableName,
+                # <name>
+                CommonTokens.VariableName,
 
-                    # ('=' <expression>)?
-                    OptionalPhraseItem(
-                        name="Initializer",
-                        item=[
-                            "=",
-                            CommonTokens.PushIgnoreWhitespaceControl,
-                            DynamicPhrasesType.Expressions,
-                            CommonTokens.PopIgnoreWhitespaceControl,
-                        ],
-                    ),
+                # ('=' <expression>)?
+                OptionalPhraseItem(
+                    name="Initializer",
+                    item=[
+                        "=",
+                        CommonTokens.PushIgnoreWhitespaceControl,
+                        DynamicPhrasesType.Expressions,
+                        CommonTokens.PopIgnoreWhitespaceControl,
+                    ],
+                ),
 
-                    CommonTokens.Newline,
-                ],
-            ),
+                CommonTokens.Newline,
+            ],
         )
 
     # ----------------------------------------------------------------------

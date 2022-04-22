@@ -36,7 +36,6 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractOptional,
         ExtractSequence,
@@ -60,19 +59,17 @@ class VariantType(GrammarPhrase):
     def __init__(self):
         super(VariantType, self).__init__(
             DynamicPhrasesType.Types,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # Elements
-                    VariantPhraseImpl.Create(DynamicPhrasesType.Types),
+            self.PHRASE_NAME,
+            [
+                # Elements
+                VariantPhraseImpl.Create(DynamicPhrasesType.Types),
 
-                    # <mutability_modifier>?
-                    OptionalPhraseItem(
-                        name="Mutability Modifier",
-                        item=MutabilityModifier.CreatePhraseItem(),
-                    ),
-                ],
-            ),
+                # <mutability_modifier>?
+                OptionalPhraseItem(
+                    name="Mutability Modifier",
+                    item=MutabilityModifier.CreatePhraseItem(),
+                ),
+            ],
         )
 
     # ----------------------------------------------------------------------

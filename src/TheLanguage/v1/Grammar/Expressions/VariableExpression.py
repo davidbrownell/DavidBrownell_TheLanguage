@@ -35,7 +35,6 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractSequence,
     )
@@ -55,15 +54,13 @@ class VariableExpression(GrammarPhrase):
     def __init__(self):
         super(VariableExpression, self).__init__(
             DynamicPhrasesType.Expressions,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # Note that needs to be a sequence so that we can properly extract the value
+            self.PHRASE_NAME,
+            [
+                # Note that needs to be a sequence so that we can properly extract the value
 
-                    # <name>
-                    CommonTokens.VariableName,
-                ],
-            ),
+                # <name>
+                CommonTokens.VariableName,
+            ],
         )
 
     # ----------------------------------------------------------------------

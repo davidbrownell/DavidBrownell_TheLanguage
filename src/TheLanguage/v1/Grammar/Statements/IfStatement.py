@@ -36,7 +36,6 @@ with InitRelativeImports():
     from ..Common import StatementsFragment
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
@@ -66,34 +65,32 @@ class IfStatement(GrammarPhrase):
 
         super(IfStatement, self).__init__(
             DynamicPhrasesType.Statements,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # 'if' <expression> <statements>
-                    "if",
-                    DynamicPhrasesType.Expressions,
-                    statements_item,
+            self.PHRASE_NAME,
+            [
+                # 'if' <expression> <statements>
+                "if",
+                DynamicPhrasesType.Expressions,
+                statements_item,
 
-                    # ('elif' <expression> <statements>)*
-                    ZeroOrMorePhraseItem(
-                        name="Elif",
-                        item=[
-                            "elif",
-                            DynamicPhrasesType.Expressions,
-                            statements_item,
-                        ],
-                    ),
+                # ('elif' <expression> <statements>)*
+                ZeroOrMorePhraseItem(
+                    name="Elif",
+                    item=[
+                        "elif",
+                        DynamicPhrasesType.Expressions,
+                        statements_item,
+                    ],
+                ),
 
-                    # ('else' <statements>)?
-                    OptionalPhraseItem(
-                        name="Else",
-                        item=[
-                            "else",
-                            statements_item,
-                        ],
-                    ),
-                ],
-            ),
+                # ('else' <statements>)?
+                OptionalPhraseItem(
+                    name="Else",
+                    item=[
+                        "else",
+                        statements_item,
+                    ],
+                ),
+            ],
         )
 
     # ----------------------------------------------------------------------

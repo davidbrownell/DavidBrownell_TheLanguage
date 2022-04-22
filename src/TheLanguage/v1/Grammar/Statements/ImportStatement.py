@@ -34,25 +34,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ClassStatement import ClassStatement
-
     from ..GrammarPhrase import AST, ImportGrammarPhrase, TranslationUnitsLexerObserver
 
-    from ..Common import AttributesFragment
-    from ..Common import CapturedVariablesFragment
-    from ..Common import FuncParametersFragment
-    from ..Common import MutabilityModifier
-    from ..Common import StatementsFragment
-    from ..Common import TemplateParametersFragment
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
-    from ..Common.Impl import ModifierImpl
-
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
-        ExtractDynamic,
         ExtractOptional,
         ExtractOr,
         ExtractRepeat,
@@ -64,15 +52,11 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ...Lexer.TranslationUnitsLexer import UnknownSourceError
-
     from ...Parser.Parser import (
         CreateError,
         CreateRegion,
         CreateRegions,
-        Error,
         ErrorException,
-        GetParserInfo,
     )
 
     from ...Parser.ParserInfos.Statements.ImportStatementParserInfo import (
@@ -152,53 +136,51 @@ class ImportStatement(ImportGrammarPhrase):
 
         super(ImportStatement, self).__init__(
             DynamicPhrasesType.Statements,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <visibility>?
-                    OptionalPhraseItem(
-                        name="Visibility",
-                        item=VisibilityModifier.CreatePhraseItem(),
-                    ),
+            self.PHRASE_NAME,
+            [
+                # <visibility>?
+                OptionalPhraseItem(
+                    name="Visibility",
+                    item=VisibilityModifier.CreatePhraseItem(),
+                ),
 
-                    # 'from'
-                    "from",
+                # 'from'
+                "from",
 
-                    # <source_name>
-                    import_name,
+                # <source_name>
+                import_name,
 
-                    # 'import'
-                    "import",
+                # 'import'
+                "import",
 
-                    # <Content Items>
-                    PhraseItem(
-                        item=(
-                            # '(' <elements_phrase_item> ')'
-                            PhraseItem(
-                                name="Grouped",
-                                item=[
-                                    # '('
-                                    "(",
-                                    CommonTokens.PushIgnoreWhitespaceControl,
+                # <Content Items>
+                PhraseItem(
+                    item=(
+                        # '(' <elements_phrase_item> ')'
+                        PhraseItem(
+                            name="Grouped",
+                            item=[
+                                # '('
+                                "(",
+                                CommonTokens.PushIgnoreWhitespaceControl,
 
-                                    # <elements_phrase_item>
-                                    elements_phrase_item,
+                                # <elements_phrase_item>
+                                elements_phrase_item,
 
-                                    # ')'
-                                    CommonTokens.PopIgnoreWhitespaceControl,
-                                    ")",
-                                ],
-                            ),
-
-                            # <elements_phrase_item>
-                            elements_phrase_item,
+                                # ')'
+                                CommonTokens.PopIgnoreWhitespaceControl,
+                                ")",
+                            ],
                         ),
-                        ambiguities_resolved_by_order=True,
-                    ),
 
-                    CommonTokens.Newline,
-                ],
-            ),
+                        # <elements_phrase_item>
+                        elements_phrase_item,
+                    ),
+                    ambiguities_resolved_by_order=True,
+                ),
+
+                CommonTokens.Newline,
+            ],
         )
 
         self.file_extensions                = list(file_extensions)

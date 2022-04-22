@@ -33,12 +33,12 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOr,
         ExtractSequence,
         ExtractToken,
+        Phrase as LexPhrase,
         PhraseItem,
     )
 
@@ -55,27 +55,36 @@ with InitRelativeImports():
 class BinaryExpression(GrammarPhrase):
     PHRASE_NAME                             = "Binary Expression"
 
-    # TODO: Precedence
     OPERATOR_MAP                            = {
         "*": OperatorType.Multiply,
         "/": OperatorType.Divide,
         "//": OperatorType.DivideFloor,
         "%": OperatorType.Modulus,
+        "**": OperatorType.Power,
+
         "+": OperatorType.Add,
         "-": OperatorType.Subtract,
+
         "<<": OperatorType.BitShiftLeft,
         ">>": OperatorType.BitShiftRight,
+
+        "&": OperatorType.BitwiseAnd,
+
+        "^": OperatorType.BitwiseXor,
+
+        "|": OperatorType.BitwiseOr,
+
         "<": OperatorType.Less,
         "<=": OperatorType.LessEqual,
         ">": OperatorType.Greater,
         ">=": OperatorType.GreaterEqual,
         "==": OperatorType.Equal,
         "!=": OperatorType.NotEqual,
-        "&": OperatorType.BitwiseAnd,
-        "^": OperatorType.BitwiseXor,
-        "|": OperatorType.BitwiseOr,
+
         "and": OperatorType.LogicalAnd,
+
         "or": OperatorType.LogicalOr,
+
     }
 
     assert len(OPERATOR_MAP) == len(OperatorType), (len(OPERATOR_MAP), len(OperatorType))
@@ -84,22 +93,20 @@ class BinaryExpression(GrammarPhrase):
     def __init__(self):
         super(BinaryExpression, self).__init__(
             DynamicPhrasesType.Expressions,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <expression>
-                    DynamicPhrasesType.Expressions,
+            self.PHRASE_NAME,
+            [
+                # <expression>
+                DynamicPhrasesType.Expressions,
 
-                    # <operator>
-                    PhraseItem(
-                        name="Operator",
-                        item=tuple(self.__class__.OPERATOR_MAP),
-                    ),
+                # <operator>
+                PhraseItem(
+                    name="Operator",
+                    item=tuple(self.__class__.OPERATOR_MAP),
+                ),
 
-                    # <expression>
-                    DynamicPhrasesType.Expressions,
-                ],
-            ),
+                # <expression>
+                DynamicPhrasesType.Expressions,
+            ],
         )
 
     # ----------------------------------------------------------------------
@@ -141,3 +148,34 @@ class BinaryExpression(GrammarPhrase):
         # ----------------------------------------------------------------------
 
         return Callback
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def GetOperatorType(
+        cls,
+        data: LexPhrase.LexResultData,
+    ) -> OperatorType:
+        assert isinstance(data.data, list), data.data
+
+        # The 2nd valid data item is the operator
+        item_ctr = 0
+
+        for data_item in data.data:
+            if isinstance(data_item, LexPhrase.TokenLexResultData) and data_item.is_ignored:
+                continue
+
+            assert isinstance(data_item, LexPhrase.LexResultData), data_item
+
+            item_ctr += 1
+
+            if item_ctr == 2:
+                assert isinstance(data_item.data, LexPhrase.LexResultData), data_item.data
+                data = data_item.data
+
+                break
+
+        assert isinstance(data.data, LexPhrase.TokenLexResultData), data.data
+        token_data = data.data
+
+        value = token_data.value.match.string[token_data.value.match.start() : token_data.value.match.end()]  # type: ignore
+        return cls.OPERATOR_MAP[value]
