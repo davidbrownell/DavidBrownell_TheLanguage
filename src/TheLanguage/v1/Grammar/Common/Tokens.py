@@ -137,7 +137,7 @@ AttributeName                               = RegexToken(
             ))""",
         ),
     ),
-    exclude_matches=ReservedLowerNames,
+    exclude_matches=ReservedUpperNames,
 )
 
 AttributeName.Extract                       = _ExtractFuncFactory(False)  # type: ignore

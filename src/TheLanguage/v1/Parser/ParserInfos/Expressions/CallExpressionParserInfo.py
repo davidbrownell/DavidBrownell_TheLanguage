@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableExpressionParserInfo.py
+# |  CallExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-20 15:06:33
+# |      2022-04-22 08:11:19
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableExpressionParserInfo object"""
+"""Contains the CallExpressionParserInfo object"""
 
 import os
 
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -32,35 +32,47 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
+    from ..Common.FuncArgumentsParserInfo import FuncArgumentsParserInfo
+    from ...Error import ErrorException
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableExpressionParserInfo(ExpressionParserInfo):
+class CallExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    is_compile_time: Optional[bool]
-    name: str
+    expression: ExpressionParserInfo
+    arguments: Union[bool, FuncArgumentsParserInfo]
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
         regions: List[Optional[Region]],
-        is_compile_time: bool,
+        expression: ExpressionParserInfo,
+        arguments: Union[bool, FuncArgumentsParserInfo],
         *args,
         **kwargs,
     ):
-        if is_compile_time:
-            parser_info_type = ParserInfoType.CompileTime
-            is_compile_time_value = True
+        if isinstance(arguments, bool):
+            parser_info_type = ParserInfoType.Unknown
         else:
-            parser_info_type = ParserInfoType.Standard
-            is_compile_time_value = None
+            parser_info_type = cls._GetDominantExpressionType(expression, *arguments.arguments)
+            if isinstance(parser_info_type, list):
+                raise ErrorException(*parser_info_type)
 
         return cls(
             parser_info_type,               # type: ignore
             regions,                        # type: ignore
-            is_compile_time_value,
+            expression,
+            arguments,
             *args,
             **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, *args, **kwargs):
+        super(CallExpressionParserInfo, self).__post_init__(
+            *args,
+            **kwargs,
+            regionless_attributes=["expression", ],
         )

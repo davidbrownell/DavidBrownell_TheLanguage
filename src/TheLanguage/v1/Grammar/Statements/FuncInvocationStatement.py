@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  GroupExpression.py
+# |  FuncInvocationStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-20 16:32:52
+# |      2022-04-22 08:37:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the GroupExpression object"""
+"""Contains the FuncInvocationStatement object"""
 
 import os
 
@@ -21,7 +21,6 @@ from typing import cast
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -34,13 +33,17 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ..Common import Tokens as CommonTokens
+    from ..Expressions.CallExpression import CallExpression
 
     from ...Lexer.Phrases.DSL import (
         CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractSequence,
+        PhraseItem,
     )
+
+    from ...Lexer.Phrases.DynamicPhrase import DynamicPhrase, Phrase
 
     from ...Parser.Parser import GetParserInfo
 
@@ -50,26 +53,33 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class GroupExpression(GrammarPhrase):
-    PHRASE_NAME                             = "Group Expression"
+class FuncInvocationStatement(GrammarPhrase):
+    PHRASE_NAME                             = "Func Invocation Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(GroupExpression, self).__init__(
-            DynamicPhrasesType.Expressions,
+        # ----------------------------------------------------------------------
+        def IsValidData(
+            data: Phrase.LexResultData,
+        ) -> bool:
+            data = DynamicPhrase.GetDynamicData(data)
+
+            return data.phrase.name == CallExpression.PHRASE_NAME
+
+        # ----------------------------------------------------------------------
+
+        super(FuncInvocationStatement, self).__init__(
+            DynamicPhrasesType.Statements,
             CreatePhrase(
                 name=self.PHRASE_NAME,
                 item=[
-                    # '('
-                    "(",
-                    CommonTokens.PushIgnoreWhitespaceControl,
-
                     # <expression>
-                    DynamicPhrasesType.Expressions,
+                    PhraseItem(
+                        item=DynamicPhrasesType.Expressions,
+                        is_valid_data_func=IsValidData,
+                    ),
 
-                    # ')'
-                    CommonTokens.PopIgnoreWhitespaceControl,
-                    ")",
+                    CommonTokens.Newline,
                 ],
             ),
         )
@@ -83,23 +93,11 @@ class GroupExpression(GrammarPhrase):
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
-            assert len(nodes) == 5
-
-            # '('
-            open_node = cast(AST.Leaf, nodes[0])
+            assert len(nodes) == 2
 
             # <expression>
-            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
             expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
-
-            # ')'
-            close_node = cast(AST.Leaf, nodes[4])
-
-            # TODO: It might be helpful to turn this into an error eventually?
-            assert (
-                open_node.iter_range.begin.line == close_node.iter_range.begin.line
-                or open_node.iter_range.begin.column == close_node.iter_range.begin.column
-            ), "Parens are not aligned"
 
             return expression_info
 
