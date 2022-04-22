@@ -190,7 +190,7 @@ statements:
                 column: 5
                 line: 3
               end: # <class 'v1.Lexer.Location.Location'>
-                column: 14
+                column: 13
                 line: 3
             mutability_modifier: # <class 'v1.Parser.Region.Region'>
               begin: # <class 'v1.Lexer.Location.Location'>
