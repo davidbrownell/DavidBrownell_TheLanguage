@@ -8,6 +8,12 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
         data: None
         phrase: "Upper"
+      - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+        data:
+          - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
+            data: None
+            phrase: "'-'"
+        phrase: "Neg"
     phrase: "All Phrases <Prefix>"
   phrase: "Dynamic Phrase"
 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>

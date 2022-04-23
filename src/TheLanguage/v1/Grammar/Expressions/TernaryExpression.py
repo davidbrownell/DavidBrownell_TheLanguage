@@ -35,7 +35,6 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractSequence,
@@ -57,27 +56,25 @@ class TernaryExpression(GrammarPhrase):
     def __init__(self):
         super(TernaryExpression, self).__init__(
             DynamicPhrasesType.Expressions,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <true_expression>
-                    DynamicPhrasesType.Expressions,
-                    CommonTokens.PushIgnoreWhitespaceControl,
+            self.PHRASE_NAME,
+            [
+                # <true_expression>
+                DynamicPhrasesType.Expressions,
+                CommonTokens.PushIgnoreWhitespaceControl,
 
-                    # 'if'
-                    "if",
+                # 'if'
+                "if",
 
-                    # <condition_expression>
-                    DynamicPhrasesType.Expressions,
+                # <condition_expression>
+                DynamicPhrasesType.Expressions,
 
-                    # 'else'
-                    "else",
+                # 'else'
+                "else",
 
-                    # <false_expression>
-                    CommonTokens.PopIgnoreWhitespaceControl,
-                    DynamicPhrasesType.Expressions,
-                ],
-            ),
+                # <false_expression>
+                CommonTokens.PopIgnoreWhitespaceControl,
+                DynamicPhrasesType.Expressions,
+            ],
         )
 
     # ----------------------------------------------------------------------

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleType.py
+# |  FuncInvocationStatement.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-12 09:06:18
+# |      2022-04-22 08:37:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleType object"""
+"""Contains the FuncInvocationStatement object"""
 
 import os
 
-from typing import cast, List, Optional
+from typing import cast
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,44 +30,54 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import MutabilityModifier
-    from ..Common.Impl import TuplePhraseImpl
-
     from ..GrammarPhrase import AST, GrammarPhrase
+
+    from ..Common import Tokens as CommonTokens
+    from ..Expressions.CallExpression import CallExpression
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
-        ExtractOptional,
+        ExtractDynamic,
         ExtractSequence,
-        OptionalPhraseItem,
+        PhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions
+    from ...Lexer.Phrases.DynamicPhrase import DynamicPhrase, Phrase
 
-    from ...Parser.ParserInfos.Types.TupleTypeParserInfo import (
-        TupleTypeParserInfo,
-        TypeParserInfo,
+    from ...Parser.Parser import GetParserInfo
+
+    from ...Parser.ParserInfos.Expressions.ExpressionParserInfo import (
+        ExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class TupleType(GrammarPhrase):
-    PHRASE_NAME                             = "Tuple Type"
+class FuncInvocationStatement(GrammarPhrase):
+    PHRASE_NAME                             = "Func Invocation Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleType, self).__init__(
-            DynamicPhrasesType.Types,
+        # ----------------------------------------------------------------------
+        def IsValidData(
+            data: Phrase.LexResultData,
+        ) -> bool:
+            data = DynamicPhrase.GetDynamicData(data)
+
+            return data.phrase.name == CallExpression.PHRASE_NAME
+
+        # ----------------------------------------------------------------------
+
+        super(FuncInvocationStatement, self).__init__(
+            DynamicPhrasesType.Statements,
             self.PHRASE_NAME,
             [
-                # Elements
-                TuplePhraseImpl.Create(DynamicPhrasesType.Types),
-
-                # <mutability_modifier>?
-                OptionalPhraseItem(
-                    name="Mutability Modifier",
-                    item=MutabilityModifier.CreatePhraseItem(),
+                # <expression>
+                PhraseItem(
+                    item=DynamicPhrasesType.Expressions,
+                    is_valid_data_func=IsValidData,
                 ),
+
+                CommonTokens.Newline,
             ],
         )
 
@@ -82,23 +92,12 @@ class TupleType(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 2
 
-            # Elements
-            elements_node = cast(AST.Node, nodes[0])
-            elements_info = cast(List[TypeParserInfo], TuplePhraseImpl.Extract(elements_node))
+            # <expression>
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            # <mutability_modifier>?
-            mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
-            if mutability_modifier_node is None:
-                mutability_modifier_info = None
-            else:
-                mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
-
-            return TupleTypeParserInfo.Create(
-                CreateRegions(node, mutability_modifier_node, elements_node),  # type: ignore
-                mutability_modifier_info,
-                elements_info,
-            )
+            return expression_info
 
         # ----------------------------------------------------------------------
 
-        return Callback  # type: ignore
+        return Callback

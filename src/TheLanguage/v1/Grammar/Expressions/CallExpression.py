@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleType.py
+# |  CallExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-12 09:06:18
+# |      2022-04-22 08:22:22
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleType object"""
+"""Contains the CallExpression object"""
 
 import os
 
-from typing import cast, List, Optional
+from typing import cast
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,44 +30,39 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import MutabilityModifier
-    from ..Common.Impl import TuplePhraseImpl
-
     from ..GrammarPhrase import AST, GrammarPhrase
+
+    from ..Common import FuncArgumentsFragment
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
-        ExtractOptional,
+        ExtractDynamic,
         ExtractSequence,
-        OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions
+    from ...Parser.Parser import CreateRegions, GetParserInfo
 
-    from ...Parser.ParserInfos.Types.TupleTypeParserInfo import (
-        TupleTypeParserInfo,
-        TypeParserInfo,
+    from ...Parser.ParserInfos.Expressions.CallExpressionParserInfo import (
+        CallExpressionParserInfo,
+        ExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class TupleType(GrammarPhrase):
-    PHRASE_NAME                             = "Tuple Type"
+class CallExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Call Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleType, self).__init__(
-            DynamicPhrasesType.Types,
+        super(CallExpression, self).__init__(
+            DynamicPhrasesType.Expressions,
             self.PHRASE_NAME,
             [
-                # Elements
-                TuplePhraseImpl.Create(DynamicPhrasesType.Types),
+                # <expression>
+                DynamicPhrasesType.Expressions,
 
-                # <mutability_modifier>?
-                OptionalPhraseItem(
-                    name="Mutability Modifier",
-                    item=MutabilityModifier.CreatePhraseItem(),
-                ),
+                # <FuncArgumentsFragment>
+                FuncArgumentsFragment.Create(),
             ],
         )
 
@@ -82,23 +77,23 @@ class TupleType(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 2
 
-            # Elements
-            elements_node = cast(AST.Node, nodes[0])
-            elements_info = cast(List[TypeParserInfo], TuplePhraseImpl.Extract(elements_node))
+            # <expression>
+            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
+            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
 
-            # <mutability_modifier>?
-            mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
-            if mutability_modifier_node is None:
-                mutability_modifier_info = None
-            else:
-                mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
+            # <FuncArgumentsFragment>
+            arguments_node = cast(AST.Node, cast(AST.Node, nodes[1]))
+            arguments_info = FuncArgumentsFragment.Extract(arguments_node)
 
-            return TupleTypeParserInfo.Create(
-                CreateRegions(node, mutability_modifier_node, elements_node),  # type: ignore
-                mutability_modifier_info,
-                elements_info,
+            if isinstance(arguments_info, list):
+                return arguments_info
+
+            return CallExpressionParserInfo.Create(
+                CreateRegions(node, arguments_node),
+                expression_info,
+                arguments_info,
             )
 
         # ----------------------------------------------------------------------
 
-        return Callback  # type: ignore
+        return Callback

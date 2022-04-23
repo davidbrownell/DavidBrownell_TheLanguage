@@ -33,7 +33,6 @@ with InitRelativeImports():
     from ..Common import Tokens as CommonTokens
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
     )
 
@@ -53,13 +52,11 @@ class PassStatement(GrammarPhrase):
     def __init__(self):
         super(PassStatement, self).__init__(
             DynamicPhrasesType.Statements,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    "pass",
-                    CommonTokens.Newline,
-                ],
-            ),
+            self.PHRASE_NAME,
+            [
+                "pass",
+                CommonTokens.Newline,
+            ],
         )
 
     # ----------------------------------------------------------------------

@@ -35,6 +35,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ....Parser.Parser import ParserInfo, RootParserInfo
 
+    from ....Parser.ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo
+
     from ....Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
     from ....Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
     from ....Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
@@ -128,6 +130,17 @@ class Visitor(object):
     ) -> None:
         # Nothing to do here
         pass
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Expressions
+    # |
+    # ----------------------------------------------------------------------
+    def OnCallExpressionParserInfo(
+        self,
+        parser_info: CallExpressionParserInfo,
+    ) -> None:
+        pass # TODO
 
     # ----------------------------------------------------------------------
     # |

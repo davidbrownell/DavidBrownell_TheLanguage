@@ -1,0 +1,39 @@
+# ----------------------------------------------------------------------
+# |
+# |  Bool.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2022-04-22 16:28:01
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2022
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+
+
+# ----------------------------------------------------------------------
+public immutable class Bool:
+    [Deferred] public ArchInt val GetBytes() immutable
+
+    [Deferred, Static] public override ThisType var __Deserialize?__<ArchiveT>(ArchiveT ref archive)
+    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) immutable
+
+    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) immutable
+
+    [Deferred] public override ThisType var __Clone?__() immutable
+
+    [Deferred] public override Bool val __ToBool__() immutable
+    [Deferred] public override Str val __ToString?__() immutable
+
+    [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, ThisType immutable that)
+
+    [Deferred] public override Bool val __Equal__(Integer immutable that) immutable
+    [Deferred] public override Bool val __NotEqual__(Integer immutable that) immutable
+    [Deferred] public override Bool val __Less__(Integer immutable that) immutable
+    [Deferred] public override Bool val __LessEqual__(Integer immutable that) immutable
+    [Deferred] public override Bool val __Greater__(Integer immutable that) immutable
+    [Deferred] public override Bool val __GreaterEqual__(Integer immutable that) immutable

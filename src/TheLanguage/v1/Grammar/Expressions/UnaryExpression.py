@@ -33,12 +33,12 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ...Lexer.Phrases.DSL import (
-        CreatePhrase,
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOr,
         ExtractSequence,
         ExtractToken,
+        Phrase as LexPhrase,
         PhraseItem,
     )
 
@@ -55,7 +55,6 @@ with InitRelativeImports():
 class UnaryExpression(GrammarPhrase):
     PHRASE_NAME                             = "Unary Expression"
 
-    # TODO: Precedence
     OPERATOR_MAP                            = {
         "+": OperatorType.Positive,
         "-": OperatorType.Negative,
@@ -69,19 +68,17 @@ class UnaryExpression(GrammarPhrase):
     def __init__(self):
         super(UnaryExpression, self).__init__(
             DynamicPhrasesType.Expressions,
-            CreatePhrase(
-                name=self.PHRASE_NAME,
-                item=[
-                    # <operator>
-                    PhraseItem(
-                        name="Operator",
-                        item=tuple(self.__class__.OPERATOR_MAP.keys()),
-                    ),
+            self.PHRASE_NAME,
+            [
+                # <operator>
+                PhraseItem(
+                    name="Operator",
+                    item=tuple(self.__class__.OPERATOR_MAP.keys()),
+                ),
 
-                    # <expression>
-                    DynamicPhrasesType.Expressions,
-                ],
-            ),
+                # <expression>
+                DynamicPhrasesType.Expressions,
+            ],
         )
 
     # ----------------------------------------------------------------------
@@ -118,3 +115,28 @@ class UnaryExpression(GrammarPhrase):
         # ----------------------------------------------------------------------
 
         return Callback
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def GetOperatorType(
+        cls,
+        data: LexPhrase.LexResultData,
+    ) -> OperatorType:
+        assert isinstance(data.data, list), data.data
+
+        # The 1st valid data item is the operator
+        for data_item in data.data:
+            if isinstance(data_item, LexPhrase.TokenLexResultData) and data_item.is_ignored:
+                continue
+
+            assert isinstance(data_item, LexPhrase.LexResultData), data_item
+            assert isinstance(data_item.data, LexPhrase.LexResultData), data_item.data
+
+            data = data_item.data
+            break
+
+        assert isinstance(data.data, LexPhrase.TokenLexResultData), data.data
+        token_data = data.data
+
+        value = token_data.value.match.string[token_data.value.match.start() : token_data.value.match.end()]  # type: ignore
+        return cls.OPERATOR_MAP[value]

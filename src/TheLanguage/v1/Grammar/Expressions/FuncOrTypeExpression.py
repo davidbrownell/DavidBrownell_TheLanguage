@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  GroupExpression.py
+# |  FuncOrTypeExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-20 16:32:52
+# |      2022-04-22 08:05:30
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the GroupExpression object"""
+"""Contains the FuncOrTypeExpression object"""
 
 import os
 
@@ -21,7 +21,6 @@ from typing import cast
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -37,37 +36,33 @@ with InitRelativeImports():
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
-        ExtractDynamic,
         ExtractSequence,
     )
 
-    from ...Parser.Parser import GetParserInfo
+    from ...Parser.Parser import CreateRegions
 
-    from ...Parser.ParserInfos.Expressions.ExpressionParserInfo import (
-        ExpressionParserInfo,
+    from ...Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import (
+        FuncOrTypeExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class GroupExpression(GrammarPhrase):
-    PHRASE_NAME                             = "Group Expression"
+class FuncOrTypeExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Func or Type Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(GroupExpression, self).__init__(
+        super(FuncOrTypeExpression, self).__init__(
             DynamicPhrasesType.Expressions,
             self.PHRASE_NAME,
             [
-                # '('
-                "(",
-                CommonTokens.PushIgnoreWhitespaceControl,
+                # Note that needs to be a sequence so that we can properly extract the value
 
-                # <expression>
-                DynamicPhrasesType.Expressions,
+                # Note that the definition of a type is a subset of the definition of a function,
+                # so using function here.
 
-                # ')'
-                CommonTokens.PopIgnoreWhitespaceControl,
-                ")",
+                # <name>
+                CommonTokens.FuncName,
             ],
         )
 
@@ -77,29 +72,17 @@ class GroupExpression(GrammarPhrase):
     def ExtractParserInfo(
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserInfoReturnType:
-        # ----------------------------------------------------------------------
-        def Callback():
-            nodes = ExtractSequence(node)
-            assert len(nodes) == 5
+        nodes = ExtractSequence(node)
+        assert len(nodes) == 1
 
-            # '('
-            open_node = cast(AST.Leaf, nodes[0])
+        # <name>
+        name_leaf = cast(AST.Leaf, nodes[0])
+        name_info = CommonTokens.FuncName.Extract(name_leaf)  # type: ignore
 
-            # <expression>
-            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
-            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
+        is_compile_time_region = CommonTokens.FuncName.GetIsCompileTimeRegion(name_leaf)  # type: ignore
 
-            # ')'
-            close_node = cast(AST.Leaf, nodes[4])
-
-            # TODO: It might be helpful to turn this into an error eventually?
-            assert (
-                open_node.iter_range.begin.line == close_node.iter_range.begin.line
-                or open_node.iter_range.begin.column == close_node.iter_range.begin.column
-            ), "Parens are not aligned"
-
-            return expression_info
-
-        # ----------------------------------------------------------------------
-
-        return Callback
+        return FuncOrTypeExpressionParserInfo.Create(
+            CreateRegions(node, is_compile_time_region, name_leaf),
+            bool(is_compile_time_region),
+            name_info,
+        )

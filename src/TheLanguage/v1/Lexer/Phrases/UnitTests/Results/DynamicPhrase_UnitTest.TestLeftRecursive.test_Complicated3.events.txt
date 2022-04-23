@@ -15,7 +15,11 @@
         match: "<_sre.SRE_Match object; span=(0, 4), match='TRUE'>"
     phrase: "Upper"
 6) EndPhrase, "Upper" [True]
-7) OnInternalPhrase, 0, 4
+7) StartPhrase, "Neg"
+8) StartPhrase, "'-'"
+9) EndPhrase, "'-'" [False]
+10) EndPhrase, "Neg" [False]
+11) OnInternalPhrase, 0, 4
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -28,18 +32,18 @@
           match: "<_sre.SRE_Match object; span=(0, 4), match='TRUE'>"
       phrase: "Upper"
     phrase: "All Phrases <Prefix>"
-8) EndPhrase, "All Phrases <Prefix>" [True]
-9) StartPhrase, "All Phrases <Suffix>"
-10) StartPhrase, "'+'"
-11) EndPhrase, "'+'" [False]
-12) StartPhrase, "'-'"
-13) EndPhrase, "'-'" [False]
-14) StartPhrase, "'*'"
-15) EndPhrase, "'*'" [False]
-16) StartPhrase, "'/'"
-17) EndPhrase, "'/'" [False]
-18) StartPhrase, "'if'"
-19) OnInternalPhrase, 5, 7
+12) EndPhrase, "All Phrases <Prefix>" [True]
+13) StartPhrase, "All Phrases <Suffix>"
+14) StartPhrase, "'+'"
+15) EndPhrase, "'+'" [False]
+16) StartPhrase, "'-'"
+17) EndPhrase, "'-'" [False]
+18) StartPhrase, "'*'"
+19) EndPhrase, "'*'" [False]
+20) StartPhrase, "'/'"
+21) EndPhrase, "'/'" [False]
+22) StartPhrase, "'if'"
+23) OnInternalPhrase, 5, 7
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -50,11 +54,11 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(5, 7), match='if'>"
     phrase: "'if'"
-20) EndPhrase, "'if'" [True]
-21) StartPhrase, "DynamicPhrasesType.Statements"
-22) StartPhrase, "All Phrases <Prefix>"
-23) StartPhrase, "Lower"
-24) OnInternalPhrase, 8, 11
+24) EndPhrase, "'if'" [True]
+25) StartPhrase, "DynamicPhrasesType.Statements"
+26) StartPhrase, "All Phrases <Prefix>"
+27) StartPhrase, "Lower"
+28) OnInternalPhrase, 8, 11
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -65,10 +69,14 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(8, 11), match='var'>"
     phrase: "Lower"
-25) EndPhrase, "Lower" [True]
-26) StartPhrase, "Upper"
-27) EndPhrase, "Upper" [False]
-28) OnInternalPhrase, 8, 11
+29) EndPhrase, "Lower" [True]
+30) StartPhrase, "Upper"
+31) EndPhrase, "Upper" [False]
+32) StartPhrase, "Neg"
+33) StartPhrase, "'-'"
+34) EndPhrase, "'-'" [False]
+35) EndPhrase, "Neg" [False]
+36) OnInternalPhrase, 8, 11
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -81,20 +89,20 @@
           match: "<_sre.SRE_Match object; span=(8, 11), match='var'>"
       phrase: "Lower"
     phrase: "All Phrases <Prefix>"
-29) EndPhrase, "All Phrases <Prefix>" [True]
-30) StartPhrase, "All Phrases <Suffix>"
-31) StartPhrase, "'+'"
-32) EndPhrase, "'+'" [False]
-33) StartPhrase, "'-'"
-34) EndPhrase, "'-'" [False]
-35) StartPhrase, "'*'"
-36) EndPhrase, "'*'" [False]
-37) StartPhrase, "'/'"
-38) EndPhrase, "'/'" [False]
-39) StartPhrase, "'if'"
-40) EndPhrase, "'if'" [False]
-41) StartPhrase, "'['"
-42) OnInternalPhrase, 11, 12
+37) EndPhrase, "All Phrases <Prefix>" [True]
+38) StartPhrase, "All Phrases <Suffix>"
+39) StartPhrase, "'+'"
+40) EndPhrase, "'+'" [False]
+41) StartPhrase, "'-'"
+42) EndPhrase, "'-'" [False]
+43) StartPhrase, "'*'"
+44) EndPhrase, "'*'" [False]
+45) StartPhrase, "'/'"
+46) EndPhrase, "'/'" [False]
+47) StartPhrase, "'if'"
+48) EndPhrase, "'if'" [False]
+49) StartPhrase, "'['"
+50) OnInternalPhrase, 11, 12
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -105,11 +113,11 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(11, 12), match='['>"
     phrase: "'['"
-43) EndPhrase, "'['" [True]
-44) StartPhrase, "DynamicPhrasesType.Statements"
-45) StartPhrase, "All Phrases <Prefix>"
-46) StartPhrase, "Lower"
-47) OnInternalPhrase, 12, 13
+51) EndPhrase, "'['" [True]
+52) StartPhrase, "DynamicPhrasesType.Statements"
+53) StartPhrase, "All Phrases <Prefix>"
+54) StartPhrase, "Lower"
+55) OnInternalPhrase, 12, 13
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -120,10 +128,14 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(12, 13), match='a'>"
     phrase: "Lower"
-48) EndPhrase, "Lower" [True]
-49) StartPhrase, "Upper"
-50) EndPhrase, "Upper" [False]
-51) OnInternalPhrase, 12, 13
+56) EndPhrase, "Lower" [True]
+57) StartPhrase, "Upper"
+58) EndPhrase, "Upper" [False]
+59) StartPhrase, "Neg"
+60) StartPhrase, "'-'"
+61) EndPhrase, "'-'" [False]
+62) EndPhrase, "Neg" [False]
+63) OnInternalPhrase, 12, 13
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -136,22 +148,22 @@
           match: "<_sre.SRE_Match object; span=(12, 13), match='a'>"
       phrase: "Lower"
     phrase: "All Phrases <Prefix>"
-52) EndPhrase, "All Phrases <Prefix>" [True]
-53) StartPhrase, "All Phrases <Suffix>"
-54) StartPhrase, "'+'"
-55) EndPhrase, "'+'" [False]
-56) StartPhrase, "'-'"
-57) EndPhrase, "'-'" [False]
-58) StartPhrase, "'*'"
-59) EndPhrase, "'*'" [False]
-60) StartPhrase, "'/'"
-61) EndPhrase, "'/'" [False]
-62) StartPhrase, "'if'"
-63) EndPhrase, "'if'" [False]
-64) StartPhrase, "'['"
-65) EndPhrase, "'['" [False]
-66) EndPhrase, "All Phrases <Suffix>" [False]
-67) OnInternalPhrase, 12, 13
+64) EndPhrase, "All Phrases <Prefix>" [True]
+65) StartPhrase, "All Phrases <Suffix>"
+66) StartPhrase, "'+'"
+67) EndPhrase, "'+'" [False]
+68) StartPhrase, "'-'"
+69) EndPhrase, "'-'" [False]
+70) StartPhrase, "'*'"
+71) EndPhrase, "'*'" [False]
+72) StartPhrase, "'/'"
+73) EndPhrase, "'/'" [False]
+74) StartPhrase, "'if'"
+75) EndPhrase, "'if'" [False]
+76) StartPhrase, "'['"
+77) EndPhrase, "'['" [False]
+78) EndPhrase, "All Phrases <Suffix>" [False]
+79) OnInternalPhrase, 12, 13
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
@@ -166,9 +178,9 @@
         phrase: "Lower"
       phrase: "All Phrases"
     phrase: "DynamicPhrasesType.Statements"
-68) EndPhrase, "DynamicPhrasesType.Statements" [True]
-69) StartPhrase, "']'"
-70) OnInternalPhrase, 13, 14
+80) EndPhrase, "DynamicPhrasesType.Statements" [True]
+81) StartPhrase, "']'"
+82) OnInternalPhrase, 13, 14
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -179,8 +191,8 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(13, 14), match=']'>"
     phrase: "']'"
-71) EndPhrase, "']'" [True]
-72) OnInternalPhrase, 11, 14
+83) EndPhrase, "']'" [True]
+84) OnInternalPhrase, 11, 14
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data:
@@ -234,20 +246,20 @@
           phrase: "']'"
       phrase: "Index"
     phrase: "All Phrases <Suffix>"
-73) EndPhrase, "All Phrases <Suffix>" [True]
-74) StartPhrase, "All Phrases <Suffix>"
-75) StartPhrase, "'+'"
-76) EndPhrase, "'+'" [False]
-77) StartPhrase, "'-'"
-78) EndPhrase, "'-'" [False]
-79) StartPhrase, "'*'"
-80) EndPhrase, "'*'" [False]
-81) StartPhrase, "'/'"
-82) EndPhrase, "'/'" [False]
-83) StartPhrase, "'if'"
-84) EndPhrase, "'if'" [False]
-85) StartPhrase, "'['"
-86) OnInternalPhrase, 14, 15
+85) EndPhrase, "All Phrases <Suffix>" [True]
+86) StartPhrase, "All Phrases <Suffix>"
+87) StartPhrase, "'+'"
+88) EndPhrase, "'+'" [False]
+89) StartPhrase, "'-'"
+90) EndPhrase, "'-'" [False]
+91) StartPhrase, "'*'"
+92) EndPhrase, "'*'" [False]
+93) StartPhrase, "'/'"
+94) EndPhrase, "'/'" [False]
+95) StartPhrase, "'if'"
+96) EndPhrase, "'if'" [False]
+97) StartPhrase, "'['"
+98) OnInternalPhrase, 14, 15
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -258,11 +270,11 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(14, 15), match='['>"
     phrase: "'['"
-87) EndPhrase, "'['" [True]
-88) StartPhrase, "DynamicPhrasesType.Statements"
-89) StartPhrase, "All Phrases <Prefix>"
-90) StartPhrase, "Lower"
-91) OnInternalPhrase, 15, 18
+99) EndPhrase, "'['" [True]
+100) StartPhrase, "DynamicPhrasesType.Statements"
+101) StartPhrase, "All Phrases <Prefix>"
+102) StartPhrase, "Lower"
+103) OnInternalPhrase, 15, 18
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -273,10 +285,14 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(15, 18), match='one'>"
     phrase: "Lower"
-92) EndPhrase, "Lower" [True]
-93) StartPhrase, "Upper"
-94) EndPhrase, "Upper" [False]
-95) OnInternalPhrase, 15, 18
+104) EndPhrase, "Lower" [True]
+105) StartPhrase, "Upper"
+106) EndPhrase, "Upper" [False]
+107) StartPhrase, "Neg"
+108) StartPhrase, "'-'"
+109) EndPhrase, "'-'" [False]
+110) EndPhrase, "Neg" [False]
+111) OnInternalPhrase, 15, 18
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -289,18 +305,18 @@
           match: "<_sre.SRE_Match object; span=(15, 18), match='one'>"
       phrase: "Lower"
     phrase: "All Phrases <Prefix>"
-96) EndPhrase, "All Phrases <Prefix>" [True]
-97) StartPhrase, "All Phrases <Suffix>"
-98) StartPhrase, "'+'"
-99) EndPhrase, "'+'" [False]
-100) StartPhrase, "'-'"
-101) EndPhrase, "'-'" [False]
-102) StartPhrase, "'*'"
-103) EndPhrase, "'*'" [False]
-104) StartPhrase, "'/'"
-105) EndPhrase, "'/'" [False]
-106) StartPhrase, "'if'"
-107) OnInternalPhrase, 19, 21
+112) EndPhrase, "All Phrases <Prefix>" [True]
+113) StartPhrase, "All Phrases <Suffix>"
+114) StartPhrase, "'+'"
+115) EndPhrase, "'+'" [False]
+116) StartPhrase, "'-'"
+117) EndPhrase, "'-'" [False]
+118) StartPhrase, "'*'"
+119) EndPhrase, "'*'" [False]
+120) StartPhrase, "'/'"
+121) EndPhrase, "'/'" [False]
+122) StartPhrase, "'if'"
+123) OnInternalPhrase, 19, 21
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -311,13 +327,13 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(19, 21), match='if'>"
     phrase: "'if'"
-108) EndPhrase, "'if'" [True]
-109) StartPhrase, "DynamicPhrasesType.Statements"
-110) StartPhrase, "All Phrases <Prefix>"
-111) StartPhrase, "Lower"
-112) EndPhrase, "Lower" [False]
-113) StartPhrase, "Upper"
-114) OnInternalPhrase, 22, 31
+124) EndPhrase, "'if'" [True]
+125) StartPhrase, "DynamicPhrasesType.Statements"
+126) StartPhrase, "All Phrases <Prefix>"
+127) StartPhrase, "Lower"
+128) EndPhrase, "Lower" [False]
+129) StartPhrase, "Upper"
+130) OnInternalPhrase, 22, 31
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -328,8 +344,12 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(22, 31), match='CONDITION'>"
     phrase: "Upper"
-115) EndPhrase, "Upper" [True]
-116) OnInternalPhrase, 22, 31
+131) EndPhrase, "Upper" [True]
+132) StartPhrase, "Neg"
+133) StartPhrase, "'-'"
+134) EndPhrase, "'-'" [False]
+135) EndPhrase, "Neg" [False]
+136) OnInternalPhrase, 22, 31
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -342,22 +362,22 @@
           match: "<_sre.SRE_Match object; span=(22, 31), match='CONDITION'>"
       phrase: "Upper"
     phrase: "All Phrases <Prefix>"
-117) EndPhrase, "All Phrases <Prefix>" [True]
-118) StartPhrase, "All Phrases <Suffix>"
-119) StartPhrase, "'+'"
-120) EndPhrase, "'+'" [False]
-121) StartPhrase, "'-'"
-122) EndPhrase, "'-'" [False]
-123) StartPhrase, "'*'"
-124) EndPhrase, "'*'" [False]
-125) StartPhrase, "'/'"
-126) EndPhrase, "'/'" [False]
-127) StartPhrase, "'if'"
-128) EndPhrase, "'if'" [False]
-129) StartPhrase, "'['"
-130) EndPhrase, "'['" [False]
-131) EndPhrase, "All Phrases <Suffix>" [False]
-132) OnInternalPhrase, 22, 31
+137) EndPhrase, "All Phrases <Prefix>" [True]
+138) StartPhrase, "All Phrases <Suffix>"
+139) StartPhrase, "'+'"
+140) EndPhrase, "'+'" [False]
+141) StartPhrase, "'-'"
+142) EndPhrase, "'-'" [False]
+143) StartPhrase, "'*'"
+144) EndPhrase, "'*'" [False]
+145) StartPhrase, "'/'"
+146) EndPhrase, "'/'" [False]
+147) StartPhrase, "'if'"
+148) EndPhrase, "'if'" [False]
+149) StartPhrase, "'['"
+150) EndPhrase, "'['" [False]
+151) EndPhrase, "All Phrases <Suffix>" [False]
+152) OnInternalPhrase, 22, 31
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
@@ -372,9 +392,9 @@
         phrase: "Upper"
       phrase: "All Phrases"
     phrase: "DynamicPhrasesType.Statements"
-133) EndPhrase, "DynamicPhrasesType.Statements" [True]
-134) StartPhrase, "'else'"
-135) OnInternalPhrase, 32, 36
+153) EndPhrase, "DynamicPhrasesType.Statements" [True]
+154) StartPhrase, "'else'"
+155) OnInternalPhrase, 32, 36
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -385,11 +405,11 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(32, 36), match='else'>"
     phrase: "'else'"
-136) EndPhrase, "'else'" [True]
-137) StartPhrase, "DynamicPhrasesType.Statements"
-138) StartPhrase, "All Phrases <Prefix>"
-139) StartPhrase, "Lower"
-140) OnInternalPhrase, 37, 40
+156) EndPhrase, "'else'" [True]
+157) StartPhrase, "DynamicPhrasesType.Statements"
+158) StartPhrase, "All Phrases <Prefix>"
+159) StartPhrase, "Lower"
+160) OnInternalPhrase, 37, 40
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -400,10 +420,14 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(37, 40), match='two'>"
     phrase: "Lower"
-141) EndPhrase, "Lower" [True]
-142) StartPhrase, "Upper"
-143) EndPhrase, "Upper" [False]
-144) OnInternalPhrase, 37, 40
+161) EndPhrase, "Lower" [True]
+162) StartPhrase, "Upper"
+163) EndPhrase, "Upper" [False]
+164) StartPhrase, "Neg"
+165) StartPhrase, "'-'"
+166) EndPhrase, "'-'" [False]
+167) EndPhrase, "Neg" [False]
+168) OnInternalPhrase, 37, 40
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -416,22 +440,22 @@
           match: "<_sre.SRE_Match object; span=(37, 40), match='two'>"
       phrase: "Lower"
     phrase: "All Phrases <Prefix>"
-145) EndPhrase, "All Phrases <Prefix>" [True]
-146) StartPhrase, "All Phrases <Suffix>"
-147) StartPhrase, "'+'"
-148) EndPhrase, "'+'" [False]
-149) StartPhrase, "'-'"
-150) EndPhrase, "'-'" [False]
-151) StartPhrase, "'*'"
-152) EndPhrase, "'*'" [False]
-153) StartPhrase, "'/'"
-154) EndPhrase, "'/'" [False]
-155) StartPhrase, "'if'"
-156) EndPhrase, "'if'" [False]
-157) StartPhrase, "'['"
-158) EndPhrase, "'['" [False]
-159) EndPhrase, "All Phrases <Suffix>" [False]
-160) OnInternalPhrase, 37, 40
+169) EndPhrase, "All Phrases <Prefix>" [True]
+170) StartPhrase, "All Phrases <Suffix>"
+171) StartPhrase, "'+'"
+172) EndPhrase, "'+'" [False]
+173) StartPhrase, "'-'"
+174) EndPhrase, "'-'" [False]
+175) StartPhrase, "'*'"
+176) EndPhrase, "'*'" [False]
+177) StartPhrase, "'/'"
+178) EndPhrase, "'/'" [False]
+179) StartPhrase, "'if'"
+180) EndPhrase, "'if'" [False]
+181) StartPhrase, "'['"
+182) EndPhrase, "'['" [False]
+183) EndPhrase, "All Phrases <Suffix>" [False]
+184) OnInternalPhrase, 37, 40
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
@@ -446,10 +470,10 @@
         phrase: "Lower"
       phrase: "All Phrases"
     phrase: "DynamicPhrasesType.Statements"
-161) EndPhrase, "DynamicPhrasesType.Statements" [True]
-162) StartPhrase, "'['"
-163) EndPhrase, "'['" [False]
-164) OnInternalPhrase, 18, 40
+185) EndPhrase, "DynamicPhrasesType.Statements" [True]
+186) StartPhrase, "'['"
+187) EndPhrase, "'['" [False]
+188) OnInternalPhrase, 18, 40
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data:
@@ -557,22 +581,22 @@
           phrase: "DynamicPhrasesType.Statements"
       phrase: "Ter"
     phrase: "All Phrases <Suffix>"
-165) EndPhrase, "All Phrases <Suffix>" [True]
-166) StartPhrase, "All Phrases <Suffix>"
-167) StartPhrase, "'+'"
-168) EndPhrase, "'+'" [False]
-169) StartPhrase, "'-'"
-170) EndPhrase, "'-'" [False]
-171) StartPhrase, "'*'"
-172) EndPhrase, "'*'" [False]
-173) StartPhrase, "'/'"
-174) EndPhrase, "'/'" [False]
-175) StartPhrase, "'if'"
-176) EndPhrase, "'if'" [False]
-177) StartPhrase, "'['"
-178) EndPhrase, "'['" [False]
-179) EndPhrase, "All Phrases <Suffix>" [False]
-180) OnInternalPhrase, 15, 40
+189) EndPhrase, "All Phrases <Suffix>" [True]
+190) StartPhrase, "All Phrases <Suffix>"
+191) StartPhrase, "'+'"
+192) EndPhrase, "'+'" [False]
+193) StartPhrase, "'-'"
+194) EndPhrase, "'-'" [False]
+195) StartPhrase, "'*'"
+196) EndPhrase, "'*'" [False]
+197) StartPhrase, "'/'"
+198) EndPhrase, "'/'" [False]
+199) StartPhrase, "'if'"
+200) EndPhrase, "'if'" [False]
+201) StartPhrase, "'['"
+202) EndPhrase, "'['" [False]
+203) EndPhrase, "All Phrases <Suffix>" [False]
+204) OnInternalPhrase, 15, 40
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
@@ -682,9 +706,9 @@
         phrase: "Ter"
       phrase: "All Phrases"
     phrase: "DynamicPhrasesType.Statements"
-181) EndPhrase, "DynamicPhrasesType.Statements" [True]
-182) StartPhrase, "']'"
-183) OnInternalPhrase, 40, 41
+205) EndPhrase, "DynamicPhrasesType.Statements" [True]
+206) StartPhrase, "']'"
+207) OnInternalPhrase, 40, 41
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -695,8 +719,8 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(40, 41), match=']'>"
     phrase: "']'"
-184) EndPhrase, "']'" [True]
-185) OnInternalPhrase, 14, 41
+208) EndPhrase, "']'" [True]
+209) OnInternalPhrase, 14, 41
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data:
@@ -886,22 +910,22 @@
           phrase: "']'"
       phrase: "Index"
     phrase: "All Phrases <Suffix>"
-186) EndPhrase, "All Phrases <Suffix>" [True]
-187) StartPhrase, "All Phrases <Suffix>"
-188) StartPhrase, "'+'"
-189) EndPhrase, "'+'" [False]
-190) StartPhrase, "'-'"
-191) EndPhrase, "'-'" [False]
-192) StartPhrase, "'*'"
-193) EndPhrase, "'*'" [False]
-194) StartPhrase, "'/'"
-195) EndPhrase, "'/'" [False]
-196) StartPhrase, "'if'"
-197) EndPhrase, "'if'" [False]
-198) StartPhrase, "'['"
-199) EndPhrase, "'['" [False]
-200) EndPhrase, "All Phrases <Suffix>" [False]
-201) OnInternalPhrase, 8, 41
+210) EndPhrase, "All Phrases <Suffix>" [True]
+211) StartPhrase, "All Phrases <Suffix>"
+212) StartPhrase, "'+'"
+213) EndPhrase, "'+'" [False]
+214) StartPhrase, "'-'"
+215) EndPhrase, "'-'" [False]
+216) StartPhrase, "'*'"
+217) EndPhrase, "'*'" [False]
+218) StartPhrase, "'/'"
+219) EndPhrase, "'/'" [False]
+220) StartPhrase, "'if'"
+221) EndPhrase, "'if'" [False]
+222) StartPhrase, "'['"
+223) EndPhrase, "'['" [False]
+224) EndPhrase, "All Phrases <Suffix>" [False]
+225) OnInternalPhrase, 8, 41
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
@@ -1093,9 +1117,9 @@
         phrase: "Index"
       phrase: "All Phrases"
     phrase: "DynamicPhrasesType.Statements"
-202) EndPhrase, "DynamicPhrasesType.Statements" [True]
-203) StartPhrase, "'else'"
-204) OnInternalPhrase, 42, 46
+226) EndPhrase, "DynamicPhrasesType.Statements" [True]
+227) StartPhrase, "'else'"
+228) OnInternalPhrase, 42, 46
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -1106,13 +1130,13 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(42, 46), match='else'>"
     phrase: "'else'"
-205) EndPhrase, "'else'" [True]
-206) StartPhrase, "DynamicPhrasesType.Statements"
-207) StartPhrase, "All Phrases <Prefix>"
-208) StartPhrase, "Lower"
-209) EndPhrase, "Lower" [False]
-210) StartPhrase, "Upper"
-211) OnInternalPhrase, 47, 52
+229) EndPhrase, "'else'" [True]
+230) StartPhrase, "DynamicPhrasesType.Statements"
+231) StartPhrase, "All Phrases <Prefix>"
+232) StartPhrase, "Lower"
+233) EndPhrase, "Lower" [False]
+234) StartPhrase, "Upper"
+235) OnInternalPhrase, 47, 52
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
       is_ignored: False
@@ -1123,8 +1147,12 @@
       value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
         match: "<_sre.SRE_Match object; span=(47, 52), match='FALSE'>"
     phrase: "Upper"
-212) EndPhrase, "Upper" [True]
-213) OnInternalPhrase, 47, 52
+236) EndPhrase, "Upper" [True]
+237) StartPhrase, "Neg"
+238) StartPhrase, "'-'"
+239) EndPhrase, "'-'" [False]
+240) EndPhrase, "Neg" [False]
+241) OnInternalPhrase, 47, 52
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
@@ -1137,22 +1165,22 @@
           match: "<_sre.SRE_Match object; span=(47, 52), match='FALSE'>"
       phrase: "Upper"
     phrase: "All Phrases <Prefix>"
-214) EndPhrase, "All Phrases <Prefix>" [True]
-215) StartPhrase, "All Phrases <Suffix>"
-216) StartPhrase, "'+'"
-217) EndPhrase, "'+'" [False]
-218) StartPhrase, "'-'"
-219) EndPhrase, "'-'" [False]
-220) StartPhrase, "'*'"
-221) EndPhrase, "'*'" [False]
-222) StartPhrase, "'/'"
-223) EndPhrase, "'/'" [False]
-224) StartPhrase, "'if'"
-225) EndPhrase, "'if'" [False]
-226) StartPhrase, "'['"
-227) EndPhrase, "'['" [False]
-228) EndPhrase, "All Phrases <Suffix>" [False]
-229) OnInternalPhrase, 47, 52
+242) EndPhrase, "All Phrases <Prefix>" [True]
+243) StartPhrase, "All Phrases <Suffix>"
+244) StartPhrase, "'+'"
+245) EndPhrase, "'+'" [False]
+246) StartPhrase, "'-'"
+247) EndPhrase, "'-'" [False]
+248) StartPhrase, "'*'"
+249) EndPhrase, "'*'" [False]
+250) StartPhrase, "'/'"
+251) EndPhrase, "'/'" [False]
+252) StartPhrase, "'if'"
+253) EndPhrase, "'if'" [False]
+254) StartPhrase, "'['"
+255) EndPhrase, "'['" [False]
+256) EndPhrase, "All Phrases <Suffix>" [False]
+257) OnInternalPhrase, 47, 52
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
@@ -1167,10 +1195,10 @@
         phrase: "Upper"
       phrase: "All Phrases"
     phrase: "DynamicPhrasesType.Statements"
-230) EndPhrase, "DynamicPhrasesType.Statements" [True]
-231) StartPhrase, "'['"
-232) EndPhrase, "'['" [False]
-233) OnInternalPhrase, 4, 52
+258) EndPhrase, "DynamicPhrasesType.Statements" [True]
+259) StartPhrase, "'['"
+260) EndPhrase, "'['" [False]
+261) OnInternalPhrase, 4, 52
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data:
@@ -1455,22 +1483,22 @@
           phrase: "DynamicPhrasesType.Statements"
       phrase: "Ter"
     phrase: "All Phrases <Suffix>"
-234) EndPhrase, "All Phrases <Suffix>" [True]
-235) StartPhrase, "All Phrases <Suffix>"
-236) StartPhrase, "'+'"
-237) EndPhrase, "'+'" [False]
-238) StartPhrase, "'-'"
-239) EndPhrase, "'-'" [False]
-240) StartPhrase, "'*'"
-241) EndPhrase, "'*'" [False]
-242) StartPhrase, "'/'"
-243) EndPhrase, "'/'" [False]
-244) StartPhrase, "'if'"
-245) EndPhrase, "'if'" [False]
-246) StartPhrase, "'['"
-247) EndPhrase, "'['" [False]
-248) EndPhrase, "All Phrases <Suffix>" [False]
-249) OnInternalPhrase, 0, 52
+262) EndPhrase, "All Phrases <Suffix>" [True]
+263) StartPhrase, "All Phrases <Suffix>"
+264) StartPhrase, "'+'"
+265) EndPhrase, "'+'" [False]
+266) StartPhrase, "'-'"
+267) EndPhrase, "'-'" [False]
+268) StartPhrase, "'*'"
+269) EndPhrase, "'*'" [False]
+270) StartPhrase, "'/'"
+271) EndPhrase, "'/'" [False]
+272) StartPhrase, "'if'"
+273) EndPhrase, "'if'" [False]
+274) StartPhrase, "'['"
+275) EndPhrase, "'['" [False]
+276) EndPhrase, "All Phrases <Suffix>" [False]
+277) OnInternalPhrase, 0, 52
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
@@ -1757,4 +1785,4 @@
         phrase: "Ter"
       phrase: "All Phrases"
     phrase: "Dynamic Phrase"
-250) EndPhrase, "Dynamic Phrase" [True]
+278) EndPhrase, "Dynamic Phrase" [True]
