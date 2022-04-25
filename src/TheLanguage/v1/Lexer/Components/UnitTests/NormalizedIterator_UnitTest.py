@@ -592,19 +592,19 @@ def test_Errors():
 
     iter.AtEnd()
 
-# TODO: # ----------------------------------------------------------------------
-# TODO: def test_Clone():
-# TODO:     iter1 = NormalizedIterator.Create(Normalize("12345"))
-# TODO:     iter2 = iter1.Clone()
-# TODO:
-# TODO:     assert iter1 == iter2
-# TODO:
-# TODO:     iter1.Advance(1)
-# TODO:     assert iter1 != iter2
-# TODO:
-# TODO:     iter2.Advance(2)
-# TODO:     assert iter1 != iter2
-# TODO:
-# TODO:     iter1.Advance(1)
-# TODO:     assert iter1 == iter2
-# TODO:
+# # ----------------------------------------------------------------------
+# def test_Clone():
+#     iter1 = NormalizedIterator.Create(Normalize("12345"))
+#     iter2 = iter1.Clone()
+#
+#     assert iter1 == iter2
+#
+#     iter1.Advance(1)
+#     assert iter1 != iter2
+#
+#     iter2.Advance(2)
+#     assert iter1 != iter2
+#
+#     iter1.Advance(1)
+#     assert iter1 == iter2
+#

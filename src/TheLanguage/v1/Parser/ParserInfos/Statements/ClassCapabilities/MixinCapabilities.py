@@ -91,8 +91,8 @@ MixinCapabilities                           = _ClassCapabilities(
     valid_method_mutabilities=[
         MutabilityModifier.var,
         MutabilityModifier.ref,
+        MutabilityModifier.view,
         MutabilityModifier.val,
-        MutabilityModifier.mutable,
         MutabilityModifier.immutable,
     ],
     default_method_mutability=None,
