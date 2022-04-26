@@ -121,6 +121,17 @@ class ClassStatementDependencyParserInfo(ParserInfo):
         if errors:
             raise ErrorException(*errors)
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("type", self.type),
+            ],
+            children=None,
+        )
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -227,7 +238,7 @@ class ClassStatementParserInfo(StatementParserInfo):
             for dependency in dependencies:
                 if dependency.visibility is None:
                     object.__setattr__(dependency, "visibility", default_visibility)
-                    object.__setattr__(dependency.regions__, "visibility", self.regions__.self__)
+                    object.__setattr__(dependency.regions__, "visibility", dependency.regions__.self__)
 
         self.ValidateRegions()
 
@@ -316,8 +327,25 @@ class ClassStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, *args, **kwargs):
-        return self._ScopedAcceptImpl(cast(List[ParserInfo], self.statements), *args, **kwargs)
+    def Accept(self, visitor):
+        details = []
+
+        if self.templates:
+            details.append(("templates", self.templates))
+        if self.constraints:
+            details.append(("constraints", self.constraints))
+        if self.extends:
+            details.append(("extends", self.extends))
+        if self.implements:
+            details.append(("implements", self.implements))
+        if self.uses:
+            details.append(("uses", self.uses))
+
+        return self._AcceptImpl(
+            visitor,
+            details=details,
+            children=cast(List[ParserInfo], self.statements),
+        )
 
 # TODO: Not valid to have a protected class without a class ancestor
 # TODO: Ensure that all contents have mutability values consistent with the class decoration

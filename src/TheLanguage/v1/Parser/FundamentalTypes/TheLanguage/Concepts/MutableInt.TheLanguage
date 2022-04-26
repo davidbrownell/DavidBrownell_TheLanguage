@@ -23,22 +23,22 @@ public concept MutableInt {
 }
     extends Int { min_value!, max_value! }
 :
-    public None __Serialize?__<ArchiveT>(ArchiveT ref archive) mutable
-    public None __Accept?__<VisitorT>(VisitorT ref visitor) mutable
+    public None __Serialize?__<ArchiveT>(ArchiveT ref archive) val
+    public None __Accept?__<VisitorT>(VisitorT ref visitor) val
 
-    [Deferred] public None __BitFlipInplace?__() mutable
+    [Deferred] public None __BitFlipInplace?__() val
 
-    [Deferred] public None __DivideFloorInplace?__(Int immutable divisor) mutable
-    [Deferred] public None __ModuloInplace?__(Int immutable divisor) mutable
-    [Deferred] public None __MultiplyInplace?__(Int immutable multiplier) mutable
-    [Deferred] public None __PowerInplace?__(Int immutable exponent) mutable
+    [Deferred] public None __DivideFloorInplace?__(Int immutable divisor) val
+    [Deferred] public None __ModuloInplace?__(Int immutable divisor) val
+    [Deferred] public None __MultiplyInplace?__(Int immutable multiplier) val
+    [Deferred] public None __PowerInplace?__(Int immutable exponent) val
 
-    [Deferred] public None __AddInplace?__(Int immutable value) mutable
-    [Deferred] public None __SubtractInplace?__(Int immutable value) mutable
+    [Deferred] public None __AddInplace?__(Int immutable value) val
+    [Deferred] public None __SubtractInplace?__(Int immutable value) val
 
-    [Deferred] public None __BitShiftLeftInplace?__(Int immutable places) mutable
-    [Deferred] public None __BitShiftRightInplace?__(Int immutable places) mutable
+    [Deferred] public None __BitShiftLeftInplace?__(Int immutable places) val
+    [Deferred] public None __BitShiftRightInplace?__(Int immutable places) val
 
-    [Deferred] public None __BitAndInplace?__(Int immutable value) mutable
-    [Deferred] public None __BitXOrInplace?__(Int immutable value) mutable
-    [Deferred] public None __BitOrInplace?__(Int immutable value) mutable
+    [Deferred] public None __BitAndInplace?__(Int immutable value) val
+    [Deferred] public None __BitXOrInplace?__(Int immutable value) val
+    [Deferred] public None __BitOrInplace?__(Int immutable value) val

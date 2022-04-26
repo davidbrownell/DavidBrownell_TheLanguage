@@ -17,7 +17,7 @@
 
 import os
 
-from enum import auto, Flag
+from enum import auto, Enum
 
 import CommonEnvironment
 
@@ -28,12 +28,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 
 # ----------------------------------------------------------------------
-class MutabilityModifier(Flag):
-    var                                     = auto()
-    ref                                     = auto()
-    val                                     = auto()
-    mutable                                 = auto()
-    immutable                               = auto()
-    new                                     = auto()
+class MutabilityModifier(Enum):
+    #                                                     Mutable   Shared      Finalized   Notes
+    #                                                     --------  ----------  ---------   -----------------
+    var                                     = auto()    # Yes       No          No
+    ref                                     = auto()    # Yes       Yes         No
+    view                                    = auto()    # No        No          No
+    val                                     = auto()    # No        Yes         Yes
+    immutable                               = auto()    # No        Yes | No    Yes | No    view | val
+
+    new                                     = auto()    # Depends on associated Type; should only be used with method return values
+                                                        # in concepts, interfaces, and mixins when the actual type is not known.
 
     # TODO: Validate that new is used appropriately

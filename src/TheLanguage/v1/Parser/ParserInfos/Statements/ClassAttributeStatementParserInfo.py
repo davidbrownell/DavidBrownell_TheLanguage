@@ -189,7 +189,7 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
 
             if (
                 self.visibility == VisibilityModifier.public
-                and self.type.mutability_modifier & MutabilityModifier.mutable
+                and self.type.mutability_modifier in [MutabilityModifier.var, MutabilityModifier.ref, MutabilityModifier.view]
                 and not class_capabilities.allow_mutable_public_attributes
             ):
                 errors.append(

@@ -22,6 +22,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -90,6 +91,17 @@ class ConstraintArgumentParserInfo(ParserInfo):
         if errors:
             raise ErrorException(*errors)
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("expression", self.expression),
+            ],
+            children=None,
+        )
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -134,3 +146,14 @@ class ConstraintArgumentsParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("arguments", self.arguments),
+            ],  # type: ignore
+            children=None,
+        )
