@@ -45,7 +45,7 @@ class PythonTarget(Target):
     def __init__(
         self,
         source_dirs: List[str],
-        output_dir: str,
+        output_dir: Optional[str],
         indent_spaces: Optional[int]=None,
     ):
         indent_spaces = indent_spaces or 4
@@ -84,13 +84,19 @@ class PythonTarget(Target):
                 output_name = FileSystem.TrimPath(fully_qualified_name, source_dir)
                 break
 
+        if output_name is None:
+            assert self.output_dir is None, self.output_dir
+            output_name = fully_qualified_name
+        else:
+            assert self.output_dir is not None, self.output_dir
+            output_name = os.path.join(self.output_dir, output_name)
+
         assert output_name is not None
 
-        assert fully_qualified_name.startswith
         self._outputs.append(
             Target.EnumResult.Create(
                 fully_qualified_name,
-                os.path.join(self.output_dir, output_name),
+                output_name,
                 visitor.GetContent(),
             ),
         )
