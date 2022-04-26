@@ -22,6 +22,7 @@ from typing import Dict, List, Optional, Union
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -77,6 +78,17 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
             regionless_attributes=["type", ],
         )
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("type", self.type),
+            ],
+            children=None,
+        )
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -117,6 +129,17 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("expression", self.expression),
+            ],
+            children=None,
+        )
 
 
 # ----------------------------------------------------------------------
@@ -170,3 +193,14 @@ class TemplateArgumentsParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("arguments", self.arguments),
+            ],  # type: ignore
+            children=None,
+        )

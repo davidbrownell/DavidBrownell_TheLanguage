@@ -43,6 +43,8 @@ with InitRelativeImports():
     from ....Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier
     from ....Parser.ParserInfos.Common.VisibilityModifier import VisibilityModifier
 
+    from ....Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo, StatementParserInfo
+
 
 # ----------------------------------------------------------------------
 class BaseMixin(object):
@@ -85,6 +87,9 @@ class BaseMixin(object):
 
         self._stream                        = StringIO()
         self._imports                       = imports
+
+        self._scope_level                               = 0
+        self._public_exports: List[ParserInfo]          = []
 
     # ----------------------------------------------------------------------
     def __getattr__(
@@ -129,19 +134,48 @@ class BaseMixin(object):
 
     # ----------------------------------------------------------------------
     @staticmethod
-    def OnEnterScope(
-        parser_info: ParserInfo,
-    ) -> None:
-        # Nothing to do here
-        pass
+    def OnEnterPhrase(
+        parser_info: ParserInfo,  # pylint: disable=unused-argument
+    ):
+        return VisitControl.Continue
 
     # ----------------------------------------------------------------------
-    @staticmethod
+    def OnExitPhrase(
+        self,
+        parser_info: ParserInfo,
+    ):
+        if self._scope_level == 1:
+            if isinstance(parser_info, StatementParserInfo):
+                should_add = False
+
+                potential_visibility = getattr(parser_info, "visibility", None)
+                if potential_visibility is not None:
+                    if potential_visibility == VisibilityModifier.public:
+                        should_add = True
+
+                elif isinstance(parser_info, IfStatementParserInfo):
+                    should_add = True
+
+                else:
+                    assert False, type(parser_info)
+
+                if should_add:
+                    self._public_exports.append(parser_info)
+
+    # ----------------------------------------------------------------------
+    def OnEnterScope(
+        self,
+        parser_info: ParserInfo,  # pylint: disable=unused-argument
+    ) -> None:
+        self._scope_level += 1
+
+    # ----------------------------------------------------------------------
     def OnExitScope(
+        self,
         parser_info: ParserInfo,
     ) -> None:
-        # Nothing to do here
-        pass
+        assert self._scope_level
+        self._scope_level -= 1
 
     # ----------------------------------------------------------------------
     def OnEnterRootParserInfo(
@@ -163,10 +197,20 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     def OnExitRootParserInfo(
         self,
-        parser_info: RootParserInfo,
+        parser_info: RootParserInfo,  # pylint: disable=unused-argument
     ) -> None:
-        # Nothing to do here
-        pass
+        if self._public_exports:
+            self._stream.write(
+                textwrap.dedent(
+                    """\
+                    public_exports = [
+                        {exports},
+                    ]
+                    """,
+                ).format(
+                    exports=",\n    ".join(self._CreateStatementName(pi) for pi in self._public_exports),
+                ),
+            )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
