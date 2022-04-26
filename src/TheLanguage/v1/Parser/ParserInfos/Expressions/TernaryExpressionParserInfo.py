@@ -22,6 +22,7 @@ from typing import List, Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -83,4 +84,17 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
                 "true_expression",
                 "false_expression",
             ],
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("ConditionExpression", self.condition_expression),
+                ("TrueExpression", self.true_expression),
+                ("FalseExpression", self.false_expression),
+            ],
+            children=None,
         )

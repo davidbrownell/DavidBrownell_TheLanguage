@@ -23,6 +23,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -129,6 +130,22 @@ class FuncParameterParserInfo(ParserInfo):
         if errors:
             raise ErrorException(*errors)
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        details = []
+
+        if self.default_value is not None:
+            details.append(("DefaultValue", self.default_value))
+
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("Type", self.type),
+            ] + details,  # type: ignore
+            children=None,
+        )
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -217,3 +234,21 @@ class FuncParametersParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        details = []
+
+        if self.positional:
+            details.append(("Positional", self.positional))
+        if self.any:
+            details.append(("Any", self.any))
+        if self.keyword:
+            details.append(("Keyword", self.keyword))
+
+        return self._AcceptImpl(
+            visitor,
+            details=details,
+            children=None,
+        )

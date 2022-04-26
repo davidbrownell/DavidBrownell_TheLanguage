@@ -23,6 +23,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -58,7 +59,7 @@ class ConstraintParameterParserInfo(ParserInfo):
 
     type: TypeParserInfo
     name: str
-    default_type: Optional[ExpressionParserInfo]
+    default_value: Optional[ExpressionParserInfo]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -77,7 +78,7 @@ class ConstraintParameterParserInfo(ParserInfo):
             **kwargs,
             regionless_attributes=[
                 "type",
-                "default_type",
+                "default_value",
             ],
         )
 
@@ -85,17 +86,33 @@ class ConstraintParameterParserInfo(ParserInfo):
         errors: List[Error] = []
 
         if (
-            self.default_type is not None
-            and self.default_type.parser_info_type__.value > ParserInfoType.CompileTime.value  # type: ignore
+            self.default_value is not None
+            and self.default_value.parser_info_type__.value > ParserInfoType.CompileTime.value  # type: ignore
         ):
             errors.append(
                 InvalidConstraintExpressionError.Create(
-                    region=self.default_type.regions__.self__,
+                    region=self.default_value.regions__.self__,
                 ),
             )
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        details = []
+
+        if self.default_value is not None:
+            details.append(("DefaultValue", self.default_value))
+
+        return self._AcceptImpl(
+            visitor,
+            [
+                ("Type", self.type),
+            ] + details,  # type: ignore
+            children=None,
+        )
 
 
 # ----------------------------------------------------------------------
@@ -147,3 +164,21 @@ class ConstraintParametersParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        details = []
+
+        if self.positional:
+            details.append(("Positional", self.positional))
+        if self.any:
+            details.append(("Any", self.any))
+        if self.keyword:
+            details.append(("Keyword", self.keyword))
+
+        return self._AcceptImpl(
+            visitor,
+            details=details,
+            children=None,
+        )

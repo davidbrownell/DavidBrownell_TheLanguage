@@ -22,6 +22,7 @@ from typing import List, Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -80,4 +81,16 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
                 "left_expression",
                 "right_expression",
             ],
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("LeftExpression", self.left_expression),
+                ("RightExpression", self.right_expression),
+            ],
+            children=None,
         )

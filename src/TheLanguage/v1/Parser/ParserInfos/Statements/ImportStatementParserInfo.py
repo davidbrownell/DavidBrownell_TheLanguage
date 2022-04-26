@@ -23,6 +23,7 @@ from typing import List, Optional
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -90,6 +91,7 @@ class ImportStatementParserInfo(StatementParserInfo):
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             *args,
+            **kwargs,
         )
 
     # ----------------------------------------------------------------------
@@ -113,3 +115,14 @@ class ImportStatementParserInfo(StatementParserInfo):
 
         # Validate
         self.ValidateRegions()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("ImportItems", self.import_items),
+            ],  # type: ignore
+            children=None,
+        )

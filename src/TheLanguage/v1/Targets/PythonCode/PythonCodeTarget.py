@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  PythonTarget.py
+# |  PythonCodeTarget.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-13 10:44:55
+# |      2022-04-25 08:09:28
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the PythonTarget object"""
+"""Contains the PythonCodeTarget object"""
 
 import os
 
@@ -32,28 +32,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Visitor import Visitor
-
     from ..Target import RootParserInfo, Target
 
 
 # ----------------------------------------------------------------------
-class PythonTarget(Target):
-    name                                    = Interface.DerivedProperty("Python")               # type: ignore
-    configurations                          = Interface.DerivedProperty(["Debug", "Release"])   # type: ignore
+class PythonCodeTarget(Target):
+    name                                    = Interface.DerivedProperty("PythonCode")   # type: ignore
+    configurations                          = Interface.DerivedProperty([])             # type: ignore
 
     # ----------------------------------------------------------------------
     def __init__(
         self,
         source_dirs: List[str],
         output_dir: str,
-        indent_spaces: Optional[int]=None,
     ):
-        indent_spaces = indent_spaces or 4
+        self.source_dirs                                = source_dirs
+        self.output_dir                                 = output_dir
 
-        self.source_dirs                    = source_dirs
-        self.output_dir                     = output_dir
-
-        self._indent_spaces                             = indent_spaces
         self._outputs: List[Target.EnumResult]          = []
 
     # ----------------------------------------------------------------------
@@ -62,7 +57,7 @@ class PythonTarget(Target):
     def PreInvoke(
         fully_qualified_names: List[str],
     ) -> None:
-        pass # Nothong to do here
+        pass
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -71,9 +66,7 @@ class PythonTarget(Target):
         fully_qualified_name: str,
         root: RootParserInfo,
     ) -> None:
-        visitor = Visitor(
-            indent_spaces=self._indent_spaces,
-        )
+        visitor = Visitor()
 
         root.Accept(visitor)
 
@@ -85,8 +78,8 @@ class PythonTarget(Target):
                 break
 
         assert output_name is not None
+        output_name = os.path.splitext(output_name)[0] + ".py"
 
-        assert fully_qualified_name.startswith
         self._outputs.append(
             Target.EnumResult.Create(
                 fully_qualified_name,
@@ -95,13 +88,23 @@ class PythonTarget(Target):
             ),
         )
 
-    # ----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
     @Interface.override
     def PostInvoke(
         self,
         fully_qualified_names: List[str],
     ) -> None:
-        pass # TODO
+        for output in self._outputs:
+            output_dir = os.path.dirname(output.output_name)
+            FileSystem.MakeDirs(output_dir)
+
+            init_filename = os.path.join(output_dir, "__init__.py")
+            if not os.path.isfile(init_filename):
+                with open(init_filename, "w") as f:
+                    pass
+
+            with open(output.output_name, "w") as f:
+                f.write(output.content)
 
     # ----------------------------------------------------------------------
     @Interface.override
