@@ -90,7 +90,7 @@ class TemplateTypeParameterParserInfo(ParserInfo):
         details = []
 
         if self.default_type is not None:
-            details.append(("DefaultType", self.default_type))
+            details.append(("default_type", self.default_type))
 
         return self._AcceptImpl(
             visitor,
@@ -152,12 +152,12 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
         details = []
 
         if self.default_value is not None:
-            details.append(("Default Value", self.default_value))
+            details.append(("default_value", self.default_value))
 
         return self._AcceptImpl(
             visitor,
             details=[
-                ("Type", self.type),
+                ("type", self.type),
             ] + details,  # type: ignore
             children=None,
         )
@@ -241,11 +241,11 @@ class TemplateParametersParserInfo(ParserInfo):
         details = []
 
         if self.positional is not None:
-            details.append(("Positional", self.positional))
+            details.append(("positional", self.positional))
         if self.any is not None:
-            details.append(("Any", self.any))
+            details.append(("any", self.any))
         if self.keyword is not None:
-            details.append(("Keyword", self.keyword))
+            details.append(("keyword", self.keyword))
 
         return self._AcceptImpl(
             visitor,

@@ -87,7 +87,7 @@ class TupleTypeParserInfo(TypeParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("Types", self.types),
+                ("types", self.types),
             ],  # type: ignore
             children=None,
         )

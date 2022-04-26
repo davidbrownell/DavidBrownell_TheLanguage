@@ -122,7 +122,7 @@ class ImportStatementParserInfo(StatementParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("ImportItems", self.import_items),
+                ("import_items", self.import_items),
             ],  # type: ignore
             children=None,
         )

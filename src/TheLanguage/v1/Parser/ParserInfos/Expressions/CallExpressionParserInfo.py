@@ -84,12 +84,12 @@ class CallExpressionParserInfo(ExpressionParserInfo):
         details = []
 
         if not isinstance(self.arguments, bool):
-            details.append(("Arguments", self.arguments))
+            details.append(("arguments", self.arguments))
 
         return self._AcceptImpl(
             visitor,
             details=[
-                ("Expression", self.expression),
+                ("expression", self.expression),
             ] + details,  # type: ignore
             children=None,
         )

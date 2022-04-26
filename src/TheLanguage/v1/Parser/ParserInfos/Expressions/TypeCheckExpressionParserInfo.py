@@ -80,8 +80,8 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("Expression", self.expression),
-                ("Type", self.type),
+                ("expression", self.expression),
+                ("type", self.type),
             ],
             children=None,
         )

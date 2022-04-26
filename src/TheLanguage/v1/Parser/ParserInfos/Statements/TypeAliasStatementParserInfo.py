@@ -90,7 +90,7 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("Type", self.type),
+                ("type", self.type),
             ],
             children=None,
         )

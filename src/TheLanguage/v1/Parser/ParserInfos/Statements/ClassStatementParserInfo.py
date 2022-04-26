@@ -127,7 +127,7 @@ class ClassStatementDependencyParserInfo(ParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("Type", self.type),
+                ("type", self.type),
             ],
             children=None,
         )
@@ -331,15 +331,15 @@ class ClassStatementParserInfo(StatementParserInfo):
         details = []
 
         if self.templates:
-            details.append(("Templates", self.templates))
+            details.append(("templates", self.templates))
         if self.constraints:
-            details.append(("Constraints", self.constraints))
+            details.append(("constraints", self.constraints))
         if self.extends:
-            details.append(("Extends", self.extends))
+            details.append(("extends", self.extends))
         if self.implements:
-            details.append(("Implements", self.implements))
+            details.append(("implements", self.implements))
         if self.uses:
-            details.append(("Uses", self.uses))
+            details.append(("uses", self.uses))
 
         return self._AcceptImpl(
             visitor,

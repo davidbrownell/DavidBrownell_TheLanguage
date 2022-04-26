@@ -4728,46 +4728,6 @@ statement01520005_01540001 = TypeAliasStatementParserInfo.Create(
     type=statement01520047_01520060,
 )
 
-statement01510047_01510053 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=151, column=47), end=Location(line=151, column=53)), Region(begin=Location(line=151, column=47), end=Location(line=151, column=53))],
-    name="UInt32",
-    templates=None,
-    constraints=None,
-)
-
-statement01510047_01510053 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=151, column=47), end=Location(line=151, column=53)), None, Region(begin=Location(line=151, column=47), end=Location(line=151, column=53))],
-    mutability_modifier=None,
-    items=[statement01510047_01510053, ],
-)
-
-statement01510005_01520001 = TypeAliasStatementParserInfo.Create(
-    regions=[Region(begin=Location(line=151, column=5), end=Location(line=152, column=1)), Region(begin=Location(line=151, column=5), end=Location(line=151, column=11)), Region(begin=Location(line=151, column=12), end=Location(line=151, column=19))],
-    visibility_param=VisibilityModifier.public,
-    name="ArchInt",
-    type=statement01510047_01510053,
-)
-
-statement01520047_01520060 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=152, column=47), end=Location(line=152, column=60)), Region(begin=Location(line=152, column=47), end=Location(line=152, column=60))],
-    name="CheckedUInt32",
-    templates=None,
-    constraints=None,
-)
-
-statement01520047_01520060 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=152, column=47), end=Location(line=152, column=60)), None, Region(begin=Location(line=152, column=47), end=Location(line=152, column=60))],
-    mutability_modifier=None,
-    items=[statement01520047_01520060, ],
-)
-
-statement01520005_01540001 = TypeAliasStatementParserInfo.Create(
-    regions=[Region(begin=Location(line=152, column=5), end=Location(line=154, column=1)), Region(begin=Location(line=152, column=5), end=Location(line=152, column=11)), Region(begin=Location(line=152, column=12), end=Location(line=152, column=26))],
-    visibility_param=VisibilityModifier.public,
-    name="CheckedArchInt",
-    type=statement01520047_01520060,
-)
-
 statement01500001_01600001 = IfStatementClauseParserInfo.Create(
     regions=[Region(begin=Location(line=150, column=1), end=Location(line=160, column=1)), Region(begin=Location(line=150, column=30), end=Location(line=154, column=1)), None],
     expression=statement01500004_01500030,
@@ -4791,46 +4751,6 @@ statement01540006_01540032 = BinaryExpressionParserInfo.Create(
     left_expression=statement01540006_01540027,
     operator=BinaryExpressionOperatorType.Equal,
     right_expression=statement01540031_01540032,
-)
-
-statement01550047_01550053 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=155, column=47), end=Location(line=155, column=53)), Region(begin=Location(line=155, column=47), end=Location(line=155, column=53))],
-    name="UInt64",
-    templates=None,
-    constraints=None,
-)
-
-statement01550047_01550053 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=155, column=47), end=Location(line=155, column=53)), None, Region(begin=Location(line=155, column=47), end=Location(line=155, column=53))],
-    mutability_modifier=None,
-    items=[statement01550047_01550053, ],
-)
-
-statement01550005_01560001 = TypeAliasStatementParserInfo.Create(
-    regions=[Region(begin=Location(line=155, column=5), end=Location(line=156, column=1)), Region(begin=Location(line=155, column=5), end=Location(line=155, column=11)), Region(begin=Location(line=155, column=12), end=Location(line=155, column=19))],
-    visibility_param=VisibilityModifier.public,
-    name="ArchInt",
-    type=statement01550047_01550053,
-)
-
-statement01560047_01560060 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=156, column=47), end=Location(line=156, column=60)), Region(begin=Location(line=156, column=47), end=Location(line=156, column=60))],
-    name="CheckedUInt64",
-    templates=None,
-    constraints=None,
-)
-
-statement01560047_01560060 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=156, column=47), end=Location(line=156, column=60)), None, Region(begin=Location(line=156, column=47), end=Location(line=156, column=60))],
-    mutability_modifier=None,
-    items=[statement01560047_01560060, ],
-)
-
-statement01560005_01580001 = TypeAliasStatementParserInfo.Create(
-    regions=[Region(begin=Location(line=156, column=5), end=Location(line=158, column=1)), Region(begin=Location(line=156, column=5), end=Location(line=156, column=11)), Region(begin=Location(line=156, column=12), end=Location(line=156, column=26))],
-    visibility_param=VisibilityModifier.public,
-    name="CheckedArchInt",
-    type=statement01560047_01560060,
 )
 
 statement01550047_01550053 = StandardTypeItemParserInfo.Create(

@@ -76,7 +76,7 @@ class UnaryExpressionParserInfo(ExpressionParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("Expression", self.expression),
+                ("expression", self.expression),
             ],
             children=None,
         )

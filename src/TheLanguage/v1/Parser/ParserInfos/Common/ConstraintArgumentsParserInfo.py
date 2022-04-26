@@ -97,7 +97,7 @@ class ConstraintArgumentParserInfo(ParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("Expression", self.expression),
+                ("expression", self.expression),
             ],
             children=None,
         )
@@ -153,7 +153,7 @@ class ConstraintArgumentsParserInfo(ParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("Arguments", self.arguments),
+                ("arguments", self.arguments),
             ],  # type: ignore
             children=None,
         )

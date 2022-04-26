@@ -43,13 +43,14 @@ with InitRelativeImports():
 
     from ...Parser.ParserInfos.ParserInfo import ParserInfo, VisitControl
 
+    # TODO: CapturedVariablesParserInfo
     from ...Parser.ParserInfos.Common.ClassModifier import ClassModifier
     from ...Parser.ParserInfos.Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo, ConstraintArgumentParserInfo
     from ...Parser.ParserInfos.Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo, ConstraintParameterParserInfo
-    from ...Parser.ParserInfos.Common.MethodModifier import MethodModifier
-    from ...Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier
     from ...Parser.ParserInfos.Common.FuncArgumentsParserInfo import FuncArgumentsParserInfo, FuncArgumentParserInfo
     from ...Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParametersParserInfo, FuncParameterParserInfo
+    from ...Parser.ParserInfos.Common.MethodModifier import MethodModifier
+    from ...Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier
     from ...Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateDecoratorArgumentParserInfo, TemplateTypeArgumentParserInfo
     from ...Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateParametersParserInfo, TemplateTypeParameterParserInfo, TemplateDecoratorParameterParserInfo
     from ...Parser.ParserInfos.Common.VariableNameParserInfo import VariableNameParserInfo
@@ -70,6 +71,7 @@ with InitRelativeImports():
     from ...Parser.ParserInfos.Expressions.UnaryExpressionParserInfo import UnaryExpressionParserInfo
     from ...Parser.ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
 
+    # TODO: ClassAttributeStatementParserInfo
     from ...Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
     from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
     from ...Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo, IfStatementClauseParserInfo
@@ -230,7 +232,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnConstraintArgumentsParserInfo_Arguments(
+    def OnConstraintArgumentsParserInfo__arguments(
         self,
         parser_infos: List[ConstraintArgumentParserInfo],
     ):
@@ -271,7 +273,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnConstraintArgumentParserInfo_Expression(
+    def OnConstraintArgumentParserInfo__expression(
         self,
         parser_info: ExpressionParserInfo,
     ):
@@ -319,7 +321,7 @@ class Visitor(object):
         return VisitControl.ContinueWithDetail
 
     # ----------------------------------------------------------------------
-    def OnConstraintParametersParserInfo_Positional(
+    def OnConstraintParametersParserInfo__positional(
         self,
         parser_infos: List[ConstraintParameterParserInfo],
     ):
@@ -327,7 +329,7 @@ class Visitor(object):
             parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnConstraintParametersParserInfo_Any(
+    def OnConstraintParametersParserInfo__any(
         self,
         parser_infos: List[ConstraintParameterParserInfo],
     ):
@@ -335,7 +337,7 @@ class Visitor(object):
             parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnConstraintParametersParserInfo_Keyword(
+    def OnConstraintParametersParserInfo__keyword(
         self,
         parser_infos: List[ConstraintParameterParserInfo],
     ):
@@ -380,14 +382,14 @@ class Visitor(object):
         return VisitControl.ContinueWithDetail
 
     # ----------------------------------------------------------------------
-    def OnConstraintParameterParserInfo_Type(
+    def OnConstraintParameterParserInfo__type(
         self,
         parser_info: TypeParserInfo,
     ):
         parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnConstraintParameterParserInfo_DefaultValue(
+    def OnConstraintParameterParserInfo__default_value(
         self,
         parser_info: ExpressionParserInfo,
     ):
@@ -427,7 +429,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnFuncArgumentsParserInfo_Arguments(
+    def OnFuncArgumentsParserInfo__arguments(
         self,
         parser_infos: List[FuncArgumentParserInfo],
     ):
@@ -470,7 +472,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnFuncArgumentParserInfo_Expression(
+    def OnFuncArgumentParserInfo__expression(
         self,
         parser_info: ExpressionParserInfo,
     ):
@@ -516,7 +518,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnFuncParametersParserInfo_Positional(
+    def OnFuncParametersParserInfo__positional(
         self,
         parser_infos: List[FuncParameterParserInfo],
     ):
@@ -524,7 +526,7 @@ class Visitor(object):
             parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnFuncParametersParserInfo_Any(
+    def OnFuncParametersParserInfo__any(
         self,
         parser_infos: List[FuncParameterParserInfo],
     ):
@@ -532,7 +534,7 @@ class Visitor(object):
             parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnFuncParametersParserInfo_Keyword(
+    def OnFuncParametersParserInfo__keyword(
         self,
         parser_infos: List[FuncParameterParserInfo],
     ):
@@ -581,14 +583,14 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnFuncParameterParserInfo_Type(
+    def OnFuncParameterParserInfo__type(
         self,
         parser_info: TypeParserInfo,
     ):
         return parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnFuncParameterParserInfo_DefaultValue(
+    def OnFuncParameterParserInfo__default_value(
         self,
         parser_info: ExpressionParserInfo,
     ):
@@ -636,7 +638,7 @@ class Visitor(object):
         return VisitControl.ContinueWithDetail
 
     # ----------------------------------------------------------------------
-    def OnTemplateParametersParserInfo_Positional(
+    def OnTemplateParametersParserInfo__positional(
         self,
         parser_infos: List[TemplateParametersParserInfo.ParameterType],
     ):
@@ -644,7 +646,7 @@ class Visitor(object):
             parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnTemplateParametersParserInfo_Any(
+    def OnTemplateParametersParserInfo__any(
         self,
         parser_infos: List[TemplateParametersParserInfo.ParameterType],
     ):
@@ -652,7 +654,7 @@ class Visitor(object):
             parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnTemplateParametersParserInfo_Keyword(
+    def OnTemplateParametersParserInfo__keyword(
         self,
         parser_infos: List[TemplateParametersParserInfo.ParameterType],
     ):
@@ -698,7 +700,7 @@ class Visitor(object):
         return VisitControl.ContinueWithDetail
 
     # ----------------------------------------------------------------------
-    def OnTemplateTypeParameterParserInfo_DefaultType(
+    def OnTemplateTypeParameterParserInfo__default_type(
         self,
         parser_info: TypeParserInfo,
     ):
@@ -742,14 +744,14 @@ class Visitor(object):
         return VisitControl.ContinueWithDetail
 
     # ----------------------------------------------------------------------
-    def OnTemplateDecoratorParameterParserInfo_Type(
+    def OnTemplateDecoratorParameterParserInfo__type(
         self,
         parser_info: TypeParserInfo,
     ):
         return parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnTemplateDecoratorParameterParserInfo_DefaultValue(
+    def OnTemplateDecoratorParameterParserInfo__default_value(
         self,
         parser_info: ExpressionParserInfo,
     ):
@@ -799,14 +801,14 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnBinaryExpressionParserInfo_LeftExpression(
+    def OnBinaryExpressionParserInfo__left_expression(
         self,
         parser_info: ExpressionParserInfo,
     ):
         return parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnBinaryExpressionParserInfo_RightExpression(
+    def OnBinaryExpressionParserInfo__right_expression(
         self,
         parser_info: ExpressionParserInfo,
     ):
@@ -873,14 +875,14 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnCallExpressionParserInfo_Expression(
+    def OnCallExpressionParserInfo__expression(
         self,
         parser_info: ExpressionParserInfo,
     ):
         parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnCallExpressionParserInfo_Arguments(
+    def OnCallExpressionParserInfo__arguments(
         self,
         parser_info: FuncArgumentsParserInfo,
     ):
@@ -1075,21 +1077,21 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnTernaryExpressionParserInfo_ConditionExpression(
+    def OnTernaryExpressionParserInfo__conditional_expression(
         self,
         parser_info: ExpressionParserInfo,
     ):
         return parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnTernaryExpressionParserInfo_TrueExpression(
+    def OnTernaryExpressionParserInfo__true_expression(
         self,
         parser_info: ExpressionParserInfo,
     ):
         return parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnTernaryExpressionParserInfo_FalseExpression(
+    def OnTernaryExpressionParserInfo__false_expression(
         self,
         parser_info: ExpressionParserInfo,
     ):
@@ -1133,14 +1135,14 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnTypeCheckExpressionParserInfo_Expression(
+    def OnTypeCheckExpressionParserInfo__expression(
         self,
         parser_info: ExpressionParserInfo,
     ):
         return parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnTypeCheckExpressionParserInfo_Type(
+    def OnTypeCheckExpressionParserInfo__type(
         self,
         parser_info: TypeParserInfo,
     ):
@@ -1182,7 +1184,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnUnaryExpressionParserInfo_Expression(
+    def OnUnaryExpressionParserInfo__expression(
         self,
         parser_info: ExpressionParserInfo,
     ):
@@ -1293,21 +1295,21 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnClassStatementParserInfo_Templates(
+    def OnClassStatementParserInfo__templates(
         self,
         parser_info: TemplateParametersParserInfo,
     ):
         parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnClassStatementParserInfo_Constraints(
+    def OnClassStatementParserInfo__constraints(
         self,
         parser_info: ConstraintParametersParserInfo,
     ):
         parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnClassStatementParserInfo_Extends(
+    def OnClassStatementParserInfo__extends(
         self,
         parser_infos: List[ClassStatementDependencyParserInfo],
     ):
@@ -1315,7 +1317,7 @@ class Visitor(object):
             parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnClassStatementParserInfo_Implements(
+    def OnClassStatementParserInfo__implements(
         self,
         parser_infos: List[ClassStatementDependencyParserInfo],
     ):
@@ -1323,7 +1325,7 @@ class Visitor(object):
             parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnClassStatementParserInfo_Uses(
+    def OnClassStatementParserInfo__uses(
         self,
         parser_infos: List[ClassStatementDependencyParserInfo],
     ):
@@ -1364,7 +1366,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnClassStatementDependencyParserInfo_Type(
+    def OnClassStatementDependencyParserInfo__type(
         self,
         parser_info: StandardTypeParserInfo,
     ):
@@ -1451,7 +1453,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnFuncDefinitionStatementParserInfo_CapturedVariables(
+    def OnFuncDefinitionStatementParserInfo__captured_variables(
         self,
         parser_infos: List[VariableNameParserInfo],
     ):
@@ -1459,21 +1461,21 @@ class Visitor(object):
             item.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnFuncDefinitionStatementParserInfo_Parameters(
+    def OnFuncDefinitionStatementParserInfo__parameters(
         self,
         parser_info: FuncParametersParserInfo,
     ):
         return parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnFuncDefinitionStatementParserInfo_ReturnType(
+    def OnFuncDefinitionStatementParserInfo__return_type(
         self,
         parser_info: TypeParserInfo,
     ):
         return parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnFuncDefinitionStatementParserInfo_Templates(
+    def OnFuncDefinitionStatementParserInfo__templates(
         self,
         parser_info: TemplateParametersParserInfo,
     ):
@@ -1518,7 +1520,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnIfStatementParserInfo_Clauses(
+    def OnIfStatementParserInfo__clauses(
         self,
         parser_infos: List[IfStatementClauseParserInfo],
     ):
@@ -1526,7 +1528,7 @@ class Visitor(object):
             parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnIfStatementParserInfo_ElseStatements(
+    def OnIfStatementParserInfo__else_statements(
         self,
         parser_infos: List[StatementParserInfo],
     ):
@@ -1570,19 +1572,11 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnIfStatementClauseParserInfo_Expression(
+    def OnIfStatementClauseParserInfo__expression(
         self,
         parser_info: ExpressionParserInfo,
     ):
         return parser_info.Accept(self)
-
-    # ----------------------------------------------------------------------
-    def OnIfStatementClauseParserInfo_Statements(
-        self,
-        parser_infos: List[StatementParserInfo],
-    ):
-        for parser_info in parser_infos:
-            parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
     # |  ImportStatementParserInfo
@@ -1625,7 +1619,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnImportStatementParserInfo_ImportItems(
+    def OnImportStatementParserInfo__import_items(
         self,
         parser_infos: List[ImportStatementItemParserInfo],
     ):
@@ -1722,7 +1716,7 @@ class Visitor(object):
     # ----------------------------------------------------------------------
     @staticmethod
     def OnEnterTypeAliasStatementParserInfo(
-        parser_info: TypeAliasStatementParserInfo,
+        parser_info: TypeAliasStatementParserInfo,  # pylint: disable=unused-argument
     ):
         return VisitControl.ContinueWithDetail
 
@@ -1756,7 +1750,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnTypeAliasStatementParserInfo_Type(
+    def OnTypeAliasStatementParserInfo__type(
         self,
         parser_info: TypeParserInfo,
     ):
@@ -1807,7 +1801,7 @@ class Visitor(object):
         return VisitControl.ContinueWithDetail
 
     # ----------------------------------------------------------------------
-    def OnStandardTypeParserInfo_Items(
+    def OnStandardTypeParserInfo__items(
         self,
         parser_infos: List[StandardTypeItemParserInfo],
     ):
@@ -1848,14 +1842,14 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnStandardTypeItemParserInfo_Templates(
+    def OnStandardTypeItemParserInfo__templates(
         self,
         parser_info: TemplateArgumentsParserInfo,
     ):
         return parser_info.Accept(self)
 
     # ----------------------------------------------------------------------
-    def OnStandardTypeItemParserInfo_Constraints(
+    def OnStandardTypeItemParserInfo__constraints(
         self,
         parser_info: ConstraintArgumentsParserInfo,
     ):
@@ -1898,7 +1892,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnTupleTypeParserInfo_Types(
+    def OnTupleTypeParserInfo__types(
         self,
         parser_infos: List[TypeParserInfo],
     ):
@@ -1944,7 +1938,7 @@ class Visitor(object):
         )
 
     # ----------------------------------------------------------------------
-    def OnVariantTypeParserInfo_Types(
+    def OnVariantTypeParserInfo__types(
         self,
         parser_infos: List[TypeParserInfo],
     ):

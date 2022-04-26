@@ -89,8 +89,8 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("LeftExpression", self.left_expression),
-                ("RightExpression", self.right_expression),
+                ("left_expression", self.left_expression),
+                ("right_expression", self.right_expression),
             ],
             children=None,
         )

@@ -495,16 +495,16 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
         details = []
 
         if self.return_type:
-            details.append(("ReturnType", self.return_type))
+            details.append(("return_type", self.return_type))
         if self.templates:
-            details.append(("Templates", self.templates))
+            details.append(("templates", self.templates))
         if self.captured_variables:
-            details.append(("CapturedVariables", self.captured_variables))
+            details.append(("captured_variables", self.captured_variables))
         if not isinstance(self.parameters, bool):
-            details.append(("Parameters", self.parameters))
+            details.append(("parameters", self.parameters))
 
         return self._AcceptImpl(
             visitor,
             details=details,
-            children=cast(List[ParserInfo], self.statements) or [],
+            children=cast(List[ParserInfo], self.statements) or None,
         )

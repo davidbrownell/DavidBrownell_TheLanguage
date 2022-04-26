@@ -76,9 +76,9 @@ class StandardTypeItemParserInfo(ParserInfo):
         details = []
 
         if self.templates:
-            details.append(("Templates", self.templates))
+            details.append(("templates", self.templates))
         if self.constraints:
-            details.append(("Constraints", self.constraints))
+            details.append(("constraints", self.constraints))
 
         return self._AcceptImpl(
             visitor,
@@ -113,6 +113,6 @@ class StandardTypeParserInfo(TypeParserInfo):
     def Accept(self, visitor):
         return self._AcceptImpl(
             visitor,
-            details=[("Items", self.items), ],  # type: ignore
+            details=[("items", self.items), ],  # type: ignore
             children=None,
         )

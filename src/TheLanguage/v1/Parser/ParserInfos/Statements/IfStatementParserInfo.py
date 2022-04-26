@@ -89,8 +89,7 @@ class IfStatementClauseParserInfo(ParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("Expression", self.expression),
-                ("Statements", self.statements),  # type: ignore
+                ("expression", self.expression),
             ],
             children=cast(List[ParserInfo], self.statements),
         )
@@ -141,12 +140,12 @@ class IfStatementParserInfo(StatementParserInfo):
         details = []
 
         if self.else_statements:
-            details.append(("ElseStatements", self.else_statements))
+            details.append(("else_statements", self.else_statements))
 
         return self._AcceptImpl(
             visitor,
             details=[
-                ("Clauses", self.clauses),
+                ("clauses", self.clauses),
             ] + details,  # type: ignore
             children=None,
         )

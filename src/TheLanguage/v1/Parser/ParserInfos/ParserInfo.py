@@ -218,7 +218,7 @@ class ParserInfo(ObjectReprImplBase):
                     if not details:
                         visit_control = VisitControl.Continue
                     else:
-                        method_name_prefix = "On{}_".format(self.__class__.__name__)
+                        method_name_prefix = "On{}__".format(self.__class__.__name__)
 
                         for detail_name, detail_value in details:
                             method_name = "{}{}".format(method_name_prefix, detail_name)

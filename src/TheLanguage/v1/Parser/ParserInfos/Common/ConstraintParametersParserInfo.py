@@ -104,12 +104,12 @@ class ConstraintParameterParserInfo(ParserInfo):
         details = []
 
         if self.default_value is not None:
-            details.append(("DefaultValue", self.default_value))
+            details.append(("default_value", self.default_value))
 
         return self._AcceptImpl(
             visitor,
             [
-                ("Type", self.type),
+                ("type", self.type),
             ] + details,  # type: ignore
             children=None,
         )
@@ -171,11 +171,11 @@ class ConstraintParametersParserInfo(ParserInfo):
         details = []
 
         if self.positional:
-            details.append(("Positional", self.positional))
+            details.append(("positional", self.positional))
         if self.any:
-            details.append(("Any", self.any))
+            details.append(("any", self.any))
         if self.keyword:
-            details.append(("Keyword", self.keyword))
+            details.append(("keyword", self.keyword))
 
         return self._AcceptImpl(
             visitor,

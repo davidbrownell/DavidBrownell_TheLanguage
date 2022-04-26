@@ -92,9 +92,9 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("ConditionExpression", self.condition_expression),
-                ("TrueExpression", self.true_expression),
-                ("FalseExpression", self.false_expression),
+                ("conditional_expression", self.condition_expression),
+                ("true_expression", self.true_expression),
+                ("false_expression", self.false_expression),
             ],
             children=None,
         )
