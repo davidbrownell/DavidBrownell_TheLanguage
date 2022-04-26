@@ -22,9 +22,10 @@ public mutable concept FixedMutableStr {
 }
     extends Str { allow_empty! = allow_empty! }
 :
-    # TODO: Make this a docstring
-    # Functionality that will always result a string whose number of chars
-    # are <= the number of chars before the operation was invoked.
+    <<<
+    Functionality that will always result with a string whose number of chars
+    are <= the number of chars before the operation was invoked.
+    >>>
 
     public None __Serialize?__<ArchiveT>(ArchiveT ref archive) var
     public None __Accept?__<VisitorT>(VisitorT ref visitor) var
@@ -50,9 +51,10 @@ public mutable concept MutableStr {
 }
     extends FixedMutableStr { allow_empty! = allow_empty! }
 :
-    # TODO: Make this a docstring
-    # Contains functionality that may increase the number of chars before the
-    # operation was invoked.
+    <<<
+    Contains functionality that may increase the number of chars before the
+    operation was invoked.
+    >>>
 
     public None CenterInplace?(
         NonZeroInt immutable length,
