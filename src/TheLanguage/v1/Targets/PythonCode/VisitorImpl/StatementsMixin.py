@@ -34,7 +34,7 @@ with InitRelativeImports():
 
     from ....Parser.ParserInfos.ParserInfo import ParserInfo
 
-    # TODO: ClassAttributeStatementParserInfo
+    from ....Parser.ParserInfos.Statements.ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo
     from ....Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
     from ....Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
     from ....Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo, IfStatementClauseParserInfo
@@ -51,6 +51,59 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class StatementsMixin(BaseMixin):
     """Implements functionality for ParserInfos/Statements"""
+
+    # ----------------------------------------------------------------------
+    # |  ClassAttributeStatementParserInfo
+    # ----------------------------------------------------------------------
+    def OnClassAttributeStatementParserInfo(
+        self,
+        parser_info: ClassAttributeStatementParserInfo,
+    ):
+        self._imports.add("from v1.Parser.ParserInfos.Statements.ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                {statement_name} = ClassAttributeStatementParserInfo.Create(
+                    regions=[{self_region}, {visibility_region}, {name_region}, {documentation_region}, {keyword_initialization_region}, {no_initialization_region}, {no_serialize_region}, {no_compare_region}, {is_override_region}],
+                    class_capabilities={class_capabilities},
+                    visibility_param={visibility},
+                    type={type},
+                    name={name},
+                    documentation={documentation},
+                    initialized_value={initialized_value},
+                    keyword_initialization={keyword_initialization},
+                    no_initialization={no_initialization},
+                    no_serialize={no_serialize},
+                    no_compare={no_compare},
+                    is_override={is_override},
+                )
+
+                """,
+            ).format(
+                statement_name=self._CreateStatementName(parser_info),
+                self_region=self._ToString(parser_info.regions__.self__),
+                visibility_region=self._ToString(parser_info.regions__.visibility),
+                name_region=self._ToString(parser_info.regions__.name),
+                documentation_region=self._ToString(parser_info.regions__.documentation),
+                keyword_initialization_region=self._ToString(parser_info.regions__.keyword_initialization),
+                no_initialization_region=self._ToString(parser_info.regions__.no_initialization),
+                no_serialize_region=self._ToString(parser_info.regions__.no_serialize),
+                no_compare_region=self._ToString(parser_info.regions__.no_compare),
+                is_override_region=self._ToString(parser_info.regions__.is_override),
+                class_capabilities="{}Capabilities".format(parser_info.class_capabilities.name),
+                visibility=self._ToString(parser_info.visibility),
+                type=self._ToString(parser_info.type),
+                name=self._ToString(parser_info.name),
+                documentation=self._ToString(parser_info.documentation),
+                initialized_value=self._ToString(parser_info.initialized_value),
+                keyword_initialization=self._ToString(parser_info.keyword_initialization),
+                no_initialization=self._ToString(parser_info.no_initialization),
+                no_serialize=self._ToString(parser_info.no_serialize),
+                no_compare=self._ToString(parser_info.no_compare),
+                is_override=self._ToString(parser_info.is_override),
+            ),
+        )
 
     # ----------------------------------------------------------------------
     # |  ClassStatementParserInfo

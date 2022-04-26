@@ -34,12 +34,12 @@ with InitRelativeImports():
 
     from ....Parser.ParserInfos.ParserInfo import ParserInfo, VisitControl
 
-    # TODO: CapturedVariablesParserInfo
+    from ....Parser.ParserInfos.Common.CapturedVariablesParserInfo import CapturedVariablesParserInfo
     from ....Parser.ParserInfos.Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo, ConstraintArgumentParserInfo
     from ....Parser.ParserInfos.Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo, ConstraintParameterParserInfo
     from ....Parser.ParserInfos.Common.FuncArgumentsParserInfo import FuncArgumentsParserInfo, FuncArgumentParserInfo
     from ....Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParametersParserInfo, FuncParameterParserInfo
-    # TODO: from ....Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateDecoratorArgumentParserInfo, TemplateTypeArgumentParserInfo
+    from ....Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateDecoratorArgumentParserInfo, TemplateTypeArgumentParserInfo
     from ....Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateParametersParserInfo, TemplateTypeParameterParserInfo, TemplateDecoratorParameterParserInfo
 
 
@@ -50,6 +50,32 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class CommonMixin(BaseMixin):
     """Implements functionality for ParserInfos/Common"""
+
+    # ----------------------------------------------------------------------
+    # |  CapturedVariablesParserInfo
+    # ----------------------------------------------------------------------
+    def OnCapturedVariablesParserInfo(
+        self,
+        parser_info: CapturedVariablesParserInfo,
+    ):
+        self._imports.add("from v1.Parser.ParserInfos.Common.CapturedVariablesParserInfo import CapturedVariablesParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                {statement_name} = CapturedVariablesParserInfo.Create(
+                    regions=[{self_region}, {variables_region}],
+                    variables={variables},
+                )
+
+                """,
+            ).format(
+                statement_name=self.__class__._CreateStatementName(parser_info),
+                self_region=self._ToString(parser_info.regions__.self__),
+                variables_region=self._ToString(parser_info.regions__.variables),
+                variables=self._ToString(cast(List[ParserInfo], parser_info.variables)),
+            ),
+        )
 
     # ----------------------------------------------------------------------
     # |  ConstraintArgumentsParserInfo
@@ -284,6 +310,84 @@ class CommonMixin(BaseMixin):
                 is_variadic=self._ToString(parser_info.is_variadic),
                 name=self._ToString(parser_info.name),
                 default_value=self._ToString(parser_info.default_value),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    # |  TemplateArgumentsParserInfo
+    # ----------------------------------------------------------------------
+    def OnTemplateArgumentsParserInfo(
+        self,
+        parser_info: TemplateArgumentsParserInfo,
+    ):
+        self._imports.add("from v1.Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                {statement_name} = TemplateArgumentsParserInfo.Create(
+                    regions=[{self_region}, {arguments_region}],
+                    arguments={arguments},
+                )
+
+                """,
+            ).format(
+                statement_name=self._CreateStatementName(parser_info),
+                self_region=self._ToString(parser_info.regions__.self__),
+                arguments_region=self._ToString(parser_info.regions__.arguments),
+                arguments=self._ToString(cast(List[ParserInfo], parser_info.arguments)),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    def OnTemplateDecoratorArgumentParserInfo(
+        self,
+        parser_info: TemplateDecoratorArgumentParserInfo,
+    ):
+        self._imports.add("from v1.Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateDecoratorArgumentParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                {statement_name} = TemplateDecoratorArgumentParserInfo.Create(
+                    regions=[{self_region}, {keyword_region}],
+                    expression={expression},
+                    keyword={keyword},
+                )
+
+                """,
+            ).format(
+                statement_name=self._CreateStatementName(parser_info),
+                self_region=self._ToString(parser_info.regions__.self__),
+                keyword_region=self._ToString(parser_info.regions__.keyword),
+                expression=self._ToString(parser_info.expression),
+                keyword=self._ToString(parser_info.keyword),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    def OnTemplateTypeArgumentParserInfo(
+        self,
+        parser_info: TemplateTypeArgumentParserInfo,
+    ):
+        self._imports.add("from v1.Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateTypeArgumentParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                {statement_name} = TemplateTypeArgumentParserInfo.Create(
+                    regions=[{self_region}, {keyword_region}],
+                    type={type},
+                    keyword={keyword},
+                )
+
+                """,
+            ).format(
+                statement_name=self._CreateStatementName(parser_info),
+                self_region=self._ToString(parser_info.regions__.self__),
+                keyword_region=self._ToString(parser_info.regions__.keyword),
+                type=self._ToString(parser_info.type),
+                keyword=self._ToString(parser_info.keyword),
             ),
         )
 

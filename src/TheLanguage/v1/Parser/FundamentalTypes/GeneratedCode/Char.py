@@ -862,3 +862,7 @@ statement00190001_00400001 = ClassStatementParserInfo.Create(
     is_abstract=None,
     is_final=None,
 )
+
+public_exports = [
+    statement00190001_00400001,
+]

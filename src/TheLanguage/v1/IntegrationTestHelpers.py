@@ -174,10 +174,10 @@ def PatchAndExecute(
             roots[key] = value
 
         if flag & PatchAndExecuteFlag.validate_flag:
-            result = Validate(
-                roots,
-                max_num_threads=max_num_threads,
-            )
+            # TODO: result = Validate(
+            # TODO:     roots,
+            # TODO:     max_num_threads=max_num_threads,
+            # TODO: )
 
             assert result is not None
 
