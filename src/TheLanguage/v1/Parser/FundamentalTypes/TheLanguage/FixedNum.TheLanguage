@@ -1,0 +1,138 @@
+# ----------------------------------------------------------------------
+# |
+# |  FixedNum.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2022-04-26 11:08:14
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2022
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Concepts.MutableNum import MutableNum
+
+
+# ----------------------------------------------------------------------
+public mutable class FixedNum <
+    Int num_bytes!,                         # 2, 4, 8, 16, 32
+    Bool is_checked!,
+> {
+    key:
+        (Num | None) min_value! = None,
+        (Num | None) max_value! = None,
+}
+    implements MutableNum { min_value!, max_value! }
+:
+    # IEEE 754 Floating Point format
+
+    __EvalTemplates!__():
+        Enforce!(
+            num_bytes! == 2
+            or num_bytes! == 4
+            or num_bytes! == 8
+            or num_bytes! == 16
+            or num_bytes! == 32
+        )
+
+    [Deferred, Static] public override ThisType var __Deserialize?__<ArchiveT>(ArchiveT ref archive)
+    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) immutable
+    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) var
+
+    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) immutable
+
+    [Deferred] public override ThisType var __Clone?__() immutable
+
+    [Deferred] public override Bool val __ToBool__() immutable              # value != 0.0
+    [Deferred] public override Str val __ToString?__() immutable
+
+    [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, Number immutable that)
+
+    [Deferred] public override Bool val __Equal__(Num immutable that) immutable
+    [Deferred] public override Bool val __NotEqual__(Num immutable that) immutable
+    [Deferred] public override Bool val __Less__(Num immutable that) immutable
+    [Deferred] public override Bool val __LessEqual__(Num immutable that) immutable
+    [Deferred] public override Bool val __Greater__(Num immutable that) immutable
+    [Deferred] public override Bool val __GreaterEqual__(Num immutable that) immutable
+
+    [Deferred] public override ThisType var __Negative?__() immutable
+    [Deferred] public override ThisType var __Positive?__() immutable
+
+    [Deferred] public override ThisType var __Divide?__(Num immutable divisor) immutable
+    [Deferred] public override ThisType var __Multiply?__(Num immutable multiplier) immutable
+    [Deferred] public override ThisType var __Power?__(Num immutable exponent) immutable
+
+    [Deferred] public override ThisType var __Add?__(Num immutable value) immutable
+    [Deferred] public override ThisType var __Subtract?__(Num immutable value) immutable
+
+    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) var
+
+    [Deferred] public override None __DivideInplace?__(Num immutable divisor) var
+    [Deferred] public override None __MultiplyInplace?__(Num immutable multiplier) var
+    [Deferred] public override None __PowerInplace?__(Num immutable exponent) var
+
+    [Deferred] public override None __AddInplace?__(Num immutable value) var
+    [Deferred] public override None __SubtractInplace?__(Num immutable value) var
+
+
+# ----------------------------------------------------------------------
+public Num16 {
+    (Num | None) min_value! = None,
+    (Num | None) max_value! = None,
+}                                           = FixedNum {2, is_checked! = False, min_value! = min_value!, max_value! = max_value!}
+
+public CheckedNum16 {
+    (Num | None) min_value! = None,
+    (Num | None) max_value! = None,
+}                                           = FixedNum {2, is_checked! = True, min_value! = min_value!, max_value! = max_value!}
+
+
+# ----------------------------------------------------------------------
+public Num32 {
+    (Num | None) min_value! = None,
+    (Num | None) max_value! = None,
+}                                           = FixedNum {4, is_checked! = False, min_value! = min_value!, max_value! = max_value!}
+
+public CheckedNum32 {
+    (Num | None) min_value! = None,
+    (Num | None) max_value! = None,
+}                                           = FixedNum {4, is_checked! = True, min_value! = min_value!, max_value! = max_value!}
+
+
+# ----------------------------------------------------------------------
+public Num64 {
+    (Num | None) min_value! = None,
+    (Num | None) max_value! = None,
+}                                           = FixedNum {8, is_checked! = False, min_value! = min_value!, max_value! = max_value!}
+
+public CheckedNum64 {
+    (Num | None) min_value! = None,
+    (Num | None) max_value! = None,
+}                                           = FixedNum {8, is_checked! = True, min_value! = min_value!, max_value! = max_value!}
+
+
+# ----------------------------------------------------------------------
+public Num128 {
+    (Num | None) min_value! = None,
+    (Num | None) max_value! = None,
+}                                           = FixedNum {16, is_checked! = False, min_value! = min_value!, max_value! = max_value!}
+
+public CheckedNum128 {
+    (Num | None) min_value! = None,
+    (Num | None) max_value! = None,
+}                                           = FixedNum {16, is_checked! = True, min_value! = min_value!, max_value! = max_value!}
+
+
+# ----------------------------------------------------------------------
+public Num256 {
+    (Num | None) min_value! = None,
+    (Num | None) max_value! = None,
+}                                           = FixedNum {32, is_checked! = False, min_value! = min_value!, max_value! = max_value!}
+
+public CheckedNum256 {
+    (Num | None) min_value! = None,
+    (Num | None) max_value! = None,
+}                                           = FixedNum {32, is_checked! = True, min_value! = min_value!, max_value! = max_value!}

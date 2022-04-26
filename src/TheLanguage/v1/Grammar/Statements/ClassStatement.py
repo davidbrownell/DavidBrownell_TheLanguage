@@ -186,7 +186,7 @@ class ClassStatement(GrammarPhrase):
                     TemplateParametersFragment.Create(),
                 ),
 
-                # <constraints>?
+                # <constraint_parameters>?
                 OptionalPhraseItem(
                     ConstraintParametersFragment.Create(),
                 ),
@@ -427,7 +427,7 @@ class ClassStatement(GrammarPhrase):
                 else:
                     templates_info = result
 
-            # <constraints>?
+            # <constraint_parameters>?
             constraints_info = None
 
             constraints_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))

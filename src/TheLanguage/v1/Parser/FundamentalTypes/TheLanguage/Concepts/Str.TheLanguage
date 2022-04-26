@@ -1,0 +1,170 @@
+# ----------------------------------------------------------------------
+# |
+# |  Str.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2022-04-26 11:55:40
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2022
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+
+
+# ----------------------------------------------------------------------
+public immutable concept Str {
+    Bool allow_empty! = False,
+}:
+    # ----------------------------------------------------------------------
+    # |  Public Types
+    public PosInt                           = Int { min_value! = 0 }
+    public NonZeroInt                       = Int { min_value! = 1 }
+    public NonEmptyStr                      = Str { allow_empty! = False }
+
+    # ----------------------------------------------------------------------
+    # |  Public Methods
+
+    [Static] public ThisType new __Deserialize?__<ArchiveT>(ArchiveT ref archive)
+    public None __Serialize?__<ArchiveT>(ArchiveT ref archive) immutable
+
+    public None __Accept?__<VisitorT>(VisitorT ref visitor) immutable
+
+    public ThisType new __Clone?__() immutable
+
+    public Bool val __ToBool__() immutable              # value != ""
+    public Str val __ToString?__() immutable
+
+    [Static] public CompareResult val __Compare__(ThisType immutable this, Str immutable that)
+
+    public Bool val __Equal__(Str immutable that) immutable
+    public Bool val __NotEqual__(Str immutable that) immutable
+    public Bool val __Less__(Str immutable that) immutable
+    public Bool val __LessEqual__(Str immutable that) immutable
+    public Bool val __Greater__(Str immutable that) immutable
+    public Bool val __GreaterEqual__(Str immutable that) immutable
+
+    public (PosInt | None) val __Index__(Char immutable value) immutable
+    public (PosInt | None) val __Index__(NonEmptyStr immutable value) immutable
+
+    # TODO: Range concept for __Iter?__
+
+    public Bool val __Contains__(Char immutable value) immutable
+    public Bool val __Contains__(NonEmptyStr immutable value) immutable
+    public Bool val __NotContains__(Char immutable value) immutable
+    public Bool val __NotContains__(NonEmptyStr immutable value) immutable
+
+    public PosInt val NumChars() immutable
+    public PosInt val NumBytes() immutable
+
+    public Bool val IsAlphanumeric() immutable
+    public Bool val IsAlpha() immutable
+    public Bool val IsAscii() immutable
+    public Bool val IsInt() immutable
+    public Bool val IsLower() immutable
+    public Bool val IsNum() immutable
+    public Bool val IsPrintable() immutable
+    public Bool val IsSpace() immutable
+    public Bool val IsTitle() immutable
+    public Bool val IsUpper() immutable
+
+    public PosInt val Count(Char immutable value) immutable
+    public PosInt val Count(NonEmptyStr immutable value) immutable
+
+    public Bool val StartsWith(Char immutable value) immutable
+    public Bool val StartsWith(NonEmptyStr immutable value) immutable
+
+    public Bool val EndsWith(Char immutable value) immutable
+    public Bool val EndsWith(NonEmptyStr immutable value) immutable
+
+    # TODO: Range concept for Substr?
+
+    public (PosInt | None) val Find(
+        Char immutable value,
+        (PosInt | None) immutable begin_char_index = None,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    public (PosInt | None) val Find(
+        NonEmptyStr immutable value,
+        (PosInt | None) immutable begin_char_index = None,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    public (PosInt | None) val ReverseFind(
+        Char immutable value,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    public (PosInt | None) val ReverseFind(
+        NonEmptyStr immutable value,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    public (PosInt | None) val FindFirst(
+        Char immutable value,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    public (PosInt | None) val FindFirst(
+        NonEmptyStr immutable value,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    public (PosInt | None) val FindLast(
+        Char immutable value,
+        (PosInt | None) immutable begin_char_index = None,
+    ) immutable
+
+    public (PosInt | None) val FindLast(
+        NonEmptyStr immutable value,
+        (PosInt | None) immutable begin_char_index = None,
+    ) immutable
+
+    public ThisType new ToLower?() immutable
+    public ThisType new ToCamelCase?() immutable
+    public ThisType new ToPascalCase?() immutable
+    public ThisType new ToSnakeCase?() immutable
+    public ThisType new ToTitle?() immutable
+    public ThisType new ToUpper?() immutable
+
+    public ThisType new Center?(
+        NonZeroInt immutable length,
+        Char immutable fill_char = ' ',
+    ) immutable
+
+    public ThisType new LeftJustify?(
+        NonZeroInt immutable length,
+        Char immutable fill_char = ' ',
+    ) immutable
+
+    public ThisType new RightJustify?(
+        NonZeroInt immutable length,
+        Char immutable fill_char = ' ',
+    ) immutable
+
+    # TODO: Pass in variadic chars to strip
+    public ThisType new LeftStrip?() immutable
+    public ThisType new RightStrip?() immutable
+    public ThisType new Strip?() immutable
+
+    public ThisType new Replace?(
+        Char immutable source,
+        Char immutable dest,
+        (NonZeroInt | None) immutable count = None,
+    ) immutable
+
+    public ThisType new Replace?(
+        NonEmptyStr immutable source,
+        Str immutable dest,
+        (NonZeroInt | None) immutable count = None,
+    ) immutable
+
+    # TODO: Format
+
+    # TODO: Join
+    # TODO: Split
+    # TODO: RightSplit
