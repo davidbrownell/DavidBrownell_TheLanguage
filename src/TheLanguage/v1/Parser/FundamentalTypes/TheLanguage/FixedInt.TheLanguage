@@ -52,7 +52,7 @@ public class FixedInt <
     [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) immutable
 
     [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) immutable
-    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) mutable
+    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) val
 
     [Deferred] public override ThisType var __Clone?__() immutable
 
@@ -88,22 +88,22 @@ public class FixedInt <
     [Deferred] public override ThisType var __BitXOr?__(Integer immutable value) immutable
     [Deferred] public override ThisType var __BitOr?__(Integer immutable value) immutable
 
-    [Deferred] public None __BitFlipInplace?__() mutable
+    [Deferred] public None __BitFlipInplace?__() val
 
-    [Deferred] public None __DivideFloorInplace?__(Integer immutable divisor) mutable
-    [Deferred] public None __ModuloInplace?__(Integer immutable divisor) mutable
-    [Deferred] public None __MultiplyInplace?__(Integer immutable multiplier) mutable
-    [Deferred] public None __PowerInplace?__(Integer immutable exponent) mutable
+    [Deferred] public None __DivideFloorInplace?__(Integer immutable divisor) val
+    [Deferred] public None __ModuloInplace?__(Integer immutable divisor) val
+    [Deferred] public None __MultiplyInplace?__(Integer immutable multiplier) val
+    [Deferred] public None __PowerInplace?__(Integer immutable exponent) val
 
-    [Deferred] public None __AddInplace?__(Integer immutable value) mutable
-    [Deferred] public None __SubtractInplace?__(Integer immutable value) mutable
+    [Deferred] public None __AddInplace?__(Integer immutable value) val
+    [Deferred] public None __SubtractInplace?__(Integer immutable value) val
 
-    [Deferred] public None __BitShiftLeftInplace?__(Integer immutable places) mutable
-    [Deferred] public None __BitShiftRightInplace?__(Integer immutable places) mutable
+    [Deferred] public None __BitShiftLeftInplace?__(Integer immutable places) val
+    [Deferred] public None __BitShiftRightInplace?__(Integer immutable places) val
 
-    [Deferred] public None __BitAndInplace?__(Integer immutable value) mutable
-    [Deferred] public None __BitXOrInplace?__(Integer immutable value) mutable
-    [Deferred] public None __BitOrInplace?__(Integer immutable value) mutable
+    [Deferred] public None __BitAndInplace?__(Integer immutable value) val
+    [Deferred] public None __BitXOrInplace?__(Integer immutable value) val
+    [Deferred] public None __BitOrInplace?__(Integer immutable value) val
 
 
 # ----------------------------------------------------------------------

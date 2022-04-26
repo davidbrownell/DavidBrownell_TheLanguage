@@ -22,6 +22,7 @@ from typing import List, Optional
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -82,3 +83,14 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
         # Validate
 
         # TODO: protected visibility only valid when nested within class
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("type", self.type),
+            ],
+            children=None,
+        )

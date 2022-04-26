@@ -22,6 +22,7 @@ from typing import List, Optional
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -69,6 +70,22 @@ class StandardTypeItemParserInfo(ParserInfo):
             ],
         )
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        details = []
+
+        if self.templates:
+            details.append(("templates", self.templates))
+        if self.constraints:
+            details.append(("constraints", self.constraints))
+
+        return self._AcceptImpl(
+            visitor,
+            details=details,
+            children=None,
+        )
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -89,4 +106,13 @@ class StandardTypeParserInfo(TypeParserInfo):
             regions,                        # type: ignore
             *args,
             **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[("items", self.items), ],  # type: ignore
+            children=None,
         )

@@ -33,19 +33,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ....Parser.Parser import ParserInfo, RootParserInfo
+    from ...Parser.Parser import ParserInfo, RootParserInfo
 
-    from ....Parser.ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo
+    from ...Parser.ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo
 
-    from ....Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
-    from ....Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
-    from ....Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
-    from ....Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
-    from ....Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
-    from ....Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
-    from ....Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
+    from ...Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+    from ...Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
+    from ...Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
+    from ...Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
+    from ...Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
+    from ...Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
-    from ....Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo
+    from ...Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo
 
 
 # ----------------------------------------------------------------------

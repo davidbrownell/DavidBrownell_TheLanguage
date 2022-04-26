@@ -28,7 +28,7 @@ statements:
     method_modifier: None
     mutability: None
     name: "Func1"
-    parameters: False
+    parameters: True
     regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
       name: # <class 'v1.Parser.Region.Region'>
         begin: # <class 'v1.Lexer.Location.Location'>

@@ -50,10 +50,12 @@ with StreamDecorator(
             ErrorException as ParseErrorException,
             Parse,
             ParserInfo,
+            RootParserInfo,
             Validate,
         )
 
         from .Targets.Python.PythonTarget import PythonTarget
+        from .Targets.PythonCode.PythonCodeTarget import PythonCodeTarget
 
 
 # ----------------------------------------------------------------------
@@ -61,6 +63,7 @@ inflect                                     = inflect_mod.engine()
 
 _TARGETS                                    = {
     "Python": PythonTarget,
+    "PythonCode": PythonCodeTarget,
 }
 
 
@@ -135,10 +138,10 @@ def Execute(
 
             if isinstance(lex_result, list):
                 for error in lex_result:
-                    lex_dm.stream.write("{}\n{}\n\n".format(error.fully_qualified_name, error))
+                    lex_dm.stream.write("{}\n{}\n\n".format(error.fully_qualified_name, error))  # type: ignore
 
-                    if not str(error):
-                        lex_dm.stream.write("{}\n\n".format(error.traceback))
+                    if not str(error) or isinstance(error, AssertionError):
+                        lex_dm.stream.write("{}\n\n".format(error.traceback))  # type: ignore
 
                 lex_dm.result = -1
                 return lex_dm.result
@@ -174,7 +177,7 @@ def Execute(
                     parse_dm.result = -1
                     return parse_dm.result
 
-                parse_result[key] = cast(ParserInfo, result)
+                parse_result[key] = cast(RootParserInfo, result)
 
         dm.stream.write("\nValidating...")
         with dm.stream.DoneManager() as validate_dm:
@@ -182,7 +185,10 @@ def Execute(
 
         dm.stream.write("\nGenerating output...")
         with dm.stream.DoneManager() as target_dm:
-            target = _TARGETS[target](input_dir)
+            target = _TARGETS[target](
+                [input_dir],
+                output_directory,
+            )
 
             all_names = list(parse_result.keys())
 
@@ -195,10 +201,9 @@ def Execute(
 
             for output in target.EnumOutputs():
                 target_dm.stream.write(
-                    "{}\n  -> {}\n\n{}\n\n".format(
+                    "{:<130} -> {}\n".format(
                         output.fully_qualified_name,
                         output.output_name,
-                        output.content,
                     ),
                 )
 

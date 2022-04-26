@@ -22,6 +22,7 @@ from typing import List, Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -67,4 +68,15 @@ class UnaryExpressionParserInfo(ExpressionParserInfo):
             *args,
             **kwargs,
             regionless_attributes=["expression", ],
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("expression", self.expression),
+            ],
+            children=None,
         )

@@ -54,11 +54,12 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegion, CreateRegions, Error, GetParserInfo
+    from ...Parser.Parser import CreateError, CreateRegion, CreateRegions, Error, GetParserInfo
     from ...Parser.ParserInfos.Common.MethodModifier import MethodModifier
 
     from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import (
         FuncDefinitionStatementParserInfo,
+        OperatorType,
         ParserInfoType,
         TypeParserInfo,
     )
@@ -67,8 +68,71 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+InvalidReservedMethodName                   = CreateError(
+    "'{name}' is not a valid reserved method name",
+    name=str,
+)
+
+
+# ----------------------------------------------------------------------
 class FuncDefinitionStatement(GrammarPhrase):
     PHRASE_NAME                             = "Func Definition Statement"
+
+    OPERATOR_MAP                            = {
+        "__Accept?__" : OperatorType.Accept,
+        "__Compare__": OperatorType.Compare,
+        "__Deserialize?__": OperatorType.Deserialize,
+        "__Serialize?__": OperatorType.Serialize,
+        "__Clone?__": OperatorType.Clone,
+        "__ToBool__": OperatorType.ToBool,
+        "__ToString?__": OperatorType.ToString,
+        "__Call?__": OperatorType.Call,
+        "__GetAttribute?__": OperatorType.GetAttribute,
+        "__Index?__": OperatorType.Index,
+        "__Iter?__": OperatorType.Iter,
+        "__Cast?__": OperatorType.Cast,
+        "__Negative?__": OperatorType.Negative,
+        "__Positive?__": OperatorType.Positive,
+        "__BitFlip?__": OperatorType.BitFlip,
+        "__Divide?__": OperatorType.Divide,
+        "__DivideFloor?__": OperatorType.DivideFloor,
+        "__Modulo?__": OperatorType.Modulo,
+        "__Multiply?__": OperatorType.Multiply,
+        "__Power?__": OperatorType.Power,
+        "__Add?__": OperatorType.Add,
+        "__Subtract?__": OperatorType.Subtract,
+        "__BitShiftLeft?__": OperatorType.BitShiftLeft,
+        "__BitShiftRight?__": OperatorType.BitShiftRight,
+        "__Greater__": OperatorType.Greater,
+        "__GreaterEqual__": OperatorType.GreaterEqual,
+        "__Less__": OperatorType.Less,
+        "__LessEqual__": OperatorType.LessEqual,
+        "__Equal__": OperatorType.Equal,
+        "__NotEqual__": OperatorType.NotEqual,
+        "__BitAnd?__": OperatorType.BitAnd,
+        "__BitXOr?__": OperatorType.BitXor,
+        "__BitOr?__": OperatorType.BitOr,
+        "__Contains__": OperatorType.Contains,
+        "__NotContains__": OperatorType.NotContains,
+        "__Not__": OperatorType.Not,
+        "__LogicalAnd__": OperatorType.LogicalAnd,
+        "__LogicalOr__": OperatorType.LogicalOr,
+        "__BitFlipInplace?__": OperatorType.BitFlipInplace,
+        "__DivideInplace?__": OperatorType.DivideInplace,
+        "__DivideFloorInplace?__": OperatorType.DivideFloorInplace,
+        "__ModuloInplace?__": OperatorType.ModuloInplace,
+        "__MultiplyInplace?__": OperatorType.MultiplyInplace,
+        "__PowerInplace?__": OperatorType.PowerInplace,
+        "__AddInplace?__": OperatorType.AddInplace,
+        "__SubtractInplace?__": OperatorType.SubtractInplace,
+        "__BitShiftLeftInplace?__": OperatorType.BitShiftLeftInplace,
+        "__BitShiftRightInplace?__": OperatorType.BitShiftRightInplace,
+        "__BitAndInplace?__": OperatorType.BitAndInplace,
+        "__BitXOrInplace?__": OperatorType.BitXorInplace,
+        "__BitOrInplace?__": OperatorType.BitOrInplace,
+    }
+
+    assert len(OPERATOR_MAP) == len(OperatorType), (len(OPERATOR_MAP), len(OperatorType))
 
     # ----------------------------------------------------------------------
     def __init__(self):
@@ -243,6 +307,18 @@ class FuncDefinitionStatement(GrammarPhrase):
             # <name>
             name_leaf = cast(AST.Leaf, nodes[4])
             name_info = CommonTokens.FuncName.Extract(name_leaf)  # type: ignore
+
+            if name_info.startswith("__") and name_info.endswith("__"):
+                operator_type = cls.OPERATOR_MAP.get(name_info, None)
+                if operator_type is None:
+                    errors.append(
+                        InvalidReservedMethodName.Create(
+                            region=CreateRegion(name_leaf),
+                            name=name_info,
+                        ),
+                    )
+                else:
+                    name_info = operator_type
 
             # TODO: Get compile status from name
             # TODO: Get exceptional information from name
