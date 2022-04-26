@@ -22,6 +22,7 @@ from typing import List, Optional
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -55,3 +56,14 @@ class CapturedVariablesParserInfo(ParserInfo):
 
         # TODO: Validate that all variables are ultimately variable expressions (dotted notation is OK)
         # TODO: Is dotted notation OK? Capturing variables is a bit like adding a ref; need to think about this more
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("variables", self.variables),
+            ],  # type: ignore
+            children=None,
+        )
