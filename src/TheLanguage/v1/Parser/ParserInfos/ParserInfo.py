@@ -213,8 +213,6 @@ class ParserInfo(ObjectReprImplBase):
         if visit_control != VisitControl.Terminate:
             with CallOnExit(lambda: exit_method(self)):
                 if visit_control == VisitControl.ContinueWithDetail:
-                    assert details is not None
-
                     if not details:
                         visit_control = VisitControl.Continue
                     else:

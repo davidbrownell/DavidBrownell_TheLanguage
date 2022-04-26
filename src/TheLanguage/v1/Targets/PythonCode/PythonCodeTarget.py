@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Visitor import Visitor
+    from .VisitorImpl.Visitor import Visitor
     from ..Target import RootParserInfo, Target
 
 
