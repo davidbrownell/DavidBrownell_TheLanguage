@@ -16,7 +16,7 @@
 
 
 # ----------------------------------------------------------------------
-public concept Int {
+public immutable concept Int {
     (Int | None) min_value! = None,
     (Int | None) max_value! = None,
 }:
@@ -33,7 +33,7 @@ public concept Int {
     public Bool val __ToBool__() immutable              # value != 0
     public Str val __ToString?__() immutable
 
-    [Static] public CompareResult new __Compare__(ThisType immutable this, Int immutable that)
+    [Static] public CompareResult val __Compare__(ThisType immutable this, Int immutable that)
 
     public Bool val __Equal__(Int immutable that) immutable
     public Bool val __NotEqual__(Int immutable that) immutable

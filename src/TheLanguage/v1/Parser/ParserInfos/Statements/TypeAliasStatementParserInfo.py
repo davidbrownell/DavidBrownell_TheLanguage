@@ -34,7 +34,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StatementParserInfo import ParserInfoType, Region, StatementParserInfo
 
+    from ..Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo
+    from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier
+
     from ..Types.TypeParserInfo import TypeParserInfo
 
 
@@ -45,6 +48,10 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
     visibility: VisibilityModifier          = field(init=False)
 
     name: str
+
+    templates: Optional[TemplateParametersParserInfo]
+    constraints: Optional[ConstraintParameterParserInfo]
+
     type: TypeParserInfo
 
     # ----------------------------------------------------------------------
@@ -67,7 +74,11 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
         super(TypeAliasStatementParserInfo, self).__post_init__(
             parser_info_type,
             regions,
-            regionless_attributes=["type", ],
+            regionless_attributes=[
+                "templates",
+                "constraints",
+                "type",
+            ],
             validate=False,
         )
 
@@ -87,10 +98,17 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor):
+        details = []
+
+        if self.templates:
+            details.append(("templates", self.templates))
+        if self.constraints:
+            details.append(("constraints", self.constraints))
+
         return self._AcceptImpl(
             visitor,
             details=[
                 ("type", self.type),
-            ],
+            ] + details,  # type: ignore
             children=None,
         )

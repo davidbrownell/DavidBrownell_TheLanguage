@@ -157,7 +157,7 @@ class ExpressionsMixin(BaseMixin):
             ).format(
                 statement_name=self.__class__._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
-                value=chr(parser_info.value),
+                value=parser_info.value,
             ),
         )
 
