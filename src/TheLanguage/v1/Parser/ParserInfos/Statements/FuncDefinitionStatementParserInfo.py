@@ -91,9 +91,9 @@ class OperatorType(Enum):
 
     # ----------------------------------------------------------------------
     Call                        = auto()  # TODO: Finish all this stuff                         N/A                             Yes             <visibility> <return_type> __Call?__(<args>) <mutability>
-    GetAttribute                = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __GetAttribute?__(String immutable name) <ref|val>
-    Index                       = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __Index?__(<args>) <ref|val>
-    Iter                        = auto()  #                                                     N/A                             Yes             <visibility> Iterator<type> __Iter?__() <ref|val>
+    GetAttribute                = auto()  #                                                     N/A                             Yes             <visibility> (<return_type> | None) __GetAttribute__(String immutable name) <ref|val>
+    Index                       = auto()  #                                                     N/A                             No              <visibility> (IntArch | None) __Index__(<args>) <ref|val>
+    Iter                        = auto()  #                                                     N/A                             No              <visibility> Iterator<type> __Iter__() <ref|val>
     Cast                        = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __Cast?__<OtherT>() TODO: This needs some work!
 
     Negative                    = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __Negative?__() immutable
@@ -228,6 +228,10 @@ InvalidVisibilityError                      = CreateError(
     valid_visibilities=List[VisibilityModifier],
     visibility_str=str,
     valid_visibilities_str=str,
+)
+
+MutabilityRequiredError                     = CreateError(
+    "A mutability modifier is required",
 )
 
 StatementsRequiredError                     = CreateError(
@@ -410,9 +414,13 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                         ),
                     )
             else:
-                assert self.mutability is not None
-
-                if self.mutability not in self.class_capabilities.valid_method_mutabilities:
+                if self.mutability is None:
+                    errors.append(
+                        MutabilityRequiredError.Create(
+                            region=self.regions__.self__,
+                        ),
+                    )
+                elif self.mutability not in self.class_capabilities.valid_method_mutabilities:
                     errors.append(
                         InvalidMethodMutabilityError.Create(
                             region=self.regions__.mutability,

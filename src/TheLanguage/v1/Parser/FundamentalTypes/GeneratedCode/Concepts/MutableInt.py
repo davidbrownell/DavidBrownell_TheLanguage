@@ -139,8 +139,8 @@ statement00220005_00220035 = ConstraintParameterParserInfo.Create(
     default_value=statement00220031_00220035,
 )
 
-statement00200027_00230002 = ConstraintParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=20, column=27), end=Location(line=23, column=2)), None, Region(begin=Location(line=21, column=5), end=Location(line=22, column=36)), None],
+statement00200035_00230002 = ConstraintParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=20, column=35), end=Location(line=23, column=2)), None, Region(begin=Location(line=21, column=5), end=Location(line=22, column=36)), None],
     positional=None,
     any=[statement00210005_00210035, statement00220005_00220035, ],
     keyword=None,
@@ -242,7 +242,7 @@ statement00260005_00270001 = FuncDefinitionStatementParserInfo.Create(
     regions=[Region(begin=Location(line=26, column=5), end=Location(line=27, column=1)), Region(begin=Location(line=26, column=5), end=Location(line=26, column=11)), Region(begin=Location(line=26, column=64), end=Location(line=26, column=67)), Region(begin=Location(line=26, column=5), end=Location(line=27, column=1)), Region(begin=Location(line=26, column=17), end=Location(line=26, column=31)), None, None, Region(begin=Location(line=26, column=41), end=Location(line=26, column=63)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.Serialize,
@@ -307,7 +307,7 @@ statement00270005_00290001 = FuncDefinitionStatementParserInfo.Create(
     regions=[Region(begin=Location(line=27, column=5), end=Location(line=29, column=1)), Region(begin=Location(line=27, column=5), end=Location(line=27, column=11)), Region(begin=Location(line=27, column=61), end=Location(line=27, column=64)), Region(begin=Location(line=27, column=5), end=Location(line=29, column=1)), Region(begin=Location(line=27, column=17), end=Location(line=27, column=28)), None, None, Region(begin=Location(line=27, column=38), end=Location(line=27, column=60)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.Accept,
@@ -326,10 +326,10 @@ statement00270005_00290001 = FuncDefinitionStatementParserInfo.Create(
 
 statement00290005_00310001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=29, column=5), end=Location(line=31, column=1)), Region(begin=Location(line=29, column=16), end=Location(line=29, column=22)), Region(begin=Location(line=29, column=50), end=Location(line=29, column=53)), Region(begin=Location(line=29, column=5), end=Location(line=31, column=1)), Region(begin=Location(line=29, column=28), end=Location(line=29, column=47)), None, None, Region(begin=Location(line=29, column=47), end=Location(line=29, column=49)), None, Region(begin=Location(line=29, column=6), end=Location(line=29, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=29, column=5), end=Location(line=31, column=1)), Region(begin=Location(line=29, column=5), end=Location(line=29, column=11)), Region(begin=Location(line=29, column=39), end=Location(line=29, column=42)), Region(begin=Location(line=29, column=5), end=Location(line=31, column=1)), Region(begin=Location(line=29, column=17), end=Location(line=29, column=36)), None, None, Region(begin=Location(line=29, column=36), end=Location(line=29, column=38)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.BitFlipInplace,
@@ -338,7 +338,7 @@ statement00290005_00310001 = FuncDefinitionStatementParserInfo.Create(
     captured_variables=None,
     parameters=True,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -346,50 +346,50 @@ statement00290005_00310001 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement00310052_00310055 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=31, column=52), end=Location(line=31, column=55)), Region(begin=Location(line=31, column=52), end=Location(line=31, column=55))],
+statement00310041_00310044 = StandardTypeItemParserInfo.Create(
+    regions=[Region(begin=Location(line=31, column=41), end=Location(line=31, column=44)), Region(begin=Location(line=31, column=41), end=Location(line=31, column=44))],
     name="Int",
     templates=None,
     constraints=None,
 )
 
-statement00310052_00310065 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=31, column=52), end=Location(line=31, column=65)), Region(begin=Location(line=31, column=56), end=Location(line=31, column=65)), Region(begin=Location(line=31, column=52), end=Location(line=31, column=55))],
+statement00310041_00310054 = StandardTypeParserInfo.Create(
+    regions=[Region(begin=Location(line=31, column=41), end=Location(line=31, column=54)), Region(begin=Location(line=31, column=45), end=Location(line=31, column=54)), Region(begin=Location(line=31, column=41), end=Location(line=31, column=44))],
     mutability_modifier=MutabilityModifier.immutable,
-    items=[statement00310052_00310055, ],
+    items=[statement00310041_00310044, ],
 )
 
-statement00310052_00310073 = FuncParameterParserInfo.Create(
-    regions=[Region(begin=Location(line=31, column=52), end=Location(line=31, column=73)), None, None, Region(begin=Location(line=31, column=66), end=Location(line=31, column=73))],  # type: ignore
+statement00310041_00310062 = FuncParameterParserInfo.Create(
+    regions=[Region(begin=Location(line=31, column=41), end=Location(line=31, column=62)), None, None, Region(begin=Location(line=31, column=55), end=Location(line=31, column=62))],  # type: ignore
     is_compile_time=False,
-    type=statement00310052_00310065,
+    type=statement00310041_00310054,
     is_variadic=None,
     name="divisor",
     default_value=None,
 )
 
-statement00310051_00310074 = FuncParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=31, column=51), end=Location(line=31, column=74)), None, Region(begin=Location(line=31, column=52), end=Location(line=31, column=73)), None],
+statement00310040_00310063 = FuncParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=31, column=40), end=Location(line=31, column=63)), None, Region(begin=Location(line=31, column=41), end=Location(line=31, column=62)), None],
     positional=None,
-    any_args=[statement00310052_00310073, ],
+    any_args=[statement00310041_00310062, ],
     keyword=None,
 )
 
 statement00310005_00320001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=31, column=5), end=Location(line=32, column=1)), Region(begin=Location(line=31, column=16), end=Location(line=31, column=22)), Region(begin=Location(line=31, column=75), end=Location(line=31, column=78)), Region(begin=Location(line=31, column=5), end=Location(line=32, column=1)), Region(begin=Location(line=31, column=28), end=Location(line=31, column=51)), None, None, Region(begin=Location(line=31, column=51), end=Location(line=31, column=74)), None, Region(begin=Location(line=31, column=6), end=Location(line=31, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=31, column=5), end=Location(line=32, column=1)), Region(begin=Location(line=31, column=5), end=Location(line=31, column=11)), Region(begin=Location(line=31, column=64), end=Location(line=31, column=67)), Region(begin=Location(line=31, column=5), end=Location(line=32, column=1)), Region(begin=Location(line=31, column=17), end=Location(line=31, column=40)), None, None, Region(begin=Location(line=31, column=40), end=Location(line=31, column=63)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.DivideFloorInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
-    parameters=statement00310051_00310074,
+    parameters=statement00310040_00310063,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -397,50 +397,50 @@ statement00310005_00320001 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement00320047_00320050 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=32, column=47), end=Location(line=32, column=50)), Region(begin=Location(line=32, column=47), end=Location(line=32, column=50))],
+statement00320036_00320039 = StandardTypeItemParserInfo.Create(
+    regions=[Region(begin=Location(line=32, column=36), end=Location(line=32, column=39)), Region(begin=Location(line=32, column=36), end=Location(line=32, column=39))],
     name="Int",
     templates=None,
     constraints=None,
 )
 
-statement00320047_00320060 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=32, column=47), end=Location(line=32, column=60)), Region(begin=Location(line=32, column=51), end=Location(line=32, column=60)), Region(begin=Location(line=32, column=47), end=Location(line=32, column=50))],
+statement00320036_00320049 = StandardTypeParserInfo.Create(
+    regions=[Region(begin=Location(line=32, column=36), end=Location(line=32, column=49)), Region(begin=Location(line=32, column=40), end=Location(line=32, column=49)), Region(begin=Location(line=32, column=36), end=Location(line=32, column=39))],
     mutability_modifier=MutabilityModifier.immutable,
-    items=[statement00320047_00320050, ],
+    items=[statement00320036_00320039, ],
 )
 
-statement00320047_00320068 = FuncParameterParserInfo.Create(
-    regions=[Region(begin=Location(line=32, column=47), end=Location(line=32, column=68)), None, None, Region(begin=Location(line=32, column=61), end=Location(line=32, column=68))],  # type: ignore
+statement00320036_00320057 = FuncParameterParserInfo.Create(
+    regions=[Region(begin=Location(line=32, column=36), end=Location(line=32, column=57)), None, None, Region(begin=Location(line=32, column=50), end=Location(line=32, column=57))],  # type: ignore
     is_compile_time=False,
-    type=statement00320047_00320060,
+    type=statement00320036_00320049,
     is_variadic=None,
     name="divisor",
     default_value=None,
 )
 
-statement00320046_00320069 = FuncParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=32, column=46), end=Location(line=32, column=69)), None, Region(begin=Location(line=32, column=47), end=Location(line=32, column=68)), None],
+statement00320035_00320058 = FuncParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=32, column=35), end=Location(line=32, column=58)), None, Region(begin=Location(line=32, column=36), end=Location(line=32, column=57)), None],
     positional=None,
-    any_args=[statement00320047_00320068, ],
+    any_args=[statement00320036_00320057, ],
     keyword=None,
 )
 
 statement00320005_00330001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=32, column=5), end=Location(line=33, column=1)), Region(begin=Location(line=32, column=16), end=Location(line=32, column=22)), Region(begin=Location(line=32, column=70), end=Location(line=32, column=73)), Region(begin=Location(line=32, column=5), end=Location(line=33, column=1)), Region(begin=Location(line=32, column=28), end=Location(line=32, column=46)), None, None, Region(begin=Location(line=32, column=46), end=Location(line=32, column=69)), None, Region(begin=Location(line=32, column=6), end=Location(line=32, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=32, column=5), end=Location(line=33, column=1)), Region(begin=Location(line=32, column=5), end=Location(line=32, column=11)), Region(begin=Location(line=32, column=59), end=Location(line=32, column=62)), Region(begin=Location(line=32, column=5), end=Location(line=33, column=1)), Region(begin=Location(line=32, column=17), end=Location(line=32, column=35)), None, None, Region(begin=Location(line=32, column=35), end=Location(line=32, column=58)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.ModuloInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
-    parameters=statement00320046_00320069,
+    parameters=statement00320035_00320058,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -448,50 +448,50 @@ statement00320005_00330001 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement00330049_00330052 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=33, column=49), end=Location(line=33, column=52)), Region(begin=Location(line=33, column=49), end=Location(line=33, column=52))],
+statement00330038_00330041 = StandardTypeItemParserInfo.Create(
+    regions=[Region(begin=Location(line=33, column=38), end=Location(line=33, column=41)), Region(begin=Location(line=33, column=38), end=Location(line=33, column=41))],
     name="Int",
     templates=None,
     constraints=None,
 )
 
-statement00330049_00330062 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=33, column=49), end=Location(line=33, column=62)), Region(begin=Location(line=33, column=53), end=Location(line=33, column=62)), Region(begin=Location(line=33, column=49), end=Location(line=33, column=52))],
+statement00330038_00330051 = StandardTypeParserInfo.Create(
+    regions=[Region(begin=Location(line=33, column=38), end=Location(line=33, column=51)), Region(begin=Location(line=33, column=42), end=Location(line=33, column=51)), Region(begin=Location(line=33, column=38), end=Location(line=33, column=41))],
     mutability_modifier=MutabilityModifier.immutable,
-    items=[statement00330049_00330052, ],
+    items=[statement00330038_00330041, ],
 )
 
-statement00330049_00330073 = FuncParameterParserInfo.Create(
-    regions=[Region(begin=Location(line=33, column=49), end=Location(line=33, column=73)), None, None, Region(begin=Location(line=33, column=63), end=Location(line=33, column=73))],  # type: ignore
+statement00330038_00330062 = FuncParameterParserInfo.Create(
+    regions=[Region(begin=Location(line=33, column=38), end=Location(line=33, column=62)), None, None, Region(begin=Location(line=33, column=52), end=Location(line=33, column=62))],  # type: ignore
     is_compile_time=False,
-    type=statement00330049_00330062,
+    type=statement00330038_00330051,
     is_variadic=None,
     name="multiplier",
     default_value=None,
 )
 
-statement00330048_00330074 = FuncParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=33, column=48), end=Location(line=33, column=74)), None, Region(begin=Location(line=33, column=49), end=Location(line=33, column=73)), None],
+statement00330037_00330063 = FuncParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=33, column=37), end=Location(line=33, column=63)), None, Region(begin=Location(line=33, column=38), end=Location(line=33, column=62)), None],
     positional=None,
-    any_args=[statement00330049_00330073, ],
+    any_args=[statement00330038_00330062, ],
     keyword=None,
 )
 
 statement00330005_00340001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=33, column=5), end=Location(line=34, column=1)), Region(begin=Location(line=33, column=16), end=Location(line=33, column=22)), Region(begin=Location(line=33, column=75), end=Location(line=33, column=78)), Region(begin=Location(line=33, column=5), end=Location(line=34, column=1)), Region(begin=Location(line=33, column=28), end=Location(line=33, column=48)), None, None, Region(begin=Location(line=33, column=48), end=Location(line=33, column=74)), None, Region(begin=Location(line=33, column=6), end=Location(line=33, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=33, column=5), end=Location(line=34, column=1)), Region(begin=Location(line=33, column=5), end=Location(line=33, column=11)), Region(begin=Location(line=33, column=64), end=Location(line=33, column=67)), Region(begin=Location(line=33, column=5), end=Location(line=34, column=1)), Region(begin=Location(line=33, column=17), end=Location(line=33, column=37)), None, None, Region(begin=Location(line=33, column=37), end=Location(line=33, column=63)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.MultiplyInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
-    parameters=statement00330048_00330074,
+    parameters=statement00330037_00330063,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -499,50 +499,50 @@ statement00330005_00340001 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement00340046_00340049 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=34, column=46), end=Location(line=34, column=49)), Region(begin=Location(line=34, column=46), end=Location(line=34, column=49))],
+statement00340035_00340038 = StandardTypeItemParserInfo.Create(
+    regions=[Region(begin=Location(line=34, column=35), end=Location(line=34, column=38)), Region(begin=Location(line=34, column=35), end=Location(line=34, column=38))],
     name="Int",
     templates=None,
     constraints=None,
 )
 
-statement00340046_00340059 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=34, column=46), end=Location(line=34, column=59)), Region(begin=Location(line=34, column=50), end=Location(line=34, column=59)), Region(begin=Location(line=34, column=46), end=Location(line=34, column=49))],
+statement00340035_00340048 = StandardTypeParserInfo.Create(
+    regions=[Region(begin=Location(line=34, column=35), end=Location(line=34, column=48)), Region(begin=Location(line=34, column=39), end=Location(line=34, column=48)), Region(begin=Location(line=34, column=35), end=Location(line=34, column=38))],
     mutability_modifier=MutabilityModifier.immutable,
-    items=[statement00340046_00340049, ],
+    items=[statement00340035_00340038, ],
 )
 
-statement00340046_00340068 = FuncParameterParserInfo.Create(
-    regions=[Region(begin=Location(line=34, column=46), end=Location(line=34, column=68)), None, None, Region(begin=Location(line=34, column=60), end=Location(line=34, column=68))],  # type: ignore
+statement00340035_00340057 = FuncParameterParserInfo.Create(
+    regions=[Region(begin=Location(line=34, column=35), end=Location(line=34, column=57)), None, None, Region(begin=Location(line=34, column=49), end=Location(line=34, column=57))],  # type: ignore
     is_compile_time=False,
-    type=statement00340046_00340059,
+    type=statement00340035_00340048,
     is_variadic=None,
     name="exponent",
     default_value=None,
 )
 
-statement00340045_00340069 = FuncParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=34, column=45), end=Location(line=34, column=69)), None, Region(begin=Location(line=34, column=46), end=Location(line=34, column=68)), None],
+statement00340034_00340058 = FuncParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=34, column=34), end=Location(line=34, column=58)), None, Region(begin=Location(line=34, column=35), end=Location(line=34, column=57)), None],
     positional=None,
-    any_args=[statement00340046_00340068, ],
+    any_args=[statement00340035_00340057, ],
     keyword=None,
 )
 
 statement00340005_00360001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=34, column=5), end=Location(line=36, column=1)), Region(begin=Location(line=34, column=16), end=Location(line=34, column=22)), Region(begin=Location(line=34, column=70), end=Location(line=34, column=73)), Region(begin=Location(line=34, column=5), end=Location(line=36, column=1)), Region(begin=Location(line=34, column=28), end=Location(line=34, column=45)), None, None, Region(begin=Location(line=34, column=45), end=Location(line=34, column=69)), None, Region(begin=Location(line=34, column=6), end=Location(line=34, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=34, column=5), end=Location(line=36, column=1)), Region(begin=Location(line=34, column=5), end=Location(line=34, column=11)), Region(begin=Location(line=34, column=59), end=Location(line=34, column=62)), Region(begin=Location(line=34, column=5), end=Location(line=36, column=1)), Region(begin=Location(line=34, column=17), end=Location(line=34, column=34)), None, None, Region(begin=Location(line=34, column=34), end=Location(line=34, column=58)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.PowerInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
-    parameters=statement00340045_00340069,
+    parameters=statement00340034_00340058,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -550,50 +550,50 @@ statement00340005_00360001 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement00360044_00360047 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=36, column=44), end=Location(line=36, column=47)), Region(begin=Location(line=36, column=44), end=Location(line=36, column=47))],
+statement00360033_00360036 = StandardTypeItemParserInfo.Create(
+    regions=[Region(begin=Location(line=36, column=33), end=Location(line=36, column=36)), Region(begin=Location(line=36, column=33), end=Location(line=36, column=36))],
     name="Int",
     templates=None,
     constraints=None,
 )
 
-statement00360044_00360057 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=36, column=44), end=Location(line=36, column=57)), Region(begin=Location(line=36, column=48), end=Location(line=36, column=57)), Region(begin=Location(line=36, column=44), end=Location(line=36, column=47))],
+statement00360033_00360046 = StandardTypeParserInfo.Create(
+    regions=[Region(begin=Location(line=36, column=33), end=Location(line=36, column=46)), Region(begin=Location(line=36, column=37), end=Location(line=36, column=46)), Region(begin=Location(line=36, column=33), end=Location(line=36, column=36))],
     mutability_modifier=MutabilityModifier.immutable,
-    items=[statement00360044_00360047, ],
+    items=[statement00360033_00360036, ],
 )
 
-statement00360044_00360063 = FuncParameterParserInfo.Create(
-    regions=[Region(begin=Location(line=36, column=44), end=Location(line=36, column=63)), None, None, Region(begin=Location(line=36, column=58), end=Location(line=36, column=63))],  # type: ignore
+statement00360033_00360052 = FuncParameterParserInfo.Create(
+    regions=[Region(begin=Location(line=36, column=33), end=Location(line=36, column=52)), None, None, Region(begin=Location(line=36, column=47), end=Location(line=36, column=52))],  # type: ignore
     is_compile_time=False,
-    type=statement00360044_00360057,
+    type=statement00360033_00360046,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement00360043_00360064 = FuncParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=36, column=43), end=Location(line=36, column=64)), None, Region(begin=Location(line=36, column=44), end=Location(line=36, column=63)), None],
+statement00360032_00360053 = FuncParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=36, column=32), end=Location(line=36, column=53)), None, Region(begin=Location(line=36, column=33), end=Location(line=36, column=52)), None],
     positional=None,
-    any_args=[statement00360044_00360063, ],
+    any_args=[statement00360033_00360052, ],
     keyword=None,
 )
 
 statement00360005_00370001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=36, column=5), end=Location(line=37, column=1)), Region(begin=Location(line=36, column=16), end=Location(line=36, column=22)), Region(begin=Location(line=36, column=65), end=Location(line=36, column=68)), Region(begin=Location(line=36, column=5), end=Location(line=37, column=1)), Region(begin=Location(line=36, column=28), end=Location(line=36, column=43)), None, None, Region(begin=Location(line=36, column=43), end=Location(line=36, column=64)), None, Region(begin=Location(line=36, column=6), end=Location(line=36, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=36, column=5), end=Location(line=37, column=1)), Region(begin=Location(line=36, column=5), end=Location(line=36, column=11)), Region(begin=Location(line=36, column=54), end=Location(line=36, column=57)), Region(begin=Location(line=36, column=5), end=Location(line=37, column=1)), Region(begin=Location(line=36, column=17), end=Location(line=36, column=32)), None, None, Region(begin=Location(line=36, column=32), end=Location(line=36, column=53)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.AddInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
-    parameters=statement00360043_00360064,
+    parameters=statement00360032_00360053,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -601,50 +601,50 @@ statement00360005_00370001 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement00370049_00370052 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=37, column=49), end=Location(line=37, column=52)), Region(begin=Location(line=37, column=49), end=Location(line=37, column=52))],
+statement00370038_00370041 = StandardTypeItemParserInfo.Create(
+    regions=[Region(begin=Location(line=37, column=38), end=Location(line=37, column=41)), Region(begin=Location(line=37, column=38), end=Location(line=37, column=41))],
     name="Int",
     templates=None,
     constraints=None,
 )
 
-statement00370049_00370062 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=37, column=49), end=Location(line=37, column=62)), Region(begin=Location(line=37, column=53), end=Location(line=37, column=62)), Region(begin=Location(line=37, column=49), end=Location(line=37, column=52))],
+statement00370038_00370051 = StandardTypeParserInfo.Create(
+    regions=[Region(begin=Location(line=37, column=38), end=Location(line=37, column=51)), Region(begin=Location(line=37, column=42), end=Location(line=37, column=51)), Region(begin=Location(line=37, column=38), end=Location(line=37, column=41))],
     mutability_modifier=MutabilityModifier.immutable,
-    items=[statement00370049_00370052, ],
+    items=[statement00370038_00370041, ],
 )
 
-statement00370049_00370068 = FuncParameterParserInfo.Create(
-    regions=[Region(begin=Location(line=37, column=49), end=Location(line=37, column=68)), None, None, Region(begin=Location(line=37, column=63), end=Location(line=37, column=68))],  # type: ignore
+statement00370038_00370057 = FuncParameterParserInfo.Create(
+    regions=[Region(begin=Location(line=37, column=38), end=Location(line=37, column=57)), None, None, Region(begin=Location(line=37, column=52), end=Location(line=37, column=57))],  # type: ignore
     is_compile_time=False,
-    type=statement00370049_00370062,
+    type=statement00370038_00370051,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement00370048_00370069 = FuncParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=37, column=48), end=Location(line=37, column=69)), None, Region(begin=Location(line=37, column=49), end=Location(line=37, column=68)), None],
+statement00370037_00370058 = FuncParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=37, column=37), end=Location(line=37, column=58)), None, Region(begin=Location(line=37, column=38), end=Location(line=37, column=57)), None],
     positional=None,
-    any_args=[statement00370049_00370068, ],
+    any_args=[statement00370038_00370057, ],
     keyword=None,
 )
 
 statement00370005_00390001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=37, column=5), end=Location(line=39, column=1)), Region(begin=Location(line=37, column=16), end=Location(line=37, column=22)), Region(begin=Location(line=37, column=70), end=Location(line=37, column=73)), Region(begin=Location(line=37, column=5), end=Location(line=39, column=1)), Region(begin=Location(line=37, column=28), end=Location(line=37, column=48)), None, None, Region(begin=Location(line=37, column=48), end=Location(line=37, column=69)), None, Region(begin=Location(line=37, column=6), end=Location(line=37, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=37, column=5), end=Location(line=39, column=1)), Region(begin=Location(line=37, column=5), end=Location(line=37, column=11)), Region(begin=Location(line=37, column=59), end=Location(line=37, column=62)), Region(begin=Location(line=37, column=5), end=Location(line=39, column=1)), Region(begin=Location(line=37, column=17), end=Location(line=37, column=37)), None, None, Region(begin=Location(line=37, column=37), end=Location(line=37, column=58)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.SubtractInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
-    parameters=statement00370048_00370069,
+    parameters=statement00370037_00370058,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -652,50 +652,50 @@ statement00370005_00390001 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement00390053_00390056 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=39, column=53), end=Location(line=39, column=56)), Region(begin=Location(line=39, column=53), end=Location(line=39, column=56))],
+statement00390042_00390045 = StandardTypeItemParserInfo.Create(
+    regions=[Region(begin=Location(line=39, column=42), end=Location(line=39, column=45)), Region(begin=Location(line=39, column=42), end=Location(line=39, column=45))],
     name="Int",
     templates=None,
     constraints=None,
 )
 
-statement00390053_00390066 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=39, column=53), end=Location(line=39, column=66)), Region(begin=Location(line=39, column=57), end=Location(line=39, column=66)), Region(begin=Location(line=39, column=53), end=Location(line=39, column=56))],
+statement00390042_00390055 = StandardTypeParserInfo.Create(
+    regions=[Region(begin=Location(line=39, column=42), end=Location(line=39, column=55)), Region(begin=Location(line=39, column=46), end=Location(line=39, column=55)), Region(begin=Location(line=39, column=42), end=Location(line=39, column=45))],
     mutability_modifier=MutabilityModifier.immutable,
-    items=[statement00390053_00390056, ],
+    items=[statement00390042_00390045, ],
 )
 
-statement00390053_00390073 = FuncParameterParserInfo.Create(
-    regions=[Region(begin=Location(line=39, column=53), end=Location(line=39, column=73)), None, None, Region(begin=Location(line=39, column=67), end=Location(line=39, column=73))],  # type: ignore
+statement00390042_00390062 = FuncParameterParserInfo.Create(
+    regions=[Region(begin=Location(line=39, column=42), end=Location(line=39, column=62)), None, None, Region(begin=Location(line=39, column=56), end=Location(line=39, column=62))],  # type: ignore
     is_compile_time=False,
-    type=statement00390053_00390066,
+    type=statement00390042_00390055,
     is_variadic=None,
     name="places",
     default_value=None,
 )
 
-statement00390052_00390074 = FuncParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=39, column=52), end=Location(line=39, column=74)), None, Region(begin=Location(line=39, column=53), end=Location(line=39, column=73)), None],
+statement00390041_00390063 = FuncParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=39, column=41), end=Location(line=39, column=63)), None, Region(begin=Location(line=39, column=42), end=Location(line=39, column=62)), None],
     positional=None,
-    any_args=[statement00390053_00390073, ],
+    any_args=[statement00390042_00390062, ],
     keyword=None,
 )
 
 statement00390005_00400001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=39, column=5), end=Location(line=40, column=1)), Region(begin=Location(line=39, column=16), end=Location(line=39, column=22)), Region(begin=Location(line=39, column=75), end=Location(line=39, column=78)), Region(begin=Location(line=39, column=5), end=Location(line=40, column=1)), Region(begin=Location(line=39, column=28), end=Location(line=39, column=52)), None, None, Region(begin=Location(line=39, column=52), end=Location(line=39, column=74)), None, Region(begin=Location(line=39, column=6), end=Location(line=39, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=39, column=5), end=Location(line=40, column=1)), Region(begin=Location(line=39, column=5), end=Location(line=39, column=11)), Region(begin=Location(line=39, column=64), end=Location(line=39, column=67)), Region(begin=Location(line=39, column=5), end=Location(line=40, column=1)), Region(begin=Location(line=39, column=17), end=Location(line=39, column=41)), None, None, Region(begin=Location(line=39, column=41), end=Location(line=39, column=63)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.BitShiftLeftInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
-    parameters=statement00390052_00390074,
+    parameters=statement00390041_00390063,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -703,50 +703,50 @@ statement00390005_00400001 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement00400054_00400057 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=40, column=54), end=Location(line=40, column=57)), Region(begin=Location(line=40, column=54), end=Location(line=40, column=57))],
+statement00400043_00400046 = StandardTypeItemParserInfo.Create(
+    regions=[Region(begin=Location(line=40, column=43), end=Location(line=40, column=46)), Region(begin=Location(line=40, column=43), end=Location(line=40, column=46))],
     name="Int",
     templates=None,
     constraints=None,
 )
 
-statement00400054_00400067 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=40, column=54), end=Location(line=40, column=67)), Region(begin=Location(line=40, column=58), end=Location(line=40, column=67)), Region(begin=Location(line=40, column=54), end=Location(line=40, column=57))],
+statement00400043_00400056 = StandardTypeParserInfo.Create(
+    regions=[Region(begin=Location(line=40, column=43), end=Location(line=40, column=56)), Region(begin=Location(line=40, column=47), end=Location(line=40, column=56)), Region(begin=Location(line=40, column=43), end=Location(line=40, column=46))],
     mutability_modifier=MutabilityModifier.immutable,
-    items=[statement00400054_00400057, ],
+    items=[statement00400043_00400046, ],
 )
 
-statement00400054_00400074 = FuncParameterParserInfo.Create(
-    regions=[Region(begin=Location(line=40, column=54), end=Location(line=40, column=74)), None, None, Region(begin=Location(line=40, column=68), end=Location(line=40, column=74))],  # type: ignore
+statement00400043_00400063 = FuncParameterParserInfo.Create(
+    regions=[Region(begin=Location(line=40, column=43), end=Location(line=40, column=63)), None, None, Region(begin=Location(line=40, column=57), end=Location(line=40, column=63))],  # type: ignore
     is_compile_time=False,
-    type=statement00400054_00400067,
+    type=statement00400043_00400056,
     is_variadic=None,
     name="places",
     default_value=None,
 )
 
-statement00400053_00400075 = FuncParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=40, column=53), end=Location(line=40, column=75)), None, Region(begin=Location(line=40, column=54), end=Location(line=40, column=74)), None],
+statement00400042_00400064 = FuncParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=40, column=42), end=Location(line=40, column=64)), None, Region(begin=Location(line=40, column=43), end=Location(line=40, column=63)), None],
     positional=None,
-    any_args=[statement00400054_00400074, ],
+    any_args=[statement00400043_00400063, ],
     keyword=None,
 )
 
 statement00400005_00420001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=40, column=5), end=Location(line=42, column=1)), Region(begin=Location(line=40, column=16), end=Location(line=40, column=22)), Region(begin=Location(line=40, column=76), end=Location(line=40, column=79)), Region(begin=Location(line=40, column=5), end=Location(line=42, column=1)), Region(begin=Location(line=40, column=28), end=Location(line=40, column=53)), None, None, Region(begin=Location(line=40, column=53), end=Location(line=40, column=75)), None, Region(begin=Location(line=40, column=6), end=Location(line=40, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=40, column=5), end=Location(line=42, column=1)), Region(begin=Location(line=40, column=5), end=Location(line=40, column=11)), Region(begin=Location(line=40, column=65), end=Location(line=40, column=68)), Region(begin=Location(line=40, column=5), end=Location(line=42, column=1)), Region(begin=Location(line=40, column=17), end=Location(line=40, column=42)), None, None, Region(begin=Location(line=40, column=42), end=Location(line=40, column=64)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.BitShiftRightInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
-    parameters=statement00400053_00400075,
+    parameters=statement00400042_00400064,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -754,50 +754,50 @@ statement00400005_00420001 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement00420047_00420050 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=42, column=47), end=Location(line=42, column=50)), Region(begin=Location(line=42, column=47), end=Location(line=42, column=50))],
+statement00420036_00420039 = StandardTypeItemParserInfo.Create(
+    regions=[Region(begin=Location(line=42, column=36), end=Location(line=42, column=39)), Region(begin=Location(line=42, column=36), end=Location(line=42, column=39))],
     name="Int",
     templates=None,
     constraints=None,
 )
 
-statement00420047_00420060 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=42, column=47), end=Location(line=42, column=60)), Region(begin=Location(line=42, column=51), end=Location(line=42, column=60)), Region(begin=Location(line=42, column=47), end=Location(line=42, column=50))],
+statement00420036_00420049 = StandardTypeParserInfo.Create(
+    regions=[Region(begin=Location(line=42, column=36), end=Location(line=42, column=49)), Region(begin=Location(line=42, column=40), end=Location(line=42, column=49)), Region(begin=Location(line=42, column=36), end=Location(line=42, column=39))],
     mutability_modifier=MutabilityModifier.immutable,
-    items=[statement00420047_00420050, ],
+    items=[statement00420036_00420039, ],
 )
 
-statement00420047_00420066 = FuncParameterParserInfo.Create(
-    regions=[Region(begin=Location(line=42, column=47), end=Location(line=42, column=66)), None, None, Region(begin=Location(line=42, column=61), end=Location(line=42, column=66))],  # type: ignore
+statement00420036_00420055 = FuncParameterParserInfo.Create(
+    regions=[Region(begin=Location(line=42, column=36), end=Location(line=42, column=55)), None, None, Region(begin=Location(line=42, column=50), end=Location(line=42, column=55))],  # type: ignore
     is_compile_time=False,
-    type=statement00420047_00420060,
+    type=statement00420036_00420049,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement00420046_00420067 = FuncParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=42, column=46), end=Location(line=42, column=67)), None, Region(begin=Location(line=42, column=47), end=Location(line=42, column=66)), None],
+statement00420035_00420056 = FuncParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=42, column=35), end=Location(line=42, column=56)), None, Region(begin=Location(line=42, column=36), end=Location(line=42, column=55)), None],
     positional=None,
-    any_args=[statement00420047_00420066, ],
+    any_args=[statement00420036_00420055, ],
     keyword=None,
 )
 
 statement00420005_00430001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=42, column=5), end=Location(line=43, column=1)), Region(begin=Location(line=42, column=16), end=Location(line=42, column=22)), Region(begin=Location(line=42, column=68), end=Location(line=42, column=71)), Region(begin=Location(line=42, column=5), end=Location(line=43, column=1)), Region(begin=Location(line=42, column=28), end=Location(line=42, column=46)), None, None, Region(begin=Location(line=42, column=46), end=Location(line=42, column=67)), None, Region(begin=Location(line=42, column=6), end=Location(line=42, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=42, column=5), end=Location(line=43, column=1)), Region(begin=Location(line=42, column=5), end=Location(line=42, column=11)), Region(begin=Location(line=42, column=57), end=Location(line=42, column=60)), Region(begin=Location(line=42, column=5), end=Location(line=43, column=1)), Region(begin=Location(line=42, column=17), end=Location(line=42, column=35)), None, None, Region(begin=Location(line=42, column=35), end=Location(line=42, column=56)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.BitAndInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
-    parameters=statement00420046_00420067,
+    parameters=statement00420035_00420056,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -805,50 +805,50 @@ statement00420005_00430001 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement00430047_00430050 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=43, column=47), end=Location(line=43, column=50)), Region(begin=Location(line=43, column=47), end=Location(line=43, column=50))],
+statement00430036_00430039 = StandardTypeItemParserInfo.Create(
+    regions=[Region(begin=Location(line=43, column=36), end=Location(line=43, column=39)), Region(begin=Location(line=43, column=36), end=Location(line=43, column=39))],
     name="Int",
     templates=None,
     constraints=None,
 )
 
-statement00430047_00430060 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=43, column=47), end=Location(line=43, column=60)), Region(begin=Location(line=43, column=51), end=Location(line=43, column=60)), Region(begin=Location(line=43, column=47), end=Location(line=43, column=50))],
+statement00430036_00430049 = StandardTypeParserInfo.Create(
+    regions=[Region(begin=Location(line=43, column=36), end=Location(line=43, column=49)), Region(begin=Location(line=43, column=40), end=Location(line=43, column=49)), Region(begin=Location(line=43, column=36), end=Location(line=43, column=39))],
     mutability_modifier=MutabilityModifier.immutable,
-    items=[statement00430047_00430050, ],
+    items=[statement00430036_00430039, ],
 )
 
-statement00430047_00430066 = FuncParameterParserInfo.Create(
-    regions=[Region(begin=Location(line=43, column=47), end=Location(line=43, column=66)), None, None, Region(begin=Location(line=43, column=61), end=Location(line=43, column=66))],  # type: ignore
+statement00430036_00430055 = FuncParameterParserInfo.Create(
+    regions=[Region(begin=Location(line=43, column=36), end=Location(line=43, column=55)), None, None, Region(begin=Location(line=43, column=50), end=Location(line=43, column=55))],  # type: ignore
     is_compile_time=False,
-    type=statement00430047_00430060,
+    type=statement00430036_00430049,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement00430046_00430067 = FuncParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=43, column=46), end=Location(line=43, column=67)), None, Region(begin=Location(line=43, column=47), end=Location(line=43, column=66)), None],
+statement00430035_00430056 = FuncParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=43, column=35), end=Location(line=43, column=56)), None, Region(begin=Location(line=43, column=36), end=Location(line=43, column=55)), None],
     positional=None,
-    any_args=[statement00430047_00430066, ],
+    any_args=[statement00430036_00430055, ],
     keyword=None,
 )
 
 statement00430005_00440001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=43, column=5), end=Location(line=44, column=1)), Region(begin=Location(line=43, column=16), end=Location(line=43, column=22)), Region(begin=Location(line=43, column=68), end=Location(line=43, column=71)), Region(begin=Location(line=43, column=5), end=Location(line=44, column=1)), Region(begin=Location(line=43, column=28), end=Location(line=43, column=46)), None, None, Region(begin=Location(line=43, column=46), end=Location(line=43, column=67)), None, Region(begin=Location(line=43, column=6), end=Location(line=43, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=43, column=5), end=Location(line=44, column=1)), Region(begin=Location(line=43, column=5), end=Location(line=43, column=11)), Region(begin=Location(line=43, column=57), end=Location(line=43, column=60)), Region(begin=Location(line=43, column=5), end=Location(line=44, column=1)), Region(begin=Location(line=43, column=17), end=Location(line=43, column=35)), None, None, Region(begin=Location(line=43, column=35), end=Location(line=43, column=56)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.BitXorInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
-    parameters=statement00430046_00430067,
+    parameters=statement00430035_00430056,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -856,50 +856,50 @@ statement00430005_00440001 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement00440046_00440049 = StandardTypeItemParserInfo.Create(
-    regions=[Region(begin=Location(line=44, column=46), end=Location(line=44, column=49)), Region(begin=Location(line=44, column=46), end=Location(line=44, column=49))],
+statement00440035_00440038 = StandardTypeItemParserInfo.Create(
+    regions=[Region(begin=Location(line=44, column=35), end=Location(line=44, column=38)), Region(begin=Location(line=44, column=35), end=Location(line=44, column=38))],
     name="Int",
     templates=None,
     constraints=None,
 )
 
-statement00440046_00440059 = StandardTypeParserInfo.Create(
-    regions=[Region(begin=Location(line=44, column=46), end=Location(line=44, column=59)), Region(begin=Location(line=44, column=50), end=Location(line=44, column=59)), Region(begin=Location(line=44, column=46), end=Location(line=44, column=49))],
+statement00440035_00440048 = StandardTypeParserInfo.Create(
+    regions=[Region(begin=Location(line=44, column=35), end=Location(line=44, column=48)), Region(begin=Location(line=44, column=39), end=Location(line=44, column=48)), Region(begin=Location(line=44, column=35), end=Location(line=44, column=38))],
     mutability_modifier=MutabilityModifier.immutable,
-    items=[statement00440046_00440049, ],
+    items=[statement00440035_00440038, ],
 )
 
-statement00440046_00440065 = FuncParameterParserInfo.Create(
-    regions=[Region(begin=Location(line=44, column=46), end=Location(line=44, column=65)), None, None, Region(begin=Location(line=44, column=60), end=Location(line=44, column=65))],  # type: ignore
+statement00440035_00440054 = FuncParameterParserInfo.Create(
+    regions=[Region(begin=Location(line=44, column=35), end=Location(line=44, column=54)), None, None, Region(begin=Location(line=44, column=49), end=Location(line=44, column=54))],  # type: ignore
     is_compile_time=False,
-    type=statement00440046_00440059,
+    type=statement00440035_00440048,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement00440045_00440066 = FuncParametersParserInfo.Create(
-    regions=[Region(begin=Location(line=44, column=45), end=Location(line=44, column=66)), None, Region(begin=Location(line=44, column=46), end=Location(line=44, column=65)), None],
+statement00440034_00440055 = FuncParametersParserInfo.Create(
+    regions=[Region(begin=Location(line=44, column=34), end=Location(line=44, column=55)), None, Region(begin=Location(line=44, column=35), end=Location(line=44, column=54)), None],
     positional=None,
-    any_args=[statement00440046_00440065, ],
+    any_args=[statement00440035_00440054, ],
     keyword=None,
 )
 
 statement00440005_00450001 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[Region(begin=Location(line=44, column=5), end=Location(line=45, column=1)), Region(begin=Location(line=44, column=16), end=Location(line=44, column=22)), Region(begin=Location(line=44, column=67), end=Location(line=44, column=70)), Region(begin=Location(line=44, column=5), end=Location(line=45, column=1)), Region(begin=Location(line=44, column=28), end=Location(line=44, column=45)), None, None, Region(begin=Location(line=44, column=45), end=Location(line=44, column=66)), None, Region(begin=Location(line=44, column=6), end=Location(line=44, column=14)), None, None, None, None, None],
+    regions=[Region(begin=Location(line=44, column=5), end=Location(line=45, column=1)), Region(begin=Location(line=44, column=5), end=Location(line=44, column=11)), Region(begin=Location(line=44, column=56), end=Location(line=44, column=59)), Region(begin=Location(line=44, column=5), end=Location(line=45, column=1)), Region(begin=Location(line=44, column=17), end=Location(line=44, column=34)), None, None, Region(begin=Location(line=44, column=34), end=Location(line=44, column=55)), None, None, None, None, None, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.val,
+    mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.BitOrInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
-    parameters=statement00440045_00440066,
+    parameters=statement00440034_00440055,
     statements=None,
-    is_deferred=True,
+    is_deferred=None,
     is_exceptional=None,
     is_generator=None,
     is_reentrant=None,
@@ -908,14 +908,14 @@ statement00440005_00450001 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement00200001_00450001 = ClassStatementParserInfo.Create(
-    regions=[Region(begin=Location(line=20, column=1), end=Location(line=45, column=1)), Region(begin=Location(line=20, column=1), end=Location(line=20, column=7)), Region(begin=Location(line=20, column=1), end=Location(line=45, column=1)), Region(begin=Location(line=20, column=16), end=Location(line=20, column=26)), None, Region(begin=Location(line=24, column=13), end=Location(line=24, column=43)), None, None, Region(begin=Location(line=25, column=1), end=Location(line=45, column=1)), Region(begin=Location(line=20, column=1), end=Location(line=45, column=1)), None, None],
+    regions=[Region(begin=Location(line=20, column=1), end=Location(line=45, column=1)), Region(begin=Location(line=20, column=1), end=Location(line=20, column=7)), Region(begin=Location(line=20, column=8), end=Location(line=20, column=15)), Region(begin=Location(line=20, column=24), end=Location(line=20, column=34)), None, Region(begin=Location(line=24, column=13), end=Location(line=24, column=43)), None, None, Region(begin=Location(line=25, column=1), end=Location(line=45, column=1)), Region(begin=Location(line=20, column=1), end=Location(line=45, column=1)), None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
-    class_modifier_param=ClassModifier.immutable,
+    class_modifier_param=ClassModifier.mutable,
     name="MutableInt",
     documentation=None,
     templates=None,
-    constraints=statement00200027_00230002,
+    constraints=statement00200035_00230002,
     extends=[statement00240013_00240043, ],
     implements=None,
     uses=None,

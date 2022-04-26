@@ -453,6 +453,8 @@ class StatementsMixin(BaseMixin):
                     regions=[{self_region}, {visibility_region}, {name_region}],
                     visibility_param={visibility},
                     name={name},
+                    templates={templates},
+                    constraints={constraints},
                     type={type},
                 )
 
@@ -464,6 +466,8 @@ class StatementsMixin(BaseMixin):
                 name_region=self._ToString(parser_info.regions__.name),
                 visibility=self._ToString(parser_info.visibility),
                 name=self._ToString(parser_info.name),
+                templates=self._ToString(parser_info.templates),
+                constraints=self._ToString(parser_info.constraints),
                 type=self._ToString(parser_info.type),
             ),
         )

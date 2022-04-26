@@ -1,0 +1,85 @@
+# ----------------------------------------------------------------------
+# |
+# |  MutableStr.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2022-04-26 12:53:52
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2022
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Str import Str
+
+
+# ----------------------------------------------------------------------
+public mutable concept FixedMutableStr {
+    Bool allow_empty! = False
+}
+    extends Str { allow_empty! = allow_empty! }
+:
+    # TODO: Make this a docstring
+    # Functionality that will always result a string whose number of chars
+    # are <= the number of chars before the operation was invoked.
+
+    public None __Serialize?__<ArchiveT>(ArchiveT ref archive) var
+    public None __Accept?__<VisitorT>(VisitorT ref visitor) var
+
+    # TODO: Range concept for __Iter?__
+
+    public None ToLowerInplace?() var
+    public None ToCamelCaseInplace?() var
+    public None ToPascalCaseInplace?() var
+    public None ToSnakeCaseInplace?() var
+    public None ToTitleInplace?() var
+    public None ToUpperInplace?() var
+
+    # TODO: Pass in variadic chars to strip
+    public None LeftStripInplace?() var
+    public None RightStripInplace?() var
+    public None StripInplace?() var
+
+
+# ----------------------------------------------------------------------
+public mutable concept MutableStr {
+    Bool allow_empty! = False
+}
+    extends FixedMutableStr { allow_empty! = allow_empty! }
+:
+    # TODO: Make this a docstring
+    # Contains functionality that may increase the number of chars before the
+    # operation was invoked.
+
+    public None CenterInplace?(
+        NonZeroInt immutable length,
+        Char immutable fill_char = ' ',
+    ) var
+
+    public None LeftJustifyInplace?(
+        NonZeroInt immutable length,
+        Char immutable fill_char = ' ',
+    ) var
+
+    public None RightJustifyInplace?(
+        NonZeroInt immutable length,
+        Char immutable fill_char = ' ',
+    ) var
+
+
+    public None ReplaceInplace?(
+        Char immutable source,
+        Char immutable dest,
+        (NonZeroInt | None) immutable count = None,
+    ) var
+
+    public None ReplaceInplace?(
+        NonEmptyStr immutable source,
+        Str immutable dest,
+        (NonZeroInt | None) immutable count = None,
+    ) var
+
+    # TODO: Format
