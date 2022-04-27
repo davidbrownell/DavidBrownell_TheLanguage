@@ -33,12 +33,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .TypeParserInfo import (           # pylint: disable=unused-import
-        CreateError,
-        Error,
-        ErrorException,
         ParserInfoType,                     # convenience import
         TypeParserInfo,
     )
+
+    from ...Error import CreateError, Error, ErrorException
 
 
 # ----------------------------------------------------------------------

@@ -33,13 +33,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .TypeParserInfo import (
-        Error,
-        ErrorException,
-        MutabilityModifierRequiredError,
         ParserInfoType,
         Region,
         TypeParserInfo,
     )
+
+    from ..Common.MutabilityModifier import MutabilityModifierRequiredError
+
+    from ...Error import Error, ErrorException
 
 
 # ----------------------------------------------------------------------

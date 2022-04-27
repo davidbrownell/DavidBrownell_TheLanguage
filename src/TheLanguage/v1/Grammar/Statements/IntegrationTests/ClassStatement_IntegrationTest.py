@@ -66,7 +66,6 @@ def test_Visibility():
             """\
             public class PublicClass: pass
             internal class InternalClass: pass
-            protected class ProtectedClass: pass
             private class PrivateClass: pass
             """,
         ),
