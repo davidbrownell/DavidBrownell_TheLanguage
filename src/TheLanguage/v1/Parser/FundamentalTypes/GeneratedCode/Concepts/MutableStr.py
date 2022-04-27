@@ -455,8 +455,7 @@ statement00200001_00490001 = ClassStatementParserInfo.Create(
     visibility_param=VisibilityModifier.public,
     class_modifier_param=ClassModifier.mutable,
     name="FixedMutableStr",
-    documentation="Functionality that will always result with a string whose number of chars
-are <= the number of chars before the operation was invoked.",
+    documentation="Functionality that will always result with a string whose number of chars\nare <= the number of chars before the operation was invoked.",
     templates=None,
     constraints=statement00200040_00220002,
     extends=[statement00230013_00230048, ],
@@ -1014,8 +1013,7 @@ statement00490001_00880001 = ClassStatementParserInfo.Create(
     visibility_param=VisibilityModifier.public,
     class_modifier_param=ClassModifier.mutable,
     name="MutableStr",
-    documentation="Contains functionality that may increase the number of chars before the
-operation was invoked.",
+    documentation="Contains functionality that may increase the number of chars before the\noperation was invoked.",
     templates=None,
     constraints=statement00490035_00510002,
     extends=[statement00520013_00520060, ],

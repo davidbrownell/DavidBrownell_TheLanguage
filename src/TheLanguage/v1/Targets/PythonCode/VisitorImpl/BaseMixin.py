@@ -172,7 +172,7 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     def OnExitScope(
         self,
-        parser_info: ParserInfo,
+        parser_info: ParserInfo,  # pylint: disable=unused-argument
     ) -> None:
         assert self._scope_level
         self._scope_level -= 1
@@ -246,7 +246,7 @@ class BaseMixin(object):
         if value is None:
             return "None"
         elif isinstance(value, str):
-            return '"{}"'.format(value)
+            return '"{}"'.format(value.replace("\n", "\\n"))
         elif isinstance(value, bool):
             return str(value)
         elif isinstance(value, ClassModifier):
