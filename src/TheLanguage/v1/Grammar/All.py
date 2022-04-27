@@ -39,6 +39,7 @@ with InitRelativeImports():
 
     from .Statements.ClassAttributeStatement import ClassAttributeStatement
     from .Statements.ClassStatement import ClassStatement
+    from .Statements.DocstringStatement import DocstringStatement
     from .Statements.FuncDefinitionStatement import FuncDefinitionStatement
     from .Statements.FuncInvocationStatement import FuncInvocationStatement
     from .Statements.IfStatement import IfStatement
@@ -68,6 +69,7 @@ GrammarPhrases                              = [
     # Statements
     ClassAttributeStatement(),
     ClassStatement(),
+    DocstringStatement(),
     FuncDefinitionStatement(),
     FuncInvocationStatement(),
     IfStatement(),

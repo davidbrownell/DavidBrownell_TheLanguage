@@ -32,6 +32,7 @@ with InitRelativeImports():
     from . import Tokens as CommonTokens
 
     from ..GrammarPhrase import AST
+    from ..Statements.DocstringStatement import DocstringStatement
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
@@ -43,7 +44,26 @@ with InitRelativeImports():
         OneOrMorePhraseItem,
     )
 
-    from ...Parser.Parser import Error, GetParserInfoNoThrow, ParserInfo
+    from ...Parser.Parser import (
+        CreateError,
+        CreateRegion,
+        Error,
+        GetParserInfoNoThrow,
+        Region,
+        ParserInfo,
+    )
+
+
+# ----------------------------------------------------------------------
+MultipleDocstringsError                     = CreateError(
+    "There may only be one docstring within a scope",
+    prev_region=Region,
+)
+
+MisplacedDocstringError                     = CreateError(
+    "Docstrings must be the 1st statement within a scope; this is the '{ordinal}' statement",
+    ordinal=int,
+)
 
 
 # ----------------------------------------------------------------------
@@ -79,7 +99,6 @@ def Create() -> PhraseItem:
 
 
 # ----------------------------------------------------------------------
-# TODO: Fix this return value as it is wonky!
 def Extract(
     node: AST.Node,
 ) -> Union[
@@ -91,6 +110,8 @@ def Extract(
 ]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 2
+
+    errors: List[Error] = []
 
     statements_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[1])))
 
@@ -110,41 +131,41 @@ def Extract(
     # Extract phrases and process docstrings (if any)
     phrases: List[ParserInfo] = []
     docstring_leaf: Optional[AST.Leaf] = None
-    docstring_info: Optional[ParserInfo] = None
+    docstring_info: Optional[str] = None
 
-    is_first_statement = True
+    statement_ctr = 0
 
     for statement_node in statement_nodes:
-        statement_phrase = GetParserInfoNoThrow(cast(AST.Node, statement_node))
-        if statement_phrase is None:
-            continue
+        statement_ctr += 1
 
-        if False: # TODO: Remove this and uncomment the code below once DocstringStatement is implemented
-            pass
-        # if statement_node.type is not None and statement_node.type.name == DocstringStatement.PHRASE_NAME:
-        #     if validate_docstrings:
-        #         if docstring_leaf is not None:
-        #            errors.append(
-        #                MultipleDocstringsError.Create(
-        #                    CreateRegion(statement_node),
-        #                    prev_region=CreateRegion(docstring_leaf),
-        #                ),
-        #            )
-        #
-        #        if not is_first_statement:
-        #            errors.append(
-        #                MisplacedDocstringError.Create(
-        #                    CreateRegion(statement_node),
-        #                ),
-        #            )
-        #
-        #     docstring_leaf = cast(AST.Leaf, statement_node)
-        #     docstring_info = statement_phrase
+        if statement_node.type is not None and statement_node.type.name == DocstringStatement.PHRASE_NAME:
+            if docstring_leaf is not None:
+                errors.append(
+                    MultipleDocstringsError.Create(
+                        region=CreateRegion(statement_node),
+                        prev_region=CreateRegion(docstring_leaf),
+                    ),
+                )
+
+                if statement_ctr != 1:
+                    errors.append(
+                        MisplacedDocstringError.Create(
+                            region=CreateRegion(statement_node),
+                            ordinal=statement_ctr,
+                        ),
+                    )
+
+            docstring_result = DocstringStatement.GetDocstringInfo(cast(AST.Node, statement_node))
+            if docstring_result is not None:
+                docstring_leaf, docstring_info = docstring_result
 
         else:
-            phrases.append(statement_phrase)
+            statement_phrase = GetParserInfoNoThrow(cast(AST.Node, statement_node))
+            if statement_phrase is not None:
+                phrases.append(statement_phrase)
 
-        is_first_statement = False
+    if errors:
+        return errors
 
     # Note that the phrases may be empty; this is valid in some cases, so it is a condition that needs
     # to be handled by the caller if necessary.
@@ -153,5 +174,4 @@ def Extract(
         assert docstring_info is None
         return (phrases, None)
 
-    assert docstring_info is not None
-    return (phrases, (docstring_leaf, "TODO")) # TODO: Finish this once DocstringStatement objects are available
+    return phrases, (docstring_leaf, cast(str, docstring_info))

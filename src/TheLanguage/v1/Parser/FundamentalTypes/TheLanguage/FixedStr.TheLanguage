@@ -78,44 +78,52 @@ public mutable class FixedMutableStr {
 
     # TODO: Range concept for Substr?
 
-    [Deferred] public override (PosInt | None) val Find(
+    [Deferred]
+    public override (PosInt | None) val Find(
         Char immutable value,
         (PosInt | None) immutable begin_char_index = None,
         (PosInt | None) immutable end_char_index = None,
     ) immutable
 
-    [Deferred] public override (PosInt | None) val Find(
+    [Deferred]
+    public override (PosInt | None) val Find(
         NonEmptyStr immutable value,
         (PosInt | None) immutable begin_char_index = None,
         (PosInt | None) immutable end_char_index = None,
     ) immutable
 
-    [Deferred] public override (PosInt | None) val ReverseFind(
+    [Deferred]
+    public override (PosInt | None) val ReverseFind(
         Char immutable value,
         (PosInt | None) immutable end_char_index = None,
     ) immutable
 
-    [Deferred] public override (PosInt | None) val ReverseFind(
+    [Deferred]
+    public override (PosInt | None) val ReverseFind(
         NonEmptyStr immutable value,
         (PosInt | None) immutable end_char_index = None,
     ) immutable
 
-    [Deferred] public override (PosInt | None) val FindFirst(
+    [Deferred]
+    public override (PosInt | None) val FindFirst(
         Char immutable value,
         (PosInt | None) immutable end_char_index = None,
     ) immutable
 
-    [Deferred] public override (PosInt | None) val FindFirst(
+    [Deferred]
+    public override (PosInt | None) val FindFirst(
         NonEmptyStr immutable value,
         (PosInt | None) immutable end_char_index = None,
     ) immutable
 
-    [Deferred] public override (PosInt | None) val FindLast(
+    [Deferred]
+    public override (PosInt | None) val FindLast(
         Char immutable value,
         (PosInt | None) immutable begin_char_index = None,
     ) immutable
 
-    [Deferred] public override (PosInt | None) val FindLast(
+    [Deferred]
+    public override (PosInt | None) val FindLast(
         NonEmptyStr immutable value,
         (PosInt | None) immutable begin_char_index = None,
     ) immutable
@@ -127,17 +135,20 @@ public mutable class FixedMutableStr {
     [Deferred] public override ThisType val ToTitle?() immutable
     [Deferred] public override ThisType val ToUpper?() immutable
 
-    [Deferred] public override ThisType val Center?(
+    [Deferred]
+    public override ThisType val Center?(
         NonZeroInt immutable length,
         Char immutable fill_char = ' ',
     ) immutable
 
-    [Deferred] public override ThisType val LeftJustify?(
+    [Deferred]
+    public override ThisType val LeftJustify?(
         NonZeroInt immutable length,
         Char immutable fill_char = ' ',
     ) immutable
 
-    [Deferred] public override ThisType val RightJustify?(
+    [Deferred]
+    public override ThisType val RightJustify?(
         NonZeroInt immutable length,
         Char immutable fill_char = ' ',
     ) immutable
@@ -147,13 +158,15 @@ public mutable class FixedMutableStr {
     [Deferred] public override ThisType val RightStrip?() immutable
     [Deferred] public override ThisType val Strip?() immutable
 
-    [Deferred] public override ThisType val Replace?(
+    [Deferred]
+    public override ThisType val Replace?(
         Char immutable source,
         Char immutable dest,
         (NonZeroInt | None) immutable count = None,
     ) immutable
 
-    [Deferred] public override ThisType val Replace?(
+    [Deferred]
+    public override ThisType val Replace?(
         NonEmptyStr immutable source,
         Str immutable dest,
         (NonZeroInt | None) immutable count = None,
