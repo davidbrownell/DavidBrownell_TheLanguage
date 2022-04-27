@@ -266,7 +266,7 @@ class ParserInfo(ObjectReprImplBase):
                                     visit_control = VisitControl.Continue
                                     break
                                 else:
-                                    assert False, visit_control
+                                    assert False, visit_control  # pragma: no cover
 
             assert visit_control in [VisitControl.Continue, VisitControl.Terminate], visit_control
             return visit_control

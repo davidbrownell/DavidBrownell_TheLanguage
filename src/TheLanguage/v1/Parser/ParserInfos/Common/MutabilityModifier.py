@@ -21,10 +21,29 @@ from enum import auto, Enum
 
 import CommonEnvironment
 
+from CommonEnvironmentEx.Package import InitRelativeImports
+
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
+
+with InitRelativeImports():
+    from ...Error import CreateError
+
+
+# ----------------------------------------------------------------------
+MutabilityModifierRequiredError             = CreateError(
+    "A mutability modifier is required in this context",
+)
+
+MutabilityModifierNotAllowedError           = CreateError(
+    "A mutability modifier is not allowed in this context",
+)
+
+InvalidNewMutabilityModifierError           = CreateError(
+    "The mutability modifier 'new' is not allowed in this context",
+)
 
 
 # ----------------------------------------------------------------------

@@ -108,12 +108,17 @@ def Parse(
 
                 if result is None:
                     continue
+
                 elif callable(result):
                     callback_funcs.append((node, result))
+
                 elif isinstance(result, list):
+                    _SetParserInfoErrors(node)
                     errors += result
+
                 elif isinstance(result, ParserInfo):
                     _SetParserInfo(node, result)
+
                 else:
                     assert False, result  # pragma: no cover
 
@@ -125,9 +130,12 @@ def Parse(
                 result = callback()
 
                 if isinstance(result, list):
+                    _SetParserInfoErrors(node)
                     errors += result
+
                 elif isinstance(result, ParserInfo):
                     _SetParserInfo(node, result)
+
                 else:
                     assert False, result  # pragma: no cover
 
@@ -238,10 +246,19 @@ def Validate(
 
 
 # ----------------------------------------------------------------------
+def HasParserInfoErrors(
+    node: AST.Node,
+) -> bool:
+    return getattr(node, _PARSER_INFO_ERROR_ATTRIBUTE_NAME, False)
+
+
+# ----------------------------------------------------------------------
 def GetParserInfoNoThrow(
     node: AST.Node,
 ) -> Optional[ParserInfo]:
-    return  getattr(node, _PARSER_INFO_ATTRIBUTE_NAME, None)
+    # TODO: All code should check for this condition prior to invoking this method, which might cause the assertion to fire
+    assert not HasParserInfoErrors(node)
+    return getattr(node, _PARSER_INFO_ATTRIBUTE_NAME, None)
 
 
 # ----------------------------------------------------------------------
@@ -300,6 +317,7 @@ def CreateRegions(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 _PARSER_INFO_ATTRIBUTE_NAME                 = "parser_info"
+_PARSER_INFO_ERROR_ATTRIBUTE_NAME           = "_has_parser_info_errors"
 
 
 # ----------------------------------------------------------------------
@@ -308,6 +326,13 @@ def _SetParserInfo(
     parser_info: ParserInfo,
 ) -> None:
     object.__setattr__(node, _PARSER_INFO_ATTRIBUTE_NAME, parser_info)
+
+
+# ----------------------------------------------------------------------
+def _SetParserInfoErrors(
+    node: AST.Node,
+):
+    object.__setattr__(node, _PARSER_INFO_ERROR_ATTRIBUTE_NAME, True)
 
 
 # ----------------------------------------------------------------------

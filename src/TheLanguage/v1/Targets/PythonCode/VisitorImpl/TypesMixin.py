@@ -67,7 +67,7 @@ class TypesMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 mutability_modifier_region=self._ToString(parser_info.regions__.mutability_modifier),
                 mutability_modifier=self._ToString(parser_info.mutability_modifier),
@@ -93,7 +93,7 @@ class TypesMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 name_region=self._ToString(parser_info.regions__.name),
                 name=self._ToString(parser_info.name),
@@ -122,7 +122,7 @@ class TypesMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 mutability_modifier_region=self._ToString(parser_info.regions__.mutability_modifier),
                 types_region=self._ToString(parser_info.regions__.types),
@@ -152,7 +152,7 @@ class TypesMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 parser_info_type=str(parser_info.parser_info_type__),  # type: ignore
                 self_region=self._ToString(parser_info.regions__.self__),
                 mutability_modifier_region=self._ToString(parser_info.regions__.mutability_modifier),

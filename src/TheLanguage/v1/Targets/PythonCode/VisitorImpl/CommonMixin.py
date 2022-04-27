@@ -70,7 +70,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 variables_region=self._ToString(parser_info.regions__.variables),
                 variables=self._ToString(cast(List[ParserInfo], parser_info.variables)),
@@ -96,7 +96,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 arguments_region=self._ToString(parser_info.regions__.arguments),
                 arguments=self._ToString(cast(List[ParserInfo], parser_info.arguments)),
@@ -121,7 +121,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 keyword_region=self._ToString(parser_info.regions__.keyword),
                 expression=self._ToString(parser_info.expression),
@@ -150,7 +150,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 positional_region=self._ToString(parser_info.regions__.positional),
                 any_region=self._ToString(parser_info.regions__.any),
@@ -182,7 +182,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 name_region=self._ToString(parser_info.regions__.name),
                 type=self._ToString(parser_info.type),
@@ -212,7 +212,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 arguments_region=self._ToString(parser_info.regions__.arguments),
                 arguments=self._ToString(cast(List[ParserInfo], parser_info.arguments)),
@@ -238,7 +238,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 parser_info_type=str(parser_info.parser_info_type__),  # type: ignore
                 self_region=self._ToString(parser_info.regions__.self__),
                 keyword_region=self._ToString(parser_info.regions__.keyword),
@@ -268,7 +268,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 positional_region=self._ToString(parser_info.regions__.positional),
                 any_region=self._ToString(parser_info.regions__.any),
@@ -300,7 +300,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 is_compile_time_region=self._ToString(parser_info.regions__.is_compile_time),
                 is_variadic_region=self._ToString(parser_info.regions__.is_variadic),
@@ -412,7 +412,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 positional_region=self._ToString(parser_info.regions__.positional),
                 any_region=self._ToString(parser_info.regions__.any),
@@ -442,7 +442,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 name_region=self._ToString(parser_info.regions__.name),
                 is_variadic_region=self._ToString(parser_info.regions__.is_variadic),
@@ -471,7 +471,7 @@ class CommonMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 name_region=self._ToString(parser_info.regions__.name),
                 type=self._ToString(parser_info.type),

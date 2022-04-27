@@ -7,14 +7,14 @@ regions__: # <class 'types.RootParserInfoRegions'>
       line: 1
     end: # <class 'v1.Lexer.Location.Location'>
       column: 1
-      line: 5
+      line: 4
   statements: # <class 'v1.Parser.Region.Region'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
     end: # <class 'v1.Lexer.Location.Location'>
       column: 1
-      line: 5
+      line: 4
 statements:
   - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     class_capabilities: "Standard"
@@ -132,99 +132,46 @@ statements:
     implements: None
     is_abstract: None
     is_final: None
-    name: "ProtectedClass"
-    regions__: # <class 'types.ClassStatementParserInfoRegions'>
-      name: # <class 'v1.Parser.Region.Region'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 17
-          line: 3
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 31
-          line: 3
-      self__: # <class 'v1.Parser.Region.Region'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 3
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 4
-      statements: # <class 'v1.Parser.Region.Region'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 31
-          line: 3
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 4
-      visibility: # <class 'v1.Parser.Region.Region'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 3
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 10
-          line: 3
-    statements:
-      - # <class 'v1.Parser.ParserInfos.Statements.PassStatementParserInfo.PassStatementParserInfo'>
-        regions__: # <class 'types.PassStatementParserInfoRegions'>
-          self__: # <class 'v1.Parser.Region.Region'>
-            begin: # <class 'v1.Lexer.Location.Location'>
-              column: 33
-              line: 3
-            end: # <class 'v1.Lexer.Location.Location'>
-              column: 1
-              line: 4
-    templates: None
-    uses: None
-    visibility: "VisibilityModifier.protected"
-  - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    class_capabilities: "Standard"
-    class_modifier: "ClassModifier.immutable"
-    constraints: None
-    constructor_visibility: "VisibilityModifier.public"
-    documentation: None
-    extends: None
-    implements: None
-    is_abstract: None
-    is_final: None
     name: "PrivateClass"
     regions__: # <class 'types.ClassStatementParserInfoRegions'>
       name: # <class 'v1.Parser.Region.Region'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 15
-          line: 4
+          line: 3
         end: # <class 'v1.Lexer.Location.Location'>
           column: 27
-          line: 4
+          line: 3
       self__: # <class 'v1.Parser.Region.Region'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
-          line: 4
+          line: 3
         end: # <class 'v1.Lexer.Location.Location'>
           column: 1
-          line: 5
+          line: 4
       statements: # <class 'v1.Parser.Region.Region'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 27
-          line: 4
+          line: 3
         end: # <class 'v1.Lexer.Location.Location'>
           column: 1
-          line: 5
+          line: 4
       visibility: # <class 'v1.Parser.Region.Region'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
-          line: 4
+          line: 3
         end: # <class 'v1.Lexer.Location.Location'>
           column: 8
-          line: 4
+          line: 3
     statements:
       - # <class 'v1.Parser.ParserInfos.Statements.PassStatementParserInfo.PassStatementParserInfo'>
         regions__: # <class 'types.PassStatementParserInfoRegions'>
           self__: # <class 'v1.Parser.Region.Region'>
             begin: # <class 'v1.Lexer.Location.Location'>
               column: 29
-              line: 4
+              line: 3
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
-              line: 5
+              line: 4
     templates: None
     uses: None
     visibility: "VisibilityModifier.private"

@@ -74,7 +74,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 operator_region=self._ToString(parser_info.regions__.operator),
                 left_expression=self._ToString(parser_info.left_expression),
@@ -102,7 +102,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 value=self._ToString(parser_info.value),
             ),
@@ -128,7 +128,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 arguments_region=self._ToString(parser_info.regions__.arguments),
                 expression=self._ToString(parser_info.expression),
@@ -155,7 +155,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 value=parser_info.value,
             ),
@@ -181,7 +181,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 is_compile_time_region=self._ToString(parser_info.regions__.is_compile_time),
                 name_region=self._ToString(parser_info.regions__.name),
@@ -209,7 +209,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 value=parser_info.value,
             ),
@@ -233,7 +233,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
             ),
         )
@@ -257,7 +257,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 value=parser_info.value,
             ),
@@ -282,7 +282,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 value=parser_info.value.replace("\n", "\\n"),
             ),
@@ -309,7 +309,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 condition_expression=self._ToString(parser_info.condition_expression),
                 true_expression=self._ToString(parser_info.true_expression),
@@ -338,7 +338,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 operator_region=self._ToString(parser_info.regions__.operator),
                 operator="TypeCheckExpressionParserInfoOperatorType.{}".format(parser_info.operator.name),
@@ -367,7 +367,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 operator_region=self._ToString(parser_info.regions__.operator),
                 operator="UnaryExpressionParserInfoOperatorType.{}".format(parser_info.operator.name),
@@ -395,7 +395,7 @@ class ExpressionsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 is_compile_time_region=self._ToString(parser_info.regions__.is_compile_time),
                 name_region=self._ToString(parser_info.regions__.name),

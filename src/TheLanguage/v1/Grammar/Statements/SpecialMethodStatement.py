@@ -31,7 +31,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ClassStatement import ClassStatement
-    from .FuncDefinitionStatement import FuncDefinitionStatement
 
     from ..GrammarPhrase import AST, GrammarPhrase
 
@@ -150,7 +149,7 @@ class SpecialMethodStatement(GrammarPhrase):
 
             return SpecialMethodStatementParserInfo.Create(
                 CreateRegions(node, name_leaf, statements_node),
-                ClassStatement.GetParentClassCapabilities(node, FuncDefinitionStatement),
+                ClassStatement.GetParentClassCapabilities(node),
                 name_info,
                 statements_info,
             )

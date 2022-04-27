@@ -78,6 +78,8 @@ InvalidReservedMethodName                   = CreateError(
 class FuncDefinitionStatement(GrammarPhrase):
     PHRASE_NAME                             = "Func Definition Statement"
 
+    assert ClassStatement.FUNCTION_STATEMENT_PHRASE_NAME == PHRASE_NAME
+
     OPERATOR_MAP                            = {
         "__Accept?__" : OperatorType.Accept,
         "__Compare__": OperatorType.Compare,
@@ -385,17 +387,18 @@ class FuncDefinitionStatement(GrammarPhrase):
             if errors:
                 return errors
 
+            assert not isinstance(parameters_info, list)
+
             return FuncDefinitionStatementParserInfo.Create(
-                ParserInfoType.Standard, # TODO
                 CreateRegions(
                     node,
+                    parameters_node,
                     visibility_node,
                     mutability_modifier_node,
                     method_type_modifier_node,
                     name_leaf,
                     docstring_leaf,
                     captured_variables_node,
-                    parameters_node,
                     statements_node,
                     is_deferred_node,
                     is_exceptional_node,
@@ -404,7 +407,8 @@ class FuncDefinitionStatement(GrammarPhrase):
                     is_scoped_node,
                     is_static_node,
                 ),
-                ClassStatement.GetParentClassCapabilities(node, cls),
+                ClassStatement.GetParentClassCapabilities(node),
+                parameters_info,
                 visibility_info,
                 mutability_modifier_info,
                 method_type_modifier_info,
@@ -413,7 +417,6 @@ class FuncDefinitionStatement(GrammarPhrase):
                 docstring_info,
                 template_parameters_info,
                 captured_variables_info,
-                parameters_info,
                 statements_info,
                 is_deferred_info,
                 is_exceptional_info,
