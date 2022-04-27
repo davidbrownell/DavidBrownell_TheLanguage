@@ -13,12 +13,6 @@ from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplatePa
 from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
 from v1.Parser.ParserInfos.Common.VisibilityModifier import VisibilityModifier
 from v1.Parser.ParserInfos.ParserInfo import ParserInfoType
-from v1.Parser.ParserInfos.Statements.ClassCapabilities.ConceptCapabilities import ConceptCapabilities
-from v1.Parser.ParserInfos.Statements.ClassCapabilities.ExceptionCapabilities import ExceptionCapabilities
-from v1.Parser.ParserInfos.Statements.ClassCapabilities.ImmutablePODCapabilities import ImmutablePODCapabilities
-from v1.Parser.ParserInfos.Statements.ClassCapabilities.InterfaceCapabilities import InterfaceCapabilities
-from v1.Parser.ParserInfos.Statements.ClassCapabilities.MixinCapabilities import MixinCapabilities
-from v1.Parser.ParserInfos.Statements.ClassCapabilities.MutablePODCapabilities import MutablePODCapabilities
 from v1.Parser.ParserInfos.Statements.ClassCapabilities.StandardCapabilities import StandardCapabilities
 from v1.Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
 from v1.Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo, OperatorType as FuncDefinitionStatementParserInfoOperatorType

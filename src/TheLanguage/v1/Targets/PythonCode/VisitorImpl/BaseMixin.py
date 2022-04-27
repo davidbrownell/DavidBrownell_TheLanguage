@@ -70,21 +70,6 @@ class BaseMixin(object):
                 ),
             )
 
-        for capabilities in [
-            "Concept",
-            "Exception",
-            "ImmutablePOD",
-            "Interface",
-            "Mixin",
-            "MutablePOD",
-            "Standard",
-        ]:
-            imports.add(
-                "from v1.Parser.ParserInfos.Statements.ClassCapabilities.{capabilities}Capabilities import {capabilities}Capabilities".format(
-                    capabilities=capabilities,
-                ),
-            )
-
         self._stream                        = StringIO()
         self._imports                       = imports
 
