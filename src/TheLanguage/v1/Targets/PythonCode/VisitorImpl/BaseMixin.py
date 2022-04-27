@@ -20,7 +20,7 @@ import textwrap
 import types
 
 from io import StringIO
-from typing import List, Set, Union
+from typing import Dict, List, Set, Union
 
 import CommonEnvironment
 
@@ -70,8 +70,11 @@ class BaseMixin(object):
                 ),
             )
 
-        self._stream                        = StringIO()
         self._imports                       = imports
+        self._stream                        = StringIO()
+
+        self._region_id_lookup: Dict[str, str]          = {}
+        self._statement_id_lookup: Dict[Region, str]    = {}
 
         self._scope_level                               = 0
         self._public_exports: List[ParserInfo]          = []
@@ -110,11 +113,15 @@ class BaseMixin(object):
 
 
             # ----------------------------------------------------------------------
+            {regions}
+
+            # ----------------------------------------------------------------------
             {content}
             """,
         ).format(
             imports="\n".join(sorted(self._imports)),
             content="\n".join(line.rstrip() for line in self._stream.getvalue().rstrip().splitlines()),
+            regions="\n".join("{} = {}".format(value, key) for key, value in self._region_id_lookup.items()),
         )
 
     # ----------------------------------------------------------------------
@@ -200,16 +207,19 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
-    @staticmethod
     def _CreateStatementName(
+        self,
         parser_info: ParserInfo,
     ) -> str:
-        return "statement{line_begin:0>4}{column_begin:0>4}_{line_end:0>4}{column_end:0>4}".format(
-            line_begin=parser_info.regions__.self__.begin.line,
-            column_begin=parser_info.regions__.self__.begin.column,
-            line_end=parser_info.regions__.self__.end.line,
-            column_end=parser_info.regions__.self__.end.column,
-        )
+        potential_statement_id = self._statement_id_lookup.get(parser_info.regions__.self__, None)
+        if potential_statement_id is not None:
+            return potential_statement_id
+
+        statement_id = "statement_{:0>6}".format(len(self._statement_id_lookup))
+
+        self._statement_id_lookup[parser_info.regions__.self__] = statement_id
+
+        return statement_id
 
     # ----------------------------------------------------------------------
     def _ToString(
@@ -245,9 +255,22 @@ class BaseMixin(object):
         elif isinstance(value, Location):
             return "Location(line={}, column={})".format(value.line, value.column)
         elif isinstance(value, Region):
-            return "Region(begin={}, end={})".format(self._ToString(value.begin), self._ToString(value.end))
+            region_statement = "Region(begin={}, end={})".format(
+                self._ToString(value.begin),
+                self._ToString(value.end),
+            )
+
+            potential_var_name = self._region_id_lookup.get(region_statement, None)
+            if potential_var_name is not None:
+                return potential_var_name
+
+            var_name = "region_{:0>6}".format(len(self._region_id_lookup))
+
+            self._region_id_lookup[region_statement] = var_name
+
+            return var_name
         elif isinstance(value, ParserInfo):
-            return self.__class__._CreateStatementName(value)  # pylint: disable=protected-access
+            return self._CreateStatementName(value)
         elif isinstance(value, list):
             return "[{}, ]".format(", ".join(self._ToString(item) for item in value))
 

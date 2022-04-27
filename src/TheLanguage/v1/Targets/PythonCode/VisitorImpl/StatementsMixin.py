@@ -153,7 +153,7 @@ class StatementsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 visibility_region=self._ToString(parser_info.regions__.visibility),
                 class_modifier_region=self._ToString(parser_info.regions__.class_modifier),
@@ -201,7 +201,7 @@ class StatementsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 visibility_region=self._ToString(parser_info.regions__.visibility),
                 visibility=self._ToString(parser_info.visibility),
@@ -256,7 +256,7 @@ class StatementsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 parser_info_type=str(parser_info.parser_info_type__),  # type: ignore
                 self_region=self._ToString(parser_info.regions__.self__),
                 visibility_region=self._ToString(parser_info.regions__.visibility),
@@ -314,7 +314,7 @@ class StatementsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 else_statements_region=self._ToString(parser_info.regions__.else_statements),
                 else_documentation_region=self._ToString(parser_info.regions__.else_documentation),
@@ -343,7 +343,7 @@ class StatementsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 statements_region=self._ToString(parser_info.regions__.statements),
                 documentation_region=self._ToString(parser_info.regions__.documentation),
@@ -375,7 +375,7 @@ class StatementsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 visibility_region=self._ToString(parser_info.regions__.visibility),
                 source_filename_region=self._ToString(parser_info.regions__.source_filename),
@@ -404,7 +404,7 @@ class StatementsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 name_region=self._ToString(parser_info.regions__.name),
                 alias_region=self._ToString(parser_info.regions__.alias),
@@ -428,7 +428,7 @@ class StatementsMixin(BaseMixin):
                 {statement_name} = PassStatementParserInfo.Create([{self_region}])
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
             ),
         )
@@ -462,7 +462,7 @@ class StatementsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 type_region=self._ToString(parser_info.regions__.type),
                 statements_region=self._ToString(parser_info.regions__.statements),
@@ -495,7 +495,7 @@ class StatementsMixin(BaseMixin):
 
                 """,
             ).format(
-                statement_name=self.__class__._CreateStatementName(parser_info),
+                statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 visibility_region=self._ToString(parser_info.regions__.visibility),
                 name_region=self._ToString(parser_info.regions__.name),
