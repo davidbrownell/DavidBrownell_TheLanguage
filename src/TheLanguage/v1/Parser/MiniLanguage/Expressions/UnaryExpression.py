@@ -59,7 +59,7 @@ class UnaryExpression(Expression):
         if self.operator == OperatorType.Not:
             eval_impl = self._EvalNotImpl
         else:
-            assert False, self.operator
+            assert False, self.operator  # pragma: no cover
 
         object.__setattr__(self, "Eval", types.MethodType(eval_impl, self))
 

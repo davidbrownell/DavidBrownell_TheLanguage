@@ -31,7 +31,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ClassStatement import ClassStatement
-    from .FuncDefinitionStatement import FuncDefinitionStatement
 
     from ..GrammarPhrase import AST, GrammarPhrase
 
@@ -212,7 +211,7 @@ class ClassAttributeStatement(GrammarPhrase):
                 initializer_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, initializer_nodes[2])))
                 initializer_info = GetParserInfo(initializer_node)
 
-            class_capabilities = ClassStatement.GetParentClassCapabilities(node, FuncDefinitionStatement)
+            class_capabilities = ClassStatement.GetParentClassCapabilities(node)
 
             if class_capabilities is None:
                 errors.append(

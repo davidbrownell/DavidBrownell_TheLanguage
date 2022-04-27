@@ -37,6 +37,7 @@ with InitRelativeImports():
     from .StatementParserInfo import (  # pylint: disable=unused-import
         ParserInfo,
         ParserInfoType,                     # Convenience import
+        Region,
         StatementParserInfo,
     )
 
@@ -48,7 +49,12 @@ with InitRelativeImports():
     )
 
     from ..Common.MethodModifier import MethodModifier
-    from ..Common.MutabilityModifier import MutabilityModifier
+
+    from ..Common.MutabilityModifier import (
+        InvalidNewMutabilityModifierError,
+        MutabilityModifier,
+        MutabilityModifierRequiredError,
+    )
 
     from ..Common.TemplateParametersParserInfo import (  # pylint: disable=unused-import
         TemplateDecoratorParameterParserInfo,           # Convenience import
@@ -57,20 +63,11 @@ with InitRelativeImports():
     )
 
     from ..Common.VariableNameParserInfo import VariableNameParserInfo
-    from ..Common.VisibilityModifier import VisibilityModifier
+    from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
-    from ..Types.TypeParserInfo import (
-        InvalidNewMutabilityModifierError,
-        MutabilityModifierRequiredError,
-        TypeParserInfo,
-    )
+    from ..Types.TypeParserInfo import TypeParserInfo
 
     from ...Error import CreateError, Error, ErrorException
-
-
-# ----------------------------------------------------------------------
-_auto_ctr = itertools.count(1)
-_auto = lambda: next(_auto_ctr)
 
 
 # ----------------------------------------------------------------------
@@ -157,15 +154,6 @@ class OperatorType(Enum):
 
 
 # ----------------------------------------------------------------------
-del _auto
-del _auto_ctr
-
-
-# ----------------------------------------------------------------------
-InvalidProtectedVisibilityError             = CreateError(
-    "Protected visibility is not valid for functions",
-)
-
 InvalidFunctionMutabilityError              = CreateError(
     "Mutability modifiers are not valid for functions",
 )
@@ -248,7 +236,9 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     introduces_scope__                      = True
 
     # ----------------------------------------------------------------------
-    class_capabilities: Optional[ClassCapabilities]
+    parent_class_capabilities: Optional[ClassCapabilities]
+
+    parameters: Union[bool, FuncParametersParserInfo]
 
     visibility_param: InitVar[Optional[VisibilityModifier]]
     visibility: VisibilityModifier                      = field(init=False)
@@ -266,8 +256,6 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     templates: Optional[TemplateParametersParserInfo]
 
     captured_variables: Optional[List[VariableNameParserInfo]]
-    parameters: Union[bool, FuncParametersParserInfo]
-
     statements: Optional[List[StatementParserInfo]]
 
     is_deferred: Optional[bool]
@@ -278,6 +266,30 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
 
     # Valid only for methods
     is_static: Optional[bool]
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        parent_class_capabilities: Optional[ClassCapabilities],
+        parameters: Union[bool, FuncParametersParserInfo],
+        *args,
+        **kwargs,
+    ):
+        if isinstance(parameters, bool):
+            parser_info_type = ParserInfoType.Standard
+        else:
+            parser_info_type = parameters.parser_info_type__  # type: ignore
+
+        return cls(
+            parser_info_type,               # type: ignore
+            regions,                        # type: ignore
+            parent_class_capabilities,
+            parameters,
+            *args,
+            **kwargs,
+        )
 
     # ----------------------------------------------------------------------
     def __post_init__(
@@ -292,49 +304,41 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
             parser_info_type,
             regions,
             regionless_attributes=[
-                "class_capabilities",
+                "parent_class_capabilities",
                 "return_type",
                 "templates",
             ],
             validate=False,
-            class_capabilities=lambda value: None if value is None else value.name,
+            parent_class_capabilities=lambda value: None if value is None else value.name,
         )
 
         # Set defaults
-        if self.class_capabilities is None:
+        if self.parent_class_capabilities is None:
             # We are looking at a function
-            valid_method_visibilities = [
-                VisibilityModifier.public,
-                VisibilityModifier.internal,
-                VisibilityModifier.private,
-            ]
+            if visibility_param is None:
+                visibility_param = VisibilityModifier.private
+                object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
-            default_method_visibility = VisibilityModifier.private
-
-            capabilities_name = "functions"
+            desc = "functions"
 
         else:
-            if not self.is_static and mutability_param is None and self.class_capabilities.default_method_mutability is not None:
-                mutability_param = self.class_capabilities.default_method_mutability
+            if visibility_param is None and self.parent_class_capabilities.default_method_visibility is not None:
+                visibility_param = self.parent_class_capabilities.default_method_visibility
+                object.__setattr__(self.regions__, "visibility", self.regions__.self__)
+
+            if not self.is_static and mutability_param is None and self.parent_class_capabilities.default_method_mutability is not None:
+                mutability_param = self.parent_class_capabilities.default_method_mutability
                 object.__setattr__(self.regions__, "mutability", self.regions__.self__)
 
-            if method_modifier_param is None and self.class_capabilities.default_method_modifier is not None:
-                method_modifier_param = self.class_capabilities.default_method_modifier
+            if method_modifier_param is None and self.parent_class_capabilities.default_method_modifier is not None:
+                method_modifier_param = self.parent_class_capabilities.default_method_modifier
                 object.__setattr__(self.regions__, "method_modifier", self.regions__.self__)
 
-            valid_method_visibilities = self.class_capabilities.valid_method_visibilities
-
-            default_method_visibility = self.class_capabilities.default_method_visibility
-            capabilities_name = "{} methods".format(self.class_capabilities.name)
-
-        object.__setattr__(self, "mutability", mutability_param)
-        object.__setattr__(self, "method_modifier", method_modifier_param)
-
-        if visibility_param is None and default_method_visibility is not None:
-            visibility_param = default_method_visibility
-            object.__setattr__(self.regions__, "visibility", self.regions__.self__)
+            desc = "{} methods".format(self.parent_class_capabilities.name)
 
         object.__setattr__(self, "visibility", visibility_param)
+        object.__setattr__(self, "mutability", mutability_param)
+        object.__setattr__(self, "method_modifier", method_modifier_param)
 
         self.ValidateRegions()
 
@@ -351,7 +355,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
             elif (
                 self.return_type.mutability_modifier == MutabilityModifier.new
                 and (
-                    self.class_capabilities is None or self.class_capabilities.is_instantiable
+                    self.parent_class_capabilities is None or self.parent_class_capabilities.is_instantiable
                 )
             ):
                 errors.append(
@@ -360,10 +364,10 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                     ),
                 )
 
-        if self.class_capabilities is None:
+        if self.parent_class_capabilities is None:
             if self.visibility == VisibilityModifier.protected:
                 errors.append(
-                    InvalidProtectedVisibilityError.Create(
+                    InvalidProtectedError.Create(
                         region=self.regions__.visibility,
                     ),
                 )
@@ -396,7 +400,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                     ),
                 )
 
-            # TODO: Captures only when nested
+            # TODO: Captures only when nested with a function
 
         else:
             if self.captured_variables:
@@ -420,17 +424,6 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                             region=self.regions__.self__,
                         ),
                     )
-                elif self.mutability not in self.class_capabilities.valid_method_mutabilities:
-                    errors.append(
-                        InvalidMethodMutabilityError.Create(
-                            region=self.regions__.mutability,
-                            type=self.class_capabilities.name,
-                            mutability=self.mutability,
-                            valid_mutabilities=self.class_capabilities.valid_method_mutabilities,
-                            mutability_str=self.mutability.name,
-                            valid_mutabilities_str=", ".join("'{}'".format(m.name) for m in self.class_capabilities.valid_method_mutabilities),
-                        ),
-                    )
 
                 # 'this' and 'self' can't be used as parameter names
                 if isinstance(self.parameters, FuncParametersParserInfo):
@@ -449,18 +442,6 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
 
             assert self.method_modifier is not None
 
-            if self.method_modifier not in self.class_capabilities.valid_method_modifiers:
-                errors.append(
-                    InvalidMethodModifierError.Create(
-                        region=self.regions__.method_modifier,
-                        type=self.class_capabilities.name,
-                        modifier=self.method_modifier,
-                        valid_modifiers=self.class_capabilities.valid_method_modifiers,
-                        modifier_str=self.method_modifier.name,
-                        valid_modifiers_str=", ".join("'{}'".format(m.name) for m in self.class_capabilities.valid_method_modifiers),
-                    ),
-                )
-
             if self.method_modifier == MethodModifier.abstract and self.statements:
                 errors.append(
                     InvalidMethodAbstractStatementsError.Create(
@@ -474,23 +455,13 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                     ),
                 )
 
-        if self.visibility not in valid_method_visibilities:
-            errors.append(
-                InvalidVisibilityError.Create(
-                    region=self.regions__.visibility,
-                    type=capabilities_name,
-                    visibility=self.visibility,
-                    valid_visibilities=valid_method_visibilities,
-                    visibility_str=self.visibility.name,
-                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in valid_method_visibilities),
-                ),
-            )
+            errors += self.parent_class_capabilities.ValidateFuncDefinitionStatementCapabilities(self)
 
         if self.is_deferred and self.statements:
             errors.append(
                 StatementsRequiredError.Create(
                     region=self.regions__.statements,
-                    type=capabilities_name,
+                    type=desc,
                 ),
             )
 

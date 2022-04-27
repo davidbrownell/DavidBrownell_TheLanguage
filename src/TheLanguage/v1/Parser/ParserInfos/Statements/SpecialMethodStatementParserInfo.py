@@ -91,7 +91,7 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
     introduces_scope__                      = True
 
     # ----------------------------------------------------------------------
-    class_capabilities: ClassCapabilities
+    parent_class_capabilities: ClassCapabilities
 
     type: SpecialMethodType
     statements: List[StatementParserInfo]
@@ -101,7 +101,7 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
     def Create(
         cls,
         regions: List[Optional[Region]],
-        class_capabilities: Optional[ClassCapabilities],
+        parent_class_capabilities: Optional[ClassCapabilities],
         the_type: SpecialMethodType,
         *args,
         **kwargs,
@@ -114,7 +114,7 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
         return cls(
             parser_info_type,               # type: ignore
             regions,                        # type: ignore
-            class_capabilities,             # type: ignore
+            parent_class_capabilities,             # type: ignore
             the_type,
             *args,
             **kwargs,
@@ -125,14 +125,14 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
         super(SpecialMethodStatementParserInfo, self).__post_init__(
             parser_info_type,
             regions,
-            regionless_attributes=["class_capabilities", ],
-            class_capabilities=lambda value: value.name,
+            regionless_attributes=["parent_class_capabilities", ],
+            parent_class_capabilities=lambda value: value.name,
         )
 
         # Validate
         errors: List[Error] = []
 
-        if self.class_capabilities is None:
+        if self.parent_class_capabilities is None:
             errors.append(
                 NoClassError.Create(
                     region=self.regions__.self__,

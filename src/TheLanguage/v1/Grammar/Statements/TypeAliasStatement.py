@@ -30,6 +30,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .ClassStatement import ClassStatement
+
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ..Common import ConstraintParametersFragment
@@ -158,6 +160,7 @@ class TypeAliasStatement(GrammarPhrase):
 
             return TypeAliasStatementParserInfo.Create(
                 CreateRegions(node, visibility_node, name_leaf),
+                ClassStatement.GetParentClassCapabilities(node),
                 visibility_info,
                 name_info,
                 templates_info,

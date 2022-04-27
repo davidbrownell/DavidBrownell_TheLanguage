@@ -149,7 +149,7 @@ class BaseMixin(object):
                     should_add = True
 
                 else:
-                    assert False, type(parser_info)
+                    assert False, type(parser_info)  # pragma: no cover
 
                 if should_add:
                     self._public_exports.append(parser_info)
@@ -274,8 +274,8 @@ class BaseMixin(object):
         elif isinstance(value, list):
             return "[{}, ]".format(", ".join(self._ToString(item) for item in value))
 
-        assert False, value
-        return None
+        assert False, value  # pragma: no cover
+        return None  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod

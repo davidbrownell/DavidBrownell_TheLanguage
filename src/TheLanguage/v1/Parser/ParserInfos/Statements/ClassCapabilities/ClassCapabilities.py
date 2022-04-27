@@ -33,9 +33,224 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ...Common.ClassModifier import ClassModifier
     from ...Common.MethodModifier import MethodModifier
-    from ...Common.MutabilityModifier import MutabilityModifier
+
+    from ...Common.MutabilityModifier import (
+        InvalidNewMutabilityModifierError,
+        MutabilityModifier,
+        MutabilityModifierRequiredError,
+    )
+
     from ...Common.VisibilityModifier import VisibilityModifier
 
+    from ....Parser import CreateError, Error
+
+
+# ----------------------------------------------------------------------
+VisibilityRequiredError                     = CreateError(
+    "A visibility value is required for '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+InvalidVisibilityError                      = CreateError(
+    "'{visibility_str}' is not a valid visibility value for '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    visibility=VisibilityModifier,
+    visibility_str=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+InvalidProtectedVisibilityError             = CreateError(
+    "The visibility 'protected' is only valid when nested within a class-like object",
+)
+
+ClassModifierRequiredError                  = CreateError(
+    "A class modifier is required for '{type}' types; valid values are {valid_class_modifiers_str}",
+    type=str,
+    valid_class_modifiers=List[ClassModifier],
+    valid_class_modifiers_str=str,
+)
+
+InvalidClassModifierError                   = CreateError(
+    "'{class_modifier_str}' is not a valid class modifier value for '{type}' types; valid values are {valid_class_modifiers_str}",
+    type=str,
+    class_modifier=ClassModifier,
+    class_modifier_str=str,
+    valid_class_modifiers=List[ClassModifier],
+    valid_class_modifiers_str=str,
+)
+
+InvalidDependencyError                      = CreateError(
+    "'{type}' types do not support '{desc}' dependencies",
+    type=str,
+    desc=str,
+)
+
+DependencyVisibilityRequiredError           = CreateError(
+    "A visibility value is required for '{desc}' dependencies on '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    desc=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+InvalidDependencyVisibilityError            = CreateError(
+    "'{visibility_str}' is not a valid visibility value for '{desc}' dependencies on '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    desc=str,
+    visibility=VisibilityModifier,
+    visibility_str=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+AttributeVisibilityRequiredError            = CreateError(
+    "A visibility value is required for attributes in '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+InvalidAttributeError                       = CreateError(
+    "'{type}' types do not support attributes",
+    type=str,
+)
+
+InvalidAttributeVisibilityError             = CreateError(
+    "'{visibility_str}' is not a valid visibility value for attributes in '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    visibility=VisibilityModifier,
+    visibility_str=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+InvalidAttributeMutabilityModifierError     = CreateError(
+    "'{mutability_str}' is not a valid mutability modifier for attributes in '{type}' types; valid values are {valid_mutabilities_str}",
+    type=str,
+    mutability=MutabilityModifier,
+    valid_mutabilities=List[MutabilityModifier],
+    mutability_str=str,
+    valid_mutabilities_str=str,
+)
+
+InvalidMutablePublicAttributeError          = CreateError(
+    "'{type}' types do not support public mutable attributes",
+    type=str,
+)
+
+TypeAliasVisibilityRequiredError            = CreateError(
+    "A visibility value is required for type aliases in '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+InvalidTypeAliasError                       = CreateError(
+    "'{type}' types do not support type aliases",
+    type=str,
+)
+
+InvalidTypeAliasVisibilityError             = CreateError(
+    "'{visibility_str}' is not a valid visibility value for type aliases in '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    visibility=VisibilityModifier,
+    visibility_str=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+FuncDefinitionVisibilityRequiredError       = CreateError(
+    "A visibility value is required for methods in '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+InvalidFuncDefinitionError                  = CreateError(
+    "'{type}' types do not support methods",
+    type=str,
+)
+
+InvalidFuncDefinitionVisibilityError        = CreateError(
+    "'{visibility_str}' is not a valid visibility value for methods of '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    visibility=VisibilityModifier,
+    visibility_str=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+FuncDefinitionMethodModifierRequiredError   = CreateError(
+    "A method modifier is required for methods in '{type}' types; valid values are {valid_modifiers_str}",
+    type=str,
+    valid_modifiers=List[MethodModifier],
+    valid_modifiers_str=str,
+)
+
+InvalidFuncDefinitionMethodModifierError    = CreateError(
+    "'{method_modifier_str}' is not a valid modifier for methods of '{type}' types; valid values are {valid_method_modifiers_str}",
+    type=str,
+    method_modifier=MethodModifier,
+    method_modifier_str=str,
+    valid_method_modifiers=List[MethodModifier],
+    valid_method_modifiers_str=str,
+)
+
+FuncDefinitionMutabilityRequiredError       = CreateError(
+    "A mutability value is required for methods in '{type}' types; valid values are {valid_mutabilities_str}",
+    type=str,
+    valid_mutabilities=List[MutabilityModifier],
+    valid_mutabilities_str=str,
+)
+
+InvalidFuncDefinitionMutabilityError        = CreateError(
+    "'{mutability_str}' is not a valid mutability modifier value for methods in '{type}' types; valid values are {valid_mutabilities_str}",
+    type=str,
+    mutability=MutabilityModifier,
+    mutability_str=str,
+    valid_mutabilities=List[MutabilityModifier],
+    valid_mutabilities_str=str,
+)
+
+InvalidStaticMethodError                    = CreateError(
+    "'{type}' types do not support static methods",
+    type=str,
+)
+
+InvalidNestedClassError                     = CreateError(
+    "'{type}' types do not support nested class-like objects",
+    type=str,
+)
+
+InvalidNestedClassTypeError                 = CreateError(
+    "'{nested_type}' is not a valid nested class-like object for '{type}' types; valid values are {valid_nested_types_str}",
+    type=str,
+    nested_type=str,
+    valid_nested_types=List[str],
+    valid_nested_types_str=str,
+)
+
+NestedClassVisibilityRequiredError          = CreateError(
+    "A visibility value is required for nested class-like objects in '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+InvalidNestedClassVisibilityError           = CreateError(
+    "'{visibility_str}' is not a valid visibility value for nested class-like objects in '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    visibility=VisibilityModifier,
+    visibility_str=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibility_str=str,
+)
+
+
+# TODO: All of the capabilities need some TLC
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -48,10 +263,11 @@ class ClassCapabilities(ObjectReprImplBase):
     name: str
     is_instantiable: bool
 
-    default_class_modifier: ClassModifier
-
     valid_visibilities: List[VisibilityModifier]
-    default_visibility: VisibilityModifier
+    default_visibility: Optional[VisibilityModifier]
+
+    valid_class_modifiers: List[ClassModifier]
+    default_class_modifier: Optional[ClassModifier]
 
     valid_extends_visibilities: List[VisibilityModifier]
     default_extends_visibility: Optional[VisibilityModifier]
@@ -63,6 +279,13 @@ class ClassCapabilities(ObjectReprImplBase):
     valid_uses_types: List[str]
     valid_uses_visibilities: List[VisibilityModifier]
     default_uses_visibility: Optional[VisibilityModifier]
+
+    valid_type_alias_visibilities: List[VisibilityModifier]
+    default_type_alias_visibility: Optional[VisibilityModifier]
+
+    valid_nested_class_types: List[str]
+    valid_nested_class_visibilities: List[VisibilityModifier]
+    default_nested_class_visibility: Optional[VisibilityModifier]
 
     valid_method_modifiers: List[MethodModifier]
     default_method_modifier: Optional[MethodModifier]
@@ -80,7 +303,10 @@ class ClassCapabilities(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     def __post_init__(self):
         assert self.valid_visibilities
-        assert self.default_visibility in self.valid_visibilities
+        assert self.default_visibility is None or self.default_visibility in self.valid_visibilities
+
+        assert self.valid_class_modifiers
+        assert self.default_class_modifier is None or self.default_class_modifier in self.valid_class_modifiers
 
         assert self.default_extends_visibility is None or self.default_extends_visibility in self.valid_extends_visibilities
 
@@ -89,6 +315,11 @@ class ClassCapabilities(ObjectReprImplBase):
 
         assert (self.valid_uses_types and self.valid_uses_visibilities) or (not self.valid_uses_types and not self.valid_uses_visibilities)
         assert self.default_uses_visibility is None or self.default_uses_visibility in self.valid_uses_visibilities
+
+        assert self.default_type_alias_visibility is None or self.default_type_alias_visibility in self.valid_type_alias_visibilities
+
+        assert (self.valid_nested_class_types and self.valid_nested_class_visibilities) or (not self.valid_nested_class_types and not self.valid_nested_class_visibilities)
+        assert self.default_nested_class_visibility is None or self.default_nested_class_visibility in self.valid_nested_class_visibilities
 
         assert (self.valid_method_modifiers and self.valid_method_visibilities and self.valid_method_mutabilities) or (not self.valid_method_modifiers and not self.valid_method_visibilities and not self.valid_method_mutabilities)
         assert self.default_method_modifier is None or self.default_method_modifier in self.valid_method_modifiers
@@ -101,3 +332,411 @@ class ClassCapabilities(ObjectReprImplBase):
         assert not self.allow_mutable_public_attributes or (VisibilityModifier.public in self.valid_attribute_visibilities and MutabilityModifier.var in self.valid_attribute_mutabilities)
 
         ObjectReprImplBase.__init__(self)
+
+    # ----------------------------------------------------------------------
+    def ValidateClassStatementCapabilities(
+        self,
+        parser_info, # : ClassStatementParserInfo
+        has_parent_class: bool,
+    ) -> List[Error]:
+        errors: List[Error] = []
+
+        # visibility
+        if parser_info.visibility is None:
+            if self.valid_visibilities:
+                errors.append(
+                    VisibilityRequiredError.Create(
+                        region=parser_info.regions__.self__,
+                        type=self.name,
+                        valid_visibilities=self.valid_visibilities,
+                        valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_visibilities),
+                    ),
+                )
+        elif parser_info.visibility not in self.valid_visibilities:
+            errors.append(
+                InvalidVisibilityError.Create(
+                    region=parser_info.regions__.visibility,
+                    type=self.name,
+                    visibility=parser_info.visibility,
+                    visibility_str=parser_info.visibility.name,
+                    valid_visibilities=self.valid_visibilities,
+                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_visibilities),
+                ),
+            )
+        elif parser_info.visibility == VisibilityModifier.protected and not has_parent_class:
+            errors.append(
+                InvalidProtectedVisibilityError.Create(
+                    region=parser_info.regions__.visibility,
+                ),
+            )
+
+        # class_modifier
+        if parser_info.class_modifier is None:
+            if self.valid_class_modifiers:
+                errors.append(
+                    ClassModifierRequiredError.Create(
+                        region=parser_info.regions__.self__,
+                        type=self.name,
+                        valid_class_modifiers=self.valid_class_modifiers,
+                        valid_class_modifiers_str=", ".join("'{}'".format(v.name) for v in self.valid_class_modifiers),
+                    ),
+                )
+        elif parser_info.class_modifier not in self.valid_class_modifiers:
+            errors.append(
+                InvalidClassModifierError.Create(
+                    region=parser_info.regions__.class_modifier,
+                    type=self.name,
+                    class_modifier=parser_info.class_modifier,
+                    class_modifier_str=parser_info.class_modifier.name,
+                    valid_class_modifiers=self.valid_class_modifiers,
+                    valid_class_modifiers_str=", ".join("'{}'".format(v.name) for v in self.valid_class_modifiers),
+                ),
+            )
+
+        # extends / implements / uses
+        for desc, dependencies, dependencies_region, valid_visibilities in [
+            (
+                "extend",
+                parser_info.extends,
+                parser_info.regions__.extends,
+                self.valid_extends_visibilities,
+            ),
+            (
+                "implement",
+                parser_info.implements,
+                parser_info.regions__.implements,
+                self.valid_implements_visibilities,
+            ),
+            (
+                "use",
+                parser_info.uses,
+                parser_info.regions__.uses,
+                self.valid_uses_visibilities,
+            ),
+        ]:
+            # Do not check for errors if there isn't anything to check
+            if dependencies is None:
+                continue
+
+            if valid_visibilities is None:
+                errors.append(
+                    InvalidDependencyError.Create(
+                        region=dependencies_region,
+                        type=self.name,
+                        desc=desc,
+                    ),
+                )
+                continue
+
+            for dependency in dependencies:
+                if dependency.visibility is None:
+                    errors.append(
+                        DependencyVisibilityRequiredError.Create(
+                            region=dependency.regions__.self__,
+                            type=self.name,
+                            desc=desc,
+                            valid_visibilities=valid_visibilities,
+                            valid_visibilities_str=", ".join("'{}'".format(v.name) for v in valid_visibilities),
+                        ),
+                    )
+                elif dependency.visibility not in valid_visibilities:
+                    errors.append(
+                        InvalidDependencyVisibilityError.Create(
+                            region=dependency.regions__.visibility,
+                            type=self.name,
+                            desc=desc,
+                            visibility=dependency.visibility,
+                            visibility_str=dependency.visibility.name,
+                            valid_visibilities=valid_visibilities,
+                            valid_visibilities_str=", ".join("'{}'".format(v.name) for v in valid_visibilities),
+                        ),
+                    )
+
+        return errors
+
+    # ----------------------------------------------------------------------
+    def ValidateNestedClassStatementCapabilities(
+        self,
+        parser_info, # : ClassStatementParserInfo
+    ) -> List[Error]:
+        errors: List[Error] = []
+
+        # type
+        if not self.valid_nested_class_types:
+            errors.append(
+                InvalidNestedClassError.Create(
+                    region=parser_info.regions__.self__,
+                    type=self.name,
+                ),
+            )
+        elif parser_info.class_capabilities.name not in self.valid_nested_class_types:
+            errors.append(
+                InvalidNestedClassTypeError.Create(
+                    region=parser_info.regions__.self__,
+                    type=self.name,
+                    nested_type=parser_info.class_capabilities.name,
+                    valid_nested_types=self.valid_nested_class_types,
+                    valid_nested_types_str=", ".join("'{}'".format(nested_type_name) for nested_type_name in self.valid_nested_class_types),
+                ),
+            )
+
+        # visibility
+        if parser_info.visibility is None:
+            if self.valid_nested_class_visibilities:
+                errors.append(
+                    NestedClassVisibilityRequiredError.Create(
+                        region=parser_info.regions__.self__,
+                        type=self.name,
+                        valid_visibilities=self.valid_nested_class_visibilities,
+                        valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_nested_class_visibilities),
+                    ),
+                )
+        elif not self.valid_nested_class_visibilities:
+            errors.append(
+                InvalidNestedClassError.Create(
+                    region=parser_info.regions__.self__,
+                    type=self.name,
+                ),
+            )
+        elif parser_info.visibility not in self.valid_nested_class_visibilities:
+            errors.append(
+                InvalidNestedClassVisibilityError.Create(
+                    region=parser_info.regions__.visibility,
+                    type=self.name,
+                    visibility=parser_info.visibility,
+                    visibility_str=parser_info.visibility.name,
+                    valid_visibilities=self.valid_nested_class_visibilities,
+                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_nested_class_visibilities),
+                ),
+            )
+
+        return errors
+
+    # ----------------------------------------------------------------------
+    def ValidateClassAttributeStatementCapabilities(
+        self,
+        parser_info, # : ClassAttributeStatementParserInfo
+    ) -> List[Error]:
+        errors: List[Error] = []
+
+        # visibility
+        if parser_info.visibility is None:
+            if self.valid_attribute_visibilities:
+                errors.append(
+                    AttributeVisibilityRequiredError.Create(
+                        region=parser_info.regions__.self__,
+                        type=self.name,
+                        valid_visibilities=self.valid_attribute_visibilities,
+                        valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_attribute_visibilities),
+                    ),
+                )
+        elif not self.valid_attribute_visibilities:
+            errors.append(
+                InvalidAttributeError.Create(
+                    region=parser_info.regions__.self__,
+                    type=self.name,
+                ),
+            )
+        elif parser_info.visibility not in self.valid_attribute_visibilities:
+            errors.append(
+                InvalidAttributeVisibilityError.Create(
+                    region=parser_info.regions__.visibility,
+                    type=self.name,
+                    visibility=parser_info.visibility,
+                    visibility_str=parser_info.visibility.name,
+                    valid_visibilities=self.valid_attribute_visibilities,
+                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_attribute_visibilities),
+                ),
+            )
+
+        # mutability
+        if parser_info.type.mutability_modifier is None:
+            errors.append(
+                MutabilityModifierRequiredError.Create(
+                    region=parser_info.type.regions__.self__,
+                ),
+            )
+        elif parser_info.type.mutability_modifier == MutabilityModifier.new:
+            errors.append(
+                InvalidNewMutabilityModifierError.Create(
+                    region=parser_info.type.regions__.mutability_modifier,
+                ),
+            )
+        else:
+            if parser_info.type.mutability_modifier not in self.valid_attribute_mutabilities:
+                errors.append(
+                    InvalidAttributeMutabilityModifierError.Create(
+                        region=parser_info.type.regions__.mutability_modifier,
+                        type=self.name,
+                        mutability=parser_info.type.mutability_modifier,
+                        mutability_str=parser_info.type.mutability_modifier.name,
+                        valid_mutabilities=self.valid_attribute_mutabilities,
+                        valid_mutabilities_str=", ".join("'{}'".format(v.name) for v in self.valid_attribute_mutabilities),
+                    ),
+                )
+
+            if (
+                parser_info.visibility == VisibilityModifier.public
+                and parser_info.type.mutability_modifier.IsMutable()
+                and not self.allow_mutable_public_attributes
+            ):
+                errors.append(
+                    InvalidMutablePublicAttributeError.Create(
+                        region=parser_info.regions__.self__,
+                        type=self.name,
+                    ),
+                )
+
+        return errors
+
+    # ----------------------------------------------------------------------
+    def ValidateTypeAliasStatementCapabilities(
+        self,
+        parser_info, # : TypeAliasStatementParserInfo
+    ) -> List[Error]:
+        errors: List[Error] = []
+
+        # visibility
+        if parser_info.visibility is None:
+            if self.valid_type_alias_visibilities:
+                errors.append(
+                    TypeAliasVisibilityRequiredError.Create(
+                        region=parser_info.regions__.self__,
+                        type=self.name,
+                        valid_visibilities=self.valid_type_alias_visibilities,
+                        valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_type_alias_visibilities),
+                    ),
+                )
+        elif not self.valid_type_alias_visibilities:
+            errors.append(
+                InvalidTypeAliasError.Create(
+                    region=parser_info.regions__.self__,
+                    type=self.name,
+                ),
+            )
+        elif parser_info.visibility not in self.valid_type_alias_visibilities:
+            errors.append(
+                InvalidTypeAliasVisibilityError.Create(
+                    region=parser_info.regions__.visibility,
+                    type=self.name,
+                    visibility=parser_info.visibility,
+                    visibility_str=parser_info.visibility.name,
+                    valid_visibilities=self.valid_type_alias_visibilities,
+                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_type_alias_visibilities),
+                ),
+            )
+
+        return errors
+
+    # ----------------------------------------------------------------------
+    def ValidateFuncDefinitionStatementCapabilities(
+        self,
+        parser_info, # : FuncDefinitionStatementParserInfo
+    ) -> List[Error]:
+        errors: List[Error] = []
+
+        # visibility
+        if parser_info.visibility is None:
+            if self.valid_method_visibilities:
+                errors.append(
+                    FuncDefinitionVisibilityRequiredError.Create(
+                        region=parser_info.regions__.self__,
+                        type=self.name,
+                        valid_visibilities=self.valid_method_visibilities,
+                        valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_method_visibilities),
+                    ),
+                )
+        elif not self.valid_method_visibilities:
+            errors.append(
+                InvalidFuncDefinitionError.Create(
+                    region=parser_info.regions__.self__,
+                    type=self.name,
+                ),
+            )
+        elif parser_info.visibility not in self.valid_method_visibilities:
+            errors.append(
+                InvalidFuncDefinitionVisibilityError.Create(
+                    region=parser_info.regions__.visibility,
+                    type=self.name,
+                    visibility=parser_info.visibility,
+                    visibility_str=parser_info.visibility.name,
+                    valid_visibilities=self.valid_method_visibilities,
+                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_method_visibilities),
+                ),
+            )
+
+        # method_modifier
+        if parser_info.method_modifier is None:
+            if self.valid_method_modifiers:
+                errors.append(
+                    FuncDefinitionMethodModifierRequiredError.Create(
+                        region=parser_info.regions__.self__,
+                        type=self.name,
+                        valid_modifiers=self.valid_method_modifiers,
+                        valid_modifiers_str=", ".join("'{}'".format(v.name) for v in self.valid_method_modifiers),
+                    ),
+                )
+        elif not self.valid_method_modifiers:
+            errors.append(
+                InvalidFuncDefinitionError.Create(
+                    region=parser_info.regions__.self__,
+                    type=self.name,
+                ),
+            )
+        elif parser_info.method_modifier not in self.valid_method_modifiers:
+            errors.append(
+                InvalidFuncDefinitionMethodModifierError.Create(
+                    region=parser_info.regions__.method_modifier,
+                    type=self.name,
+                    method_modifier=parser_info.method_modifier,
+                    method_modifier_str=parser_info.method_modifier.name,
+                    valid_method_modifiers=self.valid_method_modifiers,
+                    valid_method_modifiers_str=", ".join("'{}'".format(v.name) for v in self.valid_method_modifiers),
+                ),
+            )
+
+        if parser_info.is_static:
+            if not self.allow_static_methods:
+                errors.append(
+                    InvalidStaticMethodError.Create(
+                        region=parser_info.regions__.self__,
+                    ),
+                )
+        else:
+            # mutability
+            if parser_info.mutability is None:
+                if self.valid_method_mutabilities:
+                    errors.append(
+                        FuncDefinitionMutabilityRequiredError.Create(
+                            region=parser_info.regions__.self__,
+                            type=self.name,
+                            valid_mutabilities=self.valid_method_mutabilities,
+                            valid_mutabilities_str=", ".join("'{}'".format(v.name) for v in self.valid_method_mutabilities),
+                        ),
+                    )
+            elif not self.valid_method_mutabilities:
+                errors.append(
+                    InvalidFuncDefinitionError.Create(
+                        region=parser_info.regions__.self__,
+                        type=self.name,
+                    ),
+                )
+            elif parser_info.mutability == MutabilityModifier.new:
+                errors.append(
+                    InvalidNewMutabilityModifierError.Create(
+                        region=parser_info.regions__.mutability,
+                    ),
+                )
+            elif parser_info.mutability not in self.valid_method_mutabilities:
+                errors.append(
+                    InvalidFuncDefinitionMutabilityError.Create(
+                        region=parser_info.mutability,
+                        type=self.name,
+                        mutability=parser_info.mutability,
+                        mutability_str=parser_info.mutability.name,
+                        valid_mutabilities=self.valid_attribute_mutabilities,
+                        valid_mutabilities_str=", ".join("'{}'".format(v.name) for v in self.valid_method_mutabilities),
+                    ),
+                )
+
+        return errors

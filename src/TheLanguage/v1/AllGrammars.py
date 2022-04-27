@@ -45,7 +45,7 @@ with InitRelativeImports():
         AST,
         DynamicPhrasesInfo,
         Observer as LexObserverBase,
-        Phrase as LexerPhrase, # BuBug: Change to Phrase
+        Phrase as LexerPhrase,
         TranslationUnitsObserver,
     )
 

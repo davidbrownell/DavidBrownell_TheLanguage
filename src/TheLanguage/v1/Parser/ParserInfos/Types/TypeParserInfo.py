@@ -35,26 +35,6 @@ with InitRelativeImports():
 
     from ..Common.MutabilityModifier import MutabilityModifier
 
-    from ...Error import (  # pylint: disable=unused-import
-        CreateError,
-        Error,                              # Convenience import
-        ErrorException,                     # Convenience import
-    )
-
-
-# ----------------------------------------------------------------------
-MutabilityModifierRequiredError             = CreateError(
-    "A mutability modifier is required in this context",
-)
-
-MutabilityModifierNotAllowedError           = CreateError(
-    "A mutability modifier is not allowed in this context",
-)
-
-InvalidNewMutabilityModifierError           = CreateError(
-    "The mutability modifier 'new' is not allowed in this context",
-)
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
