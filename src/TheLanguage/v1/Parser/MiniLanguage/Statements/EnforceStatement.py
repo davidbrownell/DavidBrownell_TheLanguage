@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -35,12 +35,23 @@ with InitRelativeImports():
     from .Statement import Statement, Type
     from ..Expressions.Expression import Expression
 
+    from ...Error import CreateError, Error, ErrorException, Region
+
+
+# ----------------------------------------------------------------------
+EnforceStatementError                       = CreateError(
+    "The expression '{expression}' failed{message_suffix}",
+    expression=str,
+    message_suffix=str,
+)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class EnforceStatement(Statement):
     expression: Expression
-    message: Optional[str]
+    expression_region: Region
+    message: Optional[Expression]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
@@ -53,27 +64,38 @@ class EnforceStatement(Statement):
         args: Dict[str, Any],
         type_overloads: Dict[str, Type],
     ) -> Statement.ExecuteResult:
-        result = self.expression.Eval(args, type_overloads)
+        errors: List[Error] = []
 
-        if not result.type.ToBoolValue(result.value):
-            return Statement.ExecuteResult(
-                errors=[
-                    "Expression '{}' failed{}".format(
-                        self.expression.ToString(args),
-                        "" if self.message is None else ": {}".format(self.message),
+        try:
+            result = self.expression.Eval(args, type_overloads)
+
+            if not result.type.ToBoolValue(result.value):
+                if self.message is None:
+                    message_suffix = ""
+                else:
+                    message_result = self.message.Eval(args, type_overloads)
+
+                    message_suffix = ": {}".format(
+                        message_result.type.ToStringValue(message_result.value),
+                    )
+
+                errors.append(
+                    EnforceStatementError.Create(
+                        region=self.expression_region,
+                        expression=self.expression.ToString(args),
+                        message_suffix=message_suffix,
                     ),
-                ],
-                warnings=[],
-                infos=[],
-                should_continue=False,
-            )
+                )
 
-        if result.name is not None:
-            type_overloads[result.name] = result.type
+            if result.name is not None:
+                type_overloads[result.name] = result.type
+
+        except ErrorException as ex:
+            errors += ex.errors
 
         return Statement.ExecuteResult(
-            errors=[],
+            errors=errors,
             warnings=[],
             infos=[],
-            should_continue=True,
+            should_continue=not errors,
         )

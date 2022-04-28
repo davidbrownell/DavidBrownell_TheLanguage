@@ -89,7 +89,7 @@ class BaseMixin(object):
         elif name.startswith("OnExit"):
             name = "On{}".format(name[len("OnExit"):])
 
-            method = object.__getattribute__(self, name)
+            method = getattr(self, name, None)
             assert method is not None, name
 
             return method
@@ -115,6 +115,7 @@ class BaseMixin(object):
             # ----------------------------------------------------------------------
             {regions}
 
+
             # ----------------------------------------------------------------------
             {content}
             """,
@@ -129,7 +130,7 @@ class BaseMixin(object):
     def OnEnterPhrase(
         parser_info: ParserInfo,  # pylint: disable=unused-argument
     ):
-        return VisitControl.Continue
+        pass
 
     # ----------------------------------------------------------------------
     def OnExitPhrase(
@@ -282,7 +283,7 @@ class BaseMixin(object):
     def _DefaultOnEnterMethod(
         parser_info: ParserInfo,  # pylint: disable=unused-argument
     ):
-        return VisitControl.ContinueWithDetail
+        return VisitControl.Continue
 
     # ----------------------------------------------------------------------
     def _DefaultDetailMethod(

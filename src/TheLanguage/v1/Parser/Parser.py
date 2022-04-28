@@ -19,7 +19,7 @@ import os
 import traceback
 
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -35,6 +35,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Error import CreateError, Error, ErrorException, Region
     from .ParserInfos.ParserInfo import ParserInfo, RootParserInfo
+    from .Visitors.ValidateVisitor.ValidateVisitor import ValidateVisitor
+
     from ..Lexer.Lexer import AST, Phrase as LexPhrase
 
 
@@ -123,6 +125,7 @@ def Parse(
                     assert False, result  # pragma: no cover
 
             except ErrorException as ex:
+                _SetParserInfoErrors(node)
                 errors += ex.errors
 
         for node, callback in reversed(callback_funcs):
@@ -140,6 +143,7 @@ def Parse(
                     assert False, result  # pragma: no cover
 
             except ErrorException as ex:
+                _SetParserInfoErrors(node)
                 errors += ex.errors
 
         # Extract the root information
@@ -207,42 +211,47 @@ def Parse(
 
 
 # ----------------------------------------------------------------------
-# TODO: Deferred types
 def Validate(
     roots: Dict[str, RootParserInfo],
+    compile_time_values: Dict[
+        str,
+        Tuple[Type, Any],
+    ],
     *,
     max_num_threads: Optional[int]=None,
 ) -> Optional[
     Dict[str, Union[RootParserInfo, List[Error]]]
 ]:
-    # Extract names
+    # TODO: Add functionality for deferred processing
 
     # ----------------------------------------------------------------------
-    def ExtractNamespaces(
+    def Execute(
         fully_qualified_name: str,  # pylint: disable=unused-argument
         root: RootParserInfo,
-    ) -> _NamespaceVisitor.ReturnType:
-        visitor = _NamespaceVisitor()
+    ) -> Union[
+        RootParserInfo,
+        List[Error],
+    ]:
+        visitor = ValidateVisitor(compile_time_values)
 
         root.Accept(visitor)
 
-        result = visitor.root
-        return result
+        # TODO: Handle warnings and infos
+
+        if visitor.errors:
+            return visitor.errors
+
+        return root
 
     # ----------------------------------------------------------------------
 
-    namespace_values = _Execute(
+    results = _Execute(
         roots,
-        ExtractNamespaces,
+        Execute,
         max_num_threads=max_num_threads,
     )
 
-    if namespace_values is None:
-        return None
-
-    # TODO: Validate types
-
-    return roots
+    return results
 
 
 # ----------------------------------------------------------------------
@@ -419,82 +428,3 @@ def _Execute(
         fully_qualified_name: result
         for fully_qualified_name, result in zip(inputs.keys(), results)
     }
-
-
-# ----------------------------------------------------------------------
-class _NamespaceVisitor(object):
-    # ----------------------------------------------------------------------
-    # |  Public Types
-    class Node(ObjectReprImplBase):
-        # ----------------------------------------------------------------------
-        def __init__(
-            self,
-            parser_info: Optional[ParserInfo],
-        ):
-            self.parser_info                                                = parser_info
-            self.namespaces: Dict[str, List["_NamespaceVisitor.Node"]]      = {}
-            self.unnamed: List["_NamespaceVisitor.Node"]                    = []
-
-            super(_NamespaceVisitor.Node, self).__init__()
-
-    # ----------------------------------------------------------------------
-    ReturnType                              = Dict[str, List["_NamespaceVisitor.Node"]]
-
-    # ----------------------------------------------------------------------
-    # |  Public Methods
-    def __init__(self):
-        self._node_stack: List[_NamespaceVisitor.Node]  = [_NamespaceVisitor.Node(None)]
-
-    # ----------------------------------------------------------------------
-    @property
-    def root(self) -> "_NamespaceVisitor.ReturnType":
-        assert len(self._node_stack) == 1, self._node_stack
-        assert self._node_stack[0].parser_info is None, self._node_stack[0]
-        assert len(self._node_stack[0].unnamed) == 1, self._node_stack[0].unnamed
-
-        return self._node_stack[0].unnamed[0]
-
-    # ----------------------------------------------------------------------
-    def OnEnterScope(
-        self,
-        parser_info: ParserInfo,
-    ) -> None:
-        assert parser_info.introduces_scope__, parser_info
-
-        new_node = _NamespaceVisitor.Node(parser_info)
-
-        name = getattr(parser_info, "name", None)
-        if name is not None:
-            self._node_stack[-1].namespaces.setdefault(name, []).append(new_node)
-        else:
-            self._node_stack[-1].unnamed.append(new_node)
-
-        self._node_stack.append(new_node)
-
-    # ----------------------------------------------------------------------
-    def OnExitScope(
-        self,
-        parser_info: ParserInfo,
-    ) -> None:
-        assert parser_info.introduces_scope__, parser_info
-
-        assert self._node_stack, parser_info
-        self._node_stack.pop()
-        assert self._node_stack, parser_info
-
-    # ----------------------------------------------------------------------
-    def __getattr__(
-        self,
-        attribute: str,
-    ) -> Callable[[ParserInfo], None]:
-        return self._NoopMethod
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _NoopMethod(*args, **kwargs):
-        return None
-
-    # TODO: Aliases
-    # TODO: Compile-time statements populate parent namespace

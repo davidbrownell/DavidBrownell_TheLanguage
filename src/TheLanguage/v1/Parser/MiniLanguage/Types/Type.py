@@ -57,8 +57,17 @@ class Type(Interface.Interface):
     def ToBoolValue(
         value: Any,
     ) -> bool:
-        """Convert the value to a boolean value"""
+        """Converts the value to a boolean value"""
         raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.extensionmethod
+    def ToStringValue(
+        value: Any,
+    ) -> str:
+        """Converts the value to a string"""
+        return str(value)
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod

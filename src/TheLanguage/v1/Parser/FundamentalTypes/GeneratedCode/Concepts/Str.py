@@ -880,6 +880,7 @@ region_000845 = Region(begin=Location(line=19, column=8), end=Location(line=19, 
 region_000846 = Region(begin=Location(line=19, column=26), end=Location(line=19, column=29))
 region_000847 = Region(begin=Location(line=21, column=2), end=Location(line=171, column=1))
 
+
 # ----------------------------------------------------------------------
 statement_000000 = StandardTypeItemParserInfo.Create(
     regions=[region_000000, region_000000],

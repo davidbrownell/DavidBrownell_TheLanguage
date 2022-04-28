@@ -34,6 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Expression import Expression, Type
+    from ..Types.VariantType import VariantType
 
 
 # ----------------------------------------------------------------------
@@ -46,6 +47,19 @@ class TernaryExpression(Expression):
     # ----------------------------------------------------------------------
     def __post_init__(self):
         super(TernaryExpression, self).__init__()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def EvalType(self) -> Type:
+        # We don't know which type will be the result here, so we need to assume that it can be
+        # either.
+        true_type = self.true_expression.EvalType()
+        false_type = self.false_expression.EvalType()
+
+        if true_type.name == false_type.name:
+            return true_type
+
+        return VariantType([true_type, false_type])
 
     # ----------------------------------------------------------------------
     @Interface.override
