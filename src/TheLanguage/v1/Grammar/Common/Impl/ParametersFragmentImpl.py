@@ -58,6 +58,7 @@ with InitRelativeImports():
         Region,
     )
 
+# TODO: Add perfect forwarding
 
 # ----------------------------------------------------------------------
 class ParametersType(Enum):
@@ -233,7 +234,7 @@ def Extract(
     if allow_empty:
         all_parameters_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[2])))
         if all_parameters_node is None:
-            return False
+            return True
     else:
         all_parameters_node = cast(AST.Node, nodes[2])
 

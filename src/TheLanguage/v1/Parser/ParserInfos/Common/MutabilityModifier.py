@@ -17,23 +17,46 @@
 
 import os
 
-from enum import auto, Flag
+from enum import auto, Enum
 
 import CommonEnvironment
+
+from CommonEnvironmentEx.Package import InitRelativeImports
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
+with InitRelativeImports():
+    from ...Error import CreateError
+
 
 # ----------------------------------------------------------------------
-class MutabilityModifier(Flag):
-    var                                     = auto()
-    ref                                     = auto()
-    val                                     = auto()
-    mutable                                 = auto()
-    immutable                               = auto()
-    new                                     = auto()
+MutabilityModifierRequiredError             = CreateError(
+    "A mutability modifier is required in this context",
+)
+
+MutabilityModifierNotAllowedError           = CreateError(
+    "A mutability modifier is not allowed in this context",
+)
+
+InvalidNewMutabilityModifierError           = CreateError(
+    "The mutability modifier 'new' is not allowed in this context",
+)
+
+
+# ----------------------------------------------------------------------
+class MutabilityModifier(Enum):
+    #                                                     Mutable   Shared      Finalized   Notes
+    #                                                     --------  ----------  ---------   -----------------
+    var                                     = auto()    # Yes       No          No
+    ref                                     = auto()    # Yes       Yes         No
+    view                                    = auto()    # No        No          No
+    val                                     = auto()    # No        Yes         Yes
+    immutable                               = auto()    # No        Yes | No    Yes | No    view | val
+
+    new                                     = auto()    # Depends on associated Type; should only be used with method return values
+                                                        # in concepts, interfaces, and mixins when the actual type is not known.
 
     # TODO: Validate that new is used appropriately

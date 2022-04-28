@@ -37,44 +37,19 @@ with InitRelativeImports():
 
     from ..Common.ClassModifier import ClassModifier
     from ..Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo
+    from ..Common.MutabilityModifier import MutabilityModifierNotAllowedError
     from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo
-    from ..Common.VisibilityModifier import VisibilityModifier
+    from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ..Types.StandardTypeParserInfo import StandardTypeParserInfo
-    from ..Types.TypeParserInfo import MutabilityModifierNotAllowedError
 
     from ...Error import CreateError, Error, ErrorException
 
 
 # ----------------------------------------------------------------------
-InvalidVisibilityError                      = CreateError(
-    "'{visibility_str}' is not a valid visibility for '{type}' types; valid visibilities are {valid_visibilities_str}",
-    type=str,
-    visibility=VisibilityModifier,
-    valid_visibilities=List[VisibilityModifier],
-    visibility_str=str,
-    valid_visibilities_str=str,
-)
-
 MultipleExtendsError                        = CreateError(
     "'{type}' types may only extend one other type",
     type=str,
-)
-
-InvalidDependencyError                      = CreateError(
-    "'{type}' types do not support '{desc}' dependencies",
-    type=str,
-    desc=str,
-)
-
-InvalidDependencyVisibilityError            = CreateError(
-    "'{type}' types may not {desc} other types via '{visibility_str}' visibility; valid visibilities are {valid_visibilities_str}",
-    type=str,
-    desc=str,
-    visibility=VisibilityModifier,
-    valid_visibilities=List[VisibilityModifier],
-    visibility_str=str,
-    valid_visibilities_str=str,
 )
 
 
@@ -121,6 +96,17 @@ class ClassStatementDependencyParserInfo(ParserInfo):
         if errors:
             raise ErrorException(*errors)
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("type", self.type),
+            ],
+            children=None,
+        )
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -135,6 +121,8 @@ class ClassStatementParserInfo(StatementParserInfo):
     introduces_scope__                      = True
 
     # ----------------------------------------------------------------------
+    parent_class_capabilities: InitVar[Optional[ClassCapabilities]]
+
     class_capabilities: ClassCapabilities
 
     visibility_param: InitVar[Optional[VisibilityModifier]]
@@ -181,6 +169,7 @@ class ClassStatementParserInfo(StatementParserInfo):
         self,
         parser_info_type,
         regions,
+        parent_class_capabilities,
         visibility_param,
         class_modifier_param,
         constructor_visibility_param,
@@ -199,7 +188,11 @@ class ClassStatementParserInfo(StatementParserInfo):
 
         # Set defaults
         if visibility_param is None:
-            visibility_param = self.class_capabilities.default_visibility
+            if parent_class_capabilities is not None:
+                visibility_param = parent_class_capabilities.default_nested_class_visibility
+            else:
+                visibility_param = self.class_capabilities.default_visibility
+
             object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
         object.__setattr__(self, "visibility", visibility_param)
@@ -227,26 +220,12 @@ class ClassStatementParserInfo(StatementParserInfo):
             for dependency in dependencies:
                 if dependency.visibility is None:
                     object.__setattr__(dependency, "visibility", default_visibility)
-                    object.__setattr__(dependency.regions__, "visibility", self.regions__.self__)
+                    object.__setattr__(dependency.regions__, "visibility", dependency.regions__.self__)
 
         self.ValidateRegions()
 
         # Validate
         errors: List[Error] = []
-
-        if self.visibility not in self.class_capabilities.valid_visibilities:
-            errors.append(
-                InvalidVisibilityError.Create(
-                    region=self.regions__.visibility,
-                    type=self.class_capabilities.name,
-                    visibility=self.visibility,
-                    valid_visibilities=self.class_capabilities.valid_visibilities,
-                    visibility_str=self.visibility.name,
-                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.class_capabilities.valid_visibilities),
-                ),
-            )
-
-        # TODO: protected visibility only valid when nested within class
 
         if self.extends and len(self.extends) > 1:
             errors.append(
@@ -259,54 +238,20 @@ class ClassStatementParserInfo(StatementParserInfo):
                 ),
             )
 
-        for desc, dependencies, default_visibility, valid_visibilities in [
-            (
-                "extend",
-                self.extends,
-                self.class_capabilities.default_extends_visibility,
-                self.class_capabilities.valid_extends_visibilities,
-            ),
-            (
-                "implement",
-                self.implements,
-                self.class_capabilities.default_implements_visibility,
-                self.class_capabilities.valid_implements_visibilities,
-            ),
-            (
-                "use",
-                self.uses,
-                self.class_capabilities.default_uses_visibility,
-                self.class_capabilities.valid_uses_visibilities,
-            ),
-        ]:
-            if dependencies is None:
-                continue
+        errors += self.class_capabilities.ValidateClassStatementCapabilities(
+            self,
+            has_parent_class=parent_class_capabilities is not None,
+        )
 
-            if default_visibility is None:
+        if parent_class_capabilities is not None:
+            errors += parent_class_capabilities.ValidateNestedClassStatementCapabilities(self)
+        else:
+            if self.visibility == VisibilityModifier.protected:
                 errors.append(
-                    InvalidDependencyError.Create(
-                        region=Region.Create(
-                            dependencies[0].regions__.self__.begin,
-                            dependencies[-1].regions__.self__.end,
-                        ),
-                        type=self.class_capabilities.name,
-                        desc=desc,
+                    InvalidProtectedError.Create(
+                        region=self.regions__.visibility,
                     ),
                 )
-
-            for dependency in dependencies:
-                if dependency.visibility not in valid_visibilities:
-                    errors.append(
-                        InvalidDependencyVisibilityError.Create(
-                            region=dependency.regions__.visibility,
-                            type=self.class_capabilities.name,
-                            desc=desc,
-                            visibility=dependency.visibility,
-                            valid_visibilities=valid_visibilities,
-                            visibility_str=dependency.visibility.name,
-                            valid_visibilities_str=", ".join("'{}'".format(v.name) for v in valid_visibilities),
-                        ),
-                    )
 
         # TODO: Create default special methods as necessary
         # TODO: Create a static 'Create' method if one does not already exist
@@ -316,8 +261,25 @@ class ClassStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, *args, **kwargs):
-        return self._ScopedAcceptImpl(cast(List[ParserInfo], self.statements), *args, **kwargs)
+    def Accept(self, visitor):
+        details = []
+
+        if self.templates:
+            details.append(("templates", self.templates))
+        if self.constraints:
+            details.append(("constraints", self.constraints))
+        if self.extends:
+            details.append(("extends", self.extends))
+        if self.implements:
+            details.append(("implements", self.implements))
+        if self.uses:
+            details.append(("uses", self.uses))
+
+        return self._AcceptImpl(
+            visitor,
+            details=details,
+            children=cast(List[ParserInfo], self.statements),
+        )
 
 # TODO: Not valid to have a protected class without a class ancestor
 # TODO: Ensure that all contents have mutability values consistent with the class decoration

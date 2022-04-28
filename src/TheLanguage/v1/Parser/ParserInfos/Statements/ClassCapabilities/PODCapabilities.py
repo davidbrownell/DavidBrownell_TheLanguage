@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ImmutablePODCapabilities.py
+# |  PODCapabilities.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-03-31 10:23:36
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the definition for an immutable Plain-Old-Data (PDO) class capabilities"""
+"""Contains the definition for a Plain-Old-Data (PDO) class capabilities"""
 
 import os
 
@@ -37,10 +37,9 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-ImmutablePODCapabilities                    = _ClassCapabilities(
-    name="Immutable POD",
+PODCapabilities                             = _ClassCapabilities(
+    name="POD",
     is_instantiable=True,
-    default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
@@ -48,6 +47,11 @@ ImmutablePODCapabilities                    = _ClassCapabilities(
         VisibilityModifier.private,
     ],
     default_visibility=VisibilityModifier.private,
+    valid_class_modifiers=[
+        ClassModifier.immutable,
+        ClassModifier.mutable,
+    ],
+    default_class_modifier=ClassModifier.immutable,
     valid_extends_visibilities=[],
     default_extends_visibility=None,
     valid_implements_types=[],
@@ -56,6 +60,19 @@ ImmutablePODCapabilities                    = _ClassCapabilities(
     valid_uses_types=[],
     valid_uses_visibilities=[],
     default_uses_visibility=None,
+    valid_type_alias_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.internal,
+        VisibilityModifier.private,
+    ],
+    default_type_alias_visibility=VisibilityModifier.private,
+    valid_nested_class_types=[
+        "POD",
+    ],
+    valid_nested_class_visibilities=[
+        VisibilityModifier.public,
+    ],
+    default_nested_class_visibility=VisibilityModifier.public,
     valid_method_modifiers=[
         MethodModifier.standard,
     ],
@@ -67,10 +84,13 @@ ImmutablePODCapabilities                    = _ClassCapabilities(
     ],
     default_method_visibility=VisibilityModifier.private,
     valid_method_mutabilities=[
+        MutabilityModifier.var,
+        MutabilityModifier.ref,
+        MutabilityModifier.view,
         MutabilityModifier.val,
         MutabilityModifier.immutable,
     ],
-    default_method_mutability=MutabilityModifier.immutable,
+    default_method_mutability=None,
     allow_static_methods=True,
     valid_attribute_visibilities=[
         VisibilityModifier.public,
@@ -79,7 +99,10 @@ ImmutablePODCapabilities                    = _ClassCapabilities(
     default_attribute_visibility=VisibilityModifier.public,
     valid_attribute_mutabilities=[
         MutabilityModifier.var,
+        MutabilityModifier.ref,
+        MutabilityModifier.view,
         MutabilityModifier.val,
+        MutabilityModifier.immutable,
     ],
     allow_mutable_public_attributes=True,
 )

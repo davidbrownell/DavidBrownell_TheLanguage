@@ -43,7 +43,6 @@ with InitRelativeImports():
 StandardCapabilities                        = _ClassCapabilities(
     name="Standard",
     is_instantiable=True,
-    default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
@@ -51,6 +50,11 @@ StandardCapabilities                        = _ClassCapabilities(
         VisibilityModifier.private,
     ],
     default_visibility=VisibilityModifier.private,
+    valid_class_modifiers=[
+        ClassModifier.immutable,
+        ClassModifier.mutable,
+    ],
+    default_class_modifier=ClassModifier.immutable,
     valid_extends_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
@@ -79,6 +83,24 @@ StandardCapabilities                        = _ClassCapabilities(
         VisibilityModifier.private,
     ],
     default_uses_visibility=VisibilityModifier.private,
+    valid_type_alias_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.internal,
+        VisibilityModifier.protected,
+        VisibilityModifier.private,
+    ],
+    default_type_alias_visibility=VisibilityModifier.private,
+    valid_nested_class_types=[
+        "Exception",
+        "POD",
+        "Standard",
+    ],
+    valid_nested_class_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.protected,
+        VisibilityModifier.private,
+    ],
+    default_nested_class_visibility=VisibilityModifier.private,
     valid_method_modifiers=[
         MethodModifier.abstract,
         MethodModifier.final,
@@ -97,8 +119,8 @@ StandardCapabilities                        = _ClassCapabilities(
     valid_method_mutabilities=[
         MutabilityModifier.var,
         MutabilityModifier.ref,
+        MutabilityModifier.view,
         MutabilityModifier.val,
-        MutabilityModifier.mutable,
         MutabilityModifier.immutable,
     ],
     default_method_mutability=None,

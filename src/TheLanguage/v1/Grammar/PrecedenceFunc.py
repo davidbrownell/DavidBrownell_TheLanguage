@@ -135,4 +135,4 @@ def PrecedenceFunc(
         return_value += 10
 
     # if here, we are looking at something unexpected
-    assert False, data.phrase.name
+    assert False, data.phrase.name  # pragma: no cover

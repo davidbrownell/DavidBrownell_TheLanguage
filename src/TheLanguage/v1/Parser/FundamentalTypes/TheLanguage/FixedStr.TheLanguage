@@ -1,0 +1,195 @@
+# ----------------------------------------------------------------------
+# |
+# |  FixedStr.TheLanguage
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2022-04-26 13:06:39
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2022
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+from .Concepts.MutableStr import FixedMutableStr as FixedMutableStrConcept
+
+
+# TODO: Use perfect forwarding
+
+# ----------------------------------------------------------------------
+public mutable class FixedMutableStr {
+    Bool allow_empty! = False
+}
+    extends FixedMutableStrConcept { allow_empty! = allow_empty! }
+:
+    [Deferred, Static] public override ThisType var __Deserialize?__<ArchiveT>(ArchiveT ref archive)
+    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) immutable
+    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) var
+
+    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) immutable
+    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) var
+
+    [Deferred] public override ThisType var __Clone?__() immutable
+
+    [Deferred] public override Bool val __ToBool__() immutable   # value != ""
+    [Deferred] public override Str val __ToString?__() immutable
+
+    [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, Str immutable that)
+
+    [Deferred] public override Bool val __Equal__(Str immutable that) immutable
+    [Deferred] public override Bool val __NotEqual__(Str immutable that) immutable
+    [Deferred] public override Bool val __Less__(Str immutable that) immutable
+    [Deferred] public override Bool val __LessEqual__(Str immutable that) immutable
+    [Deferred] public override Bool val __Greater__(Str immutable that) immutable
+    [Deferred] public override Bool val __GreaterEqual__(Str immutable that) immutable
+
+    [Deferred] public override (PosInt | None) val __Index__(Char immutable value) immutable
+    [Deferred] public override (PosInt | None) val __Index__(NonEmptyStr immutable value) immutable
+
+    # TODO: Range concept for __Iter?__
+
+    [Deferred] public override Bool val __Contains__(Char immutable value) immutable
+    [Deferred] public override Bool val __Contains__(NonEmptyStr immutable value) immutable
+    [Deferred] public override Bool val __NotContains__(Char immutable value) immutable
+    [Deferred] public override Bool val __NotContains__(NonEmptyStr immutable value) immutable
+
+    [Deferred] public override PosInt val NumChars() immutable
+    [Deferred] public override PosInt val NumBytes() immutable
+
+    [Deferred] public override Bool val IsAlphanumeric() immutable
+    [Deferred] public override Bool val IsAlpha() immutable
+    [Deferred] public override Bool val IsAscii() immutable
+    [Deferred] public override Bool val IsInt() immutable
+    [Deferred] public override Bool val IsLower() immutable
+    [Deferred] public override Bool val IsNum() immutable
+    [Deferred] public override Bool val IsPrintable() immutable
+    [Deferred] public override Bool val IsSpace() immutable
+    [Deferred] public override Bool val IsTitle() immutable
+    [Deferred] public override Bool val IsUpper() immutable
+
+    [Deferred] public override PosInt val Count(Char immutable value) immutable
+    [Deferred] public override PosInt val Count(NonEmptyStr immutable value) immutable
+
+    [Deferred] public override Bool val StartsWith(Char immutable value) immutable
+    [Deferred] public override Bool val StartsWith(NonEmptyStr immutable value) immutable
+
+    [Deferred] public override Bool val EndsWith(Char immutable value) immutable
+    [Deferred] public override Bool val EndsWith(NonEmptyStr immutable value) immutable
+
+    # TODO: Range concept for Substr?
+
+    [Deferred]
+    public override (PosInt | None) val Find(
+        Char immutable value,
+        (PosInt | None) immutable begin_char_index = None,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    [Deferred]
+    public override (PosInt | None) val Find(
+        NonEmptyStr immutable value,
+        (PosInt | None) immutable begin_char_index = None,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    [Deferred]
+    public override (PosInt | None) val ReverseFind(
+        Char immutable value,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    [Deferred]
+    public override (PosInt | None) val ReverseFind(
+        NonEmptyStr immutable value,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    [Deferred]
+    public override (PosInt | None) val FindFirst(
+        Char immutable value,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    [Deferred]
+    public override (PosInt | None) val FindFirst(
+        NonEmptyStr immutable value,
+        (PosInt | None) immutable end_char_index = None,
+    ) immutable
+
+    [Deferred]
+    public override (PosInt | None) val FindLast(
+        Char immutable value,
+        (PosInt | None) immutable begin_char_index = None,
+    ) immutable
+
+    [Deferred]
+    public override (PosInt | None) val FindLast(
+        NonEmptyStr immutable value,
+        (PosInt | None) immutable begin_char_index = None,
+    ) immutable
+
+    [Deferred] public override ThisType val ToLower?() immutable
+    [Deferred] public override ThisType val ToCamelCase?() immutable
+    [Deferred] public override ThisType val ToPascalCase?() immutable
+    [Deferred] public override ThisType val ToSnakeCase?() immutable
+    [Deferred] public override ThisType val ToTitle?() immutable
+    [Deferred] public override ThisType val ToUpper?() immutable
+
+    [Deferred]
+    public override ThisType val Center?(
+        NonZeroInt immutable length,
+        Char immutable fill_char = ' ',
+    ) immutable
+
+    [Deferred]
+    public override ThisType val LeftJustify?(
+        NonZeroInt immutable length,
+        Char immutable fill_char = ' ',
+    ) immutable
+
+    [Deferred]
+    public override ThisType val RightJustify?(
+        NonZeroInt immutable length,
+        Char immutable fill_char = ' ',
+    ) immutable
+
+    # TODO: Pass in variadic chars to strip
+    [Deferred] public override ThisType val LeftStrip?() immutable
+    [Deferred] public override ThisType val RightStrip?() immutable
+    [Deferred] public override ThisType val Strip?() immutable
+
+    [Deferred]
+    public override ThisType val Replace?(
+        Char immutable source,
+        Char immutable dest,
+        (NonZeroInt | None) immutable count = None,
+    ) immutable
+
+    [Deferred]
+    public override ThisType val Replace?(
+        NonEmptyStr immutable source,
+        Str immutable dest,
+        (NonZeroInt | None) immutable count = None,
+    ) immutable
+
+    # TODO: Format
+
+    # TODO: Join
+    # TODO: Split
+    # TODO: RightSplit
+
+    # TODO: Range concept for __Iter?__
+
+    [Deferred] public override None ToLowerInplace?() var
+    [Deferred] public override None ToCamelCaseInplace?() var
+    [Deferred] public override None ToPascalCaseInplace?() var
+    [Deferred] public override None ToSnakeCaseInplace?() var
+    [Deferred] public override None ToTitleInplace?() var
+    [Deferred] public override None ToUpperInplace?() var
+
+    # TODO: Pass in variadic chars to strip
+    [Deferred] public override None LeftStripInplace?() var
+    [Deferred] public override None RightStripInplace?() var
+    [Deferred] public override None StripInplace?() var

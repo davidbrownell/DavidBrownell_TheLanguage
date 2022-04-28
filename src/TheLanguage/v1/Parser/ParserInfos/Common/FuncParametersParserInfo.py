@@ -23,6 +23,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,13 +33,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.MutabilityModifier import MutabilityModifier
+    from ..Common.MutabilityModifier import (
+        InvalidNewMutabilityModifierError,
+        MutabilityModifier,
+        MutabilityModifierRequiredError,
+    )
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
     from ..Types.TypeParserInfo import (
-        InvalidNewMutabilityModifierError,
-        MutabilityModifierRequiredError,
         ParserInfo,
         ParserInfoType,
         Region,
@@ -129,6 +132,22 @@ class FuncParameterParserInfo(ParserInfo):
         if errors:
             raise ErrorException(*errors)
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        details = []
+
+        if self.default_value is not None:
+            details.append(("default_value", self.default_value))
+
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("type", self.type),
+            ] + details,  # type: ignore
+            children=None,
+        )
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -217,3 +236,21 @@ class FuncParametersParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        details = []
+
+        if self.positional:
+            details.append(("positional", self.positional))
+        if self.any:
+            details.append(("any", self.any))
+        if self.keyword:
+            details.append(("keyword", self.keyword))
+
+        return self._AcceptImpl(
+            visitor,
+            details=details,
+            children=None,
+        )

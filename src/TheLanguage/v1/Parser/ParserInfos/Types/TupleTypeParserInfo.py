@@ -22,6 +22,7 @@ from typing import List, Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,13 +33,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .TypeParserInfo import (
-        Error,
-        ErrorException,
-        MutabilityModifierRequiredError,
         ParserInfoType,
         Region,
         TypeParserInfo,
     )
+
+    from ..Common.MutabilityModifier import MutabilityModifierRequiredError
+
+    from ...Error import Error, ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -79,3 +81,14 @@ class TupleTypeParserInfo(TypeParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("types", self.types),
+            ],  # type: ignore
+            children=None,
+        )

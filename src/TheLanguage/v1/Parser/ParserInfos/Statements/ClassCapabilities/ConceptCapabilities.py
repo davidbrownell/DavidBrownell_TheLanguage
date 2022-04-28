@@ -40,7 +40,6 @@ with InitRelativeImports():
 ConceptCapabilities                         = _ClassCapabilities(
     name="Concept",
     is_instantiable=False,
-    default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
@@ -48,6 +47,11 @@ ConceptCapabilities                         = _ClassCapabilities(
         VisibilityModifier.private,
     ],
     default_visibility=VisibilityModifier.private,
+    valid_class_modifiers=[
+        ClassModifier.immutable,
+        ClassModifier.mutable,
+    ],
+    default_class_modifier=ClassModifier.immutable,
     valid_extends_visibilities=[
         VisibilityModifier.public,
     ],
@@ -58,19 +62,34 @@ ConceptCapabilities                         = _ClassCapabilities(
     valid_uses_types=[],
     valid_uses_visibilities=[],
     default_uses_visibility=None,
+    valid_type_alias_visibilities=[
+        VisibilityModifier.public,
+    ],
+    default_type_alias_visibility=VisibilityModifier.public,
+    valid_nested_class_types=[
+        "Exception",
+        "POD",
+    ],
+    valid_nested_class_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.protected,
+    ],
+    default_nested_class_visibility=VisibilityModifier.public,
     valid_method_modifiers=[
         MethodModifier.abstract,
     ],
     default_method_modifier=MethodModifier.abstract,
     valid_method_visibilities=[
         VisibilityModifier.public,
+        VisibilityModifier.protected,
+        VisibilityModifier.private,
     ],
     default_method_visibility=VisibilityModifier.public,
     valid_method_mutabilities=[
         MutabilityModifier.var,
         MutabilityModifier.ref,
+        MutabilityModifier.view,
         MutabilityModifier.val,
-        MutabilityModifier.mutable,
         MutabilityModifier.immutable,
     ],
     default_method_mutability=None,

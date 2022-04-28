@@ -17,7 +17,7 @@ from .Concepts.MutableInt import MutableInt
 
 
 # ----------------------------------------------------------------------
-public class FixedInt <
+public mutable class FixedInt <
     Int num_bytes!,                         # 1, 2, 4, 8, 16
     Bool is_checked!,
 > {
@@ -46,13 +46,12 @@ public class FixedInt <
         Enforce!(max_value! - min_value! <= ((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1)))
         Enforce!(min_value! - max_value! >= (-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0))
 
-    [Deferred] public ArchInt val GetBytes() immutable
-
     [Deferred, Static] public override ThisType var __Deserialize?__<ArchiveT>(ArchiveT ref archive)
     [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) immutable
+    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) var
 
     [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) immutable
-    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) mutable
+    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) val
 
     [Deferred] public override ThisType var __Clone?__() immutable
 
@@ -88,62 +87,62 @@ public class FixedInt <
     [Deferred] public override ThisType var __BitXOr?__(Integer immutable value) immutable
     [Deferred] public override ThisType var __BitOr?__(Integer immutable value) immutable
 
-    [Deferred] public None __BitFlipInplace?__() mutable
+    [Deferred] public override None __BitFlipInplace?__() var
 
-    [Deferred] public None __DivideFloorInplace?__(Integer immutable divisor) mutable
-    [Deferred] public None __ModuloInplace?__(Integer immutable divisor) mutable
-    [Deferred] public None __MultiplyInplace?__(Integer immutable multiplier) mutable
-    [Deferred] public None __PowerInplace?__(Integer immutable exponent) mutable
+    [Deferred] public override None __DivideFloorInplace?__(Integer immutable divisor) var
+    [Deferred] public override None __ModuloInplace?__(Integer immutable divisor) var
+    [Deferred] public override None __MultiplyInplace?__(Integer immutable multiplier) var
+    [Deferred] public override None __PowerInplace?__(Integer immutable exponent) var
 
-    [Deferred] public None __AddInplace?__(Integer immutable value) mutable
-    [Deferred] public None __SubtractInplace?__(Integer immutable value) mutable
+    [Deferred] public override None __AddInplace?__(Integer immutable value) var
+    [Deferred] public override None __SubtractInplace?__(Integer immutable value) var
 
-    [Deferred] public None __BitShiftLeftInplace?__(Integer immutable places) mutable
-    [Deferred] public None __BitShiftRightInplace?__(Integer immutable places) mutable
+    [Deferred] public override None __BitShiftLeftInplace?__(Integer immutable places) var
+    [Deferred] public override None __BitShiftRightInplace?__(Integer immutable places) var
 
-    [Deferred] public None __BitAndInplace?__(Integer immutable value) mutable
-    [Deferred] public None __BitXOrInplace?__(Integer immutable value) mutable
-    [Deferred] public None __BitOrInplace?__(Integer immutable value) mutable
-
-
-# ----------------------------------------------------------------------
-public Int8                                 = FixedInt{1, is_signed! = True, is_checked! = False}
-public CheckedInt8                          = FixedInt{1, is_signed! = True, is_checked! = True}
-
-public UInt8                                = FixedInt{1, is_signed! = False, is_checked! = False}
-public CheckedUInt8                         = FixedInt{1, is_signed! = False, is_checked! = True}
+    [Deferred] public override None __BitAndInplace?__(Integer immutable value) var
+    [Deferred] public override None __BitXOrInplace?__(Integer immutable value) var
+    [Deferred] public override None __BitOrInplace?__(Integer immutable value) var
 
 
 # ----------------------------------------------------------------------
-public Int16                                = FixedInt{2, is_signed! = True, is_checked! = False}
-public CheckedInt16                         = FixedInt{2, is_signed! = True, is_checked! = True}
+public Int8                                 = FixedInt {1, is_signed! = True, is_checked! = False}
+public CheckedInt8                          = FixedInt {1, is_signed! = True, is_checked! = True}
 
-public UInt16                               = FixedInt{2, is_signed! = False, is_checked! = False}
-public CheckedUInt16                        = FixedInt{2, is_signed! = False, is_checked! = True}
-
-
-# ----------------------------------------------------------------------
-public Int32                                = FixedInt{4, is_signed! = True, is_checked! = False}
-public CheckedInt32                         = FixedInt{4, is_signed! = True, is_checked! = True}
-
-public UInt32                               = FixedInt{4, is_signed! = False, is_checked! = False}
-public CheckedUInt32                        = FixedInt{4, is_signed! = False, is_checked! = True}
+public UInt8                                = FixedInt {1, is_signed! = False, is_checked! = False}
+public CheckedUInt8                         = FixedInt {1, is_signed! = False, is_checked! = True}
 
 
 # ----------------------------------------------------------------------
-public Int64                                = FixedInt{8, is_signed! = True, is_checked! = False}
-public CheckedInt64                         = FixedInt{8, is_signed! = True, is_checked! = True}
+public Int16                                = FixedInt {2, is_signed! = True, is_checked! = False}
+public CheckedInt16                         = FixedInt {2, is_signed! = True, is_checked! = True}
 
-public UInt64                               = FixedInt{8, is_signed! = False, is_checked! = False}
-public CheckedUInt64                        = FixedInt{8, is_signed! = False, is_checked! = True}
+public UInt16                               = FixedInt {2, is_signed! = False, is_checked! = False}
+public CheckedUInt16                        = FixedInt {2, is_signed! = False, is_checked! = True}
 
 
 # ----------------------------------------------------------------------
-public Int128                               = FixedInt{16, is_signed! = True, is_checked! = False}
-public CheckedInt128                        = FixedInt{16, is_signed! = True, is_checked! = True}
+public Int32                                = FixedInt {4, is_signed! = True, is_checked! = False}
+public CheckedInt32                         = FixedInt {4, is_signed! = True, is_checked! = True}
 
-public UInt128                              = FixedInt{16, is_signed! = False, is_checked! = False}
-public CheckedUInt128                       = FixedInt{16, is_signed! = False, is_checked! = True}
+public UInt32                               = FixedInt {4, is_signed! = False, is_checked! = False}
+public CheckedUInt32                        = FixedInt {4, is_signed! = False, is_checked! = True}
+
+
+# ----------------------------------------------------------------------
+public Int64                                = FixedInt {8, is_signed! = True, is_checked! = False}
+public CheckedInt64                         = FixedInt {8, is_signed! = True, is_checked! = True}
+
+public UInt64                               = FixedInt {8, is_signed! = False, is_checked! = False}
+public CheckedUInt64                        = FixedInt {8, is_signed! = False, is_checked! = True}
+
+
+# ----------------------------------------------------------------------
+public Int128                               = FixedInt {16, is_signed! = True, is_checked! = False}
+public CheckedInt128                        = FixedInt {16, is_signed! = True, is_checked! = True}
+
+public UInt128                              = FixedInt {16, is_signed! = False, is_checked! = False}
+public CheckedUInt128                       = FixedInt {16, is_signed! = False, is_checked! = True}
 
 
 # ----------------------------------------------------------------------

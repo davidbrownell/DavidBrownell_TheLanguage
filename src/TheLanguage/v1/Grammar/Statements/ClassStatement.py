@@ -74,10 +74,9 @@ with InitRelativeImports():
     from ...Parser.ParserInfos.Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
     from ...Parser.ParserInfos.Statements.ClassCapabilities.ConceptCapabilities import ConceptCapabilities
     from ...Parser.ParserInfos.Statements.ClassCapabilities.ExceptionCapabilities import ExceptionCapabilities
-    from ...Parser.ParserInfos.Statements.ClassCapabilities.ImmutablePODCapabilities import ImmutablePODCapabilities
     from ...Parser.ParserInfos.Statements.ClassCapabilities.InterfaceCapabilities import InterfaceCapabilities
     from ...Parser.ParserInfos.Statements.ClassCapabilities.MixinCapabilities import MixinCapabilities
-    from ...Parser.ParserInfos.Statements.ClassCapabilities.MutablePODCapabilities import MutablePODCapabilities
+    from ...Parser.ParserInfos.Statements.ClassCapabilities.PODCapabilities import PODCapabilities
     from ...Parser.ParserInfos.Statements.ClassCapabilities.StandardCapabilities import StandardCapabilities
 
 
@@ -109,6 +108,7 @@ class DependencyType(Enum):
 # ----------------------------------------------------------------------
 class ClassStatement(GrammarPhrase):
     PHRASE_NAME                             = "Class Statement"
+    FUNCTION_STATEMENT_PHRASE_NAME          = "Func Definition Statement"
 
     # ----------------------------------------------------------------------
     def __init__(self):
@@ -186,7 +186,7 @@ class ClassStatement(GrammarPhrase):
                     TemplateParametersFragment.Create(),
                 ),
 
-                # <constraints>?
+                # <constraint_parameters>?
                 OptionalPhraseItem(
                     ConstraintParametersFragment.Create(),
                 ),
@@ -232,7 +232,6 @@ class ClassStatement(GrammarPhrase):
     def GetParentClassCapabilities(
         cls,
         node: AST.Node,
-        function_defintion_statement: Type[GrammarPhrase],
     ) -> Optional[ClassCapabilities]:
 
         walking_node = node.parent
@@ -242,8 +241,9 @@ class ClassStatement(GrammarPhrase):
                 if walking_node.type.name == cls.PHRASE_NAME:
                     return getattr(walking_node, cls._CLASS_CAPABILITIES_ATTRIBUTE_NAME)
 
-                # Do not attempt to get class info if it means walking beyond a function
-                if isinstance(node.type, function_defintion_statement):
+                # Do not attempt to get class info if it means walking beyond a function. Note that
+                # we are comparing by string name here to avoid circular imports.
+                if getattr(node.type, "PHRASE_NAME", None) == cls.FUNCTION_STATEMENT_PHRASE_NAME:
                     break
 
             walking_node = walking_node.parent
@@ -290,10 +290,7 @@ class ClassStatement(GrammarPhrase):
         elif class_type_info == ClassType.mixin_value:
             class_capabilities = MixinCapabilities
         elif class_type_info == ClassType.struct_value:
-            if class_modifier_info == ClassModifier.mutable:
-                class_capabilities = MutablePODCapabilities
-            else:
-                class_capabilities = ImmutablePODCapabilities
+            class_capabilities = PODCapabilities
         else:
             assert False, class_type_info  # pragma: no cover
 
@@ -427,7 +424,7 @@ class ClassStatement(GrammarPhrase):
                 else:
                     templates_info = result
 
-            # <constraints>?
+            # <constraint_parameters>?
             constraints_info = None
 
             constraints_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
@@ -531,6 +528,7 @@ class ClassStatement(GrammarPhrase):
                     is_abstract_node,
                     is_final_node,
                 ),
+                self.__class__.GetParentClassCapabilities(node),
                 class_capabilities,
                 visibility_info,
                 class_modifier_info,

@@ -21,6 +21,7 @@ from typing import List, Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -71,4 +72,16 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
                 "expression",
                 "type",
             ],
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("expression", self.expression),
+                ("type", self.type),
+            ],
+            children=None,
         )

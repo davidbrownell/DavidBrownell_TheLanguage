@@ -21,10 +21,21 @@ from enum import auto, Enum
 
 import CommonEnvironment
 
+from CommonEnvironmentEx.Package import InitRelativeImports
+
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
+
+with InitRelativeImports():
+    from ...Error import CreateError
+
+
+# ----------------------------------------------------------------------
+InvalidProtectedError                       = CreateError(
+    "'protected' is not valid in this context",
+)
 
 
 # ----------------------------------------------------------------------
@@ -33,5 +44,3 @@ class VisibilityModifier(Enum):
     protected                               = auto()
     internal                                = auto()
     public                                  = auto()
-
-    # TODO: Validate the protected is used appropriately

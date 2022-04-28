@@ -40,7 +40,6 @@ with InitRelativeImports():
 MixinCapabilities                           = _ClassCapabilities(
     name="Mixin",
     is_instantiable=False,
-    default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
@@ -48,6 +47,11 @@ MixinCapabilities                           = _ClassCapabilities(
         VisibilityModifier.private,
     ],
     default_visibility=VisibilityModifier.private,
+    valid_class_modifiers=[
+        ClassModifier.immutable,
+        ClassModifier.mutable,
+    ],
+    default_class_modifier=ClassModifier.immutable,
     valid_extends_visibilities=[
         VisibilityModifier.public,
     ],
@@ -73,6 +77,22 @@ MixinCapabilities                           = _ClassCapabilities(
         VisibilityModifier.private,
     ],
     default_uses_visibility=None,
+    valid_type_alias_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.internal,
+        VisibilityModifier.protected,
+        VisibilityModifier.private,
+    ],
+    default_type_alias_visibility=VisibilityModifier.private,
+    valid_nested_class_types=[
+        "Exception",
+        "POD",
+    ],
+    valid_nested_class_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.protected,
+    ],
+    default_nested_class_visibility=VisibilityModifier.public,
     valid_method_modifiers=[
         MethodModifier.abstract,
         MethodModifier.final,
@@ -91,8 +111,8 @@ MixinCapabilities                           = _ClassCapabilities(
     valid_method_mutabilities=[
         MutabilityModifier.var,
         MutabilityModifier.ref,
+        MutabilityModifier.view,
         MutabilityModifier.val,
-        MutabilityModifier.mutable,
         MutabilityModifier.immutable,
     ],
     default_method_mutability=None,

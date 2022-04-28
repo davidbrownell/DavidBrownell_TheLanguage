@@ -17,8 +17,9 @@
 
 import os
 
+from contextlib import contextmanager
 from enum import auto, Enum
-from typing import Any, Callable, Dict, List, Optional, Set, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 from dataclasses import dataclass, field, fields, make_dataclass, InitVar
 
@@ -44,6 +45,7 @@ class VisitControl(Enum):
     """Controls visitation behavior"""
 
     Continue                                = auto()    # Continue visiting all children
+    ContinueWithDetail                      = auto()
     SkipChildren                            = auto()    # Don't visit any children
     SkipSiblings                            = auto()    # Don't visit any remaining siblings
     Terminate                               = auto()    # Don't visit anything else
@@ -166,70 +168,108 @@ class ParserInfo(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
     def Accept(self, visitor) -> VisitControl:
-        method_name = "On{}".format(self.__class__.__name__)
+        with self._GenericAccept(visitor) as visit_control:
+            if visit_control != VisitControl.Continue:
+                return visit_control
 
-        on_method = getattr(visitor, method_name, None)
-        assert on_method is not None, method_name
+            method_name = "On{}".format(self.__class__.__name__)
 
-        visit_control = on_method(self)
+            on_method = getattr(visitor, method_name, None)
+            assert on_method is not None, method_name
 
-        if visit_control is None:
-            visit_control = VisitControl.Continue
-        elif visit_control in [VisitControl.SkipChildren, VisitControl.SkipSiblings]:
-            visit_control = VisitControl.Continue
+            visit_control = on_method(self)
 
-        return visit_control
+            if visit_control is None:
+                visit_control = VisitControl.Continue
+            elif visit_control in [VisitControl.SkipChildren, VisitControl.SkipSiblings]:
+                visit_control = VisitControl.Continue
+
+            assert visit_control != VisitControl.ContinueWithDetail
+
+            return visit_control
 
     # ----------------------------------------------------------------------
     # |
     # |  Protected Methods
     # |
     # ----------------------------------------------------------------------
-    def _ScopedAcceptImpl(
+    def _AcceptImpl(
         self,
-        children: List["ParserInfo"],
         visitor,
+        details: Optional[List[Tuple[str, Union["ParserInfo", List["ParserInfo"]]]]],
+        children: Optional[List["ParserInfo"]],
     ) -> VisitControl:
-        """Implementation of Accept for ParserInfos that introduce new scopes"""
+        """Implementation of Accept for ParserInfos that introduce new scopes or contain details that should be enumerated"""
 
-        # Get the visitor's dynamic methods
-        enter_method_name = "OnEnter{}".format(self.__class__.__name__)
-        enter_method = getattr(visitor, enter_method_name, None)
-        assert enter_method is not None, enter_method_name
+        with self._GenericAccept(visitor) as visit_control:
+            if visit_control not in [VisitControl.Continue, VisitControl.ContinueWithDetail]:
+                return visit_control
 
-        exit_method_name = "OnExit{}".format(self.__class__.__name__)
-        exit_method = getattr(visitor, exit_method_name, None)
-        assert exit_method is not None, exit_method_name
+            # Get the visitor's dynamic methods
+            enter_method_name = "OnEnter{}".format(self.__class__.__name__)
+            enter_method = getattr(visitor, enter_method_name, None)
+            assert enter_method is not None, enter_method_name
 
-        # Invoke the visitor
-        visit_control = enter_method(self)
-        if visit_control is None:
-            visit_control = VisitControl.Continue
+            exit_method_name = "OnExit{}".format(self.__class__.__name__)
+            exit_method = getattr(visitor, exit_method_name, None)
+            assert exit_method is not None, exit_method_name
 
-        if visit_control != VisitControl.Terminate:
-            with CallOnExit(lambda: exit_method(self)):
-                if visit_control == VisitControl.SkipChildren:
-                    visit_control = VisitControl.Continue
-                else:
-                    visitor.OnEnterScope(self)
-                    with CallOnExit(lambda: visitor.OnExitScope(self)):
-                        for child in children:
-                            visit_control = child.Accept(visitor)
-                            if visit_control is None:
-                                visit_control = VisitControl.Continue
+            # Invoke the visitor
+            visit_control = enter_method(self)
+            if visit_control is None:
+                visit_control = VisitControl.Continue
 
-                            if visit_control == VisitControl.Continue:
-                                pass # Nothing to do here
-                            elif visit_control == VisitControl.Terminate:
-                                break
-                            elif visit_control == VisitControl.SkipSiblings:
-                                visit_control = VisitControl.Continue
-                                break
-                            else:
-                                assert False, visit_control  # pragma: no cover
+            if visit_control != VisitControl.Terminate:
+                with CallOnExit(lambda: exit_method(self)):
+                    if visit_control == VisitControl.ContinueWithDetail:
+                        if not details:
+                            visit_control = VisitControl.Continue
+                        else:
+                            method_name_prefix = "On{}__".format(self.__class__.__name__)
 
-        assert visit_control in [VisitControl.Continue, VisitControl.Terminate], visit_control
-        return visit_control
+                            for detail_name, detail_value in details:
+                                method_name = "{}{}".format(method_name_prefix, detail_name)
+                                method = getattr(visitor, method_name, None)
+                                assert method is not None, method_name
+
+                                visit_control = method(detail_value)
+                                if visit_control is None:
+                                    visit_control = VisitControl.Continue
+
+                                if visit_control == VisitControl.Continue:
+                                    pass # Nothing to do here
+                                elif visit_control == VisitControl.ContinueWithDetail:
+                                    visit_control = VisitControl.Continue
+                                elif visit_control == VisitControl.Terminate:
+                                    break
+                                elif visit_control == VisitControl.SkipSiblings:
+                                    visit_control = VisitControl.Continue
+                                    break
+                                elif visit_control == VisitControl.SkipChildren:
+                                    break
+
+                    if children and visit_control != VisitControl.SkipChildren:
+                        visitor.OnEnterScope(self)
+                        with CallOnExit(lambda: visitor.OnExitScope(self)):
+                            for child in children:
+                                visit_control = child.Accept(visitor)
+                                if visit_control is None:
+                                    visit_control = VisitControl.Continue
+
+                                if visit_control == VisitControl.Continue:
+                                    pass # Nothing to do here
+                                elif visit_control == VisitControl.ContinueWithDetail:
+                                    visit_control = VisitControl.Continue
+                                elif visit_control == VisitControl.Terminate:
+                                    break
+                                elif visit_control == VisitControl.SkipSiblings:
+                                    visit_control = VisitControl.Continue
+                                    break
+                                else:
+                                    assert False, visit_control  # pragma: no cover
+
+            assert visit_control in [VisitControl.Continue, VisitControl.Terminate], visit_control
+            return visit_control
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -328,6 +368,28 @@ class ParserInfo(ObjectReprImplBase):
 
         return Func
 
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def _GenericAccept(self, visitor):
+        # Enter
+        method_name = "OnEnterPhrase"
+        method = getattr(visitor, method_name, None)
+
+        if method is not None:
+            visit_control = method(self)
+        else:
+            visit_control = VisitControl.Continue
+
+        # Yield
+        yield visit_control
+
+        # Exit
+        method_name = "OnExitPhrase"
+        method = getattr(visitor, method_name, None)
+
+        if method is not None:
+            method(self)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -356,5 +418,9 @@ class RootParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, *args, **kwargs):
-        return self._ScopedAcceptImpl(self.statements or [], *args, **kwargs)
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=None,
+            children=self.statements,
+        )

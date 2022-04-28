@@ -23,6 +23,7 @@ from typing import List, Optional
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -34,7 +35,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StatementParserInfo import ParserInfo, ParserInfoType, Region, StatementParserInfo
 
-    from ..Common.VisibilityModifier import VisibilityModifier
+    from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
+
+    from ...Error import Error, ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -90,6 +93,7 @@ class ImportStatementParserInfo(StatementParserInfo):
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             *args,
+            **kwargs,
         )
 
     # ----------------------------------------------------------------------
@@ -112,4 +116,27 @@ class ImportStatementParserInfo(StatementParserInfo):
         object.__setattr__(self, "visibility", visibility_param)
 
         # Validate
+        errors: List[Error] = []
+
         self.ValidateRegions()
+
+        if self.visibility == VisibilityModifier.protected:
+            errors.append(
+                InvalidProtectedError.Create(
+                    region=self.regions__.visibility,
+                ),
+            )
+
+        if errors:
+            raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("import_items", self.import_items),
+            ],  # type: ignore
+            children=None,
+        )

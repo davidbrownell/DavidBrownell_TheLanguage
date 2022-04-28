@@ -15,30 +15,31 @@
 # ----------------------------------------------------------------------
 from .Int import Int
 
+# TODO: Use perfect forwarding
 
 # ----------------------------------------------------------------------
-public concept MutableInt {
+public mutable concept MutableInt {
     (Int | None) min_value! = None,
     (Int | None) max_value! = None,
 }
     extends Int { min_value!, max_value! }
 :
-    public None __Serialize?__<ArchiveT>(ArchiveT ref archive) mutable
-    public None __Accept?__<VisitorT>(VisitorT ref visitor) mutable
+    public None __Serialize?__<ArchiveT>(ArchiveT ref archive) var
+    public None __Accept?__<VisitorT>(VisitorT ref visitor) var
 
-    [Deferred] public None __BitFlipInplace?__() mutable
+    public None __BitFlipInplace?__() var
 
-    [Deferred] public None __DivideFloorInplace?__(Int immutable divisor) mutable
-    [Deferred] public None __ModuloInplace?__(Int immutable divisor) mutable
-    [Deferred] public None __MultiplyInplace?__(Int immutable multiplier) mutable
-    [Deferred] public None __PowerInplace?__(Int immutable exponent) mutable
+    public None __DivideFloorInplace?__(Int immutable divisor) var
+    public None __ModuloInplace?__(Int immutable divisor) var
+    public None __MultiplyInplace?__(Int immutable multiplier) var
+    public None __PowerInplace?__(Int immutable exponent) var
 
-    [Deferred] public None __AddInplace?__(Int immutable value) mutable
-    [Deferred] public None __SubtractInplace?__(Int immutable value) mutable
+    public None __AddInplace?__(Int immutable value) var
+    public None __SubtractInplace?__(Int immutable value) var
 
-    [Deferred] public None __BitShiftLeftInplace?__(Int immutable places) mutable
-    [Deferred] public None __BitShiftRightInplace?__(Int immutable places) mutable
+    public None __BitShiftLeftInplace?__(Int immutable places) var
+    public None __BitShiftRightInplace?__(Int immutable places) var
 
-    [Deferred] public None __BitAndInplace?__(Int immutable value) mutable
-    [Deferred] public None __BitXOrInplace?__(Int immutable value) mutable
-    [Deferred] public None __BitOrInplace?__(Int immutable value) mutable
+    public None __BitAndInplace?__(Int immutable value) var
+    public None __BitXOrInplace?__(Int immutable value) var
+    public None __BitOrInplace?__(Int immutable value) var

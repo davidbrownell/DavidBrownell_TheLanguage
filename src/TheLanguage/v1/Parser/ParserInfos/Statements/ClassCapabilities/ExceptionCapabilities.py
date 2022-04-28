@@ -40,11 +40,14 @@ with InitRelativeImports():
 ExceptionCapabilities                       = _ClassCapabilities(
     name="Exception",
     is_instantiable=True,
-    default_class_modifier=ClassModifier.immutable,
     valid_visibilities=[
         VisibilityModifier.public,
     ],
     default_visibility=VisibilityModifier.public,
+    valid_class_modifiers=[
+        ClassModifier.immutable,
+    ],
+    default_class_modifier=ClassModifier.immutable,
     valid_extends_visibilities=[
         VisibilityModifier.public,
     ],
@@ -70,6 +73,17 @@ ExceptionCapabilities                       = _ClassCapabilities(
         VisibilityModifier.private,
     ],
     default_uses_visibility=VisibilityModifier.private,
+    valid_type_alias_visibilities=[
+        VisibilityModifier.public,
+    ],
+    default_type_alias_visibility=VisibilityModifier.public,
+    valid_nested_class_types=[
+        "POD",
+    ],
+    valid_nested_class_visibilities=[
+        VisibilityModifier.public,
+    ],
+    default_nested_class_visibility=VisibilityModifier.public,
     valid_method_modifiers=[
         MethodModifier.final,
         MethodModifier.override,

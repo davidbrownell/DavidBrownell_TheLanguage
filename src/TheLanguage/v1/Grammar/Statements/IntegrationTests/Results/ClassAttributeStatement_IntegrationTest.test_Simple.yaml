@@ -51,6 +51,7 @@ statements:
           line: 4
     statements:
       - # <class 'v1.Parser.ParserInfos.Statements.ClassAttributeStatementParserInfo.ClassAttributeStatementParserInfo'>
+        class_capabilities: "Standard"
         documentation: None
         initialized_value: None
         is_override: None
@@ -120,6 +121,7 @@ statements:
                 line: 2
         visibility: "VisibilityModifier.private"
       - # <class 'v1.Parser.ParserInfos.Statements.ClassAttributeStatementParserInfo.ClassAttributeStatementParserInfo'>
+        class_capabilities: "Standard"
         documentation: None
         initialized_value: None
         is_override: None

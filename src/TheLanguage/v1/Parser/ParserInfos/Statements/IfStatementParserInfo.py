@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import cast, List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -41,12 +41,15 @@ with InitRelativeImports():
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
-    from ...Error import CreateError, Error, ErrorException
+    from ...Error import ErrorException
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class IfStatementClauseParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
+    introduces_scope__                      = True
+
     # ----------------------------------------------------------------------
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
@@ -78,6 +81,17 @@ class IfStatementClauseParserInfo(ParserInfo):
             *args,
             **kwargs,
             regionless_attributes=["expression", ],
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("expression", self.expression),
+            ],
+            children=cast(List[ParserInfo], self.statements),
         )
 
 
@@ -118,4 +132,20 @@ class IfStatementParserInfo(StatementParserInfo):
             *args,
             **kwargs,
             regionless_attributes=["clauses", ],
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        details = []
+
+        if self.else_statements:
+            details.append(("else_statements", self.else_statements))
+
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("clauses", self.clauses),
+            ] + details,  # type: ignore
+            children=None,
         )

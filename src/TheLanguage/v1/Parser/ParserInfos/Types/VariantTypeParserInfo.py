@@ -22,6 +22,7 @@ from typing import Generator, List
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,12 +33,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .TypeParserInfo import (           # pylint: disable=unused-import
-        CreateError,
-        Error,
-        ErrorException,
         ParserInfoType,                     # convenience import
         TypeParserInfo,
     )
+
+    from ...Error import CreateError, Error, ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -69,6 +69,17 @@ class VariantTypeParserInfo(TypeParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("types", self.types),
+            ],  # type: ignore
+            children=None,
+        )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
