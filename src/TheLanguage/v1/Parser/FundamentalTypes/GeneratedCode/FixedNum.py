@@ -1137,7 +1137,7 @@ statement_000041 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000041 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.CompileTime,
+    parser_info_type=ParserInfoType.CompileTimeBugBug,
     regions=[region_000064, None],
     expression=statement_000041,
     keyword=None,

@@ -72,7 +72,7 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(TemplateTypeArgumentParserInfo, self).__init__(
-            ParserInfoType.CompileTime,
+            ParserInfoType.CompileTimeType,
             *args,
             **kwargs,
             regionless_attributes=["type", ],
@@ -110,8 +110,10 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
+        expression_parser_info_type = self.expression.parser_info_type__  # type: ignore
+
         super(TemplateDecoratorArgumentParserInfo, self).__init__(
-            ParserInfoType.CompileTime,
+            expression_parser_info_type,
             *args,
             **kwargs,
             regionless_attributes=["expression", ],
@@ -120,7 +122,7 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
         # Validate
         errors: List[Error] = []
 
-        if self.expression.parser_info_type__.value > ParserInfoType.CompileTime.value:  # type: ignore
+        if expression_parser_info_type.value >= ParserInfoType.Standard.value:  # type: ignore
             errors.append(
                 InvalidTemplateExpressionError.Create(
                     region=self.expression.regions__.self__,
@@ -154,6 +156,7 @@ class TemplateArgumentsParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     # |  Public Data
+    parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
 
     arguments: List["TemplateArgumentsParserInfo.ArgumentType"]
@@ -161,16 +164,33 @@ class TemplateArgumentsParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     # |  Public Methods
     @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        arguments: List["TemplateArgumentsParserInfo.ArgumentType"],
+        *args,
+        **kwargs,
+    ):
+        parser_info_type = cls._GetDominantExpressionType(*arguments)
+        if isinstance(parser_info_type, list):
+            raise ErrorException(*parser_info_type)
+
+        return cls(
+            parser_info_type,               # type: ignore
+            regions,                        # type: ignore
+            arguments,
+            *args,
+            **kwargs,
+        )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
-        super(TemplateArgumentsParserInfo, self).__init__(ParserInfoType.CompileTime, *args, **kwargs)
+    def __post_init__(self, parser_info_type, regions, *args, **kwargs):
+        super(TemplateArgumentsParserInfo, self).__init__(
+            parser_info_type,
+            regions,
+            *args,
+            **kwargs,
+        )
 
         # Validate
         errors: List[Error] = []

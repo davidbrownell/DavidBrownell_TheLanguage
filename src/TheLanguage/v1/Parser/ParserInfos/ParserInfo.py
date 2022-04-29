@@ -55,7 +55,15 @@ class ParserInfoType(Enum):
     Unknown                                 = auto()    # Unknown (this value should only be applied for very low-level phrases (like types))
     Literal                                 = auto()    # A literal value
     CompileTime                             = auto()    # Evaluated at compile time
+    CompileTimeType                         = auto()    # Type that is evaluated at compile time, but uses template-
+                                                        # or constraint-parameters during the evaluation; implies that
+                                                        # the results may be different depending on how the type is
+                                                        # instantiated.
     Standard                                = auto()    # Evaluated at runtime
+
+    # ----------------------------------------------------------------------
+    MinCompileValue                         = CompileTime
+    MaxCompileValue                         = CompileTimeType
 
 
 # ----------------------------------------------------------------------
@@ -282,12 +290,12 @@ class ParserInfo(ObjectReprImplBase):
         if dominant_expression is None:
             return ParserInfoType.Unknown
 
-        if dominant_expression.parser_info_type__.value >= ParserInfoType.CompileTime.value:  # type: ignore
+        if dominant_expression.parser_info_type__.value > ParserInfoType.MaxCompileValue.value:  # type: ignore
             errors: List[Error] = []
 
             # Ensure that the types are consistent
             for expression in expressions:
-                if expression.parser_info_type__.value < ParserInfoType.CompileTime.value:  # type: ignore
+                if expression.parser_info_type__.value < ParserInfoType.MinCompileValue.value:  # type: ignore
                     continue
 
                 if expression.parser_info_type__.value < dominant_expression.parser_info_type__.value:  # type: ignore

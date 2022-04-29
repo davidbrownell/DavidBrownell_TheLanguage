@@ -75,7 +75,7 @@ class VariableExpression(Expression):
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
         if self.name not in args:
             raise ErrorException(
@@ -87,7 +87,7 @@ class VariableExpression(Expression):
 
         return Expression.EvalResult(
             args[self.name],
-            type_overloads.get(self.name, self.type),
+            type_overrides.get(self.name, self.type),
             self.name,
         )
 

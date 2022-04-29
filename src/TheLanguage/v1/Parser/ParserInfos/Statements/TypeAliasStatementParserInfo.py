@@ -68,7 +68,7 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            ParserInfoType.CompileTime,     # type: ignore
+            ParserInfoType.CompileTimeType, # type: ignore
             regions,                        # type: ignore
             *args,
             **kwargs,

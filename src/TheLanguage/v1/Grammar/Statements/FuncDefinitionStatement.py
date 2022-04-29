@@ -56,7 +56,6 @@ with InitRelativeImports():
 
     from ...Parser.Parser import CreateError, CreateRegion, CreateRegions, Error, GetParserInfo
     from ...Parser.ParserInfos.Common.MethodModifier import MethodModifier
-
     from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import (
         FuncDefinitionStatementParserInfo,
         OperatorType,

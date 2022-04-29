@@ -168,12 +168,14 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: FuncOrTypeExpressionParserInfo,
     ):
+        self._imports.add("from v1.Parser.ParserInfos.ParserInfo import ParserInfoType")
         self._imports.add("from v1.Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo")
 
         self._stream.write(
             textwrap.dedent(
                 """\
                 {statement_name} = FuncOrTypeExpressionParserInfo.Create(
+                    parser_info_type={parser_info_type},
                     regions=[{self_region}, {name_region}],
                     name={name},
                 )
@@ -181,6 +183,7 @@ class ExpressionsMixin(BaseMixin):
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
+                parser_info_type=parser_info.parser_info_type__,  # type: ignore
                 self_region=self._ToString(parser_info.regions__.self__),
                 name_region=self._ToString(parser_info.regions__.name),
                 name=self._ToString(parser_info.name),
@@ -379,24 +382,24 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: VariableExpressionParserInfo,
     ):
+        self._imports.add("from v1.Parser.ParserInfos.ParserInfo import ParserInfoType")
         self._imports.add("from v1.Parser.ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo")
 
         self._stream.write(
             textwrap.dedent(
                 """\
                 {statement_name} = VariableExpressionParserInfo.Create(
-                    regions=[{self_region}, {is_compile_time_region}, {name_region}],
-                    is_compile_time={is_compile_time},
+                    parser_info_type={parser_info_type},
+                    regions=[{self_region}, {name_region}],
                     name={name},
                 )
 
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
+                parser_info_type=parser_info.parser_info_type__,  # type: ignore
                 self_region=self._ToString(parser_info.regions__.self__),
-                is_compile_time_region=self._ToString(parser_info.regions__.is_compile_time),
                 name_region=self._ToString(parser_info.regions__.name),
-                is_compile_time=self._ToString(parser_info.is_compile_time or False),
                 name=self._ToString(parser_info.name),
             ),
         )

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableNameParserInfo.py
+# |  IsDefinedExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 16:50:44
+# |      2022-04-29 07:32:00
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableNameParserInfo object"""
+"""Contains the IsDefinedExpression object"""
 
 import os
 
-from typing import List, Optional
+from typing import Any, Dict
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,43 +32,46 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, ParserInfoType, Region
+    from .Expression import Expression
+    from ..Types.BooleanType import BooleanType, Type
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableNameParserInfo(ParserInfo):
-    # ----------------------------------------------------------------------
-    parser_info_type: InitVar[ParserInfoType]
-    regions: InitVar[List[Optional[Region]]]
-
-    is_compile_time: Optional[bool]
-    name: str
+class IsDefinedExpression(Expression):
+    name: Expression
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        regions: List[Optional[Region]],
-        is_compile_time: bool,
-        *args,
-        **kwargs,
-    ):
-        if is_compile_time:
-            parser_info_type = ParserInfoType.CompileTime
-            is_compile_time_value = True
-        else:
-            parser_info_type = ParserInfoType.Standard
-            is_compile_time_value = None
+    def __post_init__(self):
+        super(IsDefinedExpression, self).__init__()
 
-        return cls(
-            parser_info_type,               # type: ignore
-            regions,                        # type: ignore
-            is_compile_time_value,
-            *args,
-            **kwargs,
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def EvalType() -> Type:
+        return BooleanType()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Eval(
+        self,
+        args: Dict[str, Any],
+        type_overrides: Dict[str, Type],
+    ) -> Expression.EvalResult:
+        name = self.name.Eval(args, type_overrides)
+        name = name.type.ToStringValue(name.value)
+
+        return Expression.EvalResult(
+            name in args,
+            BooleanType(),
+            None,
         )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
-        super(VariableNameParserInfo, self).__init__(*args, **kwargs)
+    @Interface.override
+    def ToString(
+        self,
+        args: Dict[str, Any],
+    ) -> str:
+        name = self.name.ToString(args)
+        return "<<<IsDefined '{}': {}>>>".format(name, name in args)

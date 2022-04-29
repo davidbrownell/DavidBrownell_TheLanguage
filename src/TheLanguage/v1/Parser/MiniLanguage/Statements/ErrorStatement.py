@@ -60,12 +60,12 @@ class ErrorStatement(Statement):
     def Execute(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> Statement.ExecuteResult:
         errors: List[Error] = []
 
         try:
-            result = self.message.Eval(args, type_overloads)
+            result = self.message.Eval(args, type_overrides)
 
             errors.append(
                 TheError.Create(

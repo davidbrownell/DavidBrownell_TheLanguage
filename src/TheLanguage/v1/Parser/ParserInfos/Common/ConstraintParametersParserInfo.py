@@ -73,7 +73,7 @@ class ConstraintParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(ConstraintParameterParserInfo, self).__init__(
-            ParserInfoType.CompileTime,
+            ParserInfoType.CompileTimeType,
             *args,
             **kwargs,
             regionless_attributes=[
@@ -87,7 +87,7 @@ class ConstraintParameterParserInfo(ParserInfo):
 
         if (
             self.default_value is not None
-            and self.default_value.parser_info_type__.value > ParserInfoType.CompileTime.value  # type: ignore
+            and self.default_value.parser_info_type__.value > ParserInfoType.MaxCompileValue.value  # type: ignore
         ):
             errors.append(
                 InvalidConstraintExpressionError.Create(
@@ -136,7 +136,7 @@ class ConstraintParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(ConstraintParametersParserInfo, self).__init__(ParserInfoType.CompileTime, *args, **kwargs)
+        super(ConstraintParametersParserInfo, self).__init__(ParserInfoType.CompileTimeType, *args, **kwargs)
         assert self.positional or self.any or self.keyword
 
         # Validate

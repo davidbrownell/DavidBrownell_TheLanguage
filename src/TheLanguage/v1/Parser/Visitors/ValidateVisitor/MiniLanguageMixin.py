@@ -19,6 +19,7 @@ import os
 
 from typing import (
     Any,
+    cast,
     Dict,
     List,
     Optional,
@@ -27,7 +28,7 @@ from typing import (
     Union,
 )
 
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 
 import CommonEnvironment
 
@@ -39,10 +40,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .BaseMixin import BaseMixin, StateMaintainer
+    from .BaseMixin import ArgumentInfo, BaseMixin, ParameterInfo, StateMaintainer
 
     from ...MiniLanguage.Expressions.BinaryExpression import BinaryExpression
     from ...MiniLanguage.Expressions.Expression import Expression
+    from ...MiniLanguage.Expressions.IsDefinedExpression import IsDefinedExpression
     from ...MiniLanguage.Expressions.LiteralExpression import LiteralExpression
     from ...MiniLanguage.Expressions.TernaryExpression import TernaryExpression
     from ...MiniLanguage.Expressions.TypeCheckExpression import TypeCheckExpression
@@ -86,6 +88,7 @@ with InitRelativeImports():
     from ...ParserInfos.Types.VariantTypeParserInfo import VariantTypeParserInfo
 
     from ...Error import CreateError, Error, ErrorException
+    from ...Region import Location, Region
 
 
 # ----------------------------------------------------------------------
@@ -120,81 +123,33 @@ class UnionType(object):
 
 # ----------------------------------------------------------------------
 class MiniLanguageMixin(BaseMixin):
+    FUNCTION_MAP                            = {
+        "Enforce!": EnforceStatement,
+        "Error!": ErrorStatement,
+        "IsDefined!": IsDefinedExpression,
+    }
+
     # ----------------------------------------------------------------------
     def ExecuteMiniLanguageFunctionStatement(
         self,
         parser_info: CallExpressionParserInfo,
     ):
-        return # TODO
+        assert parser_info.parser_info_type__.value < ParserInfoType.Standard.value, parser_info.parser_info_type__  # type: ignore
 
-        assert parser_info.parser_info_type__ == ParserInfoType.CompileTime, parser_info.parser_info_type__  # type: ignore
+        expression_or_statement = self.CreateMiniLanguageExpression(parser_info)
+        if isinstance(expression_or_statement, Error):
+            self._errors.append(expression_or_statement)
+            return False
 
-        if not isinstance(parser_info.expression, FuncOrTypeExpressionParserInfo):
-            self._errors.append(
-                InvalidCompileTimeFunctionExpressionError.Create(
-                    region=parser_info.expression.regions__.self__,
-                ),
-            )
-            return
+        if isinstance(expression_or_statement, Expression):
+            assert False, "BugBug!!!!"
 
-        func_name = parser_info.expression.name
+        if isinstance(expression_or_statement, Statement):
+            result = expression_or_statement.Execute(*self._CreateCompileTimeState())
 
-        # Get the MiniLanguage statement
-        if func_name in ["Enforce", "Enforce!"]:
-            minilanguage_statement_type = EnforceStatement
-
-        elif func_name in ["Error", "Error!"]:
-            minilanguage_statement_type = ErrorStatement
-
-        else:
-            self._errors.append(
-                InvalidCompileTimeFunctionError.Create(
-                    region=parser_info.expression.regions__.self__,
-                    name=func_name,
-                ),
-            )
-            return
-
-        # Extract the arguments
-        positional_arguments: List[Expression] = []
-        keyword_arguments: Dict[str, Expression] = {}
-
-        if not isinstance(parser_info.arguments, bool):
-            for argument in parser_info.arguments.arguments:
-                result = self.CreateMiniLanguageExpression(argument.expression)
-                if isinstance(result, Error):
-                    self._errors.append(result)
-                    return
-
-                if argument.keyword is None:
-                    positional_arguments.append(result)
-                else:
-                    keyword_arguments[argument.keyword] = result
-
-        # Create the statement
-        statement = minilanguage_statement_type.Create(*positional_arguments, **keyword_arguments)
-        if isinstance(statement, Error):
-            self._errors.append(statement)
-            return
-
-        # Prepare the information that will be used during argument execution
-        values: Dict[str, Any] = {}
-        types: Dict[str, MiniLanguageType] = {}
-
-        for variable_name, snapshot_values in self._compile_time_info.CreateSnapshot().items():
-            assert len(snapshot_values) == 1, snapshot_values
-
-            values[variable_name] = snapshot_values[0].value
-
-            assert isinstance(snapshot_values[0].type, MiniLanguageType), snapshot_values[0].type
-            types[variable_name] = snapshot_values[0].type
-
-        # Execute the statement
-        result = statement.Execute(*self._CreateCompileTimeState())
-
-        self._errors += result.errors       # type: ignore
-        self._warnings += result.warnings   # type: ignore
-        self._infos += result.infos         # type: ignore
+            self._errors += result.errors
+            self._warnings += result.warnings
+            self._infos += result.infos
 
     # ----------------------------------------------------------------------
     def EvalMiniLanguageExpression(
@@ -231,6 +186,71 @@ class MiniLanguageMixin(BaseMixin):
                 right_expression,
                 parser_info.left_expression.regions__.self__,
             )
+
+        elif isinstance(parser_info, CallExpressionParserInfo):
+            if not isinstance(parser_info.expression, FuncOrTypeExpressionParserInfo):
+                return InvalidCompileTimeFunctionExpressionError.Create(
+                    region=parser_info.expression.regions__.self__,
+                )
+
+            func_name = parser_info.expression.name
+
+            # Get the MiniLanguage statement
+            minilanguage_statement_type = self.__class__.FUNCTION_MAP.get(func_name, None)
+            if minilanguage_statement_type is None:
+                return InvalidCompileTimeFunctionError.Create(
+                    region=parser_info.expression.regions__.self,
+                    name=func_name,
+                )
+
+            # Extract the parameters for this function
+            parameter_infos: List[ParameterInfo] = []
+            none_type = type(None)
+
+            for field in fields(minilanguage_statement_type):
+                parameter_infos.append(
+                    ParameterInfo(
+                        field.name,
+                        None,
+                        is_optional=none_type in getattr(field, "__args__", []),
+                        is_variadic=False,
+                    ),
+                )
+
+            # Extract the arguments
+            positional_arguments: List[ArgumentInfo] = []
+            keyword_arguments: Dict[str, ArgumentInfo] = {}
+
+            if not isinstance(parser_info.arguments, bool):
+                for argument in parser_info.arguments.arguments:
+                    result = self.CreateMiniLanguageExpression(argument.expression)
+                    if isinstance(result, Error):
+                        return result
+
+                    argument_info = ArgumentInfo(result, argument.regions__.self__)
+
+                    if argument.keyword is None:
+                        positional_arguments.append(argument_info)
+                    else:
+                        assert argument.keyword not in keyword_arguments, argument.keyword # pragma: no cover
+                        keyword_arguments[argument.keyword] = argument_info
+
+            # Map the arguments to the parameters
+            argument_map = self._CreateArgumentMap(
+                func_name,
+                None,
+                [],
+                parameter_infos,
+                [],
+                positional_arguments,
+                keyword_arguments,
+            )
+
+            # We don't need to check argument types, as they are all expressions
+            argument_map = {k: cast(ArgumentInfo, v).value for k, v in argument_map.items()}
+
+            # Create an instance of the statement or expression
+            return minilanguage_statement_type(**argument_map)
 
         elif isinstance(parser_info, BooleanExpressionParserInfo):
             return LiteralExpression(BooleanType(), parser_info.value)

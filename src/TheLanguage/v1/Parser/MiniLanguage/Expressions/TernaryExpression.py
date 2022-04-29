@@ -66,19 +66,19 @@ class TernaryExpression(Expression):
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
-        condition_result = self.condition_expression.Eval(args, type_overloads)
+        condition_result = self.condition_expression.Eval(args, type_overrides)
 
         if condition_result.name is not None:
-            type_overloads = copy.deepcopy(type_overloads)
+            type_overrides = copy.deepcopy(type_overrides)
 
-            type_overloads[condition_result.name] = condition_result.type
+            type_overrides[condition_result.name] = condition_result.type
 
         if condition_result.type.ToBoolValue(condition_result.value):
-            return self.true_expression.Eval(args, type_overloads)
+            return self.true_expression.Eval(args, type_overrides)
 
-        return self.false_expression.Eval(args, type_overloads)
+        return self.false_expression.Eval(args, type_overrides)
 
     # ----------------------------------------------------------------------
     @Interface.override

@@ -71,8 +71,6 @@ class FuncParameterParserInfo(ParserInfo):
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
 
-    is_compile_time: Optional[bool]
-
     type: TypeParserInfo
     is_variadic: Optional[bool]
     name: str
@@ -80,27 +78,13 @@ class FuncParameterParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     @classmethod
-    def Create(
-        cls,
-        regions: InitVar[List[Optional[Region]]],
-        is_compile_time: bool,
-        *args,
-        **kwargs,
-    ):
-        if is_compile_time:
-            parser_info_type = ParserInfoType.CompileTime
-            is_compile_time_value = True
-        else:
-            parser_info_type = ParserInfoType.Standard
-            is_compile_time_value = None
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
 
-        return cls(
-            parser_info_type,               # type: ignore
-            regions,
-            is_compile_time_value,
-            *args,
-            **kwargs,
-        )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):

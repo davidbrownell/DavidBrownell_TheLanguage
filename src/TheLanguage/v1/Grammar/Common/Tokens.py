@@ -250,13 +250,10 @@ TypeName                                    = RegexToken(
     ),
 )
 
-
 TypeName.Extract                            = _ExtractFuncFactory(False)  # type: ignore
 
 
 # ----------------------------------------------------------------------
-# TODO: Probably looking at 2 types here, those that allow leading underscores (class attributes)
-#       and everything else.
 VariableName                                = RegexToken(
     "<variable name>",
     re.compile(
@@ -277,6 +274,8 @@ VariableName                                = RegexToken(
 VariableName.Extract                        = _ExtractFuncFactory(True)  # type: ignore
 VariableName.IsCompileTime                  = _IsFuncFactory(VariableName, "is_compile_time")  # type: ignore
 VariableName.GetIsCompileTimeRegion         = _GetRegionFuncFactory(VariableName, "is_compile_time")  # type: ignore
+
+strict_compile_time_regex                   = re.compile(r"__[a-z][A-Za-z0-9_]*!")
 
 
 # ----------------------------------------------------------------------

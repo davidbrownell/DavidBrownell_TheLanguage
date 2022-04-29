@@ -55,6 +55,7 @@ with InitRelativeImports():
         ExpressionParserInfo,
         FuncParameterParserInfo,
         FuncParametersParserInfo,
+        ParserInfoType,
         TypeParserInfo,
     )
 
@@ -137,7 +138,10 @@ def _ExtractElement(
     name_leaf = cast(AST.Leaf, nodes[2])
     name_info = CommonTokens.ParameterName.Extract(name_leaf)  # type: ignore
 
-    is_compile_time_region = CommonTokens.ParameterName.GetIsCompileTimeRegion(name_leaf)  # type: ignore  # pylint: disable=not-callable
+    if CommonTokens.ParameterName.IsCompileTime(name_info):  # type: ignore  # pylint: disable=not-callable
+        parser_info_type = ParserInfoType.CompileTime
+    else:
+        parser_info_type = ParserInfoType.Standard
 
     # ('=' <expression>)?
     default_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[3])))
@@ -152,8 +156,8 @@ def _ExtractElement(
 
     return (
         FuncParameterParserInfo.Create(
-            CreateRegions(node, is_compile_time_region, is_variadic_node, name_leaf),  # type: ignore
-            bool(is_compile_time_region),
+            parser_info_type,
+            CreateRegions(node, is_variadic_node, name_leaf),  # type: ignore
             type_info,
             is_variadic_info,
             name_info,

@@ -61,7 +61,7 @@ class Expression(Interface.Interface, ObjectReprImplBase):
     @Interface.abstractmethod
     def Eval(
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> "Expression.EvalResult":
         raise Exception("Abstract method")  # pragma: no cover
 

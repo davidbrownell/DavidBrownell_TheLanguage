@@ -62,9 +62,9 @@ with InitRelativeImports():
         TemplateTypeParameterParserInfo,                # Convenience import
     )
 
-    from ..Common.VariableNameParserInfo import VariableNameParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
+    from ..Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
     from ..Types.TypeParserInfo import TypeParserInfo
 
     from ...Error import CreateError, Error, ErrorException
@@ -255,7 +255,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
 
     templates: Optional[TemplateParametersParserInfo]
 
-    captured_variables: Optional[List[VariableNameParserInfo]]
+    captured_variables: Optional[List[VariableExpressionParserInfo]]
     statements: Optional[List[StatementParserInfo]]
 
     is_deferred: Optional[bool]

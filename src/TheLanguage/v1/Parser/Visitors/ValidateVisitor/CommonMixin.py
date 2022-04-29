@@ -48,7 +48,6 @@ with InitRelativeImports():
     from ...ParserInfos.Common.FuncParametersParserInfo import FuncParametersParserInfo, FuncParameterParserInfo
     from ...ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateDecoratorArgumentParserInfo, TemplateTypeArgumentParserInfo
     from ...ParserInfos.Common.TemplateParametersParserInfo import TemplateDecoratorParameterParserInfo, TemplateParametersParserInfo, TemplateTypeParameterParserInfo
-    from ...ParserInfos.Common.VariableNameParserInfo import VariableNameParserInfo
 
     from ...Error import CreateError, Error, ErrorException, Region
 
@@ -229,15 +228,6 @@ class CommonMixin(BaseMixin):
             )
 
         self._ProcessParameter(parser_info)
-
-    # ----------------------------------------------------------------------
-    # |  VariableNameParserInfo
-    # ----------------------------------------------------------------------
-    def OnVariableNameParserInfo(
-        self,
-        parser_info: VariableNameParserInfo,
-    ):
-        pass
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

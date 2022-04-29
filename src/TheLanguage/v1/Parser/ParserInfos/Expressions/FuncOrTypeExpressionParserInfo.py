@@ -31,7 +31,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
+    from .ExpressionParserInfo import (  # pylint: disable=unused=import
+        ExpressionParserInfo,
+        ParserInfoType,                     # convenience import
+    )
 
 
 # ----------------------------------------------------------------------
@@ -39,18 +42,3 @@ with InitRelativeImports():
 class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     name: str
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        regions: List[Optional[Region]],
-        *args,
-        **kwargs,
-    ):
-        return cls(
-            ParserInfoType.Unknown,         # type: ignore
-            regions,                        # type: ignore
-            *args,
-            **kwargs,
-        )

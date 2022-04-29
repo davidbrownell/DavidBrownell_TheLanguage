@@ -62,18 +62,18 @@ class EnforceStatement(Statement):
     def Execute(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> Statement.ExecuteResult:
         errors: List[Error] = []
 
         try:
-            result = self.expression.Eval(args, type_overloads)
+            result = self.expression.Eval(args, type_overrides)
 
             if not result.type.ToBoolValue(result.value):
                 if self.message is None:
                     message_suffix = ""
                 else:
-                    message_result = self.message.Eval(args, type_overloads)
+                    message_result = self.message.Eval(args, type_overrides)
 
                     message_suffix = ": {}".format(
                         message_result.type.ToStringValue(message_result.value),
@@ -88,7 +88,7 @@ class EnforceStatement(Statement):
                 )
 
             if result.name is not None:
-                type_overloads[result.name] = result.type
+                type_overrides[result.name] = result.type
 
         except ErrorException as ex:
             errors += ex.errors

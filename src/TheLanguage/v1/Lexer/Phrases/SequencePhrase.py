@@ -35,6 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .RecursivePlaceholderPhrase import RecursivePlaceholderPhrase
+    from .RepeatPhrase import RepeatPhrase
     from .TokenPhrase import TokenPhrase
 
     from ..Components.Phrase import NormalizedIterator, Phrase
@@ -411,7 +412,14 @@ class SequencePhrase(Phrase):
 
                 working_iter = ignored_tokens_info.iter_range.end.Clone()
 
-                if working_iter.AtEnd() and not is_control_token:
+                if (
+                    working_iter.AtEnd()
+                    and not is_control_token
+                    and (
+                        not isinstance(phrase, RepeatPhrase)
+                        or phrase.min_matches != 0
+                    )
+                ):
                     success = False
                     break
 

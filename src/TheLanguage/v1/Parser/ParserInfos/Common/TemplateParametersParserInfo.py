@@ -78,7 +78,7 @@ class TemplateTypeParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(TemplateTypeParameterParserInfo, self).__init__(
-            ParserInfoType.CompileTime,
+            ParserInfoType.CompileTimeType,
             *args,
             **kwargs,
             regionless_attributes=["default_type", ],
@@ -121,7 +121,7 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(TemplateDecoratorParameterParserInfo, self).__init__(
-            ParserInfoType.CompileTime,
+            ParserInfoType.CompileTimeType,
             *args,
             **kwargs,
             regionless_attributes=[
@@ -135,7 +135,7 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
 
         if (
             self.default_value is not None
-            and self.default_value.parser_info_type__.value > ParserInfoType.CompileTime.value  # type: ignore
+            and self.default_value.parser_info_type__.value >= ParserInfoType.MaxCompileValue.value  # type: ignore
         ):
             errors.append(
                 InvalidTemplateExpressionError.Create(
@@ -193,7 +193,7 @@ class TemplateParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(TemplateParametersParserInfo, self).__init__(ParserInfoType.CompileTime, *args, **kwargs)
+        super(TemplateParametersParserInfo, self).__init__(ParserInfoType.CompileTimeType, *args, **kwargs)
         assert self.positional or self.any or self.keyword
 
         # Validate

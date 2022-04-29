@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
-    from ....Parser.ParserInfos.ParserInfo import ParserInfo, VisitControl
+    from ....Parser.ParserInfos.ParserInfo import ParserInfo
 
     from ....Parser.ParserInfos.Common.CapturedVariablesParserInfo import CapturedVariablesParserInfo
     from ....Parser.ParserInfos.Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo, ConstraintArgumentParserInfo
@@ -280,14 +280,15 @@ class CommonMixin(BaseMixin):
         self,
         parser_info: FuncParameterParserInfo,
     ):
+        self._imports.add("from v1.Parser.ParserInfos.ParserInfo import ParserInfoType")
         self._imports.add("from v1.Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParameterParserInfo")
 
         self._stream.write(
             textwrap.dedent(
                 """\
                 {statement_name} = FuncParameterParserInfo.Create(
-                    regions=[{self_region}, {is_compile_time_region}, {is_variadic_region}, {name_region}],  # type: ignore
-                    is_compile_time={is_compile_time},
+                    parser_info_type={parser_info_type},
+                    regions=[{self_region}, {is_variadic_region}, {name_region}],  # type: ignore
                     type={type},
                     is_variadic={is_variadic},
                     name={name},
@@ -297,11 +298,10 @@ class CommonMixin(BaseMixin):
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
+                parser_info_type=parser_info.parser_info_type__,  # type: ignore
                 self_region=self._ToString(parser_info.regions__.self__),
-                is_compile_time_region=self._ToString(parser_info.regions__.is_compile_time),
                 is_variadic_region=self._ToString(parser_info.regions__.is_variadic),
                 name_region=self._ToString(parser_info.regions__.name),
-                is_compile_time=self._ToString(parser_info.is_compile_time or False),
                 type=self._ToString(parser_info.type),
                 is_variadic=self._ToString(parser_info.is_variadic),
                 name=self._ToString(parser_info.name),

@@ -42,6 +42,7 @@ with InitRelativeImports():
     from ...Parser.Parser import CreateRegions
 
     from ...Parser.ParserInfos.Expressions.VariableExpressionParserInfo import (
+        ParserInfoType,
         VariableExpressionParserInfo,
     )
 
@@ -76,11 +77,16 @@ class VariableExpression(GrammarPhrase):
         name_leaf = cast(AST.Leaf, nodes[0])
         name_info = CommonTokens.VariableName.Extract(name_leaf)  # type: ignore
 
-        # Determine if we are looking at a compile-time var
-        is_compile_time_region = CommonTokens.VariableName.GetIsCompileTimeRegion(name_leaf)  # type: ignore  # pylint: disable=not-callable
+        if CommonTokens.VariableName.IsCompileTime(name_info):  # type: ignore  # pylint: disable=not-callable
+            if CommonTokens.strict_compile_time_regex.match(name_info):
+                parser_info_type = ParserInfoType.CompileTime
+            else:
+                parser_info_type = ParserInfoType.CompileTimeType
+        else:
+            parser_info_type = ParserInfoType.Standard
 
         return VariableExpressionParserInfo.Create(
-            CreateRegions(node, is_compile_time_region, name_leaf),
-            bool(is_compile_time_region),
+            parser_info_type,
+            CreateRegions(node, name_leaf),
             name_info,
         )

@@ -187,7 +187,7 @@ class BinaryExpression(Expression):
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
         raise Exception("This should never be invoked directly, as the implementation will be replaced during instance construction")
 
@@ -213,13 +213,13 @@ class BinaryExpression(Expression):
         ])
 
     # ----------------------------------------------------------------------
-    def _EvalAndImpl(self, args, type_overloads):
-        left_result = self.left.Eval(args, type_overloads)
+    def _EvalAndImpl(self, args, type_overrides):
+        left_result = self.left.Eval(args, type_overrides)
 
         if not left_result.type.ToBoolValue(left_result.value):
             return Expression.EvalResult(False, BooleanType(), None)
 
-        return self.right.Eval(args, type_overloads)
+        return self.right.Eval(args, type_overrides)
 
     # ----------------------------------------------------------------------
     def _EvalTypeOrImpl(self):
@@ -232,13 +232,13 @@ class BinaryExpression(Expression):
         return VariantType([left_type, right_type])
 
     # ----------------------------------------------------------------------
-    def _EvalOrImpl(self, args, type_overloads):
-        left_result = self.left.Eval(args, type_overloads)
+    def _EvalOrImpl(self, args, type_overrides):
+        left_result = self.left.Eval(args, type_overrides)
 
         if left_result.type.ToBoolValue(left_result.value):
             return left_result
 
-        return self.right.Eval(args, type_overloads)
+        return self.right.Eval(args, type_overrides)
 
     # ----------------------------------------------------------------------
     def _EvalIntegerOrNumberImplFactory(
@@ -272,9 +272,9 @@ class BinaryExpression(Expression):
             return left_type
 
         # ----------------------------------------------------------------------
-        def EvalImpl(self, args, type_overloads):
-            left_result = self.left.Eval(args, type_overloads)
-            right_result = self.right.Eval(args, type_overloads)
+        def EvalImpl(self, args, type_overrides):
+            left_result = self.left.Eval(args, type_overrides)
+            right_result = self.right.Eval(args, type_overrides)
 
             if left_result.type.name != right_result.type.name:
                 raise ErrorException(
@@ -342,9 +342,9 @@ class BinaryExpression(Expression):
             return left_type
 
         # ----------------------------------------------------------------------
-        def EvalImpl(self, args, type_overloads):
-            left_result = self.left.Eval(args, type_overloads)
-            right_result = self.right.Eval(args, type_overloads)
+        def EvalImpl(self, args, type_overrides):
+            left_result = self.left.Eval(args, type_overrides)
+            right_result = self.right.Eval(args, type_overrides)
 
             if left_result.type.name != right_result.type.name:
                 raise ErrorException(
@@ -395,13 +395,13 @@ class BinaryExpression(Expression):
             return VariantType([BooleanType(), right_type])
 
         # ----------------------------------------------------------------------
-        def EvalImpl(self, args, type_overloads):
-            left_result = self.left.Eval(args, type_overloads)
+        def EvalImpl(self, args, type_overrides):
+            left_result = self.left.Eval(args, type_overrides)
 
             if isinstance(left_result.type, BooleanType) and not left_result.value:
                 return left_result
 
-            right_result = self.right.Eval(args, type_overloads)
+            right_result = self.right.Eval(args, type_overrides)
 
             if left_result.type.name != right_result.type.name:
                 raise ErrorException(

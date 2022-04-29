@@ -40,6 +40,7 @@ with InitRelativeImports():
         ExtractSequence,
         OptionalPhraseItem,
         PhraseItem,
+        PhraseItemItemType,
         ZeroOrMorePhraseItem,
     )
 
@@ -68,7 +69,7 @@ def Create(
     name: str,
     open_token: str,
     close_token: str,
-    argument_element: PhraseItem,
+    argument_element: PhraseItemItemType,
     *,
     allow_empty: bool,
 ) -> PhraseItem:

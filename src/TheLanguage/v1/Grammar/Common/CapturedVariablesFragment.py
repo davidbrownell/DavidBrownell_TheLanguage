@@ -32,6 +32,7 @@ with InitRelativeImports():
     from .Impl import ArgumentsFragmentImpl
 
     from ..GrammarPhrase import AST
+    from ..Expressions.VariableExpression import VariableExpression
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
@@ -50,15 +51,10 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def Create() -> PhraseItem:
-    variable_element = PhraseItem(
-        name="Variable",
-        item=DynamicPhrasesType.Expressions,
-    )
-
     return ArgumentsFragmentImpl.Create(
         "Captured Variables",
         "|", "|",
-        variable_element,
+        VariableExpression().phrase,
         allow_empty=False,
     )
 

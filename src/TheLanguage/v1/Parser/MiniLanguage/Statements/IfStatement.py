@@ -36,6 +36,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Statement import Statement, Type
     from ..Expressions.Expression import Expression
+    from ...Error import Error
 
 
 # ----------------------------------------------------------------------
@@ -66,19 +67,19 @@ class IfStatement(Statement):
     def Execute(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> Statement.ExecuteResult:
         for clause in self.clauses:
-            clause_type_overloads = copy.deepcopy(type_overloads)
+            clause_type_overrides = copy.deepcopy(type_overrides)
 
-            result = clause.condition.Eval(args, clause_type_overloads)
+            result = clause.condition.Eval(args, clause_type_overrides)
             if not result.type.ToBoolValue(result.value):
                 continue
 
-            return self.__class__._Execute(clause.statements, args, clause_type_overloads)  # pylint: disable=protected-access
+            return self.__class__._Execute(clause.statements, args, clause_type_overrides)  # pylint: disable=protected-access
 
         if self.else_statements is not None:
-            return self.__class__._Execute(self.else_statements, args, type_overloads)  # pylint: disable=protected-access
+            return self.__class__._Execute(self.else_statements, args, type_overrides)  # pylint: disable=protected-access
 
         return Statement.ExecuteResult(
             errors=[],
@@ -94,16 +95,16 @@ class IfStatement(Statement):
     def _Execute(
         statements: List[Statement],
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> Statement.ExecuteResult:
-        errors: List[str] = []
-        warnings: List[str] = []
-        infos: List[str] = []
+        errors: List[Error] = []
+        warnings: List[Error] = []
+        infos: List[Error] = []
 
         should_continue = True
 
         for statement in statements:
-            result = statement.Execute(args, type_overloads)
+            result = statement.Execute(args, type_overrides)
 
             errors += result.errors
             warnings += result.warnings

@@ -126,6 +126,11 @@ def Execute(
         if not filenames:
             return dm.result
 
+        # BugBug
+        filenames = [
+            r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage\FixedInt.TheLanguage",
+        ]
+
         dm.stream.write("\nLexing...\n\n")
         with dm.stream.DoneManager() as lex_dm:
             lex_result = Lex(

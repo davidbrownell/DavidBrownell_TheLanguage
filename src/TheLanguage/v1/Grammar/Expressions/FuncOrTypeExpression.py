@@ -43,6 +43,7 @@ with InitRelativeImports():
 
     from ...Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import (
         FuncOrTypeExpressionParserInfo,
+        ParserInfoType,
     )
 
 
@@ -79,7 +80,13 @@ class FuncOrTypeExpression(GrammarPhrase):
         name_leaf = cast(AST.Leaf, nodes[0])
         name_info = CommonTokens.FuncName.Extract(name_leaf)  # type: ignore
 
+        if CommonTokens.FuncName.IsCompileTime(name_info):  # type: ignore
+            parser_info_type = ParserInfoType.CompileTime
+        else:
+            parser_info_type = ParserInfoType.Standard
+
         return FuncOrTypeExpressionParserInfo.Create(
+            parser_info_type,
             CreateRegions(node, name_leaf),
             name_info,
         )

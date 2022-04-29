@@ -33,7 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Expressions.Expression import Expression
     from ..Types.Type import Type
+    from ...Error import Error, Warning, Info
 
 
 # ----------------------------------------------------------------------
@@ -44,19 +46,18 @@ class Statement(Interface.Interface, ObjectReprImplBase):
     # |  Public Types
     @dataclass
     class ExecuteResult(object):
-        errors: List[str]
-        warnings: List[str]
-        infos: List[str]
+        errors: List[Error]
+        warnings: List[Warning]
+        infos: List[Info]
 
         should_continue: bool
 
     # ----------------------------------------------------------------------
     # |  Public Methods
-    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
     def Execute(
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> "Statement.ExecuteResult":
         raise Exception("Abstract method")  # pragma: no cover

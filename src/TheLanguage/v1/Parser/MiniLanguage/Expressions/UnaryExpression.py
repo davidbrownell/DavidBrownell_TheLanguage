@@ -96,7 +96,7 @@ class UnaryExpression(Expression):
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
         raise Exception("This should never be invoked directly, as the implementation will be replaced during instance construction")
 
@@ -118,8 +118,8 @@ class UnaryExpression(Expression):
         return BooleanType()
 
     # ----------------------------------------------------------------------
-    def _EvalNotImpl(self, args, type_overloads):
-        result = self.expression.Eval(args, type_overloads)
+    def _EvalNotImpl(self, args, type_overrides):
+        result = self.expression.Eval(args, type_overrides)
 
         return Expression.EvalResult(
             not result.type.ToBoolValue(result.value),
@@ -133,8 +133,8 @@ class UnaryExpression(Expression):
         eval_func: Callable[[Any], Any],
     ):
         # ----------------------------------------------------------------------
-        def Impl(self, args, type_overloads):
-            result = self.expression.Eval(args, type_overloads)
+        def Impl(self, args, type_overrides):
+            result = self.expression.Eval(args, type_overrides)
 
             if not isinstance(result.type, (IntegerType, NumberType)):
                 raise ErrorException(

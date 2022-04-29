@@ -76,7 +76,7 @@ class TypeCheckExpression(Expression):
     def Eval(
         self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
         raise Exception("This should never be invoked directly, as the implementation will be replaced during instance construction")
 
@@ -100,8 +100,8 @@ class TypeCheckExpression(Expression):
         eval_func: Callable[[Type], Callable[[Any, Type], Tuple[Any, Optional[Type]]]]
     ):
         # ----------------------------------------------------------------------
-        def Impl(self, args, type_overloads):
-            eval_result = self.expression.Eval(args, type_overloads)
+        def Impl(self, args, type_overrides):
+            eval_result = self.expression.Eval(args, type_overrides)
 
             result, inferred_type = eval_func(eval_result.type)(eval_result.value, self.checked_type)
 
@@ -109,7 +109,7 @@ class TypeCheckExpression(Expression):
                 eval_result.type = inferred_type
 
                 if eval_result.name is not None:
-                    type_overloads[eval_result.name] = inferred_type
+                    type_overrides[eval_result.name] = inferred_type
 
             if result:
                 return eval_result

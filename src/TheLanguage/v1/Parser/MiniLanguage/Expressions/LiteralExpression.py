@@ -55,7 +55,7 @@ class LiteralExpression(Expression):
     def Eval(
         self,
         args: Dict[str, Any],               # pylint: disable=unused-argument
-        type_overloads: Dict[str, Type],    # pylint: disable=unused-argument
+        type_overrides: Dict[str, Type],    # pylint: disable=unused-argument
     ):
         return Expression.EvalResult(
             self.value,
