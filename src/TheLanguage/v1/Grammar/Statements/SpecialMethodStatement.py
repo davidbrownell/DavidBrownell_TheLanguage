@@ -47,6 +47,7 @@ with InitRelativeImports():
         CreateRegion,
         CreateRegions,
         Error,
+        ErrorException,
     )
 
     from ...Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import (
@@ -145,7 +146,7 @@ class SpecialMethodStatement(GrammarPhrase):
                 statements_info = result[0]
 
             if errors:
-                return errors
+                raise ErrorException(*errors)
 
             return SpecialMethodStatementParserInfo.Create(
                 CreateRegions(node, name_leaf, statements_node),

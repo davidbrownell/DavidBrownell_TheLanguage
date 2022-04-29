@@ -101,4 +101,4 @@ class TupleType(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return Callback  # type: ignore
+        return Callback

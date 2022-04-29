@@ -18,6 +18,7 @@
 import os
 import textwrap
 
+from contextlib import contextmanager
 from typing import cast, List
 
 import CommonEnvironment
@@ -55,10 +56,13 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  ClassAttributeStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnClassAttributeStatementParserInfo(
         self,
         parser_info: ClassAttributeStatementParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Statements.ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo")
 
         class_capabilities = "{}Capabilities".format(parser_info.class_capabilities.name)
@@ -116,10 +120,13 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  ClassStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnClassStatementParserInfo(
         self,
         parser_info: ClassStatementParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo")
 
         class_capabilities = "{}Capabilities".format(parser_info.class_capabilities.name)
@@ -184,10 +191,13 @@ class StatementsMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnClassStatementDependencyParserInfo(
         self,
         parser_info: ClassStatementDependencyParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementDependencyParserInfo")
 
         self._stream.write(
@@ -212,10 +222,13 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  FuncDefinitionStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnFuncDefinitionStatementParserInfo(
         self,
         parser_info: FuncDefinitionStatementParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo, OperatorType as FuncDefinitionStatementParserInfoOperatorType")
 
         if parser_info.parent_class_capabilities is None:
@@ -296,10 +309,13 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  IfStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnIfStatementParserInfo(
         self,
         parser_info: IfStatementParserInfo,
-    ) -> None:
+    ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo")
 
         self._stream.write(
@@ -325,10 +341,13 @@ class StatementsMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnIfStatementClauseParserInfo(
         self,
         parser_info: IfStatementClauseParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementClauseParserInfo")
 
         self._stream.write(
@@ -356,10 +375,13 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  ImportStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnImportStatementParserInfo(
         self,
         parser_info: ImportStatementParserInfo,
-    ) -> None:
+    ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportType as ImportStatementParserInfoImportType")
 
         self._stream.write(
@@ -436,10 +458,13 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  SpecialMethodStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnSpecialMethodStatementParserInfo(
         self,
         parser_info: SpecialMethodStatementParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo, SpecialMethodType")
 
         parent_class_capabilities = "{}Capabilities".format(parser_info.parent_class_capabilities.name)
@@ -475,10 +500,13 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  TypeAliasStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTypeAliasStatementParserInfo(
         self,
         parser_info: TypeAliasStatementParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo")
 
         if parser_info.parent_class_capabilities is None:

@@ -46,7 +46,7 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ...Parser.Error import CreateError, Error
+    from ...Parser.Error import CreateError, Error, ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -145,10 +145,7 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def Extract(
     node: AST.Node,
-) -> Union[
-    List[Error],
-    List[AttributeData]
-]:
+) -> List[AttributeData]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 8
 
@@ -188,4 +185,7 @@ def Extract(
             ),
         )
 
-    return errors or results
+    if errors:
+        raise ErrorException(*errors)
+
+    return results

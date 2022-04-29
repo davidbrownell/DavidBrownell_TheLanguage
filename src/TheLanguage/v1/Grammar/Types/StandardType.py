@@ -48,11 +48,7 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ...Parser.Parser import (
-        CreateRegions,
-        Error,
-        ErrorException,
-    )
+    from ...Parser.Parser import CreateRegions
 
     from ...Parser.ParserInfos.Types.StandardTypeParserInfo import (
         StandardTypeItemParserInfo,
@@ -122,8 +118,6 @@ class StandardType(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 2
 
-            errors: List[Error] = []
-
             # <element_phrase_item>
             elements_node = cast(AST.Node, nodes[0])
 
@@ -153,10 +147,7 @@ class StandardType(GrammarPhrase):
                 if template_node is not None:
                     result = TemplateArgumentsFragment.Extract(template_node)
 
-                    if isinstance(result, list):
-                        errors += result
-                        template_node = None
-                    elif isinstance(result, bool):
+                    if isinstance(result, bool):
                         template_node = None
                     else:
                         template_info = result
@@ -168,25 +159,19 @@ class StandardType(GrammarPhrase):
                 if constraint_node is not None:
                     result = ConstraintArgumentsFragment.Extract(constraint_node)
 
-                    if isinstance(result, list):
-                        errors += result
-                        constraint_node = None
-                    elif isinstance(result, bool):
+                    if isinstance(result, bool):
                         constraint_node = None
                     else:
                         constraint_info = result
 
-                try:
-                    items.append(
-                        StandardTypeItemParserInfo.Create(
-                            CreateRegions(element_node, name_leaf),
-                            name_info,
-                            template_info,
-                            constraint_info,
-                        ),
-                    )
-                except ErrorException as ex:
-                    errors += ex.errors
+                items.append(
+                    StandardTypeItemParserInfo.Create(
+                        CreateRegions(element_node, name_leaf),
+                        name_info,
+                        template_info,
+                        constraint_info,
+                    ),
+                )
 
             # <mutability_modifier>?
             mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -194,9 +179,6 @@ class StandardType(GrammarPhrase):
                 mutability_modifier_info = None
             else:
                 mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
-
-            if errors:
-                return errors
 
             return StandardTypeParserInfo.Create(
                 CreateRegions(node, mutability_modifier_node, elements_node),

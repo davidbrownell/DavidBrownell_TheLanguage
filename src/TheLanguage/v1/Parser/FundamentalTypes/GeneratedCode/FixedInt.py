@@ -32,6 +32,7 @@ region_000006 = Region(begin=Location(line=161, column=39), end=Location(line=16
 
 # ----------------------------------------------------------------------
 statement_000000 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.CompileTime,
     regions=[region_000000, region_000000],
     name="IsDefined!",
 )

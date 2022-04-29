@@ -121,7 +121,6 @@ def Extract(
     *,
     allow_empty: bool,
 ) -> Union[
-    List[Error],
     bool,
     ExtractReturnType,
 ]:
@@ -169,14 +168,10 @@ def Extract(
 
         parser_infos.append(this_parser_info)
 
-    if not errors:
-        try:
-            return parser_info_type.Create(  # type: ignore
-                CreateRegions(node, node),
-                parser_infos,
-            )
-        except ErrorException as ex:
-            errors += ex.errors
+    if errors:
+        raise ErrorException(*errors)
 
-    assert errors
-    return errors
+    return parser_info_type.Create(  # type: ignore
+        CreateRegions(node, node),
+        parser_infos,
+    )

@@ -219,12 +219,11 @@ ExtractReturnType                           = TypeVar("ExtractReturnType", bound
 
 def Extract(
     parser_info_type: Type[ExtractReturnType],
-    extract_element_func: Callable[[AST.Node], Union[List[Error], Tuple[ParserInfo, bool]]],
+    extract_element_func: Callable[[AST.Node], Tuple[ParserInfo, bool]],
     node: AST.Node,
     *,
     allow_empty: bool,
 ) -> Union[
-    List[Error],
     bool,
     ExtractReturnType,
 ]:
@@ -288,24 +287,20 @@ def Extract(
 
         parameters_parser_infos[parameters_type] = (parameters_node, parser_infos)
 
-    if not errors:
-        try:
-            return parser_info_type.Create(  # type: ignore
-                CreateRegions(
-                    node,
-                    parameters_parser_infos.get(ParametersType.pos, [None])[0],
-                    parameters_parser_infos.get(ParametersType.any, [None])[0],
-                    parameters_parser_infos.get(ParametersType.key, [None])[0],
-                ),
-                parameters_parser_infos.get(ParametersType.pos, [None, None])[1],
-                parameters_parser_infos.get(ParametersType.any, [None, None])[1],
-                parameters_parser_infos.get(ParametersType.key, [None, None])[1],
-            )
-        except ErrorException as ex:
-            errors += ex.errors
+    if errors:
+        raise ErrorException(*errors)
 
-    assert errors
-    return errors
+    return parser_info_type.Create(  # type: ignore
+        CreateRegions(
+            node,
+            parameters_parser_infos.get(ParametersType.pos, [None])[0],
+            parameters_parser_infos.get(ParametersType.any, [None])[0],
+            parameters_parser_infos.get(ParametersType.key, [None])[0],
+        ),
+        parameters_parser_infos.get(ParametersType.pos, [None, None])[1],
+        parameters_parser_infos.get(ParametersType.any, [None, None])[1],
+        parameters_parser_infos.get(ParametersType.key, [None, None])[1],
+    )
 
 
 # ----------------------------------------------------------------------

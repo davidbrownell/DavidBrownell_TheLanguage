@@ -15,9 +15,9 @@
 # ----------------------------------------------------------------------
 """Contains the CommonMixin object"""
 
-import itertools
 import os
 
+from contextlib import contextmanager
 from typing import Union
 
 import CommonEnvironment
@@ -35,7 +35,6 @@ with InitRelativeImports():
         CompileTimeTemplateTypeWrapper,
         CompileTimeVariable,
         StateMaintainer,
-        VisitControl,
     )
 
     from ...MiniLanguage.Types.BooleanType import BooleanType
@@ -73,38 +72,43 @@ class CommonMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  CapturedVariablesParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnCapturedVariablesParserInfo(
         self,
         parser_info: CapturedVariablesParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  ConstraintArgumentsParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnConstraintArgumentsParserInfo(
         self,
         parser_info: ConstraintArgumentsParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnConstraintArgumentParserInfo(
         self,
         parser_info: ConstraintArgumentParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  ConstraintParametersParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnConstraintParametersParserInfo(
         self,
         parser_info: ConstraintParametersParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnConstraintParameterParserInfo(
         self,
         parser_info: ConstraintParameterParserInfo,
@@ -122,71 +126,82 @@ class CommonMixin(BaseMixin):
 
         self._ProcessParameter(parser_info)
 
+        yield
+
     # ----------------------------------------------------------------------
     # |  FuncArgumentsParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnFuncArgumentsParserInfo(
         self,
         parser_info: FuncArgumentsParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnFuncArgumentParserInfo(
         self,
         parser_info: FuncArgumentParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  FuncParametersParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnFuncParametersParserInfo(
         self,
         parser_info: FuncParametersParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnFuncParameterParserInfo(
         self,
         parser_info: FuncParameterParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  TemplateArgumentsParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateArgumentsParserInfo(
         self,
         parser_info: TemplateArgumentsParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateTypeArgumentParserInfo(
         self,
         parser_info: TemplateTypeArgumentParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateDecoratorArgumentParserInfo(
         self,
         parser_info: TemplateDecoratorArgumentParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  TemplateParametersParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateParametersParserInfo(
         self,
         parser_info: TemplateParametersParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateTypeParameterParserInfo(
         self,
         parser_info: TemplateTypeParameterParserInfo,
@@ -211,7 +226,10 @@ class CommonMixin(BaseMixin):
             ),
         )
 
+        yield
+
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateDecoratorParameterParserInfo(
         self,
         parser_info: TemplateDecoratorParameterParserInfo,
@@ -228,6 +246,8 @@ class CommonMixin(BaseMixin):
             )
 
         self._ProcessParameter(parser_info)
+
+        yield
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

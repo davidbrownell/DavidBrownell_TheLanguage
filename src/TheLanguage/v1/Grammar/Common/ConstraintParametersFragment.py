@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import cast, List, Optional, Tuple
 
 import CommonEnvironment
 
@@ -49,6 +49,7 @@ with InitRelativeImports():
         CreateRegion,
         CreateRegions,
         Error,
+        ErrorException,
         GetParserInfo,
         ParserInfo,
     )
@@ -103,10 +104,7 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def Extract(
     node: AST.Node,
-) -> Union[
-    List[Error],
-    ConstraintParametersParserInfo,
-]:
+) -> ConstraintParametersParserInfo:
     result = ParametersFragmentImpl.Extract(
         ConstraintParametersParserInfo,
         _ExtractElement,
@@ -123,10 +121,7 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractElement(
     node: AST.Node,
-) -> Union[
-    List[Error],
-    Tuple[ParserInfo, bool],
-]:
+) -> Tuple[ParserInfo, bool]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 3
 
@@ -160,7 +155,7 @@ def _ExtractElement(
         default_info = cast(ExpressionParserInfo, GetParserInfo(default_node))
 
     if errors:
-        return errors
+        raise ErrorException(*errors)
 
     return (
         ConstraintParameterParserInfo.Create(

@@ -73,9 +73,7 @@ class DocstringStatement(GrammarPhrase):
         nodes = ExtractSequence(node)
         assert len(nodes) == 2
 
-        result = MultilineFragmentImpl.Extract(cls.HEADER, cls.FOOTER, cast(AST.Node, nodes[0]))
-        if isinstance(result, list):
-            return result
+        result = MultilineFragmentImpl.Extract(cls.HEADER, cls.FOOTER, cast(AST.Node, nodes[0]))  # pylint: disable=unused-variable
 
         # Associate this information with the node
         object.__setattr__(node, cls._DOCSTRING_INFO_ATTRIBUTE_NAME, result)

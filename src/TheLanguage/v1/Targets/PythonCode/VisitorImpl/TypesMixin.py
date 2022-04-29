@@ -18,6 +18,7 @@
 import os
 import textwrap
 
+from contextlib import contextmanager
 from typing import cast, List
 
 import CommonEnvironment
@@ -50,10 +51,13 @@ class TypesMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  StandardTypeParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnStandardTypeParserInfo(
         self,
         parser_info: StandardTypeParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo, StandardTypeItemParserInfo")
 
         self._stream.write(
@@ -77,10 +81,13 @@ class TypesMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnStandardTypeItemParserInfo(
         self,
         parser_info: StandardTypeItemParserInfo,
     ):
+        yield
+
         self._stream.write(
             textwrap.dedent(
                 """\
@@ -105,10 +112,13 @@ class TypesMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  TupleTypeParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTupleTypeParserInfo(
         self,
         parser_info: TupleTypeParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Types.TupleTypeParserInfo import TupleTypeParserInfo")
 
         self._stream.write(
@@ -134,10 +144,13 @@ class TypesMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  VariantTypeParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnVariantTypeParserInfo(
         self,
         parser_info: VariantTypeParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Types.VariantTypeParserInfo import VariantTypeParserInfo")
 
         self._stream.write(

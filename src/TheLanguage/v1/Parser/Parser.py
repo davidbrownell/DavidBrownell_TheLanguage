@@ -52,13 +52,9 @@ class ParseObserver(Interface.Interface):
     ExtractParserInfoReturnType             = Union[
         None,
         ParserInfo,
-        List[Error],
         Callable[
             [],
-            Union[
-                ParserInfo,
-                List[Error],
-            ]
+            ParserInfo,
         ],
     ]
 
@@ -114,10 +110,6 @@ def Parse(
                 elif callable(result):
                     callback_funcs.append((node, result))
 
-                elif isinstance(result, list):
-                    _SetParserInfoErrors(node)
-                    errors += result
-
                 elif isinstance(result, ParserInfo):
                     _SetParserInfo(node, result)
 
@@ -132,11 +124,7 @@ def Parse(
             try:
                 result = callback()
 
-                if isinstance(result, list):
-                    _SetParserInfoErrors(node)
-                    errors += result
-
-                elif isinstance(result, ParserInfo):
+                if isinstance(result, ParserInfo):
                     _SetParserInfo(node, result)
 
                 else:
@@ -155,9 +143,7 @@ def Parse(
                 result = observer.ExtractPotentialDocInfo(child)
 
                 if result is not None:
-                    if isinstance(result, list):
-                        errors += result
-                    elif isinstance(result, tuple):
+                    if isinstance(result, tuple):
                         if existing_doc_info is not None:
                             errors.append(
                                 DuplicateDocInfoError(
@@ -166,6 +152,7 @@ def Parse(
                             )
                         else:
                             existing_doc_info = result
+
                     else:
                         assert False, result  # pragma: no cover
 

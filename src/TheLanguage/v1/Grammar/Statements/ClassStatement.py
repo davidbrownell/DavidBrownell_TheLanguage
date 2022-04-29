@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, Dict, List, Optional, Tuple, Type
+from typing import cast, Dict, List, Optional, Tuple
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -61,6 +61,7 @@ with InitRelativeImports():
         CreateRegion,
         CreateRegions,
         Error,
+        ErrorException,
         Region,
     )
 
@@ -328,7 +329,7 @@ class ClassStatement(GrammarPhrase):
         )
 
         if errors:
-            return errors
+            raise ErrorException(*errors)
 
         # ----------------------------------------------------------------------
         def Callback():
@@ -346,41 +347,15 @@ class ClassStatement(GrammarPhrase):
 
             attributes_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
             if attributes_node is not None:
-                result = AttributesFragment.Extract(attributes_node)
+                for attribute in AttributesFragment.Extract(attributes_node):
+                    supports_arguments = False
 
-                assert isinstance(result, list)
-                assert result
+                    if attribute.name == "ConstructorVisibility":
+                        supports_arguments = True
 
-                if isinstance(result[0], Error):
-                    errors += cast(List[Error], result)
-                else:
-                    for attribute in cast(List[AttributesFragment.AttributeData], result):
-                        supports_arguments = False
-
-                        if attribute.name == "ConstructorVisibility":
-                            supports_arguments = True
-
-                            if not attribute.arguments:
-                                errors.append(
-                                    AttributesFragment.ArgumentsRequiredError.Create(
-                                        region=CreateRegion(attribute.leaf),
-                                        name=attribute.name,
-                                    ),
-                                )
-
-                                continue
-
-                            # TODO: Get the value (potentially generate InvalidArgumentError)
-
-                        elif attribute.name == "Abstract":
-                            is_abstract_node = attribute.leaf
-                            is_abstract_info = True
-                        elif attribute.name == "Final":
-                            is_final_node = attribute.leaf
-                            is_final_info = True
-                        else:
+                        if not attribute.arguments:
                             errors.append(
-                                AttributesFragment.UnsupportedAttributeError.Create(
+                                AttributesFragment.ArgumentsRequiredError.Create(
                                     region=CreateRegion(attribute.leaf),
                                     name=attribute.name,
                                 ),
@@ -388,13 +363,31 @@ class ClassStatement(GrammarPhrase):
 
                             continue
 
-                        if not supports_arguments and attribute.arguments_node is not None:
-                            errors.append(
-                                AttributesFragment.UnsupportedArgumentsError.Create(
-                                    region=CreateRegion(attribute.arguments_node),
-                                    name=attribute.name,
-                                ),
-                            )
+                        # TODO: Get the value (potentially generate InvalidArgumentError)
+
+                    elif attribute.name == "Abstract":
+                        is_abstract_node = attribute.leaf
+                        is_abstract_info = True
+                    elif attribute.name == "Final":
+                        is_final_node = attribute.leaf
+                        is_final_info = True
+                    else:
+                        errors.append(
+                            AttributesFragment.UnsupportedAttributeError.Create(
+                                region=CreateRegion(attribute.leaf),
+                                name=attribute.name,
+                            ),
+                        )
+
+                        continue
+
+                    if not supports_arguments and attribute.arguments_node is not None:
+                        errors.append(
+                            AttributesFragment.UnsupportedArgumentsError.Create(
+                                region=CreateRegion(attribute.arguments_node),
+                                name=attribute.name,
+                            ),
+                        )
 
             # <visibility>?
             visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[1])))
@@ -413,28 +406,18 @@ class ClassStatement(GrammarPhrase):
             # TODO: Get visibility information from name
 
             # <template_parameters>?
-            templates_info = None
-
             templates_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[6])))
-            if templates_node is not None:
-                result = TemplateParametersFragment.Extract(templates_node)
-
-                if isinstance(result, list):
-                    errors += result
-                else:
-                    templates_info = result
+            if templates_node is None:
+                templates_info = None
+            else:
+                templates_info = TemplateParametersFragment.Extract(templates_node)
 
             # <constraint_parameters>?
-            constraints_info = None
-
             constraints_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
-            if constraints_node is not None:
-                result = ConstraintParametersFragment.Extract(constraints_node)
-
-                if isinstance(result, list):
-                    errors += result
-                else:
-                    constraints_info = result
+            if constraints_node is None:
+                constraints_info = None
+            else:
+                constraints_info = ConstraintParametersFragment.Extract(constraints_node)
 
             # <dependencies>?
             all_dependencies_info: Dict[DependencyType, Tuple[AST.Node, List[ClassStatementDependencyParserInfo]]] = {}
@@ -478,10 +461,6 @@ class ClassStatement(GrammarPhrase):
                     assert callable(standard_type_info)
                     standard_type_info = standard_type_info()
 
-                    if isinstance(standard_type_info, list):
-                        errors += standard_type_info
-                        continue
-
                     # Add it
                     these_dependencies.append(
                         ClassStatementDependencyParserInfo.Create(
@@ -497,20 +476,15 @@ class ClassStatement(GrammarPhrase):
             statements_node = cast(AST.Node, nodes[10])
             statements_info = None
 
-            docstring_node = None
-            docstring_info = None
+            statements_info, docstring_info = StatementsFragment.Extract(statements_node)
 
-            result = StatementsFragment.Extract(statements_node)
-            if isinstance(result, list):
-                errors += result
+            if docstring_info is None:
+                docstring_node = None
             else:
-                statements_info, docstring_info = result
-
-                if docstring_info is not None:
-                    docstring_node, docstring_info = docstring_info
+                docstring_node, docstring_info = docstring_info
 
             if errors:
-                return errors
+                raise ErrorException(*errors)
 
             # Commit
             return ClassStatementParserInfo.Create(
@@ -547,7 +521,7 @@ class ClassStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return Callback  # type: ignore
+        return Callback
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

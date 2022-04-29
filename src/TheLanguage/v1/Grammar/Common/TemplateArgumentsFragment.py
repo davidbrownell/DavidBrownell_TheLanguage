@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import cast, Optional, Tuple, Union
 
 import CommonEnvironment
 
@@ -47,7 +47,6 @@ with InitRelativeImports():
 
     from ...Parser.Parser import (
         CreateRegions,
-        Error,
         GetParserInfo,
         ParserInfo,
     )
@@ -116,7 +115,6 @@ def Create() -> PhraseItem:
 def Extract(
     node: AST.Node,
 ) -> Union[
-    List[Error],
     bool,
     TemplateArgumentsParserInfo,
 ]:

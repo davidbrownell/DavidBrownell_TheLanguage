@@ -1072,8 +1072,8 @@ statement_000024 = StandardTypeParserInfo.Create(
 )
 
 statement_000025 = FuncParameterParserInfo.Create(
-    regions=[region_000041, None, None, region_000042],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000041, None, region_000042],  # type: ignore
     type=statement_000024,
     is_variadic=None,
     name="archive",
@@ -1137,8 +1137,8 @@ statement_000031 = StandardTypeParserInfo.Create(
 )
 
 statement_000032 = FuncParameterParserInfo.Create(
-    regions=[region_000053, None, None, region_000054],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000053, None, region_000054],  # type: ignore
     type=statement_000031,
     is_variadic=None,
     name="archive",
@@ -1202,8 +1202,8 @@ statement_000038 = StandardTypeParserInfo.Create(
 )
 
 statement_000039 = FuncParameterParserInfo.Create(
-    regions=[region_000065, None, None, region_000066],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000065, None, region_000066],  # type: ignore
     type=statement_000038,
     is_variadic=None,
     name="visitor",
@@ -1371,8 +1371,8 @@ statement_000054 = StandardTypeParserInfo.Create(
 )
 
 statement_000055 = FuncParameterParserInfo.Create(
-    regions=[region_000102, None, None, region_000103],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000102, None, region_000103],  # type: ignore
     type=statement_000054,
     is_variadic=None,
     name="this",
@@ -1393,8 +1393,8 @@ statement_000057 = StandardTypeParserInfo.Create(
 )
 
 statement_000058 = FuncParameterParserInfo.Create(
-    regions=[region_000107, None, None, region_000108],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000107, None, region_000108],  # type: ignore
     type=statement_000057,
     is_variadic=None,
     name="that",
@@ -1457,8 +1457,8 @@ statement_000064 = StandardTypeParserInfo.Create(
 )
 
 statement_000065 = FuncParameterParserInfo.Create(
-    regions=[region_000121, None, None, region_000122],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000121, None, region_000122],  # type: ignore
     type=statement_000064,
     is_variadic=None,
     name="that",
@@ -1521,8 +1521,8 @@ statement_000071 = StandardTypeParserInfo.Create(
 )
 
 statement_000072 = FuncParameterParserInfo.Create(
-    regions=[region_000134, None, None, region_000135],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000134, None, region_000135],  # type: ignore
     type=statement_000071,
     is_variadic=None,
     name="that",
@@ -1585,8 +1585,8 @@ statement_000078 = StandardTypeParserInfo.Create(
 )
 
 statement_000079 = FuncParameterParserInfo.Create(
-    regions=[region_000147, None, None, region_000148],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000147, None, region_000148],  # type: ignore
     type=statement_000078,
     is_variadic=None,
     name="that",
@@ -1649,8 +1649,8 @@ statement_000085 = StandardTypeParserInfo.Create(
 )
 
 statement_000086 = FuncParameterParserInfo.Create(
-    regions=[region_000160, None, None, region_000161],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000160, None, region_000161],  # type: ignore
     type=statement_000085,
     is_variadic=None,
     name="that",
@@ -1713,8 +1713,8 @@ statement_000092 = StandardTypeParserInfo.Create(
 )
 
 statement_000093 = FuncParameterParserInfo.Create(
-    regions=[region_000173, None, None, region_000174],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000173, None, region_000174],  # type: ignore
     type=statement_000092,
     is_variadic=None,
     name="that",
@@ -1777,8 +1777,8 @@ statement_000099 = StandardTypeParserInfo.Create(
 )
 
 statement_000100 = FuncParameterParserInfo.Create(
-    regions=[region_000186, None, None, region_000187],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000186, None, region_000187],  # type: ignore
     type=statement_000099,
     is_variadic=None,
     name="that",
@@ -1861,8 +1861,8 @@ statement_000107 = StandardTypeParserInfo.Create(
 )
 
 statement_000108 = FuncParameterParserInfo.Create(
-    regions=[region_000201, None, None, region_000202],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000201, None, region_000202],  # type: ignore
     type=statement_000107,
     is_variadic=None,
     name="value",
@@ -1945,8 +1945,8 @@ statement_000115 = StandardTypeParserInfo.Create(
 )
 
 statement_000116 = FuncParameterParserInfo.Create(
-    regions=[region_000216, None, None, region_000217],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000216, None, region_000217],  # type: ignore
     type=statement_000115,
     is_variadic=None,
     name="value",
@@ -2009,8 +2009,8 @@ statement_000122 = StandardTypeParserInfo.Create(
 )
 
 statement_000123 = FuncParameterParserInfo.Create(
-    regions=[region_000229, None, None, region_000230],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000229, None, region_000230],  # type: ignore
     type=statement_000122,
     is_variadic=None,
     name="value",
@@ -2073,8 +2073,8 @@ statement_000129 = StandardTypeParserInfo.Create(
 )
 
 statement_000130 = FuncParameterParserInfo.Create(
-    regions=[region_000242, None, None, region_000243],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000242, None, region_000243],  # type: ignore
     type=statement_000129,
     is_variadic=None,
     name="value",
@@ -2137,8 +2137,8 @@ statement_000136 = StandardTypeParserInfo.Create(
 )
 
 statement_000137 = FuncParameterParserInfo.Create(
-    regions=[region_000255, None, None, region_000256],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000255, None, region_000256],  # type: ignore
     type=statement_000136,
     is_variadic=None,
     name="value",
@@ -2201,8 +2201,8 @@ statement_000143 = StandardTypeParserInfo.Create(
 )
 
 statement_000144 = FuncParameterParserInfo.Create(
-    regions=[region_000268, None, None, region_000269],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000268, None, region_000269],  # type: ignore
     type=statement_000143,
     is_variadic=None,
     name="value",
@@ -2685,8 +2685,8 @@ statement_000186 = StandardTypeParserInfo.Create(
 )
 
 statement_000187 = FuncParameterParserInfo.Create(
-    regions=[region_000377, None, None, region_000378],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000377, None, region_000378],  # type: ignore
     type=statement_000186,
     is_variadic=None,
     name="value",
@@ -2749,8 +2749,8 @@ statement_000193 = StandardTypeParserInfo.Create(
 )
 
 statement_000194 = FuncParameterParserInfo.Create(
-    regions=[region_000390, None, None, region_000391],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000390, None, region_000391],  # type: ignore
     type=statement_000193,
     is_variadic=None,
     name="value",
@@ -2813,8 +2813,8 @@ statement_000200 = StandardTypeParserInfo.Create(
 )
 
 statement_000201 = FuncParameterParserInfo.Create(
-    regions=[region_000403, None, None, region_000404],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000403, None, region_000404],  # type: ignore
     type=statement_000200,
     is_variadic=None,
     name="value",
@@ -2877,8 +2877,8 @@ statement_000207 = StandardTypeParserInfo.Create(
 )
 
 statement_000208 = FuncParameterParserInfo.Create(
-    regions=[region_000416, None, None, region_000417],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000416, None, region_000417],  # type: ignore
     type=statement_000207,
     is_variadic=None,
     name="value",
@@ -2941,8 +2941,8 @@ statement_000214 = StandardTypeParserInfo.Create(
 )
 
 statement_000215 = FuncParameterParserInfo.Create(
-    regions=[region_000429, None, None, region_000430],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000429, None, region_000430],  # type: ignore
     type=statement_000214,
     is_variadic=None,
     name="value",
@@ -3005,8 +3005,8 @@ statement_000221 = StandardTypeParserInfo.Create(
 )
 
 statement_000222 = FuncParameterParserInfo.Create(
-    regions=[region_000442, None, None, region_000443],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000442, None, region_000443],  # type: ignore
     type=statement_000221,
     is_variadic=None,
     name="value",
@@ -3089,8 +3089,8 @@ statement_000229 = StandardTypeParserInfo.Create(
 )
 
 statement_000230 = FuncParameterParserInfo.Create(
-    regions=[region_000457, None, None, region_000458],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000457, None, region_000458],  # type: ignore
     type=statement_000229,
     is_variadic=None,
     name="value",
@@ -3135,8 +3135,8 @@ statement_000234 = NoneExpressionParserInfo.Create(
 )
 
 statement_000235 = FuncParameterParserInfo.Create(
-    regions=[region_000465, None, None, region_000466],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000465, None, region_000466],  # type: ignore
     type=statement_000233,
     is_variadic=None,
     name="begin_char_index",
@@ -3181,8 +3181,8 @@ statement_000239 = NoneExpressionParserInfo.Create(
 )
 
 statement_000240 = FuncParameterParserInfo.Create(
-    regions=[region_000473, None, None, region_000474],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000473, None, region_000474],  # type: ignore
     type=statement_000238,
     is_variadic=None,
     name="end_char_index",
@@ -3265,8 +3265,8 @@ statement_000247 = StandardTypeParserInfo.Create(
 )
 
 statement_000248 = FuncParameterParserInfo.Create(
-    regions=[region_000489, None, None, region_000490],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000489, None, region_000490],  # type: ignore
     type=statement_000247,
     is_variadic=None,
     name="value",
@@ -3311,8 +3311,8 @@ statement_000252 = NoneExpressionParserInfo.Create(
 )
 
 statement_000253 = FuncParameterParserInfo.Create(
-    regions=[region_000497, None, None, region_000498],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000497, None, region_000498],  # type: ignore
     type=statement_000251,
     is_variadic=None,
     name="begin_char_index",
@@ -3357,8 +3357,8 @@ statement_000257 = NoneExpressionParserInfo.Create(
 )
 
 statement_000258 = FuncParameterParserInfo.Create(
-    regions=[region_000505, None, None, region_000506],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000505, None, region_000506],  # type: ignore
     type=statement_000256,
     is_variadic=None,
     name="end_char_index",
@@ -3441,8 +3441,8 @@ statement_000265 = StandardTypeParserInfo.Create(
 )
 
 statement_000266 = FuncParameterParserInfo.Create(
-    regions=[region_000521, None, None, region_000522],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000521, None, region_000522],  # type: ignore
     type=statement_000265,
     is_variadic=None,
     name="value",
@@ -3487,8 +3487,8 @@ statement_000270 = NoneExpressionParserInfo.Create(
 )
 
 statement_000271 = FuncParameterParserInfo.Create(
-    regions=[region_000529, None, None, region_000530],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000529, None, region_000530],  # type: ignore
     type=statement_000269,
     is_variadic=None,
     name="end_char_index",
@@ -3571,8 +3571,8 @@ statement_000278 = StandardTypeParserInfo.Create(
 )
 
 statement_000279 = FuncParameterParserInfo.Create(
-    regions=[region_000545, None, None, region_000546],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000545, None, region_000546],  # type: ignore
     type=statement_000278,
     is_variadic=None,
     name="value",
@@ -3617,8 +3617,8 @@ statement_000283 = NoneExpressionParserInfo.Create(
 )
 
 statement_000284 = FuncParameterParserInfo.Create(
-    regions=[region_000553, None, None, region_000554],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000553, None, region_000554],  # type: ignore
     type=statement_000282,
     is_variadic=None,
     name="end_char_index",
@@ -3701,8 +3701,8 @@ statement_000291 = StandardTypeParserInfo.Create(
 )
 
 statement_000292 = FuncParameterParserInfo.Create(
-    regions=[region_000569, None, None, region_000570],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000569, None, region_000570],  # type: ignore
     type=statement_000291,
     is_variadic=None,
     name="value",
@@ -3747,8 +3747,8 @@ statement_000296 = NoneExpressionParserInfo.Create(
 )
 
 statement_000297 = FuncParameterParserInfo.Create(
-    regions=[region_000577, None, None, region_000578],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000577, None, region_000578],  # type: ignore
     type=statement_000295,
     is_variadic=None,
     name="end_char_index",
@@ -3831,8 +3831,8 @@ statement_000304 = StandardTypeParserInfo.Create(
 )
 
 statement_000305 = FuncParameterParserInfo.Create(
-    regions=[region_000593, None, None, region_000594],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000593, None, region_000594],  # type: ignore
     type=statement_000304,
     is_variadic=None,
     name="value",
@@ -3877,8 +3877,8 @@ statement_000309 = NoneExpressionParserInfo.Create(
 )
 
 statement_000310 = FuncParameterParserInfo.Create(
-    regions=[region_000601, None, None, region_000602],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000601, None, region_000602],  # type: ignore
     type=statement_000308,
     is_variadic=None,
     name="end_char_index",
@@ -3961,8 +3961,8 @@ statement_000317 = StandardTypeParserInfo.Create(
 )
 
 statement_000318 = FuncParameterParserInfo.Create(
-    regions=[region_000617, None, None, region_000618],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000617, None, region_000618],  # type: ignore
     type=statement_000317,
     is_variadic=None,
     name="value",
@@ -4007,8 +4007,8 @@ statement_000322 = NoneExpressionParserInfo.Create(
 )
 
 statement_000323 = FuncParameterParserInfo.Create(
-    regions=[region_000625, None, None, region_000626],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000625, None, region_000626],  # type: ignore
     type=statement_000321,
     is_variadic=None,
     name="begin_char_index",
@@ -4091,8 +4091,8 @@ statement_000330 = StandardTypeParserInfo.Create(
 )
 
 statement_000331 = FuncParameterParserInfo.Create(
-    regions=[region_000641, None, None, region_000642],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000641, None, region_000642],  # type: ignore
     type=statement_000330,
     is_variadic=None,
     name="value",
@@ -4137,8 +4137,8 @@ statement_000335 = NoneExpressionParserInfo.Create(
 )
 
 statement_000336 = FuncParameterParserInfo.Create(
-    regions=[region_000649, None, None, region_000650],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000649, None, region_000650],  # type: ignore
     type=statement_000334,
     is_variadic=None,
     name="begin_char_index",
@@ -4411,8 +4411,8 @@ statement_000360 = StandardTypeParserInfo.Create(
 )
 
 statement_000361 = FuncParameterParserInfo.Create(
-    regions=[region_000711, None, None, region_000712],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000711, None, region_000712],  # type: ignore
     type=statement_000360,
     is_variadic=None,
     name="length",
@@ -4438,8 +4438,8 @@ statement_000364 = CharacterExpressionParserInfo.Create(
 )
 
 statement_000365 = FuncParameterParserInfo.Create(
-    regions=[region_000717, None, None, region_000718],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000717, None, region_000718],  # type: ignore
     type=statement_000363,
     is_variadic=None,
     name="fill_char",
@@ -4502,8 +4502,8 @@ statement_000371 = StandardTypeParserInfo.Create(
 )
 
 statement_000372 = FuncParameterParserInfo.Create(
-    regions=[region_000731, None, None, region_000732],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000731, None, region_000732],  # type: ignore
     type=statement_000371,
     is_variadic=None,
     name="length",
@@ -4529,8 +4529,8 @@ statement_000375 = CharacterExpressionParserInfo.Create(
 )
 
 statement_000376 = FuncParameterParserInfo.Create(
-    regions=[region_000737, None, None, region_000738],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000737, None, region_000738],  # type: ignore
     type=statement_000374,
     is_variadic=None,
     name="fill_char",
@@ -4593,8 +4593,8 @@ statement_000382 = StandardTypeParserInfo.Create(
 )
 
 statement_000383 = FuncParameterParserInfo.Create(
-    regions=[region_000751, None, None, region_000752],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000751, None, region_000752],  # type: ignore
     type=statement_000382,
     is_variadic=None,
     name="length",
@@ -4620,8 +4620,8 @@ statement_000386 = CharacterExpressionParserInfo.Create(
 )
 
 statement_000387 = FuncParameterParserInfo.Create(
-    regions=[region_000757, None, None, region_000758],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000757, None, region_000758],  # type: ignore
     type=statement_000385,
     is_variadic=None,
     name="fill_char",
@@ -4789,8 +4789,8 @@ statement_000402 = StandardTypeParserInfo.Create(
 )
 
 statement_000403 = FuncParameterParserInfo.Create(
-    regions=[region_000795, None, None, region_000796],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000795, None, region_000796],  # type: ignore
     type=statement_000402,
     is_variadic=None,
     name="source",
@@ -4811,8 +4811,8 @@ statement_000405 = StandardTypeParserInfo.Create(
 )
 
 statement_000406 = FuncParameterParserInfo.Create(
-    regions=[region_000800, None, None, region_000801],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000800, None, region_000801],  # type: ignore
     type=statement_000405,
     is_variadic=None,
     name="dest",
@@ -4857,8 +4857,8 @@ statement_000410 = NoneExpressionParserInfo.Create(
 )
 
 statement_000411 = FuncParameterParserInfo.Create(
-    regions=[region_000808, None, None, region_000809],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000808, None, region_000809],  # type: ignore
     type=statement_000409,
     is_variadic=None,
     name="count",
@@ -4921,8 +4921,8 @@ statement_000417 = StandardTypeParserInfo.Create(
 )
 
 statement_000418 = FuncParameterParserInfo.Create(
-    regions=[region_000822, None, None, region_000823],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000822, None, region_000823],  # type: ignore
     type=statement_000417,
     is_variadic=None,
     name="source",
@@ -4943,8 +4943,8 @@ statement_000420 = StandardTypeParserInfo.Create(
 )
 
 statement_000421 = FuncParameterParserInfo.Create(
-    regions=[region_000827, None, None, region_000828],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000827, None, region_000828],  # type: ignore
     type=statement_000420,
     is_variadic=None,
     name="dest",
@@ -4989,8 +4989,8 @@ statement_000425 = NoneExpressionParserInfo.Create(
 )
 
 statement_000426 = FuncParameterParserInfo.Create(
-    regions=[region_000835, None, None, region_000836],  # type: ignore
-    is_compile_time=False,
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000835, None, region_000836],  # type: ignore
     type=statement_000424,
     is_variadic=None,
     name="count",

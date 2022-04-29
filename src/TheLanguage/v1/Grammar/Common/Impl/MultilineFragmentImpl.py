@@ -18,7 +18,7 @@
 import os
 import re
 
-from typing import cast, List, Union, Tuple
+from typing import cast, List, Tuple
 
 import CommonEnvironment
 
@@ -41,7 +41,7 @@ with InitRelativeImports():
         RegexToken,
     )
 
-    from ....Parser.Parser import CreateError, CreateRegion, Error
+    from ....Parser.Parser import CreateError, CreateRegion, Error, ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -96,10 +96,7 @@ def Extract(
     header: str,
     footer: str,
     node: AST.Node,
-) -> Union[
-    Tuple[AST.Leaf, str],
-    List[Error],
-]:
+) -> Tuple[AST.Leaf, str]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 1
 
@@ -166,7 +163,7 @@ def Extract(
         )
 
     if errors:
-        return errors
+        raise ErrorException(*errors)
 
     value = value.replace("\\{}".format(footer), footer)
 

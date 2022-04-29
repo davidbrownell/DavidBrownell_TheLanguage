@@ -17,6 +17,8 @@
 
 import os
 
+from contextlib import contextmanager
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -27,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .BaseMixin import BaseMixin, VisitControl
+    from .BaseMixin import BaseMixin
 
     from ...Error import Error
     from ...ParserInfos.ParserInfo import ParserInfoType
@@ -51,11 +53,12 @@ with InitRelativeImports():
 class ExpressionsMixin(BaseMixin):
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnBinaryExpressionParserInfo(
         self,
         parser_info: BinaryExpressionParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     def OnBooleanExpressionParserInfo(
@@ -65,6 +68,7 @@ class ExpressionsMixin(BaseMixin):
         pass
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnCallExpressionParserInfo(
         self,
         parser_info: CallExpressionParserInfo,
@@ -72,7 +76,7 @@ class ExpressionsMixin(BaseMixin):
         if parser_info.parser_info_type__ == ParserInfoType.CompileTime:  # type: ignore
             self.ExecuteMiniLanguageFunctionStatement(parser_info)  # type: ignore
 
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     def OnCharacterExpressionParserInfo(
@@ -117,25 +121,28 @@ class ExpressionsMixin(BaseMixin):
         pass
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTernaryExpressionParserInfo(
         self,
         parser_info: TernaryExpressionParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTypeCheckExpressionParserInfo(
         self,
         parser_info: TypeCheckExpressionParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnUnaryExpressionParserInfo(
         self,
         parser_info: UnaryExpressionParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     def OnVariableExpressionParserInfo(

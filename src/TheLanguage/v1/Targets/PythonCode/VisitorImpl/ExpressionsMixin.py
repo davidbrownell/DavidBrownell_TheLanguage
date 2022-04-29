@@ -18,6 +18,8 @@
 import os
 import textwrap
 
+from contextlib import contextmanager
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -56,10 +58,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  BinaryExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnBinaryExpressionParserInfo(
         self,
         parser_info: BinaryExpressionParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo, OperatorType as BinaryExpressionOperatorType")
 
         self._stream.write(
@@ -111,10 +116,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  CallExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnCallExpressionParserInfo(
         self,
         parser_info: CallExpressionParserInfo,
     ) -> None:
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo")
 
         self._stream.write(
@@ -291,10 +299,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  TernaryExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTernaryExpressionParserInfo(
         self,
         parser_info: TernaryExpressionParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo")
 
         self._stream.write(
@@ -320,10 +331,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  TypeCheckExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTypeCheckExpressionParserInfo(
         self,
         parser_info: TypeCheckExpressionParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Expressions.TypeCheckExpressionParserInfo import TypeCheckExpressionParserInfo, OperatorType as TypeCheckExpressionParserInfoOperatorType")
 
         self._stream.write(
@@ -350,10 +364,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  UnaryExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnUnaryExpressionParserInfo(
         self,
         parser_info: UnaryExpressionParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Expressions.UnaryExpressionParserInfo import UnaryExpressionParserInfo, OperatorType as UnaryExpressionParserInfoOperatorType")
 
         self._stream.write(

@@ -17,6 +17,8 @@
 
 import os
 
+from contextlib import contextmanager
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -45,16 +47,18 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  ClassAttributeStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnClassAttributeStatementParserInfo(
         self,
         parser_info: ClassAttributeStatementParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  ClassStatementParserInfo
     # ----------------------------------------------------------------------
-    def OnEnterClassStatementParserInfo(
+    @contextmanager
+    def OnClassStatementParserInfo(
         self,
         parser_info: ClassStatementParserInfo,
     ):
@@ -62,26 +66,25 @@ class StatementsMixin(BaseMixin):
         if parser_info.templates or parser_info.constraints:
             self._compile_time_info.PushScope()
 
-    # ----------------------------------------------------------------------
-    def OnExitClassStatementParserInfo(
-        self,
-        parser_info: ClassStatementParserInfo,
-    ):
+        yield
+
         # Remove scope for templates and constraints
         if parser_info.templates or parser_info.constraints:
             self._compile_time_info.PopScope()
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnClassStatementDependencyParserInfo(
         self,
         parser_info: ClassStatementDependencyParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  FuncDefinitionStatementParserInfo
     # ----------------------------------------------------------------------
-    def OnEnterFuncDefinitionStatementParserInfo(
+    @contextmanager
+    def OnFuncDefinitionStatementParserInfo(
         self,
         parser_info: FuncDefinitionStatementParserInfo,
     ):
@@ -89,11 +92,8 @@ class StatementsMixin(BaseMixin):
         if parser_info.templates:
             self._compile_time_info.PushScope()
 
-    # ----------------------------------------------------------------------
-    def OnExitFuncDefinitionStatementParserInfo(
-        self,
-        parser_info: FuncDefinitionStatementParserInfo,
-    ):
+        yield
+
         # Remove scope for templates
         if parser_info.templates:
             self._compile_time_info.PopScope()
@@ -101,27 +101,30 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  IfStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnIfStatementParserInfo(
         self,
         parser_info: IfStatementParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnIfStatementClauseParserInfo(
         self,
         parser_info: IfStatementClauseParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  ImportStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnImportStatementParserInfo(
         self,
         parser_info: ImportStatementParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     def OnImportStatementItemParserInfo(
@@ -142,16 +145,18 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  SpecialMethodStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnSpecialMethodStatementParserInfo(
         self,
         parser_info: SpecialMethodStatementParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  TypeAliasStatementParserInfo
     # ----------------------------------------------------------------------
-    def OnEnterTypeAliasStatementParserInfo(
+    @contextmanager
+    def OnTypeAliasStatementParserInfo(
         self,
         parser_info: TypeAliasStatementParserInfo,
     ):
@@ -159,11 +164,8 @@ class StatementsMixin(BaseMixin):
         if parser_info.templates or parser_info.constraints:
             self._compile_time_info.PushScope()
 
-    # ----------------------------------------------------------------------
-    def OnExitTypeAliasStatementParserInfo(
-        self,
-        parser_info: TypeAliasStatementParserInfo,
-    ):
+        yield
+
         # Remove scope for templates or constraints
         if parser_info.templates or parser_info.constraints:
             self._compile_time_info.PopScope()

@@ -17,6 +17,8 @@
 
 import os
 
+from contextlib import contextmanager
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -27,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .BaseMixin import BaseMixin, VisitControl
+    from .BaseMixin import BaseMixin
 
     from ...ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo, StandardTypeItemParserInfo
     from ...ParserInfos.Types.TupleTypeParserInfo import TupleTypeParserInfo
@@ -39,33 +41,37 @@ class TypesMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  StandardTypeParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnStandardTypeParserInfo(
         self,
         parser_info: StandardTypeParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnStandardTypeItemParserInfo(
         self,
         parser_info: StandardTypeItemParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  TupleTypeParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTupleTypeParserInfo(
         self,
         parser_info: TupleTypeParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  VariantTypeParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnVariantTypeParserInfo(
         self,
         parser_info: VariantTypeParserInfo,
     ):
-        pass
+        yield

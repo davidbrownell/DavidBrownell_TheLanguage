@@ -18,6 +18,7 @@
 import os
 import textwrap
 
+from contextlib import contextmanager
 from typing import cast, List, Optional
 
 import CommonEnvironment
@@ -54,10 +55,13 @@ class CommonMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  CapturedVariablesParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnCapturedVariablesParserInfo(
         self,
         parser_info: CapturedVariablesParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.CapturedVariablesParserInfo import CapturedVariablesParserInfo")
 
         self._stream.write(
@@ -80,10 +84,13 @@ class CommonMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  ConstraintArgumentsParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnConstraintArgumentsParserInfo(
         self,
         parser_info: ConstraintArgumentsParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo")
 
         self._stream.write(
@@ -104,10 +111,13 @@ class CommonMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnConstraintArgumentParserInfo(
         self,
         parser_info: ConstraintArgumentParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.ConstraintArgumentsParserInfo import ConstraintArgumentParserInfo")
 
         self._stream.write(
@@ -132,10 +142,13 @@ class CommonMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  ConstraintParametersParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnConstraintParametersParserInfo(
         self,
         parser_info: ConstraintParametersParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo")
 
         self._stream.write(
@@ -162,10 +175,13 @@ class CommonMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnConstraintParameterParserInfo(
         self,
         parser_info: ConstraintParameterParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo")
 
         self._stream.write(
@@ -192,10 +208,13 @@ class CommonMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  FuncArgumentsParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnFuncArgumentsParserInfo(
         self,
         parser_info: FuncArgumentsParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.FuncArgumentsParserInfo import FuncArgumentsParserInfo")
 
         self._stream.write(
@@ -216,10 +235,13 @@ class CommonMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnFuncArgumentParserInfo(
         self,
         parser_info: FuncArgumentParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.FuncArgumentsParserInfo import FuncArgumentParserInfo")
 
         self._stream.write(
@@ -246,10 +268,13 @@ class CommonMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  FuncParametersParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnFuncParametersParserInfo(
         self,
         parser_info: FuncParametersParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParametersParserInfo")
 
         self._stream.write(
@@ -276,10 +301,13 @@ class CommonMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnFuncParameterParserInfo(
         self,
         parser_info: FuncParameterParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.ParserInfo import ParserInfoType")
         self._imports.add("from v1.Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParameterParserInfo")
 
@@ -312,10 +340,13 @@ class CommonMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  TemplateArgumentsParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateArgumentsParserInfo(
         self,
         parser_info: TemplateArgumentsParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo")
 
         self._stream.write(
@@ -336,10 +367,13 @@ class CommonMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateDecoratorArgumentParserInfo(
         self,
         parser_info: TemplateDecoratorArgumentParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateDecoratorArgumentParserInfo")
 
         self._stream.write(
@@ -362,10 +396,13 @@ class CommonMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateTypeArgumentParserInfo(
         self,
         parser_info: TemplateTypeArgumentParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateTypeArgumentParserInfo")
 
         self._stream.write(
@@ -390,10 +427,13 @@ class CommonMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  TemplateParametersParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateParametersParserInfo(
         self,
         parser_info: TemplateParametersParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateParametersParserInfo")
 
         self._stream.write(
@@ -420,10 +460,13 @@ class CommonMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateTypeParameterParserInfo(
         self,
         parser_info: TemplateTypeParameterParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo")
 
         self._stream.write(
@@ -449,10 +492,13 @@ class CommonMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTemplateDecoratorParameterParserInfo(
         self,
         parser_info: TemplateDecoratorParameterParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateDecoratorParameterParserInfo")
 
         self._stream.write(

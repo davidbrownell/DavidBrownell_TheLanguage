@@ -45,7 +45,7 @@ with InitRelativeImports():
         ZeroOrMorePhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions, Error, GetParserInfo
+    from ...Parser.Parser import CreateRegions, GetParserInfo
 
     from ...Parser.ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
 
@@ -104,8 +104,6 @@ class IfStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 5
 
-            errors: List[Error] = []
-
             clauses: List[IfStatementClauseParserInfo] = []
 
             for clause_node in itertools.chain(
@@ -124,58 +122,43 @@ class IfStatement(GrammarPhrase):
 
                 # <statements>
                 statements_node = cast(AST.Node, clause_nodes[2])
+                statements_info, docstring_info = StatementsFragment.Extract(statements_node)
 
-                statements_info = None
-                docstring_leaf = None
-                docstring_info = None
-
-                result = StatementsFragment.Extract(statements_node)
-
-                if isinstance(result, list):
-                    errors += result
+                if docstring_info is None:
+                    docstring_node = None
                 else:
-                    statements_info, docstring_info = result
+                    docstring_node, docstring_info = docstring_info
 
-                    if docstring_info is not None:
-                        docstring_leaf, docstring_info = docstring_info
-
-                if statements_info is not None:
-                    clauses.append(
-                        IfStatementClauseParserInfo.Create(
-                            CreateRegions(clause_node, statements_node, docstring_leaf),
-                            expression_info,
-                            statements_info,
-                            docstring_info,
-                        ),
-                    )
+                clauses.append(
+                    IfStatementClauseParserInfo.Create(
+                        CreateRegions(clause_node, statements_node, docstring_node),
+                        expression_info,
+                        statements_info,
+                        docstring_info,
+                    ),
+                )
 
             # ('else' <statements>)?
             else_statements_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[4])))
+            if else_statements_node is None:
+                else_statements_info = None
+                else_docstring_node = None
+                else_docstring_info = None
 
-            else_statements_info = None
-            else_docstring_leaf = None
-            else_docstring_info = None
-
-            if else_statements_node is not None:
+            else:
                 else_statements_nodes = ExtractSequence(else_statements_node)
                 assert len(else_statements_nodes) == 2
 
                 else_statements_node = cast(AST.Node, else_statements_nodes[1])
-                result = StatementsFragment.Extract(else_statements_node)
+                else_statements_info, else_docstring_info = StatementsFragment.Extract(else_statements_node)
 
-                if isinstance(result, list):
-                    errors += result
+                if else_docstring_info is None:
+                    else_docstring_node = None
                 else:
-                    else_statements_info, else_docstring_info = result
-
-                    if else_docstring_info is not None:
-                        else_docstring_leaf, else_docstring_info = else_docstring_info
-
-            if errors:
-                return errors
+                    else_docstring_node, else_docstring_info = else_docstring_info
 
             return IfStatementParserInfo.Create(
-                CreateRegions(node, else_statements_node, else_docstring_leaf),
+                CreateRegions(node, else_statements_node, else_docstring_node),
                 clauses,
                 else_statements_info,
                 else_docstring_info,

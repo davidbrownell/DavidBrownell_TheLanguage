@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -47,11 +47,7 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import (
-        CreateRegions,
-        Error,
-        GetParserInfo,
-    )
+    from ...Parser.Parser import CreateRegions, GetParserInfo
 
     from ...Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import (
         TypeAliasStatementParserInfo,
@@ -114,8 +110,6 @@ class TypeAliasStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 9
 
-            errors: List[Error] = []
-
             # <visibility>?
             visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
             if visibility_node is None:
@@ -128,35 +122,22 @@ class TypeAliasStatement(GrammarPhrase):
             name_info = CommonTokens.TypeName.Extract(name_leaf)  # type: ignore
 
             # <template_parameters>?
-            templates_info = None
-
             templates_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[3])))
-            if templates_node is not None:
-                result = TemplateParametersFragment.Extract(templates_node)
-
-                if isinstance(result, list):
-                    errors += result
-                else:
-                    templates_info = result
+            if templates_node is None:
+                templates_info = None
+            else:
+                templates_info = TemplateParametersFragment.Extract(templates_node)
 
             # <constraint_parameters>?
-            constraints_info = None
-
             constraints_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[4])))
-            if constraints_node is not None:
-                result = ConstraintParametersFragment.Extract(constraints_node)
-
-                if isinstance(result, list):
-                    errors += result
-                else:
-                    constraints_info = result
+            if constraints_node is None:
+                constraints_info = None
+            else:
+                constraints_info = ConstraintParametersFragment.Extract(constraints_node)
 
             # <type>
             type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[7])))
             type_info = cast(TypeParserInfo, GetParserInfo(type_node))
-
-            if errors:
-                return errors
 
             return TypeAliasStatementParserInfo.Create(
                 CreateRegions(node, visibility_node, name_leaf),

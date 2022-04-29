@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import cast, List, Optional, Tuple
 
 import CommonEnvironment
 
@@ -50,6 +50,7 @@ with InitRelativeImports():
         CreateRegion,
         CreateRegions,
         Error,
+        ErrorException,
         GetParserInfo,
         ParserInfo,
     )
@@ -137,10 +138,7 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def Extract(
     node: AST.Node,
-) -> Union[
-    List[Error],
-    TemplateParametersParserInfo,
-]:
+) -> TemplateParametersParserInfo:
     result = ParametersFragmentImpl.Extract(
         TemplateParametersParserInfo,
         _ExtractElement,
@@ -157,10 +155,7 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractElement(
     node: AST.Node,
-) -> Union[
-    List[Error],
-    Tuple[ParserInfo, bool],
-]:
+) -> Tuple[ParserInfo, bool]:
     node = cast(AST.Node, ExtractOr(node))
     assert node.type is not None
 
@@ -175,10 +170,7 @@ def _ExtractElement(
 # ----------------------------------------------------------------------
 def _ExtractTypeElement(
     node: AST.Node,
-) -> Union[
-    List[Error],
-    Tuple[ParserInfo, bool],
-]:
+) -> Tuple[ParserInfo, bool]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 3
 
@@ -207,7 +199,7 @@ def _ExtractTypeElement(
         default_info = cast(TypeParserInfo, GetParserInfo(default_node))
 
     if errors:
-        return errors
+        raise ErrorException(*errors)
 
     return (
         TemplateTypeParameterParserInfo.Create(
@@ -223,10 +215,7 @@ def _ExtractTypeElement(
 # ----------------------------------------------------------------------
 def _ExtractDecoratorElement(
     node: AST.Node,
-) -> Union[
-    List[Error],
-    Tuple[ParserInfo, bool],
-]:
+) -> Tuple[ParserInfo, bool]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 3
 
@@ -260,7 +249,7 @@ def _ExtractDecoratorElement(
         default_info = cast(ExpressionParserInfo, GetParserInfo(default_node))
 
     if errors:
-        return errors
+        raise ErrorException(*errors)
 
     return (
         TemplateDecoratorParameterParserInfo.Create(

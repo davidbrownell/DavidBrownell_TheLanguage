@@ -19,6 +19,7 @@ import itertools
 import os
 import types
 
+from contextlib import contextmanager
 from typing import Any, cast, Dict, List, Optional, Union
 
 from dataclasses import dataclass
@@ -39,7 +40,7 @@ with InitRelativeImports():
 
     from ...MiniLanguage.Types.Type import Type as MiniLanguageType
 
-    from ...ParserInfos.ParserInfo import ParserInfo, Region, VisitControl
+    from ...ParserInfos.ParserInfo import ParserInfo, Region
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
 
 
@@ -139,57 +140,42 @@ class BaseMixin(object):
         self,
         name: str,
     ):
-        if name.startswith("OnExit"):
-            return self.__class__._DefaultOnExitMethod  # pylint: disable=protected-access
-        elif name.startswith("OnEnter"):
-            name = "On{}".format(name[len("OnEnter"):])
-
-            method = getattr(self, name, None)
-            assert method is not None, name
-
-            return method
-
         index = name.find("ParserInfo__")
         if index != -1 and index + len("ParserInfo__") + 1 < len(name):
-            return types.MethodType(self.__class__._DefaultDetailMethod, self)
+            return types.MethodType(self.__class__._DefaultDetailMethod, self)  # pylint: disable=protected-access
 
         return None
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    def OnEnterPhrase(
+    @contextmanager
+    def OnPhrase(
+        self,
         parser_info: ParserInfo,  # pylint: disable=unused-argument
     ):
-        pass
+        yield
 
-    # ----------------------------------------------------------------------
-    def OnExitPhrase(
-        self,
-        parser_info: ParserInfo,
-    ):
         if self._scope_level + self._scope_delta == 1:
             pass # TODO
 
     # ----------------------------------------------------------------------
-    def OnEnterScope(
+    @contextmanager
+    def OnNewScope(
         self,
         parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ) -> None:
+    ):
         self._PushScope()
 
-    # ----------------------------------------------------------------------
-    def OnExitScope(
-        self,
-        parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ) -> None:
+        yield
+
         self._PopScope()
 
     # ----------------------------------------------------------------------
     @staticmethod
+    @contextmanager
     def OnRootParserInfo(
         parser_info: ParserInfo,  # pylint: disable=unused-argument
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |
@@ -373,21 +359,6 @@ class BaseMixin(object):
     ):
         if isinstance(parser_info_or_infos, list):
             for parser_info in parser_info_or_infos:
-                visit_control = parser_info.Accept(self)
-
-                if visit_control == VisitControl.Terminate:
-                    return visit_control
-
-                if visit_control == VisitControl.SkipSiblings:
-                    break
-
-            return VisitControl.Continue
-
-        return parser_info_or_infos.Accept(self)
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _DefaultOnExitMethod(
-        parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ):
-        pass
+                parser_info.Accept(self)
+        else:
+            parser_info_or_infos.Accept(self)
