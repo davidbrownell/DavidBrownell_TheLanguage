@@ -35,7 +35,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class IntegerType(Type):
-    name                                    = Interface.DerivedProperty("IntegerType")  # type: ignore
+    name                                    = Interface.DerivedProperty("Integer")  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod

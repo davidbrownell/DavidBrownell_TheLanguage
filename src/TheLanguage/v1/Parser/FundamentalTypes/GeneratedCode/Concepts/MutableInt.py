@@ -200,6 +200,7 @@ region_000165 = Region(begin=Location(line=21, column=8), end=Location(line=21, 
 region_000166 = Region(begin=Location(line=21, column=24), end=Location(line=21, column=34))
 region_000167 = Region(begin=Location(line=26, column=1), end=Location(line=46, column=1))
 
+
 # ----------------------------------------------------------------------
 statement_000000 = ImportStatementItemParserInfo.Create(
     regions=[region_000000, region_000000, None],

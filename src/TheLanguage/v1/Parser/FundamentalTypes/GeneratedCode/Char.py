@@ -222,6 +222,7 @@ region_000197 = Region(begin=Location(line=20, column=8), end=Location(line=20, 
 region_000198 = Region(begin=Location(line=20, column=24), end=Location(line=20, column=28))
 region_000199 = Region(begin=Location(line=20, column=28), end=Location(line=41, column=1))
 
+
 # ----------------------------------------------------------------------
 statement_000000 = StandardTypeItemParserInfo.Create(
     regions=[region_000000, region_000000],

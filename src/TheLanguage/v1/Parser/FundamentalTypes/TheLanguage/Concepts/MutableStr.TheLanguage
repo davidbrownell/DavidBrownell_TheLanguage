@@ -53,8 +53,8 @@ public mutable concept MutableStr {
     extends FixedMutableStr { allow_empty! = allow_empty! }
 :
     <<<
-    Contains functionality that may increase the number of chars before the
-    operation was invoked.
+    Contains functionality that may increase the number of chars as a result
+    of the operation.
     >>>
 
     public None CenterInplace?(

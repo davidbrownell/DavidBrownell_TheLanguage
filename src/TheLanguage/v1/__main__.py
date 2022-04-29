@@ -172,16 +172,40 @@ def Execute(
             for key, result in list(parse_result.items()):
                 if isinstance(result, list):
                     for error in result:
-                        parse_dm.stream.write("{}\n{}\n\n".format(error.region, error))
+                        parse_dm.stream.write("{} [{}]\n{}\n\n".format(key, error.region, error))
 
                     parse_dm.result = -1
-                    return parse_dm.result
+                else:
+                    parse_result[key] = cast(RootParserInfo, result)
 
-                parse_result[key] = cast(RootParserInfo, result)
+            if parse_dm.result != 0:
+                return parse_dm.result
+
+            parse_result = cast(Dict[str, RootParserInfo], parse_result)
 
         dm.stream.write("\nValidating...")
         with dm.stream.DoneManager() as validate_dm:
-            pass # TODO: Do this
+            validate_result = Validate(
+                parse_result,
+                {}, # TODO
+                max_num_threads=max_num_threads,
+            )
+
+            assert validate_result is not None
+
+            for key, result in list(validate_result.items()):
+                if isinstance(result, list):
+                    for error in result:
+                        validate_dm.stream.write("{} [{}]\n{}\n\n".format(key, error.region, error))
+
+                    validate_dm.result = -1
+                else:
+                    validate_result[key] = cast(RootParserInfo, result)
+
+            if validate_dm.result != 0:
+                return validate_dm.result
+
+            validate_result = cast(Dict[str, RootParserInfo], validate_result)
 
         dm.stream.write("\nGenerating output...")
         with dm.stream.DoneManager() as target_dm:
@@ -190,11 +214,11 @@ def Execute(
                 output_directory,
             )
 
-            all_names = list(parse_result.keys())
+            all_names = list(validate_result.keys())
 
             target.PreInvoke(all_names)
 
-            for key, result in parse_result.items():
+            for key, result in validate_result.items():
                 target.Invoke(key, cast(ParserInfo, result))
 
             target.PostInvoke(all_names)

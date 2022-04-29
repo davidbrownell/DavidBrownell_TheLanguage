@@ -807,6 +807,7 @@ region_000762 = Region(begin=Location(line=135, column=1), end=Location(line=139
 region_000763 = Region(begin=Location(line=135, column=1), end=Location(line=135, column=7))
 region_000764 = Region(begin=Location(line=135, column=8), end=Location(line=135, column=21))
 
+
 # ----------------------------------------------------------------------
 statement_000000 = ImportStatementItemParserInfo.Create(
     regions=[region_000000, region_000000, None],
@@ -1013,8 +1014,7 @@ statement_000021 = ClassStatementDependencyParserInfo.Create(
 )
 
 statement_000022 = FuncOrTypeExpressionParserInfo.Create(
-    regions=[region_000032, None, region_000032],
-    is_compile_time=False,
+    regions=[region_000032, region_000032],
     name="Enforce!",
 )
 
@@ -1137,7 +1137,7 @@ statement_000041 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000041 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
+    parser_info_type=ParserInfoType.CompileTime,
     regions=[region_000064, None],
     expression=statement_000041,
     keyword=None,

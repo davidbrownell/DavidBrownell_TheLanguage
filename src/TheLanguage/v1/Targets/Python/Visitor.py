@@ -18,9 +18,10 @@
 import itertools
 import os
 import textwrap
+import types
 
 from io import StringIO
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 import CommonEnvironment
 from CommonEnvironment.StreamDecorator import StreamDecorator
@@ -35,9 +36,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ...Parser.Parser import ParserInfo, RootParserInfo
 
+    from ...Parser.ParserInfos.ParserInfo import VisitControl
+
     from ...Parser.ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo
 
-    from ...Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ...Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
     from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
     from ...Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
     from ...Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
@@ -45,7 +48,7 @@ with InitRelativeImports():
     from ...Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
     from ...Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
-    from ...Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo
+    from ...Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo, StandardTypeItemParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -63,6 +66,17 @@ class Visitor(object):
 
         self._indent_stack: List[int]       = [0, ]
         self._stream_stack: List[Any]       = [sink, ]
+
+    # ----------------------------------------------------------------------
+    def __getattr__(
+        self,
+        name: str,
+    ):
+        index = name.find("ParserInfo__")
+        if index != -1 and index + len("ParserInfo__") + 1 < len(name):
+            return types.MethodType(self.__class__._DefaultDetailMethod, self)  # pylint: disable=protected-access
+
+        return None
 
     # ----------------------------------------------------------------------
     def GetContent(self) -> str:
@@ -178,6 +192,20 @@ class Visitor(object):
         self._stream.write("\n")
 
     # ----------------------------------------------------------------------
+    def OnEnterClassStatementDependencyParserInfo(
+        self,
+        parser_info: ClassStatementDependencyParserInfo,
+    ):
+        pass
+
+    # ----------------------------------------------------------------------
+    def OnExitClassStatementDependencyParserInfo(
+        self,
+        parser_info: ClassStatementDependencyParserInfo,
+    ):
+        pass
+
+    # ----------------------------------------------------------------------
     def OnEnterFuncDefinitionStatementParserInfo(
         self,
         parser_info: FuncDefinitionStatementParserInfo,
@@ -234,6 +262,34 @@ class Visitor(object):
         pass # TODO
 
     # ----------------------------------------------------------------------
+    def OnEnterStandardTypeParserInfo(
+        self,
+        parser_info: StandardTypeParserInfo,
+    ):
+        pass
+
+    # ----------------------------------------------------------------------
+    def OnExitStandardTypeParserInfo(
+        self,
+        parser_info: StandardTypeParserInfo,
+    ):
+        pass
+
+    # ----------------------------------------------------------------------
+    def OnEnterStandardTypeItemParserInfo(
+        self,
+        parser_info: StandardTypeItemParserInfo,
+    ):
+        pass
+
+    # ----------------------------------------------------------------------
+    def OnExitStandardTypeItemParserInfo(
+        self,
+        parser_info: StandardTypeItemParserInfo,
+    ):
+        pass
+
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @property
@@ -279,3 +335,22 @@ class Visitor(object):
         parser_info: StandardTypeParserInfo,
     ) -> str:
         return ".".join(item.name for item in parser_info.items)
+
+    # ----------------------------------------------------------------------
+    def _DefaultDetailMethod(
+        self,
+        parser_info_or_infos: Union[ParserInfo, List[ParserInfo]],
+    ):
+        if isinstance(parser_info_or_infos, list):
+            for parser_info in parser_info_or_infos:
+                visit_control = parser_info.Accept(self)
+
+                if visit_control == VisitControl.Terminate:
+                    return visit_control
+
+                if visit_control == VisitControl.SkipSiblings:
+                    break
+
+            return VisitControl.Continue
+
+        return parser_info_or_infos.Accept(self)

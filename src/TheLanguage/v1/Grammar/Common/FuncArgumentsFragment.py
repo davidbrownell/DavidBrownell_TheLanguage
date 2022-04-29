@@ -128,7 +128,6 @@ def _ExtractElement(
 
     return (
         FuncArgumentParserInfo.Create(
-            ParserInfoType.Standard, # TODO
             CreateRegions(node, keyword_node),
             expression_info,
             keyword_info,

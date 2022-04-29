@@ -17,7 +17,17 @@
 
 import os
 
-from typing import Any, List, Optional, Tuple
+from collections import OrderedDict
+
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Type as TypingType,
+    TypeVar as TypingTypeVar,
+)
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -42,8 +52,15 @@ class VariantType(Type):
     ):
         assert types
 
-        self.types                          = types
-        self._name                          = "VariantType({})".format(" | ".join(the_type.name for the_type in self.types))
+        self.types                          = self.__class__._Flatten(types)  # pylint: disable=protected-access
+        self._name                          = "Variant({})".format(" | ".join(the_type.name for the_type in self.types))
+
+    # ----------------------------------------------------------------------
+    def __contains__(
+        self,
+        the_type: Type,
+    ) -> bool:
+        return any(query_type.name == the_type.name for query_type in self.types)
 
     # ----------------------------------------------------------------------
     @property
@@ -69,13 +86,12 @@ class VariantType(Type):
         self,
         value: Any,
     ) -> bool:
-        # TODO: This should update the type
-
         for the_type in self.types:
             if the_type.IsSupportedValue(value):
                 return the_type.ToBoolValue(value)
 
         assert False, value  # pragma: no cover
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -140,3 +156,25 @@ class VariantType(Type):
             return True, remaining_types[0]
 
         return True, VariantType(remaining_types)
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @classmethod
+    def _Flatten(
+        cls,
+        types: List[Type],
+    ) -> List[Type]:
+        results: Dict[str, Type] = OrderedDict()
+
+        for query_type in types:
+            if isinstance(query_type, cls):
+                the_types = cls._Flatten(query_type.types)
+            else:
+                the_types = [query_type, ]
+
+            for the_type in the_types:
+                if the_type.name not in results:
+                    results[the_type.name] = the_type
+
+        return list(results.values())

@@ -52,6 +52,13 @@ class Expression(Interface.Interface, ObjectReprImplBase):
     # |  Public Methods
     @staticmethod
     @Interface.abstractmethod
+    def EvalType() -> Type:
+        """Evaluated the type of the expression"""
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
     def Eval(
         args: Dict[str, Any],
         type_overloads: Dict[str, Type],
