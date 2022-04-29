@@ -241,6 +241,7 @@ region_000204 = Region(begin=Location(line=50, column=24), end=Location(line=50,
 region_000205 = Region(begin=Location(line=55, column=5), end=Location(line=58, column=8))
 region_000206 = Region(begin=Location(line=54, column=1), end=Location(line=89, column=1))
 
+
 # ----------------------------------------------------------------------
 statement_000000 = ImportStatementItemParserInfo.Create(
     regions=[region_000000, region_000000, None],
@@ -1216,7 +1217,7 @@ statement_000095 = ClassStatementParserInfo.Create(
     visibility_param=VisibilityModifier.public,
     class_modifier_param=ClassModifier.mutable,
     name="MutableStr",
-    documentation="Contains functionality that may increase the number of chars before the\noperation was invoked.",
+    documentation="Contains functionality that may increase the number of chars as a result\nof the operation.",
     templates=None,
     constraints=statement_000037,
     extends=[statement_000041, ],

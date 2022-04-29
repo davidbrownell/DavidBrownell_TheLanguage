@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  LiteralExpression.py
+# |  TypesMixin.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-15 13:32:37
+# |      2022-04-27 13:45:48
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the LiteralExpression object"""
+"""Contains the TypesMixin object"""
 
 import os
 
-from typing import Any, Dict
-
-from dataclasses import dataclass
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,41 +27,45 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Expression import Expression, Type
+    from .BaseMixin import BaseMixin, VisitControl
+
+    from ...ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo, StandardTypeItemParserInfo
+    from ...ParserInfos.Types.TupleTypeParserInfo import TupleTypeParserInfo
+    from ...ParserInfos.Types.VariantTypeParserInfo import VariantTypeParserInfo
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class LiteralExpression(Expression):
-    type: Type
-    value: Any
-
+class TypesMixin(BaseMixin):
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(LiteralExpression, self).__init__()
-
+    # |  StandardTypeParserInfo
     # ----------------------------------------------------------------------
-    @Interface.override
-    def EvalType(self) -> Type:
-        return self.type
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Eval(
+    def OnStandardTypeParserInfo(
         self,
-        args: Dict[str, Any],               # pylint: disable=unused-argument
-        type_overloads: Dict[str, Type],    # pylint: disable=unused-argument
+        parser_info: StandardTypeParserInfo,
     ):
-        return Expression.EvalResult(
-            self.value,
-            self.type,
-            None,
-        )
+        pass
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def ToString(
+    def OnStandardTypeItemParserInfo(
         self,
-        args: Dict[str, Any],
-    ) -> str:
-        return "<<<{}>>>".format(self.value)
+        parser_info: StandardTypeItemParserInfo,
+    ):
+        pass
+
+    # ----------------------------------------------------------------------
+    # |  TupleTypeParserInfo
+    # ----------------------------------------------------------------------
+    def OnTupleTypeParserInfo(
+        self,
+        parser_info: TupleTypeParserInfo,
+    ):
+        pass
+
+    # ----------------------------------------------------------------------
+    # |  VariantTypeParserInfo
+    # ----------------------------------------------------------------------
+    def OnVariantTypeParserInfo(
+        self,
+        parser_info: VariantTypeParserInfo,
+    ):
+        pass

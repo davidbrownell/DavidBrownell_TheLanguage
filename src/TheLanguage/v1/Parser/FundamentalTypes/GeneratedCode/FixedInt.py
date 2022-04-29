@@ -1171,6 +1171,7 @@ region_001123 = Region(begin=Location(line=158, column=10), end=Location(line=15
 region_001124 = Region(begin=Location(line=158, column=5), end=Location(line=158, column=68))
 region_001125 = Region(begin=Location(line=157, column=5), end=Location(line=159, column=1))
 
+
 # ----------------------------------------------------------------------
 statement_000000 = ImportStatementItemParserInfo.Create(
     regions=[region_000000, region_000000, None],
@@ -1548,8 +1549,7 @@ statement_000050 = ClassStatementDependencyParserInfo.Create(
 )
 
 statement_000051 = FuncOrTypeExpressionParserInfo.Create(
-    regions=[region_000080, None, region_000080],
-    is_compile_time=False,
+    regions=[region_000080, region_000080],
     name="Enforce!",
 )
 
@@ -1672,7 +1672,7 @@ statement_000070 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000070 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
+    parser_info_type=ParserInfoType.CompileTime,
     regions=[region_000112, None],
     expression=statement_000070,
     keyword=None,
@@ -1697,8 +1697,7 @@ statement_000073 = SpecialMethodStatementParserInfo.Create(
 )
 
 statement_000074 = FuncOrTypeExpressionParserInfo.Create(
-    regions=[region_000119, None, region_000119],
-    is_compile_time=False,
+    regions=[region_000119, region_000119],
     name="Enforce!",
 )
 
@@ -1794,7 +1793,7 @@ statement_000089 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000089 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
+    parser_info_type=ParserInfoType.CompileTime,
     regions=[region_000142, None],
     expression=statement_000089,
     keyword=None,
@@ -1812,8 +1811,7 @@ statement_000091 = CallExpressionParserInfo.Create(
 )
 
 statement_000092 = FuncOrTypeExpressionParserInfo.Create(
-    regions=[region_000146, None, region_000146],
-    is_compile_time=False,
+    regions=[region_000146, region_000146],
     name="Enforce!",
 )
 
@@ -1952,7 +1950,7 @@ statement_000114 = TernaryExpressionParserInfo.Create(
 )
 
 statement_000114 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
+    parser_info_type=ParserInfoType.CompileTime,
     regions=[region_000181, None],
     expression=statement_000114,
     keyword=None,
@@ -1970,8 +1968,7 @@ statement_000116 = CallExpressionParserInfo.Create(
 )
 
 statement_000117 = FuncOrTypeExpressionParserInfo.Create(
-    regions=[region_000184, None, region_000184],
-    is_compile_time=False,
+    regions=[region_000184, region_000184],
     name="Enforce!",
 )
 
@@ -2123,7 +2120,7 @@ statement_000141 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000141 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
+    parser_info_type=ParserInfoType.CompileTime,
     regions=[region_000222, None],
     expression=statement_000141,
     keyword=None,
@@ -2141,8 +2138,7 @@ statement_000143 = CallExpressionParserInfo.Create(
 )
 
 statement_000144 = FuncOrTypeExpressionParserInfo.Create(
-    regions=[region_000226, None, region_000226],
-    is_compile_time=False,
+    regions=[region_000226, region_000226],
     name="Enforce!",
 )
 
@@ -2251,7 +2247,7 @@ statement_000161 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000161 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
+    parser_info_type=ParserInfoType.CompileTime,
     regions=[region_000253, None],
     expression=statement_000161,
     keyword=None,
@@ -6025,8 +6021,7 @@ statement_000588 = IfStatementClauseParserInfo.Create(
 )
 
 statement_000589 = FuncOrTypeExpressionParserInfo.Create(
-    regions=[region_001118, None, region_001118],
-    is_compile_time=False,
+    regions=[region_001118, region_001118],
     name="Error",
 )
 
@@ -6036,7 +6031,7 @@ statement_000590 = BooleanExpressionParserInfo.Create(
 )
 
 statement_000590 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001119, None],
     expression=statement_000590,
     keyword=None,
@@ -6048,7 +6043,7 @@ statement_000591 = StringExpressionParserInfo.Create(
 )
 
 statement_000591 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001120, None],
     expression=statement_000591,
     keyword=None,
@@ -6061,7 +6056,7 @@ statement_000592 = VariableExpressionParserInfo.Create(
 )
 
 statement_000592 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
+    parser_info_type=ParserInfoType.CompileTime,
     regions=[region_001121, None],
     expression=statement_000592,
     keyword=None,

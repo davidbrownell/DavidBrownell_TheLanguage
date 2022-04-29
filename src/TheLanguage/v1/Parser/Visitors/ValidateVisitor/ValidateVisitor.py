@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncOrTypeExpressionParserInfo.py
+# |  ValidateVisitor.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-22 08:02:03
+# |      2022-04-27 13:42:37
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncOrTypeExpressionParserInfo object"""
+"""Contains the ValidateVisitor object"""
 
 import os
-
-from typing import List, Optional
-
-from dataclasses import dataclass
 
 import CommonEnvironment
 
@@ -31,26 +27,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
+    from .CommonMixin import CommonMixin
+    from .ExpressionsMixin import ExpressionsMixin
+    from .MiniLanguageMixin import MiniLanguageMixin
+    from .StatementsMixin import StatementsMixin
+    from .TypesMixin import TypesMixin
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
-    # ----------------------------------------------------------------------
-    name: str
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        regions: List[Optional[Region]],
-        *args,
-        **kwargs,
-    ):
-        return cls(
-            ParserInfoType.Unknown,         # type: ignore
-            regions,                        # type: ignore
-            *args,
-            **kwargs,
-        )
+class ValidateVisitor(
+    CommonMixin,
+    ExpressionsMixin,
+    MiniLanguageMixin,
+    StatementsMixin,
+    TypesMixin,
+):
+    pass

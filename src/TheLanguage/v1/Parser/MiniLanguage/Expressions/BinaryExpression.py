@@ -39,12 +39,13 @@ with InitRelativeImports():
     from ..Types.BooleanType import BooleanType
     from ..Types.IntegerType import IntegerType
     from ..Types.NumberType import NumberType
+    from ..Types.VariantType import VariantType
 
-    from ...Error import CreateError, ErrorException
-    from ...Region import Region
+    from ...Error import CreateError, ErrorException, Region
 
 
 # ----------------------------------------------------------------------
+# TODO: Errors are no longer showing the operation, just the enum name (e.g. "*" vs "Multiply")
 class OperatorType(Enum):
     # ----------------------------------------------------------------------
     # |  Public Data
@@ -80,6 +81,13 @@ class OperatorType(Enum):
 
 # ----------------------------------------------------------------------
 IncompatibleTypesError                      = CreateError(
+    "'{left_type}' and '{right_type}' are incompatible types when used with the '{operator}' operator",
+    left_type=str,
+    right_type=str,
+    operator=str,
+)
+
+IncompatibleTypeValuesError                 = CreateError(
     "'{left_value}' ({left_type}) and '{right_value}' ({right_type}) are incompatible types when used with the '{operator}' operator",
     left_value=str,
     left_type=str,
@@ -114,57 +122,65 @@ class BinaryExpression(Expression):
         super(BinaryExpression, self).__init__()
 
         if self.operator == OperatorType.Multiply:
-            eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left * right)
+            eval_type_impl, eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left * right)
         elif self.operator == OperatorType.Divide:
-            eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left / right)
+            eval_type_impl, eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left / right)
         elif self.operator == OperatorType.DivideFloor:
-            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left // right)
+            eval_type_impl, eval_impl = self._EvalIntegerImplFactory(lambda left, right: left // right)
         elif self.operator == OperatorType.Modulus:
-            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left % right)
+            eval_type_impl, eval_impl = self._EvalIntegerImplFactory(lambda left, right: left % right)
         elif self.operator == OperatorType.Power:
-            eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left ** right)
+            eval_type_impl, eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left ** right)
 
         elif self.operator == OperatorType.Add:
-            eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left + right)
+            eval_type_impl, eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left + right)
         elif self.operator == OperatorType.Subtract:
-            eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left - right)
+            eval_type_impl, eval_impl = self._EvalIntegerOrNumberImplFactory(lambda left, right: left - right)
 
         elif self.operator == OperatorType.BitShiftLeft:
-            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left << right)
+            eval_type_impl, eval_impl = self._EvalIntegerImplFactory(lambda left, right: left << right)
         elif self.operator == OperatorType.BitShiftRight:
-            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left >> right)
+            eval_type_impl, eval_impl = self._EvalIntegerImplFactory(lambda left, right: left >> right)
 
         elif self.operator == OperatorType.BitwiseAnd:
-            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left & right)
+            eval_type_impl, eval_impl = self._EvalIntegerImplFactory(lambda left, right: left & right)
 
         elif self.operator == OperatorType.BitwiseXor:
-            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left ^ right)
+            eval_type_impl, eval_impl = self._EvalIntegerImplFactory(lambda left, right: left ^ right)
 
         elif self.operator == OperatorType.BitwiseOr:
-            eval_impl = self._EvalIntegerImplFactory(lambda left, right: left | right)
+            eval_type_impl, eval_impl = self._EvalIntegerImplFactory(lambda left, right: left | right)
 
         elif self.operator == OperatorType.Less:
-            eval_impl = self._EvalBoolImplFactory(lambda left, right: left < right)
+            eval_type_impl, eval_impl = self._EvalBoolImplFactory(lambda left, right: left < right)
         elif self.operator == OperatorType.LessEqual:
-            eval_impl = self._EvalBoolImplFactory(lambda left, right: left <= right)
+            eval_type_impl, eval_impl = self._EvalBoolImplFactory(lambda left, right: left <= right)
         elif self.operator == OperatorType.Greater:
-            eval_impl = self._EvalBoolImplFactory(lambda left, right: left > right)
+            eval_type_impl, eval_impl = self._EvalBoolImplFactory(lambda left, right: left > right)
         elif self.operator == OperatorType.GreaterEqual:
-            eval_impl = self._EvalBoolImplFactory(lambda left, right: left >= right)
+            eval_type_impl, eval_impl = self._EvalBoolImplFactory(lambda left, right: left >= right)
         elif self.operator == OperatorType.Equal:
-            eval_impl = self._EvalBoolImplFactory(lambda left, right: left == right)
+            eval_type_impl, eval_impl = self._EvalBoolImplFactory(lambda left, right: left == right)
         elif self.operator == OperatorType.NotEqual:
-            eval_impl = self._EvalBoolImplFactory(lambda left, right: left != right)
+            eval_type_impl, eval_impl = self._EvalBoolImplFactory(lambda left, right: left != right)
 
         elif self.operator == OperatorType.LogicalAnd:
+            eval_type_impl = self._EvalTypeAndImpl
             eval_impl = self._EvalAndImpl
 
         elif self.operator == OperatorType.LogicalOr:
+            eval_type_impl = self._EvalTypeOrImpl
             eval_impl = self._EvalOrImpl
         else:
             assert False, self.operator  # pragma: no cover
 
+        object.__setattr__(self, "EvalType", eval_type_impl)
         object.__setattr__(self, "Eval", eval_impl)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def EvalType(self) -> Type:
+        raise Exception("This should never be invoked directly, as the implementation will be replaced during instance construction")
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -173,7 +189,7 @@ class BinaryExpression(Expression):
         args: Dict[str, Any],
         type_overloads: Dict[str, Type],
     ) -> Expression.EvalResult:
-        raise Exception("This should never be invoked directly, as the implementation will be replaced during instane construction")
+        raise Exception("This should never be invoked directly, as the implementation will be replaced during instance construction")
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -190,6 +206,13 @@ class BinaryExpression(Expression):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
+    def _EvalTypeAndImpl(self):
+        return VariantType([
+            BooleanType(),
+            self.right.EvalType(),
+        ])
+
+    # ----------------------------------------------------------------------
     def _EvalAndImpl(self, args, type_overloads):
         left_result = self.left.Eval(args, type_overloads)
 
@@ -197,6 +220,16 @@ class BinaryExpression(Expression):
             return Expression.EvalResult(False, BooleanType(), None)
 
         return self.right.Eval(args, type_overloads)
+
+    # ----------------------------------------------------------------------
+    def _EvalTypeOrImpl(self):
+        left_type = self.left.EvalType()
+        right_type = self.right.EvalType()
+
+        if left_type.name == right_type.name:
+            return left_type
+
+        return VariantType([left_type, right_type])
 
     # ----------------------------------------------------------------------
     def _EvalOrImpl(self, args, type_overloads):
@@ -213,19 +246,45 @@ class BinaryExpression(Expression):
         eval_func: Callable[[Any, Any], Any],
     ):
         # ----------------------------------------------------------------------
-        def Impl(self, args, type_overloads):
+        def EvalTypeImpl(self):
+            left_type = self.left.EvalType()
+            right_type = self.right.EvalType()
+
+            if left_type.name != right_type.name:
+                raise ErrorException(
+                    IncompatibleTypesError.Create(
+                        region=self.left_region,
+                        left_type=left_type.name,
+                        right_type=right_type.name,
+                        operator=self.operator.name,
+                    ),
+                )
+
+            if not isinstance(left_type, (IntegerType, NumberType)):
+                raise ErrorException(
+                    IntegerOrNumberRequiredError.Create(
+                        region=self.left_region,
+                        oeprator=self.operator.name,
+                        left_type=left_type.name,
+                    ),
+                )
+
+            return left_type
+
+        # ----------------------------------------------------------------------
+        def EvalImpl(self, args, type_overloads):
             left_result = self.left.Eval(args, type_overloads)
             right_result = self.right.Eval(args, type_overloads)
 
             if left_result.type.name != right_result.type.name:
                 raise ErrorException(
-                    IncompatibleTypesError.Create(
+                    IncompatibleTypeValuesError.Create(
                         region=self.left_region,
                         left_value=str(left_result.value),
                         left_type=left_result.type.name,
                         right_value=str(right_result.value),
                         right_type=right_result.type.name,
-                        operator=self.operator.token,
+                        operator=self.operator.name,
                     ),
                 )
 
@@ -233,7 +292,7 @@ class BinaryExpression(Expression):
                 raise ErrorException(
                     IntegerOrNumberRequiredError.Create(
                         region=self.left_region,
-                        operator=self.operator.token,
+                        operator=self.operator.name,
                         left_type=left_result.type.name,
                     ),
                 )
@@ -246,7 +305,10 @@ class BinaryExpression(Expression):
 
         # ----------------------------------------------------------------------
 
-        return types.MethodType(Impl, self)
+        return (
+            types.MethodType(EvalTypeImpl, self),
+            types.MethodType(EvalImpl, self),
+        )
 
     # ----------------------------------------------------------------------
     def _EvalIntegerImplFactory(
@@ -254,19 +316,45 @@ class BinaryExpression(Expression):
         eval_func: Callable[[int, int], int],
     ):
         # ----------------------------------------------------------------------
-        def Impl(self, args, type_overloads):
+        def EvalTypeImpl(self):
+            left_type = self.left.EvalType()
+            right_type = self.right.EvalType()
+
+            if left_type.name != right_type.name:
+                raise ErrorException(
+                    IncompatibleTypesError.Create(
+                        region=self.left_region,
+                        left_type=left_type.name,
+                        right_type=right_type.name,
+                        operator=self.operator.name,
+                    ),
+                )
+
+            if not isinstance(left_type, IntegerType):
+                raise ErrorException(
+                    IntegerRequiredError.Create(
+                        region=self.left_region,
+                        operator=self.operator.name,
+                        left_type=left_type.name,
+                    ),
+                )
+
+            return left_type
+
+        # ----------------------------------------------------------------------
+        def EvalImpl(self, args, type_overloads):
             left_result = self.left.Eval(args, type_overloads)
             right_result = self.right.Eval(args, type_overloads)
 
             if left_result.type.name != right_result.type.name:
                 raise ErrorException(
-                    IncompatibleTypesError.Create(
+                    IncompatibleTypeValuesError.Create(
                         region=self.left_region,
                         left_value=str(left_result.value),
                         left_type=left_result.type.name,
                         right_value=str(right_result.value),
                         right_type=right_result.type.name,
-                        operator=self.operator.token,
+                        operator=self.operator.name,
                     ),
                 )
 
@@ -274,7 +362,7 @@ class BinaryExpression(Expression):
                 raise ErrorException(
                     IntegerRequiredError.Create(
                         region=self.left_region,
-                        operator=self.operator.token,
+                        operator=self.operator.name,
                         left_type=left_result.type.name,
                     ),
                 )
@@ -287,7 +375,10 @@ class BinaryExpression(Expression):
 
         # ----------------------------------------------------------------------
 
-        return types.MethodType(Impl, self)
+        return (
+            types.MethodType(EvalTypeImpl, self),
+            types.MethodType(EvalImpl, self),
+        )
 
     # ----------------------------------------------------------------------
     def _EvalBoolImplFactory(
@@ -295,7 +386,16 @@ class BinaryExpression(Expression):
         eval_func: Callable[[Any, Any], Any],
     ):
         # ----------------------------------------------------------------------
-        def Impl(self, args, type_overloads):
+        def EvalTypeImpl(self):
+            right_type = self.right.EvalType()
+
+            if isinstance(right_type, BooleanType):
+                return right_type
+
+            return VariantType([BooleanType(), right_type])
+
+        # ----------------------------------------------------------------------
+        def EvalImpl(self, args, type_overloads):
             left_result = self.left.Eval(args, type_overloads)
 
             if isinstance(left_result.type, BooleanType) and not left_result.value:
@@ -311,7 +411,7 @@ class BinaryExpression(Expression):
                         left_type=left_result.type.name,
                         right_value=str(right_result.value),
                         right_type=right_result.type.name,
-                        operator=self.operator.token,
+                        operator=self.operator.name,
                     ),
                 )
 
@@ -322,4 +422,7 @@ class BinaryExpression(Expression):
 
         # ----------------------------------------------------------------------
 
-        return types.MethodType(Impl, self)
+        return (
+            types.MethodType(EvalTypeImpl, self),
+            types.MethodType(EvalImpl, self),
+        )
