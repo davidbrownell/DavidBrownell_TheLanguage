@@ -174,16 +174,19 @@ def PatchAndExecute(
             roots[key] = value
 
         if flag & PatchAndExecuteFlag.validate_flag:
-            # TODO: result = Validate(
-            # TODO:     roots,
-            # TODO:     max_num_threads=max_num_threads,
-            # TODO: )
+            result = Validate(
+                roots,
+                {}, # TODO
+                max_num_threads=max_num_threads,
+            )
 
             assert result is not None
 
-            # TODO: Check return value
+            for key, value in result.items():
+                if isinstance(value, list):
+                    return result
 
-        return result
+        return cast(Dict[str, Union[RootParserInfo, List[ParserError]]], roots)
 
 
 # ----------------------------------------------------------------------

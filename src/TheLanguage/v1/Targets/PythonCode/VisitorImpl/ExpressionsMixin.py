@@ -174,8 +174,7 @@ class ExpressionsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = FuncOrTypeExpressionParserInfo.Create(
-                    regions=[{self_region}, {is_compile_time_region}, {name_region}],
-                    is_compile_time={is_compile_time},
+                    regions=[{self_region}, {name_region}],
                     name={name},
                 )
 
@@ -183,9 +182,7 @@ class ExpressionsMixin(BaseMixin):
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
-                is_compile_time_region=self._ToString(parser_info.regions__.is_compile_time),
                 name_region=self._ToString(parser_info.regions__.name),
-                is_compile_time=self._ToString(parser_info.is_compile_time or False),
                 name=self._ToString(parser_info.name),
             ),
         )

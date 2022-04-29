@@ -161,8 +161,6 @@ class CommonMixin(BaseMixin):
             ),
         )
 
-        return VisitControl.ContinueWithDetail
-
     # ----------------------------------------------------------------------
     def OnConstraintParameterParserInfo(
         self,
@@ -190,8 +188,6 @@ class CommonMixin(BaseMixin):
                 default_value=self._ToString(parser_info.default_value),
             ),
         )
-
-        return VisitControl.ContinueWithDetail
 
     # ----------------------------------------------------------------------
     # |  FuncArgumentsParserInfo

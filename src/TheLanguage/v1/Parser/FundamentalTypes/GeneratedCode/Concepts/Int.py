@@ -419,6 +419,7 @@ region_000382 = Region(begin=Location(line=19, column=8), end=Location(line=19, 
 region_000383 = Region(begin=Location(line=19, column=26), end=Location(line=19, column=29))
 region_000384 = Region(begin=Location(line=22, column=2), end=Location(line=65, column=1))
 
+
 # ----------------------------------------------------------------------
 statement_000000 = StandardTypeItemParserInfo.Create(
     regions=[region_000000, region_000000],
@@ -516,8 +517,7 @@ statement_000010 = ConstraintParametersParserInfo.Create(
 )
 
 statement_000011 = FuncOrTypeExpressionParserInfo.Create(
-    regions=[region_000014, None, region_000014],
-    is_compile_time=False,
+    regions=[region_000014, region_000014],
     name="Enforce",
 )
 
@@ -607,7 +607,7 @@ statement_000022 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000022 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
+    parser_info_type=ParserInfoType.CompileTime,
     regions=[region_000033, None],
     expression=statement_000022,
     keyword=None,

@@ -79,10 +79,7 @@ class FuncOrTypeExpression(GrammarPhrase):
         name_leaf = cast(AST.Leaf, nodes[0])
         name_info = CommonTokens.FuncName.Extract(name_leaf)  # type: ignore
 
-        is_compile_time_region = CommonTokens.FuncName.GetIsCompileTimeRegion(name_leaf)  # type: ignore
-
         return FuncOrTypeExpressionParserInfo.Create(
-            CreateRegions(node, is_compile_time_region, name_leaf),
-            bool(is_compile_time_region),
+            CreateRegions(node, name_leaf),
             name_info,
         )

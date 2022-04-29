@@ -41,7 +41,7 @@ with InitRelativeImports():
 # |
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class Error(Interface.Interface):
+class _Diagnostic(Interface.Interface):
     region: Region
     _message: Optional[str]                 = field(init=False, default_factory=lambda: None)
 
@@ -69,6 +69,24 @@ class Error(Interface.Interface):
 
 
 # ----------------------------------------------------------------------
+@dataclass(frozen=True)  # pylint: disable=abstract-method
+class Error(_Diagnostic):
+    pass
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)  # pylint: disable=abstract-method  # pylint: disable=redefined-builtin
+class Warning(_Diagnostic):
+    pass
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)  # pylint: disable=abstract-method
+class Info(_Diagnostic):
+    pass
+
+
+# ----------------------------------------------------------------------
 class ErrorException(Exception):
     # ----------------------------------------------------------------------
     def __init__(
@@ -89,10 +107,37 @@ def CreateError(
     message_template: str,
     **args: Type,
 ) -> Type[Error]:
+    return _CreateDiagnosticImpl(Error, message_template, **args)
+
+
+# ----------------------------------------------------------------------
+def CreateWarning(
+    message_template: str,
+    **args: Type,
+) -> Type[Warning]:
+    return _CreateDiagnosticImpl(Warning, message_template, **args)
+
+
+# ----------------------------------------------------------------------
+def CreateInfo(
+    message_template: str,
+    **args: Type,
+) -> Type[Info]:
+    return _CreateDiagnosticImpl(Info, message_template, **args)
+
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+def _CreateDiagnosticImpl(
+    base_type: Type,
+    message_template: str,
+    **args: Type,
+):
     dynamic_fields_class = make_dataclass(
         "DynamicFields",
         args.items(),
-        bases=(Error,),
+        bases=(base_type,),
         frozen=True,
         repr=False,
     )

@@ -66,12 +66,19 @@ class TypeCheckExpression(Expression):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def EvalType(self) -> Type:
+        # Note that the actual return type is dependent upon the value passed in, which we don't
+        # have here. Therefore, we can't reduce the return type at all.
+        return self.expression.EvalType()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def Eval(
         self,
         args: Dict[str, Any],
         type_overloads: Dict[str, Type],
     ) -> Expression.EvalResult:
-        raise Exception("This should never be invoked directly, as the implementation will be replaced during instane construction")
+        raise Exception("This should never be invoked directly, as the implementation will be replaced during instance construction")
 
     # ----------------------------------------------------------------------
     @Interface.override

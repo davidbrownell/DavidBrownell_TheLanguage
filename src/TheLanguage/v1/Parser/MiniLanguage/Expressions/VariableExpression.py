@@ -40,7 +40,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 InvalidNameError                            = CreateError(
-    "The name '{name}' is not valid",
+    "'{name}' is not defined",
     name=str,
 )
 
@@ -64,6 +64,11 @@ class VariableExpression(Expression):
     # ----------------------------------------------------------------------
     def __post_init__(self):
         super(VariableExpression, self).__init__()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def EvalType(self) -> Type:
+        return self.type
 
     # ----------------------------------------------------------------------
     @Interface.override

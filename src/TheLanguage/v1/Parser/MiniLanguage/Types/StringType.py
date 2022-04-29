@@ -35,7 +35,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class StringType(Type):
-    name                                    = Interface.DerivedProperty("StringType")  # type: ignore
+    name                                    = Interface.DerivedProperty("String")  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod
