@@ -3,7 +3,7 @@
 # |  EnforceExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-30 15:51:47
+# |      2022-05-02 22:35:10
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -51,7 +51,11 @@ EnforceError                                = CreateError(
 class EnforceExpression(Expression):
     expression: Expression
     expression_region: Region
-    message: Optional[Expression]  # TODO: Should be variadic
+    messages: Optional[List[Expression]]
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        super(EnforceExpression, self).__init__()
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -69,14 +73,18 @@ class EnforceExpression(Expression):
         result = self.expression.Eval(args, type_overrides)
 
         if not result.type.ToBoolValue(result.value):
-            if self.message is None:
+            if self.messages is None:
                 message_suffix = ""
             else:
-                message_result = self.message.Eval(args, type_overrides)
+                suffixes: List[str] = []
 
-                message_suffix = ": {}".format(
-                    message_result.type.ToStringValue(message_result.value),
-                )
+                for message in self.messages:
+                    suffix = message.Eval(args, type_overrides)
+                    suffix = suffix.type.ToStringValue(suffix.value)
+
+                    suffixes.append(suffix)
+
+                message_suffix = ": {}".format(", ".join(suffixes))
 
             raise ErrorException(
                 EnforceError.Create(
@@ -89,11 +97,7 @@ class EnforceExpression(Expression):
         if result.name is not None:
             type_overrides[result.name] = result.type
 
-        return Expression.EvalResult(
-            None,
-            NoneType(),
-            None,
-        )
+        return Expression.EvalResult(None, NoneType(), None)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -103,5 +107,7 @@ class EnforceExpression(Expression):
     ) -> str:
         return "Enforce!({}{})".format(
             self.expression.ToString(args),
-            "" if self.message is None else ", {}".format(self.message.ToString(args)),
+            "" if not self.messages else ", {}".format(
+                ", ".join(message.ToString(args) for message in self.messages),
+            ),
         )

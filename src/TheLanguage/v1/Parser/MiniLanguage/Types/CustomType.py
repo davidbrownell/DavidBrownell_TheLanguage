@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CharacterType.py
+# |  CustomType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-05-02 22:12:23
+# |      2022-05-02 21:59:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CharacterType object"""
+"""Contains the CustomType object"""
 
 import os
 
@@ -34,21 +34,46 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class CharacterType(Type):
-    name                                    = Interface.DerivedProperty("Character")  # type: ignore
+class CustomType(Type):
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        name: str,
+    ):
+        super(CustomType, self).__init__()
+
+        self._name                          = name
+
+    # ----------------------------------------------------------------------
+    @property
+    @Interface.override
+    def name(self) -> str:
+        return self._name
 
     # ----------------------------------------------------------------------
     @staticmethod
-    @Interface.override
+    @Interface.extensionmethod
     def IsSupportedValue(
         value: Any,
     ) -> bool:
-        return isinstance(value, int)
+        return (
+            isinstance(value, str)
+            and bool(value)
+            and not value.startswith('"')
+        )
 
     # ----------------------------------------------------------------------
     @staticmethod
-    @Interface.override
+    @Interface.extensionmethod
     def ToBoolValue(
         value: Any,
     ) -> bool:
-        return value > 0
+        return True
+
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def ToStringValue(
+        self,
+        value: Any,
+    ) -> str:
+        return value

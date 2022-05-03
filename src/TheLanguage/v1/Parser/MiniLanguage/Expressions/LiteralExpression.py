@@ -3,7 +3,7 @@
 # |  LiteralExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-15 13:32:37
+# |      2022-05-02 22:54:35
 # |
 # ----------------------------------------------------------------------
 # |
@@ -54,14 +54,10 @@ class LiteralExpression(Expression):
     @Interface.override
     def Eval(
         self,
-        args: Dict[str, Any],               # pylint: disable=unused-argument
-        type_overrides: Dict[str, Type],    # pylint: disable=unused-argument
-    ):
-        return Expression.EvalResult(
-            self.value,
-            self.type,
-            None,
-        )
+        args: Dict[str, Any],
+        type_overrides: Dict[str, Type],
+    ) -> Expression.EvalResult:
+        return Expression.EvalResult(self.value, self.type, None)
 
     # ----------------------------------------------------------------------
     @Interface.override

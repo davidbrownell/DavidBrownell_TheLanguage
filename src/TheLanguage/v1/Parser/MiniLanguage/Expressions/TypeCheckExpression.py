@@ -3,7 +3,7 @@
 # |  TypeCheckExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-19 14:50:00
+# |      2022-05-02 23:02:58
 # |
 # ----------------------------------------------------------------------
 # |
@@ -19,7 +19,7 @@ import os
 import types
 
 from enum import Enum
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Dict
 
 from dataclasses import dataclass
 
@@ -58,11 +58,11 @@ class TypeCheckExpression(Expression):
         if self.operator == OperatorType.Is:
             eval_impl = lambda eval_result: eval_result.type.IsSupportedValueOfType
         elif self.operator == OperatorType.IsNot:
-            eval_impl = lambda eval_result: eval_result.type.IsNotSupportedValueOfType
+            eval_impl = lambda eval_result: not eval_result.type.IsNotSupportedValueOfType
         else:
             assert False, self.operator  # pragma: no cover
 
-        object.__setattr__(self, "Eval", eval_impl)
+        object.__setattr__(self, "Eval", self._EvalImplFactory(eval_impl))
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -72,9 +72,9 @@ class TypeCheckExpression(Expression):
         return self.expression.EvalType()
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
     def Eval(
-        self,
         args: Dict[str, Any],
         type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
@@ -97,25 +97,31 @@ class TypeCheckExpression(Expression):
     # ----------------------------------------------------------------------
     def _EvalImplFactory(
         self,
-        eval_func: Callable[[Type], Callable[[Any, Type], Tuple[Any, Optional[Type]]]]
+        eval_func: Callable[
+            [Expression.EvalResult],
+            Callable[
+                [Any, Type],
+                Type.IsSupportedResult,
+            ],
+        ],
     ):
         # ----------------------------------------------------------------------
-        def Impl(self, args, type_overrides):
+        def Eval(self, args, type_overrides):
             eval_result = self.expression.Eval(args, type_overrides)
 
-            result, inferred_type = eval_func(eval_result.type)(eval_result.value, self.checked_type)
+            is_supported = eval_func(eval_result)(eval_result.value, self.checked_type)
 
-            if inferred_type is not None:
-                eval_result.type = inferred_type
+            if is_supported.refined_type is not None:
+                eval_result.type = is_supported.refined_type
 
                 if eval_result.name is not None:
-                    type_overrides[eval_result.name] = inferred_type
+                    type_overrides[eval_result.name] = is_supported.refined_type
 
-            if result:
+            if is_supported.result:
                 return eval_result
 
             return Expression.EvalResult(False, BooleanType(), None)
 
         # ----------------------------------------------------------------------
 
-        return types.MethodType(Impl, self)
+        return types.MethodType(Eval, self)

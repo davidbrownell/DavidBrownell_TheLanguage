@@ -3,7 +3,7 @@
 # |  VariableExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-15 13:23:27
+# |      2022-05-02 23:18:24
 # |
 # ----------------------------------------------------------------------
 # |
@@ -34,8 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Expression import Expression, Type
 
-    from ...Error import CreateError, ErrorException
-    from ...Region import Region
+    from ...Error import CreateError, ErrorException, Region
 
 
 # ----------------------------------------------------------------------
@@ -53,15 +52,6 @@ class VariableExpression(Expression):
     name_region: Region
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
     def __post_init__(self):
         super(VariableExpression, self).__init__()
 
@@ -77,7 +67,8 @@ class VariableExpression(Expression):
         args: Dict[str, Any],
         type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
-        if self.name not in args:
+        potential_value = args.get(self.name, self.__class__._does_not_exist)  # pylint: disable=protected-access
+        if isinstance(potential_value, self.__class__._DoesNotExist):          # pylint: disable=protected-access
             raise ErrorException(
                 InvalidNameError.Create(
                     region=self.name_region,
@@ -86,7 +77,7 @@ class VariableExpression(Expression):
             )
 
         return Expression.EvalResult(
-            args[self.name],
+            potential_value,
             type_overrides.get(self.name, self.type),
             self.name,
         )
@@ -97,4 +88,13 @@ class VariableExpression(Expression):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "<<<{}: {}>>>".format(self.name, args[self.name])
+        return "<<<{}: {}>>>".format(self.name, self.type.ToStringValue(args[self.name]))
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    class _DoesNotExist(object):
+        pass
+
+    # ----------------------------------------------------------------------
+    _does_not_exist                         = _DoesNotExist()

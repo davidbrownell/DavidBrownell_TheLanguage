@@ -3,7 +3,7 @@
 # |  ErrorExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-30 16:00:55
+# |      2022-05-02 22:45:02
 # |
 # ----------------------------------------------------------------------
 # |
@@ -52,6 +52,10 @@ class ErrorExpression(Expression):
     error_region: Region
 
     # ----------------------------------------------------------------------
+    def __post_init__(self):
+        super(ErrorExpression, self).__init__()
+
+    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
     def EvalType() -> Type:
@@ -64,16 +68,18 @@ class ErrorExpression(Expression):
         args: Dict[str, Any],
         type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
-        results: List[str] = []
+        messages: List[str] = []
 
         for message in self.messages:
             result = message.Eval(args, type_overrides)
-            results.append(result.type.ToStringValue(result.value))
+            result = result.type.ToStringValue(result.value)
+
+            messages.append("{} = {}".format(message.ToString(args), result))
 
         raise ErrorException(
             ErrorError.Create(
                 region=self.error_region,
-                message=", ".join(results),
+                message=", ".join(messages),
             ),
         )
 

@@ -3,7 +3,7 @@
 # |  Expression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-15 13:19:36
+# |      2022-05-02 22:30:08
 # |
 # ----------------------------------------------------------------------
 # |
@@ -41,7 +41,10 @@ class Expression(Interface.Interface, ObjectReprImplBase):
     """Abstract base class for all expressions"""
 
     # ----------------------------------------------------------------------
+    # |
     # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
     @dataclass
     class EvalResult(object):
         value: Any
@@ -49,11 +52,14 @@ class Expression(Interface.Interface, ObjectReprImplBase):
         name: Optional[str]                 # None if the result is a temporary value
 
     # ----------------------------------------------------------------------
+    # |
     # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
     def EvalType() -> Type:
-        """Evaluated the type of the expression"""
+        """The evaluated type of the expression (once invoked)"""
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------

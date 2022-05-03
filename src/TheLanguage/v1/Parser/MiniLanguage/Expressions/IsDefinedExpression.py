@@ -3,7 +3,7 @@
 # |  IsDefinedExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-29 07:32:00
+# |      2022-05-02 22:50:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -32,8 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Expression import Expression
-    from ..Types.BooleanType import BooleanType, Type
+    from .Expression import Expression, Type
+    from ..Types.BooleanType import BooleanType
 
 
 # ----------------------------------------------------------------------
@@ -58,14 +58,10 @@ class IsDefinedExpression(Expression):
         args: Dict[str, Any],
         type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
-        name = self.name.Eval(args, type_overrides)
-        name = name.type.ToStringValue(name.value)
+        result = self.name.Eval(args, type_overrides)
+        result = result.type.ToStringValue(result.value)
 
-        return Expression.EvalResult(
-            name in args,
-            BooleanType(),
-            None,
-        )
+        return Expression.EvalResult(result in args, BooleanType(), None)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -73,5 +69,4 @@ class IsDefinedExpression(Expression):
         self,
         args: Dict[str, Any],
     ) -> str:
-        name = self.name.ToString(args)
-        return "<<<IsDefined '{}': {}>>>".format(name, name in args)
+        return "IsDefined!({})".format(self.name.ToString(args))

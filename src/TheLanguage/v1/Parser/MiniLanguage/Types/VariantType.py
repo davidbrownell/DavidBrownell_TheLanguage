@@ -3,7 +3,7 @@
 # |  VariantType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 16:16:47
+# |      2022-05-02 22:17:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -18,16 +18,7 @@
 import os
 
 from collections import OrderedDict
-
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Type as TypingType,
-    TypeVar as TypingTypeVar,
-)
+from typing import Any, Dict, List, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -50,23 +41,25 @@ class VariantType(Type):
         self,
         types: List[Type],
     ):
+        super(VariantType, self).__init__()
+
         assert types
 
         self.types                          = self.__class__._Flatten(types)  # pylint: disable=protected-access
-        self._name                          = "Variant({})".format(" | ".join(the_type.name for the_type in self.types))
-
-    # ----------------------------------------------------------------------
-    def __contains__(
-        self,
-        the_type: Type,
-    ) -> bool:
-        return any(query_type.name == the_type.name for query_type in self.types)
+        self._name                          = "Variant({})".format(" | ".join(the_type.name for the_type in types))
 
     # ----------------------------------------------------------------------
     @property
     @Interface.override
     def name(self):
         return self._name
+
+    # ----------------------------------------------------------------------
+    def __contains__(
+        self,
+        query_type: Type,
+    ) -> bool:
+        return any(query_type.name == the_type.name for the_type in self.types)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -81,7 +74,7 @@ class VariantType(Type):
         return False
 
     # ----------------------------------------------------------------------
-    @Interface.override
+    @Interface.abstractmethod
     def ToBoolValue(
         self,
         value: Any,
@@ -99,7 +92,7 @@ class VariantType(Type):
         self,
         value: Any,
         query_type: Type,
-    ) -> Tuple[bool, Optional[Type]]:
+    ) -> Type.IsSupportedResult:
         query_type_type = type(query_type)
 
         if self.__class__ == query_type_type:
@@ -110,20 +103,20 @@ class VariantType(Type):
         for the_type in self.types:
             if the_type.__class__ == query_type_type:
                 if the_type.IsSupportedValue(value):
-                    return True, the_type
+                    return Type.IsSupportedResult(True, the_type)
 
                 matched_type = the_type
                 break
 
         if matched_type is None:
-            return False, None
+            return Type.IsSupportedResult(False, None)
 
         remaining_types = [the_type for the_type in self.types if the_type is not matched_type]
 
         if len(remaining_types) == 1:
-            return False, remaining_types[0]
+            return Type.IsSupportedResult(False, remaining_types[0])
 
-        return False, VariantType(remaining_types)
+        return Type.IsSupportedResult(False, VariantType(remaining_types))
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -131,7 +124,7 @@ class VariantType(Type):
         self,
         value: Any,
         query_type: Type,
-    ) -> Tuple[bool, Optional[Type]]:
+    ) -> Type.IsSupportedResult:
         query_type_type = type(query_type)
 
         if self.__class__ == query_type_type:
@@ -142,20 +135,20 @@ class VariantType(Type):
         for the_type in self.types:
             if the_type.__class__ == query_type_type:
                 if the_type.IsSupportedValue(value):
-                    return False, None
+                    return Type.IsSupportedResult(False, None)
 
                 matched_type = the_type
                 break
 
         if matched_type is None:
-            return True, self
+            return Type.IsSupportedResult(True, self)
 
         remaining_types = [the_type for the_type in self.types if the_type is not matched_type]
 
         if len(remaining_types) == 1:
-            return True, remaining_types[0]
+            return Type.IsSupportedResult(True, remaining_types[0])
 
-        return True, VariantType(remaining_types)
+        return Type.IsSupportedResult(True, VariantType(remaining_types))
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -167,14 +160,14 @@ class VariantType(Type):
     ) -> List[Type]:
         results: Dict[str, Type] = OrderedDict()
 
-        for query_type in types:
-            if isinstance(query_type, cls):
-                the_types = cls._Flatten(query_type.types)
+        for the_type in types:
+            if isinstance(the_type, cls):
+                the_types = cls._Flatten(the_type.types)
             else:
-                the_types = [query_type, ]
+                the_types = [the_type, ]
 
-            for the_type in the_types:
-                if the_type.name not in results:
-                    results[the_type.name] = the_type
+            for typ in the_types:
+                if typ.name not in results:
+                    results[typ.name] = typ
 
         return list(results.values())
