@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import cast, Optional, Tuple, Union
 
 import CommonEnvironment
 
@@ -47,7 +47,6 @@ with InitRelativeImports():
 
     from ...Parser.Parser import (
         CreateRegions,
-        Error,
         GetParserInfo,
         ParserInfo,
     )
@@ -57,7 +56,6 @@ with InitRelativeImports():
         TemplateArgumentsParserInfo,
         TemplateDecoratorArgumentParserInfo,
         TemplateTypeArgumentParserInfo,
-        TypeParserInfo,
     )
 
 
@@ -80,7 +78,7 @@ def Create() -> PhraseItem:
                     ),
 
                     # <type>
-                    DynamicPhrasesType.Types,
+                    DynamicPhrasesType.Expressions,
                 ],
             ),
 
@@ -116,7 +114,6 @@ def Create() -> PhraseItem:
 def Extract(
     node: AST.Node,
 ) -> Union[
-    List[Error],
     bool,
     TemplateArgumentsParserInfo,
 ]:
@@ -139,12 +136,10 @@ def _ExtractElement(
 
     if node.type.name == "Template Type":
         keyword_regex_token = CommonTokens.TemplateTypeName
-        dynamic_phrase_type = TypeParserInfo
         element_type = TemplateTypeArgumentParserInfo
 
     elif node.type.name == "Template Decorator":
         keyword_regex_token = CommonTokens.ParameterName
-        dynamic_phrase_type = ExpressionParserInfo
         element_type = TemplateDecoratorArgumentParserInfo
 
     else:
@@ -166,7 +161,7 @@ def _ExtractElement(
 
     # <type> | <template_expression>
     value_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
-    value_info = cast(dynamic_phrase_type, GetParserInfo(value_node))
+    value_info = cast(ExpressionParserInfo, GetParserInfo(value_node))
 
     return (
         element_type.Create(

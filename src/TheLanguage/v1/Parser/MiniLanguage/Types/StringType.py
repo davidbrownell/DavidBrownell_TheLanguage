@@ -3,7 +3,7 @@
 # |  StringType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 16:16:47
+# |      2022-05-02 22:12:23
 # |
 # ----------------------------------------------------------------------
 # |
@@ -44,6 +44,14 @@ class StringType(Type):
         value: Any,
     ) -> bool:
         return isinstance(value, str)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def ToStringValue(
+        value: Any,
+    ) -> str:
+        return '"{}"'.format(value.replace("\n", "\\n"))
 
     # ----------------------------------------------------------------------
     @staticmethod

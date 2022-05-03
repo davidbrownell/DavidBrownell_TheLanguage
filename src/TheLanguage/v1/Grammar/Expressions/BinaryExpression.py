@@ -56,6 +56,9 @@ class BinaryExpression(GrammarPhrase):
     PHRASE_NAME                             = "Binary Expression"
 
     OPERATOR_MAP                            = {
+        ".": OperatorType.Access,
+        ".*": OperatorType.AccessReturnSelf,
+
         "*": OperatorType.Multiply,
         "/": OperatorType.Divide,
         "//": OperatorType.DivideFloor,
@@ -72,7 +75,9 @@ class BinaryExpression(GrammarPhrase):
 
         "^": OperatorType.BitwiseXor,
 
-        "|": OperatorType.BitwiseOr,
+        # This conflicts with variants (similar to how '>' conflicts with templates). Need to figure this out.
+        # The strategy to match longest isn't always the best.
+        "|_TODO": OperatorType.BitwiseOr,
 
         "<": OperatorType.Less,
         "<=": OperatorType.LessEqual,

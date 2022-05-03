@@ -108,25 +108,6 @@ def _GetRegionFuncFactory(
 
 
 # ----------------------------------------------------------------------
-ReservedUpperNames                          = [
-    # Fundamental Types
-    "Bool",
-    "Char",
-    "Int",
-    "None",
-    "Num",
-    "Str",
-
-    # Fundamental Type Values
-    "True",
-    "False",
-]
-
-ReservedLowerNames                          = [
-]
-
-
-# ----------------------------------------------------------------------
 AttributeName                               = RegexToken(
     "<attribute name>",
     re.compile(
@@ -137,15 +118,14 @@ AttributeName                               = RegexToken(
             ))""",
         ),
     ),
-    exclude_matches=ReservedUpperNames,
 )
 
 AttributeName.Extract                       = _ExtractFuncFactory(False)  # type: ignore
 
 
 # ----------------------------------------------------------------------
-FuncName                                    = RegexToken(
-    "<func name>",
+FuncOrTypeName                              = RegexToken(
+    "<func or type name>",
     re.compile(
         textwrap.dedent(
             r"""(?P<value>(?#
@@ -159,15 +139,18 @@ FuncName                                    = RegexToken(
             ))""",
         ),
     ),
-    exclude_matches=ReservedUpperNames,
 )
 
-FuncName.Extract                            = _ExtractFuncFactory(True)                             # type: ignore
-FuncName.IsCompileTime                      = _IsFuncFactory(FuncName, "is_compile_time")           # type: ignore
-FuncName.GetIsCompileTimeRegion             = _GetRegionFuncFactory(FuncName, "is_compile_time")    # type: ignore
-FuncName.IsExceptional                      = _IsFuncFactory(FuncName, "is_exceptional")            # type: ignore
-FuncName.GetIsCompileTimeRegion             = _GetRegionFuncFactory(FuncName, "is_exceptional")     # type: ignore
+# TODO: Do not allow a 'T' suffix
+# TODO: Do not allow compile_time when not expected / require compile time when expected
 
+FuncOrTypeName.Extract                      = _ExtractFuncFactory(True)                             # type: ignore
+FuncOrTypeName.IsCompileTime                = _IsFuncFactory(FuncOrTypeName, "is_compile_time")           # type: ignore
+FuncOrTypeName.GetIsCompileTimeRegion       = _GetRegionFuncFactory(FuncOrTypeName, "is_compile_time")    # type: ignore
+FuncOrTypeName.IsExceptional                = _IsFuncFactory(FuncOrTypeName, "is_exceptional")            # type: ignore
+FuncOrTypeName.GetIsCompileTimeRegion       = _GetRegionFuncFactory(FuncOrTypeName, "is_exceptional")     # type: ignore
+
+func_or_type_name_configuration_compile_time_regex      = re.compile(r"__[A-Z][A-Za-z0-9_]+!")
 
 # ----------------------------------------------------------------------
 ParameterName                               = RegexToken(
@@ -181,8 +164,9 @@ ParameterName                               = RegexToken(
             ))""",
         ),
     ),
-    exclude_matches=ReservedLowerNames,
 )
+
+# TODO: Do not allow compile_time when not expected / require compile time when expected
 
 ParameterName.Extract                       = _ExtractFuncFactory(True)                                 # type: ignore
 ParameterName.IsCompileTime                 = _IsFuncFactory(ParameterName, "is_compile_time")          # type: ignore
@@ -228,35 +212,12 @@ TemplateTypeName                            = RegexToken(
             ))""",
         ),
     ),
-    exclude_matches=ReservedUpperNames,
 )
 
 TemplateTypeName.Extract                    = _ExtractFuncFactory(False)  # type: ignore
 
 
 # ----------------------------------------------------------------------
-TypeName                                    = RegexToken(
-    "<type name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Initial Underscores [optional]  )_*(?#
-            Upper                           )[A-Z](?#
-            Alphanumeric                    )[A-Za-z0-9_]+(?#
-            Trailing Underscores [optional] )_*(?#
-            Whole match only                )(?![A-Za-z0-9_])(?#
-            ))""",
-        ),
-    ),
-)
-
-
-TypeName.Extract                            = _ExtractFuncFactory(False)  # type: ignore
-
-
-# ----------------------------------------------------------------------
-# TODO: Probably looking at 2 types here, those that allow leading underscores (class attributes)
-#       and everything else.
 VariableName                                = RegexToken(
     "<variable name>",
     re.compile(
@@ -271,12 +232,15 @@ VariableName                                = RegexToken(
             ))""",
         ),
     ),
-    exclude_matches=ReservedLowerNames,
 )
+
+# TODO: Do not allow compile_time when not expected / require compile time when expected
 
 VariableName.Extract                        = _ExtractFuncFactory(True)  # type: ignore
 VariableName.IsCompileTime                  = _IsFuncFactory(VariableName, "is_compile_time")  # type: ignore
 VariableName.GetIsCompileTimeRegion         = _GetRegionFuncFactory(VariableName, "is_compile_time")  # type: ignore
+
+variable_name_configuration_compile_time_regex          = re.compile(r"__[a-z][A-Za-z0-9_]*!")
 
 
 # ----------------------------------------------------------------------

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TypeParserInfo.py
+# |  TupleExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-12 08:28:34
+# |      2022-05-01 14:05:36
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TypeParserInfo object"""
+"""Contains the TupleExpressionParserInfo object"""
 
 import os
 
-from typing import Any, Callable, List, Optional
+from typing import List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,44 +32,46 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, ParserInfoType, Region
-
-    from ..Common.MutabilityModifier import MutabilityModifier
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TypeParserInfo(ParserInfo):
-    """Abstract base class for all types"""
-
+class TupleExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type: InitVar[ParserInfoType]
-    regions: InitVar[List[Optional[Region]]]
-
-    mutability_modifier: Optional[MutabilityModifier]
+    types: List[ExpressionParserInfo]
 
     # ----------------------------------------------------------------------
     @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        types: List[ExpressionParserInfo],
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            ParserInfoType.GetDominantType(*types),     # type: ignore
+            regions,                                    # type: ignore
+            *args,
+            **kwargs,
+        )
 
     # ----------------------------------------------------------------------
-    def __post_init__(
-        self,
-        parser_info_type,
-        regions,
-        regionless_attributes: Optional[List[str]]=None,
-        validate=True,
-        **custom_display_funcs: Callable[[Any], Optional[Any]],
-    ):
-        super(TypeParserInfo, self).__init__(
-            parser_info_type,
-            regions,
-            regionless_attributes,
-            validate,
-            **custom_display_funcs,
+    def __post_init__(self, *args, **kwargs):
+        super(TupleExpressionParserInfo, self).__post_init__(
+            *args,
+            **kwargs,
+            regionless_attributes=["types", ],
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("types", self.types),
+            ],  # type: ignore
+            children=None,
         )

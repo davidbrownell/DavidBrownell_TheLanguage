@@ -19,6 +19,7 @@ import os
 import textwrap
 import types
 
+from contextlib import contextmanager
 from io import StringIO
 from typing import Dict, List, Set, Union
 
@@ -36,7 +37,7 @@ with InitRelativeImports():
 
     from ....Parser.Parser import Region, RootParserInfo
 
-    from ....Parser.ParserInfos.ParserInfo import ParserInfo, VisitControl
+    from ....Parser.ParserInfos.ParserInfo import ParserInfo
 
     from ....Parser.ParserInfos.Common.ClassModifier import ClassModifier
     from ....Parser.ParserInfos.Common.MethodModifier import MethodModifier
@@ -84,21 +85,11 @@ class BaseMixin(object):
         self,
         name: str,
     ):
-        if name.startswith("OnEnter"):
-            return self.__class__._DefaultOnEnterMethod  # pylint: disable=protected-access
-        elif name.startswith("OnExit"):
-            name = "On{}".format(name[len("OnExit"):])
-
-            method = getattr(self, name, None)
-            assert method is not None, name
-
-            return method
-
         index = name.find("ParserInfo__")
         if index != -1 and index + len("ParserInfo__") + 1 < len(name):
             return types.MethodType(self.__class__._DefaultDetailMethod, self)  # pylint: disable=protected-access
 
-        return None
+        raise AttributeError(name)
 
     # ----------------------------------------------------------------------
     def GetContent(self) -> str:
@@ -126,17 +117,13 @@ class BaseMixin(object):
         )
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    def OnEnterPhrase(
-        parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ):
-        pass
-
-    # ----------------------------------------------------------------------
-    def OnExitPhrase(
+    @contextmanager
+    def OnPhrase(
         self,
         parser_info: ParserInfo,
     ):
+        yield
+
         if self._scope_level == 1:
             if isinstance(parser_info, StatementParserInfo):
                 should_add = False
@@ -156,25 +143,24 @@ class BaseMixin(object):
                     self._public_exports.append(parser_info)
 
     # ----------------------------------------------------------------------
-    def OnEnterScope(
+    @contextmanager
+    def OnNewScope(
         self,
         parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ) -> None:
+    ):
         self._scope_level += 1
 
-    # ----------------------------------------------------------------------
-    def OnExitScope(
-        self,
-        parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ) -> None:
+        yield
+
         assert self._scope_level
         self._scope_level -= 1
 
     # ----------------------------------------------------------------------
-    def OnEnterRootParserInfo(
+    @contextmanager
+    def OnRootParserInfo(
         self,
         parser_info: RootParserInfo,
-    ) -> None:
+    ):
         if parser_info.documentation is not None:
             self._stream.write(
                 textwrap.dedent(
@@ -187,11 +173,8 @@ class BaseMixin(object):
                 ).format(parser_info.documentation),
             )
 
-    # ----------------------------------------------------------------------
-    def OnExitRootParserInfo(
-        self,
-        parser_info: RootParserInfo,  # pylint: disable=unused-argument
-    ) -> None:
+        yield
+
         if self._public_exports:
             self._stream.write(
                 textwrap.dedent(
@@ -279,27 +262,12 @@ class BaseMixin(object):
         return None  # pragma: no cover
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    def _DefaultOnEnterMethod(
-        parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ):
-        return VisitControl.Continue
-
-    # ----------------------------------------------------------------------
     def _DefaultDetailMethod(
         self,
         parser_info_or_infos: Union[ParserInfo, List[ParserInfo]],
     ):
         if isinstance(parser_info_or_infos, list):
             for parser_info in parser_info_or_infos:
-                visit_control = parser_info.Accept(self)
-
-                if visit_control == VisitControl.Terminate:
-                    return visit_control
-
-                if visit_control == VisitControl.SkipSiblings:
-                    break
-
-            return VisitControl.Continue
-
-        return parser_info_or_infos.Accept(self)
+                parser_info.Accept(self)
+        else:
+            parser_info_or_infos.Accept(self)

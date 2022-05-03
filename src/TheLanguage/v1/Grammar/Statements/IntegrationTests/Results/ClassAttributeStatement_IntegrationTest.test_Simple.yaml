@@ -75,36 +75,10 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 3
-        type: # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
-          items:
-            - # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeItemParserInfo'>
-              constraints: None
-              name: "TheType1"
-              regions__: # <class 'types.StandardTypeItemParserInfoRegions'>
-                name: # <class 'v1.Parser.Region.Region'>
-                  begin: # <class 'v1.Lexer.Location.Location'>
-                    column: 5
-                    line: 2
-                  end: # <class 'v1.Lexer.Location.Location'>
-                    column: 13
-                    line: 2
-                self__: # <class 'v1.Parser.Region.Region'>
-                  begin: # <class 'v1.Lexer.Location.Location'>
-                    column: 5
-                    line: 2
-                  end: # <class 'v1.Lexer.Location.Location'>
-                    column: 13
-                    line: 2
-              templates: None
+        type: # <class 'v1.Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo.FuncOrTypeExpressionParserInfo'>
+          constraints: None
           mutability_modifier: "MutabilityModifier.var"
-          regions__: # <class 'types.StandardTypeParserInfoRegions'>
-            items: # <class 'v1.Parser.Region.Region'>
-              begin: # <class 'v1.Lexer.Location.Location'>
-                column: 5
-                line: 2
-              end: # <class 'v1.Lexer.Location.Location'>
-                column: 13
-                line: 2
+          regions__: # <class 'types.FuncOrTypeExpressionParserInfoRegions'>
             mutability_modifier: # <class 'v1.Parser.Region.Region'>
               begin: # <class 'v1.Lexer.Location.Location'>
                 column: 14
@@ -119,6 +93,16 @@ statements:
               end: # <class 'v1.Lexer.Location.Location'>
                 column: 17
                 line: 2
+            value: # <class 'v1.Parser.Region.Region'>
+              begin: # <class 'v1.Lexer.Location.Location'>
+                column: 5
+                line: 2
+              end: # <class 'v1.Lexer.Location.Location'>
+                column: 13
+                line: 2
+          templates: None
+          value: # <class 'v1.Parser.MiniLanguage.Types.CustomType.CustomType'>
+            name: "TheType1"
         visibility: "VisibilityModifier.private"
       - # <class 'v1.Parser.ParserInfos.Statements.ClassAttributeStatementParserInfo.ClassAttributeStatementParserInfo'>
         class_capabilities: "Standard"
@@ -145,61 +129,36 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 4
-        type: # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeParserInfo'>
-          items:
-            - # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeItemParserInfo'>
-              constraints: None
+        type: # <class 'v1.Parser.ParserInfos.Expressions.BinaryExpressionParserInfo.BinaryExpressionParserInfo'>
+          left_expression: # <class 'v1.Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo.FuncOrTypeExpressionParserInfo'>
+            constraints: None
+            mutability_modifier: None
+            regions__: # <class 'types.FuncOrTypeExpressionParserInfoRegions'>
+              self__: # <class 'v1.Parser.Region.Region'>
+                begin: # <class 'v1.Lexer.Location.Location'>
+                  column: 5
+                  line: 3
+                end: # <class 'v1.Lexer.Location.Location'>
+                  column: 8
+                  line: 3
+              value: # <class 'v1.Parser.Region.Region'>
+                begin: # <class 'v1.Lexer.Location.Location'>
+                  column: 5
+                  line: 3
+                end: # <class 'v1.Lexer.Location.Location'>
+                  column: 8
+                  line: 3
+            templates: None
+            value: # <class 'v1.Parser.MiniLanguage.Types.CustomType.CustomType'>
               name: "The"
-              regions__: # <class 'types.StandardTypeItemParserInfoRegions'>
-                name: # <class 'v1.Parser.Region.Region'>
-                  begin: # <class 'v1.Lexer.Location.Location'>
-                    column: 5
-                    line: 3
-                  end: # <class 'v1.Lexer.Location.Location'>
-                    column: 8
-                    line: 3
-                self__: # <class 'v1.Parser.Region.Region'>
-                  begin: # <class 'v1.Lexer.Location.Location'>
-                    column: 5
-                    line: 3
-                  end: # <class 'v1.Lexer.Location.Location'>
-                    column: 8
-                    line: 3
-              templates: None
-            - # <class 'v1.Parser.ParserInfos.Types.StandardTypeParserInfo.StandardTypeItemParserInfo'>
-              constraints: None
-              name: "Type"
-              regions__: # <class 'types.StandardTypeItemParserInfoRegions'>
-                name: # <class 'v1.Parser.Region.Region'>
-                  begin: # <class 'v1.Lexer.Location.Location'>
-                    column: 9
-                    line: 3
-                  end: # <class 'v1.Lexer.Location.Location'>
-                    column: 13
-                    line: 3
-                self__: # <class 'v1.Parser.Region.Region'>
-                  begin: # <class 'v1.Lexer.Location.Location'>
-                    column: 9
-                    line: 3
-                  end: # <class 'v1.Lexer.Location.Location'>
-                    column: 13
-                    line: 3
-              templates: None
-          mutability_modifier: "MutabilityModifier.val"
-          regions__: # <class 'types.StandardTypeParserInfoRegions'>
-            items: # <class 'v1.Parser.Region.Region'>
+          operator: "OperatorType.Access"
+          regions__: # <class 'types.BinaryExpressionParserInfoRegions'>
+            operator: # <class 'v1.Parser.Region.Region'>
               begin: # <class 'v1.Lexer.Location.Location'>
-                column: 5
+                column: 8
                 line: 3
               end: # <class 'v1.Lexer.Location.Location'>
-                column: 13
-                line: 3
-            mutability_modifier: # <class 'v1.Parser.Region.Region'>
-              begin: # <class 'v1.Lexer.Location.Location'>
-                column: 14
-                line: 3
-              end: # <class 'v1.Lexer.Location.Location'>
-                column: 17
+                column: 9
                 line: 3
             self__: # <class 'v1.Parser.Region.Region'>
               begin: # <class 'v1.Lexer.Location.Location'>
@@ -208,6 +167,34 @@ statements:
               end: # <class 'v1.Lexer.Location.Location'>
                 column: 17
                 line: 3
+          right_expression: # <class 'v1.Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo.FuncOrTypeExpressionParserInfo'>
+            constraints: None
+            mutability_modifier: "MutabilityModifier.val"
+            regions__: # <class 'types.FuncOrTypeExpressionParserInfoRegions'>
+              mutability_modifier: # <class 'v1.Parser.Region.Region'>
+                begin: # <class 'v1.Lexer.Location.Location'>
+                  column: 14
+                  line: 3
+                end: # <class 'v1.Lexer.Location.Location'>
+                  column: 17
+                  line: 3
+              self__: # <class 'v1.Parser.Region.Region'>
+                begin: # <class 'v1.Lexer.Location.Location'>
+                  column: 9
+                  line: 3
+                end: # <class 'v1.Lexer.Location.Location'>
+                  column: 17
+                  line: 3
+              value: # <class 'v1.Parser.Region.Region'>
+                begin: # <class 'v1.Lexer.Location.Location'>
+                  column: 9
+                  line: 3
+                end: # <class 'v1.Lexer.Location.Location'>
+                  column: 13
+                  line: 3
+            templates: None
+            value: # <class 'v1.Parser.MiniLanguage.Types.CustomType.CustomType'>
+              name: "Type"
         visibility: "VisibilityModifier.private"
     templates: None
     uses: None

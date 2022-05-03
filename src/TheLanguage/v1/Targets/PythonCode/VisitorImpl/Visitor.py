@@ -30,7 +30,6 @@ with InitRelativeImports():
     from .CommonMixin import CommonMixin
     from .ExpressionsMixin import ExpressionsMixin
     from .StatementsMixin import StatementsMixin
-    from .TypesMixin import TypesMixin
 
 
 # ----------------------------------------------------------------------
@@ -38,6 +37,5 @@ class Visitor(
     CommonMixin,
     ExpressionsMixin,
     StatementsMixin,
-    TypesMixin,
 ):
     pass

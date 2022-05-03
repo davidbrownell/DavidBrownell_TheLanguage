@@ -38,10 +38,6 @@ with InitRelativeImports():
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
-    from ..Types.TypeParserInfo import TypeParserInfo
-
-    from ...Error import Error, ErrorException
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -54,7 +50,7 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
     visibility_param: InitVar[Optional[VisibilityModifier]]
     visibility: VisibilityModifier          = field(init=False)
 
-    type: TypeParserInfo
+    type: ExpressionParserInfo
 
     name: str
     documentation: Optional[str]
@@ -106,9 +102,5 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
         self.ValidateRegions()
 
         # Validate
-        errors: List[Error] = []
-
-        errors += self.class_capabilities.ValidateClassAttributeStatementCapabilities(self)
-
-        if errors:
-            raise ErrorException(*errors)
+        # TODO: Need to expand type and then call this functionality
+        # self.class_capabilities.ValidateClassAttributeStatementCapabilities(self)

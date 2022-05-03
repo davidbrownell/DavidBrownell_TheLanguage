@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Union, Tuple
+from typing import cast, Tuple
 
 import CommonEnvironment
 
@@ -32,15 +32,14 @@ with InitRelativeImports():
     from .Impl import ArgumentsFragmentImpl
 
     from ..GrammarPhrase import AST
+    from ..Expressions.VariableExpression import VariableExpression
 
     from ...Lexer.Phrases.DSL import (
-        DynamicPhrasesType,
         ExtractDynamic,
         PhraseItem,
     )
 
     from ...Parser.Parser import (
-        Error,
         GetParserInfo,
         ParserInfo,
     )
@@ -50,15 +49,10 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 def Create() -> PhraseItem:
-    variable_element = PhraseItem(
-        name="Variable",
-        item=DynamicPhrasesType.Expressions,
-    )
-
     return ArgumentsFragmentImpl.Create(
         "Captured Variables",
         "|", "|",
-        variable_element,
+        VariableExpression().phrase,
         allow_empty=False,
     )
 
@@ -66,10 +60,7 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def Extract(
     node: AST.Node,
-) -> Union[
-    List[Error],
-    CapturedVariablesParserInfo,
-]:
+) -> CapturedVariablesParserInfo:
     result = ArgumentsFragmentImpl.Extract(
         CapturedVariablesParserInfo,
         _ExtractElement,

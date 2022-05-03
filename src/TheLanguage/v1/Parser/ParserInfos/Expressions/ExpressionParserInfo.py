@@ -22,6 +22,7 @@ from typing import Any, Callable, List, Optional
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -68,3 +69,18 @@ class ExpressionParserInfo(ParserInfo):
             validate,
             **custom_display_funcs,
         )
+
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def ValidateAsConfigurationType(self) -> None:
+        raise NotImplementedError("This method should be overridden by those derived types that are valid at compile-time")
+
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def ValidateAsCustomizationType(self) -> None:
+        raise NotImplementedError("This method should be overridden by those derived types that are valid at compile-time")
+
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def ValidateAsStandardType(self) -> None:
+        raise NotImplementedError("This method should be overridden by those derived types that are valid at compile-time")

@@ -3,7 +3,7 @@
 # |  Type.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 16:08:48
+# |      2022-05-02 21:51:00
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,10 +17,13 @@
 
 import os
 
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
@@ -29,13 +32,31 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 
 # ----------------------------------------------------------------------
-class Type(Interface.Interface):
+class Type(Interface.Interface, ObjectReprImplBase):
     """\
     Abstract base class for types that can be used at compile time by the compiler.
 
     Expressions of these types can be used to evaluate constraints or compile time
     conditionals.
     """
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class IsSupportedResult(object):
+        result: bool
+        refined_type: Optional["Type"]
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        ObjectReprImplBase.__init__(self)
 
     # ----------------------------------------------------------------------
     @Interface.abstractproperty
@@ -66,7 +87,7 @@ class Type(Interface.Interface):
     def ToStringValue(
         value: Any,
     ) -> str:
-        """Converts the value to a string"""
+        """Convers the value to a string value"""
         return str(value)
 
     # ----------------------------------------------------------------------
@@ -75,7 +96,7 @@ class Type(Interface.Interface):
         self,
         value: Any,
         query_type: "Type",
-    ) -> Tuple[bool, Optional["Type"]]:
+    ) -> "Type.IsSupportedResult":
         """\
         Returns True if the value is supported and of the query_type.
 
@@ -84,9 +105,9 @@ class Type(Interface.Interface):
         """
 
         if query_type.__class__ == self.__class__ and self.IsSupportedValue(value):
-            return True, self
+            return Type.IsSupportedResult(True, self)
 
-        return False, None
+        return Type.IsSupportedResult(False, None)
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
@@ -94,7 +115,7 @@ class Type(Interface.Interface):
         self,
         value: Any,
         query_type: "Type",
-    ) -> Tuple[bool, Optional["Type"]]:
+    ) -> "Type.IsSupportedResult":
         """\
         Returns True if the value is not supported and of the query_type.
 
@@ -103,6 +124,6 @@ class Type(Interface.Interface):
         """
 
         if query_type.__class__ != self.__class__ or not self.IsSupportedValue(value):
-            return True, self
+            return Type.IsSupportedResult(True, self)
 
-        return False, None
+        return Type.IsSupportedResult(False, None)

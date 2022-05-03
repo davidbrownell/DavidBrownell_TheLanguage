@@ -17,8 +17,6 @@
 
 import os
 
-from typing import List, Optional
-
 from dataclasses import dataclass
 
 import CommonEnvironment
@@ -31,36 +29,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
+    from .ExpressionParserInfo import (  # pylint: disable=unused-import
+        ExpressionParserInfo,
+        ParserInfoType,                     # convenience import
+    )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class VariableExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    is_compile_time: Optional[bool]
     name: str
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        regions: List[Optional[Region]],
-        is_compile_time: bool,
-        *args,
-        **kwargs,
-    ):
-        if is_compile_time:
-            parser_info_type = ParserInfoType.CompileTime
-            is_compile_time_value = True
-        else:
-            parser_info_type = ParserInfoType.Standard
-            is_compile_time_value = None
-
-        return cls(
-            parser_info_type,               # type: ignore
-            regions,                        # type: ignore
-            is_compile_time_value,
-            *args,
-            **kwargs,
-        )

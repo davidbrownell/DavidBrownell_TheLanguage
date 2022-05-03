@@ -18,13 +18,12 @@
 import os
 
 from contextlib import contextmanager
-from enum import auto, Enum
+from enum import auto, Enum, Flag
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 from dataclasses import dataclass, field, fields, make_dataclass, InitVar
 
 import CommonEnvironment
-from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
 from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
@@ -36,35 +35,56 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Error import Error, CreateError
     from ..Region import Region
 
 
 # ----------------------------------------------------------------------
-class VisitControl(Enum):
-    """Controls visitation behavior"""
+class VisitResult(Flag):
+    Continue                                = 0
 
-    Continue                                = auto()    # Continue visiting all children
-    SkipChildren                            = auto()    # Don't visit any children
-    SkipSiblings                            = auto()    # Don't visit any remaining siblings
-    Terminate                               = auto()    # Don't visit anything else
+    SkipDetails                             = auto()
+    SkipChildren                            = auto()
+
+    SkipAll                                 = SkipDetails | SkipChildren
 
 
 # ----------------------------------------------------------------------
 class ParserInfoType(Enum):
     Unknown                                 = auto()    # Unknown (this value should only be applied for very low-level phrases (like types))
-    Literal                                 = auto()    # A literal value
-    CompileTime                             = auto()    # Evaluated at compile time
-    Standard                                = auto()    # Evaluated at runtime
 
+    # Compile-Time Flags
+    Configuration                           = auto()    # Can be used in the specification of basic compile-time types
+    TypeCustomization                       = auto()    # Can be used in the evaluation of compile-time constraints
 
-# ----------------------------------------------------------------------
-InconsistentParserInfoTypeError             = CreateError(
-    "The '{type}' expression is not consistent with the '{dominant_type}' expression",
-    type=str,
-    dominant_type=str,
-    dominant_region=Region,
-)
+    # Standard Flags
+    Standard                                = auto()
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def GetDominantType(
+        cls,
+        *expressions: "ParserInfo",
+    ) -> "ParserInfoType":
+        dominant_expression: Optional["ParserInfo"] = None
+
+        for expression in expressions:
+            expression_value = expression.parser_info_type__  # type: ignore
+
+            if (
+                dominant_expression is None
+                or expression_value.value > dominant_expression.parser_info_type__.value  # type: ignore
+            ):
+                dominant_expression = expression
+
+        return dominant_expression.parser_info_type__ if dominant_expression else cls.Unknown  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def IsCompileTimeValue(
+        cls,
+        value: "ParserInfoType",
+    ) -> bool:
+        return value != cls.Standard
 
 
 # ----------------------------------------------------------------------
@@ -166,24 +186,14 @@ class ParserInfo(ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def Accept(self, visitor) -> VisitControl:
-        with self._GenericAccept(visitor) as visit_control:
-            if visit_control != VisitControl.Continue:
-                return visit_control
-
+    def Accept(self, visitor):
+        with self._GenericAccept(visitor):
             method_name = "On{}".format(self.__class__.__name__)
 
-            on_method = getattr(visitor, method_name, None)
-            assert on_method is not None, method_name
+            method = getattr(visitor, method_name, None)
+            assert method is not None, method_name
 
-            visit_control = on_method(self)
-
-            if visit_control is None:
-                visit_control = VisitControl.Continue
-            elif visit_control in [VisitControl.SkipChildren, VisitControl.SkipSiblings]:
-                visit_control = VisitControl.Continue
-
-            return visit_control
+            method(self)
 
     # ----------------------------------------------------------------------
     # |
@@ -193,117 +203,62 @@ class ParserInfo(ObjectReprImplBase):
     def _AcceptImpl(
         self,
         visitor,
-        details: Optional[List[Tuple[str, Union["ParserInfo", List["ParserInfo"]]]]],
+        details: Optional[
+            List[
+                Tuple[
+                    str,
+                    Union[
+                        "ParserInfo",
+                        List["ParserInfo"],
+                    ],
+                ],
+            ]
+        ],
         children: Optional[List["ParserInfo"]],
-    ) -> VisitControl:
+    ):
         """Implementation of Accept for ParserInfos that introduce new scopes or contain details that should be enumerated"""
 
-        with self._GenericAccept(visitor) as visit_control:
-            if visit_control != VisitControl.Continue:
-                return visit_control
+        with self._GenericAccept(visitor):
+            method_name = "On{}".format(self.__class__.__name__)
 
-            # Get the visitor's dynamic methods
-            enter_method_name = "OnEnter{}".format(self.__class__.__name__)
-            enter_method = getattr(visitor, enter_method_name, None)
-            assert enter_method is not None, enter_method_name
+            method = getattr(visitor, method_name, None)
+            assert method is not None, method_name
 
-            exit_method_name = "OnExit{}".format(self.__class__.__name__)
-            exit_method = getattr(visitor, exit_method_name, None)
-            assert exit_method is not None, exit_method_name
+            try:
+                with method(self) as visit_result:
+                    if visit_result is None:
+                        visit_result = VisitResult.Continue
 
-            # Invoke the visitor
-            visit_control = enter_method(self)
-            if visit_control is None:
-                visit_control = VisitControl.Continue
-
-            if visit_control != VisitControl.Terminate:
-                with CallOnExit(lambda: exit_method(self)):
-                    if details:
+                    if details and not visit_result & VisitResult.SkipDetails:
                         method_name_prefix = "On{}__".format(self.__class__.__name__)
 
                         for detail_name, detail_value in details:
                             method_name = "{}{}".format(method_name_prefix, detail_name)
+
                             method = getattr(visitor, method_name, None)
                             assert method is not None, method_name
 
-                            visit_control = method(detail_value)
-                            if visit_control is None:
-                                visit_control = VisitControl.Continue
+                            method(detail_value)
 
-                            if visit_control == VisitControl.Continue:
-                                pass # Nothing to do here
-                            elif visit_control == VisitControl.Terminate:
-                                break
-                            elif visit_control == VisitControl.SkipSiblings:
-                                visit_control = VisitControl.Continue
-                                break
-                            elif visit_control == VisitControl.SkipChildren:
-                                break
+                    if children and not visit_result & VisitResult.SkipChildren:
+                        method_name = "OnNewScope"
 
-                    if children and visit_control != VisitControl.SkipChildren:
-                        visitor.OnEnterScope(self)
-                        with CallOnExit(lambda: visitor.OnExitScope(self)):
-                            for child in children:
-                                visit_control = child.Accept(visitor)
-                                if visit_control is None:
-                                    visit_control = VisitControl.Continue
+                        method = getattr(visitor, method_name, None)
+                        assert method is not None, method_name
 
-                                if visit_control == VisitControl.Continue:
-                                    pass # Nothing to do here
-                                elif visit_control == VisitControl.Terminate:
-                                    break
-                                elif visit_control == VisitControl.SkipSiblings:
-                                    visit_control = VisitControl.Continue
-                                    break
-                                else:
-                                    assert False, visit_control  # pragma: no cover
+                        with method(self) as visit_result:
+                            if visit_result is None:
+                                visit_result = VisitResult.Continue
 
-            assert visit_control in [VisitControl.Continue, VisitControl.Terminate], visit_control
-            return visit_control
+                            if not visit_result & VisitResult.SkipChildren:
+                                for child in children:
+                                    child.Accept(visitor)
 
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _GetDominantExpressionType(
-        cls,
-        *expressions: "ParserInfo"
-    ) -> Union[
-        ParserInfoType,
-        List[Error],
-    ]:
-        dominant_expression: Optional[ParserInfo] = None
+            except AttributeError as ex:
+                if str(ex) == "__enter__":
+                    assert False, (method_name, "__enter__")
 
-        for expression in expressions:
-            if (
-                dominant_expression is None
-                or expression.parser_info_type__.value > dominant_expression.parser_info_type__.value  # type: ignore
-            ):
-                dominant_expression = expression
-
-        if dominant_expression is None:
-            return ParserInfoType.Unknown
-
-        if dominant_expression.parser_info_type__.value >= ParserInfoType.CompileTime.value:  # type: ignore
-            errors: List[Error] = []
-
-            # Ensure that the types are consistent
-            for expression in expressions:
-                if expression.parser_info_type__.value < ParserInfoType.CompileTime.value:  # type: ignore
-                    continue
-
-                if expression.parser_info_type__.value < dominant_expression.parser_info_type__.value:  # type: ignore
-                    errors.append(
-                        InconsistentParserInfoTypeError.Create(
-                            region=expression.regions__.self__,
-                            type=expression.parser_info_type__.name,                    # type: ignore
-                            dominant_type=dominant_expression.parser_info_type__.name,  # type: ignore
-                            dominant_region=dominant_expression.regions__.self__,
-                        )
-                    )
-
-            if errors:
-                return errors
-
-        return dominant_expression.parser_info_type__  # type: ignore
+                raise
 
     # ----------------------------------------------------------------------
     # |
@@ -361,26 +316,15 @@ class ParserInfo(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @contextmanager
     def _GenericAccept(self, visitor):
-        # Enter
-        method_name = "OnEnterPhrase"
+        method_name = "OnPhrase"
         method = getattr(visitor, method_name, None)
 
-        if method is not None:
-            visit_control = method(self)
-            if visit_control is None:
-                visit_control = VisitControl.Continue
-        else:
-            visit_control = VisitControl.Continue
+        if method is None:
+            yield
+            return
 
-        # Yield
-        yield visit_control
-
-        # Exit
-        method_name = "OnExitPhrase"
-        method = getattr(visitor, method_name, None)
-
-        if method is not None:
-            method(self)
+        with method(self):
+            yield
 
 
 # ----------------------------------------------------------------------

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import cast, List, Optional, Tuple
 
 import CommonEnvironment
 
@@ -48,6 +48,7 @@ with InitRelativeImports():
         CreateError,
         CreateRegion,
         Error,
+        ErrorException,
         GetParserInfoNoThrow,
         Region,
         ParserInfo,
@@ -101,12 +102,9 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def Extract(
     node: AST.Node,
-) -> Union[
-    List[Error],
-    Tuple[
-        List[ParserInfo],
-        Optional[Tuple[AST.Leaf, str]],
-    ],
+) -> Tuple[
+    List[ParserInfo],
+    Optional[Tuple[AST.Leaf, str]],
 ]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 2
@@ -165,7 +163,7 @@ def Extract(
                 phrases.append(statement_phrase)
 
     if errors:
-        return errors
+        raise ErrorException(*errors)
 
     # Note that the phrases may be empty; this is valid in some cases, so it is a condition that needs
     # to be handled by the caller if necessary.

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -35,6 +35,7 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ..Common import ConstraintParametersFragment
+    from ..Common.Errors import InvalidCompileTimeNameError
     from ..Common import TemplateParametersFragment
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
@@ -47,15 +48,11 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import (
-        CreateRegions,
-        Error,
-        GetParserInfo,
-    )
+    from ...Parser.Parser import CreateRegion, CreateRegions, ErrorException, GetParserInfo
 
     from ...Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import (
+        ExpressionParserInfo,
         TypeAliasStatementParserInfo,
-        TypeParserInfo,
     )
 
 
@@ -76,7 +73,7 @@ class TypeAliasStatement(GrammarPhrase):
                 ),
 
                 # <name>
-                CommonTokens.TypeName,
+                CommonTokens.FuncOrTypeName,
 
                 # Template Parameters, Constraints
                 CommonTokens.PushIgnoreWhitespaceControl,
@@ -97,7 +94,7 @@ class TypeAliasStatement(GrammarPhrase):
                 "=",
 
                 # <type>
-                DynamicPhrasesType.Types,
+                DynamicPhrasesType.Expressions,
 
                 CommonTokens.Newline,
             ],
@@ -114,8 +111,6 @@ class TypeAliasStatement(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 9
 
-            errors: List[Error] = []
-
             # <visibility>?
             visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
             if visibility_node is None:
@@ -125,38 +120,34 @@ class TypeAliasStatement(GrammarPhrase):
 
             # <name>
             name_leaf = cast(AST.Leaf, nodes[1])
-            name_info = CommonTokens.TypeName.Extract(name_leaf)  # type: ignore
+            name_info = CommonTokens.FuncOrTypeName.Extract(name_leaf)  # type: ignore
+
+            if CommonTokens.FuncOrTypeName.IsCompileTime(name_info):  # type: ignore
+                raise ErrorException(
+                    InvalidCompileTimeNameError.Create(
+                        region=CreateRegion(name_leaf),
+                        name=name_info,
+                        type="type alias",
+                    ),
+                )
 
             # <template_parameters>?
-            templates_info = None
-
             templates_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[3])))
-            if templates_node is not None:
-                result = TemplateParametersFragment.Extract(templates_node)
-
-                if isinstance(result, list):
-                    errors += result
-                else:
-                    templates_info = result
+            if templates_node is None:
+                templates_info = None
+            else:
+                templates_info = TemplateParametersFragment.Extract(templates_node)
 
             # <constraint_parameters>?
-            constraints_info = None
-
             constraints_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[4])))
-            if constraints_node is not None:
-                result = ConstraintParametersFragment.Extract(constraints_node)
-
-                if isinstance(result, list):
-                    errors += result
-                else:
-                    constraints_info = result
+            if constraints_node is None:
+                constraints_info = None
+            else:
+                constraints_info = ConstraintParametersFragment.Extract(constraints_node)
 
             # <type>
             type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[7])))
-            type_info = cast(TypeParserInfo, GetParserInfo(type_node))
-
-            if errors:
-                return errors
+            type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
             return TypeAliasStatementParserInfo.Create(
                 CreateRegions(node, visibility_node, name_leaf),

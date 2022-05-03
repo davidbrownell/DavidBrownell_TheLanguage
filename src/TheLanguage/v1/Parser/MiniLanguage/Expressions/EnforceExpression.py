@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableExpression.py
+# |  EnforceExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-05-02 23:18:24
+# |      2022-05-02 22:35:10
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableExpression object"""
+"""Contains the EnforceExpression object"""
 
 import os
 
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -33,32 +33,35 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Expression import Expression, Type
+    from ..Types.NoneType import NoneType
 
     from ...Error import CreateError, ErrorException, Region
 
 
 # ----------------------------------------------------------------------
-InvalidNameError                            = CreateError(
-    "'{name}' is not defined",
-    name=str,
+EnforceError                                = CreateError(
+    "The expression '{expression}' failed{message_suffix}",
+    expression=str,
+    message_suffix=str,
 )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableExpression(Expression):
-    type: Type
-    name: str
-    name_region: Region
+class EnforceExpression(Expression):
+    expression: Expression
+    expression_region: Region
+    messages: Optional[List[Expression]]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(VariableExpression, self).__init__()
+        super(EnforceExpression, self).__init__()
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
-    def EvalType(self) -> Type:
-        return self.type
+    def EvalType() -> Type:
+        return NoneType()
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -67,20 +70,34 @@ class VariableExpression(Expression):
         args: Dict[str, Any],
         type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
-        potential_value = args.get(self.name, self.__class__._does_not_exist)  # pylint: disable=protected-access
-        if isinstance(potential_value, self.__class__._DoesNotExist):          # pylint: disable=protected-access
+        result = self.expression.Eval(args, type_overrides)
+
+        if not result.type.ToBoolValue(result.value):
+            if self.messages is None:
+                message_suffix = ""
+            else:
+                suffixes: List[str] = []
+
+                for message in self.messages:
+                    suffix = message.Eval(args, type_overrides)
+                    suffix = suffix.type.ToStringValue(suffix.value)
+
+                    suffixes.append(suffix)
+
+                message_suffix = ": {}".format(", ".join(suffixes))
+
             raise ErrorException(
-                InvalidNameError.Create(
-                    region=self.name_region,
-                    name=self.name,
+                EnforceError.Create(
+                    region=self.expression_region,
+                    expression=self.expression.ToString(args),
+                    message_suffix=message_suffix,
                 ),
             )
 
-        return Expression.EvalResult(
-            potential_value,
-            type_overrides.get(self.name, self.type),
-            self.name,
-        )
+        if result.name is not None:
+            type_overrides[result.name] = result.type
+
+        return Expression.EvalResult(None, NoneType(), None)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -88,13 +105,9 @@ class VariableExpression(Expression):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "{} [{}]".format(self.name, self.type.ToStringValue(args[self.name]))
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    class _DoesNotExist(object):
-        pass
-
-    # ----------------------------------------------------------------------
-    _does_not_exist                         = _DoesNotExist()
+        return "Enforce!({}{})".format(
+            self.expression.ToString(args),
+            "" if not self.messages else ", {}".format(
+                ", ".join(message.ToString(args) for message in self.messages),
+            ),
+        )
