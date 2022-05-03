@@ -42,7 +42,7 @@ with InitRelativeImports():
 
     from ...Common.VisibilityModifier import VisibilityModifier
 
-    from ....Parser import CreateError, Error
+    from ....Parser import CreateError, Error, ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -338,7 +338,7 @@ class ClassCapabilities(ObjectReprImplBase):
         self,
         parser_info, # : ClassStatementParserInfo
         has_parent_class: bool,
-    ) -> List[Error]:
+    ) -> None:
         errors: List[Error] = []
 
         # visibility
@@ -452,13 +452,14 @@ class ClassCapabilities(ObjectReprImplBase):
                         ),
                     )
 
-        return errors
+        if errors:
+            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     def ValidateNestedClassStatementCapabilities(
         self,
         parser_info, # : ClassStatementParserInfo
-    ) -> List[Error]:
+    ) -> None:
         errors: List[Error] = []
 
         # type
@@ -510,13 +511,14 @@ class ClassCapabilities(ObjectReprImplBase):
                 ),
             )
 
-        return errors
+        if errors:
+            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     def ValidateClassAttributeStatementCapabilities(
         self,
         parser_info, # : ClassAttributeStatementParserInfo
-    ) -> List[Error]:
+    ) -> None:
         errors: List[Error] = []
 
         # visibility
@@ -587,13 +589,14 @@ class ClassCapabilities(ObjectReprImplBase):
                     ),
                 )
 
-        return errors
+        if errors:
+            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     def ValidateTypeAliasStatementCapabilities(
         self,
         parser_info, # : TypeAliasStatementParserInfo
-    ) -> List[Error]:
+    ) -> None:
         errors: List[Error] = []
 
         # visibility
@@ -626,13 +629,14 @@ class ClassCapabilities(ObjectReprImplBase):
                 ),
             )
 
-        return errors
+        if errors:
+            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     def ValidateFuncDefinitionStatementCapabilities(
         self,
         parser_info, # : FuncDefinitionStatementParserInfo
-    ) -> List[Error]:
+    ) -> None:
         errors: List[Error] = []
 
         # visibility
@@ -739,4 +743,5 @@ class ClassCapabilities(ObjectReprImplBase):
                     ),
                 )
 
-        return errors
+        if errors:
+            raise ErrorException(*errors)

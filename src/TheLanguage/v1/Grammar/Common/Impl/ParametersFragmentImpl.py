@@ -219,12 +219,11 @@ ExtractReturnType                           = TypeVar("ExtractReturnType", bound
 
 def Extract(
     parser_info_type: Type[ExtractReturnType],
-    extract_element_func: Callable[[AST.Node], Union[List[Error], Tuple[ParserInfo, bool]]],
+    extract_element_func: Callable[[AST.Node], Tuple[ParserInfo, bool]],
     node: AST.Node,
     *,
     allow_empty: bool,
 ) -> Union[
-    List[Error],
     bool,
     ExtractReturnType,
 ]:
@@ -261,12 +260,8 @@ def Extract(
 
         for parameter_node in parameter_nodes:
             try:
-                result = extract_element_func(parameter_node)
-                if isinstance(result, list):
-                    errors += result
-                    continue
+                parser_info, has_default = extract_element_func(parameter_node)
 
-                parser_info, has_default = result
             except ErrorException as ex:
                 errors += ex.errors
                 continue
@@ -283,29 +278,27 @@ def Extract(
 
             parser_infos.append(parser_info)
 
-        assert parser_infos
-        assert parameters_type not in parameters_parser_infos
+        if not parser_infos:
+            assert errors
+        else:
+            assert parameters_type not in parameters_parser_infos
 
-        parameters_parser_infos[parameters_type] = (parameters_node, parser_infos)
+            parameters_parser_infos[parameters_type] = (parameters_node, parser_infos)
 
-    if not errors:
-        try:
-            return parser_info_type.Create(  # type: ignore
-                CreateRegions(
-                    node,
-                    parameters_parser_infos.get(ParametersType.pos, [None])[0],
-                    parameters_parser_infos.get(ParametersType.any, [None])[0],
-                    parameters_parser_infos.get(ParametersType.key, [None])[0],
-                ),
-                parameters_parser_infos.get(ParametersType.pos, [None, None])[1],
-                parameters_parser_infos.get(ParametersType.any, [None, None])[1],
-                parameters_parser_infos.get(ParametersType.key, [None, None])[1],
-            )
-        except ErrorException as ex:
-            errors += ex.errors
+    if errors:
+        raise ErrorException(*errors)
 
-    assert errors
-    return errors
+    return parser_info_type.Create(  # type: ignore
+        CreateRegions(
+            node,
+            parameters_parser_infos.get(ParametersType.pos, [None])[0],
+            parameters_parser_infos.get(ParametersType.any, [None])[0],
+            parameters_parser_infos.get(ParametersType.key, [None])[0],
+        ),
+        parameters_parser_infos.get(ParametersType.pos, [None, None])[1],
+        parameters_parser_infos.get(ParametersType.any, [None, None])[1],
+        parameters_parser_infos.get(ParametersType.key, [None, None])[1],
+    )
 
 
 # ----------------------------------------------------------------------

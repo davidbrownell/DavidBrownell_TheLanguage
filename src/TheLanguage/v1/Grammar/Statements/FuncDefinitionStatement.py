@@ -36,6 +36,7 @@ with InitRelativeImports():
 
     from ..Common import AttributesFragment
     from ..Common import CapturedVariablesFragment
+    from ..Common.Errors import InvalidCompileTimeNameError
     from ..Common import FuncParametersFragment
     from ..Common import MutabilityModifier
     from ..Common import StatementsFragment
@@ -54,17 +55,22 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateError, CreateRegion, CreateRegions, Error, GetParserInfo
-    from ...Parser.ParserInfos.Common.MethodModifier import MethodModifier
-
-    from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import (
-        FuncDefinitionStatementParserInfo,
-        OperatorType,
-        ParserInfoType,
-        TypeParserInfo,
+    from ...Parser.Parser import (
+        CreateError,
+        CreateRegion,
+        CreateRegions,
+        Error,
+        ErrorException,
+        GetParserInfo,
     )
 
-    from ...Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo
+    from ...Parser.ParserInfos.Common.MethodModifier import MethodModifier
+    from ...Parser.ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
+    from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import (
+        ExpressionParserInfo,
+        FuncDefinitionStatementParserInfo,
+        OperatorType,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -160,10 +166,10 @@ class FuncDefinitionStatement(GrammarPhrase):
                 ),
 
                 # <return_type>
-                DynamicPhrasesType.Types,
+                DynamicPhrasesType.Expressions,
 
                 # <name>
-                CommonTokens.FuncName,
+                CommonTokens.FuncOrTypeName,
 
                 # Template Parameters, Captures
                 CommonTokens.PushIgnoreWhitespaceControl,
@@ -232,52 +238,44 @@ class FuncDefinitionStatement(GrammarPhrase):
 
             attributes_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
             if attributes_node is not None:
-                result = AttributesFragment.Extract(attributes_node)
+                for attribute in AttributesFragment.Extract(attributes_node):
+                    supports_arguments = False
 
-                assert isinstance(result, list)
-                assert result
+                    if attribute.name == "Deferred":
+                        is_deferred_node = attribute.leaf
+                        is_deferred_info = True
+                    elif attribute.name == "Exceptional":
+                        is_exceptional_node = attribute.leaf
+                        is_exceptional_info = True
+                    elif attribute.name == "Generator":
+                        is_generator_node = attribute.leaf
+                        is_generator_info = True
+                    elif attribute.name == "Reentrant":
+                        is_reentrant_node = attribute.leaf
+                        is_reentrant_info = True
+                    elif attribute.name == "Scoped":
+                        is_scoped_node = attribute.leaf
+                        is_scoped_info = True
+                    elif attribute.name == "Static":
+                        is_static_node = attribute.leaf
+                        is_static_info = True
+                    else:
+                        errors.append(
+                            AttributesFragment.UnsupportedAttributeError.Create(
+                                region=CreateRegion(attribute.leaf),
+                                name=attribute.name,
+                            ),
+                        )
 
-                if isinstance(result[0], Error):
-                    errors += cast(List[Error], result)
-                else:
-                    for attribute in cast(List[AttributesFragment.AttributeData], result):
-                        supports_arguments = False
+                        continue
 
-                        if attribute.name == "Deferred":
-                            is_deferred_node = attribute.leaf
-                            is_deferred_info = True
-                        elif attribute.name == "Exceptional":
-                            is_exceptional_node = attribute.leaf
-                            is_exceptional_info = True
-                        elif attribute.name == "Generator":
-                            is_generator_node = attribute.leaf
-                            is_generator_info = True
-                        elif attribute.name == "Reentrant":
-                            is_reentrant_node = attribute.leaf
-                            is_reentrant_info = True
-                        elif attribute.name == "Scoped":
-                            is_scoped_node = attribute.leaf
-                            is_scoped_info = True
-                        elif attribute.name == "Static":
-                            is_static_node = attribute.leaf
-                            is_static_info = True
-                        else:
-                            errors.append(
-                                AttributesFragment.UnsupportedAttributeError.Create(
-                                    region=CreateRegion(attribute.leaf),
-                                    name=attribute.name,
-                                ),
-                            )
-
-                            continue
-
-                        if not supports_arguments and attribute.arguments_node is not None:
-                            errors.append(
-                                AttributesFragment.UnsupportedArgumentsError.Create(
-                                    region=CreateRegion(attribute.arguments_node),
-                                    name=attribute.name,
-                                ),
-                            )
+                    if not supports_arguments and attribute.arguments_node is not None:
+                        errors.append(
+                            AttributesFragment.UnsupportedArgumentsError.Create(
+                                region=CreateRegion(attribute.arguments_node),
+                                name=attribute.name,
+                            ),
+                        )
 
             # <visibility>?
             visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -295,20 +293,25 @@ class FuncDefinitionStatement(GrammarPhrase):
 
             # <return_type>
             return_type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
-            return_type_info = cast(TypeParserInfo, GetParserInfo(return_type_node))
+            return_type_info = cast(ExpressionParserInfo, GetParserInfo(return_type_node))
 
-            if (
-                isinstance(return_type_info, StandardTypeParserInfo)
-                and len(return_type_info.items) == 1
-                and return_type_info.items[0].name == "None"
-            ):
-                # We are looking at a None type - clear all info
+            # Clear all info if we are looking at a None return type
+            if isinstance(return_type_info, NoneExpressionParserInfo):
                 return_type_info = None
                 return_type_node = None
 
             # <name>
             name_leaf = cast(AST.Leaf, nodes[4])
-            name_info = CommonTokens.FuncName.Extract(name_leaf)  # type: ignore
+            name_info = CommonTokens.FuncOrTypeName.Extract(name_leaf)  # type: ignore
+
+            if CommonTokens.FuncOrTypeName.IsCompileTime(name_info):  # type: ignore
+                raise ErrorException(
+                    InvalidCompileTimeNameError.Create(
+                        region=CreateRegion(name_leaf),
+                        name=name_info,
+                        type="function or type",
+                    ),
+                )
 
             if name_info.startswith("__") and name_info.endswith("__"):
                 operator_type = cls.OPERATOR_MAP.get(name_info, None)
@@ -322,40 +325,26 @@ class FuncDefinitionStatement(GrammarPhrase):
                 else:
                     name_info = operator_type
 
-            # TODO: Get compile status from name
             # TODO: Get exceptional information from name
             # TODO: Get visibility information from name
 
             # <template_parameters>?
-            template_parameters_info = None
-
             template_parameters_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[6])))
-            if template_parameters_node is not None:
-                result = TemplateParametersFragment.Extract(template_parameters_node)
-
-                if isinstance(result, list):
-                    errors += result
-                else:
-                    template_parameters_info = result
+            if template_parameters_node is None:
+                template_parameters_info = None
+            else:
+                template_parameters_info = TemplateParametersFragment.Extract(template_parameters_node)
 
             # <captured_variables>?
-            captured_variables_info = None
-
             captured_variables_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
-            if captured_variables_node is not None:
-                result = CapturedVariablesFragment.Extract(captured_variables_node)
-
-                if isinstance(result, list):
-                    errors += result
-                else:
-                    captured_variables_info = result
+            if captured_variables_node is None:
+                captured_variables_info = None
+            else:
+                captured_variables_info = CapturedVariablesFragment.Extract(captured_variables_node)
 
             # <parameters>
             parameters_node = cast(AST.Node, nodes[9])
             parameters_info = FuncParametersFragment.Extract(parameters_node)
-
-            if isinstance(parameters_info, list):
-                errors += parameters_info
 
             # <mutability_modifier>?
             mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[10])))
@@ -366,26 +355,23 @@ class FuncDefinitionStatement(GrammarPhrase):
 
             # Statements or None
             statements_node = cast(AST.Node, ExtractOr(cast(AST.Node, nodes[11])))
-            statements_info = None
-
-            docstring_leaf = None
-            docstring_info = None
 
             if isinstance(statements_node, AST.Leaf):
                 statements_node = None
+                statements_info = None
+
+                docstring_leaf = None
+                docstring_info = None
             else:
-                result = StatementsFragment.Extract(statements_node)
+                statements_info, docstring_info = StatementsFragment.Extract(statements_node)
 
-                if isinstance(result, list):
-                    errors += result
+                if docstring_info is None:
+                    docstring_leaf = None
                 else:
-                    statements_info, docstring_info = result
-
-                    if docstring_info is not None:
-                        docstring_leaf, docstring_info = docstring_info
+                    docstring_leaf, docstring_info = docstring_info
 
             if errors:
-                return errors
+                raise ErrorException(*errors)
 
             assert not isinstance(parameters_info, list)
 
@@ -428,7 +414,7 @@ class FuncDefinitionStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return Callback  # type: ignore
+        return Callback
 
 
 # ----------------------------------------------------------------------

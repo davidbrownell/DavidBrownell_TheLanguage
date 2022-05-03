@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TernaryExpression.py
+# |  IsDefinedExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-05-02 22:57:37
+# |      2022-05-02 22:50:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,9 +13,8 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TernaryExpression object"""
+"""Contains the IsDefinedExpression object"""
 
-import copy
 import os
 
 from typing import Any, Dict
@@ -34,32 +33,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Expression import Expression, Type
-    from ..Types.VariantType import VariantType
+    from .VariableExpression import VariableExpression
+
+    from ..Types.BooleanType import BooleanType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TernaryExpression(Expression):
-    condition_expression: Expression
-    true_expression: Expression
-    false_expression: Expression
+class IsDefinedExpression(Expression):
+    name: Expression
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        super(TernaryExpression, self).__init__()
+        super(IsDefinedExpression, self).__init__()
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
-    def EvalType(self) -> Type:
-        # We don't know which type will be the result here, so we need to assume that it can be
-        # either.
-        true_type = self.true_expression.EvalType()
-        false_type = self.false_expression.EvalType()
-
-        if true_type.name == false_type.name:
-            return true_type
-
-        return VariantType([true_type, false_type])
+    def EvalType() -> Type:
+        return BooleanType()
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -68,17 +60,15 @@ class TernaryExpression(Expression):
         args: Dict[str, Any],
         type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
-        condition_result = self.condition_expression.Eval(args, type_overrides)
+        # If the name is a VariableExpression, don't try to evaluate it as that will generate
+        # errors when attempting to return the value of a variable that may not be defined.
+        if isinstance(self.name, VariableExpression):
+            result = self.name.name
+        else:
+            result = self.name.Eval(args, type_overrides)
+            result = result.type.ToStringValue(result.value)
 
-        if condition_result.name is not None:
-            type_overrides = copy.deepcopy(type_overrides)
-
-            type_overrides[condition_result.name] = condition_result.type
-
-        if condition_result.type.ToBoolValue(condition_result.value):
-            return self.true_expression.Eval(args, type_overrides)
-
-        return self.false_expression.Eval(args, type_overrides)
+        return Expression.EvalResult(result in args, BooleanType(), None)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -86,8 +76,4 @@ class TernaryExpression(Expression):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "{} if {} else {}".format(
-            self.true_expression.ToString(args),
-            self.condition_expression.ToString(args),
-            self.false_expression.ToString(args),
-        )
+        return "IsDefined!({})".format(self.name.ToString(args))

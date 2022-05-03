@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, Dict, List, Optional, Tuple, Type
+from typing import cast, Dict, List, Optional, Tuple
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -36,6 +36,7 @@ with InitRelativeImports():
 
     from ..Common import AttributesFragment
     from ..Common import ConstraintParametersFragment
+    from ..Common.Errors import InvalidCompileTimeNameError
     from ..Common import StatementsFragment
     from ..Common import TemplateParametersFragment
     from ..Common import Tokens as CommonTokens
@@ -43,10 +44,9 @@ with InitRelativeImports():
 
     from ..Common.Impl import ModifierImpl
 
-    from ..Types.StandardType import StandardType
-
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
+        ExtractDynamic,
         ExtractOptional,
         ExtractOr,
         ExtractRepeat,
@@ -61,6 +61,8 @@ with InitRelativeImports():
         CreateRegion,
         CreateRegions,
         Error,
+        ErrorException,
+        GetParserInfo,
         Region,
     )
 
@@ -69,6 +71,7 @@ with InitRelativeImports():
     from ...Parser.ParserInfos.Statements.ClassStatementParserInfo import (
         ClassStatementParserInfo,
         ClassStatementDependencyParserInfo,
+        ExpressionParserInfo,
     )
 
     from ...Parser.ParserInfos.Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
@@ -112,8 +115,6 @@ class ClassStatement(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        self._standard_type                 = StandardType()
-
         dependency_element = PhraseItem(
             name="Class Dependency Element",
             item=[
@@ -123,8 +124,8 @@ class ClassStatement(GrammarPhrase):
                     item=VisibilityModifier.CreatePhraseItem(),
                 ),
 
-                # <standard_type>
-                self._standard_type.phrase,
+                # <type>
+                DynamicPhrasesType.Expressions,
             ],
         )
 
@@ -176,7 +177,7 @@ class ClassStatement(GrammarPhrase):
                 CreateClassTypePhraseItem(),
 
                 # <name>
-                CommonTokens.TypeName,
+                CommonTokens.FuncOrTypeName,
 
                 # Template Parameters, Constraints, Dependencies
                 CommonTokens.PushIgnoreWhitespaceControl,
@@ -251,9 +252,10 @@ class ClassStatement(GrammarPhrase):
         return None
 
     # ----------------------------------------------------------------------
+    @classmethod
     @Interface.override
     def ExtractParserInfo(
-        self,
+        cls,
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserInfoReturnType:
 
@@ -323,12 +325,12 @@ class ClassStatement(GrammarPhrase):
         # This information will be used when children call `GetParentClassCapabilities`
         object.__setattr__(
             node,
-            self.__class__._CLASS_CAPABILITIES_ATTRIBUTE_NAME,  # pylint: disable=protected-access
+            cls._CLASS_CAPABILITIES_ATTRIBUTE_NAME,
             class_capabilities,
         )
 
         if errors:
-            return errors
+            raise ErrorException(*errors)
 
         # ----------------------------------------------------------------------
         def Callback():
@@ -346,41 +348,15 @@ class ClassStatement(GrammarPhrase):
 
             attributes_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
             if attributes_node is not None:
-                result = AttributesFragment.Extract(attributes_node)
+                for attribute in AttributesFragment.Extract(attributes_node):
+                    supports_arguments = False
 
-                assert isinstance(result, list)
-                assert result
+                    if attribute.name == "ConstructorVisibility":
+                        supports_arguments = True
 
-                if isinstance(result[0], Error):
-                    errors += cast(List[Error], result)
-                else:
-                    for attribute in cast(List[AttributesFragment.AttributeData], result):
-                        supports_arguments = False
-
-                        if attribute.name == "ConstructorVisibility":
-                            supports_arguments = True
-
-                            if not attribute.arguments:
-                                errors.append(
-                                    AttributesFragment.ArgumentsRequiredError.Create(
-                                        region=CreateRegion(attribute.leaf),
-                                        name=attribute.name,
-                                    ),
-                                )
-
-                                continue
-
-                            # TODO: Get the value (potentially generate InvalidArgumentError)
-
-                        elif attribute.name == "Abstract":
-                            is_abstract_node = attribute.leaf
-                            is_abstract_info = True
-                        elif attribute.name == "Final":
-                            is_final_node = attribute.leaf
-                            is_final_info = True
-                        else:
+                        if not attribute.arguments:
                             errors.append(
-                                AttributesFragment.UnsupportedAttributeError.Create(
+                                AttributesFragment.ArgumentsRequiredError.Create(
                                     region=CreateRegion(attribute.leaf),
                                     name=attribute.name,
                                 ),
@@ -388,13 +364,31 @@ class ClassStatement(GrammarPhrase):
 
                             continue
 
-                        if not supports_arguments and attribute.arguments_node is not None:
-                            errors.append(
-                                AttributesFragment.UnsupportedArgumentsError.Create(
-                                    region=CreateRegion(attribute.arguments_node),
-                                    name=attribute.name,
-                                ),
-                            )
+                        # TODO: Get the value (potentially generate InvalidArgumentError)
+
+                    elif attribute.name == "Abstract":
+                        is_abstract_node = attribute.leaf
+                        is_abstract_info = True
+                    elif attribute.name == "Final":
+                        is_final_node = attribute.leaf
+                        is_final_info = True
+                    else:
+                        errors.append(
+                            AttributesFragment.UnsupportedAttributeError.Create(
+                                region=CreateRegion(attribute.leaf),
+                                name=attribute.name,
+                            ),
+                        )
+
+                        continue
+
+                    if not supports_arguments and attribute.arguments_node is not None:
+                        errors.append(
+                            AttributesFragment.UnsupportedArgumentsError.Create(
+                                region=CreateRegion(attribute.arguments_node),
+                                name=attribute.name,
+                            ),
+                        )
 
             # <visibility>?
             visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[1])))
@@ -408,33 +402,32 @@ class ClassStatement(GrammarPhrase):
 
             # <name>
             name_node = cast(AST.Leaf, nodes[4])
-            name_info = CommonTokens.TypeName.Extract(name_node)  # type: ignore
+            name_info = CommonTokens.FuncOrTypeName.Extract(name_node)  # type: ignore
+
+            if CommonTokens.FuncOrTypeName.IsCompileTime(name_info):  # type: ignore
+                raise ErrorException(
+                    InvalidCompileTimeNameError.Create(
+                        region=CreateRegion(name_node),
+                        name=name_info,
+                        type=class_capabilities.name,
+                    ),
+                )
 
             # TODO: Get visibility information from name
 
             # <template_parameters>?
-            templates_info = None
-
             templates_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[6])))
-            if templates_node is not None:
-                result = TemplateParametersFragment.Extract(templates_node)
-
-                if isinstance(result, list):
-                    errors += result
-                else:
-                    templates_info = result
+            if templates_node is None:
+                templates_info = None
+            else:
+                templates_info = TemplateParametersFragment.Extract(templates_node)
 
             # <constraint_parameters>?
-            constraints_info = None
-
             constraints_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[7])))
-            if constraints_node is not None:
-                result = ConstraintParametersFragment.Extract(constraints_node)
-
-                if isinstance(result, list):
-                    errors += result
-                else:
-                    constraints_info = result
+            if constraints_node is None:
+                constraints_info = None
+            else:
+                constraints_info = ConstraintParametersFragment.Extract(constraints_node)
 
             # <dependencies>?
             all_dependencies_info: Dict[DependencyType, Tuple[AST.Node, List[ClassStatementDependencyParserInfo]]] = {}
@@ -471,23 +464,16 @@ class ClassStatement(GrammarPhrase):
                     else:
                         this_visibility_info = VisibilityModifier.Extract(this_visibility_node)
 
-                    # <standard_type>
-                    standard_type_node = cast(AST.Node, this_dependency_nodes[1])
-                    standard_type_info = self._standard_type.ExtractParserInfo(standard_type_node)
-
-                    assert callable(standard_type_info)
-                    standard_type_info = standard_type_info()
-
-                    if isinstance(standard_type_info, list):
-                        errors += standard_type_info
-                        continue
+                    # <type>
+                    type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, this_dependency_nodes[1])))
+                    type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
                     # Add it
                     these_dependencies.append(
                         ClassStatementDependencyParserInfo.Create(
                             CreateRegions(this_dependency_node, this_visibility_node),
                             this_visibility_info,
-                            standard_type_info,
+                            type_info,
                         ),
                     )
 
@@ -497,20 +483,15 @@ class ClassStatement(GrammarPhrase):
             statements_node = cast(AST.Node, nodes[10])
             statements_info = None
 
-            docstring_node = None
-            docstring_info = None
+            statements_info, docstring_info = StatementsFragment.Extract(statements_node)
 
-            result = StatementsFragment.Extract(statements_node)
-            if isinstance(result, list):
-                errors += result
+            if docstring_info is None:
+                docstring_node = None
             else:
-                statements_info, docstring_info = result
-
-                if docstring_info is not None:
-                    docstring_node, docstring_info = docstring_info
+                docstring_node, docstring_info = docstring_info
 
             if errors:
-                return errors
+                raise ErrorException(*errors)
 
             # Commit
             return ClassStatementParserInfo.Create(
@@ -528,7 +509,7 @@ class ClassStatement(GrammarPhrase):
                     is_abstract_node,
                     is_final_node,
                 ),
-                self.__class__.GetParentClassCapabilities(node),
+                cls.GetParentClassCapabilities(node),
                 class_capabilities,
                 visibility_info,
                 class_modifier_info,
@@ -547,7 +528,7 @@ class ClassStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return Callback  # type: ignore
+        return Callback
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

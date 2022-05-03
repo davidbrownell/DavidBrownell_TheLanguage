@@ -3,7 +3,7 @@
 # |  NumberType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 16:16:47
+# |      2022-05-02 22:12:23
 # |
 # ----------------------------------------------------------------------
 # |
@@ -51,4 +51,4 @@ class NumberType(Type):
     def ToBoolValue(
         value: Any,
     ) -> bool:
-        return value != 0
+        return value > 0.0

@@ -34,6 +34,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Error import CreateError, Error, ErrorException, Region
+    from .Helpers import MiniLanguageHelpers
+
+    from .MiniLanguage.Types.BooleanType import BooleanType                 # pylint: disable=unused-import
+    from .MiniLanguage.Types.CharacterType import CharacterType             # pylint: disable=unused-import
+    from .MiniLanguage.Types.IntegerType import IntegerType                 # pylint: disable=unused-import
+    from .MiniLanguage.Types.NoneType import NoneType                       # pylint: disable=unused-import
+    from .MiniLanguage.Types.NumberType import NumberType                   # pylint: disable=unused-import
+    from .MiniLanguage.Types.StringType import StringType                   # pylint: disable=unused-import
+    from .MiniLanguage.Types.Type import Type as MiniLanguageType
+    from .MiniLanguage.Types.VariantType import VariantType                 # pylint: disable=unused-import
+
     from .ParserInfos.ParserInfo import ParserInfo, RootParserInfo
     from .Visitors.ValidateVisitor.ValidateVisitor import ValidateVisitor
 
@@ -45,6 +56,10 @@ DuplicateDocInfoError                       = CreateError(
     "Documentation information has already been provided",
 )
 
+ActiveErrorError                            = CreateError(
+    "Active errors prevent further validation",
+)
+
 
 # ----------------------------------------------------------------------
 class ParseObserver(Interface.Interface):
@@ -52,13 +67,9 @@ class ParseObserver(Interface.Interface):
     ExtractParserInfoReturnType             = Union[
         None,
         ParserInfo,
-        List[Error],
         Callable[
             [],
-            Union[
-                ParserInfo,
-                List[Error],
-            ]
+            ParserInfo,
         ],
     ]
 
@@ -70,10 +81,11 @@ class ParseObserver(Interface.Interface):
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
-    ExtractPotentialDocInfoReturnType       = Union[
-        None,
-        Tuple[Union[AST.Leaf, AST.Node], str],
-        List[Error],
+    ExtractPotentialDocInfoReturnType       = Optional[
+        Tuple[
+            Union[AST.Leaf, AST.Node],
+            str,
+        ]
     ]
 
     @staticmethod
@@ -114,10 +126,6 @@ def Parse(
                 elif callable(result):
                     callback_funcs.append((node, result))
 
-                elif isinstance(result, list):
-                    _SetParserInfoErrors(node)
-                    errors += result
-
                 elif isinstance(result, ParserInfo):
                     _SetParserInfo(node, result)
 
@@ -132,11 +140,7 @@ def Parse(
             try:
                 result = callback()
 
-                if isinstance(result, list):
-                    _SetParserInfoErrors(node)
-                    errors += result
-
-                elif isinstance(result, ParserInfo):
+                if isinstance(result, ParserInfo):
                     _SetParserInfo(node, result)
 
                 else:
@@ -153,11 +157,8 @@ def Parse(
         for child in root.children:
             try:
                 result = observer.ExtractPotentialDocInfo(child)
-
                 if result is not None:
-                    if isinstance(result, list):
-                        errors += result
-                    elif isinstance(result, tuple):
+                    if isinstance(result, tuple):
                         if existing_doc_info is not None:
                             errors.append(
                                 DuplicateDocInfoError(
@@ -166,16 +167,17 @@ def Parse(
                             )
                         else:
                             existing_doc_info = result
+
                     else:
                         assert False, result  # pragma: no cover
 
+                if isinstance(child, AST.Node):
+                    parser_info = _ExtractParserInfo(child)
+                    if parser_info is not None:
+                        statements.append(parser_info)
+
             except ErrorException as ex:
                 errors += ex.errors
-
-            if isinstance(child, AST.Node):
-                parser_info = _ExtractParserInfo(child)
-                if parser_info is not None:
-                    statements.append(parser_info)
 
         if errors:
             return errors
@@ -213,26 +215,25 @@ def Parse(
 # ----------------------------------------------------------------------
 def Validate(
     roots: Dict[str, RootParserInfo],
-    compile_time_values: Dict[
-        str,
-        Tuple[Type, Any],
-    ],
+    configuration_values: Dict[str, Tuple[MiniLanguageType, Any]],
     *,
     max_num_threads: Optional[int]=None,
 ) -> Optional[
     Dict[str, Union[RootParserInfo, List[Error]]]
 ]:
+    mini_language_configuration_values = {
+        k: MiniLanguageHelpers.CompileTimeValue(v[0], v[1])
+        for k, v in configuration_values.items()
+    }
+
     # TODO: Add functionality for deferred processing
 
     # ----------------------------------------------------------------------
     def Execute(
         fully_qualified_name: str,  # pylint: disable=unused-argument
         root: RootParserInfo,
-    ) -> Union[
-        RootParserInfo,
-        List[Error],
-    ]:
-        visitor = ValidateVisitor(compile_time_values)
+    ) -> Union[RootParserInfo, List[Error]]:
+        visitor = ValidateVisitor(mini_language_configuration_values)
 
         root.Accept(visitor)
 
@@ -265,8 +266,13 @@ def HasParserInfoErrors(
 def GetParserInfoNoThrow(
     node: AST.Node,
 ) -> Optional[ParserInfo]:
-    # TODO: All code should check for this condition prior to invoking this method, which might cause the assertion to fire
-    assert not HasParserInfoErrors(node)
+    if HasParserInfoErrors(node):
+        raise ErrorException(
+            ActiveErrorError.Create(
+                CreateRegion(node),
+            ),
+        )
+
     return getattr(node, _PARSER_INFO_ATTRIBUTE_NAME, None)
 
 

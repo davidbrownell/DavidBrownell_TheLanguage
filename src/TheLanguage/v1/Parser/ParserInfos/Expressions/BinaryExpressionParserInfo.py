@@ -17,6 +17,7 @@
 
 import os
 
+from enum import auto, Enum
 from typing import List, Optional
 
 from dataclasses import dataclass
@@ -32,11 +33,62 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
 
-    from ...Error import ErrorException
+    from ...MiniLanguage.Expressions.BinaryExpression import OperatorType as MiniLanguageOperatorType
 
-    from ...MiniLanguage.Expressions.BinaryExpression import OperatorType
+
+# ----------------------------------------------------------------------
+_initial_num_mini_language_operator_types: Optional[int] = None
+
+class OperatorType(Enum):
+    # ----------------------------------------------------------------------
+    def _generate_next_value_(name, start, count, last_values):  # type: ignore  # pylint: disable=no-self-argument,unused-argument
+        global _initial_num_mini_language_operator_types  # pylint: disable=global-statement
+
+        if _initial_num_mini_language_operator_types is None:
+            _initial_num_mini_language_operator_types = count
+
+        return count
+
+    # ----------------------------------------------------------------------
+
+    # Operators valid within the MiniLanguage
+    Multiply                                = MiniLanguageOperatorType.Multiply
+    Divide                                  = MiniLanguageOperatorType.Divide
+    DivideFloor                             = MiniLanguageOperatorType.DivideFloor
+    Modulus                                 = MiniLanguageOperatorType.Modulus
+    Power                                   = MiniLanguageOperatorType.Power
+    Add                                     = MiniLanguageOperatorType.Add
+    Subtract                                = MiniLanguageOperatorType.Subtract
+    BitShiftLeft                            = MiniLanguageOperatorType.BitShiftLeft
+    BitShiftRight                           = MiniLanguageOperatorType.BitShiftRight
+    BitwiseAnd                              = MiniLanguageOperatorType.BitwiseAnd
+    BitwiseXor                              = MiniLanguageOperatorType.BitwiseXor
+    BitwiseOr                               = MiniLanguageOperatorType.BitwiseOr
+    Less                                    = MiniLanguageOperatorType.Less
+    LessEqual                               = MiniLanguageOperatorType.LessEqual
+    Greater                                 = MiniLanguageOperatorType.Greater
+    GreaterEqual                            = MiniLanguageOperatorType.GreaterEqual
+    Equal                                   = MiniLanguageOperatorType.Equal
+    NotEqual                                = MiniLanguageOperatorType.NotEqual
+    LogicalAnd                              = MiniLanguageOperatorType.LogicalAnd
+    LogicalOr                               = MiniLanguageOperatorType.LogicalOr
+
+    # Operators that are not valid within the MiniLanguage
+    Access                                  = auto()
+    AccessReturnSelf                        = auto()
+
+    # ----------------------------------------------------------------------
+    def ToMiniLanguageOperatorType(self) -> Optional[MiniLanguageOperatorType]:
+        try:
+            return MiniLanguageOperatorType(self.value)
+        except ValueError:
+            return None
+
+
+assert _initial_num_mini_language_operator_types == len(MiniLanguageOperatorType)
+del _initial_num_mini_language_operator_types
 
 
 # ----------------------------------------------------------------------
@@ -58,13 +110,9 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
         *args,
         **kwargs,
     ):
-        parser_info_type = cls._GetDominantExpressionType(left_expression, right_expression)
-        if isinstance(parser_info_type, list):
-            raise ErrorException(*parser_info_type)
-
-        return cls(                         # pylint: disable=too-many-function-args
-            parser_info_type,               # type: ignore
-            regions,                        # type: ignore
+        return cls(  # pylint: disable=too-many-function-args
+            ParserInfoType.GetDominantType(left_expression, right_expression),  # type: ignore
+            regions,                                                            # type: ignore
             left_expression,
             operator,
             right_expression,

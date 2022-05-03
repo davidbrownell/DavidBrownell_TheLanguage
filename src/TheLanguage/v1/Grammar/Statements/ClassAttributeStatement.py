@@ -35,6 +35,7 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ..Common import AttributesFragment
+    from ..Common.Errors import InvalidCompileTimeNameError
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
@@ -51,12 +52,13 @@ with InitRelativeImports():
         CreateRegion,
         CreateRegions,
         Error,
+        ErrorException,
         GetParserInfo,
     )
 
     from ...Parser.ParserInfos.Statements.ClassAttributeStatementParserInfo import (
         ClassAttributeStatementParserInfo,
-        TypeParserInfo,
+        ExpressionParserInfo,
     )
 
 
@@ -88,7 +90,7 @@ class ClassAttributeStatement(GrammarPhrase):
                 ),
 
                 # <type>
-                DynamicPhrasesType.Types,
+                DynamicPhrasesType.Expressions,
 
                 # <name>
                 CommonTokens.VariableName,
@@ -139,49 +141,41 @@ class ClassAttributeStatement(GrammarPhrase):
 
             attributes_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
             if attributes_node is not None:
-                result = AttributesFragment.Extract(attributes_node)
+                for attribute in AttributesFragment.Extract(attributes_node):
+                    supports_arguments = False
 
-                assert isinstance(result, list)
-                assert result
+                    if attribute.name == "KeywordInit":
+                        keyword_initialization_node = attribute.leaf
+                        keyword_initialization_info = True
+                    elif attribute.name == "NoInit":
+                        no_initialization_node = attribute.leaf
+                        no_initialization_info = True
+                    elif attribute.name == "NoSerialize":
+                        no_serialize_node = attribute.leaf
+                        no_serialize_info = True
+                    elif attribute.name == "NoCompare":
+                        no_compare_node = attribute.leaf
+                        no_compare_info = True
+                    elif attribute.name == "Override":
+                        is_override_node = attribute.leaf
+                        is_override_info = True
+                    else:
+                        errors.append(
+                            AttributesFragment.UnsupportedAttributeError.Create(
+                                region=CreateRegion(attribute.leaf),
+                                name=attribute.name,
+                            ),
+                        )
 
-                if isinstance(result[0], Error):
-                    errors += cast(List[Error], result)
-                else:
-                    for attribute in cast(List[AttributesFragment.AttributeData], result):
-                        supports_arguments = False
+                        continue
 
-                        if attribute.name == "KeywordInit":
-                            keyword_initialization_node = attribute.leaf
-                            keyword_initialization_info = True
-                        elif attribute.name == "NoInit":
-                            no_initialization_node = attribute.leaf
-                            no_initialization_info = True
-                        elif attribute.name == "NoSerialize":
-                            no_serialize_node = attribute.leaf
-                            no_serialize_info = True
-                        elif attribute.name == "NoCompare":
-                            no_compare_node = attribute.leaf
-                            no_compare_info = True
-                        elif attribute.name == "Override":
-                            is_override_node = attribute.leaf
-                            is_override_info = True
-                        else:
-                            errors.append(
-                                AttributesFragment.UnsupportedAttributeError.Create(
-                                    region=CreateRegion(attribute.leaf),
-                                    name=attribute.name,
-                                ),
-                            )
-
-                            continue
-
-                        if not supports_arguments and attribute.arguments_node is not None:
-                            errors.append(
-                                AttributesFragment.UnsupportedArgumentsError.Create(
-                                    region=CreateRegion(attribute.arguments_node),
-                                    name=attribute.name,
-                                ),
-                            )
+                    if not supports_arguments and attribute.arguments_node is not None:
+                        errors.append(
+                            AttributesFragment.UnsupportedArgumentsError.Create(
+                                region=CreateRegion(attribute.arguments_node),
+                                name=attribute.name,
+                            ),
+                        )
 
             # <visibility>?
             visibility_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[1])))
@@ -192,11 +186,20 @@ class ClassAttributeStatement(GrammarPhrase):
 
             # <type>
             type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
-            type_info = cast(TypeParserInfo, GetParserInfo(type_node))
+            type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
             # <name>
             name_node = cast(AST.Leaf, nodes[3])
             name_info = CommonTokens.VariableName.Extract(name_node)  # type: ignore
+
+            if CommonTokens.VariableName.IsCompileTime(name_info):  # type: ignore  # pylint: disable=not-callable
+                raise ErrorException(
+                    InvalidCompileTimeNameError.Create(
+                        region=CreateRegion(name_node),
+                        name=name_info,
+                        type="attribute",
+                    ),
+                )
 
             # TODO: Get visibility information from name
 
@@ -221,7 +224,7 @@ class ClassAttributeStatement(GrammarPhrase):
                 )
 
             if errors:
-                return errors
+                raise ErrorException(*errors)
 
             return ClassAttributeStatementParserInfo.Create(
                 CreateRegions(
@@ -250,4 +253,4 @@ class ClassAttributeStatement(GrammarPhrase):
 
         # ----------------------------------------------------------------------
 
-        return Callback  # type: ignore
+        return Callback

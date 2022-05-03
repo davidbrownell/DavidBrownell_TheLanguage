@@ -47,7 +47,6 @@ with InitRelativeImports():
         ExpressionParserInfo,
         OperatorType,
         TypeCheckExpressionParserInfo,
-        TypeParserInfo,
     )
 
 
@@ -78,7 +77,7 @@ class TypeCheckExpression(GrammarPhrase):
                 ),
 
                 # <type>
-                DynamicPhrasesType.Types,
+                DynamicPhrasesType.Expressions,
             ],
         )
 
@@ -109,7 +108,7 @@ class TypeCheckExpression(GrammarPhrase):
 
             # <type>
             type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
-            type_info = cast(TypeParserInfo, GetParserInfo(type_node))
+            type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
             return TypeCheckExpressionParserInfo.Create(
                 CreateRegions(node, operator_node),

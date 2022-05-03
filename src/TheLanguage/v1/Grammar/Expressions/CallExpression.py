@@ -85,9 +85,6 @@ class CallExpression(GrammarPhrase):
             arguments_node = cast(AST.Node, cast(AST.Node, nodes[1]))
             arguments_info = FuncArgumentsFragment.Extract(arguments_node)
 
-            if isinstance(arguments_info, list):
-                return arguments_info
-
             return CallExpressionParserInfo.Create(
                 CreateRegions(node, arguments_node),
                 expression_info,

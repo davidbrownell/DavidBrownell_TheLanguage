@@ -3,7 +3,7 @@
 # |  UnaryExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-15 13:35:27
+# |      2022-05-02 23:25:17
 # |
 # ----------------------------------------------------------------------
 # |
@@ -44,7 +44,6 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-# TODO: Errors are no longer showing the operation, just the enum name (e.g. "*" vs "Multiply")
 class OperatorType(Enum):
     Not                                     = "not"
 
@@ -72,14 +71,12 @@ class UnaryExpression(Expression):
         super(UnaryExpression, self).__init__()
 
         if self.operator == OperatorType.Not:
-            eval_type_impl = self._EvalTypeNotImpl
-            eval_impl = self._EvalNotImpl
+            eval_type_impl = self._NotEvalTypeImpl
+            eval_impl = self._NotEvalImpl
         elif self.operator == OperatorType.Positive:
-            eval_type_impl = self._EvalTypeIntegerOrNumberImpl
-            eval_impl = self._EvalIntegerOrNumberImplFactory(lambda value: +value)
+            eval_type_impl, eval_impl = self._IntegerOrNumberEvalImplFactory(lambda value: +value)
         elif self.operator == OperatorType.Negative:
-            eval_type_impl = self._EvalTypeIntegerOrNumberImpl
-            eval_impl = self._EvalIntegerOrNumberImplFactory(lambda value: -value)
+            eval_type_impl, eval_impl = self._IntegerOrNumberEvalImplFactory(lambda value: -value)
         else:
             assert False, self.operator  # pragma: no cover
 
@@ -87,16 +84,17 @@ class UnaryExpression(Expression):
         object.__setattr__(self, "Eval", eval_impl)
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
-    def EvalType(self) -> Type:
+    def EvalType() -> Type:
         raise Exception("This should never be invoked directly, as the implementation will be replaced during instance construction")
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
     def Eval(
-        self,
         args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
+        type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
         raise Exception("This should never be invoked directly, as the implementation will be replaced during instance construction")
 
@@ -106,20 +104,17 @@ class UnaryExpression(Expression):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "{} {}".format(
-            self.operator.value,
-            self.expression.ToString(args),
-        )
+        return "{} {}".format(self.operator.value, self.expression.ToString(args))
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
-    def _EvalTypeNotImpl(self):
+    def _NotEvalTypeImpl(self):
         return BooleanType()
 
     # ----------------------------------------------------------------------
-    def _EvalNotImpl(self, args, type_overloads):
-        result = self.expression.Eval(args, type_overloads)
+    def _NotEvalImpl(self, args, type_overrides):
+        result = self.expression.Eval(args, type_overrides)
 
         return Expression.EvalResult(
             not result.type.ToBoolValue(result.value),
@@ -128,44 +123,43 @@ class UnaryExpression(Expression):
         )
 
     # ----------------------------------------------------------------------
-    def _EvalIntegerOrNumberImplFactory(
+    def _IntegerOrNumberEvalImplFactory(
         self,
         eval_func: Callable[[Any], Any],
     ):
         # ----------------------------------------------------------------------
-        def Impl(self, args, type_overloads):
-            result = self.expression.Eval(args, type_overloads)
+        def EvalType(self):
+            expression_type = self.expression.EvalType()
+
+            if not isinstance(expression_type, (IntegerType, NumberType)):
+                raise ErrorException(
+                    IntegerOrNumberRequiredError.Create(
+                        region=self.expression_region,
+                        operator=self.operator.value,
+                        type=expression_type.name,
+                    ),
+                )
+
+            return expression_type
+
+        # ----------------------------------------------------------------------
+        def Eval(self, args, type_overrides):
+            result = self.expression.Eval(args, type_overrides)
 
             if not isinstance(result.type, (IntegerType, NumberType)):
                 raise ErrorException(
                     IntegerOrNumberRequiredError.Create(
                         region=self.expression_region,
-                        operator=self.operator.name,
+                        operator=self.operator.value,
                         type=result.type.name,
                     ),
                 )
 
-            return Expression.EvalResult(
-                eval_func(result.value),
-                result.type,
-                None,
-            )
+            return Expression.EvalResult(eval_func(result.value), result.type, None)
 
         # ----------------------------------------------------------------------
 
-        return types.MethodType(Impl, self)
-
-    # ----------------------------------------------------------------------
-    def _EvalTypeIntegerOrNumberImpl(self):
-        expression_type = self.expression.EvalType()
-
-        if not isinstance(expression_type, (IntegerType, NumberType)):
-            raise ErrorException(
-                IntegerOrNumberRequiredError.Create(
-                    region=self.expression_region,
-                    operator=self.operator.name,
-                    type=expression_type.name,
-                ),
-            )
-
-        return expression_type
+        return (
+            types.MethodType(EvalType, self),
+            types.MethodType(Eval, self),
+        )

@@ -17,6 +17,8 @@
 
 import os
 
+from contextlib import contextmanager
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -27,9 +29,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .BaseMixin import BaseMixin, VisitControl
+    from .BaseMixin import BaseMixin
 
-    from ...Error import Error
     from ...ParserInfos.ParserInfo import ParserInfoType
 
     from ...ParserInfos.Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo
@@ -42,20 +43,23 @@ with InitRelativeImports():
     from ...ParserInfos.Expressions.NumberExpressionParserInfo import NumberExpressionParserInfo
     from ...ParserInfos.Expressions.StringExpressionParserInfo import StringExpressionParserInfo
     from ...ParserInfos.Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo
+    from ...ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
     from ...ParserInfos.Expressions.TypeCheckExpressionParserInfo import TypeCheckExpressionParserInfo
     from ...ParserInfos.Expressions.UnaryExpressionParserInfo import UnaryExpressionParserInfo
     from ...ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
+    from ...ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
 
 # ----------------------------------------------------------------------
 class ExpressionsMixin(BaseMixin):
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnBinaryExpressionParserInfo(
         self,
         parser_info: BinaryExpressionParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     def OnBooleanExpressionParserInfo(
@@ -65,14 +69,12 @@ class ExpressionsMixin(BaseMixin):
         pass
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnCallExpressionParserInfo(
         self,
         parser_info: CallExpressionParserInfo,
     ):
-        if parser_info.parser_info_type__ == ParserInfoType.CompileTime:  # type: ignore
-            self.ExecuteMiniLanguageFunctionStatement(parser_info)  # type: ignore
-
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     def OnCharacterExpressionParserInfo(
@@ -82,11 +84,12 @@ class ExpressionsMixin(BaseMixin):
         pass
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnFuncOrTypeExpressionParserInfo(
         self,
         parser_info: FuncOrTypeExpressionParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     def OnIntegerExpressionParserInfo(
@@ -117,25 +120,36 @@ class ExpressionsMixin(BaseMixin):
         pass
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTernaryExpressionParserInfo(
         self,
         parser_info: TernaryExpressionParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
+    def OnTupleExpressionParserInfo(
+        self,
+        parser_info: TupleExpressionParserInfo,
+    ):
+        yield
+
+    # ----------------------------------------------------------------------
+    @contextmanager
     def OnTypeCheckExpressionParserInfo(
         self,
         parser_info: TypeCheckExpressionParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnUnaryExpressionParserInfo(
         self,
         parser_info: UnaryExpressionParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     def OnVariableExpressionParserInfo(
@@ -143,3 +157,11 @@ class ExpressionsMixin(BaseMixin):
         parser_info: VariableExpressionParserInfo,
     ):
         pass
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnVariantExpressionParserInfo(
+        self,
+        parser_info: VariantExpressionParserInfo,
+    ):
+        yield
