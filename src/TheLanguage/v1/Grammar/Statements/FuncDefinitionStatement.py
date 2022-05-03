@@ -36,6 +36,7 @@ with InitRelativeImports():
 
     from ..Common import AttributesFragment
     from ..Common import CapturedVariablesFragment
+    from ..Common.Errors import InvalidCompileTimeNameError
     from ..Common import FuncParametersFragment
     from ..Common import MutabilityModifier
     from ..Common import StatementsFragment
@@ -303,6 +304,15 @@ class FuncDefinitionStatement(GrammarPhrase):
             name_leaf = cast(AST.Leaf, nodes[4])
             name_info = CommonTokens.FuncOrTypeName.Extract(name_leaf)  # type: ignore
 
+            if CommonTokens.FuncOrTypeName.IsCompileTime(name_info):  # type: ignore
+                raise ErrorException(
+                    InvalidCompileTimeNameError.Create(
+                        region=CreateRegion(name_leaf),
+                        name=name_info,
+                        type="function or type",
+                    ),
+                )
+
             if name_info.startswith("__") and name_info.endswith("__"):
                 operator_type = cls.OPERATOR_MAP.get(name_info, None)
                 if operator_type is None:
@@ -315,7 +325,6 @@ class FuncDefinitionStatement(GrammarPhrase):
                 else:
                     name_info = operator_type
 
-            # TODO: Get compile status from name
             # TODO: Get exceptional information from name
             # TODO: Get visibility information from name
 

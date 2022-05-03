@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
 
 
 # ----------------------------------------------------------------------
@@ -53,7 +53,7 @@ class IndexExpressionParserInfo(ExpressionParserInfo):
         **kwargs,
     ):
         return cls(
-            cls._GetDominantExpressionType(lhs_expression, index_expression),   # type: ignore
+            ParserInfoType.GetDominantType(lhs_expression, index_expression),   # type: ignore
             regions,                                                            # type: ignore
             lhs_expression,
             index_expression,

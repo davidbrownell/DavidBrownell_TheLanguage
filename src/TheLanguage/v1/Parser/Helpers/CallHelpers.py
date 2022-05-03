@@ -86,7 +86,7 @@ class ParameterInfo(object):
 @dataclass(frozen=True)
 class ArgumentInfo(object):
     value: Any
-    region: Region
+    region: Optional[Region]
 
 
 # ----------------------------------------------------------------------
@@ -98,13 +98,7 @@ def CreateArgumentMap(
     keyword_parameters: List[ParameterInfo],
     args: List[ArgumentInfo],
     kwargs: Dict[str, ArgumentInfo],
-) -> Dict[
-    str,
-    Union[
-        ArgumentInfo,                       # Standard arguments
-        List[ArgumentInfo],                 # Variadic arguments
-    ]
-]:
+) -> Dict[str, Any]:
     """\
     Returns a dictionary that can be used to dynamically invoke the destination function with
     the specified parameters.
@@ -214,22 +208,36 @@ def CreateArgumentMap(
                 assert potential_parameter.name not in result, potential_parameter.name
                 result[potential_parameter.name] = arg
 
+    result = result
+    raw_arguments = {}
+
+    for k, v in result.items():
+        if isinstance(v, list):
+            v = [item.value for item in v]
+        else:
+            v = v.value
+
+        raw_arguments[k] = v
+
     # Have all arguments been provided?
     for parameter in itertools.chain(positional_parameters, any_parameters, keyword_parameters):
-        if parameter.name not in result and not parameter.is_optional:
-            errors.append(
-                RequiredArgumentMissingError.Create(
-                    region=parameter.region,
-                    destination=destination,
-                    destination_region=destination_region,
-                    name=parameter.name,
-                ),
-            )
+        if parameter.name not in result:
+            if not parameter.is_optional:
+                errors.append(
+                    RequiredArgumentMissingError.Create(
+                        region=parameter.region,
+                        destination=destination,
+                        destination_region=destination_region,
+                        name=parameter.name,
+                    ),
+                )
+            else:
+                raw_arguments[parameter.name] = None
 
     if errors:
         raise ErrorException(*errors)
 
-    return result
+    return raw_arguments
 
 
 # ----------------------------------------------------------------------

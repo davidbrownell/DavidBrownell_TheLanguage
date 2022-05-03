@@ -34,6 +34,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Error import CreateError, Error, ErrorException, Region
+    from .Helpers import MiniLanguageHelpers
+
+    from .MiniLanguage.Types.BooleanType import BooleanType                 # pylint: disable=unused-import
+    from .MiniLanguage.Types.CharacterType import CharacterType             # pylint: disable=unused-import
+    from .MiniLanguage.Types.IntegerType import IntegerType                 # pylint: disable=unused-import
+    from .MiniLanguage.Types.NoneType import NoneType                       # pylint: disable=unused-import
+    from .MiniLanguage.Types.NumberType import NumberType                   # pylint: disable=unused-import
+    from .MiniLanguage.Types.StringType import StringType                   # pylint: disable=unused-import
+    from .MiniLanguage.Types.Type import Type as MiniLanguageType
+    from .MiniLanguage.Types.VariantType import VariantType                 # pylint: disable=unused-import
+
     from .ParserInfos.ParserInfo import ParserInfo, RootParserInfo
     from .Visitors.ValidateVisitor.ValidateVisitor import ValidateVisitor
 
@@ -204,15 +215,17 @@ def Parse(
 # ----------------------------------------------------------------------
 def Validate(
     roots: Dict[str, RootParserInfo],
-    compile_time_values: Dict[
-        str,
-        Tuple[Type, Any],
-    ],
+    configuration_values: Dict[str, Tuple[MiniLanguageType, Any]],
     *,
     max_num_threads: Optional[int]=None,
 ) -> Optional[
     Dict[str, Union[RootParserInfo, List[Error]]]
 ]:
+    mini_language_configuration_values = {
+        k: MiniLanguageHelpers.CompileTimeValue(v[0], v[1])
+        for k, v in configuration_values.items()
+    }
+
     # TODO: Add functionality for deferred processing
 
     # ----------------------------------------------------------------------
@@ -220,7 +233,7 @@ def Validate(
         fully_qualified_name: str,  # pylint: disable=unused-argument
         root: RootParserInfo,
     ) -> Union[RootParserInfo, List[Error]]:
-        visitor = ValidateVisitor(compile_time_values)
+        visitor = ValidateVisitor(mini_language_configuration_values)
 
         root.Accept(visitor)
 

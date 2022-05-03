@@ -77,7 +77,6 @@ class FuncParameterParserInfo(ParserInfo):
         """
         return cls(*args, **kwargs)
 
-
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(FuncParameterParserInfo, self).__init__(
@@ -88,9 +87,6 @@ class FuncParameterParserInfo(ParserInfo):
                 "default_value",
             ],
         )
-
-        # BugBug: Ensure type is type
-        # BugBug: Ensure modifier
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -131,7 +127,7 @@ class FuncParametersParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(FuncParametersParserInfo, self).__init__(
-            self.__class__._GetDominantExpressionType(  # type: ignore  # pylint: disable=protected-access
+            ParserInfoType.GetDominantType(
                 *itertools.chain(
                     self.positional or [],
                     self.any or [],

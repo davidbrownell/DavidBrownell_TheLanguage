@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
 
 
 # ----------------------------------------------------------------------
@@ -51,7 +51,7 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
         **kwargs,
     ):
         return cls(
-            cls._GetDominantExpressionType(*types),     # type: ignore
+            ParserInfoType.GetDominantType(*types),     # type: ignore
             regions,                                    # type: ignore
             *args,
             **kwargs,
@@ -64,9 +64,6 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
             **kwargs,
             regionless_attributes=["types", ],
         )
-
-        # BugBug: Ensure expressions are types
-        # BugBug: Check mutability modifier
 
     # ----------------------------------------------------------------------
     @Interface.override

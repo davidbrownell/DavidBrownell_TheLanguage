@@ -35,6 +35,7 @@ with InitRelativeImports():
 
     from ....Parser.MiniLanguage.Types.BooleanType import BooleanType
     from ....Parser.MiniLanguage.Types.CharacterType import CharacterType
+    from ....Parser.MiniLanguage.Types.CustomType import CustomType
     from ....Parser.MiniLanguage.Types.IntegerType import IntegerType
     from ....Parser.MiniLanguage.Types.NoneType import NoneType
     from ....Parser.MiniLanguage.Types.NumberType import NumberType
@@ -196,54 +197,48 @@ class ExpressionsMixin(BaseMixin):
         self._imports.add("from v1.Parser.ParserInfos.ParserInfo import ParserInfoType")
         self._imports.add("from v1.Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo")
 
-        if isinstance(parser_info.name, MiniLanguageType):
-            # ----------------------------------------------------------------------
-            def ToMiniLanguageType(
-                value: MiniLanguageType,
-            ) -> str:
-                contents = None
+        # Get the type name
+        value_contents = None
 
-                if isinstance(value, BooleanType):
-                    prefix = "Boolean"
-                elif isinstance(value, CharacterType):
-                    prefix = "Character"
-                elif isinstance(value, IntegerType):
-                    prefix = "Integer"
-                elif isinstance(value, NoneType):
-                    prefix = "None"
-                elif isinstance(value, NumberType):
-                    prefix = "Number"
-                elif isinstance(value, StringType):
-                    prefix = "String"
-                elif isinstance(value, VariantType):
-                    prefix = "Variant"
-                    contents = ", ".join(ToMiniLanguageType(type) for type in value.types)
-                else:
-                    assert False, value  # pragma: no cover
-
-                type_name = "{}Type".format(prefix)
-
-                self._imports.add(
-                    "from v1.Parser.MiniLanguage.Types.{type_name} import {type_name}".format(
-                        type_name=type_name,
-                    ),
-                )
-
-                return "{}({})".format(type_name, contents or "")
-
-            # ----------------------------------------------------------------------
-
-            name = ToMiniLanguageType(parser_info.name)
+        if isinstance(parser_info.value, BooleanType):
+            type_name = "BooleanType"
+        elif isinstance(parser_info.value, CharacterType):
+            type_name = "CharacterType"
+        elif isinstance(parser_info.value, CustomType):
+            type_name = "CustomType"
+            value_contents = '"{}"'.format(parser_info.value.name)
+        elif isinstance(parser_info.value, IntegerType):
+            type_name = "IntegerType"
+        elif isinstance(parser_info.value, NoneType):
+            type_name = "NoneType"
+        elif isinstance(parser_info.value, NumberType):
+            type_name = "NumberType"
+        elif isinstance(parser_info.value, StringType):
+            type_name = "StringType"
         else:
-            name = self._ToString(parser_info.name)
+            assert False, parser_info.value  # pragma: no cover
+
+        self._imports.add(
+            "from v1.Parser.MiniLanguage.Types.{type_name} import {type_name}".format(
+                type_name=type_name,
+            ),
+        )
+
+        value = "{}({})".format(type_name, value_contents or "")
+
+        if parser_info.mutability_modifier is not None:
+            self._imports.add("from v1.Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier")
 
         self._stream.write(
             textwrap.dedent(
                 """\
                 {statement_name} = FuncOrTypeExpressionParserInfo.Create(
                     parser_info_type={parser_info_type},
-                    regions=[{self_region}, {name_region}],
-                    name={name},
+                    regions=[{self_region}, {value_region}, {mutability_modifier_region}],
+                    value={value},
+                    templates={templates},
+                    constraints={constraints},
+                    mutability_modifier={mutability_modifier},
                 )
 
                 """,
@@ -251,8 +246,12 @@ class ExpressionsMixin(BaseMixin):
                 statement_name=self._CreateStatementName(parser_info),
                 parser_info_type=parser_info.parser_info_type__,  # type: ignore
                 self_region=self._ToString(parser_info.regions__.self__),
-                name_region=self._ToString(parser_info.regions__.name),
-                name=name,
+                value_region=self._ToString(parser_info.regions__.value),
+                mutability_modifier_region=self._ToString(parser_info.regions__.mutability_modifier),
+                value=value,
+                templates=self._ToString(parser_info.templates),
+                constraints=self._ToString(parser_info.constraints),
+                mutability_modifier=str(parser_info.mutability_modifier),
             ),
         )
 
@@ -433,7 +432,7 @@ class ExpressionsMixin(BaseMixin):
                     regions=[{self_region}, {operator_region}],
                     operator={operator},
                     expression={expression},
-                    type={type},
+                    the_type={type},
                 )
 
                 """,
@@ -519,18 +518,24 @@ class ExpressionsMixin(BaseMixin):
 
         self._imports.add("from v1.Parser.ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo")
 
+        if parser_info.mutability_modifier is not None:
+            self._imports.add("from v1.Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier")
+
         self._stream.write(
             textwrap.dedent(
                 """\
                 {statement_name} = VariantExpressionParserInfo.Create(
-                    regions=[{self_region}]
+                    regions=[{self_region}, {mutability_region}],
                     types={types},
+                    mutability_modifier={mutability},
                 )
 
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
+                mutability_region=self._ToString(parser_info.regions__.mutability_modifier),
                 types=self._ToString(cast(List[ParserInfo], parser_info.types)),
+                mutability=str(parser_info.mutability_modifier),
             ),
         )

@@ -36,6 +36,7 @@ with InitRelativeImports():
 
     from ..Common import AttributesFragment
     from ..Common import ConstraintParametersFragment
+    from ..Common.Errors import InvalidCompileTimeNameError
     from ..Common import StatementsFragment
     from ..Common import TemplateParametersFragment
     from ..Common import Tokens as CommonTokens
@@ -402,6 +403,15 @@ class ClassStatement(GrammarPhrase):
             # <name>
             name_node = cast(AST.Leaf, nodes[4])
             name_info = CommonTokens.FuncOrTypeName.Extract(name_node)  # type: ignore
+
+            if CommonTokens.FuncOrTypeName.IsCompileTime(name_info):  # type: ignore
+                raise ErrorException(
+                    InvalidCompileTimeNameError.Create(
+                        region=CreateRegion(name_node),
+                        name=name_info,
+                        type=class_capabilities.name,
+                    ),
+                )
 
             # TODO: Get visibility information from name
 

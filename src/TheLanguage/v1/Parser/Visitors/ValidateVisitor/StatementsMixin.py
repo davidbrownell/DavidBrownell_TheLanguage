@@ -31,11 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
-    from ...Error import ErrorException
-
     from ...Helpers import MiniLanguageHelpers
-
-    from ...MiniLanguage.Expressions.Expression import Expression
 
     from ...ParserInfos.ParserInfo import ParserInfoType, VisitResult
 
@@ -115,8 +111,14 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: FuncInvocationStatementParserInfo,
     ):
-        if parser_info.parser_info_type__ == ParserInfoType.CompileTime:  # type: ignore
-            MiniLanguageHelpers.EvalMiniLanguageExpression(parser_info.expression, self._compile_time_info)
+        parser_info_type = parser_info.parser_info_type__  # type: ignore
+
+        if parser_info_type == ParserInfoType.Configuration:
+            MiniLanguageHelpers.EvalExpression(parser_info.expression, self._configuration_info)
+        elif parser_info_type == ParserInfoType.TypeCustomization:
+            pass # Nothing to do here on this pass
+        else:
+            raise NotImplementedError("TODO")  # TODO
 
         yield
 
@@ -128,20 +130,19 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: IfStatementParserInfo,
     ):
-        if parser_info.parser_info_type__ == ParserInfoType.CompileTime:  # type: ignore
+        parser_info_type = parser_info.parser_info_type__  # type: ignore  # pylint: disable=no-member
+
+        if parser_info_type == ParserInfoType.Configuration:
             matched_clause = False
 
             for clause in parser_info.clauses:
                 execute_flag = False
 
                 if not matched_clause:
-                    clause_value, clause_type = MiniLanguageHelpers.EvalMiniLanguageExpression(
-                        clause.expression,
-                        self._compile_time_info,
-                    )
-                    clause_value = clause_type.ToBoolValue(clause_value)
+                    clause_result = MiniLanguageHelpers.EvalExpression(clause.expression, self._configuration_info)
+                    clause_result = clause_result.type.ToBoolValue(clause_result.value)
 
-                    if clause_value:
+                    if clause_result:
                         execute_flag = True
                         matched_clause = True
 
@@ -149,6 +150,9 @@ class StatementsMixin(BaseMixin):
 
             if parser_info.else_clause:
                 self.__class__._SetExecuteFlag(parser_info.else_clause, not matched_clause)  # pylint: disable=protected-access
+
+        elif parser_info_type ==ParserInfoType.TypeCustomization:
+            raise NotImplementedError("TODO") # TODO
 
         yield
 

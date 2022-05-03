@@ -49,6 +49,7 @@ with InitRelativeImports():
     from ...Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import (
         BooleanType,
         CharacterType,
+        CustomType,
         FuncOrTypeExpressionParserInfo,
         IntegerType,
         NoneType,
@@ -111,13 +112,22 @@ class FuncOrTypeExpression(GrammarPhrase):
             name_info = CommonTokens.FuncOrTypeName.Extract(name_leaf)  # type: ignore
 
             if CommonTokens.FuncOrTypeName.IsCompileTime(name_info):  # type: ignore
-                parser_info_type = ParserInfoType.CompileTime
-            else:
-                parser_info_type = ParserInfoType.Unknown
+                # If here, the function could be invoked during Configuration or TypeCustomization.
+                # Pick the earlies of the two.
+                assert ParserInfoType.Configuration.value < ParserInfoType.TypeCustomization.value
+                parser_info_type = ParserInfoType.Configuration
 
+                name_info = CustomType(name_info)
+
+            else:
                 potential_mini_language_type = cls.MINILANGUAGE_TYPE_MAP.get(name_info, None)
                 if potential_mini_language_type is not None:
                     name_info = potential_mini_language_type
+                    parser_info_type = ParserInfoType.Configuration
+
+                else:
+                    name_info = CustomType(name_info)
+                    parser_info_type = ParserInfoType.Unknown
 
             # <template_arguments>?
             template_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))

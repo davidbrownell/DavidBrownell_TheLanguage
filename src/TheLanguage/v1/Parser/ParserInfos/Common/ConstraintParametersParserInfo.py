@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -83,7 +83,7 @@ class ConstraintParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(ConstraintParameterParserInfo, self).__init__(
-            ParserInfoType.CompileTimeTypeCustomization,
+            ParserInfoType.Configuration,
             *args,
             **kwargs,
             regionless_attributes=[
@@ -98,7 +98,7 @@ class ConstraintParameterParserInfo(ParserInfo):
 
         if (
             self.default_value is not None
-            and self.default_value.parser_info_type__.value > ParserInfoType.MaxCompileValue.value  # type: ignore
+            and not ParserInfoType.IsCompileTimeValue(self.default_value.parser_info_type__)  # type: ignore
         ):
             errors.append(
                 InvalidConstraintExpressionError.Create(
@@ -125,15 +125,6 @@ class ConstraintParameterParserInfo(ParserInfo):
             children=None,
         )
 
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def ValidateCompileTime(
-        self,
-        compile_time_values: Dict[str, MiniLanguageHelpers.CompileTimeValue],
-    ) -> None:
-        mini_language_type = MiniLanguageHelpers.ParserInfoToType(self.type, compile_time_values)
-        object.__setattr__(self, "mini_language_type", mini_language_type)
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -156,7 +147,18 @@ class ConstraintParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(ConstraintParametersParserInfo, self).__init__(ParserInfoType.CompileTimeTypeCustomization, *args, **kwargs)
+        super(ConstraintParametersParserInfo, self).__init__(
+            ParserInfoType.GetDominantType(
+                *itertools.chain(
+                    self.positional or [],
+                    self.any or [],
+                    self.keyword or [],
+                ),
+            ),
+            *args,
+            **kwargs,
+        )
+
         assert self.positional or self.any or self.keyword
 
         # Validate

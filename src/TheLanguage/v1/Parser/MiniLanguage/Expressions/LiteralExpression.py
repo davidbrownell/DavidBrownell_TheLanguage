@@ -65,4 +65,4 @@ class LiteralExpression(Expression):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "<<<{}>>>".format(self.value)
+        return self.type.ToStringValue(self.value)

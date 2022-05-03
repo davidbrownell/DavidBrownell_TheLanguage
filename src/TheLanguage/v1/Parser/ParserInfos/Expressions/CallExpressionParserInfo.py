@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
     from ..Common.FuncArgumentsParserInfo import FuncArgumentsParserInfo
 
 
@@ -56,7 +56,7 @@ class CallExpressionParserInfo(ExpressionParserInfo):
         if isinstance(arguments, bool):
             parser_info_type = expression.parser_info_type__  # type: ignore
         else:
-            parser_info_type = cls._GetDominantExpressionType(expression, *arguments.arguments)
+            parser_info_type = ParserInfoType.GetDominantType(expression, *arguments.arguments)
 
         return cls(
             parser_info_type,               # type: ignore

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -32,7 +32,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from .ExpressionParserInfo import (  # pylint: disable=unused-import
+        ExpressionParserInfo,
+        ParserInfoType,
+    )
 
     from ..Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
     from ..Common.MutabilityModifier import MutabilityModifier
@@ -40,6 +43,7 @@ with InitRelativeImports():
 
     from ...Error import CreateError, Error, ErrorException
 
+    from ...MiniLanguage.Types.CustomType import CustomType
     from ...MiniLanguage.Types.Type import Type as MiniLanguageType
 
     # Convenience imports
@@ -53,7 +57,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 InvalidCompileTimeTypeError                 = CreateError(
-    "Invalid compile-time type",
+    "Invalid compile-time type (configuration)",
 )
 
 InvalidCompileTimeTemplatesError            = CreateError(
@@ -73,7 +77,7 @@ InvalidCompileTimeMutabilityError           = CreateError(
 @dataclass(frozen=True, repr=False)
 class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    name: Union[str, MiniLanguageType]
+    value: MiniLanguageType
     templates: Optional[TemplateArgumentsParserInfo]
     constraints: Optional[ConstraintArgumentsParserInfo]
     mutability_modifier: Optional[MutabilityModifier]
@@ -88,6 +92,38 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
                 "constraints",
             ],
         )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateAsConfigurationType(self) -> None:
+        errors: List[Error] = []
+
+        if isinstance(self.value, CustomType):
+            errors.append(
+                InvalidCompileTimeTypeError.Create(
+                    region=self.regions__.value,
+                ),
+            )
+
+        errors += self._GenerateCompileTimeValidationErrors()
+
+        if errors:
+            raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateAsCustomizationType(self) -> None:
+        errors: List[Error] = []
+
+        errors += self._GenerateCompileTimeValidationErrors()
+
+        if errors:
+            raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateAsStandardType(self) -> None:
+        raise NotImplementedError("TODO")  # TODO
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -106,22 +142,10 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
         )
 
     # ----------------------------------------------------------------------
-    def ValidateAsCompileTimeType(
-        self,
-        *,
-        require_mini_language_type,
-    ) -> None:
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    def _GenerateCompileTimeValidationErrors(self) -> List[Error]:
         errors: List[Error] = []
-
-        if (
-            self.parser_info_type__.value > ParserInfoType.MaxCompileValue.value  # type: ignore  # pylint: disable=no-member
-            or (require_mini_language_type and not isinstance(self.name, MiniLanguageType))
-        ):
-            errors.append(
-                InvalidCompileTimeTypeError.Create(
-                    region=self.regions__.name,
-                ),
-            )
 
         if self.templates is not None:
             errors.append(
@@ -144,5 +168,4 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
                 ),
             )
 
-        if errors:
-            raise ErrorException(*errors)
+        return errors

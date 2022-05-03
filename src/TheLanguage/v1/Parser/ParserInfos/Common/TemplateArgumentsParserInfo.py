@@ -71,16 +71,11 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(TemplateTypeArgumentParserInfo, self).__init__(
-            ParserInfoType.CompileTimeTypeCustomization,
+            ParserInfoType.TypeCustomization,
             *args,
             **kwargs,
             regionless_attributes=["type", ],
         )
-
-        # BugBug: Can only be BinaryExpressionParserInfo (with op == Access) or FuncOrTypeExpressionParserInfo
-
-        # BugBug: Ensure type is type
-        # BugBug: No modifier
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -126,7 +121,7 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
         # Validate
         errors: List[Error] = []
 
-        if expression_parser_info_type.value > ParserInfoType.MaxCompileValue.value:  # type: ignore
+        if not ParserInfoType.IsCompileTimeValue(expression_parser_info_type):
             errors.append(
                 InvalidTemplateExpressionError.Create(
                     region=self.expression.regions__.self__,
@@ -177,7 +172,7 @@ class TemplateArgumentsParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, regions, *args, **kwargs):
         super(TemplateArgumentsParserInfo, self).__init__(
-            self.__class__._GetDominantExpressionType(*self.arguments),  # type: ignore  # pylint: disable=protected-access
+            ParserInfoType.GetDominantType(*self.arguments),
             regions,
             *args,
             **kwargs,

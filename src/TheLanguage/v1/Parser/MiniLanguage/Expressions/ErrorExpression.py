@@ -68,18 +68,10 @@ class ErrorExpression(Expression):
         args: Dict[str, Any],
         type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
-        messages: List[str] = []
-
-        for message in self.messages:
-            result = message.Eval(args, type_overrides)
-            result = result.type.ToStringValue(result.value)
-
-            messages.append("{} = {}".format(message.ToString(args), result))
-
         raise ErrorException(
             ErrorError.Create(
                 region=self.error_region,
-                message=", ".join(messages),
+                message=self.ToString(args),
             ),
         )
 

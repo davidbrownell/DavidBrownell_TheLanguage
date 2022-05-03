@@ -55,12 +55,16 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 GrammarPhrases                              = [
     # Expressions
+
+    # This must be the first expression so that FuncOrTypeExpression doesn't consume
+    # things that are upper case (e.g. True, False, None).
+    LiteralExpression(),
+
     BinaryExpression(),
     CallExpression(),
     FuncOrTypeExpression(),
     GroupExpression(),
     IndexExpression(),
-    LiteralExpression(),
     TernaryExpression(),
     # TODO: Tuples negatively impact performance too much right now
     # TupleExpression(),

@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
     from ...MiniLanguage.Expressions.TypeCheckExpression import OperatorType
 
 
@@ -50,14 +50,16 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
         regions: List[Optional[Region]],
         operator: OperatorType,
         expression: ExpressionParserInfo,
+        the_type: ExpressionParserInfo,
         *args,
         **kwargs,
     ):
-        return cls(
-            expression.parser_info_type__,  # type: ignore
-            regions,                        # type: ignore
+        return cls(  # pylint: disable=too-many-function-args
+            ParserInfoType.GetDominantType(expression, the_type),           # type: ignore
+            regions,                                                        # type: ignore
             operator,
             expression,
+            the_type,
             *args,
             **kwargs,
         )
@@ -72,8 +74,6 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
                 "type",
             ],
         )
-
-        # BugBug: Ensure type is type
 
     # ----------------------------------------------------------------------
     @Interface.override

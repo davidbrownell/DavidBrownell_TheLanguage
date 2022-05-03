@@ -36,6 +36,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Expression import Expression, Type
     from ..Types.BooleanType import BooleanType
+    from ..Types.VariantType import VariantType
 
 
 # ----------------------------------------------------------------------
@@ -67,9 +68,12 @@ class TypeCheckExpression(Expression):
     # ----------------------------------------------------------------------
     @Interface.override
     def EvalType(self) -> Type:
-        # Note that the actual return type is dependent upon the value passed in, which we don't
-        # have here. Therefore, we can't reduce the return type at all.
-        return self.expression.EvalType()
+        expression_type = self.expression.EvalType()
+
+        if isinstance(expression_type, BooleanType):
+            return expression_type
+
+        return VariantType([expression_type, BooleanType()])
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -109,7 +113,7 @@ class TypeCheckExpression(Expression):
         def Eval(self, args, type_overrides):
             eval_result = self.expression.Eval(args, type_overrides)
 
-            is_supported = eval_func(eval_result)(eval_result.value, self.checked_type)
+            is_supported = eval_func(eval_result)(eval_result.value, self.check_type)
 
             if is_supported.refined_type is not None:
                 eval_result.type = is_supported.refined_type
@@ -118,6 +122,11 @@ class TypeCheckExpression(Expression):
                     type_overrides[eval_result.name] = is_supported.refined_type
 
             if is_supported.result:
+                # Returning None here causes problems for downstream code. Check for that condition
+                # and return a bool to avoid these issues.
+                if eval_result.value is None:
+                    return Expression.EvalResult(True, BooleanType(), None)
+
                 return eval_result
 
             return Expression.EvalResult(False, BooleanType(), None)

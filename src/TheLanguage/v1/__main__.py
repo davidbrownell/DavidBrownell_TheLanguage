@@ -19,7 +19,7 @@ import os
 import sys
 import threading
 
-from typing import cast, Dict
+from typing import Any, cast, Dict, Tuple
 
 import inflect as inflect_mod
 
@@ -48,10 +48,14 @@ with StreamDecorator(
         from .Parser.Parser import (
             Error as ParseError,
             ErrorException as ParseErrorException,
+            IntegerType,
+            MiniLanguageType,
+            NoneType,
             Parse,
             ParserInfo,
             RootParserInfo,
             Validate,
+            VariantType,
         )
 
         from .Targets.Python.PythonTarget import PythonTarget
@@ -126,11 +130,6 @@ def Execute(
         if not filenames:
             return dm.result
 
-        # BugBug
-        # filenames = [
-        #     r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage\None.TheLanguage",
-        # ]
-
         dm.stream.write("\nLexing...\n\n")
         with dm.stream.DoneManager() as lex_dm:
             lex_result = Lex(
@@ -190,9 +189,13 @@ def Execute(
 
         dm.stream.write("\nValidating...")
         with dm.stream.DoneManager() as validate_dm:
+            configuration_values: Dict[str, Tuple[MiniLanguageType, Any]] = {
+                "__architecture_bytes!": (IntegerType(), 8),
+            }
+
             validate_result = Validate(
                 parse_result,
-                {}, # TODO
+                configuration_values,
                 max_num_threads=max_num_threads,
             )
 

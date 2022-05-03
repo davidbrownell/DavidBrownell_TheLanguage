@@ -67,6 +67,8 @@ MismatchedDefaultValueTypeError             = CreateError(
 
 # ----------------------------------------------------------------------
 class CommonMixin(BaseMixin):
+    # TODO: Validate that all expressions resolve to expected types
+
     # ----------------------------------------------------------------------
     # |  CapturedVariablesParserInfo
     # ----------------------------------------------------------------------

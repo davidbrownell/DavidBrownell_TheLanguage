@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import Callable, List, Optional
 
 from dataclasses import dataclass
 
@@ -39,10 +39,6 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-InvalidCompileTimeTypeError                 = CreateError(
-    "Invalid compile-time type",
-)
-
 InvalidCompileTimeMutabilityError           = CreateError(
     "Compile-time types may not have a mutability modifier",
 )
@@ -65,7 +61,7 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
         **kwargs,
     ):
         return cls(
-            cls._GetDominantExpressionType(*types),     # type: ignore
+            ParserInfoType.GetDominantType(*types),     # type: ignore
             regions,                                    # type: ignore
             types,
             *args,
@@ -84,6 +80,20 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def ValidateAsConfigurationType(self) -> None:
+        self._ValidateImpl(
+            lambda parser_info: parser_info.ValidateAsConfigurationType(),
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateAsCustomizationType(self) -> None:
+        self._ValidateImpl(
+            lambda parser_info: parser_info.ValidateAsCustomizationType(),
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def Accept(self, visitor):
         return self._AcceptImpl(
             visitor,
@@ -94,18 +104,13 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
         )
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def ValidateAsCompileTimeType(self) -> None:
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    def _ValidateImpl(
+        self,
+        validate_func: Callable[[ExpressionParserInfo], None],
+    ) -> None:
         errors: List[Error] = []
-
-        if(
-            self.parser_info_type__.value > ParserInfoType.MaxCompileValue.value  # type: ignore  # pylint: disable=no-member
-        ):
-            errors.append(
-                InvalidCompileTimeTypeError.Create(
-                    region=self.regions__.name,
-                ),
-            )
 
         if self.mutability_modifier is not None:
             errors.append(
@@ -114,7 +119,11 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
                 ),
             )
 
+        for the_type in self.types:
+            try:
+                validate_func(the_type)
+            except ErrorException as ex:
+                errors += ex.errors
+
         if errors:
             raise ErrorException(*errors)
-
-    # BugBug: All types should not have a modifier

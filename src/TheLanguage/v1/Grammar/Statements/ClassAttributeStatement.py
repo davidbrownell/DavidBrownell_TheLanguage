@@ -35,6 +35,7 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ..Common import AttributesFragment
+    from ..Common.Errors import InvalidCompileTimeNameError
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
 
@@ -190,6 +191,15 @@ class ClassAttributeStatement(GrammarPhrase):
             # <name>
             name_node = cast(AST.Leaf, nodes[3])
             name_info = CommonTokens.VariableName.Extract(name_node)  # type: ignore
+
+            if CommonTokens.VariableName.IsCompileTime(name_info):  # type: ignore  # pylint: disable=not-callable
+                raise ErrorException(
+                    InvalidCompileTimeNameError.Create(
+                        region=CreateRegion(name_node),
+                        name=name_info,
+                        type="attribute",
+                    ),
+                )
 
             # TODO: Get visibility information from name
 

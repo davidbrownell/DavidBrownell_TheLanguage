@@ -102,6 +102,5 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
         self.ValidateRegions()
 
         # Validate
-        self.class_capabilities.ValidateClassAttributeStatementCapabilities(self)
-
-        # BugBug: Ensure type is type
+        # TODO: Need to expand type and then call this functionality
+        # self.class_capabilities.ValidateClassAttributeStatementCapabilities(self)

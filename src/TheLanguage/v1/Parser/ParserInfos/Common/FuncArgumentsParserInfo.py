@@ -109,7 +109,7 @@ class FuncArgumentsParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(FuncArgumentsParserInfo, self).__init__(
-            self.__class__._GetDominantExpressionType(*self.arguments),  # type: ignore  # pylint: disable=protected-access
+            ParserInfoType.GetDominantType(*self.arguments),
             *args,
             **kwargs,
         )

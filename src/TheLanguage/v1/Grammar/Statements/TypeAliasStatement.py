@@ -35,6 +35,7 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ..Common import ConstraintParametersFragment
+    from ..Common.Errors import InvalidCompileTimeNameError
     from ..Common import TemplateParametersFragment
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
@@ -47,7 +48,7 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions, GetParserInfo
+    from ...Parser.Parser import CreateRegion, CreateRegions, ErrorException, GetParserInfo
 
     from ...Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import (
         ExpressionParserInfo,
@@ -120,6 +121,15 @@ class TypeAliasStatement(GrammarPhrase):
             # <name>
             name_leaf = cast(AST.Leaf, nodes[1])
             name_info = CommonTokens.FuncOrTypeName.Extract(name_leaf)  # type: ignore
+
+            if CommonTokens.FuncOrTypeName.IsCompileTime(name_info):  # type: ignore
+                raise ErrorException(
+                    InvalidCompileTimeNameError.Create(
+                        region=CreateRegion(name_leaf),
+                        name=name_info,
+                        type="type alias",
+                    ),
+                )
 
             # <template_parameters>?
             templates_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[3])))

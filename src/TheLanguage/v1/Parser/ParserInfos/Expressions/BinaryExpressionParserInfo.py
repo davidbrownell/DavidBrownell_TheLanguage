@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
 
     from ...MiniLanguage.Expressions.BinaryExpression import OperatorType as MiniLanguageOperatorType
 
@@ -111,7 +111,7 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
         **kwargs,
     ):
         return cls(  # pylint: disable=too-many-function-args
-            cls._GetDominantExpressionType(left_expression, right_expression),  # type: ignore
+            ParserInfoType.GetDominantType(left_expression, right_expression),  # type: ignore
             regions,                                                            # type: ignore
             left_expression,
             operator,

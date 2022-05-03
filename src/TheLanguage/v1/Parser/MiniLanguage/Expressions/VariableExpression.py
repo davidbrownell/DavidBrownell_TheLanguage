@@ -88,7 +88,7 @@ class VariableExpression(Expression):
         self,
         args: Dict[str, Any],
     ) -> str:
-        return "<<<{}: {}>>>".format(self.name, self.type.ToStringValue(args[self.name]))
+        return "{} [{}]".format(self.name, self.type.ToStringValue(args[self.name]))
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

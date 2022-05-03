@@ -141,12 +141,16 @@ FuncOrTypeName                              = RegexToken(
     ),
 )
 
+# TODO: Do not allow a 'T' suffix
+# TODO: Do not allow compile_time when not expected / require compile time when expected
+
 FuncOrTypeName.Extract                      = _ExtractFuncFactory(True)                             # type: ignore
 FuncOrTypeName.IsCompileTime                = _IsFuncFactory(FuncOrTypeName, "is_compile_time")           # type: ignore
 FuncOrTypeName.GetIsCompileTimeRegion       = _GetRegionFuncFactory(FuncOrTypeName, "is_compile_time")    # type: ignore
 FuncOrTypeName.IsExceptional                = _IsFuncFactory(FuncOrTypeName, "is_exceptional")            # type: ignore
 FuncOrTypeName.GetIsCompileTimeRegion       = _GetRegionFuncFactory(FuncOrTypeName, "is_exceptional")     # type: ignore
 
+func_or_type_name_configuration_compile_time_regex      = re.compile(r"__[A-Z][A-Za-z0-9_]+!")
 
 # ----------------------------------------------------------------------
 ParameterName                               = RegexToken(
@@ -161,6 +165,8 @@ ParameterName                               = RegexToken(
         ),
     ),
 )
+
+# TODO: Do not allow compile_time when not expected / require compile time when expected
 
 ParameterName.Extract                       = _ExtractFuncFactory(True)                                 # type: ignore
 ParameterName.IsCompileTime                 = _IsFuncFactory(ParameterName, "is_compile_time")          # type: ignore
@@ -228,11 +234,13 @@ VariableName                                = RegexToken(
     ),
 )
 
+# TODO: Do not allow compile_time when not expected / require compile time when expected
+
 VariableName.Extract                        = _ExtractFuncFactory(True)  # type: ignore
 VariableName.IsCompileTime                  = _IsFuncFactory(VariableName, "is_compile_time")  # type: ignore
 VariableName.GetIsCompileTimeRegion         = _GetRegionFuncFactory(VariableName, "is_compile_time")  # type: ignore
 
-strict_compile_time_regex                   = re.compile(r"__[a-z][A-Za-z0-9_]*!")
+variable_name_configuration_compile_time_regex          = re.compile(r"__[a-z][A-Za-z0-9_]*!")
 
 
 # ----------------------------------------------------------------------

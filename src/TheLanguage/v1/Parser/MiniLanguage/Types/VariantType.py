@@ -74,7 +74,7 @@ class VariantType(Type):
         return False
 
     # ----------------------------------------------------------------------
-    @Interface.abstractmethod
+    @Interface.override
     def ToBoolValue(
         self,
         value: Any,

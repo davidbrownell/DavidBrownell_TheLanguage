@@ -444,8 +444,6 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                 ),
             )
 
-        # BugBug: Ensure return type is type
-
         if errors:
             raise ErrorException(*errors)
 

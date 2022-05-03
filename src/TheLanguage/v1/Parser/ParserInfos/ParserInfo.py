@@ -35,32 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Error import Error, CreateError, ErrorException
-    from ..MiniLanguage.Types.Type import Type as MiniLanguageType
     from ..Region import Region
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class CompileTimeValue(object):
-    type: MiniLanguageType
-    value: Any
-
-
-# ----------------------------------------------------------------------
-class ParserInfoType(Enum):
-    Unknown                                 = auto()    # Unknown (this value should only be applied for very low-level phrases (like types))
-    Literal                                 = auto()    # A literal value
-    CompileTime                             = auto()    # Evaluated at compile time
-    CompileTimeTypeCustomization            = auto()    # Type that is evaluated at compile time, but uses template-
-                                                        # or constraint-parameters during the evaluation; implies that
-                                                        # the results may be different depending on how the type is
-                                                        # instantiated.
-    Standard                                = auto()    # Evaluated at runtime
-
-    # ----------------------------------------------------------------------
-    MinCompileValue                         = CompileTime
-    MaxCompileValue                         = CompileTimeTypeCustomization
 
 
 # ----------------------------------------------------------------------
@@ -74,12 +49,42 @@ class VisitResult(Flag):
 
 
 # ----------------------------------------------------------------------
-InconsistentParserInfoTypeError             = CreateError(
-    "The '{type}' expression is not consistent with the '{dominant_type}' expression",
-    type=str,
-    dominant_type=str,
-    dominant_region=Region,
-)
+class ParserInfoType(Enum):
+    Unknown                                 = auto()    # Unknown (this value should only be applied for very low-level phrases (like types))
+
+    # Compile-Time Flags
+    Configuration                           = auto()    # Can be used in the specification of basic compile-time types
+    TypeCustomization                       = auto()    # Can be used in the evaluation of compile-time constraints
+
+    # Standard Flags
+    Standard                                = auto()
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def GetDominantType(
+        cls,
+        *expressions: "ParserInfo",
+    ) -> "ParserInfoType":
+        dominant_expression: Optional["ParserInfo"] = None
+
+        for expression in expressions:
+            expression_value = expression.parser_info_type__  # type: ignore
+
+            if (
+                dominant_expression is None
+                or expression_value.value > dominant_expression.parser_info_type__.value  # type: ignore
+            ):
+                dominant_expression = expression
+
+        return dominant_expression.parser_info_type__ if dominant_expression else cls.Unknown  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def IsCompileTimeValue(
+        cls,
+        value: "ParserInfoType",
+    ) -> bool:
+        return value != cls.Standard
 
 
 # ----------------------------------------------------------------------
@@ -191,15 +196,6 @@ class ParserInfo(ObjectReprImplBase):
             method(self)
 
     # ----------------------------------------------------------------------
-    @Interface.extensionmethod
-    def ValidateCompileTime(
-        self,
-        compile_time_values: Dict[str, CompileTimeValue],
-    ) -> None:
-        # No validation be default
-        pass
-
-    # ----------------------------------------------------------------------
     # |
     # |  Protected Methods
     # |
@@ -263,47 +259,6 @@ class ParserInfo(ObjectReprImplBase):
                     assert False, (method_name, "__enter__")
 
                 raise
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _GetDominantExpressionType(
-        cls,
-        *expressions: "ParserInfo"
-    ) -> ParserInfoType:
-        dominant_expression: Optional[ParserInfo] = None
-
-        for expression in expressions:
-            if (
-                dominant_expression is None
-                or expression.parser_info_type__.value > dominant_expression.parser_info_type__.value  # type: ignore
-            ):
-                dominant_expression = expression
-
-        if dominant_expression is None:
-            return ParserInfoType.Unknown
-
-        if dominant_expression.parser_info_type__.value > ParserInfoType.MaxCompileValue.value:  # type: ignore
-            errors: List[Error] = []
-
-            # Ensure that the types are consistent
-            for expression in expressions:
-                if expression.parser_info_type__.value < ParserInfoType.MinCompileValue.value:  # type: ignore
-                    continue
-
-                if expression.parser_info_type__.value < dominant_expression.parser_info_type__.value:  # type: ignore
-                    errors.append(
-                        InconsistentParserInfoTypeError.Create(
-                            region=expression.regions__.self__,
-                            type=expression.parser_info_type__.name,                    # type: ignore
-                            dominant_type=dominant_expression.parser_info_type__.name,  # type: ignore
-                            dominant_region=dominant_expression.regions__.self__,
-                        )
-                    )
-
-            if errors:
-                raise ErrorException(*errors)
-
-        return dominant_expression.parser_info_type__  # type: ignore
 
     # ----------------------------------------------------------------------
     # |

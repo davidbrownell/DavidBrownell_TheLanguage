@@ -52,7 +52,7 @@ class CustomType(Type):
 
     # ----------------------------------------------------------------------
     @staticmethod
-    @Interface.extensionmethod
+    @Interface.override
     def IsSupportedValue(
         value: Any,
     ) -> bool:
@@ -64,14 +64,14 @@ class CustomType(Type):
 
     # ----------------------------------------------------------------------
     @staticmethod
-    @Interface.extensionmethod
+    @Interface.override
     def ToBoolValue(
         value: Any,
     ) -> bool:
         return True
 
     # ----------------------------------------------------------------------
-    @Interface.extensionmethod
+    @Interface.override
     def ToStringValue(
         self,
         value: Any,

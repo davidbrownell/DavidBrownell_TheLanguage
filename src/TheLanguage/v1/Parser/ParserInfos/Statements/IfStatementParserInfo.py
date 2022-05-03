@@ -152,7 +152,7 @@ class IfStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            cls._GetDominantExpressionType(*clauses),   # type: ignore
+            ParserInfoType.GetDominantType(*clauses),   # type: ignore
             regions,                                    # type: ignore
             clauses,
             *args,

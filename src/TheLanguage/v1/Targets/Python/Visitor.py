@@ -38,6 +38,7 @@ with InitRelativeImports():
     from ...Parser.Parser import ParserInfo, RootParserInfo
 
     from ...Parser.ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo
+    from ...Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
     from ...Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
     from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
@@ -143,6 +144,14 @@ class Visitor(object):
         pass # TODO
 
     # ----------------------------------------------------------------------
+    @contextmanager
+    def OnFuncOrTypeExpressionParserInfo(
+        self,
+        parser_info: FuncOrTypeExpressionParserInfo,
+    ):
+        yield
+
+    # ----------------------------------------------------------------------
     # |
     # |  Statements
     # |
@@ -154,7 +163,6 @@ class Visitor(object):
     ):
         self._stream.write("class {}(".format(parser_info.name))
 
-        # BugBug
         self._stream.write(
             ", ".join(
                 self._GetStandardTypeName(dependency.type) for dependency in itertools.chain(
@@ -286,3 +294,10 @@ class Visitor(object):
                 parser_info.Accept(self)
         else:
             parser_info_or_infos.Accept(self)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _GetStandardTypeName(
+        parser_info,
+    ) -> str:
+        return parser_info.value.name

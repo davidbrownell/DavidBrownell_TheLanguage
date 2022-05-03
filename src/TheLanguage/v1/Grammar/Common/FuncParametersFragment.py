@@ -136,7 +136,7 @@ def _ExtractElement(
     name_info = CommonTokens.ParameterName.Extract(name_leaf)  # type: ignore
 
     if CommonTokens.ParameterName.IsCompileTime(name_info):  # type: ignore  # pylint: disable=not-callable
-        parser_info_type = ParserInfoType.CompileTime
+        parser_info_type = ParserInfoType.TypeCustomization
     else:
         parser_info_type = ParserInfoType.Standard
 

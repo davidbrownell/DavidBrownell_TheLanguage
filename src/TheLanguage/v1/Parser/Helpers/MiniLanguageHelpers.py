@@ -3,7 +3,7 @@
 # |  MiniLanguageHelpers.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-05-02 10:56:02
+# |      2022-05-03 08:51:02
 # |
 # ----------------------------------------------------------------------
 # |
@@ -15,21 +15,22 @@
 # ----------------------------------------------------------------------
 """Contains functionality that helps when extracting MiniLanguage information"""
 
+import copy
 import os
 
 from typing import (
     Any,
     Callable,
-    cast,
     Dict,
     List,
     Optional,
+    Set,
     Tuple,
     Type as TypingType,
     Union,
 )
 
-from dataclasses import fields
+from dataclasses import dataclass, fields
 
 import CommonEnvironment
 
@@ -42,24 +43,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from . import CallHelpers
-
-    from ..ParserInfos.ParserInfo import CompileTimeValue, ParserInfoType
-
-    from ..ParserInfos.Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo
-    from ..ParserInfos.Expressions.BooleanExpressionParserInfo import BooleanExpressionParserInfo
-    from ..ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo
-    from ..ParserInfos.Expressions.CharacterExpressionParserInfo import CharacterExpressionParserInfo
-    from ..ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ..ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
-    from ..ParserInfos.Expressions.IntegerExpressionParserInfo import IntegerExpressionParserInfo
-    from ..ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
-    from ..ParserInfos.Expressions.NumberExpressionParserInfo import NumberExpressionParserInfo
-    from ..ParserInfos.Expressions.StringExpressionParserInfo import StringExpressionParserInfo
-    from ..ParserInfos.Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo
-    from ..ParserInfos.Expressions.TypeCheckExpressionParserInfo import TypeCheckExpressionParserInfo
-    from ..ParserInfos.Expressions.UnaryExpressionParserInfo import UnaryExpressionParserInfo
-    from ..ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
-    from ..ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
     from ..Error import CreateError, ErrorException
 
@@ -76,6 +59,7 @@ with InitRelativeImports():
 
     from ..MiniLanguage.Types.BooleanType import BooleanType
     from ..MiniLanguage.Types.CharacterType import CharacterType
+    from ..MiniLanguage.Types.CustomType import CustomType
     from ..MiniLanguage.Types.IntegerType import IntegerType
     from ..MiniLanguage.Types.NoneType import NoneType
     from ..MiniLanguage.Types.NumberType import NumberType
@@ -83,51 +67,76 @@ with InitRelativeImports():
     from ..MiniLanguage.Types.Type import Type as MiniLanguageType
     from ..MiniLanguage.Types.VariantType import VariantType
 
+    from ..ParserInfos.ParserInfo import ParserInfoType
+
+    from ..ParserInfos.Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo
+    from ..ParserInfos.Expressions.BooleanExpressionParserInfo import BooleanExpressionParserInfo
+    from ..ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo
+    from ..ParserInfos.Expressions.CharacterExpressionParserInfo import CharacterExpressionParserInfo
+    from ..ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
+    from ..ParserInfos.Expressions.IntegerExpressionParserInfo import IntegerExpressionParserInfo
+    from ..ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
+    from ..ParserInfos.Expressions.NumberExpressionParserInfo import NumberExpressionParserInfo
+    from ..ParserInfos.Expressions.StringExpressionParserInfo import StringExpressionParserInfo
+    from ..ParserInfos.Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo
+    from ..ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
+    from ..ParserInfos.Expressions.TypeCheckExpressionParserInfo import TypeCheckExpressionParserInfo
+    from ..ParserInfos.Expressions.UnaryExpressionParserInfo import UnaryExpressionParserInfo
+    from ..ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
+    from ..ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class CompileTimeValue(object):
+    type: MiniLanguageType
+    value: Any
+
 
 # ----------------------------------------------------------------------
 InvalidParserInfoTypeError                  = CreateError(
-    "Invalid compile-time expression",
-)
-
-InvalidBinaryOperatorError                  = CreateError(
-    "'{operator}' is not a valid binary operator for compile-time expressions",
-    operator=str,
-)
-
-InvalidFunctionError                        = CreateError(
-    "'{name}' is not a valid compile-time function",
-    name=str,
-)
-
-InvalidVariableNameError                    = CreateError(
-    "'{name}' is not a valid compile-time variable",
-    name=str,
-)
-
-InvalidParserInfoExpressionError            = CreateError(
-    "Invalid compile-time expression",
-)
-
-InvalidTypeNameError                        = CreateError(
-    "'{name}' is not a valid compile-time type",
-    name=str,
+    "This expression is not a valid '{type}' type expression as it is currently written",
+    type=str,
 )
 
 InvalidParserInfoMiniLanguageTypeError      = CreateError(
-    "Invalid compile-time type expression",
+    "Invalid '{type}' type expression",
+    type=str,
+)
+
+InvalidParserInfoExpressionError            = CreateError(
+    "Invalid '{type}' expression",
+    type=str,
+)
+
+InvalidBinaryOperatorError                  = CreateError(
+    "'{operator}' is not a valid binary operator for '{type}' expressions",
+)
+
+InvalidVariableNameError                    = CreateError(
+    "'{name}' is not a defined '{type}' variable",
+    type=str,
+    name=str,
+)
+
+InvalidFunctionError                        = CreateError(
+    "'{name}' is not a valid '{type}' function",
+    type=str,
+    name=str,
 )
 
 
 # ----------------------------------------------------------------------
-def _AugmentEnforceExpressionArguments(*args, **kwargs):                    return __AugmentEnforceExpressionArguments(*args, **kwargs)  # pylint: disable=multiple-statements
-def _AugmentErrorExpressionArguments(*args, **kwargs):                      return __AugmentErrorExpressionArguments(*args, **kwargs)  # pylint: disable=multiple-statements
+def _AugmentEnforceExpressionArguments(*args, **kwargs):                    return __AugmentEnforceExpressionArguments(*args, **kwargs)
+def _AugmentErrorExpressionArguments(*args, **kwargs):                      return __AugmentErrorExpressionArguments(*args, **kwargs)
 
-FUNCTION_MAP: Dict[
-    str,                                                # Name of the function
+COMPILE_TIME_FUNCTION_MAP: Dict[
+    str,                                                # Name of the function.
     Tuple[
         TypingType[MiniLanguageExpression],             # Expression to evaluate.
         Optional[                                       # Opportunity to augment kwargs mapped to the
-            Callable[                                   #   creation of the Expression.
+            Callable[                                   #    creation of the expression.
                 [
                     CallExpressionParserInfo,
                     Dict[str, CallHelpers.ArgumentInfo],
@@ -135,43 +144,212 @@ FUNCTION_MAP: Dict[
                 Dict[str, CallHelpers.ArgumentInfo],
             ]
         ],
-    ]
+    ],
 ]                                           = {
     "Enforce!" : (EnforceExpression, _AugmentEnforceExpressionArguments),
     "Error!" : (ErrorExpression, _AugmentErrorExpressionArguments),
     "IsDefined!" : (IsDefinedExpression, None),
 }
 
-del _AugmentErrorExpressionArguments
 del _AugmentEnforceExpressionArguments
+del _AugmentErrorExpressionArguments
 
 
 # ----------------------------------------------------------------------
-def ParserInfoToExpression(
+def ToConfigurationType(
+    parser_info: ExpressionParserInfo,
+    compile_time_values: Dict[str, CompileTimeValue],
+) -> MiniLanguageType:
+    return _ToTypeImpl(
+        parser_info,
+        compile_time_values,
+        ParserInfoType.Configuration,
+        lambda parser_info: parser_info.ValidateAsConfigurationType(),
+    )
+
+
+# ----------------------------------------------------------------------
+def ToTypeCustomizationType(
+    parser_info: ExpressionParserInfo,
+    compile_time_values: Dict[str, CompileTimeValue],
+) -> MiniLanguageType:
+    return _ToTypeImpl(
+        parser_info,
+        compile_time_values,
+        ParserInfoType.TypeCustomization,
+        lambda parser_info: parser_info.ValidateAsCustomizationType(),
+    )
+
+
+# ----------------------------------------------------------------------
+def ToStandardType(
+    parser_info: ExpressionParserInfo,
+    compile_time_values: Dict[str, CompileTimeValue],
+) -> MiniLanguageType:
+    return _ToTypeImpl(
+        parser_info,
+        compile_time_values,
+        ParserInfoType.Standard,
+        lambda parser_info: parser_info.ValidateAsStandardType(),
+    )
+
+
+# ----------------------------------------------------------------------
+def EvalExpression(
+    expression_or_parser_info: Union[MiniLanguageExpression, ExpressionParserInfo],
+    compile_time_values: Dict[str, CompileTimeValue],
+) -> MiniLanguageExpression.EvalResult:
+    if isinstance(expression_or_parser_info, MiniLanguageExpression):
+        expression = expression_or_parser_info
+    elif isinstance(expression_or_parser_info, ExpressionParserInfo):
+        expression = ToExpression(expression_or_parser_info, compile_time_values)
+    else:
+        assert False, expression_or_parser_info  # pragma: no cover
+
+    # We are splitting the values here, as evaluating the expression may alter the types dictionary;
+    # we don't want that change to be visible outside of this method (unless used explicitly be the
+    # return value of this method).
+    types: Dict[str, MiniLanguageType] = {}
+    values: Dict[str, Any] = {}
+
+    for k, v in compile_time_values.items():
+        types[k] = v.type
+        values[k] = v.value
+
+    return expression.Eval(values, types)
+
+
+# ----------------------------------------------------------------------
+def ToExpression(
     parser_info: ExpressionParserInfo,
     compile_time_values: Dict[str, CompileTimeValue],
 ) -> MiniLanguageExpression:
-    if parser_info.parser_info_type__.value > ParserInfoType.MaxCompileValue.value:  # type: ignore
-        raise ErrorException(
-            InvalidParserInfoTypeError.Create(
-                region=parser_info.regions__.self__,
-            ),
+    parser_info_type = parser_info.parser_info_type__  # type: ignore
+
+    if parser_info_type == ParserInfoType.Configuration:
+        to_type_func = ToConfigurationType
+    elif parser_info_type == ParserInfoType.TypeCustomization:
+        to_type_func = ToTypeCustomizationType
+    elif parser_info_type in [
+        ParserInfoType.Unknown,
+        ParserInfoType.Standard,
+    ]:
+        to_type_func = ToStandardType
+    else:
+        assert False, parser_info_type  # pragma: no cover
+
+    return _ToExpressionImpl(
+        parser_info,
+        compile_time_values,
+        parser_info_type,
+        to_type_func,
+        set(),
+    )
+
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+def _ToTypeImpl(
+    parser_info: ExpressionParserInfo,
+    compile_time_values: Dict[str, CompileTimeValue],
+    required_parser_info_type: ParserInfoType,
+    validate_func: Callable[[ExpressionParserInfo], None],
+) -> MiniLanguageType:
+
+    _ValidateParserInfoType(parser_info, required_parser_info_type)
+
+    if isinstance(parser_info, FuncOrTypeExpressionParserInfo):
+        # Do not validate this as a Configuration type if we are looking at a compile-time
+        # function call. Instead, validate it as a TypeCustomization to ensure that we aren't
+        # overly strict about what values are considered to be valid.
+        if (
+            required_parser_info_type == ParserInfoType.Configuration
+            and isinstance(parser_info.value, CustomType)
+            and parser_info.value.name in COMPILE_TIME_FUNCTION_MAP
+        ):
+            parser_info.ValidateAsCustomizationType()
+        else:
+            validate_func(parser_info)
+
+        return parser_info.value
+
+    elif isinstance(parser_info, NoneExpressionParserInfo):
+        return NoneType()
+
+    elif isinstance(parser_info, TernaryExpressionParserInfo):
+        result = EvalExpression(parser_info.condition_expression, compile_time_values)
+        result = result.type.ToBoolValue(result.value)
+
+        return _ToTypeImpl(
+            parser_info.true_expression if result else parser_info.false_expression,
+            compile_time_values,
+            required_parser_info_type,
+            validate_func,
         )
+
+    elif isinstance(parser_info, VariantExpressionParserInfo):
+        validate_func(parser_info)
+
+        return VariantType(
+            [
+                _ToTypeImpl(
+                    type_expression,
+                    compile_time_values,
+                    required_parser_info_type,
+                    validate_func,
+                )
+                for type_expression in parser_info.types
+            ],
+        )
+
+    raise ErrorException(
+        InvalidParserInfoMiniLanguageTypeError.Create(
+            region=parser_info.regions__.self__,
+            type=required_parser_info_type.name,
+        ),
+    )
+
+
+# ----------------------------------------------------------------------
+def _ToExpressionImpl(
+    parser_info: ExpressionParserInfo,
+    compile_time_values: Dict[str, CompileTimeValue],
+    required_parser_info_type: ParserInfoType,
+    to_type_func: Callable[[ExpressionParserInfo, Dict[str, CompileTimeValue]], MiniLanguageType],
+    suppress_variable_warnings: Set[str],
+) -> MiniLanguageExpression:
+
+    _ValidateParserInfoType(parser_info, required_parser_info_type)
 
     if isinstance(parser_info, BinaryExpressionParserInfo):
         operator = parser_info.operator.ToMiniLanguageOperatorType()
+
         if operator is None:
             raise ErrorException(
                 InvalidBinaryOperatorError.Create(
                     region=parser_info.regions__.operator,
                     operator=parser_info.operator.name,
+                    type=required_parser_info_type.name,
                 ),
             )
 
         return BinaryExpression(
-            ParserInfoToExpression(parser_info.left_expression, compile_time_values),
+            _ToExpressionImpl(
+                parser_info.left_expression,
+                compile_time_values,
+                required_parser_info_type,
+                to_type_func,
+                suppress_variable_warnings,
+            ),
             operator,
-            ParserInfoToExpression(parser_info.right_expression, compile_time_values),
+            _ToExpressionImpl(
+                parser_info.right_expression,
+                compile_time_values,
+                required_parser_info_type,
+                to_type_func,
+                suppress_variable_warnings,
+            ),
             parser_info.left_expression.regions__.self__,
         )
 
@@ -179,34 +357,52 @@ def ParserInfoToExpression(
         return LiteralExpression(BooleanType(), parser_info.value)
 
     elif isinstance(parser_info, CallExpressionParserInfo):
-        result = EvalMiniLanguageExpression(parser_info.expression, compile_time_values)
-        func_name = result[1].ToStringValue(result[0])
+        result = EvalExpression(parser_info.expression, compile_time_values)
+        func_name = result.type.ToStringValue(result.value)
 
         # Get the function expression
-        result = FUNCTION_MAP.get(func_name, None)
+        result = COMPILE_TIME_FUNCTION_MAP.get(func_name, None)
         if result is None:
             raise ErrorException(
                 InvalidFunctionError.Create(
                     region=parser_info.expression.regions__.self__,
                     name=func_name,
+                    type=required_parser_info_type.name,
                 ),
             )
 
         expression_type, augment_kwargs_func = result
 
+        # If we are looking at a call to IsDefined!, we want to suppress errors associated with
+        # variables that are not defined downstream. Add a placeholder variable if one doesn't
+        # already exist. We can't perfectly handle all scenarios, so support the most common knowing
+        # that we will see type errors associated with undefined variables if we aren't able to
+        # explicitly suppress them.
+        if (
+            func_name == "IsDefined!"
+            and not isinstance(parser_info.arguments, bool)
+            and len(parser_info.arguments.arguments) == 1
+            and isinstance(parser_info.arguments.arguments[0].expression, VariableExpressionParserInfo)
+        ):
+            suppress_variable_warnings.add(parser_info.arguments.arguments[0].expression.name)
+
         # Get the parameters for the expression type
         param_infos: List[CallHelpers.ParameterInfo] = []
-        none_type = type(None)
 
         for field in fields(expression_type):
-            field_args = getattr(field.type, "__args__", [])
+            # I haven't found a clean way to do this programmatically based on the innards of the
+            # typing module. This code doesn't work in all scenarios (for example, it can't
+            # differentiate between Optional[List[int]] and List[Optional[int]], but should be
+            # good enough for use here as the ParserInfo objects follow a fairly consistent
+            # pattern of how lists are used (it is always Optional[List[int]]).
+            type_desc = str(field.type)
 
             param_infos.append(
                 CallHelpers.ParameterInfo(
                     field.name,
                     None,
-                    is_optional=none_type in field_args,
-                    is_variadic=isinstance(field_args, tuple) and len(field_args) == 1,
+                    is_optional="NoneType" in type_desc,
+                    is_variadic="typing.List" in type_desc,
                 ),
             )
 
@@ -217,22 +413,29 @@ def ParserInfoToExpression(
         if not isinstance(parser_info.arguments, bool):
             for argument in parser_info.arguments.arguments:
                 arg_info = CallHelpers.ArgumentInfo(
-                    ParserInfoToExpression(argument.expression, compile_time_values),
+                    _ToExpressionImpl(
+                        argument.expression,
+                        compile_time_values,
+                        required_parser_info_type,
+                        to_type_func,
+                        suppress_variable_warnings,
+                    ),
                     argument.regions__.self__,
                 )
 
                 if argument.keyword is None:
                     positional_args.append(arg_info)
                 else:
-                    # We are checking for duplicate keyword names when creating the corresponding
-                    # ParserInfo objects.
+                    # No need to check for duplicate keyword names, as that was done when creating
+                    # the argument ParserInfo object.
                     assert argument.keyword not in keyword_args, argument.keyword
+
                     keyword_args[argument.keyword] = arg_info
 
-        if augment_kwargs_func:
+        if augment_kwargs_func is not None:
             keyword_args = augment_kwargs_func(parser_info, keyword_args)
 
-        # Map the arguments to the parameters
+        # Map the arguments provided to the parameters required by the expression type
         argument_map = CallHelpers.CreateArgumentMap(
             func_name,
             None,
@@ -243,33 +446,17 @@ def ParserInfoToExpression(
             keyword_args,
         )
 
-        # We don't need to type check, as all args are MiniLanguage expressions
-        updated_argument_map = {}
+        # We don't need to check types, as all the args are MiniLanguageExpressions
 
-        for k, v in argument_map.items():
-            if isinstance(v, list):
-                v = [item.value for item in v]
-            else:
-                v = v.value
-
-            updated_argument_map[k] = v
-
-        return expression_type(**updated_argument_map)
+        # Create the expression
+        return expression_type(**argument_map)
 
     elif isinstance(parser_info, CharacterExpressionParserInfo):
         return LiteralExpression(CharacterType(), parser_info.value)
 
     elif isinstance(parser_info, FuncOrTypeExpressionParserInfo):
-        # BugBug: This is a hack
-        # BugBug: Need to add "CustomType" to MiniLanguage (or is it CustomExpression?)
-        # BugBug: Add method to get DottedType/FullyQualifiedCustomType
-
-        # When here, we are most likely looking at the name of a compile-time function
-        parser_info.ValidateAsCompileTimeType(
-            require_mini_language_type=False,
-        )
-
-        return LiteralExpression(StringType(), parser_info.name)
+        the_type = to_type_func(parser_info, compile_time_values)
+        return LiteralExpression(the_type, the_type.name)
 
     elif isinstance(parser_info, IntegerExpressionParserInfo):
         return LiteralExpression(IntegerType(), parser_info.value)
@@ -285,127 +472,101 @@ def ParserInfoToExpression(
 
     elif isinstance(parser_info, TernaryExpressionParserInfo):
         return TernaryExpression(
-            ParserInfoToExpression(parser_info.condition_expression, compile_time_values),
-            ParserInfoToExpression(parser_info.true_expression, compile_time_values),
-            ParserInfoToExpression(parser_info.false_expression, compile_time_values),
+            _ToExpressionImpl(
+                parser_info.condition_expression,
+                compile_time_values,
+                required_parser_info_type,
+                to_type_func,
+                suppress_variable_warnings,
+            ),
+            _ToExpressionImpl(
+                parser_info.true_expression,
+                compile_time_values,
+                required_parser_info_type,
+                to_type_func,
+                suppress_variable_warnings,
+            ),
+            _ToExpressionImpl(
+                parser_info.false_expression,
+                compile_time_values,
+                required_parser_info_type,
+                to_type_func,
+                suppress_variable_warnings,
+            ),
         )
+
+    elif isinstance(parser_info, TupleExpressionParserInfo):
+        raise NotImplementedError("TODO") # TODO: Implement this
 
     elif isinstance(parser_info, TypeCheckExpressionParserInfo):
         return TypeCheckExpression(
             parser_info.operator,
-            ParserInfoToExpression(parser_info.expression, compile_time_values),
-            ParserInfoToType(parser_info.type, compile_time_values),
+            _ToExpressionImpl(
+                parser_info.expression,
+                compile_time_values,
+                required_parser_info_type,
+                to_type_func,
+                suppress_variable_warnings,
+            ),
+            to_type_func(parser_info.type, compile_time_values),
         )
 
     elif isinstance(parser_info, UnaryExpressionParserInfo):
         return UnaryExpression(
             parser_info.operator,
-            ParserInfoToExpression(parser_info.expression, compile_time_values),
+            _ToExpressionImpl(
+                parser_info.expression,
+                compile_time_values,
+                required_parser_info_type,
+                to_type_func,
+                suppress_variable_warnings,
+            ),
             parser_info.expression.regions__.self__,
         )
 
     elif isinstance(parser_info, VariableExpressionParserInfo):
         compile_time_value = compile_time_values.get(parser_info.name, None)
-        if compile_time_value is None:
+        if compile_time_value is None and parser_info.name not in suppress_variable_warnings:
             raise ErrorException(
                 InvalidVariableNameError.Create(
                     region=parser_info.regions__.name,
                     name=parser_info.name,
+                    type=required_parser_info_type.name,
                 ),
             )
 
         return VariableExpression(
-            compile_time_value.type,
+            compile_time_value.type if compile_time_value is not None else NoneType(),
             parser_info.name,
             parser_info.regions__.name,
         )
 
+    # VariantExpressionParserInfo is not processed here, as it results in a type and not an expression
+
     raise ErrorException(
         InvalidParserInfoExpressionError.Create(
             region=parser_info.regions__.self__,
+            type=required_parser_info_type.name,
         ),
     )
 
 
 # ----------------------------------------------------------------------
-def ParserInfoToType(
+def _ValidateParserInfoType(
     parser_info: ExpressionParserInfo,
-    compile_time_values: Dict[str, CompileTimeValue],
-) -> MiniLanguageType:
-    if parser_info.parser_info_type__.value > ParserInfoType.MaxCompileValue.value:  # type: ignore
+    required_parser_info_type: ParserInfoType,
+) -> None:
+    this_parser_info_type = parser_info.parser_info_type__  # type: ignore
+
+    if not ParserInfoType.IsCompileTimeValue(this_parser_info_type):
         raise ErrorException(
             InvalidParserInfoTypeError.Create(
                 region=parser_info.regions__.self__,
+                type=required_parser_info_type.name,
             ),
         )
 
-    if isinstance(parser_info, FuncOrTypeExpressionParserInfo):
-        if not isinstance(parser_info.name, MiniLanguageType):
-            raise ErrorException(
-                InvalidTypeNameError.Create(
-                    region=parser_info.regions__.name,
-                    name=parser_info.name,
-                ),
-            )
 
-        parser_info.ValidateAsCompileTimeType(
-            require_mini_language_type=True,
-        )
-
-        return cast(MiniLanguageType, parser_info.name)
-
-    elif isinstance(parser_info, NoneExpressionParserInfo):
-        return NoneType()
-
-    elif isinstance(parser_info, TernaryExpressionParserInfo):
-        result = EvalMiniLanguageExpression(parser_info.condition_expression, compile_time_values)
-        result = result[1].ToBoolValue(result[0])
-
-        return ParserInfoToType(
-            parser_info.true_expression if result else parser_info.false_expression,
-            compile_time_values,
-        )
-
-    elif isinstance(parser_info, VariantExpressionParserInfo):
-        return VariantType(
-            [
-                ParserInfoToType(type_expression, compile_time_values)
-                for type_expression in parser_info.types
-            ],
-        )
-
-    raise ErrorException(
-        InvalidParserInfoMiniLanguageTypeError.Create(
-            region=parser_info.regions__.self__,
-        ),
-    )
-
-
-# ----------------------------------------------------------------------
-def EvalMiniLanguageExpression(
-    expression_or_parser_info: Union[MiniLanguageExpression, ExpressionParserInfo],
-    compile_time_values: Dict[str, CompileTimeValue],
-) -> Tuple[Any, MiniLanguageType]:
-    if isinstance(expression_or_parser_info, MiniLanguageExpression):
-        expression = expression_or_parser_info
-    elif isinstance(expression_or_parser_info, ExpressionParserInfo):
-        expression = ParserInfoToExpression(expression_or_parser_info, compile_time_values)
-    else:
-        assert False, expression_or_parser_info  # pragma: no cover
-
-    types: Dict[str, MiniLanguageType] = {}
-    values: Dict[str, Any] = {}
-
-    for k, v in compile_time_values.items():
-        types[k] = v.type
-        values[k] = v.value
-
-    result = expression.Eval(values, types)
-    return result.value, result.type
-
-
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 def __AugmentEnforceExpressionArguments(
     parser_info: CallExpressionParserInfo,

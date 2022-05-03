@@ -33,6 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Expression import Expression, Type
+    from .VariableExpression import VariableExpression
+
     from ..Types.BooleanType import BooleanType
 
 
@@ -58,8 +60,13 @@ class IsDefinedExpression(Expression):
         args: Dict[str, Any],
         type_overrides: Dict[str, Type],
     ) -> Expression.EvalResult:
-        result = self.name.Eval(args, type_overrides)
-        result = result.type.ToStringValue(result.value)
+        # If the name is a VariableExpression, don't try to evaluate it as that will generate
+        # errors when attempting to return the value of a variable that may not be defined.
+        if isinstance(self.name, VariableExpression):
+            result = self.name.name
+        else:
+            result = self.name.Eval(args, type_overrides)
+            result = result.type.ToStringValue(result.value)
 
         return Expression.EvalResult(result in args, BooleanType(), None)
 

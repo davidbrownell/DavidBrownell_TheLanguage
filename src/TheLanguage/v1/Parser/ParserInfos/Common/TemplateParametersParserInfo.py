@@ -83,14 +83,11 @@ class TemplateTypeParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(TemplateTypeParameterParserInfo, self).__init__(
-            ParserInfoType.CompileTimeTypeCustomization,
+            ParserInfoType.TypeCustomization,
             *args,
             **kwargs,
             regionless_attributes=["default_type", ],
         )
-
-        # BugBug: Ensure default type is type
-        # BugBug: No modifiers
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -132,7 +129,7 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(TemplateDecoratorParameterParserInfo, self).__init__(
-            ParserInfoType.CompileTimeTypeCustomization,
+            ParserInfoType.TypeCustomization,
             *args,
             **kwargs,
             regionless_attributes=[
@@ -147,7 +144,7 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
 
         if (
             self.default_value is not None
-            and self.default_value.parser_info_type__.value >= ParserInfoType.MaxCompileValue.value  # type: ignore
+            and not ParserInfoType.IsCompileTimeValue(self.default_value.parser_info_type__)  # type: ignore
         ):
             errors.append(
                 InvalidTemplateExpressionError.Create(
@@ -173,15 +170,6 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
             ] + details,  # type: ignore
             children=None,
         )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def ValidateCompileTime(
-        self,
-        compile_time_values: Dict[str, MiniLanguageHelpers.CompileTimeValue],
-    ) -> None:
-        mini_language_type = MiniLanguageHelpers.ParserInfoToType(self.type, compile_time_values)
-        object.__setattr__(self, "mini_language_type", mini_language_type)
 
 
 # ----------------------------------------------------------------------
@@ -214,7 +202,18 @@ class TemplateParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(TemplateParametersParserInfo, self).__init__(ParserInfoType.CompileTimeTypeCustomization, *args, **kwargs)
+        super(TemplateParametersParserInfo, self).__init__(
+            ParserInfoType.GetDominantType(
+                *itertools.chain(
+                    self.positional or [],
+                    self.any or [],
+                    self.keyword or [],
+                ),
+            ),
+            *args,
+            **kwargs,
+        )
+
         assert self.positional or self.any or self.keyword
 
         # Validate

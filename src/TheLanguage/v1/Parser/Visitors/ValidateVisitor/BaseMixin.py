@@ -36,53 +36,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StateMaintainer import StateMaintainer
 
-    from ...Error import CreateError, Error, ErrorException
+    from ...Error import Error, ErrorException
 
     from ...Helpers import MiniLanguageHelpers
 
     from ...MiniLanguage.Types.IntegerType import IntegerType
-    from ...MiniLanguage.Types.Type import Type as MiniLanguageType
 
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
     from ...ParserInfos.Statements.StatementParserInfo import ParserInfo, Region, StatementParserInfo
-
-
-# ----------------------------------------------------------------------
-InvalidKeywordError                         = CreateError(
-    "Arguments for the positional parameter '{name}' can not be explicitly named in the call to '{destination}'",
-    destination=str,
-    destination_region=Optional[Region],
-    name=str,
-    parameter_region=Optional[Region],
-)
-
-InvalidKeywordArgumentError                 = CreateError(
-    "'{name}' is not a valid parameter name in '{destination}'",
-    destination=str,
-    destination_region=Optional[Region],
-    name=str,
-)
-
-TooManyArgumentsError                       = CreateError(
-    "Too many arguments in the call to '{destination}'",
-    destination=str,
-    destination_region=Optional[Region],
-)
-
-DuplicateKeywordArgumentError               = CreateError(
-    "The argument '{name}' has already been provided in the call to '{destination}'",
-    destination=str,
-    destination_region=Optional[Region],
-    name=str,
-    prev_region=Region,
-)
-
-RequiredArgumentMissingError                = CreateError(
-    "An argument for the parameter '{name}' is missing in the call to '{destination}'",
-    destination=str,
-    destination_region=Optional[Region],
-    name=str,
-)
 
 
 # ----------------------------------------------------------------------
@@ -113,12 +74,9 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        compile_time_info: Dict[str, MiniLanguageHelpers.CompileTimeValue],
+        configuration_info: Dict[str, MiniLanguageHelpers.CompileTimeValue],
     ):
-        # BugBug
-        compile_time_info["__architecture_bytes!"] = MiniLanguageHelpers.CompileTimeValue(IntegerType(), 4)
-
-        self._compile_time_info             = compile_time_info
+        self._configuration_info            = configuration_info
 
         self._errors: List[Error]           = []
 
@@ -149,8 +107,6 @@ class BaseMixin(object):
         parser_info: ParserInfo,  # pylint: disable=unused-argument
     ):
         try:
-            parser_info.ValidateCompileTime(self._compile_time_info)
-
             yield
 
             if self._scope_level + self._scope_delta == 1:
@@ -213,162 +169,11 @@ class BaseMixin(object):
         return getattr(statement, cls._EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME, True)
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def _CreateArgumentMap(
-        cls,
-        destination: str,
-        destination_region: Optional[Region],
-        positional_parameters: List[ParameterInfo],
-        any_parameters: List[ParameterInfo],
-        keyword_parameters: List[ParameterInfo],
-        args: List[ArgumentInfo],
-        kwargs: Dict[str, ArgumentInfo],
-    ) -> Dict[
-        str,
-        Union[
-            ArgumentInfo,                   # Standard arguments
-            List[ArgumentInfo],             # Variadic arguments
-        ]
-    ]:
-        """Creates a map of arguments that can be passed to an entity requiring the specified positional and keyword parameters"""
-
-        results: Dict[str, Union[ArgumentInfo, List[ArgumentInfo]]] = {}
-        errors: List[Error] = []
-
-        # Process the arguments specified by keyword
-        if kwargs:
-            valid_keywords: Dict[str, ParameterInfo] = {
-                parameter.name : parameter
-                for parameter in itertools.chain(any_parameters + keyword_parameters)
-            }
-
-            for key, value in kwargs.items():
-                potential_parameter = valid_keywords.get(key, None)
-
-                if potential_parameter is None:
-                    potential_positional_parameter = next(
-                        (parameter for parameter in positional_parameters if parameter.name == key),
-                        None,
-                    )
-
-                    if potential_positional_parameter is not None:
-                        errors.append(
-                            InvalidKeywordError.Create(
-                                region=value.region,
-                                destination=destination,
-                                destination_region=destination_region,
-                                name=key,
-                                parameter_region=potential_positional_parameter.region,
-                            ),
-                        )
-                    else:
-                        errors.append(
-                            InvalidKeywordArgumentError.Create(
-                                region=value.region,
-                                destination=destination,
-                                destination_region=destination_region,
-                                name=key,
-                            ),
-                        )
-
-                    continue
-
-                potential_argument_value = results.get(potential_parameter.name, cls._does_not_exist)
-
-                if isinstance(potential_argument_value, cls._DoesNotExist):
-                    if potential_parameter.is_variadic:
-                        value = [value, ]
-
-                    results[key] = value
-
-                elif potential_parameter.is_variadic:
-                    assert isinstance(potential_argument_value, list), potential_argument_value
-                    potential_argument_value.append(value)
-
-                else:
-                    assert isinstance(potential_argument_value, ArgumentInfo), potential_argument_value
-
-                    errors.append(
-                        DuplicateKeywordArgumentError.Create(
-                            region=value.region,
-                            destination=destination,
-                            destination_region=destination_region,
-                            name=potential_parameter.name,
-                            prev_region=potential_argument_value.region,
-                        ),
-                    )
-
-        # Process the arguments specified by position
-        if args:
-            all_positional_parameters: List[ParameterInfo] = positional_parameters + any_parameters
-            all_positional_parameters_index = 0
-
-            for arg in args:
-                potential_parameter: Optional[ParameterInfo] = None
-
-                while all_positional_parameters_index < len(all_positional_parameters):
-                    potential_parameter = all_positional_parameters[all_positional_parameters_index]
-
-                    if potential_parameter.is_variadic:
-                        break
-
-                    if potential_parameter.name not in results:
-                        break
-
-                    all_positional_parameters_index += 1
-
-                if all_positional_parameters_index == len(all_positional_parameters):
-                    errors.append(
-                        TooManyArgumentsError.Create(
-                            region=arg.region,
-                            destination=destination,
-                            destination_region=destination_region,
-                        ),
-                    )
-                    break
-
-                assert potential_parameter is not None
-
-                if potential_parameter.is_variadic:
-                    cast(List[ArgumentInfo], results.setdefault(potential_parameter.name, [])).append(arg)
-                else:
-                    assert potential_parameter.name not in results, potential_parameter.name
-                    results[potential_parameter.name] = arg
-
-        # Have all values been provided?
-        for parameter in itertools.chain(positional_parameters, any_parameters, keyword_parameters):
-            if parameter.name not in results and not parameter.is_optional:
-                errors.append(
-                    RequiredArgumentMissingError.Create(
-                        region=parameter.region,
-                        destination=destination,
-                        destination_region=destination_region,
-                        name=parameter.name,
-                    ),
-                )
-
-        if errors:
-            raise ErrorException(*errors)
-
-        return results
-
-    # ----------------------------------------------------------------------
     # |
     # |  Private Data
     # |
-    # ----------------------------------------------------------------------
-    class _DoesNotExist(object):
-        pass
-
     # ----------------------------------------------------------------------
     _EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME = "_execute_statement"
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _does_not_exist                         = _DoesNotExist()
 
     # ----------------------------------------------------------------------
     # |

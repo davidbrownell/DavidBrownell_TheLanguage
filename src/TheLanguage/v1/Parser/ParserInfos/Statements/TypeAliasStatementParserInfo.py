@@ -68,8 +68,8 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            ParserInfoType.CompileTimeTypeCustomization,                    # type: ignore
-            regions,                                                        # type: ignore
+            ParserInfoType.TypeCustomization,           # type: ignore
+            regions,                                    # type: ignore
             *args,
             **kwargs,
         )
@@ -115,8 +115,6 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
                         region=self.regions__.visibility,
                     ),
                 )
-
-        # BugBug: Ensure type is type
 
         if errors:
             raise ErrorException(*errors)

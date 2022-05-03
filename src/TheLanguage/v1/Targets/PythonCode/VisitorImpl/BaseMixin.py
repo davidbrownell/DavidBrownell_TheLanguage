@@ -137,7 +137,7 @@ class BaseMixin(object):
                     should_add = True
 
                 else:
-                    pass # BugBug assert False, type(parser_info)  # pragma: no cover
+                    assert False, type(parser_info)  # pragma: no cover
 
                 if should_add:
                     self._public_exports.append(parser_info)

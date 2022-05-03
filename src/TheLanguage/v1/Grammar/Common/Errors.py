@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassAttributeStatement_IntegrationTest.py
+# |  Errors.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 13:02:28
+# |      2022-05-03 12:38:09
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,10 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Automated tests for ClassAttributeStatement.py"""
+"""Contains Common Errors"""
 
 import os
-import textwrap
 
 import CommonEnvironment
 
@@ -28,31 +27,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ....IntegrationTestHelpers import *
-    from ..ClassAttributeStatement import *
+    from ...Parser.Error import CreateError
 
 
 # ----------------------------------------------------------------------
-def test_Simple():
-    CompareResultsFromFile(str(ExecuteParserInfo(
-        textwrap.dedent(
-            """\
-            class More:
-                TheType1 var value1
-                The.Type val value2
-            """,
-        ),
-    )))
-
-
-# ----------------------------------------------------------------------
-def test_Variants():
-    CompareResultsFromFile(str(ExecuteParserInfo(
-        textwrap.dedent(
-            """\
-            class MyClass:
-                (Type1 | Type2) var value1
-                (Type3 | Type4 | Type5) var value2
-            """,
-        ),
-    )))
+InvalidCompileTimeNameError                 = CreateError(
+    "The {type} name '{name}' is a compile-time name and not valid in this context",
+    name=str,
+    type=str,
+)

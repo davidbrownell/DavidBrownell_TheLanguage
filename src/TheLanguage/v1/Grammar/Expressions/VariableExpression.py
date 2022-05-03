@@ -78,10 +78,10 @@ class VariableExpression(GrammarPhrase):
         name_info = CommonTokens.VariableName.Extract(name_leaf)  # type: ignore
 
         if CommonTokens.VariableName.IsCompileTime(name_info):  # type: ignore  # pylint: disable=not-callable
-            if CommonTokens.strict_compile_time_regex.match(name_info):
-                parser_info_type = ParserInfoType.CompileTime
+            if CommonTokens.variable_name_configuration_compile_time_regex.match(name_info):
+                parser_info_type = ParserInfoType.Configuration
             else:
-                parser_info_type = ParserInfoType.CompileTimeTypeCustomization
+                parser_info_type = ParserInfoType.TypeCustomization
         else:
             parser_info_type = ParserInfoType.Standard
 

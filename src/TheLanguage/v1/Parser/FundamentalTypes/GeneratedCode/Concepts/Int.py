@@ -5,8 +5,8 @@
 
 from v1.Lexer.Location import Location
 from v1.Parser.MiniLanguage.Types.BooleanType import BooleanType
+from v1.Parser.MiniLanguage.Types.CustomType import CustomType
 from v1.Parser.MiniLanguage.Types.IntegerType import IntegerType
-from v1.Parser.MiniLanguage.Types.NoneType import NoneType
 from v1.Parser.MiniLanguage.Types.NumberType import NumberType
 from v1.Parser.MiniLanguage.Types.StringType import StringType
 from v1.Parser.ParserInfos.Common.ClassModifier import ClassModifier
@@ -24,6 +24,7 @@ from v1.Parser.ParserInfos.Common.VisibilityModifier import VisibilityModifier
 from v1.Parser.ParserInfos.Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo, OperatorType as BinaryExpressionOperatorType
 from v1.Parser.ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo
 from v1.Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
+from v1.Parser.ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
 from v1.Parser.ParserInfos.Expressions.TypeCheckExpressionParserInfo import TypeCheckExpressionParserInfo, OperatorType as TypeCheckExpressionParserInfoOperatorType
 from v1.Parser.ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
 from v1.Parser.ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
@@ -76,326 +77,373 @@ region_000035 = Region(begin=Location(line=23, column=5), end=Location(line=23, 
 region_000036 = Region(begin=Location(line=23, column=27), end=Location(line=26, column=5))
 region_000037 = Region(begin=Location(line=26, column=21), end=Location(line=26, column=33))
 region_000038 = Region(begin=Location(line=26, column=21), end=Location(line=26, column=29))
-region_000039 = Region(begin=Location(line=26, column=51), end=Location(line=26, column=59))
-region_000040 = Region(begin=Location(line=26, column=50), end=Location(line=26, column=60))
-region_000041 = Region(begin=Location(line=26, column=61), end=Location(line=26, column=73))
-region_000042 = Region(begin=Location(line=26, column=61), end=Location(line=26, column=69))
-region_000043 = Region(begin=Location(line=26, column=61), end=Location(line=26, column=81))
-region_000044 = Region(begin=Location(line=26, column=74), end=Location(line=26, column=81))
-region_000045 = Region(begin=Location(line=26, column=60), end=Location(line=26, column=82))
-region_000046 = Region(begin=Location(line=26, column=5), end=Location(line=27, column=1))
-region_000047 = Region(begin=Location(line=26, column=14), end=Location(line=26, column=20))
-region_000048 = Region(begin=Location(line=26, column=34), end=Location(line=26, column=50))
-region_000049 = Region(begin=Location(line=26, column=6), end=Location(line=26, column=12))
-region_000050 = Region(begin=Location(line=27, column=12), end=Location(line=27, column=16))
-region_000051 = Region(begin=Location(line=27, column=32), end=Location(line=27, column=40))
-region_000052 = Region(begin=Location(line=27, column=31), end=Location(line=27, column=41))
-region_000053 = Region(begin=Location(line=27, column=42), end=Location(line=27, column=54))
-region_000054 = Region(begin=Location(line=27, column=42), end=Location(line=27, column=50))
-region_000055 = Region(begin=Location(line=27, column=42), end=Location(line=27, column=62))
-region_000056 = Region(begin=Location(line=27, column=55), end=Location(line=27, column=62))
-region_000057 = Region(begin=Location(line=27, column=41), end=Location(line=27, column=63))
-region_000058 = Region(begin=Location(line=27, column=5), end=Location(line=29, column=1))
-region_000059 = Region(begin=Location(line=27, column=5), end=Location(line=27, column=11))
-region_000060 = Region(begin=Location(line=27, column=64), end=Location(line=27, column=73))
-region_000061 = Region(begin=Location(line=27, column=17), end=Location(line=27, column=31))
-region_000062 = Region(begin=Location(line=29, column=12), end=Location(line=29, column=16))
-region_000063 = Region(begin=Location(line=29, column=29), end=Location(line=29, column=37))
-region_000064 = Region(begin=Location(line=29, column=28), end=Location(line=29, column=38))
-region_000065 = Region(begin=Location(line=29, column=39), end=Location(line=29, column=51))
-region_000066 = Region(begin=Location(line=29, column=39), end=Location(line=29, column=47))
-region_000067 = Region(begin=Location(line=29, column=39), end=Location(line=29, column=59))
-region_000068 = Region(begin=Location(line=29, column=52), end=Location(line=29, column=59))
-region_000069 = Region(begin=Location(line=29, column=38), end=Location(line=29, column=60))
-region_000070 = Region(begin=Location(line=29, column=5), end=Location(line=31, column=1))
-region_000071 = Region(begin=Location(line=29, column=5), end=Location(line=29, column=11))
-region_000072 = Region(begin=Location(line=29, column=61), end=Location(line=29, column=70))
-region_000073 = Region(begin=Location(line=29, column=17), end=Location(line=29, column=28))
-region_000074 = Region(begin=Location(line=31, column=12), end=Location(line=31, column=24))
-region_000075 = Region(begin=Location(line=31, column=12), end=Location(line=31, column=20))
-region_000076 = Region(begin=Location(line=31, column=5), end=Location(line=33, column=1))
-region_000077 = Region(begin=Location(line=31, column=5), end=Location(line=31, column=11))
-region_000078 = Region(begin=Location(line=31, column=38), end=Location(line=31, column=47))
-region_000079 = Region(begin=Location(line=31, column=25), end=Location(line=31, column=35))
-region_000080 = Region(begin=Location(line=31, column=35), end=Location(line=31, column=37))
-region_000081 = Region(begin=Location(line=33, column=12), end=Location(line=33, column=20))
-region_000082 = Region(begin=Location(line=33, column=12), end=Location(line=33, column=16))
-region_000083 = Region(begin=Location(line=33, column=5), end=Location(line=34, column=1))
-region_000084 = Region(begin=Location(line=33, column=5), end=Location(line=33, column=11))
-region_000085 = Region(begin=Location(line=33, column=34), end=Location(line=33, column=43))
-region_000086 = Region(begin=Location(line=33, column=21), end=Location(line=33, column=31))
-region_000087 = Region(begin=Location(line=33, column=31), end=Location(line=33, column=33))
-region_000088 = Region(begin=Location(line=34, column=12), end=Location(line=34, column=19))
-region_000089 = Region(begin=Location(line=34, column=12), end=Location(line=34, column=15))
-region_000090 = Region(begin=Location(line=34, column=5), end=Location(line=36, column=1))
-region_000091 = Region(begin=Location(line=34, column=5), end=Location(line=34, column=11))
-region_000092 = Region(begin=Location(line=34, column=36), end=Location(line=34, column=45))
-region_000093 = Region(begin=Location(line=34, column=20), end=Location(line=34, column=33))
-region_000094 = Region(begin=Location(line=34, column=33), end=Location(line=34, column=35))
-region_000095 = Region(begin=Location(line=36, column=21), end=Location(line=36, column=38))
-region_000096 = Region(begin=Location(line=36, column=21), end=Location(line=36, column=34))
-region_000097 = Region(begin=Location(line=36, column=51), end=Location(line=36, column=69))
-region_000098 = Region(begin=Location(line=36, column=51), end=Location(line=36, column=59))
-region_000099 = Region(begin=Location(line=36, column=51), end=Location(line=36, column=74))
-region_000100 = Region(begin=Location(line=36, column=70), end=Location(line=36, column=74))
-region_000101 = Region(begin=Location(line=36, column=76), end=Location(line=36, column=89))
-region_000102 = Region(begin=Location(line=36, column=76), end=Location(line=36, column=79))
-region_000103 = Region(begin=Location(line=36, column=76), end=Location(line=36, column=94))
-region_000104 = Region(begin=Location(line=36, column=90), end=Location(line=36, column=94))
-region_000105 = Region(begin=Location(line=36, column=50), end=Location(line=36, column=95))
-region_000106 = Region(begin=Location(line=36, column=51), end=Location(line=36, column=94))
-region_000107 = Region(begin=Location(line=36, column=5), end=Location(line=38, column=1))
-region_000108 = Region(begin=Location(line=36, column=14), end=Location(line=36, column=20))
-region_000109 = Region(begin=Location(line=36, column=39), end=Location(line=36, column=50))
-region_000110 = Region(begin=Location(line=36, column=6), end=Location(line=36, column=12))
-region_000111 = Region(begin=Location(line=38, column=12), end=Location(line=38, column=20))
-region_000112 = Region(begin=Location(line=38, column=12), end=Location(line=38, column=16))
-region_000113 = Region(begin=Location(line=38, column=31), end=Location(line=38, column=44))
-region_000114 = Region(begin=Location(line=38, column=31), end=Location(line=38, column=34))
-region_000115 = Region(begin=Location(line=38, column=31), end=Location(line=38, column=49))
-region_000116 = Region(begin=Location(line=38, column=45), end=Location(line=38, column=49))
-region_000117 = Region(begin=Location(line=38, column=30), end=Location(line=38, column=50))
-region_000118 = Region(begin=Location(line=38, column=5), end=Location(line=39, column=1))
-region_000119 = Region(begin=Location(line=38, column=5), end=Location(line=38, column=11))
-region_000120 = Region(begin=Location(line=38, column=51), end=Location(line=38, column=60))
-region_000121 = Region(begin=Location(line=38, column=21), end=Location(line=38, column=30))
-region_000122 = Region(begin=Location(line=39, column=12), end=Location(line=39, column=20))
-region_000123 = Region(begin=Location(line=39, column=12), end=Location(line=39, column=16))
-region_000124 = Region(begin=Location(line=39, column=34), end=Location(line=39, column=47))
-region_000125 = Region(begin=Location(line=39, column=34), end=Location(line=39, column=37))
-region_000126 = Region(begin=Location(line=39, column=34), end=Location(line=39, column=52))
-region_000127 = Region(begin=Location(line=39, column=48), end=Location(line=39, column=52))
-region_000128 = Region(begin=Location(line=39, column=33), end=Location(line=39, column=53))
-region_000129 = Region(begin=Location(line=39, column=5), end=Location(line=40, column=1))
-region_000130 = Region(begin=Location(line=39, column=5), end=Location(line=39, column=11))
-region_000131 = Region(begin=Location(line=39, column=54), end=Location(line=39, column=63))
-region_000132 = Region(begin=Location(line=39, column=21), end=Location(line=39, column=33))
-region_000133 = Region(begin=Location(line=40, column=12), end=Location(line=40, column=20))
-region_000134 = Region(begin=Location(line=40, column=12), end=Location(line=40, column=16))
-region_000135 = Region(begin=Location(line=40, column=30), end=Location(line=40, column=43))
-region_000136 = Region(begin=Location(line=40, column=30), end=Location(line=40, column=33))
-region_000137 = Region(begin=Location(line=40, column=30), end=Location(line=40, column=48))
-region_000138 = Region(begin=Location(line=40, column=44), end=Location(line=40, column=48))
-region_000139 = Region(begin=Location(line=40, column=29), end=Location(line=40, column=49))
-region_000140 = Region(begin=Location(line=40, column=5), end=Location(line=41, column=1))
-region_000141 = Region(begin=Location(line=40, column=5), end=Location(line=40, column=11))
-region_000142 = Region(begin=Location(line=40, column=50), end=Location(line=40, column=59))
-region_000143 = Region(begin=Location(line=40, column=21), end=Location(line=40, column=29))
-region_000144 = Region(begin=Location(line=41, column=12), end=Location(line=41, column=20))
-region_000145 = Region(begin=Location(line=41, column=12), end=Location(line=41, column=16))
-region_000146 = Region(begin=Location(line=41, column=35), end=Location(line=41, column=48))
-region_000147 = Region(begin=Location(line=41, column=35), end=Location(line=41, column=38))
-region_000148 = Region(begin=Location(line=41, column=35), end=Location(line=41, column=53))
-region_000149 = Region(begin=Location(line=41, column=49), end=Location(line=41, column=53))
-region_000150 = Region(begin=Location(line=41, column=34), end=Location(line=41, column=54))
-region_000151 = Region(begin=Location(line=41, column=5), end=Location(line=42, column=1))
-region_000152 = Region(begin=Location(line=41, column=5), end=Location(line=41, column=11))
-region_000153 = Region(begin=Location(line=41, column=55), end=Location(line=41, column=64))
-region_000154 = Region(begin=Location(line=41, column=21), end=Location(line=41, column=34))
-region_000155 = Region(begin=Location(line=42, column=12), end=Location(line=42, column=20))
-region_000156 = Region(begin=Location(line=42, column=12), end=Location(line=42, column=16))
-region_000157 = Region(begin=Location(line=42, column=33), end=Location(line=42, column=46))
-region_000158 = Region(begin=Location(line=42, column=33), end=Location(line=42, column=36))
-region_000159 = Region(begin=Location(line=42, column=33), end=Location(line=42, column=51))
-region_000160 = Region(begin=Location(line=42, column=47), end=Location(line=42, column=51))
-region_000161 = Region(begin=Location(line=42, column=32), end=Location(line=42, column=52))
-region_000162 = Region(begin=Location(line=42, column=5), end=Location(line=43, column=1))
-region_000163 = Region(begin=Location(line=42, column=5), end=Location(line=42, column=11))
-region_000164 = Region(begin=Location(line=42, column=53), end=Location(line=42, column=62))
-region_000165 = Region(begin=Location(line=42, column=21), end=Location(line=42, column=32))
-region_000166 = Region(begin=Location(line=43, column=12), end=Location(line=43, column=20))
-region_000167 = Region(begin=Location(line=43, column=12), end=Location(line=43, column=16))
-region_000168 = Region(begin=Location(line=43, column=38), end=Location(line=43, column=51))
-region_000169 = Region(begin=Location(line=43, column=38), end=Location(line=43, column=41))
-region_000170 = Region(begin=Location(line=43, column=38), end=Location(line=43, column=56))
-region_000171 = Region(begin=Location(line=43, column=52), end=Location(line=43, column=56))
-region_000172 = Region(begin=Location(line=43, column=37), end=Location(line=43, column=57))
-region_000173 = Region(begin=Location(line=43, column=5), end=Location(line=45, column=1))
-region_000174 = Region(begin=Location(line=43, column=5), end=Location(line=43, column=11))
-region_000175 = Region(begin=Location(line=43, column=58), end=Location(line=43, column=67))
-region_000176 = Region(begin=Location(line=43, column=21), end=Location(line=43, column=37))
-region_000177 = Region(begin=Location(line=45, column=12), end=Location(line=45, column=24))
-region_000178 = Region(begin=Location(line=45, column=12), end=Location(line=45, column=20))
-region_000179 = Region(begin=Location(line=45, column=5), end=Location(line=46, column=1))
-region_000180 = Region(begin=Location(line=45, column=5), end=Location(line=45, column=11))
-region_000181 = Region(begin=Location(line=45, column=41), end=Location(line=45, column=50))
-region_000182 = Region(begin=Location(line=45, column=25), end=Location(line=45, column=38))
-region_000183 = Region(begin=Location(line=45, column=38), end=Location(line=45, column=40))
-region_000184 = Region(begin=Location(line=46, column=12), end=Location(line=46, column=24))
-region_000185 = Region(begin=Location(line=46, column=12), end=Location(line=46, column=20))
-region_000186 = Region(begin=Location(line=46, column=5), end=Location(line=47, column=1))
-region_000187 = Region(begin=Location(line=46, column=5), end=Location(line=46, column=11))
-region_000188 = Region(begin=Location(line=46, column=41), end=Location(line=46, column=50))
-region_000189 = Region(begin=Location(line=46, column=25), end=Location(line=46, column=38))
-region_000190 = Region(begin=Location(line=46, column=38), end=Location(line=46, column=40))
-region_000191 = Region(begin=Location(line=47, column=12), end=Location(line=47, column=24))
-region_000192 = Region(begin=Location(line=47, column=12), end=Location(line=47, column=20))
-region_000193 = Region(begin=Location(line=47, column=5), end=Location(line=49, column=1))
-region_000194 = Region(begin=Location(line=47, column=5), end=Location(line=47, column=11))
-region_000195 = Region(begin=Location(line=47, column=40), end=Location(line=47, column=49))
-region_000196 = Region(begin=Location(line=47, column=25), end=Location(line=47, column=37))
-region_000197 = Region(begin=Location(line=47, column=37), end=Location(line=47, column=39))
-region_000198 = Region(begin=Location(line=49, column=12), end=Location(line=49, column=19))
-region_000199 = Region(begin=Location(line=49, column=12), end=Location(line=49, column=15))
-region_000200 = Region(begin=Location(line=49, column=32), end=Location(line=49, column=45))
-region_000201 = Region(begin=Location(line=49, column=32), end=Location(line=49, column=35))
-region_000202 = Region(begin=Location(line=49, column=32), end=Location(line=49, column=53))
-region_000203 = Region(begin=Location(line=49, column=46), end=Location(line=49, column=53))
-region_000204 = Region(begin=Location(line=49, column=31), end=Location(line=49, column=54))
-region_000205 = Region(begin=Location(line=49, column=5), end=Location(line=51, column=1))
-region_000206 = Region(begin=Location(line=49, column=5), end=Location(line=49, column=11))
-region_000207 = Region(begin=Location(line=49, column=55), end=Location(line=49, column=64))
-region_000208 = Region(begin=Location(line=49, column=20), end=Location(line=49, column=31))
-region_000209 = Region(begin=Location(line=51, column=12), end=Location(line=51, column=24))
-region_000210 = Region(begin=Location(line=51, column=12), end=Location(line=51, column=20))
-region_000211 = Region(begin=Location(line=51, column=42), end=Location(line=51, column=55))
-region_000212 = Region(begin=Location(line=51, column=42), end=Location(line=51, column=45))
-region_000213 = Region(begin=Location(line=51, column=42), end=Location(line=51, column=63))
-region_000214 = Region(begin=Location(line=51, column=56), end=Location(line=51, column=63))
-region_000215 = Region(begin=Location(line=51, column=41), end=Location(line=51, column=64))
-region_000216 = Region(begin=Location(line=51, column=5), end=Location(line=52, column=1))
-region_000217 = Region(begin=Location(line=51, column=5), end=Location(line=51, column=11))
-region_000218 = Region(begin=Location(line=51, column=65), end=Location(line=51, column=74))
-region_000219 = Region(begin=Location(line=51, column=25), end=Location(line=51, column=41))
-region_000220 = Region(begin=Location(line=52, column=12), end=Location(line=52, column=24))
-region_000221 = Region(begin=Location(line=52, column=12), end=Location(line=52, column=20))
-region_000222 = Region(begin=Location(line=52, column=37), end=Location(line=52, column=50))
-region_000223 = Region(begin=Location(line=52, column=37), end=Location(line=52, column=40))
-region_000224 = Region(begin=Location(line=52, column=37), end=Location(line=52, column=58))
-region_000225 = Region(begin=Location(line=52, column=51), end=Location(line=52, column=58))
-region_000226 = Region(begin=Location(line=52, column=36), end=Location(line=52, column=59))
-region_000227 = Region(begin=Location(line=52, column=5), end=Location(line=53, column=1))
-region_000228 = Region(begin=Location(line=52, column=5), end=Location(line=52, column=11))
-region_000229 = Region(begin=Location(line=52, column=60), end=Location(line=52, column=69))
-region_000230 = Region(begin=Location(line=52, column=25), end=Location(line=52, column=36))
-region_000231 = Region(begin=Location(line=53, column=12), end=Location(line=53, column=24))
-region_000232 = Region(begin=Location(line=53, column=12), end=Location(line=53, column=20))
-region_000233 = Region(begin=Location(line=53, column=39), end=Location(line=53, column=52))
-region_000234 = Region(begin=Location(line=53, column=39), end=Location(line=53, column=42))
-region_000235 = Region(begin=Location(line=53, column=39), end=Location(line=53, column=63))
-region_000236 = Region(begin=Location(line=53, column=53), end=Location(line=53, column=63))
-region_000237 = Region(begin=Location(line=53, column=38), end=Location(line=53, column=64))
-region_000238 = Region(begin=Location(line=53, column=5), end=Location(line=54, column=1))
-region_000239 = Region(begin=Location(line=53, column=5), end=Location(line=53, column=11))
-region_000240 = Region(begin=Location(line=53, column=65), end=Location(line=53, column=74))
-region_000241 = Region(begin=Location(line=53, column=25), end=Location(line=53, column=38))
-region_000242 = Region(begin=Location(line=54, column=12), end=Location(line=54, column=24))
-region_000243 = Region(begin=Location(line=54, column=12), end=Location(line=54, column=20))
-region_000244 = Region(begin=Location(line=54, column=36), end=Location(line=54, column=49))
-region_000245 = Region(begin=Location(line=54, column=36), end=Location(line=54, column=39))
-region_000246 = Region(begin=Location(line=54, column=36), end=Location(line=54, column=58))
-region_000247 = Region(begin=Location(line=54, column=50), end=Location(line=54, column=58))
-region_000248 = Region(begin=Location(line=54, column=35), end=Location(line=54, column=59))
-region_000249 = Region(begin=Location(line=54, column=5), end=Location(line=56, column=1))
-region_000250 = Region(begin=Location(line=54, column=5), end=Location(line=54, column=11))
-region_000251 = Region(begin=Location(line=54, column=60), end=Location(line=54, column=69))
-region_000252 = Region(begin=Location(line=54, column=25), end=Location(line=54, column=35))
-region_000253 = Region(begin=Location(line=56, column=12), end=Location(line=56, column=24))
-region_000254 = Region(begin=Location(line=56, column=12), end=Location(line=56, column=20))
-region_000255 = Region(begin=Location(line=56, column=34), end=Location(line=56, column=47))
-region_000256 = Region(begin=Location(line=56, column=34), end=Location(line=56, column=37))
-region_000257 = Region(begin=Location(line=56, column=34), end=Location(line=56, column=53))
-region_000258 = Region(begin=Location(line=56, column=48), end=Location(line=56, column=53))
-region_000259 = Region(begin=Location(line=56, column=33), end=Location(line=56, column=54))
-region_000260 = Region(begin=Location(line=56, column=5), end=Location(line=57, column=1))
-region_000261 = Region(begin=Location(line=56, column=5), end=Location(line=56, column=11))
-region_000262 = Region(begin=Location(line=56, column=55), end=Location(line=56, column=64))
-region_000263 = Region(begin=Location(line=56, column=25), end=Location(line=56, column=33))
-region_000264 = Region(begin=Location(line=57, column=12), end=Location(line=57, column=24))
-region_000265 = Region(begin=Location(line=57, column=12), end=Location(line=57, column=20))
-region_000266 = Region(begin=Location(line=57, column=39), end=Location(line=57, column=52))
-region_000267 = Region(begin=Location(line=57, column=39), end=Location(line=57, column=42))
-region_000268 = Region(begin=Location(line=57, column=39), end=Location(line=57, column=58))
-region_000269 = Region(begin=Location(line=57, column=53), end=Location(line=57, column=58))
-region_000270 = Region(begin=Location(line=57, column=38), end=Location(line=57, column=59))
-region_000271 = Region(begin=Location(line=57, column=5), end=Location(line=59, column=1))
-region_000272 = Region(begin=Location(line=57, column=5), end=Location(line=57, column=11))
-region_000273 = Region(begin=Location(line=57, column=60), end=Location(line=57, column=69))
-region_000274 = Region(begin=Location(line=57, column=25), end=Location(line=57, column=38))
-region_000275 = Region(begin=Location(line=59, column=12), end=Location(line=59, column=24))
-region_000276 = Region(begin=Location(line=59, column=12), end=Location(line=59, column=20))
-region_000277 = Region(begin=Location(line=59, column=43), end=Location(line=59, column=56))
-region_000278 = Region(begin=Location(line=59, column=43), end=Location(line=59, column=46))
-region_000279 = Region(begin=Location(line=59, column=43), end=Location(line=59, column=62))
-region_000280 = Region(begin=Location(line=59, column=57), end=Location(line=59, column=62))
-region_000281 = Region(begin=Location(line=59, column=42), end=Location(line=59, column=63))
-region_000282 = Region(begin=Location(line=59, column=5), end=Location(line=60, column=1))
-region_000283 = Region(begin=Location(line=59, column=5), end=Location(line=59, column=11))
-region_000284 = Region(begin=Location(line=59, column=64), end=Location(line=59, column=73))
-region_000285 = Region(begin=Location(line=59, column=25), end=Location(line=59, column=42))
-region_000286 = Region(begin=Location(line=60, column=12), end=Location(line=60, column=24))
-region_000287 = Region(begin=Location(line=60, column=12), end=Location(line=60, column=20))
-region_000288 = Region(begin=Location(line=60, column=44), end=Location(line=60, column=57))
-region_000289 = Region(begin=Location(line=60, column=44), end=Location(line=60, column=47))
-region_000290 = Region(begin=Location(line=60, column=44), end=Location(line=60, column=63))
-region_000291 = Region(begin=Location(line=60, column=58), end=Location(line=60, column=63))
-region_000292 = Region(begin=Location(line=60, column=43), end=Location(line=60, column=64))
-region_000293 = Region(begin=Location(line=60, column=5), end=Location(line=62, column=1))
-region_000294 = Region(begin=Location(line=60, column=5), end=Location(line=60, column=11))
-region_000295 = Region(begin=Location(line=60, column=65), end=Location(line=60, column=74))
-region_000296 = Region(begin=Location(line=60, column=25), end=Location(line=60, column=43))
-region_000297 = Region(begin=Location(line=62, column=12), end=Location(line=62, column=24))
-region_000298 = Region(begin=Location(line=62, column=12), end=Location(line=62, column=20))
-region_000299 = Region(begin=Location(line=62, column=37), end=Location(line=62, column=50))
-region_000300 = Region(begin=Location(line=62, column=37), end=Location(line=62, column=40))
-region_000301 = Region(begin=Location(line=62, column=37), end=Location(line=62, column=56))
-region_000302 = Region(begin=Location(line=62, column=51), end=Location(line=62, column=56))
-region_000303 = Region(begin=Location(line=62, column=36), end=Location(line=62, column=57))
-region_000304 = Region(begin=Location(line=62, column=5), end=Location(line=63, column=1))
-region_000305 = Region(begin=Location(line=62, column=5), end=Location(line=62, column=11))
-region_000306 = Region(begin=Location(line=62, column=58), end=Location(line=62, column=67))
-region_000307 = Region(begin=Location(line=62, column=25), end=Location(line=62, column=36))
-region_000308 = Region(begin=Location(line=63, column=12), end=Location(line=63, column=24))
-region_000309 = Region(begin=Location(line=63, column=12), end=Location(line=63, column=20))
-region_000310 = Region(begin=Location(line=63, column=37), end=Location(line=63, column=50))
-region_000311 = Region(begin=Location(line=63, column=37), end=Location(line=63, column=40))
-region_000312 = Region(begin=Location(line=63, column=37), end=Location(line=63, column=56))
-region_000313 = Region(begin=Location(line=63, column=51), end=Location(line=63, column=56))
-region_000314 = Region(begin=Location(line=63, column=36), end=Location(line=63, column=57))
-region_000315 = Region(begin=Location(line=63, column=5), end=Location(line=64, column=1))
-region_000316 = Region(begin=Location(line=63, column=5), end=Location(line=63, column=11))
-region_000317 = Region(begin=Location(line=63, column=58), end=Location(line=63, column=67))
-region_000318 = Region(begin=Location(line=63, column=25), end=Location(line=63, column=36))
-region_000319 = Region(begin=Location(line=64, column=12), end=Location(line=64, column=24))
-region_000320 = Region(begin=Location(line=64, column=12), end=Location(line=64, column=20))
-region_000321 = Region(begin=Location(line=64, column=36), end=Location(line=64, column=49))
-region_000322 = Region(begin=Location(line=64, column=36), end=Location(line=64, column=39))
-region_000323 = Region(begin=Location(line=64, column=36), end=Location(line=64, column=55))
-region_000324 = Region(begin=Location(line=64, column=50), end=Location(line=64, column=55))
-region_000325 = Region(begin=Location(line=64, column=35), end=Location(line=64, column=56))
-region_000326 = Region(begin=Location(line=64, column=5), end=Location(line=65, column=1))
-region_000327 = Region(begin=Location(line=64, column=5), end=Location(line=64, column=11))
-region_000328 = Region(begin=Location(line=64, column=57), end=Location(line=64, column=66))
-region_000329 = Region(begin=Location(line=64, column=25), end=Location(line=64, column=35))
-region_000330 = Region(begin=Location(line=19, column=1), end=Location(line=65, column=1))
-region_000331 = Region(begin=Location(line=19, column=1), end=Location(line=19, column=7))
-region_000332 = Region(begin=Location(line=19, column=8), end=Location(line=19, column=17))
-region_000333 = Region(begin=Location(line=19, column=26), end=Location(line=19, column=29))
-region_000334 = Region(begin=Location(line=22, column=2), end=Location(line=65, column=1))
+region_000039 = Region(begin=Location(line=26, column=30), end=Location(line=26, column=33))
+region_000040 = Region(begin=Location(line=26, column=51), end=Location(line=26, column=59))
+region_000041 = Region(begin=Location(line=26, column=50), end=Location(line=26, column=60))
+region_000042 = Region(begin=Location(line=26, column=61), end=Location(line=26, column=73))
+region_000043 = Region(begin=Location(line=26, column=61), end=Location(line=26, column=69))
+region_000044 = Region(begin=Location(line=26, column=70), end=Location(line=26, column=73))
+region_000045 = Region(begin=Location(line=26, column=61), end=Location(line=26, column=81))
+region_000046 = Region(begin=Location(line=26, column=74), end=Location(line=26, column=81))
+region_000047 = Region(begin=Location(line=26, column=60), end=Location(line=26, column=82))
+region_000048 = Region(begin=Location(line=26, column=5), end=Location(line=27, column=1))
+region_000049 = Region(begin=Location(line=26, column=14), end=Location(line=26, column=20))
+region_000050 = Region(begin=Location(line=26, column=34), end=Location(line=26, column=50))
+region_000051 = Region(begin=Location(line=26, column=6), end=Location(line=26, column=12))
+region_000052 = Region(begin=Location(line=27, column=32), end=Location(line=27, column=40))
+region_000053 = Region(begin=Location(line=27, column=31), end=Location(line=27, column=41))
+region_000054 = Region(begin=Location(line=27, column=42), end=Location(line=27, column=54))
+region_000055 = Region(begin=Location(line=27, column=42), end=Location(line=27, column=50))
+region_000056 = Region(begin=Location(line=27, column=51), end=Location(line=27, column=54))
+region_000057 = Region(begin=Location(line=27, column=42), end=Location(line=27, column=62))
+region_000058 = Region(begin=Location(line=27, column=55), end=Location(line=27, column=62))
+region_000059 = Region(begin=Location(line=27, column=41), end=Location(line=27, column=63))
+region_000060 = Region(begin=Location(line=27, column=5), end=Location(line=29, column=1))
+region_000061 = Region(begin=Location(line=27, column=5), end=Location(line=27, column=11))
+region_000062 = Region(begin=Location(line=27, column=64), end=Location(line=27, column=73))
+region_000063 = Region(begin=Location(line=27, column=17), end=Location(line=27, column=31))
+region_000064 = Region(begin=Location(line=29, column=29), end=Location(line=29, column=37))
+region_000065 = Region(begin=Location(line=29, column=28), end=Location(line=29, column=38))
+region_000066 = Region(begin=Location(line=29, column=39), end=Location(line=29, column=51))
+region_000067 = Region(begin=Location(line=29, column=39), end=Location(line=29, column=47))
+region_000068 = Region(begin=Location(line=29, column=48), end=Location(line=29, column=51))
+region_000069 = Region(begin=Location(line=29, column=39), end=Location(line=29, column=59))
+region_000070 = Region(begin=Location(line=29, column=52), end=Location(line=29, column=59))
+region_000071 = Region(begin=Location(line=29, column=38), end=Location(line=29, column=60))
+region_000072 = Region(begin=Location(line=29, column=5), end=Location(line=31, column=1))
+region_000073 = Region(begin=Location(line=29, column=5), end=Location(line=29, column=11))
+region_000074 = Region(begin=Location(line=29, column=61), end=Location(line=29, column=70))
+region_000075 = Region(begin=Location(line=29, column=17), end=Location(line=29, column=28))
+region_000076 = Region(begin=Location(line=31, column=12), end=Location(line=31, column=24))
+region_000077 = Region(begin=Location(line=31, column=12), end=Location(line=31, column=20))
+region_000078 = Region(begin=Location(line=31, column=21), end=Location(line=31, column=24))
+region_000079 = Region(begin=Location(line=31, column=5), end=Location(line=33, column=1))
+region_000080 = Region(begin=Location(line=31, column=5), end=Location(line=31, column=11))
+region_000081 = Region(begin=Location(line=31, column=38), end=Location(line=31, column=47))
+region_000082 = Region(begin=Location(line=31, column=25), end=Location(line=31, column=35))
+region_000083 = Region(begin=Location(line=31, column=35), end=Location(line=31, column=37))
+region_000084 = Region(begin=Location(line=33, column=12), end=Location(line=33, column=20))
+region_000085 = Region(begin=Location(line=33, column=12), end=Location(line=33, column=16))
+region_000086 = Region(begin=Location(line=33, column=17), end=Location(line=33, column=20))
+region_000087 = Region(begin=Location(line=33, column=5), end=Location(line=34, column=1))
+region_000088 = Region(begin=Location(line=33, column=5), end=Location(line=33, column=11))
+region_000089 = Region(begin=Location(line=33, column=34), end=Location(line=33, column=43))
+region_000090 = Region(begin=Location(line=33, column=21), end=Location(line=33, column=31))
+region_000091 = Region(begin=Location(line=33, column=31), end=Location(line=33, column=33))
+region_000092 = Region(begin=Location(line=34, column=12), end=Location(line=34, column=19))
+region_000093 = Region(begin=Location(line=34, column=12), end=Location(line=34, column=15))
+region_000094 = Region(begin=Location(line=34, column=16), end=Location(line=34, column=19))
+region_000095 = Region(begin=Location(line=34, column=5), end=Location(line=36, column=1))
+region_000096 = Region(begin=Location(line=34, column=5), end=Location(line=34, column=11))
+region_000097 = Region(begin=Location(line=34, column=36), end=Location(line=34, column=45))
+region_000098 = Region(begin=Location(line=34, column=20), end=Location(line=34, column=33))
+region_000099 = Region(begin=Location(line=34, column=33), end=Location(line=34, column=35))
+region_000100 = Region(begin=Location(line=36, column=21), end=Location(line=36, column=38))
+region_000101 = Region(begin=Location(line=36, column=21), end=Location(line=36, column=34))
+region_000102 = Region(begin=Location(line=36, column=35), end=Location(line=36, column=38))
+region_000103 = Region(begin=Location(line=36, column=51), end=Location(line=36, column=69))
+region_000104 = Region(begin=Location(line=36, column=51), end=Location(line=36, column=59))
+region_000105 = Region(begin=Location(line=36, column=60), end=Location(line=36, column=69))
+region_000106 = Region(begin=Location(line=36, column=51), end=Location(line=36, column=74))
+region_000107 = Region(begin=Location(line=36, column=70), end=Location(line=36, column=74))
+region_000108 = Region(begin=Location(line=36, column=76), end=Location(line=36, column=89))
+region_000109 = Region(begin=Location(line=36, column=76), end=Location(line=36, column=79))
+region_000110 = Region(begin=Location(line=36, column=80), end=Location(line=36, column=89))
+region_000111 = Region(begin=Location(line=36, column=76), end=Location(line=36, column=94))
+region_000112 = Region(begin=Location(line=36, column=90), end=Location(line=36, column=94))
+region_000113 = Region(begin=Location(line=36, column=50), end=Location(line=36, column=95))
+region_000114 = Region(begin=Location(line=36, column=51), end=Location(line=36, column=94))
+region_000115 = Region(begin=Location(line=36, column=5), end=Location(line=38, column=1))
+region_000116 = Region(begin=Location(line=36, column=14), end=Location(line=36, column=20))
+region_000117 = Region(begin=Location(line=36, column=39), end=Location(line=36, column=50))
+region_000118 = Region(begin=Location(line=36, column=6), end=Location(line=36, column=12))
+region_000119 = Region(begin=Location(line=38, column=12), end=Location(line=38, column=20))
+region_000120 = Region(begin=Location(line=38, column=12), end=Location(line=38, column=16))
+region_000121 = Region(begin=Location(line=38, column=17), end=Location(line=38, column=20))
+region_000122 = Region(begin=Location(line=38, column=31), end=Location(line=38, column=44))
+region_000123 = Region(begin=Location(line=38, column=31), end=Location(line=38, column=34))
+region_000124 = Region(begin=Location(line=38, column=35), end=Location(line=38, column=44))
+region_000125 = Region(begin=Location(line=38, column=31), end=Location(line=38, column=49))
+region_000126 = Region(begin=Location(line=38, column=45), end=Location(line=38, column=49))
+region_000127 = Region(begin=Location(line=38, column=30), end=Location(line=38, column=50))
+region_000128 = Region(begin=Location(line=38, column=5), end=Location(line=39, column=1))
+region_000129 = Region(begin=Location(line=38, column=5), end=Location(line=38, column=11))
+region_000130 = Region(begin=Location(line=38, column=51), end=Location(line=38, column=60))
+region_000131 = Region(begin=Location(line=38, column=21), end=Location(line=38, column=30))
+region_000132 = Region(begin=Location(line=39, column=12), end=Location(line=39, column=20))
+region_000133 = Region(begin=Location(line=39, column=12), end=Location(line=39, column=16))
+region_000134 = Region(begin=Location(line=39, column=17), end=Location(line=39, column=20))
+region_000135 = Region(begin=Location(line=39, column=34), end=Location(line=39, column=47))
+region_000136 = Region(begin=Location(line=39, column=34), end=Location(line=39, column=37))
+region_000137 = Region(begin=Location(line=39, column=38), end=Location(line=39, column=47))
+region_000138 = Region(begin=Location(line=39, column=34), end=Location(line=39, column=52))
+region_000139 = Region(begin=Location(line=39, column=48), end=Location(line=39, column=52))
+region_000140 = Region(begin=Location(line=39, column=33), end=Location(line=39, column=53))
+region_000141 = Region(begin=Location(line=39, column=5), end=Location(line=40, column=1))
+region_000142 = Region(begin=Location(line=39, column=5), end=Location(line=39, column=11))
+region_000143 = Region(begin=Location(line=39, column=54), end=Location(line=39, column=63))
+region_000144 = Region(begin=Location(line=39, column=21), end=Location(line=39, column=33))
+region_000145 = Region(begin=Location(line=40, column=12), end=Location(line=40, column=20))
+region_000146 = Region(begin=Location(line=40, column=12), end=Location(line=40, column=16))
+region_000147 = Region(begin=Location(line=40, column=17), end=Location(line=40, column=20))
+region_000148 = Region(begin=Location(line=40, column=30), end=Location(line=40, column=43))
+region_000149 = Region(begin=Location(line=40, column=30), end=Location(line=40, column=33))
+region_000150 = Region(begin=Location(line=40, column=34), end=Location(line=40, column=43))
+region_000151 = Region(begin=Location(line=40, column=30), end=Location(line=40, column=48))
+region_000152 = Region(begin=Location(line=40, column=44), end=Location(line=40, column=48))
+region_000153 = Region(begin=Location(line=40, column=29), end=Location(line=40, column=49))
+region_000154 = Region(begin=Location(line=40, column=5), end=Location(line=41, column=1))
+region_000155 = Region(begin=Location(line=40, column=5), end=Location(line=40, column=11))
+region_000156 = Region(begin=Location(line=40, column=50), end=Location(line=40, column=59))
+region_000157 = Region(begin=Location(line=40, column=21), end=Location(line=40, column=29))
+region_000158 = Region(begin=Location(line=41, column=12), end=Location(line=41, column=20))
+region_000159 = Region(begin=Location(line=41, column=12), end=Location(line=41, column=16))
+region_000160 = Region(begin=Location(line=41, column=17), end=Location(line=41, column=20))
+region_000161 = Region(begin=Location(line=41, column=35), end=Location(line=41, column=48))
+region_000162 = Region(begin=Location(line=41, column=35), end=Location(line=41, column=38))
+region_000163 = Region(begin=Location(line=41, column=39), end=Location(line=41, column=48))
+region_000164 = Region(begin=Location(line=41, column=35), end=Location(line=41, column=53))
+region_000165 = Region(begin=Location(line=41, column=49), end=Location(line=41, column=53))
+region_000166 = Region(begin=Location(line=41, column=34), end=Location(line=41, column=54))
+region_000167 = Region(begin=Location(line=41, column=5), end=Location(line=42, column=1))
+region_000168 = Region(begin=Location(line=41, column=5), end=Location(line=41, column=11))
+region_000169 = Region(begin=Location(line=41, column=55), end=Location(line=41, column=64))
+region_000170 = Region(begin=Location(line=41, column=21), end=Location(line=41, column=34))
+region_000171 = Region(begin=Location(line=42, column=12), end=Location(line=42, column=20))
+region_000172 = Region(begin=Location(line=42, column=12), end=Location(line=42, column=16))
+region_000173 = Region(begin=Location(line=42, column=17), end=Location(line=42, column=20))
+region_000174 = Region(begin=Location(line=42, column=33), end=Location(line=42, column=46))
+region_000175 = Region(begin=Location(line=42, column=33), end=Location(line=42, column=36))
+region_000176 = Region(begin=Location(line=42, column=37), end=Location(line=42, column=46))
+region_000177 = Region(begin=Location(line=42, column=33), end=Location(line=42, column=51))
+region_000178 = Region(begin=Location(line=42, column=47), end=Location(line=42, column=51))
+region_000179 = Region(begin=Location(line=42, column=32), end=Location(line=42, column=52))
+region_000180 = Region(begin=Location(line=42, column=5), end=Location(line=43, column=1))
+region_000181 = Region(begin=Location(line=42, column=5), end=Location(line=42, column=11))
+region_000182 = Region(begin=Location(line=42, column=53), end=Location(line=42, column=62))
+region_000183 = Region(begin=Location(line=42, column=21), end=Location(line=42, column=32))
+region_000184 = Region(begin=Location(line=43, column=12), end=Location(line=43, column=20))
+region_000185 = Region(begin=Location(line=43, column=12), end=Location(line=43, column=16))
+region_000186 = Region(begin=Location(line=43, column=17), end=Location(line=43, column=20))
+region_000187 = Region(begin=Location(line=43, column=38), end=Location(line=43, column=51))
+region_000188 = Region(begin=Location(line=43, column=38), end=Location(line=43, column=41))
+region_000189 = Region(begin=Location(line=43, column=42), end=Location(line=43, column=51))
+region_000190 = Region(begin=Location(line=43, column=38), end=Location(line=43, column=56))
+region_000191 = Region(begin=Location(line=43, column=52), end=Location(line=43, column=56))
+region_000192 = Region(begin=Location(line=43, column=37), end=Location(line=43, column=57))
+region_000193 = Region(begin=Location(line=43, column=5), end=Location(line=45, column=1))
+region_000194 = Region(begin=Location(line=43, column=5), end=Location(line=43, column=11))
+region_000195 = Region(begin=Location(line=43, column=58), end=Location(line=43, column=67))
+region_000196 = Region(begin=Location(line=43, column=21), end=Location(line=43, column=37))
+region_000197 = Region(begin=Location(line=45, column=12), end=Location(line=45, column=24))
+region_000198 = Region(begin=Location(line=45, column=12), end=Location(line=45, column=20))
+region_000199 = Region(begin=Location(line=45, column=21), end=Location(line=45, column=24))
+region_000200 = Region(begin=Location(line=45, column=5), end=Location(line=46, column=1))
+region_000201 = Region(begin=Location(line=45, column=5), end=Location(line=45, column=11))
+region_000202 = Region(begin=Location(line=45, column=41), end=Location(line=45, column=50))
+region_000203 = Region(begin=Location(line=45, column=25), end=Location(line=45, column=38))
+region_000204 = Region(begin=Location(line=45, column=38), end=Location(line=45, column=40))
+region_000205 = Region(begin=Location(line=46, column=12), end=Location(line=46, column=24))
+region_000206 = Region(begin=Location(line=46, column=12), end=Location(line=46, column=20))
+region_000207 = Region(begin=Location(line=46, column=21), end=Location(line=46, column=24))
+region_000208 = Region(begin=Location(line=46, column=5), end=Location(line=47, column=1))
+region_000209 = Region(begin=Location(line=46, column=5), end=Location(line=46, column=11))
+region_000210 = Region(begin=Location(line=46, column=41), end=Location(line=46, column=50))
+region_000211 = Region(begin=Location(line=46, column=25), end=Location(line=46, column=38))
+region_000212 = Region(begin=Location(line=46, column=38), end=Location(line=46, column=40))
+region_000213 = Region(begin=Location(line=47, column=12), end=Location(line=47, column=24))
+region_000214 = Region(begin=Location(line=47, column=12), end=Location(line=47, column=20))
+region_000215 = Region(begin=Location(line=47, column=21), end=Location(line=47, column=24))
+region_000216 = Region(begin=Location(line=47, column=5), end=Location(line=49, column=1))
+region_000217 = Region(begin=Location(line=47, column=5), end=Location(line=47, column=11))
+region_000218 = Region(begin=Location(line=47, column=40), end=Location(line=47, column=49))
+region_000219 = Region(begin=Location(line=47, column=25), end=Location(line=47, column=37))
+region_000220 = Region(begin=Location(line=47, column=37), end=Location(line=47, column=39))
+region_000221 = Region(begin=Location(line=49, column=12), end=Location(line=49, column=19))
+region_000222 = Region(begin=Location(line=49, column=12), end=Location(line=49, column=15))
+region_000223 = Region(begin=Location(line=49, column=16), end=Location(line=49, column=19))
+region_000224 = Region(begin=Location(line=49, column=32), end=Location(line=49, column=45))
+region_000225 = Region(begin=Location(line=49, column=32), end=Location(line=49, column=35))
+region_000226 = Region(begin=Location(line=49, column=36), end=Location(line=49, column=45))
+region_000227 = Region(begin=Location(line=49, column=32), end=Location(line=49, column=53))
+region_000228 = Region(begin=Location(line=49, column=46), end=Location(line=49, column=53))
+region_000229 = Region(begin=Location(line=49, column=31), end=Location(line=49, column=54))
+region_000230 = Region(begin=Location(line=49, column=5), end=Location(line=51, column=1))
+region_000231 = Region(begin=Location(line=49, column=5), end=Location(line=49, column=11))
+region_000232 = Region(begin=Location(line=49, column=55), end=Location(line=49, column=64))
+region_000233 = Region(begin=Location(line=49, column=20), end=Location(line=49, column=31))
+region_000234 = Region(begin=Location(line=51, column=12), end=Location(line=51, column=24))
+region_000235 = Region(begin=Location(line=51, column=12), end=Location(line=51, column=20))
+region_000236 = Region(begin=Location(line=51, column=21), end=Location(line=51, column=24))
+region_000237 = Region(begin=Location(line=51, column=42), end=Location(line=51, column=55))
+region_000238 = Region(begin=Location(line=51, column=42), end=Location(line=51, column=45))
+region_000239 = Region(begin=Location(line=51, column=46), end=Location(line=51, column=55))
+region_000240 = Region(begin=Location(line=51, column=42), end=Location(line=51, column=63))
+region_000241 = Region(begin=Location(line=51, column=56), end=Location(line=51, column=63))
+region_000242 = Region(begin=Location(line=51, column=41), end=Location(line=51, column=64))
+region_000243 = Region(begin=Location(line=51, column=5), end=Location(line=52, column=1))
+region_000244 = Region(begin=Location(line=51, column=5), end=Location(line=51, column=11))
+region_000245 = Region(begin=Location(line=51, column=65), end=Location(line=51, column=74))
+region_000246 = Region(begin=Location(line=51, column=25), end=Location(line=51, column=41))
+region_000247 = Region(begin=Location(line=52, column=12), end=Location(line=52, column=24))
+region_000248 = Region(begin=Location(line=52, column=12), end=Location(line=52, column=20))
+region_000249 = Region(begin=Location(line=52, column=21), end=Location(line=52, column=24))
+region_000250 = Region(begin=Location(line=52, column=37), end=Location(line=52, column=50))
+region_000251 = Region(begin=Location(line=52, column=37), end=Location(line=52, column=40))
+region_000252 = Region(begin=Location(line=52, column=41), end=Location(line=52, column=50))
+region_000253 = Region(begin=Location(line=52, column=37), end=Location(line=52, column=58))
+region_000254 = Region(begin=Location(line=52, column=51), end=Location(line=52, column=58))
+region_000255 = Region(begin=Location(line=52, column=36), end=Location(line=52, column=59))
+region_000256 = Region(begin=Location(line=52, column=5), end=Location(line=53, column=1))
+region_000257 = Region(begin=Location(line=52, column=5), end=Location(line=52, column=11))
+region_000258 = Region(begin=Location(line=52, column=60), end=Location(line=52, column=69))
+region_000259 = Region(begin=Location(line=52, column=25), end=Location(line=52, column=36))
+region_000260 = Region(begin=Location(line=53, column=12), end=Location(line=53, column=24))
+region_000261 = Region(begin=Location(line=53, column=12), end=Location(line=53, column=20))
+region_000262 = Region(begin=Location(line=53, column=21), end=Location(line=53, column=24))
+region_000263 = Region(begin=Location(line=53, column=39), end=Location(line=53, column=52))
+region_000264 = Region(begin=Location(line=53, column=39), end=Location(line=53, column=42))
+region_000265 = Region(begin=Location(line=53, column=43), end=Location(line=53, column=52))
+region_000266 = Region(begin=Location(line=53, column=39), end=Location(line=53, column=63))
+region_000267 = Region(begin=Location(line=53, column=53), end=Location(line=53, column=63))
+region_000268 = Region(begin=Location(line=53, column=38), end=Location(line=53, column=64))
+region_000269 = Region(begin=Location(line=53, column=5), end=Location(line=54, column=1))
+region_000270 = Region(begin=Location(line=53, column=5), end=Location(line=53, column=11))
+region_000271 = Region(begin=Location(line=53, column=65), end=Location(line=53, column=74))
+region_000272 = Region(begin=Location(line=53, column=25), end=Location(line=53, column=38))
+region_000273 = Region(begin=Location(line=54, column=12), end=Location(line=54, column=24))
+region_000274 = Region(begin=Location(line=54, column=12), end=Location(line=54, column=20))
+region_000275 = Region(begin=Location(line=54, column=21), end=Location(line=54, column=24))
+region_000276 = Region(begin=Location(line=54, column=36), end=Location(line=54, column=49))
+region_000277 = Region(begin=Location(line=54, column=36), end=Location(line=54, column=39))
+region_000278 = Region(begin=Location(line=54, column=40), end=Location(line=54, column=49))
+region_000279 = Region(begin=Location(line=54, column=36), end=Location(line=54, column=58))
+region_000280 = Region(begin=Location(line=54, column=50), end=Location(line=54, column=58))
+region_000281 = Region(begin=Location(line=54, column=35), end=Location(line=54, column=59))
+region_000282 = Region(begin=Location(line=54, column=5), end=Location(line=56, column=1))
+region_000283 = Region(begin=Location(line=54, column=5), end=Location(line=54, column=11))
+region_000284 = Region(begin=Location(line=54, column=60), end=Location(line=54, column=69))
+region_000285 = Region(begin=Location(line=54, column=25), end=Location(line=54, column=35))
+region_000286 = Region(begin=Location(line=56, column=12), end=Location(line=56, column=24))
+region_000287 = Region(begin=Location(line=56, column=12), end=Location(line=56, column=20))
+region_000288 = Region(begin=Location(line=56, column=21), end=Location(line=56, column=24))
+region_000289 = Region(begin=Location(line=56, column=34), end=Location(line=56, column=47))
+region_000290 = Region(begin=Location(line=56, column=34), end=Location(line=56, column=37))
+region_000291 = Region(begin=Location(line=56, column=38), end=Location(line=56, column=47))
+region_000292 = Region(begin=Location(line=56, column=34), end=Location(line=56, column=53))
+region_000293 = Region(begin=Location(line=56, column=48), end=Location(line=56, column=53))
+region_000294 = Region(begin=Location(line=56, column=33), end=Location(line=56, column=54))
+region_000295 = Region(begin=Location(line=56, column=5), end=Location(line=57, column=1))
+region_000296 = Region(begin=Location(line=56, column=5), end=Location(line=56, column=11))
+region_000297 = Region(begin=Location(line=56, column=55), end=Location(line=56, column=64))
+region_000298 = Region(begin=Location(line=56, column=25), end=Location(line=56, column=33))
+region_000299 = Region(begin=Location(line=57, column=12), end=Location(line=57, column=24))
+region_000300 = Region(begin=Location(line=57, column=12), end=Location(line=57, column=20))
+region_000301 = Region(begin=Location(line=57, column=21), end=Location(line=57, column=24))
+region_000302 = Region(begin=Location(line=57, column=39), end=Location(line=57, column=52))
+region_000303 = Region(begin=Location(line=57, column=39), end=Location(line=57, column=42))
+region_000304 = Region(begin=Location(line=57, column=43), end=Location(line=57, column=52))
+region_000305 = Region(begin=Location(line=57, column=39), end=Location(line=57, column=58))
+region_000306 = Region(begin=Location(line=57, column=53), end=Location(line=57, column=58))
+region_000307 = Region(begin=Location(line=57, column=38), end=Location(line=57, column=59))
+region_000308 = Region(begin=Location(line=57, column=5), end=Location(line=59, column=1))
+region_000309 = Region(begin=Location(line=57, column=5), end=Location(line=57, column=11))
+region_000310 = Region(begin=Location(line=57, column=60), end=Location(line=57, column=69))
+region_000311 = Region(begin=Location(line=57, column=25), end=Location(line=57, column=38))
+region_000312 = Region(begin=Location(line=59, column=12), end=Location(line=59, column=24))
+region_000313 = Region(begin=Location(line=59, column=12), end=Location(line=59, column=20))
+region_000314 = Region(begin=Location(line=59, column=21), end=Location(line=59, column=24))
+region_000315 = Region(begin=Location(line=59, column=43), end=Location(line=59, column=56))
+region_000316 = Region(begin=Location(line=59, column=43), end=Location(line=59, column=46))
+region_000317 = Region(begin=Location(line=59, column=47), end=Location(line=59, column=56))
+region_000318 = Region(begin=Location(line=59, column=43), end=Location(line=59, column=62))
+region_000319 = Region(begin=Location(line=59, column=57), end=Location(line=59, column=62))
+region_000320 = Region(begin=Location(line=59, column=42), end=Location(line=59, column=63))
+region_000321 = Region(begin=Location(line=59, column=5), end=Location(line=60, column=1))
+region_000322 = Region(begin=Location(line=59, column=5), end=Location(line=59, column=11))
+region_000323 = Region(begin=Location(line=59, column=64), end=Location(line=59, column=73))
+region_000324 = Region(begin=Location(line=59, column=25), end=Location(line=59, column=42))
+region_000325 = Region(begin=Location(line=60, column=12), end=Location(line=60, column=24))
+region_000326 = Region(begin=Location(line=60, column=12), end=Location(line=60, column=20))
+region_000327 = Region(begin=Location(line=60, column=21), end=Location(line=60, column=24))
+region_000328 = Region(begin=Location(line=60, column=44), end=Location(line=60, column=57))
+region_000329 = Region(begin=Location(line=60, column=44), end=Location(line=60, column=47))
+region_000330 = Region(begin=Location(line=60, column=48), end=Location(line=60, column=57))
+region_000331 = Region(begin=Location(line=60, column=44), end=Location(line=60, column=63))
+region_000332 = Region(begin=Location(line=60, column=58), end=Location(line=60, column=63))
+region_000333 = Region(begin=Location(line=60, column=43), end=Location(line=60, column=64))
+region_000334 = Region(begin=Location(line=60, column=5), end=Location(line=62, column=1))
+region_000335 = Region(begin=Location(line=60, column=5), end=Location(line=60, column=11))
+region_000336 = Region(begin=Location(line=60, column=65), end=Location(line=60, column=74))
+region_000337 = Region(begin=Location(line=60, column=25), end=Location(line=60, column=43))
+region_000338 = Region(begin=Location(line=62, column=12), end=Location(line=62, column=24))
+region_000339 = Region(begin=Location(line=62, column=12), end=Location(line=62, column=20))
+region_000340 = Region(begin=Location(line=62, column=21), end=Location(line=62, column=24))
+region_000341 = Region(begin=Location(line=62, column=37), end=Location(line=62, column=50))
+region_000342 = Region(begin=Location(line=62, column=37), end=Location(line=62, column=40))
+region_000343 = Region(begin=Location(line=62, column=41), end=Location(line=62, column=50))
+region_000344 = Region(begin=Location(line=62, column=37), end=Location(line=62, column=56))
+region_000345 = Region(begin=Location(line=62, column=51), end=Location(line=62, column=56))
+region_000346 = Region(begin=Location(line=62, column=36), end=Location(line=62, column=57))
+region_000347 = Region(begin=Location(line=62, column=5), end=Location(line=63, column=1))
+region_000348 = Region(begin=Location(line=62, column=5), end=Location(line=62, column=11))
+region_000349 = Region(begin=Location(line=62, column=58), end=Location(line=62, column=67))
+region_000350 = Region(begin=Location(line=62, column=25), end=Location(line=62, column=36))
+region_000351 = Region(begin=Location(line=63, column=12), end=Location(line=63, column=24))
+region_000352 = Region(begin=Location(line=63, column=12), end=Location(line=63, column=20))
+region_000353 = Region(begin=Location(line=63, column=21), end=Location(line=63, column=24))
+region_000354 = Region(begin=Location(line=63, column=37), end=Location(line=63, column=50))
+region_000355 = Region(begin=Location(line=63, column=37), end=Location(line=63, column=40))
+region_000356 = Region(begin=Location(line=63, column=41), end=Location(line=63, column=50))
+region_000357 = Region(begin=Location(line=63, column=37), end=Location(line=63, column=56))
+region_000358 = Region(begin=Location(line=63, column=51), end=Location(line=63, column=56))
+region_000359 = Region(begin=Location(line=63, column=36), end=Location(line=63, column=57))
+region_000360 = Region(begin=Location(line=63, column=5), end=Location(line=64, column=1))
+region_000361 = Region(begin=Location(line=63, column=5), end=Location(line=63, column=11))
+region_000362 = Region(begin=Location(line=63, column=58), end=Location(line=63, column=67))
+region_000363 = Region(begin=Location(line=63, column=25), end=Location(line=63, column=36))
+region_000364 = Region(begin=Location(line=64, column=12), end=Location(line=64, column=24))
+region_000365 = Region(begin=Location(line=64, column=12), end=Location(line=64, column=20))
+region_000366 = Region(begin=Location(line=64, column=21), end=Location(line=64, column=24))
+region_000367 = Region(begin=Location(line=64, column=36), end=Location(line=64, column=49))
+region_000368 = Region(begin=Location(line=64, column=36), end=Location(line=64, column=39))
+region_000369 = Region(begin=Location(line=64, column=40), end=Location(line=64, column=49))
+region_000370 = Region(begin=Location(line=64, column=36), end=Location(line=64, column=55))
+region_000371 = Region(begin=Location(line=64, column=50), end=Location(line=64, column=55))
+region_000372 = Region(begin=Location(line=64, column=35), end=Location(line=64, column=56))
+region_000373 = Region(begin=Location(line=64, column=5), end=Location(line=65, column=1))
+region_000374 = Region(begin=Location(line=64, column=5), end=Location(line=64, column=11))
+region_000375 = Region(begin=Location(line=64, column=57), end=Location(line=64, column=66))
+region_000376 = Region(begin=Location(line=64, column=25), end=Location(line=64, column=35))
+region_000377 = Region(begin=Location(line=19, column=1), end=Location(line=65, column=1))
+region_000378 = Region(begin=Location(line=19, column=1), end=Location(line=19, column=7))
+region_000379 = Region(begin=Location(line=19, column=8), end=Location(line=19, column=17))
+region_000380 = Region(begin=Location(line=19, column=26), end=Location(line=19, column=29))
+region_000381 = Region(begin=Location(line=22, column=2), end=Location(line=65, column=1))
 
 
 # ----------------------------------------------------------------------
 statement_000000 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000000, region_000000],
-    name=IntegerType(),
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000000, region_000000, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
 )
 
-statement_000001 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000001, region_000001],
-    name=NoneType(),
+statement_000001 = NoneExpressionParserInfo.Create(
+    regions=[region_000001],
 )
 
 statement_000002 = VariantExpressionParserInfo.Create(
-    regions=[region_000002]
+    regions=[region_000002, None],
     types=[statement_000000, statement_000001, ],
+    mutability_modifier=None,
 )
 
-statement_000003 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000003, region_000003],
-    name=NoneType(),
+statement_000003 = NoneExpressionParserInfo.Create(
+    regions=[region_000003],
 )
 
 statement_000004 = ConstraintParameterParserInfo.Create(
@@ -406,26 +454,26 @@ statement_000004 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000005 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000006, region_000006],
-    name=IntegerType(),
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000006, region_000006, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
 )
 
-statement_000006 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000007, region_000007],
-    name=NoneType(),
+statement_000006 = NoneExpressionParserInfo.Create(
+    regions=[region_000007],
 )
 
 statement_000007 = VariantExpressionParserInfo.Create(
-    regions=[region_000008]
+    regions=[region_000008, None],
     types=[statement_000005, statement_000006, ],
+    mutability_modifier=None,
 )
 
-statement_000008 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000009, region_000009],
-    name=NoneType(),
+statement_000008 = NoneExpressionParserInfo.Create(
+    regions=[region_000009],
 )
 
 statement_000009 = ConstraintParameterParserInfo.Create(
@@ -443,57 +491,56 @@ statement_000010 = ConstraintParametersParserInfo.Create(
 )
 
 statement_000011 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.CompileTime,
-    regions=[region_000014, region_000014],
-    name="Enforce!",
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000014, region_000014, None],
+    value=CustomType("Enforce!"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
 )
 
 statement_000012 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.CompileTimeTypeCustomization,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000015, region_000015],
     name="min_value!",
 )
 
-statement_000013 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000016, region_000016],
-    name=NoneType(),
+statement_000013 = NoneExpressionParserInfo.Create(
+    regions=[region_000016],
 )
 
 statement_000014 = TypeCheckExpressionParserInfo.Create(
     regions=[region_000017, region_000018],
     operator=TypeCheckExpressionParserInfoOperatorType.Is,
     expression=statement_000012,
-    type=statement_000013,
+    the_type=statement_000013,
 )
 
 statement_000015 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.CompileTimeTypeCustomization,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000019, region_000019],
     name="max_value!",
 )
 
-statement_000016 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000020, region_000020],
-    name=NoneType(),
+statement_000016 = NoneExpressionParserInfo.Create(
+    regions=[region_000020],
 )
 
 statement_000017 = TypeCheckExpressionParserInfo.Create(
     regions=[region_000021, region_000022],
     operator=TypeCheckExpressionParserInfoOperatorType.Is,
     expression=statement_000015,
-    type=statement_000016,
+    the_type=statement_000016,
 )
 
 statement_000018 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.CompileTimeTypeCustomization,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000023, region_000023],
     name="min_value!",
 )
 
 statement_000019 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.CompileTimeTypeCustomization,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000024, region_000024],
     name="max_value!",
 )
@@ -520,7 +567,7 @@ statement_000022 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000022 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.CompileTimeTypeCustomization,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000029, None],
     expression=statement_000022,
     keyword=None,
@@ -551,19 +598,22 @@ statement_000026 = SpecialMethodStatementParserInfo.Create(
 
 statement_000027 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000037, region_000038],
-    name="ThisType",
+    regions=[region_000037, region_000038, region_000039],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000028 = TemplateTypeParameterParserInfo.Create(
-    regions=[region_000039, region_000039, None],
+    regions=[region_000040, region_000040, None],
     name="ArchiveT",
     is_variadic=None,
     default_type=None,
 )
 
 statement_000029 = TemplateParametersParserInfo.Create(
-    regions=[region_000040, None, region_000039, None],
+    regions=[region_000041, None, region_000040, None],
     positional=None,
     any=[statement_000028, ],
     keyword=None,
@@ -571,13 +621,16 @@ statement_000029 = TemplateParametersParserInfo.Create(
 
 statement_000030 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000041, region_000042],
-    name="ArchiveT",
+    regions=[region_000042, region_000043, region_000044],
+    value=CustomType("ArchiveT"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.ref,
 )
 
 statement_000031 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000043, None, region_000044],  # type: ignore
+    regions=[region_000045, None, region_000046],  # type: ignore
     type=statement_000030,
     is_variadic=None,
     name="archive",
@@ -585,7 +638,7 @@ statement_000031 = FuncParameterParserInfo.Create(
 )
 
 statement_000032 = FuncParametersParserInfo.Create(
-    regions=[region_000045, None, region_000043, None],
+    regions=[region_000047, None, region_000045, None],
     positional=None,
     any_args=[statement_000031, ],
     keyword=None,
@@ -593,7 +646,7 @@ statement_000032 = FuncParametersParserInfo.Create(
 
 statement_000033 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000046, region_000045, region_000047, None, region_000046, region_000048, None, None, None, None, None, None, None, None, region_000049],
+    regions=[region_000048, region_000047, region_000049, None, region_000048, region_000050, None, None, None, None, None, None, None, None, region_000051],
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000032,
     visibility_param=VisibilityModifier.public,
@@ -613,60 +666,57 @@ statement_000033 = FuncDefinitionStatementParserInfo.Create(
     is_static=True,
 )
 
-statement_000034 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000050, region_000050],
-    name=NoneType(),
-)
-
-statement_000035 = TemplateTypeParameterParserInfo.Create(
-    regions=[region_000051, region_000051, None],
+statement_000034 = TemplateTypeParameterParserInfo.Create(
+    regions=[region_000052, region_000052, None],
     name="ArchiveT",
     is_variadic=None,
     default_type=None,
 )
 
-statement_000036 = TemplateParametersParserInfo.Create(
-    regions=[region_000052, None, region_000051, None],
+statement_000035 = TemplateParametersParserInfo.Create(
+    regions=[region_000053, None, region_000052, None],
     positional=None,
-    any=[statement_000035, ],
+    any=[statement_000034, ],
     keyword=None,
 )
 
-statement_000037 = FuncOrTypeExpressionParserInfo.Create(
+statement_000036 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000053, region_000054],
-    name="ArchiveT",
+    regions=[region_000054, region_000055, region_000056],
+    value=CustomType("ArchiveT"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.ref,
 )
 
-statement_000038 = FuncParameterParserInfo.Create(
+statement_000037 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000055, None, region_000056],  # type: ignore
-    type=statement_000037,
+    regions=[region_000057, None, region_000058],  # type: ignore
+    type=statement_000036,
     is_variadic=None,
     name="archive",
     default_value=None,
 )
 
-statement_000039 = FuncParametersParserInfo.Create(
-    regions=[region_000057, None, region_000055, None],
+statement_000038 = FuncParametersParserInfo.Create(
+    regions=[region_000059, None, region_000057, None],
     positional=None,
-    any_args=[statement_000038, ],
+    any_args=[statement_000037, ],
     keyword=None,
 )
 
-statement_000040 = FuncDefinitionStatementParserInfo.Create(
+statement_000039 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000058, region_000057, region_000059, region_000060, region_000058, region_000061, None, None, None, None, None, None, None, None, None],
+    regions=[region_000060, region_000059, region_000061, region_000062, region_000060, region_000063, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000039,
+    parameters=statement_000038,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000034,
+    return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.Serialize,
     documentation=None,
-    templates=statement_000036,
+    templates=statement_000035,
     captured_variables=None,
     statements=None,
     is_deferred=None,
@@ -677,60 +727,57 @@ statement_000040 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000041 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000062, region_000062],
-    name=NoneType(),
-)
-
-statement_000042 = TemplateTypeParameterParserInfo.Create(
-    regions=[region_000063, region_000063, None],
+statement_000040 = TemplateTypeParameterParserInfo.Create(
+    regions=[region_000064, region_000064, None],
     name="VisitorT",
     is_variadic=None,
     default_type=None,
 )
 
-statement_000043 = TemplateParametersParserInfo.Create(
-    regions=[region_000064, None, region_000063, None],
+statement_000041 = TemplateParametersParserInfo.Create(
+    regions=[region_000065, None, region_000064, None],
     positional=None,
-    any=[statement_000042, ],
+    any=[statement_000040, ],
     keyword=None,
 )
 
-statement_000044 = FuncOrTypeExpressionParserInfo.Create(
+statement_000042 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000065, region_000066],
-    name="VisitorT",
+    regions=[region_000066, region_000067, region_000068],
+    value=CustomType("VisitorT"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.ref,
 )
 
-statement_000045 = FuncParameterParserInfo.Create(
+statement_000043 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000067, None, region_000068],  # type: ignore
-    type=statement_000044,
+    regions=[region_000069, None, region_000070],  # type: ignore
+    type=statement_000042,
     is_variadic=None,
     name="visitor",
     default_value=None,
 )
 
-statement_000046 = FuncParametersParserInfo.Create(
-    regions=[region_000069, None, region_000067, None],
+statement_000044 = FuncParametersParserInfo.Create(
+    regions=[region_000071, None, region_000069, None],
     positional=None,
-    any_args=[statement_000045, ],
+    any_args=[statement_000043, ],
     keyword=None,
 )
 
-statement_000047 = FuncDefinitionStatementParserInfo.Create(
+statement_000045 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000070, region_000069, region_000071, region_000072, region_000070, region_000073, None, None, None, None, None, None, None, None, None],
+    regions=[region_000072, region_000071, region_000073, region_000074, region_000072, region_000075, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000046,
+    parameters=statement_000044,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000041,
+    return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.Accept,
     documentation=None,
-    templates=statement_000043,
+    templates=statement_000041,
     captured_variables=None,
     statements=None,
     is_deferred=None,
@@ -741,21 +788,24 @@ statement_000047 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000048 = FuncOrTypeExpressionParserInfo.Create(
+statement_000046 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000074, region_000075],
-    name="ThisType",
+    regions=[region_000076, region_000077, region_000078],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000049 = FuncDefinitionStatementParserInfo.Create(
+statement_000047 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000076, region_000080, region_000077, region_000078, region_000076, region_000079, None, None, None, None, None, None, None, None, None],
+    regions=[region_000079, region_000083, region_000080, region_000081, region_000079, region_000082, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
     parameters=True,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000048,
+    return_type=statement_000046,
     name=FuncDefinitionStatementParserInfoOperatorType.Clone,
     documentation=None,
     templates=None,
@@ -769,22 +819,56 @@ statement_000049 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
+statement_000048 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000084, region_000085, region_000086],
+    value=BooleanType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
+)
+
+statement_000049 = FuncDefinitionStatementParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000087, region_000091, region_000088, region_000089, region_000087, region_000090, None, None, None, None, None, None, None, None, None],
+    parent_class_capabilities=ConceptCapabilities,
+    parameters=True,
+    visibility_param=VisibilityModifier.public,
+    mutability_param=MutabilityModifier.immutable,
+    method_modifier_param=MethodModifier.abstract,
+    return_type=statement_000048,
+    name=FuncDefinitionStatementParserInfoOperatorType.ToBool,
+    documentation=None,
+    templates=None,
+    captured_variables=None,
+    statements=None,
+    is_deferred=None,
+    is_exceptional=None,
+    is_generator=None,
+    is_reentrant=None,
+    is_scoped=None,
+    is_static=None,
+)
+
 statement_000050 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000081, region_000082],
-    name=BooleanType(),
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000092, region_000093, region_000094],
+    value=StringType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000051 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000083, region_000087, region_000084, region_000085, region_000083, region_000086, None, None, None, None, None, None, None, None, None],
+    regions=[region_000095, region_000099, region_000096, region_000097, region_000095, region_000098, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
     parameters=True,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
     return_type=statement_000050,
-    name=FuncDefinitionStatementParserInfoOperatorType.ToBool,
+    name=FuncDefinitionStatementParserInfoOperatorType.ToString,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -799,84 +883,65 @@ statement_000051 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000052 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000088, region_000089],
-    name=StringType(),
-)
-
-statement_000053 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[region_000090, region_000094, region_000091, region_000092, region_000090, region_000093, None, None, None, None, None, None, None, None, None],
-    parent_class_capabilities=ConceptCapabilities,
-    parameters=True,
-    visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000052,
-    name=FuncDefinitionStatementParserInfoOperatorType.ToString,
-    documentation=None,
+    regions=[region_000100, region_000101, region_000102],
+    value=CustomType("CompareResult"),
     templates=None,
-    captured_variables=None,
-    statements=None,
-    is_deferred=None,
-    is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
-    is_static=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
 )
 
-statement_000054 = FuncOrTypeExpressionParserInfo.Create(
+statement_000053 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000095, region_000096],
-    name="CompareResult",
+    regions=[region_000103, region_000104, region_000105],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000055 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000097, region_000098],
-    name="ThisType",
-)
-
-statement_000056 = FuncParameterParserInfo.Create(
+statement_000054 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000099, None, region_000100],  # type: ignore
-    type=statement_000055,
+    regions=[region_000106, None, region_000107],  # type: ignore
+    type=statement_000053,
     is_variadic=None,
     name="this",
     default_value=None,
 )
 
-statement_000057 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000101, region_000102],
-    name=IntegerType(),
+statement_000055 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000108, region_000109, region_000110],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000058 = FuncParameterParserInfo.Create(
+statement_000056 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000103, None, region_000104],  # type: ignore
-    type=statement_000057,
+    regions=[region_000111, None, region_000112],  # type: ignore
+    type=statement_000055,
     is_variadic=None,
     name="that",
     default_value=None,
 )
 
-statement_000059 = FuncParametersParserInfo.Create(
-    regions=[region_000105, None, region_000106, None],
+statement_000057 = FuncParametersParserInfo.Create(
+    regions=[region_000113, None, region_000114, None],
     positional=None,
-    any_args=[statement_000056, statement_000058, ],
+    any_args=[statement_000054, statement_000056, ],
     keyword=None,
 )
 
-statement_000060 = FuncDefinitionStatementParserInfo.Create(
+statement_000058 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000107, region_000105, region_000108, None, region_000107, region_000109, None, None, None, None, None, None, None, None, region_000110],
+    regions=[region_000115, region_000113, region_000116, None, region_000115, region_000117, None, None, None, None, None, None, None, None, region_000118],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000059,
+    parameters=statement_000057,
     visibility_param=VisibilityModifier.public,
     mutability_param=None,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000054,
+    return_type=statement_000052,
     name=FuncDefinitionStatementParserInfoOperatorType.Compare,
     documentation=None,
     templates=None,
@@ -890,43 +955,49 @@ statement_000060 = FuncDefinitionStatementParserInfo.Create(
     is_static=True,
 )
 
-statement_000061 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000111, region_000112],
-    name=BooleanType(),
+statement_000059 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000119, region_000120, region_000121],
+    value=BooleanType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
 )
 
-statement_000062 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000113, region_000114],
-    name=IntegerType(),
+statement_000060 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000122, region_000123, region_000124],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000063 = FuncParameterParserInfo.Create(
+statement_000061 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000115, None, region_000116],  # type: ignore
-    type=statement_000062,
+    regions=[region_000125, None, region_000126],  # type: ignore
+    type=statement_000060,
     is_variadic=None,
     name="that",
     default_value=None,
 )
 
-statement_000064 = FuncParametersParserInfo.Create(
-    regions=[region_000117, None, region_000115, None],
+statement_000062 = FuncParametersParserInfo.Create(
+    regions=[region_000127, None, region_000125, None],
     positional=None,
-    any_args=[statement_000063, ],
+    any_args=[statement_000061, ],
     keyword=None,
 )
 
-statement_000065 = FuncDefinitionStatementParserInfo.Create(
+statement_000063 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000118, region_000117, region_000119, region_000120, region_000118, region_000121, None, None, None, None, None, None, None, None, None],
+    regions=[region_000128, region_000127, region_000129, region_000130, region_000128, region_000131, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000064,
+    parameters=statement_000062,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000061,
+    return_type=statement_000059,
     name=FuncDefinitionStatementParserInfoOperatorType.Equal,
     documentation=None,
     templates=None,
@@ -940,43 +1011,49 @@ statement_000065 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000066 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000122, region_000123],
-    name=BooleanType(),
+statement_000064 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000132, region_000133, region_000134],
+    value=BooleanType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
 )
 
-statement_000067 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000124, region_000125],
-    name=IntegerType(),
+statement_000065 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000135, region_000136, region_000137],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000068 = FuncParameterParserInfo.Create(
+statement_000066 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000126, None, region_000127],  # type: ignore
-    type=statement_000067,
+    regions=[region_000138, None, region_000139],  # type: ignore
+    type=statement_000065,
     is_variadic=None,
     name="that",
     default_value=None,
 )
 
-statement_000069 = FuncParametersParserInfo.Create(
-    regions=[region_000128, None, region_000126, None],
+statement_000067 = FuncParametersParserInfo.Create(
+    regions=[region_000140, None, region_000138, None],
     positional=None,
-    any_args=[statement_000068, ],
+    any_args=[statement_000066, ],
     keyword=None,
 )
 
-statement_000070 = FuncDefinitionStatementParserInfo.Create(
+statement_000068 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000129, region_000128, region_000130, region_000131, region_000129, region_000132, None, None, None, None, None, None, None, None, None],
+    regions=[region_000141, region_000140, region_000142, region_000143, region_000141, region_000144, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000069,
+    parameters=statement_000067,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000066,
+    return_type=statement_000064,
     name=FuncDefinitionStatementParserInfoOperatorType.NotEqual,
     documentation=None,
     templates=None,
@@ -990,43 +1067,49 @@ statement_000070 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000071 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000133, region_000134],
-    name=BooleanType(),
+statement_000069 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000145, region_000146, region_000147],
+    value=BooleanType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
 )
 
-statement_000072 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000135, region_000136],
-    name=IntegerType(),
+statement_000070 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000148, region_000149, region_000150],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000073 = FuncParameterParserInfo.Create(
+statement_000071 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000137, None, region_000138],  # type: ignore
-    type=statement_000072,
+    regions=[region_000151, None, region_000152],  # type: ignore
+    type=statement_000070,
     is_variadic=None,
     name="that",
     default_value=None,
 )
 
-statement_000074 = FuncParametersParserInfo.Create(
-    regions=[region_000139, None, region_000137, None],
+statement_000072 = FuncParametersParserInfo.Create(
+    regions=[region_000153, None, region_000151, None],
     positional=None,
-    any_args=[statement_000073, ],
+    any_args=[statement_000071, ],
     keyword=None,
 )
 
-statement_000075 = FuncDefinitionStatementParserInfo.Create(
+statement_000073 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000140, region_000139, region_000141, region_000142, region_000140, region_000143, None, None, None, None, None, None, None, None, None],
+    regions=[region_000154, region_000153, region_000155, region_000156, region_000154, region_000157, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000074,
+    parameters=statement_000072,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000071,
+    return_type=statement_000069,
     name=FuncDefinitionStatementParserInfoOperatorType.Less,
     documentation=None,
     templates=None,
@@ -1040,43 +1123,49 @@ statement_000075 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000076 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000144, region_000145],
-    name=BooleanType(),
+statement_000074 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000158, region_000159, region_000160],
+    value=BooleanType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
 )
 
-statement_000077 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000146, region_000147],
-    name=IntegerType(),
+statement_000075 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000161, region_000162, region_000163],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000078 = FuncParameterParserInfo.Create(
+statement_000076 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000148, None, region_000149],  # type: ignore
-    type=statement_000077,
+    regions=[region_000164, None, region_000165],  # type: ignore
+    type=statement_000075,
     is_variadic=None,
     name="that",
     default_value=None,
 )
 
-statement_000079 = FuncParametersParserInfo.Create(
-    regions=[region_000150, None, region_000148, None],
+statement_000077 = FuncParametersParserInfo.Create(
+    regions=[region_000166, None, region_000164, None],
     positional=None,
-    any_args=[statement_000078, ],
+    any_args=[statement_000076, ],
     keyword=None,
 )
 
-statement_000080 = FuncDefinitionStatementParserInfo.Create(
+statement_000078 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000151, region_000150, region_000152, region_000153, region_000151, region_000154, None, None, None, None, None, None, None, None, None],
+    regions=[region_000167, region_000166, region_000168, region_000169, region_000167, region_000170, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000079,
+    parameters=statement_000077,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000076,
+    return_type=statement_000074,
     name=FuncDefinitionStatementParserInfoOperatorType.LessEqual,
     documentation=None,
     templates=None,
@@ -1090,43 +1179,49 @@ statement_000080 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000081 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000155, region_000156],
-    name=BooleanType(),
+statement_000079 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000171, region_000172, region_000173],
+    value=BooleanType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
 )
 
-statement_000082 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000157, region_000158],
-    name=IntegerType(),
+statement_000080 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000174, region_000175, region_000176],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000083 = FuncParameterParserInfo.Create(
+statement_000081 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000159, None, region_000160],  # type: ignore
-    type=statement_000082,
+    regions=[region_000177, None, region_000178],  # type: ignore
+    type=statement_000080,
     is_variadic=None,
     name="that",
     default_value=None,
 )
 
-statement_000084 = FuncParametersParserInfo.Create(
-    regions=[region_000161, None, region_000159, None],
+statement_000082 = FuncParametersParserInfo.Create(
+    regions=[region_000179, None, region_000177, None],
     positional=None,
-    any_args=[statement_000083, ],
+    any_args=[statement_000081, ],
     keyword=None,
 )
 
-statement_000085 = FuncDefinitionStatementParserInfo.Create(
+statement_000083 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000162, region_000161, region_000163, region_000164, region_000162, region_000165, None, None, None, None, None, None, None, None, None],
+    regions=[region_000180, region_000179, region_000181, region_000182, region_000180, region_000183, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000084,
+    parameters=statement_000082,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000081,
+    return_type=statement_000079,
     name=FuncDefinitionStatementParserInfoOperatorType.Greater,
     documentation=None,
     templates=None,
@@ -1140,44 +1235,81 @@ statement_000085 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000086 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000166, region_000167],
-    name=BooleanType(),
+statement_000084 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000184, region_000185, region_000186],
+    value=BooleanType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
 )
 
-statement_000087 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000168, region_000169],
-    name=IntegerType(),
+statement_000085 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000187, region_000188, region_000189],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000088 = FuncParameterParserInfo.Create(
+statement_000086 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000170, None, region_000171],  # type: ignore
-    type=statement_000087,
+    regions=[region_000190, None, region_000191],  # type: ignore
+    type=statement_000085,
     is_variadic=None,
     name="that",
     default_value=None,
 )
 
-statement_000089 = FuncParametersParserInfo.Create(
-    regions=[region_000172, None, region_000170, None],
+statement_000087 = FuncParametersParserInfo.Create(
+    regions=[region_000192, None, region_000190, None],
     positional=None,
-    any_args=[statement_000088, ],
+    any_args=[statement_000086, ],
     keyword=None,
+)
+
+statement_000088 = FuncDefinitionStatementParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[region_000193, region_000192, region_000194, region_000195, region_000193, region_000196, None, None, None, None, None, None, None, None, None],
+    parent_class_capabilities=ConceptCapabilities,
+    parameters=statement_000087,
+    visibility_param=VisibilityModifier.public,
+    mutability_param=MutabilityModifier.immutable,
+    method_modifier_param=MethodModifier.abstract,
+    return_type=statement_000084,
+    name=FuncDefinitionStatementParserInfoOperatorType.GreaterEqual,
+    documentation=None,
+    templates=None,
+    captured_variables=None,
+    statements=None,
+    is_deferred=None,
+    is_exceptional=None,
+    is_generator=None,
+    is_reentrant=None,
+    is_scoped=None,
+    is_static=None,
+)
+
+statement_000089 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[region_000197, region_000198, region_000199],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000090 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000173, region_000172, region_000174, region_000175, region_000173, region_000176, None, None, None, None, None, None, None, None, None],
+    regions=[region_000200, region_000204, region_000201, region_000202, region_000200, region_000203, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000089,
+    parameters=True,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000086,
-    name=FuncDefinitionStatementParserInfoOperatorType.GreaterEqual,
+    return_type=statement_000089,
+    name=FuncDefinitionStatementParserInfoOperatorType.Negative,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -1192,20 +1324,23 @@ statement_000090 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000091 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000177, region_000178],
-    name="ThisType",
+    regions=[region_000205, region_000206, region_000207],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000092 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000179, region_000183, region_000180, region_000181, region_000179, region_000182, None, None, None, None, None, None, None, None, None],
+    regions=[region_000208, region_000212, region_000209, region_000210, region_000208, region_000211, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
     parameters=True,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
     return_type=statement_000091,
-    name=FuncDefinitionStatementParserInfoOperatorType.Negative,
+    name=FuncDefinitionStatementParserInfoOperatorType.Positive,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -1220,47 +1355,22 @@ statement_000092 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000093 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000184, region_000185],
-    name="ThisType",
+    regions=[region_000213, region_000214, region_000215],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000094 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000186, region_000190, region_000187, region_000188, region_000186, region_000189, None, None, None, None, None, None, None, None, None],
+    regions=[region_000216, region_000220, region_000217, region_000218, region_000216, region_000219, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
     parameters=True,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
     return_type=statement_000093,
-    name=FuncDefinitionStatementParserInfoOperatorType.Positive,
-    documentation=None,
-    templates=None,
-    captured_variables=None,
-    statements=None,
-    is_deferred=None,
-    is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
-    is_static=None,
-)
-
-statement_000095 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000191, region_000192],
-    name="ThisType",
-)
-
-statement_000096 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[region_000193, region_000197, region_000194, region_000195, region_000193, region_000196, None, None, None, None, None, None, None, None, None],
-    parent_class_capabilities=ConceptCapabilities,
-    parameters=True,
-    visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000095,
     name=FuncDefinitionStatementParserInfoOperatorType.BitFlip,
     documentation=None,
     templates=None,
@@ -1274,43 +1384,49 @@ statement_000096 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000097 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000198, region_000199],
-    name=NumberType(),
+statement_000095 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000221, region_000222, region_000223],
+    value=NumberType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000098 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000200, region_000201],
-    name=IntegerType(),
+statement_000096 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000224, region_000225, region_000226],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000099 = FuncParameterParserInfo.Create(
+statement_000097 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000202, None, region_000203],  # type: ignore
-    type=statement_000098,
+    regions=[region_000227, None, region_000228],  # type: ignore
+    type=statement_000096,
     is_variadic=None,
     name="divisor",
     default_value=None,
 )
 
-statement_000100 = FuncParametersParserInfo.Create(
-    regions=[region_000204, None, region_000202, None],
+statement_000098 = FuncParametersParserInfo.Create(
+    regions=[region_000229, None, region_000227, None],
     positional=None,
-    any_args=[statement_000099, ],
+    any_args=[statement_000097, ],
     keyword=None,
 )
 
-statement_000101 = FuncDefinitionStatementParserInfo.Create(
+statement_000099 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000205, region_000204, region_000206, region_000207, region_000205, region_000208, None, None, None, None, None, None, None, None, None],
+    regions=[region_000230, region_000229, region_000231, region_000232, region_000230, region_000233, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000100,
+    parameters=statement_000098,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000097,
+    return_type=statement_000095,
     name=FuncDefinitionStatementParserInfoOperatorType.Divide,
     documentation=None,
     templates=None,
@@ -1324,43 +1440,49 @@ statement_000101 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000102 = FuncOrTypeExpressionParserInfo.Create(
+statement_000100 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000209, region_000210],
-    name="ThisType",
+    regions=[region_000234, region_000235, region_000236],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000103 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000211, region_000212],
-    name=IntegerType(),
+statement_000101 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000237, region_000238, region_000239],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000104 = FuncParameterParserInfo.Create(
+statement_000102 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000213, None, region_000214],  # type: ignore
-    type=statement_000103,
+    regions=[region_000240, None, region_000241],  # type: ignore
+    type=statement_000101,
     is_variadic=None,
     name="divisor",
     default_value=None,
 )
 
-statement_000105 = FuncParametersParserInfo.Create(
-    regions=[region_000215, None, region_000213, None],
+statement_000103 = FuncParametersParserInfo.Create(
+    regions=[region_000242, None, region_000240, None],
     positional=None,
-    any_args=[statement_000104, ],
+    any_args=[statement_000102, ],
     keyword=None,
 )
 
-statement_000106 = FuncDefinitionStatementParserInfo.Create(
+statement_000104 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000216, region_000215, region_000217, region_000218, region_000216, region_000219, None, None, None, None, None, None, None, None, None],
+    regions=[region_000243, region_000242, region_000244, region_000245, region_000243, region_000246, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000105,
+    parameters=statement_000103,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000102,
+    return_type=statement_000100,
     name=FuncDefinitionStatementParserInfoOperatorType.DivideFloor,
     documentation=None,
     templates=None,
@@ -1374,43 +1496,49 @@ statement_000106 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000107 = FuncOrTypeExpressionParserInfo.Create(
+statement_000105 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000220, region_000221],
-    name="ThisType",
+    regions=[region_000247, region_000248, region_000249],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000108 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000222, region_000223],
-    name=IntegerType(),
+statement_000106 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000250, region_000251, region_000252],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000109 = FuncParameterParserInfo.Create(
+statement_000107 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000224, None, region_000225],  # type: ignore
-    type=statement_000108,
+    regions=[region_000253, None, region_000254],  # type: ignore
+    type=statement_000106,
     is_variadic=None,
     name="divisor",
     default_value=None,
 )
 
-statement_000110 = FuncParametersParserInfo.Create(
-    regions=[region_000226, None, region_000224, None],
+statement_000108 = FuncParametersParserInfo.Create(
+    regions=[region_000255, None, region_000253, None],
     positional=None,
-    any_args=[statement_000109, ],
+    any_args=[statement_000107, ],
     keyword=None,
 )
 
-statement_000111 = FuncDefinitionStatementParserInfo.Create(
+statement_000109 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000227, region_000226, region_000228, region_000229, region_000227, region_000230, None, None, None, None, None, None, None, None, None],
+    regions=[region_000256, region_000255, region_000257, region_000258, region_000256, region_000259, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000110,
+    parameters=statement_000108,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000107,
+    return_type=statement_000105,
     name=FuncDefinitionStatementParserInfoOperatorType.Modulo,
     documentation=None,
     templates=None,
@@ -1424,43 +1552,49 @@ statement_000111 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000112 = FuncOrTypeExpressionParserInfo.Create(
+statement_000110 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000231, region_000232],
-    name="ThisType",
+    regions=[region_000260, region_000261, region_000262],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000113 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000233, region_000234],
-    name=IntegerType(),
+statement_000111 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000263, region_000264, region_000265],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000114 = FuncParameterParserInfo.Create(
+statement_000112 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000235, None, region_000236],  # type: ignore
-    type=statement_000113,
+    regions=[region_000266, None, region_000267],  # type: ignore
+    type=statement_000111,
     is_variadic=None,
     name="multiplier",
     default_value=None,
 )
 
-statement_000115 = FuncParametersParserInfo.Create(
-    regions=[region_000237, None, region_000235, None],
+statement_000113 = FuncParametersParserInfo.Create(
+    regions=[region_000268, None, region_000266, None],
     positional=None,
-    any_args=[statement_000114, ],
+    any_args=[statement_000112, ],
     keyword=None,
 )
 
-statement_000116 = FuncDefinitionStatementParserInfo.Create(
+statement_000114 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000238, region_000237, region_000239, region_000240, region_000238, region_000241, None, None, None, None, None, None, None, None, None],
+    regions=[region_000269, region_000268, region_000270, region_000271, region_000269, region_000272, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000115,
+    parameters=statement_000113,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000112,
+    return_type=statement_000110,
     name=FuncDefinitionStatementParserInfoOperatorType.Multiply,
     documentation=None,
     templates=None,
@@ -1474,43 +1608,49 @@ statement_000116 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000117 = FuncOrTypeExpressionParserInfo.Create(
+statement_000115 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000242, region_000243],
-    name="ThisType",
+    regions=[region_000273, region_000274, region_000275],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000118 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000244, region_000245],
-    name=IntegerType(),
+statement_000116 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000276, region_000277, region_000278],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000119 = FuncParameterParserInfo.Create(
+statement_000117 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000246, None, region_000247],  # type: ignore
-    type=statement_000118,
+    regions=[region_000279, None, region_000280],  # type: ignore
+    type=statement_000116,
     is_variadic=None,
     name="exponent",
     default_value=None,
 )
 
-statement_000120 = FuncParametersParserInfo.Create(
-    regions=[region_000248, None, region_000246, None],
+statement_000118 = FuncParametersParserInfo.Create(
+    regions=[region_000281, None, region_000279, None],
     positional=None,
-    any_args=[statement_000119, ],
+    any_args=[statement_000117, ],
     keyword=None,
 )
 
-statement_000121 = FuncDefinitionStatementParserInfo.Create(
+statement_000119 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000249, region_000248, region_000250, region_000251, region_000249, region_000252, None, None, None, None, None, None, None, None, None],
+    regions=[region_000282, region_000281, region_000283, region_000284, region_000282, region_000285, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000120,
+    parameters=statement_000118,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000117,
+    return_type=statement_000115,
     name=FuncDefinitionStatementParserInfoOperatorType.Power,
     documentation=None,
     templates=None,
@@ -1524,43 +1664,49 @@ statement_000121 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000122 = FuncOrTypeExpressionParserInfo.Create(
+statement_000120 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000253, region_000254],
-    name="ThisType",
+    regions=[region_000286, region_000287, region_000288],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000123 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000255, region_000256],
-    name=IntegerType(),
+statement_000121 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000289, region_000290, region_000291],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000124 = FuncParameterParserInfo.Create(
+statement_000122 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000257, None, region_000258],  # type: ignore
-    type=statement_000123,
+    regions=[region_000292, None, region_000293],  # type: ignore
+    type=statement_000121,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement_000125 = FuncParametersParserInfo.Create(
-    regions=[region_000259, None, region_000257, None],
+statement_000123 = FuncParametersParserInfo.Create(
+    regions=[region_000294, None, region_000292, None],
     positional=None,
-    any_args=[statement_000124, ],
+    any_args=[statement_000122, ],
     keyword=None,
 )
 
-statement_000126 = FuncDefinitionStatementParserInfo.Create(
+statement_000124 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000260, region_000259, region_000261, region_000262, region_000260, region_000263, None, None, None, None, None, None, None, None, None],
+    regions=[region_000295, region_000294, region_000296, region_000297, region_000295, region_000298, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000125,
+    parameters=statement_000123,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000122,
+    return_type=statement_000120,
     name=FuncDefinitionStatementParserInfoOperatorType.Add,
     documentation=None,
     templates=None,
@@ -1574,43 +1720,49 @@ statement_000126 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000127 = FuncOrTypeExpressionParserInfo.Create(
+statement_000125 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000264, region_000265],
-    name="ThisType",
+    regions=[region_000299, region_000300, region_000301],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000128 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000266, region_000267],
-    name=IntegerType(),
+statement_000126 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000302, region_000303, region_000304],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000129 = FuncParameterParserInfo.Create(
+statement_000127 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000268, None, region_000269],  # type: ignore
-    type=statement_000128,
+    regions=[region_000305, None, region_000306],  # type: ignore
+    type=statement_000126,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement_000130 = FuncParametersParserInfo.Create(
-    regions=[region_000270, None, region_000268, None],
+statement_000128 = FuncParametersParserInfo.Create(
+    regions=[region_000307, None, region_000305, None],
     positional=None,
-    any_args=[statement_000129, ],
+    any_args=[statement_000127, ],
     keyword=None,
 )
 
-statement_000131 = FuncDefinitionStatementParserInfo.Create(
+statement_000129 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000271, region_000270, region_000272, region_000273, region_000271, region_000274, None, None, None, None, None, None, None, None, None],
+    regions=[region_000308, region_000307, region_000309, region_000310, region_000308, region_000311, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000130,
+    parameters=statement_000128,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000127,
+    return_type=statement_000125,
     name=FuncDefinitionStatementParserInfoOperatorType.Subtract,
     documentation=None,
     templates=None,
@@ -1624,43 +1776,49 @@ statement_000131 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000132 = FuncOrTypeExpressionParserInfo.Create(
+statement_000130 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000275, region_000276],
-    name="ThisType",
+    regions=[region_000312, region_000313, region_000314],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000133 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000277, region_000278],
-    name=IntegerType(),
+statement_000131 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000315, region_000316, region_000317],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000134 = FuncParameterParserInfo.Create(
+statement_000132 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000279, None, region_000280],  # type: ignore
-    type=statement_000133,
+    regions=[region_000318, None, region_000319],  # type: ignore
+    type=statement_000131,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement_000135 = FuncParametersParserInfo.Create(
-    regions=[region_000281, None, region_000279, None],
+statement_000133 = FuncParametersParserInfo.Create(
+    regions=[region_000320, None, region_000318, None],
     positional=None,
-    any_args=[statement_000134, ],
+    any_args=[statement_000132, ],
     keyword=None,
 )
 
-statement_000136 = FuncDefinitionStatementParserInfo.Create(
+statement_000134 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000282, region_000281, region_000283, region_000284, region_000282, region_000285, None, None, None, None, None, None, None, None, None],
+    regions=[region_000321, region_000320, region_000322, region_000323, region_000321, region_000324, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000135,
+    parameters=statement_000133,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000132,
+    return_type=statement_000130,
     name=FuncDefinitionStatementParserInfoOperatorType.BitShiftLeft,
     documentation=None,
     templates=None,
@@ -1674,43 +1832,49 @@ statement_000136 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000137 = FuncOrTypeExpressionParserInfo.Create(
+statement_000135 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000286, region_000287],
-    name="ThisType",
+    regions=[region_000325, region_000326, region_000327],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000138 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000288, region_000289],
-    name=IntegerType(),
+statement_000136 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000328, region_000329, region_000330],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000139 = FuncParameterParserInfo.Create(
+statement_000137 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000290, None, region_000291],  # type: ignore
-    type=statement_000138,
+    regions=[region_000331, None, region_000332],  # type: ignore
+    type=statement_000136,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement_000140 = FuncParametersParserInfo.Create(
-    regions=[region_000292, None, region_000290, None],
+statement_000138 = FuncParametersParserInfo.Create(
+    regions=[region_000333, None, region_000331, None],
     positional=None,
-    any_args=[statement_000139, ],
+    any_args=[statement_000137, ],
     keyword=None,
 )
 
-statement_000141 = FuncDefinitionStatementParserInfo.Create(
+statement_000139 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000293, region_000292, region_000294, region_000295, region_000293, region_000296, None, None, None, None, None, None, None, None, None],
+    regions=[region_000334, region_000333, region_000335, region_000336, region_000334, region_000337, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000140,
+    parameters=statement_000138,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000137,
+    return_type=statement_000135,
     name=FuncDefinitionStatementParserInfoOperatorType.BitShiftRight,
     documentation=None,
     templates=None,
@@ -1724,43 +1888,49 @@ statement_000141 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000142 = FuncOrTypeExpressionParserInfo.Create(
+statement_000140 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000297, region_000298],
-    name="ThisType",
+    regions=[region_000338, region_000339, region_000340],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000143 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000299, region_000300],
-    name=IntegerType(),
+statement_000141 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000341, region_000342, region_000343],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000144 = FuncParameterParserInfo.Create(
+statement_000142 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000301, None, region_000302],  # type: ignore
-    type=statement_000143,
+    regions=[region_000344, None, region_000345],  # type: ignore
+    type=statement_000141,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement_000145 = FuncParametersParserInfo.Create(
-    regions=[region_000303, None, region_000301, None],
+statement_000143 = FuncParametersParserInfo.Create(
+    regions=[region_000346, None, region_000344, None],
     positional=None,
-    any_args=[statement_000144, ],
+    any_args=[statement_000142, ],
     keyword=None,
 )
 
-statement_000146 = FuncDefinitionStatementParserInfo.Create(
+statement_000144 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000304, region_000303, region_000305, region_000306, region_000304, region_000307, None, None, None, None, None, None, None, None, None],
+    regions=[region_000347, region_000346, region_000348, region_000349, region_000347, region_000350, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000145,
+    parameters=statement_000143,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000142,
+    return_type=statement_000140,
     name=FuncDefinitionStatementParserInfoOperatorType.BitAnd,
     documentation=None,
     templates=None,
@@ -1774,43 +1944,49 @@ statement_000146 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000147 = FuncOrTypeExpressionParserInfo.Create(
+statement_000145 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000308, region_000309],
-    name="ThisType",
+    regions=[region_000351, region_000352, region_000353],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000148 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000310, region_000311],
-    name=IntegerType(),
+statement_000146 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000354, region_000355, region_000356],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000149 = FuncParameterParserInfo.Create(
+statement_000147 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000312, None, region_000313],  # type: ignore
-    type=statement_000148,
+    regions=[region_000357, None, region_000358],  # type: ignore
+    type=statement_000146,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement_000150 = FuncParametersParserInfo.Create(
-    regions=[region_000314, None, region_000312, None],
+statement_000148 = FuncParametersParserInfo.Create(
+    regions=[region_000359, None, region_000357, None],
     positional=None,
-    any_args=[statement_000149, ],
+    any_args=[statement_000147, ],
     keyword=None,
 )
 
-statement_000151 = FuncDefinitionStatementParserInfo.Create(
+statement_000149 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000315, region_000314, region_000316, region_000317, region_000315, region_000318, None, None, None, None, None, None, None, None, None],
+    regions=[region_000360, region_000359, region_000361, region_000362, region_000360, region_000363, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000150,
+    parameters=statement_000148,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000147,
+    return_type=statement_000145,
     name=FuncDefinitionStatementParserInfoOperatorType.BitXor,
     documentation=None,
     templates=None,
@@ -1824,43 +2000,49 @@ statement_000151 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000152 = FuncOrTypeExpressionParserInfo.Create(
+statement_000150 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000319, region_000320],
-    name="ThisType",
+    regions=[region_000364, region_000365, region_000366],
+    value=CustomType("ThisType"),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.new,
 )
 
-statement_000153 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[region_000321, region_000322],
-    name=IntegerType(),
+statement_000151 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[region_000367, region_000368, region_000369],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000154 = FuncParameterParserInfo.Create(
+statement_000152 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000323, None, region_000324],  # type: ignore
-    type=statement_000153,
+    regions=[region_000370, None, region_000371],  # type: ignore
+    type=statement_000151,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement_000155 = FuncParametersParserInfo.Create(
-    regions=[region_000325, None, region_000323, None],
+statement_000153 = FuncParametersParserInfo.Create(
+    regions=[region_000372, None, region_000370, None],
     positional=None,
-    any_args=[statement_000154, ],
+    any_args=[statement_000152, ],
     keyword=None,
 )
 
-statement_000156 = FuncDefinitionStatementParserInfo.Create(
+statement_000154 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[region_000326, region_000325, region_000327, region_000328, region_000326, region_000329, None, None, None, None, None, None, None, None, None],
+    regions=[region_000373, region_000372, region_000374, region_000375, region_000373, region_000376, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000155,
+    parameters=statement_000153,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.immutable,
     method_modifier_param=MethodModifier.abstract,
-    return_type=statement_000152,
+    return_type=statement_000150,
     name=FuncDefinitionStatementParserInfoOperatorType.BitOr,
     documentation=None,
     templates=None,
@@ -1874,8 +2056,8 @@ statement_000156 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000157 = ClassStatementParserInfo.Create(
-    regions=[region_000330, region_000331, region_000332, region_000333, None, None, None, None, region_000334, region_000330, None, None],
+statement_000155 = ClassStatementParserInfo.Create(
+    regions=[region_000377, region_000378, region_000379, region_000380, None, None, None, None, region_000381, region_000377, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
     class_modifier_param=ClassModifier.immutable,
@@ -1886,12 +2068,12 @@ statement_000157 = ClassStatementParserInfo.Create(
     extends=None,
     implements=None,
     uses=None,
-    statements=[statement_000026, statement_000033, statement_000040, statement_000047, statement_000049, statement_000051, statement_000053, statement_000060, statement_000065, statement_000070, statement_000075, statement_000080, statement_000085, statement_000090, statement_000092, statement_000094, statement_000096, statement_000101, statement_000106, statement_000111, statement_000116, statement_000121, statement_000126, statement_000131, statement_000136, statement_000141, statement_000146, statement_000151, statement_000156, ],
+    statements=[statement_000026, statement_000033, statement_000039, statement_000045, statement_000047, statement_000049, statement_000051, statement_000058, statement_000063, statement_000068, statement_000073, statement_000078, statement_000083, statement_000088, statement_000090, statement_000092, statement_000094, statement_000099, statement_000104, statement_000109, statement_000114, statement_000119, statement_000124, statement_000129, statement_000134, statement_000139, statement_000144, statement_000149, statement_000154, ],
     constructor_visibility_param=VisibilityModifier.public,
     is_abstract=None,
     is_final=None,
 )
 
 public_exports = [
-    statement_000157,
+    statement_000155,
 ]

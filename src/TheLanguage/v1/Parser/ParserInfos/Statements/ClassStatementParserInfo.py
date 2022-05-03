@@ -82,8 +82,6 @@ class ClassStatementDependencyParserInfo(ParserInfo):
             regionless_attributes=["type", ],
         )
 
-        # BugBug: Ensure type is type
-
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor):

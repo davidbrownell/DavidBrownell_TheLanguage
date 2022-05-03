@@ -83,7 +83,7 @@ class ConstraintArgumentParserInfo(ParserInfo):
         # Validate
         errors: List[Error] = []
 
-        if expression_parser_info_type.value > ParserInfoType.MaxCompileValue.value:  # type: ignore
+        if not ParserInfoType.IsCompileTimeValue(expression_parser_info_type):
             errors.append(
                 InvalidConstraintExpressionError.Create(
                     region=self.expression.regions__.self__,
@@ -125,7 +125,7 @@ class ConstraintArgumentsParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(ConstraintArgumentsParserInfo, self).__init__(
-            self.__class__._GetDominantExpressionType(*self.arguments),  # type: ignore  # pylint: disable=protected-access
+            ParserInfoType.GetDominantType(*self.arguments),
             *args,
             **kwargs,
         )
