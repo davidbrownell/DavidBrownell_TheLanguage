@@ -18,9 +18,9 @@
 import itertools
 import os
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,10 +33,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ..Types.TypeParserInfo import ParserInfo, ParserInfoType, Region, TypeParserInfo
+    from ..Expressions.ExpressionParserInfo import (
+        ExpressionParserInfo,
+        ParserInfo,
+        ParserInfoType,
+        Region,
+    )
 
     from ...Error import CreateError, Error, ErrorException
+
+    from ...Helpers import MiniLanguageHelpers
 
 
 # ----------------------------------------------------------------------
@@ -57,9 +63,13 @@ class ConstraintParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
 
-    type: TypeParserInfo
+    type: ExpressionParserInfo
+
     name: str
     default_value: Optional[ExpressionParserInfo]
+
+    # Values set during validation
+    mini_language_type: MiniLanguageHelpers.MiniLanguageType                = field(init=False)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -73,11 +83,12 @@ class ConstraintParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(ConstraintParameterParserInfo, self).__init__(
-            ParserInfoType.CompileTimeType,
+            ParserInfoType.CompileTimeTypeCustomization,
             *args,
             **kwargs,
             regionless_attributes=[
                 "type",
+                "mini_language_type",
                 "default_value",
             ],
         )
@@ -114,6 +125,15 @@ class ConstraintParameterParserInfo(ParserInfo):
             children=None,
         )
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateCompileTime(
+        self,
+        compile_time_values: Dict[str, MiniLanguageHelpers.CompileTimeValue],
+    ) -> None:
+        mini_language_type = MiniLanguageHelpers.ParserInfoToType(self.type, compile_time_values)
+        object.__setattr__(self, "mini_language_type", mini_language_type)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -136,7 +156,7 @@ class ConstraintParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(ConstraintParametersParserInfo, self).__init__(ParserInfoType.CompileTimeType, *args, **kwargs)
+        super(ConstraintParametersParserInfo, self).__init__(ParserInfoType.CompileTimeTypeCustomization, *args, **kwargs)
         assert self.positional or self.any or self.keyword
 
         # Validate

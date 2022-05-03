@@ -37,11 +37,10 @@ with InitRelativeImports():
 
     from ..Common.ClassModifier import ClassModifier
     from ..Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo
-    from ..Common.MutabilityModifier import MutabilityModifierNotAllowedError
     from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
-    from ..Types.StandardTypeParserInfo import StandardTypeParserInfo
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -64,7 +63,7 @@ class ClassStatementDependencyParserInfo(ParserInfo):
     visibility: Optional[VisibilityModifier]            # Note that instances may be created with this value as None,
                                                         # but a default will be provided once the instance is associated
                                                         # with a ClassStatement instance.
-    type: StandardTypeParserInfo
+    type: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -83,18 +82,7 @@ class ClassStatementDependencyParserInfo(ParserInfo):
             regionless_attributes=["type", ],
         )
 
-        # Validate
-        errors: List[Error] = []
-
-        if self.type.mutability_modifier is not None:
-            errors.append(
-                MutabilityModifierNotAllowedError.Create(
-                    region=self.type.regions__.mutability_modifier,
-                ),
-            )
-
-        if errors:
-            raise ErrorException(*errors)
+        # BugBug: Ensure type is type
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -238,13 +226,13 @@ class ClassStatementParserInfo(StatementParserInfo):
                 ),
             )
 
-        errors += self.class_capabilities.ValidateClassStatementCapabilities(
+        self.class_capabilities.ValidateClassStatementCapabilities(
             self,
             has_parent_class=parent_class_capabilities is not None,
         )
 
         if parent_class_capabilities is not None:
-            errors += parent_class_capabilities.ValidateNestedClassStatementCapabilities(self)
+            parent_class_capabilities.ValidateNestedClassStatementCapabilities(self)
         else:
             if self.visibility == VisibilityModifier.protected:
                 errors.append(

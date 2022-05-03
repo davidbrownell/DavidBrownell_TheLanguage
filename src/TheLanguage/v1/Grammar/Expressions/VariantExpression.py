@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariantType.py
+# |  VariantExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-12 09:35:15
+# |      2022-05-02 14:12:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariantType object"""
+"""Contains the VariantExpression object"""
 
 import os
 
@@ -30,10 +30,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import MutabilityModifier
-    from ..Common.Impl import VariantPhraseImpl
-
     from ..GrammarPhrase import AST, GrammarPhrase
+
+    from ..Common.Impl import VariantPhraseImpl
+    from ..Common import MutabilityModifier
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
@@ -44,25 +44,24 @@ with InitRelativeImports():
 
     from ...Parser.Parser import CreateRegions
 
-    from ...Parser.ParserInfos.Types.VariantTypeParserInfo import (
-        ParserInfoType,
-        TypeParserInfo,
-        VariantTypeParserInfo,
+    from ...Parser.ParserInfos.Expressions.VariantExpressionParserInfo import (
+        ExpressionParserInfo,
+        VariantExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class VariantType(GrammarPhrase):
-    PHRASE_NAME                             = "Variant Type"
+class VariantExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Variant Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(VariantType, self).__init__(
-            DynamicPhrasesType.Types,
+        super(VariantExpression, self).__init__(
+            DynamicPhrasesType.Expressions,
             self.PHRASE_NAME,
             [
-                # Elements
-                VariantPhraseImpl.Create(DynamicPhrasesType.Types),
+                # Variant
+                VariantPhraseImpl.Create(DynamicPhrasesType.Expressions),
 
                 # <mutability_modifier>?
                 OptionalPhraseItem(
@@ -73,10 +72,9 @@ class VariantType(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
-    @classmethod
+    @staticmethod
     @Interface.override
     def ExtractParserInfo(
-        cls,
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserInfoReturnType:
         # ----------------------------------------------------------------------
@@ -84,9 +82,9 @@ class VariantType(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 2
 
-            # Elements
-            elements_node = cast(AST.Node, nodes[0])
-            elements_info = cast(List[TypeParserInfo], VariantPhraseImpl.Extract(elements_node))
+            # Variant
+            variant_node = cast(AST.Node, nodes[0])
+            variant_info = cast(List[ExpressionParserInfo], VariantPhraseImpl.Extract(variant_node))
 
             # <mutability_modifier>?
             mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -95,11 +93,10 @@ class VariantType(GrammarPhrase):
             else:
                 mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
 
-            return VariantTypeParserInfo.Create(
-                ParserInfoType.Standard,
-                CreateRegions(node, mutability_modifier_node, elements_node),  # type: ignore
+            return VariantExpressionParserInfo.Create(
+                CreateRegions(node, mutability_modifier_node),
+                variant_info,
                 mutability_modifier_info,
-                elements_info,
             )
 
         # ----------------------------------------------------------------------

@@ -50,8 +50,8 @@ with InitRelativeImports():
     from ...Parser.Parser import CreateRegions, GetParserInfo
 
     from ...Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import (
+        ExpressionParserInfo,
         TypeAliasStatementParserInfo,
-        TypeParserInfo,
     )
 
 
@@ -72,7 +72,7 @@ class TypeAliasStatement(GrammarPhrase):
                 ),
 
                 # <name>
-                CommonTokens.TypeName,
+                CommonTokens.FuncOrTypeName,
 
                 # Template Parameters, Constraints
                 CommonTokens.PushIgnoreWhitespaceControl,
@@ -93,7 +93,7 @@ class TypeAliasStatement(GrammarPhrase):
                 "=",
 
                 # <type>
-                DynamicPhrasesType.Types,
+                DynamicPhrasesType.Expressions,
 
                 CommonTokens.Newline,
             ],
@@ -119,7 +119,7 @@ class TypeAliasStatement(GrammarPhrase):
 
             # <name>
             name_leaf = cast(AST.Leaf, nodes[1])
-            name_info = CommonTokens.TypeName.Extract(name_leaf)  # type: ignore
+            name_info = CommonTokens.FuncOrTypeName.Extract(name_leaf)  # type: ignore
 
             # <template_parameters>?
             templates_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[3])))
@@ -137,7 +137,7 @@ class TypeAliasStatement(GrammarPhrase):
 
             # <type>
             type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[7])))
-            type_info = cast(TypeParserInfo, GetParserInfo(type_node))
+            type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
             return TypeAliasStatementParserInfo.Create(
                 CreateRegions(node, visibility_node, name_leaf),

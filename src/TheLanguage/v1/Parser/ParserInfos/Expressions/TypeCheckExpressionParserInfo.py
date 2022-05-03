@@ -32,7 +32,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, Region
-    from ..Types.TypeParserInfo import TypeParserInfo
     from ...MiniLanguage.Expressions.TypeCheckExpression import OperatorType
 
 
@@ -42,7 +41,7 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     operator: OperatorType
     expression: ExpressionParserInfo
-    type: TypeParserInfo
+    type: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -73,6 +72,8 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
                 "type",
             ],
         )
+
+        # BugBug: Ensure type is type
 
     # ----------------------------------------------------------------------
     @Interface.override

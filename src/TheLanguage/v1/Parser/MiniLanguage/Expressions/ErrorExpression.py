@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ErrorStatement.py
+# |  ErrorExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-17 09:18:48
+# |      2022-04-30 16:00:55
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ErrorStatement object"""
+"""Contains the ErrorExpression object"""
 
 import os
 
@@ -32,14 +32,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Statement import Statement, Type
-    from ..Expressions.Expression import Expression
+    from .Expression import Expression, Type
+    from ..Types.NoneType import NoneType
 
-    from ...Error import CreateError, Error, ErrorException, Region
+    from ...Error import CreateError, ErrorException, Region
 
 
 # ----------------------------------------------------------------------
-TheError                                    = CreateError(
+ErrorError                                  = CreateError(
     "{message}",
     message=str,
 )
@@ -47,41 +47,45 @@ TheError                                    = CreateError(
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ErrorStatement(Statement):
-    message: Expression
-    message_region: Region
+class ErrorExpression(Expression):
+    messages: List[Expression]
+    error_region: Region
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(ErrorStatement, self).__init__()
+    @staticmethod
+    @Interface.override
+    def EvalType() -> Type:
+        return NoneType()
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Execute(
+    def Eval(
         self,
         args: Dict[str, Any],
         type_overrides: Dict[str, Type],
-    ) -> Statement.ExecuteResult:
-        errors: List[Error] = []
+    ) -> Expression.EvalResult:
+        results: List[str] = []
 
-        try:
-            result = self.message.Eval(args, type_overrides)
+        for message in self.messages:
+            result = message.Eval(args, type_overrides)
+            results.append(result.type.ToStringValue(result.value))
 
-            errors.append(
-                TheError.Create(
-                    region=self.message_region,
-                    message=result.type.ToStringValue(result.value),
-                ),
-            )
-
-        except ErrorException as ex:
-            errors += ex.errors
-
-        assert errors
-
-        return Statement.ExecuteResult(
-            errors=errors,
-            warnings=[],
-            infos=[],
-            should_continue=False,
+        raise ErrorException(
+            ErrorError.Create(
+                region=self.error_region,
+                message=", ".join(results),
+            ),
         )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ToString(
+        self,
+        args: Dict[str, Any],
+    ) -> str:
+        results: List[str] = []
+
+        for message in self.messages:
+            results.append(message.ToString(args))
+
+        return "Error!({})".format(", ".join(results))

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleType.py
+# |  IndexExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-12 09:06:18
+# |      2022-05-01 14:54:22
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleType object"""
+"""Contains the IndexExpression object"""
 
 import os
 
-from typing import cast, List, Optional
+from typing import cast
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,44 +30,47 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common import MutabilityModifier
-    from ..Common.Impl import TuplePhraseImpl
-
     from ..GrammarPhrase import AST, GrammarPhrase
+
+    from ..Common import Tokens as CommonTokens
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
-        ExtractOptional,
+        ExtractDynamic,
         ExtractSequence,
-        OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions
+    from ...Parser.Parser import CreateRegions, GetParserInfo
 
-    from ...Parser.ParserInfos.Types.TupleTypeParserInfo import (
-        TupleTypeParserInfo,
-        TypeParserInfo,
+    from ...Parser.ParserInfos.Expressions.IndexExpressionParserInfo import (
+        ExpressionParserInfo,
+        IndexExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class TupleType(GrammarPhrase):
-    PHRASE_NAME                             = "Tuple Type"
+class IndexExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Index Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        super(TupleType, self).__init__(
-            DynamicPhrasesType.Types,
+        super(IndexExpression, self).__init__(
+            DynamicPhrasesType.Expressions,
             self.PHRASE_NAME,
             [
-                # Elements
-                TuplePhraseImpl.Create(DynamicPhrasesType.Types),
+                # <lhs_expression>
+                DynamicPhrasesType.Expressions,
 
-                # <mutability_modifier>?
-                OptionalPhraseItem(
-                    name="Mutability Modifier",
-                    item=MutabilityModifier.CreatePhraseItem(),
-                ),
+                # '['
+                "[",
+                CommonTokens.PushIgnoreWhitespaceControl,
+
+                # <index_expression>
+                DynamicPhrasesType.Expressions,
+
+                # ']'
+                CommonTokens.PopIgnoreWhitespaceControl,
+                "]",
             ],
         )
 
@@ -80,23 +83,20 @@ class TupleType(GrammarPhrase):
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
-            assert len(nodes) == 2
+            assert len(nodes) == 6
 
-            # Elements
-            elements_node = cast(AST.Node, nodes[0])
-            elements_info = cast(List[TypeParserInfo], TuplePhraseImpl.Extract(elements_node))
+            # <lhs_expression>
+            lhs_expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
+            lhs_expression_info = cast(ExpressionParserInfo, GetParserInfo(lhs_expression_node))
 
-            # <mutability_modifier>?
-            mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
-            if mutability_modifier_node is None:
-                mutability_modifier_info = None
-            else:
-                mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
+            # <index_expression>
+            index_expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
+            index_expression_info = cast(ExpressionParserInfo, GetParserInfo(index_expression_node))
 
-            return TupleTypeParserInfo.Create(
-                CreateRegions(node, mutability_modifier_node, elements_node),  # type: ignore
-                mutability_modifier_info,
-                elements_info,
+            return IndexExpressionParserInfo.Create(
+                CreateRegions(node),
+                lhs_expression_info,
+                index_expression_info,
             )
 
         # ----------------------------------------------------------------------

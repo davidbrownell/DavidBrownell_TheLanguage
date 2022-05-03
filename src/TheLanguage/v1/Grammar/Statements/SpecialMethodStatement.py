@@ -69,6 +69,20 @@ class SpecialMethodStatement(GrammarPhrase):
 
     PHRASE_NAME                             = "Class Func Definition Statement"
 
+    FUNCTION_MAP                            = {
+        "__EvalTemplates!__": SpecialMethodType.CompileTimeEvalTemplates,
+        "__EvalConstraints!__": SpecialMethodType.CompileTimeEvalConstraints,
+        "__EvalConvertible!__": SpecialMethodType.CompileTimeConvert,
+        "__Construct?__": SpecialMethodType.Construct,
+        "__ConstructFinal?__": SpecialMethodType.ConstructFinal,
+        "__Destroy__": SpecialMethodType.Destroy,
+        "__DestroyFinal__": SpecialMethodType.DestroyFinal,
+        "__PrepareFinalize?__": SpecialMethodType.PrepareFinalize,
+        "__Finalize__": SpecialMethodType.Finalize,
+    }
+
+    assert len(FUNCTION_MAP) == len(SpecialMethodType)
+
     # ----------------------------------------------------------------------
     def __init__(self):
         super(SpecialMethodStatement, self).__init__(
@@ -92,9 +106,10 @@ class SpecialMethodStatement(GrammarPhrase):
         )
 
     # ----------------------------------------------------------------------
-    @staticmethod
+    @classmethod
     @Interface.override
     def ExtractParserInfo(
+        cls,
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserInfoReturnType:
         # ----------------------------------------------------------------------
@@ -108,25 +123,8 @@ class SpecialMethodStatement(GrammarPhrase):
             name_leaf = cast(AST.Leaf, nodes[0])
             name_info = CommonTokens.SpecialMethodName.Extract(name_leaf)  # type: ignore
 
-            if name_info == "__EvalTemplates!__":
-                name_info = SpecialMethodType.CompileTimeEvalTemplates
-            elif name_info == "__EvalConstraints!__":
-                name_info = SpecialMethodType.CompileTimeEvalConstraints
-            elif name_info == "__EvalConvertible!__":
-                name_info = SpecialMethodType.CompileTimeConvert
-            elif name_info == "__Construct?__":
-                name_info = SpecialMethodType.Construct
-            elif name_info == "__ConstructFinal?__":
-                name_info = SpecialMethodType.ConstructFinal
-            elif name_info == "__Destroy__":
-                name_info = SpecialMethodType.Destroy
-            elif name_info == "__DestroyFinal__":
-                name_info = SpecialMethodType.DestroyFinal
-            elif name_info == "__PrepareFinalize?__":
-                name_info = SpecialMethodType.PrepareFinalize
-            elif name_info == "__Finalize__":
-                name_info = SpecialMethodType.Finalize
-            else:
+            name_info = cls.FUNCTION_MAP.get(name_info, None)
+            if name_info is None:
                 errors.append(
                     InvalidMethodNameError.Create(
                         region=CreateRegion(name_leaf),
@@ -135,15 +133,8 @@ class SpecialMethodStatement(GrammarPhrase):
                 )
 
             # <statements>
-            statements_info = None
             statements_node = cast(AST.Node, nodes[5])
-
-            result = StatementsFragment.Extract(statements_node)
-
-            if isinstance(result, list):
-                errors += result
-            else:
-                statements_info = result[0]
+            statements_info = StatementsFragment.Extract(statements_node)[0]
 
             if errors:
                 raise ErrorException(*errors)
@@ -151,7 +142,7 @@ class SpecialMethodStatement(GrammarPhrase):
             return SpecialMethodStatementParserInfo.Create(
                 CreateRegions(node, name_leaf, statements_node),
                 ClassStatement.GetParentClassCapabilities(node),
-                name_info,
+                cast(SpecialMethodType, name_info),
                 statements_info,
             )
 

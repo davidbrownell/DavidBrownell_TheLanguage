@@ -32,8 +32,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import (
         BaseMixin,
-        CompileTimeTemplateTypeWrapper,
-        CompileTimeVariable,
         StateMaintainer,
     )
 
@@ -114,17 +112,17 @@ class CommonMixin(BaseMixin):
         parser_info: ConstraintParameterParserInfo,
     ):
         # Check for duplicate name
-        potential_prev_item = self._compile_time_info.GetItemNoThrow(parser_info.name)
-        if not isinstance(potential_prev_item, StateMaintainer.DoesNotExist):
-            self._errors.append(
-                DuplicateCompileTimeNameError.Create(
-                    region=parser_info.regions__.name,
-                    name=parser_info.name,
-                    prev_region=potential_prev_item.parser_info.regions__.name,
-                ),
-            )
-
-        self._ProcessParameter(parser_info)
+        # TODO: potential_prev_item = self._compile_time_info.GetItemNoThrow(parser_info.name)
+        # TODO: if not isinstance(potential_prev_item, StateMaintainer.DoesNotExist):
+        # TODO:     self._errors.append(
+        # TODO:         DuplicateCompileTimeNameError.Create(
+        # TODO:             region=parser_info.regions__.name,
+        # TODO:             name=parser_info.name,
+        # TODO:             prev_region=potential_prev_item.parser_info.regions__.name,
+        # TODO:         ),
+        # TODO:     )
+        # TODO:
+        # TODO: self._ProcessParameter(parser_info)
 
         yield
 
@@ -207,24 +205,24 @@ class CommonMixin(BaseMixin):
         parser_info: TemplateTypeParameterParserInfo,
     ):
         # Check for duplicate name
-        potential_prev_item = self._compile_time_info.GetItemNoThrow(parser_info.name)
-        if not isinstance(potential_prev_item, StateMaintainer.DoesNotExist):
-            self._errors.append(
-                DuplicateCompileTimeNameError.Create(
-                    region=parser_info.regions__.name,
-                    name=parser_info.name,
-                    prev_region=potential_prev_item.parser_info.regions__.name,
-                ),
-            )
-
-        self._compile_time_info.AddItem(
-            parser_info.name,
-            CompileTimeVariable(
-                CompileTimeTemplateTypeWrapper(),
-                parser_info.default_type,
-                parser_info,
-            ),
-        )
+        # TODO: potential_prev_item = self._compile_time_info.GetItemNoThrow(parser_info.name)
+        # TODO: if not isinstance(potential_prev_item, StateMaintainer.DoesNotExist):
+        # TODO:     self._errors.append(
+        # TODO:         DuplicateCompileTimeNameError.Create(
+        # TODO:             region=parser_info.regions__.name,
+        # TODO:             name=parser_info.name,
+        # TODO:             prev_region=potential_prev_item.parser_info.regions__.name,
+        # TODO:         ),
+        # TODO:     )
+        # TODO:
+        # TODO: self._compile_time_info.AddItem(
+        # TODO:     parser_info.name,
+        # TODO:     CompileTimeVariable(
+        # TODO:         CompileTimeTemplateTypeWrapper(),
+        # TODO:         parser_info.default_type,
+        # TODO:         parser_info,
+        # TODO:     ),
+        # TODO: )
 
         yield
 
@@ -234,16 +232,16 @@ class CommonMixin(BaseMixin):
         self,
         parser_info: TemplateDecoratorParameterParserInfo,
     ):
-        # Check for duplicate name
-        potential_prev_item = self._compile_time_info.GetItemNoThrow(parser_info.name)
-        if not isinstance(potential_prev_item, StateMaintainer.DoesNotExist):
-            self._errors.append(
-                DuplicateCompileTimeNameError.Create(
-                    region=parser_info.regions__.name,
-                    name=parser_info.name,
-                    prev_region=potential_prev_item.parser_info.regions__.name,
-                ),
-            )
+        # TODO: # Check for duplicate name
+        # TODO: potential_prev_item = self._compile_time_info.GetItemNoThrow(parser_info.name)
+        # TODO: if not isinstance(potential_prev_item, StateMaintainer.DoesNotExist):
+        # TODO:     self._errors.append(
+        # TODO:         DuplicateCompileTimeNameError.Create(
+        # TODO:             region=parser_info.regions__.name,
+        # TODO:             name=parser_info.name,
+        # TODO:             prev_region=potential_prev_item.parser_info.regions__.name,
+        # TODO:         ),
+        # TODO:     )
 
         self._ProcessParameter(parser_info)
 
@@ -259,40 +257,42 @@ class CommonMixin(BaseMixin):
             TemplateDecoratorParameterParserInfo,
         ],
     ) -> None:
-        parameter_type = self.__class__._ParserInfoTypeToMiniLanguageType(parser_info.type)  # type: ignore  # pylint: disable=protected-access
+        pass
 
-        default_value_expression = None
-
-        if parser_info.default_value is not None:
-            default_value_expression = self.CreateMiniLanguageExpression(parser_info.default_value)  # type: ignore
-            if isinstance(default_value_expression, Error):
-                self._errors.append(default_value_expression)
-            else:
-                try:
-                    default_value_type = default_value_expression.EvalType()  # type: ignore
-
-                    if (
-                        default_value_type.name != parameter_type.name
-                        and not isinstance(parameter_type, BooleanType)
-                        and not (
-                            isinstance(parameter_type, VariantType)
-                            and default_value_type in parameter_type
-                        )
-                    ):
-                        self._errors.append(
-                            MismatchedDefaultValueTypeError.Create(
-                                region=parser_info.default_value.regions__.self__,
-                                name=parser_info.name,
-                                actual_type=default_value_type.name,
-                                expected_type=parameter_type.name,
-                                expected_type_region=parser_info.type.regions__.self__,
-                            ),
-                        )
-
-                except ErrorException as ex:
-                    self._errors += ex.errors
-
-        self._compile_time_info.AddItem(
-            parser_info.name,
-            CompileTimeVariable(parameter_type, default_value_expression, parser_info),
-        )
+        # TODO: parameter_type = self.__class__._ParserInfoTypeToMiniLanguageType(parser_info.type)  # type: ignore  # pylint: disable=protected-access
+        # TODO:
+        # TODO: default_value_expression = None
+        # TODO:
+        # TODO: if parser_info.default_value is not None:
+        # TODO:     default_value_expression = self.CreateMiniLanguageExpression(parser_info.default_value)  # type: ignore
+        # TODO:     if isinstance(default_value_expression, Error):
+        # TODO:         self._errors.append(default_value_expression)
+        # TODO:     else:
+        # TODO:         try:
+        # TODO:             default_value_type = default_value_expression.EvalType()  # type: ignore
+        # TODO:
+        # TODO:             if (
+        # TODO:                 default_value_type.name != parameter_type.name
+        # TODO:                 and not isinstance(parameter_type, BooleanType)
+        # TODO:                 and not (
+        # TODO:                     isinstance(parameter_type, VariantType)
+        # TODO:                     and default_value_type in parameter_type
+        # TODO:                 )
+        # TODO:             ):
+        # TODO:                 self._errors.append(
+        # TODO:                     MismatchedDefaultValueTypeError.Create(
+        # TODO:                         region=parser_info.default_value.regions__.self__,
+        # TODO:                         name=parser_info.name,
+        # TODO:                         actual_type=default_value_type.name,
+        # TODO:                         expected_type=parameter_type.name,
+        # TODO:                         expected_type_region=parser_info.type.regions__.self__,
+        # TODO:                     ),
+        # TODO:                 )
+        # TODO:
+        # TODO:         except ErrorException as ex:
+        # TODO:             self._errors += ex.errors
+        # TODO:
+        # TODO: self._compile_time_info.AddItem(
+        # TODO:     parser_info.name,
+        # TODO:     CompileTimeVariable(parameter_type, default_value_expression, parser_info),
+        # TODO: )

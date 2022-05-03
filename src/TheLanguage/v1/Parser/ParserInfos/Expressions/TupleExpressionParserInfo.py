@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CallExpressionParserInfo.py
+# |  TupleExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-22 08:11:19
+# |      2022-05-01 14:05:36
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CallExpressionParserInfo object"""
+"""Contains the TupleExpressionParserInfo object"""
 
 import os
 
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -33,60 +33,48 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, Region
-    from ..Common.FuncArgumentsParserInfo import FuncArgumentsParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class CallExpressionParserInfo(ExpressionParserInfo):
+class TupleExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    expression: ExpressionParserInfo
-    arguments: Union[bool, FuncArgumentsParserInfo]
+    types: List[ExpressionParserInfo]
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
         regions: List[Optional[Region]],
-        expression: ExpressionParserInfo,
-        arguments: Union[bool, FuncArgumentsParserInfo],
+        types: List[ExpressionParserInfo],
         *args,
         **kwargs,
     ):
-        if isinstance(arguments, bool):
-            parser_info_type = expression.parser_info_type__  # type: ignore
-        else:
-            parser_info_type = cls._GetDominantExpressionType(expression, *arguments.arguments)
-
         return cls(
-            parser_info_type,               # type: ignore
-            regions,                        # type: ignore
-            expression,
-            arguments,
+            cls._GetDominantExpressionType(*types),     # type: ignore
+            regions,                                    # type: ignore
             *args,
             **kwargs,
         )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(CallExpressionParserInfo, self).__post_init__(
+        super(TupleExpressionParserInfo, self).__post_init__(
             *args,
             **kwargs,
-            regionless_attributes=["expression", ],
+            regionless_attributes=["types", ],
         )
+
+        # BugBug: Ensure expressions are types
+        # BugBug: Check mutability modifier
 
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor):
-        details = []
-
-        if not isinstance(self.arguments, bool):
-            details.append(("arguments", self.arguments))
-
         return self._AcceptImpl(
             visitor,
             details=[
-                ("expression", self.expression),
-            ] + details,  # type: ignore
+                ("types", self.types),
+            ],  # type: ignore
             children=None,
         )

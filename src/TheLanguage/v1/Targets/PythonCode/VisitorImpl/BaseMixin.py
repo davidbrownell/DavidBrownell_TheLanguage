@@ -89,7 +89,7 @@ class BaseMixin(object):
         if index != -1 and index + len("ParserInfo__") + 1 < len(name):
             return types.MethodType(self.__class__._DefaultDetailMethod, self)  # pylint: disable=protected-access
 
-        return None
+        raise AttributeError(name)
 
     # ----------------------------------------------------------------------
     def GetContent(self) -> str:
@@ -137,7 +137,7 @@ class BaseMixin(object):
                     should_add = True
 
                 else:
-                    assert False, type(parser_info)  # pragma: no cover
+                    pass # BugBug assert False, type(parser_info)  # pragma: no cover
 
                 if should_add:
                     self._public_exports.append(parser_info)

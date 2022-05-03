@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleTypeParserInfo.py
+# |  FuncInvocationStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-12 09:02:55
+# |      2022-04-29 17:02:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleTypeParserInfo object"""
+"""Contains the FuncInvocationStatementParserInfo object"""
 
 import os
 
@@ -32,55 +32,40 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeParserInfo import (
-        ParserInfoType,
-        Region,
-        TypeParserInfo,
-    )
-
-    from ..Common.MutabilityModifier import MutabilityModifierRequiredError
-
-    from ...Error import Error, ErrorException
+    from .StatementParserInfo import Region, StatementParserInfo
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleTypeParserInfo(TypeParserInfo):
-    types: List[TypeParserInfo]
+class FuncInvocationStatementParserInfo(StatementParserInfo):
+    # ----------------------------------------------------------------------
+    expression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
         regions: List[Optional[Region]],
+        expression: ExpressionParserInfo,
         *args,
         **kwargs,
     ):
         return cls(
-            ParserInfoType.Standard,        # type: ignore
+            expression.parser_info_type__,  # type: ignore
             regions,                        # type: ignore
+            expression,
             *args,
             **kwargs,
         )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):  # type: ignore
-        super(TupleTypeParserInfo, self).__post_init__(*args, **kwargs)
-
-        # Validate
-        errors: List[Error] = []
-
-        for contained_type in self.types:
-            if contained_type.mutability_modifier is None:
-                errors.append(
-                    MutabilityModifierRequiredError.Create(
-                        region=contained_type.regions__.self__,
-                    ),
-                )
-            # TODO: InvalidNewMutabilityModifierError?
-
-        if errors:
-            raise ErrorException(*errors)
+    def __post_init__(self, *args, **kwargs):
+        super(FuncInvocationStatementParserInfo, self).__post_init__(
+            *args,
+            **kwargs,
+            regionless_attributes=["expression", ],
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -88,7 +73,7 @@ class TupleTypeParserInfo(TypeParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("types", self.types),
-            ],  # type: ignore
+                ("expression", self.expression),
+            ],
             children=None,
         )

@@ -22,6 +22,7 @@ from typing import Any, Callable, List, Optional
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 

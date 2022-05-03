@@ -34,12 +34,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StatementParserInfo import ParserInfoType, Region, StatementParserInfo
 
-    from ..Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo
+    from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
     from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
-    from ..Types.TypeParserInfo import TypeParserInfo
 
     from ...Error import Error, ErrorException
 
@@ -55,9 +55,9 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
     name: str
 
     templates: Optional[TemplateParametersParserInfo]
-    constraints: Optional[ConstraintParameterParserInfo]
+    constraints: Optional[ConstraintParametersParserInfo]
 
-    type: TypeParserInfo
+    type: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -68,8 +68,8 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            ParserInfoType.CompileTimeType, # type: ignore
-            regions,                        # type: ignore
+            ParserInfoType.CompileTimeTypeCustomization,                    # type: ignore
+            regions,                                                        # type: ignore
             *args,
             **kwargs,
         )
@@ -107,7 +107,7 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
         errors: List[Error] = []
 
         if self.parent_class_capabilities is not None:
-            errors += self.parent_class_capabilities.ValidateTypeAliasStatementCapabilities(self)
+            self.parent_class_capabilities.ValidateTypeAliasStatementCapabilities(self)
         else:
             if self.visibility == VisibilityModifier.protected:
                 errors.append(
@@ -116,23 +116,18 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
                     ),
                 )
 
+        # BugBug: Ensure type is type
+
         if errors:
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor):
-        details = []
-
-        if self.templates:
-            details.append(("templates", self.templates))
-        if self.constraints:
-            details.append(("constraints", self.constraints))
-
         return self._AcceptImpl(
             visitor,
             details=[
                 ("type", self.type),
-            ] + details,  # type: ignore
+            ],
             children=None,
         )

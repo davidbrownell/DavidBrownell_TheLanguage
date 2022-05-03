@@ -58,7 +58,6 @@ with InitRelativeImports():
         ExpressionParserInfo,
         ConstraintParameterParserInfo,
         ConstraintParametersParserInfo,
-        TypeParserInfo,
     )
 
 
@@ -75,7 +74,7 @@ def Create() -> PhraseItem:
         name="Constraint Parameter",
         item=[
             # <type>
-            DynamicPhrasesType.Types,
+            DynamicPhrasesType.Expressions,
 
             # <name>
             CommonTokens.ParameterName,
@@ -129,7 +128,7 @@ def _ExtractElement(
 
     # <type>
     type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-    type_info = cast(TypeParserInfo, GetParserInfo(type_node))
+    type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
     # <name>
     name_leaf = cast(AST.Leaf, nodes[1])

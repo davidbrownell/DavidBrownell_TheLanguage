@@ -55,7 +55,6 @@ with InitRelativeImports():
         FuncParameterParserInfo,
         FuncParametersParserInfo,
         ParserInfoType,
-        TypeParserInfo,
     )
 
 
@@ -65,7 +64,7 @@ def Create() -> PhraseItem:
         name="Function Parameter",
         item=[
             # <type>
-            DynamicPhrasesType.Types,
+            DynamicPhrasesType.Expressions,
 
             # '...'?
             OptionalPhraseItem(
@@ -123,7 +122,7 @@ def _ExtractElement(
 
     # <type>
     type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-    type_info = cast(TypeParserInfo, GetParserInfo(type_node))
+    type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
     # '...'?
     is_variadic_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))

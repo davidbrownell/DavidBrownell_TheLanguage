@@ -151,6 +151,7 @@ def Extract(
     ):
         try:
             this_parser_info, is_keyword = extract_element_func(element_node)
+
         except ErrorException as ex:
             errors += ex.errors
             continue

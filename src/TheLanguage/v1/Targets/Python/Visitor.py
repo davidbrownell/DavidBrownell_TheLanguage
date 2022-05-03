@@ -41,13 +41,12 @@ with InitRelativeImports():
 
     from ...Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
     from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+    from ...Parser.ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from ...Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
     from ...Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
     from ...Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
     from ...Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
     from ...Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
-
-    from ...Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo, StandardTypeItemParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -75,7 +74,7 @@ class Visitor(object):
         if index != -1 and index + len("ParserInfo__") + 1 < len(name):
             return types.MethodType(self.__class__._DefaultDetailMethod, self)  # pylint: disable=protected-access
 
-        return None
+        raise AttributeError(name)
 
     # ----------------------------------------------------------------------
     def GetContent(self) -> str:
@@ -155,6 +154,7 @@ class Visitor(object):
     ):
         self._stream.write("class {}(".format(parser_info.name))
 
+        # BugBug
         self._stream.write(
             ", ".join(
                 self._GetStandardTypeName(dependency.type) for dependency in itertools.chain(
@@ -189,6 +189,14 @@ class Visitor(object):
     def OnFuncDefinitionStatementParserInfo(
         self,
         parser_info: FuncDefinitionStatementParserInfo,
+    ):
+        yield
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnFuncInvocationStatementParserInfo(
+        self,
+        parser_info: FuncInvocationStatementParserInfo,
     ):
         yield
 
@@ -229,22 +237,6 @@ class Visitor(object):
         pass # TODO
 
     # ----------------------------------------------------------------------
-    @contextmanager
-    def OnStandardTypeParserInfo(
-        self,
-        parser_info: StandardTypeParserInfo,
-    ):
-        yield
-
-    # ----------------------------------------------------------------------
-    @contextmanager
-    def OnStandardTypeItemParserInfo(
-        self,
-        parser_info: StandardTypeItemParserInfo,
-    ):
-        yield
-
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @property
@@ -283,13 +275,6 @@ class Visitor(object):
             self._stream_stack[-2],
             line_prefix=self._indent_stack[-1] * self._indent_text,
         )
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _GetStandardTypeName(
-        parser_info: StandardTypeParserInfo,
-    ) -> str:
-        return ".".join(item.name for item in parser_info.items)
 
     # ----------------------------------------------------------------------
     def _DefaultDetailMethod(

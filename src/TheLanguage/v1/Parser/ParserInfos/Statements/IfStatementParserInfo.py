@@ -97,11 +97,50 @@ class IfStatementClauseParserInfo(ParserInfo):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
+class IfStatementElseClauseParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
+    introduces_scope__                      = True
+
+    # ----------------------------------------------------------------------
+    regions: InitVar[List[Optional[Region]]]
+
+    statements: List[StatementParserInfo]
+    documentation: Optional[str]
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, regions, *args, **kwargs):
+        super(IfStatementElseClauseParserInfo, self).__init__(
+            ParserInfoType.Unknown,
+            regions,
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=None,
+            children=cast(List[ParserInfo], self.statements),
+        )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
 class IfStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     clauses: List[IfStatementClauseParserInfo]
-    else_statements: Optional[List[StatementParserInfo]]
-    else_documentation: Optional[str]
+    else_clause: Optional[IfStatementElseClauseParserInfo]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -112,13 +151,9 @@ class IfStatementParserInfo(StatementParserInfo):
         *args,
         **kwargs,
     ):
-        parse_info_type = cls._GetDominantExpressionType(*clauses)
-        if isinstance(parse_info_type, list):
-            raise ErrorException(*parse_info_type)
-
         return cls(
-            parse_info_type,                # type: ignore
-            regions,                        # type: ignore
+            cls._GetDominantExpressionType(*clauses),   # type: ignore
+            regions,                                    # type: ignore
             clauses,
             *args,
             **kwargs,
@@ -126,12 +161,13 @@ class IfStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        assert self.else_documentation is None or self.else_statements is not None
-
         super(IfStatementParserInfo, self).__post_init__(
             *args,
             **kwargs,
-            regionless_attributes=["clauses", ],
+            regionless_attributes=[
+                "clauses",
+                "else_clause",
+            ],
         )
 
     # ----------------------------------------------------------------------
@@ -139,8 +175,8 @@ class IfStatementParserInfo(StatementParserInfo):
     def Accept(self, visitor):
         details = []
 
-        if self.else_statements:
-            details.append(("else_statements", self.else_statements))
+        if self.else_clause:
+            details.append(("else_clause", self.else_clause))
 
         return self._AcceptImpl(
             visitor,

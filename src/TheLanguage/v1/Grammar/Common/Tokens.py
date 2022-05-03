@@ -108,25 +108,6 @@ def _GetRegionFuncFactory(
 
 
 # ----------------------------------------------------------------------
-ReservedUpperNames                          = [
-    # Fundamental Types
-    "Bool",
-    "Char",
-    "Int",
-    "None",
-    "Num",
-    "Str",
-
-    # Fundamental Type Values
-    "True",
-    "False",
-]
-
-ReservedLowerNames                          = [
-]
-
-
-# ----------------------------------------------------------------------
 AttributeName                               = RegexToken(
     "<attribute name>",
     re.compile(
@@ -137,15 +118,14 @@ AttributeName                               = RegexToken(
             ))""",
         ),
     ),
-    exclude_matches=ReservedUpperNames,
 )
 
 AttributeName.Extract                       = _ExtractFuncFactory(False)  # type: ignore
 
 
 # ----------------------------------------------------------------------
-FuncName                                    = RegexToken(
-    "<func name>",
+FuncOrTypeName                              = RegexToken(
+    "<func or type name>",
     re.compile(
         textwrap.dedent(
             r"""(?P<value>(?#
@@ -159,14 +139,13 @@ FuncName                                    = RegexToken(
             ))""",
         ),
     ),
-    exclude_matches=ReservedUpperNames,
 )
 
-FuncName.Extract                            = _ExtractFuncFactory(True)                             # type: ignore
-FuncName.IsCompileTime                      = _IsFuncFactory(FuncName, "is_compile_time")           # type: ignore
-FuncName.GetIsCompileTimeRegion             = _GetRegionFuncFactory(FuncName, "is_compile_time")    # type: ignore
-FuncName.IsExceptional                      = _IsFuncFactory(FuncName, "is_exceptional")            # type: ignore
-FuncName.GetIsCompileTimeRegion             = _GetRegionFuncFactory(FuncName, "is_exceptional")     # type: ignore
+FuncOrTypeName.Extract                      = _ExtractFuncFactory(True)                             # type: ignore
+FuncOrTypeName.IsCompileTime                = _IsFuncFactory(FuncOrTypeName, "is_compile_time")           # type: ignore
+FuncOrTypeName.GetIsCompileTimeRegion       = _GetRegionFuncFactory(FuncOrTypeName, "is_compile_time")    # type: ignore
+FuncOrTypeName.IsExceptional                = _IsFuncFactory(FuncOrTypeName, "is_exceptional")            # type: ignore
+FuncOrTypeName.GetIsCompileTimeRegion       = _GetRegionFuncFactory(FuncOrTypeName, "is_exceptional")     # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -181,7 +160,6 @@ ParameterName                               = RegexToken(
             ))""",
         ),
     ),
-    exclude_matches=ReservedLowerNames,
 )
 
 ParameterName.Extract                       = _ExtractFuncFactory(True)                                 # type: ignore
@@ -228,29 +206,9 @@ TemplateTypeName                            = RegexToken(
             ))""",
         ),
     ),
-    exclude_matches=ReservedUpperNames,
 )
 
 TemplateTypeName.Extract                    = _ExtractFuncFactory(False)  # type: ignore
-
-
-# ----------------------------------------------------------------------
-TypeName                                    = RegexToken(
-    "<type name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Initial Underscores [optional]  )_*(?#
-            Upper                           )[A-Z](?#
-            Alphanumeric                    )[A-Za-z0-9_]+(?#
-            Trailing Underscores [optional] )_*(?#
-            Whole match only                )(?![A-Za-z0-9_])(?#
-            ))""",
-        ),
-    ),
-)
-
-TypeName.Extract                            = _ExtractFuncFactory(False)  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -268,7 +226,6 @@ VariableName                                = RegexToken(
             ))""",
         ),
     ),
-    exclude_matches=ReservedLowerNames,
 )
 
 VariableName.Extract                        = _ExtractFuncFactory(True)  # type: ignore

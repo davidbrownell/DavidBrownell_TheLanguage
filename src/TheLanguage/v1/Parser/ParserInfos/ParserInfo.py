@@ -18,13 +18,12 @@
 import os
 
 from contextlib import contextmanager
-from enum import auto, Enum
+from enum import auto, Enum, Flag
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 from dataclasses import dataclass, field, fields, make_dataclass, InitVar
 
 import CommonEnvironment
-from CommonEnvironment.CallOnExit import CallOnExit
 from CommonEnvironment import Interface
 from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
@@ -36,8 +35,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Error import Error, CreateError
+    from ..Error import Error, CreateError, ErrorException
+    from ..MiniLanguage.Types.Type import Type as MiniLanguageType
     from ..Region import Region
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class CompileTimeValue(object):
+    type: MiniLanguageType
+    value: Any
 
 
 # ----------------------------------------------------------------------
@@ -45,7 +52,7 @@ class ParserInfoType(Enum):
     Unknown                                 = auto()    # Unknown (this value should only be applied for very low-level phrases (like types))
     Literal                                 = auto()    # A literal value
     CompileTime                             = auto()    # Evaluated at compile time
-    CompileTimeType                         = auto()    # Type that is evaluated at compile time, but uses template-
+    CompileTimeTypeCustomization            = auto()    # Type that is evaluated at compile time, but uses template-
                                                         # or constraint-parameters during the evaluation; implies that
                                                         # the results may be different depending on how the type is
                                                         # instantiated.
@@ -53,7 +60,17 @@ class ParserInfoType(Enum):
 
     # ----------------------------------------------------------------------
     MinCompileValue                         = CompileTime
-    MaxCompileValue                         = CompileTimeType
+    MaxCompileValue                         = CompileTimeTypeCustomization
+
+
+# ----------------------------------------------------------------------
+class VisitResult(Flag):
+    Continue                                = 0
+
+    SkipDetails                             = auto()
+    SkipChildren                            = auto()
+
+    SkipAll                                 = SkipDetails | SkipChildren
 
 
 # ----------------------------------------------------------------------
@@ -174,6 +191,15 @@ class ParserInfo(ObjectReprImplBase):
             method(self)
 
     # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def ValidateCompileTime(
+        self,
+        compile_time_values: Dict[str, CompileTimeValue],
+    ) -> None:
+        # No validation be default
+        pass
+
+    # ----------------------------------------------------------------------
     # |
     # |  Protected Methods
     # |
@@ -203,8 +229,11 @@ class ParserInfo(ObjectReprImplBase):
             assert method is not None, method_name
 
             try:
-                with method(self) as visit_details:
-                    if (visit_details is None or visit_details) and details:
+                with method(self) as visit_result:
+                    if visit_result is None:
+                        visit_result = VisitResult.Continue
+
+                    if details and not visit_result & VisitResult.SkipDetails:
                         method_name_prefix = "On{}__".format(self.__class__.__name__)
 
                         for detail_name, detail_value in details:
@@ -215,16 +244,20 @@ class ParserInfo(ObjectReprImplBase):
 
                             method(detail_value)
 
-                    if children:
+                    if children and not visit_result & VisitResult.SkipChildren:
                         method_name = "OnNewScope"
 
                         method = getattr(visitor, method_name, None)
                         assert method is not None, method_name
 
-                        with method(self) as visit_details:
-                            if visit_details is None or visit_details:
+                        with method(self) as visit_result:
+                            if visit_result is None:
+                                visit_result = VisitResult.Continue
+
+                            if not visit_result & VisitResult.SkipChildren:
                                 for child in children:
                                     child.Accept(visitor)
+
             except AttributeError as ex:
                 if str(ex) == "__enter__":
                     assert False, (method_name, "__enter__")
@@ -236,10 +269,7 @@ class ParserInfo(ObjectReprImplBase):
     def _GetDominantExpressionType(
         cls,
         *expressions: "ParserInfo"
-    ) -> Union[
-        ParserInfoType,
-        List[Error],
-    ]:
+    ) -> ParserInfoType:
         dominant_expression: Optional[ParserInfo] = None
 
         for expression in expressions:
@@ -271,7 +301,7 @@ class ParserInfo(ObjectReprImplBase):
                     )
 
             if errors:
-                return errors
+                raise ErrorException(*errors)
 
         return dominant_expression.parser_info_type__  # type: ignore
 

@@ -64,13 +64,12 @@ with InitRelativeImports():
     )
 
     from ...Parser.ParserInfos.Common.MethodModifier import MethodModifier
+    from ...Parser.ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
     from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import (
+        ExpressionParserInfo,
         FuncDefinitionStatementParserInfo,
         OperatorType,
-        TypeParserInfo,
     )
-
-    from ...Parser.ParserInfos.Types.StandardTypeParserInfo import StandardTypeParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -166,10 +165,10 @@ class FuncDefinitionStatement(GrammarPhrase):
                 ),
 
                 # <return_type>
-                DynamicPhrasesType.Types,
+                DynamicPhrasesType.Expressions,
 
                 # <name>
-                CommonTokens.FuncName,
+                CommonTokens.FuncOrTypeName,
 
                 # Template Parameters, Captures
                 CommonTokens.PushIgnoreWhitespaceControl,
@@ -293,20 +292,16 @@ class FuncDefinitionStatement(GrammarPhrase):
 
             # <return_type>
             return_type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
-            return_type_info = cast(TypeParserInfo, GetParserInfo(return_type_node))
+            return_type_info = cast(ExpressionParserInfo, GetParserInfo(return_type_node))
 
-            if (
-                isinstance(return_type_info, StandardTypeParserInfo)
-                and len(return_type_info.items) == 1
-                and return_type_info.items[0].name == "None"
-            ):
-                # We are looking at a None type - clear all info
+            # Clear all info if we are looking at a None return type
+            if isinstance(return_type_info, NoneExpressionParserInfo):
                 return_type_info = None
                 return_type_node = None
 
             # <name>
             name_leaf = cast(AST.Leaf, nodes[4])
-            name_info = CommonTokens.FuncName.Extract(name_leaf)  # type: ignore
+            name_info = CommonTokens.FuncOrTypeName.Extract(name_leaf)  # type: ignore
 
             if name_info.startswith("__") and name_info.endswith("__"):
                 operator_type = cls.OPERATOR_MAP.get(name_info, None)

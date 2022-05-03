@@ -43,10 +43,9 @@ with InitRelativeImports():
 
     from ..Common.Impl import ModifierImpl
 
-    from ..Types.StandardType import StandardType
-
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
+        ExtractDynamic,
         ExtractOptional,
         ExtractOr,
         ExtractRepeat,
@@ -62,6 +61,7 @@ with InitRelativeImports():
         CreateRegions,
         Error,
         ErrorException,
+        GetParserInfo,
         Region,
     )
 
@@ -70,6 +70,7 @@ with InitRelativeImports():
     from ...Parser.ParserInfos.Statements.ClassStatementParserInfo import (
         ClassStatementParserInfo,
         ClassStatementDependencyParserInfo,
+        ExpressionParserInfo,
     )
 
     from ...Parser.ParserInfos.Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
@@ -113,8 +114,6 @@ class ClassStatement(GrammarPhrase):
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        self._standard_type                 = StandardType()
-
         dependency_element = PhraseItem(
             name="Class Dependency Element",
             item=[
@@ -124,8 +123,8 @@ class ClassStatement(GrammarPhrase):
                     item=VisibilityModifier.CreatePhraseItem(),
                 ),
 
-                # <standard_type>
-                self._standard_type.phrase,
+                # <type>
+                DynamicPhrasesType.Expressions,
             ],
         )
 
@@ -177,7 +176,7 @@ class ClassStatement(GrammarPhrase):
                 CreateClassTypePhraseItem(),
 
                 # <name>
-                CommonTokens.TypeName,
+                CommonTokens.FuncOrTypeName,
 
                 # Template Parameters, Constraints, Dependencies
                 CommonTokens.PushIgnoreWhitespaceControl,
@@ -252,9 +251,10 @@ class ClassStatement(GrammarPhrase):
         return None
 
     # ----------------------------------------------------------------------
+    @classmethod
     @Interface.override
     def ExtractParserInfo(
-        self,
+        cls,
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserInfoReturnType:
 
@@ -324,7 +324,7 @@ class ClassStatement(GrammarPhrase):
         # This information will be used when children call `GetParentClassCapabilities`
         object.__setattr__(
             node,
-            self.__class__._CLASS_CAPABILITIES_ATTRIBUTE_NAME,  # pylint: disable=protected-access
+            cls._CLASS_CAPABILITIES_ATTRIBUTE_NAME,
             class_capabilities,
         )
 
@@ -401,7 +401,7 @@ class ClassStatement(GrammarPhrase):
 
             # <name>
             name_node = cast(AST.Leaf, nodes[4])
-            name_info = CommonTokens.TypeName.Extract(name_node)  # type: ignore
+            name_info = CommonTokens.FuncOrTypeName.Extract(name_node)  # type: ignore
 
             # TODO: Get visibility information from name
 
@@ -454,19 +454,16 @@ class ClassStatement(GrammarPhrase):
                     else:
                         this_visibility_info = VisibilityModifier.Extract(this_visibility_node)
 
-                    # <standard_type>
-                    standard_type_node = cast(AST.Node, this_dependency_nodes[1])
-                    standard_type_info = self._standard_type.ExtractParserInfo(standard_type_node)
-
-                    assert callable(standard_type_info)
-                    standard_type_info = standard_type_info()
+                    # <type>
+                    type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, this_dependency_nodes[1])))
+                    type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
                     # Add it
                     these_dependencies.append(
                         ClassStatementDependencyParserInfo.Create(
                             CreateRegions(this_dependency_node, this_visibility_node),
                             this_visibility_info,
-                            standard_type_info,
+                            type_info,
                         ),
                     )
 
@@ -502,7 +499,7 @@ class ClassStatement(GrammarPhrase):
                     is_abstract_node,
                     is_final_node,
                 ),
-                self.__class__.GetParentClassCapabilities(node),
+                cls.GetParentClassCapabilities(node),
                 class_capabilities,
                 visibility_info,
                 class_modifier_info,

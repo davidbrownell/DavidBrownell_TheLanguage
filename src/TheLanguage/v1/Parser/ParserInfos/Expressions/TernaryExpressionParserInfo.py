@@ -33,7 +33,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, Region
-    from ...Error import ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -55,17 +54,12 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
         *args,
         **kwargs,
     ):
-        parser_info_type = cls._GetDominantExpressionType(
-            condition_expression,
-            true_expression,
-            false_expression,
-        )
-
-        if isinstance(parser_info_type, list):
-            raise ErrorException(*parser_info_type)
-
         return cls(                         # pylint: disable=too-many-function-args
-            parser_info_type,               # type: ignore
+            cls._GetDominantExpressionType(
+                condition_expression,
+                true_expression,
+                false_expression,
+            ),                              # type: ignore
             regions,                        # type: ignore
             condition_expression,
             true_expression,

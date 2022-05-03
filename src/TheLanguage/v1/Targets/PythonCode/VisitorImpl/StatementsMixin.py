@@ -38,7 +38,8 @@ with InitRelativeImports():
     from ....Parser.ParserInfos.Statements.ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo
     from ....Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
     from ....Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
-    from ....Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo, IfStatementClauseParserInfo
+    from ....Parser.ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
+    from ....Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo, IfStatementClauseParserInfo, IfStatementElseClauseParserInfo
     from ....Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportStatementItemParserInfo
     from ....Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
     from ....Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
@@ -307,6 +308,34 @@ class StatementsMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    # |  FuncInvocationStatementParserInfo
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnFuncInvocationStatementParserInfo(
+        self,
+        parser_info: FuncInvocationStatementParserInfo,
+    ):
+        yield
+
+        self._imports.add("from v1.Parser.ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                {statement_name} = FuncInvocationStatementParserInfo.Create(
+                    regions=[{self_region}],
+                    expression={expression},
+                )
+
+                """,
+            ).format(
+                statement_name=self._CreateStatementName(parser_info),
+                self_region=self._ToString(parser_info.regions__.self__),
+                expression=self._ToString(parser_info.expression),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
     # |  IfStatementParserInfo
     # ----------------------------------------------------------------------
     @contextmanager
@@ -322,21 +351,17 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = IfStatementParserInfo.Create(
-                    regions=[{self_region}, {else_statements_region}, {else_documentation_region}],
+                    regions=[{self_region}],
                     clauses={clauses},
-                    else_statements={else_statements},
-                    else_documentation={else_documentation},
+                    else_clause={else_clause},
                 )
 
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
-                else_statements_region=self._ToString(parser_info.regions__.else_statements),
-                else_documentation_region=self._ToString(parser_info.regions__.else_documentation),
-                clauses=self._ToString(parser_info.clauses),                    # type: ignore
-                else_statements=self._ToString(parser_info.else_statements),    # type: ignore
-                else_documentation=self._ToString(parser_info.else_documentation),
+                clauses=self._ToString(parser_info.clauses),  # type: ignore
+                else_clause=self._ToString(parser_info.else_clause),
             ),
         )
 
@@ -367,6 +392,36 @@ class StatementsMixin(BaseMixin):
                 statements_region=self._ToString(parser_info.regions__.statements),
                 documentation_region=self._ToString(parser_info.regions__.documentation),
                 expression=self._ToString(parser_info.expression),
+                statements=self._ToString(parser_info.statements),  # type: ignore
+                documentation=self._ToString(parser_info.documentation),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnIfStatementElseClauseParserInfo(
+        self,
+        parser_info: IfStatementElseClauseParserInfo,
+    ):
+        yield
+
+        self._imports.add("from v1.Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementElseClauseParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                {statement_name} = IfStatementElseClauseParserInfo.Create(
+                    regions=[{self_region}, {statements_region}, {documentation_region}],
+                    statements={statements},
+                    documentation={documentation},
+                )
+
+                """,
+            ).format(
+                statement_name=self._CreateStatementName(parser_info),
+                self_region=self._ToString(parser_info.regions__.self__),
+                statements_region=self._ToString(parser_info.regions__.statements),
+                documentation_region=self._ToString(parser_info.regions__.documentation),
                 statements=self._ToString(parser_info.statements),  # type: ignore
                 documentation=self._ToString(parser_info.documentation),
             ),
@@ -528,8 +583,6 @@ class StatementsMixin(BaseMixin):
                     parent_class_capabilities={parent_class_capabilities},
                     visibility_param={visibility},
                     name={name},
-                    templates={templates},
-                    constraints={constraints},
                     type={type},
                 )
 
@@ -542,8 +595,6 @@ class StatementsMixin(BaseMixin):
                 visibility=self._ToString(parser_info.visibility),
                 parent_class_capabilities=parent_class_capabilities,
                 name=self._ToString(parser_info.name),
-                templates=self._ToString(parser_info.templates),
-                constraints=self._ToString(parser_info.constraints),
                 type=self._ToString(parser_info.type),
             ),
         )

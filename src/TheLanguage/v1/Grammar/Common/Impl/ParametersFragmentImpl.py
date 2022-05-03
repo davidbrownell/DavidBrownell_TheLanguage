@@ -260,12 +260,8 @@ def Extract(
 
         for parameter_node in parameter_nodes:
             try:
-                result = extract_element_func(parameter_node)
-                if isinstance(result, list):
-                    errors += result
-                    continue
+                parser_info, has_default = extract_element_func(parameter_node)
 
-                parser_info, has_default = result
             except ErrorException as ex:
                 errors += ex.errors
                 continue
@@ -282,10 +278,12 @@ def Extract(
 
             parser_infos.append(parser_info)
 
-        assert parser_infos
-        assert parameters_type not in parameters_parser_infos
+        if not parser_infos:
+            assert errors
+        else:
+            assert parameters_type not in parameters_parser_infos
 
-        parameters_parser_infos[parameters_type] = (parameters_node, parser_infos)
+            parameters_parser_infos[parameters_type] = (parameters_node, parser_infos)
 
     if errors:
         raise ErrorException(*errors)

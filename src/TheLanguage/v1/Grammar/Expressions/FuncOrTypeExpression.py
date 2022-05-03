@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast
+from typing import cast, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,18 +32,29 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
+    from ..Common import ConstraintArgumentsFragment
+    from ..Common import MutabilityModifier
+    from ..Common import TemplateArgumentsFragment
     from ..Common import Tokens as CommonTokens
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
+        ExtractOptional,
         ExtractSequence,
+        OptionalPhraseItem,
     )
 
     from ...Parser.Parser import CreateRegions
 
     from ...Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import (
+        BooleanType,
+        CharacterType,
         FuncOrTypeExpressionParserInfo,
+        IntegerType,
+        NoneType,
+        NumberType,
         ParserInfoType,
+        StringType,
     )
 
 
@@ -51,42 +62,93 @@ with InitRelativeImports():
 class FuncOrTypeExpression(GrammarPhrase):
     PHRASE_NAME                             = "Func or Type Expression"
 
+    MINILANGUAGE_TYPE_MAP                   = {
+        "Bool" : BooleanType(),
+        "Char" : CharacterType(),
+        "Int" : IntegerType(),
+        "None" : NoneType(),
+        "Num" : NumberType(),
+        "Str" : StringType(),
+    }
+
     # ----------------------------------------------------------------------
     def __init__(self):
         super(FuncOrTypeExpression, self).__init__(
             DynamicPhrasesType.Expressions,
             self.PHRASE_NAME,
             [
-                # Note that needs to be a sequence so that we can properly extract the value
-
-                # Note that the definition of a type is a subset of the definition of a function,
-                # so using function here.
-
                 # <name>
-                CommonTokens.FuncName,
+                CommonTokens.FuncOrTypeName,
+
+                # <template_arguments>?
+                OptionalPhraseItem(TemplateArgumentsFragment.Create()),
+
+                # <constraint_arguments>?
+                OptionalPhraseItem(ConstraintArgumentsFragment.Create()),
+
+                # <mutability_modifier>?
+                OptionalPhraseItem(
+                    name="Mutability Modifier",
+                    item=MutabilityModifier.CreatePhraseItem(),
+                ),
             ],
         )
 
     # ----------------------------------------------------------------------
-    @staticmethod
+    @classmethod
     @Interface.override
     def ExtractParserInfo(
+        cls,
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserInfoReturnType:
-        nodes = ExtractSequence(node)
-        assert len(nodes) == 1
+        # ----------------------------------------------------------------------
+        def Callback():
+            nodes = ExtractSequence(node)
+            assert len(nodes) == 4
 
-        # <name>
-        name_leaf = cast(AST.Leaf, nodes[0])
-        name_info = CommonTokens.FuncName.Extract(name_leaf)  # type: ignore
+            # <name>
+            name_leaf = cast(AST.Leaf, nodes[0])
+            name_info = CommonTokens.FuncOrTypeName.Extract(name_leaf)  # type: ignore
 
-        if CommonTokens.FuncName.IsCompileTime(name_info):  # type: ignore
-            parser_info_type = ParserInfoType.CompileTime
-        else:
-            parser_info_type = ParserInfoType.Standard
+            if CommonTokens.FuncOrTypeName.IsCompileTime(name_info):  # type: ignore
+                parser_info_type = ParserInfoType.CompileTime
+            else:
+                parser_info_type = ParserInfoType.Unknown
 
-        return FuncOrTypeExpressionParserInfo.Create(
-            parser_info_type,
-            CreateRegions(node, name_leaf),
-            name_info,
-        )
+                potential_mini_language_type = cls.MINILANGUAGE_TYPE_MAP.get(name_info, None)
+                if potential_mini_language_type is not None:
+                    name_info = potential_mini_language_type
+
+            # <template_arguments>?
+            template_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
+            if template_arguments_node is None:
+                template_arguments_info = None
+            else:
+                template_arguments_info = TemplateArgumentsFragment.Extract(template_arguments_node)
+
+            # <constraint_arguments>?
+            constraint_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[2])))
+            if constraint_arguments_node is None:
+                constraint_arguments_info = None
+            else:
+                constraint_arguments_info = ConstraintArgumentsFragment.Extract(constraint_arguments_node)
+
+            # <mutability_modifier>?
+            mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[3])))
+            if mutability_modifier_node is None:
+                mutability_modifier_info = None
+            else:
+                mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
+
+            return FuncOrTypeExpressionParserInfo.Create(
+                parser_info_type,
+                CreateRegions(node, name_leaf, mutability_modifier_node),
+                name_info,
+                template_arguments_info,
+                constraint_arguments_info,
+                mutability_modifier_info,
+            )
+
+        # ----------------------------------------------------------------------
+
+        return Callback

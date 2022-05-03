@@ -107,7 +107,7 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         if the_type in cls._CompileTimeMethods:
-            parser_info_type = ParserInfoType.CompileTimeType
+            parser_info_type = ParserInfoType.CompileTimeTypeCustomization
         else:
             parser_info_type = ParserInfoType.Standard
 

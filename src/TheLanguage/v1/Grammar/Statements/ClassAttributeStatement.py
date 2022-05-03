@@ -57,7 +57,7 @@ with InitRelativeImports():
 
     from ...Parser.ParserInfos.Statements.ClassAttributeStatementParserInfo import (
         ClassAttributeStatementParserInfo,
-        TypeParserInfo,
+        ExpressionParserInfo,
     )
 
 
@@ -89,7 +89,7 @@ class ClassAttributeStatement(GrammarPhrase):
                 ),
 
                 # <type>
-                DynamicPhrasesType.Types,
+                DynamicPhrasesType.Expressions,
 
                 # <name>
                 CommonTokens.VariableName,
@@ -185,7 +185,7 @@ class ClassAttributeStatement(GrammarPhrase):
 
             # <type>
             type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[2])))
-            type_info = cast(TypeParserInfo, GetParserInfo(type_node))
+            type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
             # <name>
             name_node = cast(AST.Leaf, nodes[3])

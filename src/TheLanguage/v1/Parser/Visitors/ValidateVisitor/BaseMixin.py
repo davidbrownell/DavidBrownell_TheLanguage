@@ -36,17 +36,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StateMaintainer import StateMaintainer
 
-    from ...Error import CreateError, Error, ErrorException, Warning, Info
+    from ...Error import CreateError, Error, ErrorException
 
+    from ...Helpers import MiniLanguageHelpers
+
+    from ...MiniLanguage.Types.IntegerType import IntegerType
     from ...MiniLanguage.Types.Type import Type as MiniLanguageType
 
-    from ...ParserInfos.ParserInfo import ParserInfo, Region
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
+    from ...ParserInfos.Statements.StatementParserInfo import ParserInfo, Region, StatementParserInfo
 
 
 # ----------------------------------------------------------------------
 InvalidKeywordError                         = CreateError(
-    "The argument '{name}' was explicitly named, but it is defined as a positional parameter in '{destination}'",
+    "Arguments for the positional parameter '{name}' can not be explicitly named in the call to '{destination}'",
     destination=str,
     destination_region=Optional[Region],
     name=str,
@@ -61,13 +64,13 @@ InvalidKeywordArgumentError                 = CreateError(
 )
 
 TooManyArgumentsError                       = CreateError(
-    "Too many arguments were provided to '{destination}'",
+    "Too many arguments in the call to '{destination}'",
     destination=str,
     destination_region=Optional[Region],
 )
 
 DuplicateKeywordArgumentError               = CreateError(
-    "The argument '{name}' has already been provided to '{destination}'",
+    "The argument '{name}' has already been provided in the call to '{destination}'",
     destination=str,
     destination_region=Optional[Region],
     name=str,
@@ -75,7 +78,7 @@ DuplicateKeywordArgumentError               = CreateError(
 )
 
 RequiredArgumentMissingError                = CreateError(
-    "An argument for the parameter '{name}' is missing for '{destination}'",
+    "An argument for the parameter '{name}' is missing in the call to '{destination}'",
     destination=str,
     destination_region=Optional[Region],
     name=str,
@@ -85,14 +88,6 @@ RequiredArgumentMissingError                = CreateError(
 # ----------------------------------------------------------------------
 class CompileTimeTemplateTypeWrapper(object):
     pass
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class CompileTimeVariable(object):
-    type: Union[CompileTimeTemplateTypeWrapper, MiniLanguageType]
-    value: Any
-    parser_info: ParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -118,13 +113,14 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        compile_time_info: Dict[str, CompileTimeVariable],
+        compile_time_info: Dict[str, MiniLanguageHelpers.CompileTimeValue],
     ):
-        self._compile_time_info             = StateMaintainer[CompileTimeVariable](compile_time_info)  # type: ignore
+        # BugBug
+        compile_time_info["__architecture_bytes!"] = MiniLanguageHelpers.CompileTimeValue(IntegerType(), 4)
+
+        self._compile_time_info             = compile_time_info
 
         self._errors: List[Error]           = []
-        self._warnings: List[Warning]       = []
-        self._infos: List[Info]             = []
 
         self._scope_level                                                   = 0
         self._scope_delta                                                   = 0
@@ -144,7 +140,7 @@ class BaseMixin(object):
         if index != -1 and index + len("ParserInfo__") + 1 < len(name):
             return types.MethodType(self.__class__._DefaultDetailMethod, self)  # pylint: disable=protected-access
 
-        return None
+        raise AttributeError(name)
 
     # ----------------------------------------------------------------------
     @contextmanager
@@ -152,10 +148,19 @@ class BaseMixin(object):
         self,
         parser_info: ParserInfo,  # pylint: disable=unused-argument
     ):
-        yield
+        try:
+            parser_info.ValidateCompileTime(self._compile_time_info)
 
-        if self._scope_level + self._scope_delta == 1:
-            pass # TODO
+            yield
+
+            if self._scope_level + self._scope_delta == 1:
+                pass # TODO
+
+        except ErrorException as ex:
+            if isinstance(parser_info, StatementParserInfo):
+                self._errors += ex.errors
+            else:
+                raise
 
     # ----------------------------------------------------------------------
     @contextmanager
@@ -184,14 +189,28 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     def _PushScope(self):
         self._scope_level += 1
-        self._compile_time_info.PushScope()
 
     # ----------------------------------------------------------------------
     def _PopScope(self):
-        self._compile_time_info.PopScope()
-
         assert self._scope_level
         self._scope_level -= 1
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def _SetExecuteFlag(
+        cls,
+        statement: ParserInfo,
+        value: bool,
+    ):
+        object.__setattr__(statement, cls._EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME, value)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def _GetExecuteFlag(
+        cls,
+        statement: ParserInfo,
+    ):
+        return getattr(statement, cls._EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME, True)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -340,6 +359,9 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     class _DoesNotExist(object):
         pass
+
+    # ----------------------------------------------------------------------
+    _EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME = "_execute_statement"
 
     # ----------------------------------------------------------------------
     # |

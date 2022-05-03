@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CallExpressionParserInfo.py
+# |  IndexExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-22 08:11:19
+# |      2022-05-01 15:04:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CallExpressionParserInfo object"""
+"""Contains the IndexExpressionParserInfo object"""
 
 import os
 
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -33,60 +33,53 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, Region
-    from ..Common.FuncArgumentsParserInfo import FuncArgumentsParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class CallExpressionParserInfo(ExpressionParserInfo):
+class IndexExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    expression: ExpressionParserInfo
-    arguments: Union[bool, FuncArgumentsParserInfo]
+    lhs_expression: ExpressionParserInfo
+    index_expression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
         regions: List[Optional[Region]],
-        expression: ExpressionParserInfo,
-        arguments: Union[bool, FuncArgumentsParserInfo],
+        lhs_expression: ExpressionParserInfo,
+        index_expression: ExpressionParserInfo,
         *args,
         **kwargs,
     ):
-        if isinstance(arguments, bool):
-            parser_info_type = expression.parser_info_type__  # type: ignore
-        else:
-            parser_info_type = cls._GetDominantExpressionType(expression, *arguments.arguments)
-
         return cls(
-            parser_info_type,               # type: ignore
-            regions,                        # type: ignore
-            expression,
-            arguments,
+            cls._GetDominantExpressionType(lhs_expression, index_expression),   # type: ignore
+            regions,                                                            # type: ignore
+            lhs_expression,
+            index_expression,
             *args,
             **kwargs,
         )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(CallExpressionParserInfo, self).__post_init__(
+        super(IndexExpressionParserInfo, self).__post_init__(
             *args,
             **kwargs,
-            regionless_attributes=["expression", ],
+            regionless_attributes=[
+                "lhs_expression",
+                "index_expression",
+            ],
         )
 
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor):
-        details = []
-
-        if not isinstance(self.arguments, bool):
-            details.append(("arguments", self.arguments))
-
         return self._AcceptImpl(
             visitor,
             details=[
-                ("expression", self.expression),
-            ] + details,  # type: ignore
+                ("lhs_expression", self.lhs_expression),
+                ("index_expression", self.index_expression),
+            ],
             children=None,
         )

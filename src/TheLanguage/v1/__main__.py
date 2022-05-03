@@ -127,9 +127,9 @@ def Execute(
             return dm.result
 
         # BugBug
-        filenames = [
-            r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage\FixedInt.TheLanguage",
-        ]
+        # filenames = [
+        #     r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage\None.TheLanguage",
+        # ]
 
         dm.stream.write("\nLexing...\n\n")
         with dm.stream.DoneManager() as lex_dm:

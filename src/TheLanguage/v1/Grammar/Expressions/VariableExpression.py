@@ -81,7 +81,7 @@ class VariableExpression(GrammarPhrase):
             if CommonTokens.strict_compile_time_regex.match(name_info):
                 parser_info_type = ParserInfoType.CompileTime
             else:
-                parser_info_type = ParserInfoType.CompileTimeType
+                parser_info_type = ParserInfoType.CompileTimeTypeCustomization
         else:
             parser_info_type = ParserInfoType.Standard
 

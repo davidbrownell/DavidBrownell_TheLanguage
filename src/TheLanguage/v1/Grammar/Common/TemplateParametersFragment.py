@@ -60,7 +60,6 @@ with InitRelativeImports():
         TemplateDecoratorParameterParserInfo,
         TemplateParametersParserInfo,
         TemplateTypeParameterParserInfo,
-        TypeParserInfo,
     )
 
 
@@ -95,7 +94,7 @@ def Create() -> PhraseItem:
                         item=[
                             "=",
                             CommonTokens.PushIgnoreWhitespaceControl,
-                            DynamicPhrasesType.Types,
+                            DynamicPhrasesType.Expressions,
                             CommonTokens.PopIgnoreWhitespaceControl,
                         ],
                     ),
@@ -107,7 +106,7 @@ def Create() -> PhraseItem:
                 name="Template Decorator",
                 item=[
                     # <type>
-                    DynamicPhrasesType.Types,
+                    DynamicPhrasesType.Expressions,
 
                     # <name>
                     CommonTokens.ParameterName,
@@ -174,8 +173,6 @@ def _ExtractTypeElement(
     nodes = ExtractSequence(node)
     assert len(nodes) == 3
 
-    errors: List[Error] = []
-
     # <template_type_name>
     type_leaf = cast(AST.Leaf, nodes[0])
     type_info = CommonTokens.TemplateTypeName.Extract(type_leaf)  # type: ignore
@@ -196,10 +193,7 @@ def _ExtractTypeElement(
         assert len(default_nodes) == 4
 
         default_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, default_nodes[2])))
-        default_info = cast(TypeParserInfo, GetParserInfo(default_node))
-
-    if errors:
-        raise ErrorException(*errors)
+        default_info = cast(ExpressionParserInfo, GetParserInfo(default_node))
 
     return (
         TemplateTypeParameterParserInfo.Create(
@@ -223,7 +217,7 @@ def _ExtractDecoratorElement(
 
     # <type>
     type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-    type_info = cast(TypeParserInfo, GetParserInfo(type_node))
+    type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
     # <name>
     name_leaf = cast(AST.Leaf, nodes[1])

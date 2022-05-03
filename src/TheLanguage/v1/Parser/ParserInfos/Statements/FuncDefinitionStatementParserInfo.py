@@ -50,11 +50,7 @@ with InitRelativeImports():
 
     from ..Common.MethodModifier import MethodModifier
 
-    from ..Common.MutabilityModifier import (
-        InvalidNewMutabilityModifierError,
-        MutabilityModifier,
-        MutabilityModifierRequiredError,
-    )
+    from ..Common.MutabilityModifier import MutabilityModifier
 
     from ..Common.TemplateParametersParserInfo import (  # pylint: disable=unused-import
         TemplateDecoratorParameterParserInfo,           # Convenience import
@@ -64,8 +60,10 @@ with InitRelativeImports():
 
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
-    from ..Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
-    from ..Types.TypeParserInfo import TypeParserInfo
+    from ..Expressions.VariableExpressionParserInfo import (
+        ExpressionParserInfo,
+        VariableExpressionParserInfo,
+    )
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -249,7 +247,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     method_modifier_param: InitVar[Optional[MethodModifier]]
     method_modifier: Optional[MethodModifier]           = field(init=False)
 
-    return_type: Optional[TypeParserInfo]
+    return_type: Optional[ExpressionParserInfo]
     name: Union[str, OperatorType]
     documentation: Optional[str]
 
@@ -345,25 +343,6 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
         # Validate
         errors: List[Error] = []
 
-        if self.return_type is not None:
-            if self.return_type.mutability_modifier is None:
-                errors.append(
-                    MutabilityModifierRequiredError.Create(
-                        region=self.return_type.regions__.self__,
-                    ),
-                )
-            elif (
-                self.return_type.mutability_modifier == MutabilityModifier.new
-                and (
-                    self.parent_class_capabilities is None or self.parent_class_capabilities.is_instantiable
-                )
-            ):
-                errors.append(
-                    InvalidNewMutabilityModifierError.Create(
-                        region=self.return_type.regions__.mutability_modifier,
-                    ),
-                )
-
         if self.parent_class_capabilities is None:
             if self.visibility == VisibilityModifier.protected:
                 errors.append(
@@ -455,7 +434,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                     ),
                 )
 
-            errors += self.parent_class_capabilities.ValidateFuncDefinitionStatementCapabilities(self)
+            self.parent_class_capabilities.ValidateFuncDefinitionStatementCapabilities(self)
 
         if self.is_deferred and self.statements:
             errors.append(
@@ -464,6 +443,8 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                     type=desc,
                 ),
             )
+
+        # BugBug: Ensure return type is type
 
         if errors:
             raise ErrorException(*errors)

@@ -45,6 +45,10 @@ DuplicateDocInfoError                       = CreateError(
     "Documentation information has already been provided",
 )
 
+ActiveErrorError                            = CreateError(
+    "Active errors prevent further validation",
+)
+
 
 # ----------------------------------------------------------------------
 class ParseObserver(Interface.Interface):
@@ -66,10 +70,11 @@ class ParseObserver(Interface.Interface):
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
-    ExtractPotentialDocInfoReturnType       = Union[
-        None,
-        Tuple[Union[AST.Leaf, AST.Node], str],
-        List[Error],
+    ExtractPotentialDocInfoReturnType       = Optional[
+        Tuple[
+            Union[AST.Leaf, AST.Node],
+            str,
+        ]
     ]
 
     @staticmethod
@@ -141,7 +146,6 @@ def Parse(
         for child in root.children:
             try:
                 result = observer.ExtractPotentialDocInfo(child)
-
                 if result is not None:
                     if isinstance(result, tuple):
                         if existing_doc_info is not None:
@@ -156,13 +160,13 @@ def Parse(
                     else:
                         assert False, result  # pragma: no cover
 
+                if isinstance(child, AST.Node):
+                    parser_info = _ExtractParserInfo(child)
+                    if parser_info is not None:
+                        statements.append(parser_info)
+
             except ErrorException as ex:
                 errors += ex.errors
-
-            if isinstance(child, AST.Node):
-                parser_info = _ExtractParserInfo(child)
-                if parser_info is not None:
-                    statements.append(parser_info)
 
         if errors:
             return errors
@@ -215,10 +219,7 @@ def Validate(
     def Execute(
         fully_qualified_name: str,  # pylint: disable=unused-argument
         root: RootParserInfo,
-    ) -> Union[
-        RootParserInfo,
-        List[Error],
-    ]:
+    ) -> Union[RootParserInfo, List[Error]]:
         visitor = ValidateVisitor(compile_time_values)
 
         root.Accept(visitor)
@@ -252,8 +253,13 @@ def HasParserInfoErrors(
 def GetParserInfoNoThrow(
     node: AST.Node,
 ) -> Optional[ParserInfo]:
-    # TODO: All code should check for this condition prior to invoking this method, which might cause the assertion to fire
-    assert not HasParserInfoErrors(node)
+    if HasParserInfoErrors(node):
+        raise ErrorException(
+            ActiveErrorError.Create(
+                CreateRegion(node),
+            ),
+        )
+
     return getattr(node, _PARSER_INFO_ATTRIBUTE_NAME, None)
 
 

@@ -159,31 +159,34 @@ def Extract(
             for delimited_node in cast(List[AST.Node], ExtractRepeat(cast(AST.Node, nodes[3])))
         ),
     ):
-        attribute_nodes = ExtractSequence(attribute_node)
-        assert len(attribute_nodes) == 2
+        try:
+            attribute_nodes = ExtractSequence(attribute_node)
+            assert len(attribute_nodes) == 2
 
-        # <name>
-        attribute_name_node = cast(AST.Leaf, attribute_nodes[0])
-        attribute_name_info = CommonTokens.AttributeName.Extract(attribute_name_node)  # type: ignore
+            # <name>
+            attribute_name_node = cast(AST.Leaf, attribute_nodes[0])
+            attribute_name_info = CommonTokens.AttributeName.Extract(attribute_name_node)  # type: ignore
 
-        # <function_arguments>?
-        function_arguments_info = None
+            # <function_arguments>?
+            function_arguments_info = None
 
-        function_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], attribute_nodes[1])))
-        if function_arguments_node is not None:
-            func_arguments_info = FuncArgumentsFragment.Extract(function_arguments_node)
-            if isinstance(func_arguments_info, list):
-                errors += func_arguments_info
-                continue
+            function_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], attribute_nodes[1])))
+            if function_arguments_node is None:
+                function_arguments_info = None
+            else:
+                function_arguments_info = FuncArgumentsFragment.Extract(function_arguments_node)
 
-        results.append(
-            AttributeData.Create(
-                attribute_name_node,
-                attribute_name_info,
-                function_arguments_node,
-                function_arguments_info,
-            ),
-        )
+            results.append(
+                AttributeData.Create(
+                    attribute_name_node,
+                    attribute_name_info,
+                    function_arguments_node,
+                    function_arguments_info,
+                ),
+            )
+
+        except ErrorException as ex:
+            errors += ex.errors
 
     if errors:
         raise ErrorException(*errors)
