@@ -33,6 +33,7 @@ with InitRelativeImports():
 
     from .Expressions.BinaryExpression import BinaryExpression, OperatorType as BinaryOperatorType
     from .Expressions.CallExpression import CallExpression
+    from .Expressions.IndexExpression import IndexExpression
     from .Expressions.TernaryExpression import TernaryExpression
     from .Expressions.TypeCheckExpression import TypeCheckExpression
     from .Expressions.UnaryExpression import UnaryExpression, OperatorType as UnaryOperatorType
@@ -55,10 +56,16 @@ def PrecedenceFunc(
 
     for condition_func in [
         ##### - Function call
-        # TODO: (This isn't being called, but seems like it should be?): data.phrase.name == CallExpression.PHRASE_NAME,
-
-        #### - Index (TODO)
-        #### - Dot (TODO)
+        #### - Index
+        #### - Dot
+        lambda: (
+            data.phrase.name == CallExpression.PHRASE_NAME
+            or data.phrase.name == IndexExpression.PHRASE_NAME
+            or binary_operator in [
+                BinaryOperatorType.Access,
+                BinaryOperatorType.AccessReturnSelf,
+            ]
+        ),
 
         ##### - Positive / Negative
         lambda: unary_operator in [
@@ -120,9 +127,6 @@ def PrecedenceFunc(
 
         ##### - Logical Or
         lambda: binary_operator == BinaryOperatorType.LogicalOr,
-
-        ##### - in (TODO)
-        ##### - not in (TODO)
 
         ##### - Ternary
         lambda: data.phrase.name == TernaryExpression.PHRASE_NAME,

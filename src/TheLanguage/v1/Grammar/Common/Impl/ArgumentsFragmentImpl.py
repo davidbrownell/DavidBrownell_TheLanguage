@@ -40,6 +40,7 @@ with InitRelativeImports():
         ExtractSequence,
         OptionalPhraseItem,
         PhraseItem,
+        PhraseItemItemType,
         ZeroOrMorePhraseItem,
     )
 
@@ -68,7 +69,7 @@ def Create(
     name: str,
     open_token: str,
     close_token: str,
-    argument_element: PhraseItem,
+    argument_element: PhraseItemItemType,
     *,
     allow_empty: bool,
 ) -> PhraseItem:
@@ -120,7 +121,6 @@ def Extract(
     *,
     allow_empty: bool,
 ) -> Union[
-    List[Error],
     bool,
     ExtractReturnType,
 ]:
@@ -151,6 +151,7 @@ def Extract(
     ):
         try:
             this_parser_info, is_keyword = extract_element_func(element_node)
+
         except ErrorException as ex:
             errors += ex.errors
             continue
@@ -168,14 +169,10 @@ def Extract(
 
         parser_infos.append(this_parser_info)
 
-    if not errors:
-        try:
-            return parser_info_type.Create(  # type: ignore
-                CreateRegions(node, node),
-                parser_infos,
-            )
-        except ErrorException as ex:
-            errors += ex.errors
+    if errors:
+        raise ErrorException(*errors)
 
-    assert errors
-    return errors
+    return parser_info_type.Create(  # type: ignore
+        CreateRegions(node, node),
+        parser_infos,
+    )

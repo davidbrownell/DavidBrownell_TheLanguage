@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CharacterType.py
+# |  Errors.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-05-02 22:12:23
+# |      2022-05-03 12:38:09
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CharacterType object"""
+"""Contains Common Errors"""
 
 import os
 
-from typing import Any
-
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,25 +27,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Type import Type
+    from ...Parser.Error import CreateError
 
 
 # ----------------------------------------------------------------------
-class CharacterType(Type):
-    name                                    = Interface.DerivedProperty("Character")  # type: ignore
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def IsSupportedValue(
-        value: Any,
-    ) -> bool:
-        return isinstance(value, int)
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def ToBoolValue(
-        value: Any,
-    ) -> bool:
-        return value > 0
+InvalidCompileTimeNameError                 = CreateError(
+    "The {type} name '{name}' is a compile-time name and not valid in this context",
+    name=str,
+    type=str,
+)

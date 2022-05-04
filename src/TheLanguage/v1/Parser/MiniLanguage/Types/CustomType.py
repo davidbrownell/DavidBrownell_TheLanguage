@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  Statement.py
+# |  CustomType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-17 09:14:49
+# |      2022-05-02 21:59:52
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,17 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Statement object"""
+"""Contains the CustomType object"""
 
 import os
 
-from typing import Any, Dict, List
-
-from dataclasses import dataclass
+from typing import Any
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -33,30 +30,50 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Types.Type import Type
+    from .Type import Type
 
 
 # ----------------------------------------------------------------------
-class Statement(Interface.Interface, ObjectReprImplBase):
-    """Abstract base class for all statements"""
+class CustomType(Type):
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        name: str,
+    ):
+        super(CustomType, self).__init__()
+
+        self._name                          = name
 
     # ----------------------------------------------------------------------
-    # |  Public Types
-    @dataclass
-    class ExecuteResult(object):
-        errors: List[str]
-        warnings: List[str]
-        infos: List[str]
+    @property
+    @Interface.override
+    def name(self) -> str:
+        return self._name
 
-        should_continue: bool
-
-    # ----------------------------------------------------------------------
-    # |  Public Methods
     # ----------------------------------------------------------------------
     @staticmethod
-    @Interface.abstractmethod
-    def Execute(
-        args: Dict[str, Any],
-        type_overloads: Dict[str, Type],
-    ) -> "Statement.ExecuteResult":
-        raise Exception("Abstract method")  # pragma: no cover
+    @Interface.override
+    def IsSupportedValue(
+        value: Any,
+    ) -> bool:
+        return (
+            isinstance(value, str)
+            and bool(value)
+            and not value.startswith('"')
+        )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def ToBoolValue(
+        value: Any,
+    ) -> bool:
+        return True
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ToStringValue(
+        self,
+        value: Any,
+    ) -> str:
+        return value

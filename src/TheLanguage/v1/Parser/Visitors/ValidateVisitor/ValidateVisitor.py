@@ -29,17 +29,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .CommonMixin import CommonMixin
     from .ExpressionsMixin import ExpressionsMixin
-    from .MiniLanguageMixin import MiniLanguageMixin
     from .StatementsMixin import StatementsMixin
-    from .TypesMixin import TypesMixin
 
 
 # ----------------------------------------------------------------------
 class ValidateVisitor(
     CommonMixin,
     ExpressionsMixin,
-    MiniLanguageMixin,
     StatementsMixin,
-    TypesMixin,
 ):
     pass

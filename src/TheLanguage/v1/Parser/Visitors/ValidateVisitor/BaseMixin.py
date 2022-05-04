@@ -15,10 +15,12 @@
 # ----------------------------------------------------------------------
 """Contains the BaseMixin object"""
 
+import itertools
 import os
 import types
 
-from typing import Any, Dict, List, Union
+from contextlib import contextmanager
+from typing import Any, cast, Dict, List, Optional, Union
 
 from dataclasses import dataclass
 
@@ -34,13 +36,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StateMaintainer import StateMaintainer
 
-    from ...Error import Error, Warning, Info
+    from ...Error import Error, ErrorException
 
-    from ...MiniLanguage.Types.Type import Type as MiniLanguageType
+    from ...Helpers import MiniLanguageHelpers
 
-    from ...ParserInfos.ParserInfo import ParserInfo, VisitControl
+    from ...MiniLanguage.Types.IntegerType import IntegerType
+
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
-    from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
+    from ...ParserInfos.Statements.StatementParserInfo import ParserInfo, Region, StatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -50,10 +53,18 @@ class CompileTimeTemplateTypeWrapper(object):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class CompileTimeVariable(object):
-    type: Union[CompileTimeTemplateTypeWrapper, MiniLanguageType]
+class ParameterInfo(object):
+    name: str
+    region: Optional[Region]
+    is_optional: bool
+    is_variadic: bool
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class ArgumentInfo(object):
     value: Any
-    parser_info: ParserInfo
+    region: Region
 
 
 # ----------------------------------------------------------------------
@@ -63,13 +74,11 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        compile_time_info: Dict[str, CompileTimeVariable],
+        configuration_info: Dict[str, MiniLanguageHelpers.CompileTimeValue],
     ):
-        self._compile_time_info             = StateMaintainer[CompileTimeVariable](compile_time_info)  # type: ignore
+        self._configuration_info            = configuration_info
 
         self._errors: List[Error]           = []
-        self._warnings: List[Warning]       = []
-        self._infos: List[Info]             = []
 
         self._scope_level                                                   = 0
         self._scope_delta                                                   = 0
@@ -85,72 +94,91 @@ class BaseMixin(object):
         self,
         name: str,
     ):
-        if name.startswith("OnExit"):
-            return self.__class__._DefaultOnExitMethod  # pylint: disable=protected-access
-        elif name.startswith("OnEnter"):
-            name = "On{}".format(name[len("OnEnter"):])
-
-            method = getattr(self, name, None)
-            assert method is not None, name
-
-            return method
-
         index = name.find("ParserInfo__")
         if index != -1 and index + len("ParserInfo__") + 1 < len(name):
-            return types.MethodType(self.__class__._DefaultDetailMethod, self)
+            return types.MethodType(self.__class__._DefaultDetailMethod, self)  # pylint: disable=protected-access
 
-        return None
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def OnEnterPhrase(
-        parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ):
-        pass
+        raise AttributeError(name)
 
     # ----------------------------------------------------------------------
-    def OnExitPhrase(
-        self,
-        parser_info: ParserInfo,
-    ):
-        if self._scope_level + self._scope_delta == 1:
-            pass # TODO
-
-    # ----------------------------------------------------------------------
-    def OnEnterScope(
+    @contextmanager
+    def OnPhrase(
         self,
         parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ) -> None:
+    ):
+        try:
+            yield
+
+            if self._scope_level + self._scope_delta == 1:
+                pass # TODO
+
+        except ErrorException as ex:
+            if isinstance(parser_info, StatementParserInfo):
+                self._errors += ex.errors
+            else:
+                raise
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnNewScope(
+        self,
+        parser_info: ParserInfo,  # pylint: disable=unused-argument
+    ):
         self._PushScope()
 
-    # ----------------------------------------------------------------------
-    def OnExitScope(
-        self,
-        parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ) -> None:
+        yield
+
         self._PopScope()
 
     # ----------------------------------------------------------------------
     @staticmethod
+    @contextmanager
     def OnRootParserInfo(
         parser_info: ParserInfo,  # pylint: disable=unused-argument
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
+    # |
+    # |  Protected Methods
+    # |
     # ----------------------------------------------------------------------
     def _PushScope(self):
         self._scope_level += 1
-        self._compile_time_info.PushScope()
 
     # ----------------------------------------------------------------------
     def _PopScope(self):
-        self._compile_time_info.PopScope()
-
         assert self._scope_level
         self._scope_level -= 1
 
+    # ----------------------------------------------------------------------
+    @classmethod
+    def _SetExecuteFlag(
+        cls,
+        statement: ParserInfo,
+        value: bool,
+    ):
+        object.__setattr__(statement, cls._EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME, value)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def _GetExecuteFlag(
+        cls,
+        statement: ParserInfo,
+    ):
+        return getattr(statement, cls._EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME, True)
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
+    # ----------------------------------------------------------------------
+    _EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME = "_execute_statement"
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
     # ----------------------------------------------------------------------
     def _DefaultDetailMethod(
         self,
@@ -158,21 +186,6 @@ class BaseMixin(object):
     ):
         if isinstance(parser_info_or_infos, list):
             for parser_info in parser_info_or_infos:
-                visit_control = parser_info.Accept(self)
-
-                if visit_control == VisitControl.Terminate:
-                    return visit_control
-
-                if visit_control == VisitControl.SkipSiblings:
-                    break
-
-            return VisitControl.Continue
-
-        return parser_info_or_infos.Accept(self)
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _DefaultOnExitMethod(
-        parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ):
-        pass
+                parser_info.Accept(self)
+        else:
+            parser_info_or_infos.Accept(self)

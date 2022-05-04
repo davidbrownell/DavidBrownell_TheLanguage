@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncInvocationStatement.py
+# |  TupleExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-22 08:37:28
+# |      2022-05-02 14:12:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the FuncInvocationStatement object"""
+"""Contains the TupleExpression object"""
 
 import os
 
-from typing import cast
+from typing import cast, List
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,53 +32,32 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
-    from ..Common import Tokens as CommonTokens
-    from ..Expressions.CallExpression import CallExpression
+    from ..Common.Impl import TuplePhraseImpl
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
-        ExtractDynamic,
         ExtractSequence,
-        PhraseItem,
     )
 
-    from ...Lexer.Phrases.DynamicPhrase import DynamicPhrase, Phrase
+    from ...Parser.Parser import CreateRegions
 
-    from ...Parser.Parser import CreateRegions, GetParserInfo
-
-    from ...Parser.ParserInfos.Statements.FuncInvocationStatementParserInfo import (
+    from ...Parser.ParserInfos.Expressions.TupleExpressionParserInfo import (
         ExpressionParserInfo,
-        FuncInvocationStatementParserInfo,
+        TupleExpressionParserInfo,
     )
 
 
 # ----------------------------------------------------------------------
-class FuncInvocationStatement(GrammarPhrase):
-    PHRASE_NAME                             = "Func Invocation Statement"
+class TupleExpression(GrammarPhrase):
+    PHRASE_NAME                             = "Tuple Expression"
 
     # ----------------------------------------------------------------------
     def __init__(self):
-        # ----------------------------------------------------------------------
-        def IsValidData(
-            data: Phrase.LexResultData,
-        ) -> bool:
-            data = DynamicPhrase.GetDynamicData(data)
-
-            return data.phrase.name == CallExpression.PHRASE_NAME
-
-        # ----------------------------------------------------------------------
-
-        super(FuncInvocationStatement, self).__init__(
-            DynamicPhrasesType.Statements,
+        super(TupleExpression, self).__init__(
+            DynamicPhrasesType.Expressions,
             self.PHRASE_NAME,
             [
-                # <expression>
-                PhraseItem(
-                    item=DynamicPhrasesType.Expressions,
-                    is_valid_data_func=IsValidData,
-                ),
-
-                CommonTokens.Newline,
+                TuplePhraseImpl.Create(DynamicPhrasesType.Expressions),
             ],
         )
 
@@ -91,15 +70,14 @@ class FuncInvocationStatement(GrammarPhrase):
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
-            assert len(nodes) == 2
+            assert len(nodes) == 1
 
-            # <expression>
-            expression_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-            expression_info = cast(ExpressionParserInfo, GetParserInfo(expression_node))
+            tuple_node = cast(AST.Node, nodes[0])
+            tuple_info = cast(List[ExpressionParserInfo], TuplePhraseImpl.Extract(tuple_node))
 
-            return FuncInvocationStatementParserInfo.Create(
+            return TupleExpressionParserInfo.Create(
                 CreateRegions(node),
-                expression_info,
+                tuple_info,
             )
 
         # ----------------------------------------------------------------------

@@ -17,6 +17,8 @@
 
 import os
 
+from contextlib import contextmanager
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -29,10 +31,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
+    from ...Helpers import MiniLanguageHelpers
+
+    from ...ParserInfos.ParserInfo import ParserInfoType, VisitResult
+
     from ...ParserInfos.Statements.ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo
     from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
     from ...ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
-    from ...ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo, IfStatementClauseParserInfo
+    from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
+    from ...ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo, IfStatementClauseParserInfo, IfStatementElseClauseParserInfo
     from ...ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportStatementItemParserInfo
     from ...ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
     from ...ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
@@ -45,83 +52,141 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  ClassAttributeStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnClassAttributeStatementParserInfo(
         self,
         parser_info: ClassAttributeStatementParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  ClassStatementParserInfo
     # ----------------------------------------------------------------------
-    def OnEnterClassStatementParserInfo(
+    @contextmanager
+    def OnClassStatementParserInfo(
         self,
         parser_info: ClassStatementParserInfo,
     ):
         # Add scope for templates and constraints
         if parser_info.templates or parser_info.constraints:
-            self._compile_time_info.PushScope()
+            pass # TODO: self._compile_time_info.PushScope()
 
-    # ----------------------------------------------------------------------
-    def OnExitClassStatementParserInfo(
-        self,
-        parser_info: ClassStatementParserInfo,
-    ):
+        yield
+
         # Remove scope for templates and constraints
         if parser_info.templates or parser_info.constraints:
-            self._compile_time_info.PopScope()
+            pass # TODO: self._compile_time_info.PopScope()
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnClassStatementDependencyParserInfo(
         self,
         parser_info: ClassStatementDependencyParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  FuncDefinitionStatementParserInfo
     # ----------------------------------------------------------------------
-    def OnEnterFuncDefinitionStatementParserInfo(
+    @contextmanager
+    def OnFuncDefinitionStatementParserInfo(
         self,
         parser_info: FuncDefinitionStatementParserInfo,
     ):
         # Add scope for templates
         if parser_info.templates:
-            self._compile_time_info.PushScope()
+            pass # TODO: self._compile_time_info.PushScope()
 
-    # ----------------------------------------------------------------------
-    def OnExitFuncDefinitionStatementParserInfo(
-        self,
-        parser_info: FuncDefinitionStatementParserInfo,
-    ):
+        yield
+
         # Remove scope for templates
         if parser_info.templates:
-            self._compile_time_info.PopScope()
+            pass # TODO: self._compile_time_info.PopScope()
+
+    # ----------------------------------------------------------------------
+    # |  FuncInvocationStatementParserInfo
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnFuncInvocationStatementParserInfo(
+        self,
+        parser_info: FuncInvocationStatementParserInfo,
+    ):
+        parser_info_type = parser_info.parser_info_type__  # type: ignore
+
+        if parser_info_type == ParserInfoType.Configuration:
+            MiniLanguageHelpers.EvalExpression(parser_info.expression, self._configuration_info)
+        elif parser_info_type == ParserInfoType.TypeCustomization:
+            pass # Nothing to do here on this pass
+        else:
+            raise NotImplementedError("TODO")  # TODO
+
+        yield
 
     # ----------------------------------------------------------------------
     # |  IfStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnIfStatementParserInfo(
         self,
         parser_info: IfStatementParserInfo,
     ):
-        pass
+        parser_info_type = parser_info.parser_info_type__  # type: ignore  # pylint: disable=no-member
+
+        if parser_info_type == ParserInfoType.Configuration:
+            matched_clause = False
+
+            for clause in parser_info.clauses:
+                execute_flag = False
+
+                if not matched_clause:
+                    clause_result = MiniLanguageHelpers.EvalExpression(clause.expression, self._configuration_info)
+                    clause_result = clause_result.type.ToBoolValue(clause_result.value)
+
+                    if clause_result:
+                        execute_flag = True
+                        matched_clause = True
+
+                self.__class__._SetExecuteFlag(clause, execute_flag)  # pylint: disable=protected-access
+
+            if parser_info.else_clause:
+                self.__class__._SetExecuteFlag(parser_info.else_clause, not matched_clause)  # pylint: disable=protected-access
+
+        elif parser_info_type ==ParserInfoType.TypeCustomization:
+            raise NotImplementedError("TODO") # TODO
+
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnIfStatementClauseParserInfo(
         self,
         parser_info: IfStatementClauseParserInfo,
     ):
-        pass
+        if not self.__class__._GetExecuteFlag(parser_info):  # pylint: disable=protected-access
+            yield VisitResult.SkipAll
+        else:
+            yield
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnIfStatementElseClauseParserInfo(
+        self,
+        parser_info: IfStatementElseClauseParserInfo,
+    ):
+        if not self.__class__._GetExecuteFlag(parser_info):  # pylint: disable=protected-access
+            yield VisitResult.SkipAll
+        else:
+            yield
 
     # ----------------------------------------------------------------------
     # |  ImportStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnImportStatementParserInfo(
         self,
         parser_info: ImportStatementParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     def OnImportStatementItemParserInfo(
@@ -142,28 +207,19 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  SpecialMethodStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnSpecialMethodStatementParserInfo(
         self,
         parser_info: SpecialMethodStatementParserInfo,
     ):
-        pass
+        yield
 
     # ----------------------------------------------------------------------
     # |  TypeAliasStatementParserInfo
     # ----------------------------------------------------------------------
-    def OnEnterTypeAliasStatementParserInfo(
+    @contextmanager
+    def OnTypeAliasStatementParserInfo(
         self,
         parser_info: TypeAliasStatementParserInfo,
     ):
-        # Add scope for templates or constraints
-        if parser_info.templates or parser_info.constraints:
-            self._compile_time_info.PushScope()
-
-    # ----------------------------------------------------------------------
-    def OnExitTypeAliasStatementParserInfo(
-        self,
-        parser_info: TypeAliasStatementParserInfo,
-    ):
-        # Remove scope for templates or constraints
-        if parser_info.templates or parser_info.constraints:
-            self._compile_time_info.PopScope()
+        yield

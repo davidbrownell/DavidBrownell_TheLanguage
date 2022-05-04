@@ -33,19 +33,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.MutabilityModifier import (
-        InvalidNewMutabilityModifierError,
-        MutabilityModifier,
-        MutabilityModifierRequiredError,
-    )
-
-    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
-
-    from ..Types.TypeParserInfo import (
+    from ..Expressions.ExpressionParserInfo import (
+        ExpressionParserInfo,
         ParserInfo,
         ParserInfoType,
         Region,
-        TypeParserInfo,
     )
 
     from ...Error import CreateError, Error, ErrorException
@@ -71,36 +63,19 @@ class FuncParameterParserInfo(ParserInfo):
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
 
-    is_compile_time: Optional[bool]
-
-    type: TypeParserInfo
+    type: ExpressionParserInfo
     is_variadic: Optional[bool]
     name: str
     default_value: Optional[ExpressionParserInfo]
 
     # ----------------------------------------------------------------------
     @classmethod
-    def Create(
-        cls,
-        regions: InitVar[List[Optional[Region]]],
-        is_compile_time: bool,
-        *args,
-        **kwargs,
-    ):
-        if is_compile_time:
-            parser_info_type = ParserInfoType.CompileTime
-            is_compile_time_value = True
-        else:
-            parser_info_type = ParserInfoType.Standard
-            is_compile_time_value = None
-
-        return cls(
-            parser_info_type,               # type: ignore
-            regions,
-            is_compile_time_value,
-            *args,
-            **kwargs,
-        )
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
@@ -112,25 +87,6 @@ class FuncParameterParserInfo(ParserInfo):
                 "default_value",
             ],
         )
-
-        # Validate
-        errors: List[Error] = []
-
-        if self.type.mutability_modifier is None:
-            errors.append(
-                MutabilityModifierRequiredError.Create(
-                    region=self.type.regions__.self__,
-                ),
-            )
-        elif self.type.mutability_modifier == MutabilityModifier.new:
-            errors.append(
-                InvalidNewMutabilityModifierError.Create(
-                    region=self.type.regions__.mutability_modifier,
-                ),
-            )
-
-        if errors:
-            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -153,7 +109,6 @@ class FuncParameterParserInfo(ParserInfo):
 @dataclass(frozen=True, repr=False)
 class FuncParametersParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
 
     positional: Optional[List[FuncParameterParserInfo]]
@@ -162,39 +117,26 @@ class FuncParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     @classmethod
-    def Create(
-        cls,
-        regions: List[Optional[Region]],
-        positional: Optional[List[FuncParameterParserInfo]],
-        any_args: Optional[List[FuncParameterParserInfo]],
-        keyword: Optional[List[FuncParameterParserInfo]],
-        *args,
-        **kwargs,
-    ):
-        parser_info_type = cls._GetDominantExpressionType(
-            *itertools.chain(
-                positional or [],
-                any_args or [],
-                keyword or [],
-            ),
-        )
-
-        if isinstance(parser_info_type, list):
-            raise ErrorException(*parser_info_type)
-
-        return cls(                         # pylint: disable=too-many-function-args
-            parser_info_type,               # type: ignore
-            regions,                        # type: ignore
-            positional,
-            any_args,
-            keyword,
-            *args,
-            **kwargs,
-        )
+    def Create(cls, *args, **kwargs):
+        """\
+        This hack avoids pylint warnings associated with invoking dynamically
+        generated constructors with too many methods.
+        """
+        return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(FuncParametersParserInfo, self).__init__(*args, **kwargs)
+        super(FuncParametersParserInfo, self).__init__(
+            ParserInfoType.GetDominantType(
+                *itertools.chain(
+                    self.positional or [],
+                    self.any or [],
+                    self.keyword or [],
+                ),
+            ),
+            *args,
+            **kwargs,
+        )
         assert self.positional or self.any or self.keyword
 
         # Validate

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import cast, List, Optional, Tuple
 
 import CommonEnvironment
 
@@ -49,6 +49,7 @@ with InitRelativeImports():
         CreateRegion,
         CreateRegions,
         Error,
+        ErrorException,
         GetParserInfo,
         ParserInfo,
     )
@@ -57,7 +58,6 @@ with InitRelativeImports():
         ExpressionParserInfo,
         ConstraintParameterParserInfo,
         ConstraintParametersParserInfo,
-        TypeParserInfo,
     )
 
 
@@ -74,7 +74,7 @@ def Create() -> PhraseItem:
         name="Constraint Parameter",
         item=[
             # <type>
-            DynamicPhrasesType.Types,
+            DynamicPhrasesType.Expressions,
 
             # <name>
             CommonTokens.ParameterName,
@@ -103,10 +103,7 @@ def Create() -> PhraseItem:
 # ----------------------------------------------------------------------
 def Extract(
     node: AST.Node,
-) -> Union[
-    List[Error],
-    ConstraintParametersParserInfo,
-]:
+) -> ConstraintParametersParserInfo:
     result = ParametersFragmentImpl.Extract(
         ConstraintParametersParserInfo,
         _ExtractElement,
@@ -123,10 +120,7 @@ def Extract(
 # ----------------------------------------------------------------------
 def _ExtractElement(
     node: AST.Node,
-) -> Union[
-    List[Error],
-    Tuple[ParserInfo, bool],
-]:
+) -> Tuple[ParserInfo, bool]:
     nodes = ExtractSequence(node)
     assert len(nodes) == 3
 
@@ -134,7 +128,7 @@ def _ExtractElement(
 
     # <type>
     type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-    type_info = cast(TypeParserInfo, GetParserInfo(type_node))
+    type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
     # <name>
     name_leaf = cast(AST.Leaf, nodes[1])
@@ -160,7 +154,7 @@ def _ExtractElement(
         default_info = cast(ExpressionParserInfo, GetParserInfo(default_node))
 
     if errors:
-        return errors
+        raise ErrorException(*errors)
 
     return (
         ConstraintParameterParserInfo.Create(

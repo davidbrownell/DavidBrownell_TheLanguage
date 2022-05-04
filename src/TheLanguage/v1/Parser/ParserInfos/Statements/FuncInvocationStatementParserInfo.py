@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableNameParserInfo.py
+# |  FuncInvocationStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 16:50:44
+# |      2022-04-29 17:02:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,16 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableNameParserInfo object"""
+"""Contains the FuncInvocationStatementParserInfo object"""
 
 import os
 
 from typing import List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,43 +32,48 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, ParserInfoType, Region
+    from .StatementParserInfo import Region, StatementParserInfo
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableNameParserInfo(ParserInfo):
+class FuncInvocationStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
-    parser_info_type: InitVar[ParserInfoType]
-    regions: InitVar[List[Optional[Region]]]
-
-    is_compile_time: Optional[bool]
-    name: str
+    expression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
         regions: List[Optional[Region]],
-        is_compile_time: bool,
+        expression: ExpressionParserInfo,
         *args,
         **kwargs,
     ):
-        if is_compile_time:
-            parser_info_type = ParserInfoType.CompileTime
-            is_compile_time_value = True
-        else:
-            parser_info_type = ParserInfoType.Standard
-            is_compile_time_value = None
-
         return cls(
-            parser_info_type,               # type: ignore
+            expression.parser_info_type__,  # type: ignore
             regions,                        # type: ignore
-            is_compile_time_value,
+            expression,
             *args,
             **kwargs,
         )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(VariableNameParserInfo, self).__init__(*args, **kwargs)
+        super(FuncInvocationStatementParserInfo, self).__post_init__(
+            *args,
+            **kwargs,
+            regionless_attributes=["expression", ],
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Accept(self, visitor):
+        return self._AcceptImpl(
+            visitor,
+            details=[
+                ("expression", self.expression),
+            ],
+            children=None,
+        )

@@ -35,7 +35,6 @@ with InitRelativeImports():
     from ..ParserInfo import ParserInfo, ParserInfoType, Region
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ..Types.TypeParserInfo import TypeParserInfo
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -57,7 +56,7 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
 
-    type: TypeParserInfo
+    type: ExpressionParserInfo
     keyword: Optional[str]
 
     # ----------------------------------------------------------------------
@@ -72,7 +71,7 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(TemplateTypeArgumentParserInfo, self).__init__(
-            ParserInfoType.CompileTime,
+            ParserInfoType.TypeCustomization,
             *args,
             **kwargs,
             regionless_attributes=["type", ],
@@ -110,8 +109,10 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
+        expression_parser_info_type = self.expression.parser_info_type__  # type: ignore
+
         super(TemplateDecoratorArgumentParserInfo, self).__init__(
-            ParserInfoType.CompileTime,
+            expression_parser_info_type,
             *args,
             **kwargs,
             regionless_attributes=["expression", ],
@@ -120,7 +121,7 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
         # Validate
         errors: List[Error] = []
 
-        if self.expression.parser_info_type__.value > ParserInfoType.CompileTime.value:  # type: ignore
+        if not ParserInfoType.IsCompileTimeValue(expression_parser_info_type):
             errors.append(
                 InvalidTemplateExpressionError.Create(
                     region=self.expression.regions__.self__,
@@ -169,8 +170,13 @@ class TemplateArgumentsParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
-        super(TemplateArgumentsParserInfo, self).__init__(ParserInfoType.CompileTime, *args, **kwargs)
+    def __post_init__(self, regions, *args, **kwargs):
+        super(TemplateArgumentsParserInfo, self).__init__(
+            ParserInfoType.GetDominantType(*self.arguments),
+            regions,
+            *args,
+            **kwargs,
+        )
 
         # Validate
         errors: List[Error] = []

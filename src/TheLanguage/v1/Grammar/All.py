@@ -31,11 +31,14 @@ with InitRelativeImports():
     from .Expressions.CallExpression import CallExpression
     from .Expressions.FuncOrTypeExpression import FuncOrTypeExpression
     from .Expressions.GroupExpression import GroupExpression
+    from .Expressions.IndexExpression import IndexExpression
     from .Expressions.LiteralExpression import LiteralExpression
     from .Expressions.TernaryExpression import TernaryExpression
+    from .Expressions.TupleExpression import TupleExpression
     from .Expressions.TypeCheckExpression import TypeCheckExpression
     from .Expressions.UnaryExpression import UnaryExpression
     from .Expressions.VariableExpression import VariableExpression
+    from .Expressions.VariantExpression import VariantExpression
 
     from .Statements.ClassAttributeStatement import ClassAttributeStatement
     from .Statements.ClassStatement import ClassStatement
@@ -48,23 +51,27 @@ with InitRelativeImports():
     from .Statements.SpecialMethodStatement import SpecialMethodStatement
     from .Statements.TypeAliasStatement import TypeAliasStatement
 
-    from .Types.StandardType import StandardType
-    from .Types.TupleType import TupleType
-    from .Types.VariantType import VariantType
-
 
 # ----------------------------------------------------------------------
 GrammarPhrases                              = [
     # Expressions
+
+    # This must be the first expression so that FuncOrTypeExpression doesn't consume
+    # things that are upper case (e.g. True, False, None).
+    LiteralExpression(),
+
     BinaryExpression(),
     CallExpression(),
     FuncOrTypeExpression(),
     GroupExpression(),
-    LiteralExpression(),
+    IndexExpression(),
     TernaryExpression(),
+    # TODO: Tuples negatively impact performance too much right now
+    # TupleExpression(),
     TypeCheckExpression(),
     UnaryExpression(),
     VariableExpression(),
+    VariantExpression(),
 
     # Statements
     ClassAttributeStatement(),
@@ -79,9 +86,4 @@ GrammarPhrases                              = [
     PassStatement(),
     SpecialMethodStatement(),
     TypeAliasStatement(),
-
-    # Types
-    StandardType(),
-    TupleType(),
-    VariantType(),
 ]

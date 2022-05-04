@@ -38,7 +38,7 @@ def test_Simple():
         textwrap.dedent(
             """\
             Int val Func1(): pass
-            (Int val, ) var Func2(Char val a, Bool var b): pass
+            (Int | Char) var Func2(Char val a, Bool var b): pass
             """,
         ),
     )))

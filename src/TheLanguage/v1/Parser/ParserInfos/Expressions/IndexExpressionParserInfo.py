@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleTypeParserInfo.py
+# |  IndexExpressionParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-12 09:02:55
+# |      2022-05-01 15:04:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the TupleTypeParserInfo object"""
+"""Contains the IndexExpressionParserInfo object"""
 
 import os
 
@@ -32,55 +32,45 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeParserInfo import (
-        ParserInfoType,
-        Region,
-        TypeParserInfo,
-    )
-
-    from ..Common.MutabilityModifier import MutabilityModifierRequiredError
-
-    from ...Error import Error, ErrorException
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TupleTypeParserInfo(TypeParserInfo):
-    types: List[TypeParserInfo]
+class IndexExpressionParserInfo(ExpressionParserInfo):
+    # ----------------------------------------------------------------------
+    lhs_expression: ExpressionParserInfo
+    index_expression: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
         regions: List[Optional[Region]],
+        lhs_expression: ExpressionParserInfo,
+        index_expression: ExpressionParserInfo,
         *args,
         **kwargs,
     ):
         return cls(
-            ParserInfoType.Standard,        # type: ignore
-            regions,                        # type: ignore
+            ParserInfoType.GetDominantType(lhs_expression, index_expression),   # type: ignore
+            regions,                                                            # type: ignore
+            lhs_expression,
+            index_expression,
             *args,
             **kwargs,
         )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):  # type: ignore
-        super(TupleTypeParserInfo, self).__post_init__(*args, **kwargs)
-
-        # Validate
-        errors: List[Error] = []
-
-        for contained_type in self.types:
-            if contained_type.mutability_modifier is None:
-                errors.append(
-                    MutabilityModifierRequiredError.Create(
-                        region=contained_type.regions__.self__,
-                    ),
-                )
-            # TODO: InvalidNewMutabilityModifierError?
-
-        if errors:
-            raise ErrorException(*errors)
+    def __post_init__(self, *args, **kwargs):
+        super(IndexExpressionParserInfo, self).__post_init__(
+            *args,
+            **kwargs,
+            regionless_attributes=[
+                "lhs_expression",
+                "index_expression",
+            ],
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -88,7 +78,8 @@ class TupleTypeParserInfo(TypeParserInfo):
         return self._AcceptImpl(
             visitor,
             details=[
-                ("types", self.types),
-            ],  # type: ignore
+                ("lhs_expression", self.lhs_expression),
+                ("index_expression", self.index_expression),
+            ],
             children=None,
         )

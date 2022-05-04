@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional, Tuple, Union
+from typing import cast, Optional, Tuple, Union
 
 import CommonEnvironment
 
@@ -46,7 +46,6 @@ with InitRelativeImports():
 
     from ...Parser.Parser import (
         CreateRegions,
-        Error,
         GetParserInfo,
         ParserInfo,
     )
@@ -55,7 +54,7 @@ with InitRelativeImports():
         ExpressionParserInfo,
         FuncParameterParserInfo,
         FuncParametersParserInfo,
-        TypeParserInfo,
+        ParserInfoType,
     )
 
 
@@ -65,7 +64,7 @@ def Create() -> PhraseItem:
         name="Function Parameter",
         item=[
             # <type>
-            DynamicPhrasesType.Types,
+            DynamicPhrasesType.Expressions,
 
             # '...'?
             OptionalPhraseItem(
@@ -101,7 +100,6 @@ def Create() -> PhraseItem:
 def Extract(
     node: AST.Node,
 ) -> Union[
-    List[Error],
     bool,
     FuncParametersParserInfo,
 ]:
@@ -124,7 +122,7 @@ def _ExtractElement(
 
     # <type>
     type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[0])))
-    type_info = cast(TypeParserInfo, GetParserInfo(type_node))
+    type_info = cast(ExpressionParserInfo, GetParserInfo(type_node))
 
     # '...'?
     is_variadic_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -137,7 +135,10 @@ def _ExtractElement(
     name_leaf = cast(AST.Leaf, nodes[2])
     name_info = CommonTokens.ParameterName.Extract(name_leaf)  # type: ignore
 
-    is_compile_time_region = CommonTokens.ParameterName.GetIsCompileTimeRegion(name_leaf)  # type: ignore  # pylint: disable=not-callable
+    if CommonTokens.ParameterName.IsCompileTime(name_info):  # type: ignore  # pylint: disable=not-callable
+        parser_info_type = ParserInfoType.TypeCustomization
+    else:
+        parser_info_type = ParserInfoType.Standard
 
     # ('=' <expression>)?
     default_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[3])))
@@ -152,8 +153,8 @@ def _ExtractElement(
 
     return (
         FuncParameterParserInfo.Create(
-            CreateRegions(node, is_compile_time_region, is_variadic_node, name_leaf),  # type: ignore
-            bool(is_compile_time_region),
+            parser_info_type,
+            CreateRegions(node, is_variadic_node, name_leaf),  # type: ignore
             type_info,
             is_variadic_info,
             name_info,
