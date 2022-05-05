@@ -32,9 +32,9 @@ public immutable class Char:
 
     [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, ThisType immutable that)
 
-    [Deferred] public override Bool val __Equal__(Integer immutable that) immutable
-    [Deferred] public override Bool val __NotEqual__(Integer immutable that) immutable
-    [Deferred] public override Bool val __Less__(Integer immutable that) immutable
-    [Deferred] public override Bool val __LessEqual__(Integer immutable that) immutable
-    [Deferred] public override Bool val __Greater__(Integer immutable that) immutable
-    [Deferred] public override Bool val __GreaterEqual__(Integer immutable that) immutable
+    [Deferred] public override Bool val __Equal__(Char immutable that) immutable
+    [Deferred] public override Bool val __NotEqual__(Char immutable that) immutable
+    [Deferred] public override Bool val __Less__(Char immutable that) immutable
+    [Deferred] public override Bool val __LessEqual__(Char immutable that) immutable
+    [Deferred] public override Bool val __Greater__(Char immutable that) immutable
+    [Deferred] public override Bool val __GreaterEqual__(Char immutable that) immutable

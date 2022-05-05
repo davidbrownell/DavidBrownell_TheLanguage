@@ -88,6 +88,23 @@ class FuncParameterParserInfo(ParserInfo):
             ],
         )
 
+        # Validate
+        errors: List[Error] = []
+
+        try:
+            self.type.ValidateAsType(self.parser_info_type__)
+        except ErrorException as ex:
+            errors += ex.errors
+
+        if self.default_value is not None:
+            try:
+                self.default_value.ValidateAsExpression()
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
+
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor):

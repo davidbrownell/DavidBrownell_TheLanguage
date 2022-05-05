@@ -111,7 +111,7 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: FuncInvocationStatementParserInfo,
     ):
-        parser_info_type = parser_info.parser_info_type__  # type: ignore
+        parser_info_type = parser_info.parser_info_type__
 
         if parser_info_type == ParserInfoType.Configuration:
             MiniLanguageHelpers.EvalExpression(parser_info.expression, self._configuration_info)
@@ -130,7 +130,7 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: IfStatementParserInfo,
     ):
-        parser_info_type = parser_info.parser_info_type__  # type: ignore  # pylint: disable=no-member
+        parser_info_type = parser_info.parser_info_type__
 
         if parser_info_type == ParserInfoType.Configuration:
             matched_clause = False

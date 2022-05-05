@@ -33,6 +33,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..ParserInfo import ParserInfo, ParserInfoType, Region
+    from ...Error import CreateError, ErrorException
+
+
+# ----------------------------------------------------------------------
+InvalidTypeError                            = CreateError(
+    "Expresion is not a type",
+)
+
+InvalidExpressionError                      = CreateError(
+    "Type is not an expression",
+)
 
 
 # ----------------------------------------------------------------------
@@ -72,15 +83,28 @@ class ExpressionParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def ValidateAsConfigurationType(self) -> None:
-        raise NotImplementedError("This method should be overridden by those derived types that are valid at compile-time")
+    def IsType(self) -> Optional[bool]:
+        # Most expressions are not types.
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def ValidateAsCustomizationType(self) -> None:
-        raise NotImplementedError("This method should be overridden by those derived types that are valid at compile-time")
+    def ValidateAsType(
+        self,
+        parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
+        *,
+        is_instantiated_type: Optional[bool]=True,      # pylint: disable=unused-argument
+    ) -> None:
+        # Most expressions are not types.
+
+        raise ErrorException(
+            InvalidTypeError.Create(
+                region=self.regions__.self__,
+            ),
+        )
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def ValidateAsStandardType(self) -> None:
-        raise NotImplementedError("This method should be overridden by those derived types that are valid at compile-time")
+    def ValidateAsExpression(self) -> None:
+        # Most expressions are expressions
+        pass

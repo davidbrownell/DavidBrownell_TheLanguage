@@ -71,11 +71,14 @@ class FuncArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(FuncArgumentParserInfo, self).__init__(
-            self.expression.parser_info_type__,  # type: ignore
+            self.expression.parser_info_type__,
             *args,
             **kwargs,
             regionless_attributes=["expression", ],
         )
+
+        # Validate
+        self.expression.ValidateAsExpression()
 
     # ----------------------------------------------------------------------
     @Interface.override
