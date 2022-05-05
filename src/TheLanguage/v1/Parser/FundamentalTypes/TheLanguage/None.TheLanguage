@@ -31,5 +31,5 @@ public immutable class None:
 
     [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, ThisType immutable that)
 
-    [Deferred] public override Bool val __Equal__(Integer immutable that) immutable
-    [Deferred] public override Bool val __NotEqual__(Integer immutable that) immutable
+    [Deferred] public override Bool val __Equal__(None immutable that) immutable
+    [Deferred] public override Bool val __NotEqual__(None immutable that) immutable

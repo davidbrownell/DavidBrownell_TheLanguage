@@ -244,7 +244,7 @@ class ExpressionsMixin(BaseMixin):
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
-                parser_info_type=parser_info.parser_info_type__,  # type: ignore
+                parser_info_type=parser_info.parser_info_type__,
                 self_region=self._ToString(parser_info.regions__.self__),
                 value_region=self._ToString(parser_info.regions__.value),
                 mutability_modifier_region=self._ToString(parser_info.regions__.mutability_modifier),
@@ -499,7 +499,7 @@ class ExpressionsMixin(BaseMixin):
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
-                parser_info_type=parser_info.parser_info_type__,  # type: ignore
+                parser_info_type=parser_info.parser_info_type__,
                 self_region=self._ToString(parser_info.regions__.self__),
                 name_region=self._ToString(parser_info.regions__.name),
                 name=self._ToString(parser_info.name),

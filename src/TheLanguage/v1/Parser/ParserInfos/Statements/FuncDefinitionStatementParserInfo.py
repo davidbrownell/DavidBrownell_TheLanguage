@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, List, Optional, Union
+from typing import Callable, cast, List, Optional, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -278,7 +278,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
         if isinstance(parameters, bool):
             parser_info_type = ParserInfoType.Standard
         else:
-            parser_info_type = parameters.parser_info_type__  # type: ignore
+            parser_info_type = parameters.parser_info_type__
 
         return cls(
             parser_info_type,               # type: ignore
@@ -443,6 +443,12 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
                     type=desc,
                 ),
             )
+
+        if self.return_type is not None:
+            try:
+                self.return_type.ValidateAsType(self.parser_info_type__)
+            except ErrorException as ex:
+                errors += ex.errors
 
         if errors:
             raise ErrorException(*errors)

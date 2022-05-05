@@ -31,9 +31,9 @@ public immutable class Bool:
 
     [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, ThisType immutable that)
 
-    [Deferred] public override Bool val __Equal__(Integer immutable that) immutable
-    [Deferred] public override Bool val __NotEqual__(Integer immutable that) immutable
-    [Deferred] public override Bool val __Less__(Integer immutable that) immutable
-    [Deferred] public override Bool val __LessEqual__(Integer immutable that) immutable
-    [Deferred] public override Bool val __Greater__(Integer immutable that) immutable
-    [Deferred] public override Bool val __GreaterEqual__(Integer immutable that) immutable
+    [Deferred] public override Bool val __Equal__(Bool immutable that) immutable
+    [Deferred] public override Bool val __NotEqual__(Bool immutable that) immutable
+    [Deferred] public override Bool val __Less__(Bool immutable that) immutable
+    [Deferred] public override Bool val __LessEqual__(Bool immutable that) immutable
+    [Deferred] public override Bool val __Greater__(Bool immutable that) immutable
+    [Deferred] public override Bool val __GreaterEqual__(Bool immutable that) immutable

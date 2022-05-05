@@ -22,6 +22,7 @@ from typing import List, Optional
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -51,3 +52,27 @@ class NoneExpressionParserInfo(ExpressionParserInfo):
             *args,
             **kwargs,
         )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsType() -> Optional[bool]:
+        return None
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateAsType(
+        self,
+        parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
+        *,
+        is_instantiated_type: Optional[bool]=True,      # pylint: disable=unused-argument
+    ) -> None:
+        # This can be an expression or a type
+        pass
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def ValidateAsExpression() -> None:
+        # This can be an expression or a type
+        pass

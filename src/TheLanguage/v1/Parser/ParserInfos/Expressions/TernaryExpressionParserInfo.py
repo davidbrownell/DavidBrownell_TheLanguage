@@ -82,6 +82,42 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def IsType(self) -> Optional[bool]:
+        return (
+            self.condition_expression.IsType() is False
+            and self.true_expression.IsType() is not False
+            and self.false_expression.IsType() is not False
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateAsType(
+        self,
+        parser_info_type: ParserInfoType,
+        *,
+        is_instantiated_type: Optional[bool]=True,
+    ) -> None:
+        self.condition_expression.ValidateAsExpression()
+
+        self.true_expression.ValidateAsType(
+            parser_info_type,
+            is_instantiated_type=is_instantiated_type,
+        )
+
+        self.false_expression.ValidateAsType(
+            parser_info_type,
+            is_instantiated_type=is_instantiated_type,
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateAsExpression(self) -> None:
+        self.condition_expression.ValidateAsExpression()
+        self.true_expression.ValidateAsExpression()
+        self.false_expression.ValidateAsExpression()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def Accept(self, visitor):
         return self._AcceptImpl(
             visitor,

@@ -54,7 +54,7 @@ class CallExpressionParserInfo(ExpressionParserInfo):
         **kwargs,
     ):
         if isinstance(arguments, bool):
-            parser_info_type = expression.parser_info_type__  # type: ignore
+            parser_info_type = expression.parser_info_type__
         else:
             parser_info_type = ParserInfoType.GetDominantType(expression, *arguments.arguments)
 

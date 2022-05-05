@@ -34,6 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ExpressionParserInfo import (  # pylint: disable=unused-import
         ExpressionParserInfo,
+        InvalidExpressionError,
         ParserInfoType,
     )
 
@@ -57,7 +58,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 InvalidCompileTimeTypeError                 = CreateError(
-    "Invalid compile-time type (configuration)",
+    "Invalid compile-time type",
 )
 
 InvalidCompileTimeTemplatesError            = CreateError(
@@ -68,8 +69,16 @@ InvalidCompileTimeConstraintsError          = CreateError(
     "Compile-time types may not define constraint arguments",
 )
 
-InvalidCompileTimeMutabilityError           = CreateError(
+InvalidCompileTimeMutabilityModifierError   = CreateError(
     "Compile-time types may not have a mutability modifier",
+)
+
+MutabilityModifierRequiredError             = CreateError(
+    "A mutability modifier is required in this context",
+)
+
+InvalidStandardMutabilityModifierError      = CreateError(
+    "A mutability modifier is not allowed in this context",
 )
 
 
@@ -95,35 +104,84 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsConfigurationType(self) -> None:
+    def IsType(self) -> Optional[bool]:
+        return True
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateAsType(
+        self,
+        parser_info_type: ParserInfoType,
+        *,
+        is_instantiated_type: Optional[bool]=True,
+    ) -> None:
+        # Validate
         errors: List[Error] = []
 
-        if isinstance(self.value, CustomType):
-            errors.append(
-                InvalidCompileTimeTypeError.Create(
-                    region=self.regions__.value,
-                ),
-            )
+        if parser_info_type == ParserInfoType.Configuration:
+            if isinstance(self.value, CustomType):
+                errors.append(
+                    InvalidCompileTimeTypeError.Create(
+                        region=self.regions__.value,
+                    ),
+                )
 
-        errors += self._GenerateCompileTimeValidationErrors()
+        if (
+            parser_info_type == ParserInfoType.Configuration
+            or parser_info_type == ParserInfoType.TypeCustomization
+        ):
+            if self.templates is not None:
+                errors.append(
+                    InvalidCompileTimeTemplatesError.Create(
+                        region=self.templates.regions__.self__,
+                    ),
+                )
+
+            if self.constraints is not None:
+                errors.append(
+                    InvalidCompileTimeConstraintsError.Create(
+                        region=self.constraints.regions__.self__,
+                    ),
+                )
+
+            if self.mutability_modifier is not None:
+                errors.append(
+                    InvalidCompileTimeMutabilityModifierError.Create(
+                        region=self.regions__.mutability_modifier,
+                    ),
+                )
+
+        elif (
+            parser_info_type == ParserInfoType.Standard
+            or parser_info_type == ParserInfoType.Unknown
+        ):
+            if is_instantiated_type and self.mutability_modifier is None:
+                errors.append(
+                    MutabilityModifierRequiredError.Create(
+                        region=self.regions__.self__,
+                    ),
+                )
+            elif not is_instantiated_type and self.mutability_modifier is not None:
+                errors.append(
+                    InvalidStandardMutabilityModifierError.Create(
+                        region=self.regions__.mutability_modifier,
+                    ),
+                )
+
+        else:
+            assert False, parser_info_type  # pragma: no cover
 
         if errors:
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsCustomizationType(self) -> None:
-        errors: List[Error] = []
-
-        errors += self._GenerateCompileTimeValidationErrors()
-
-        if errors:
-            raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def ValidateAsStandardType(self) -> None:
-        raise NotImplementedError("TODO")  # TODO
+    def ValidateAsExpression(self) -> None:
+        raise ErrorException(
+            InvalidExpressionError.Create(
+                self.regions__.self__,
+            ),
+        )
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -140,32 +198,3 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
             details,
             children=None,
         )
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    def _GenerateCompileTimeValidationErrors(self) -> List[Error]:
-        errors: List[Error] = []
-
-        if self.templates is not None:
-            errors.append(
-                InvalidCompileTimeTemplatesError.Create(
-                    region=self.templates.regions__.self__,
-                ),
-            )
-
-        if self.constraints is not None:
-            errors.append(
-                InvalidCompileTimeConstraintsError.Create(
-                    region=self.constraints.regions__.self__,
-                ),
-            )
-
-        if self.mutability_modifier is not None:
-            errors.append(
-                InvalidCompileTimeMutabilityError.Create(
-                    region=self.regions__.mutability_modifier,
-                ),
-            )
-
-        return errors

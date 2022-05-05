@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CustomType.py
+# |  NestedType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-05-02 21:59:52
+# |      2022-05-05 15:10:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CustomType object"""
+"""Contains the NestedType object"""
 
 import os
 
@@ -34,15 +34,30 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class CustomType(Type):
+class NestedType(Type):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        name: str,
+        left_type: Type,
+        right_type: Type,
     ):
-        super(CustomType, self).__init__()
+        super(NestedType, self).__init__()
 
-        self._name                          = name
+        if isinstance(left_type, NestedType):
+            left_types = left_type.types
+        else:
+            left_types = [left_type]
+
+        if isinstance(right_type, NestedType):
+            right_types = right_type.types
+        else:
+            right_types = [right_type]
+
+        types = left_types + right_types
+        assert types
+
+        self.types                          = types
+        self._name                          = ".".join(the_type.name for the_type in types)
 
     # ----------------------------------------------------------------------
     @property
@@ -51,12 +66,12 @@ class CustomType(Type):
         return self._name
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @Interface.override
     def IsSupportedValue(
+        self,
         value: Any,
     ) -> bool:
-        raise Exception("Not supported for custom types")
+        return self.types[-1].IsSupportedValue(value)
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -64,12 +79,4 @@ class CustomType(Type):
     def ToBoolValue(
         value: Any,
     ) -> bool:
-        raise Exception("Not supported for custom types")
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def ToStringValue(
-        value: Any,
-    ) -> str:
-        return value
+        return True
