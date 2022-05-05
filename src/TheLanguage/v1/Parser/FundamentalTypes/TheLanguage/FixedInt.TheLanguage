@@ -58,51 +58,51 @@ public mutable class FixedInt <
     [Deferred] public override Bool val __ToBool__() immutable              # value != 0
     [Deferred] public override Str val __ToString?__() immutable
 
-    [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, Integer immutable that)
+    [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, Int immutable that)
 
-    [Deferred] public override Bool val __Equal__(Integer immutable that) immutable
-    [Deferred] public override Bool val __NotEqual__(Integer immutable that) immutable
-    [Deferred] public override Bool val __Less__(Integer immutable that) immutable
-    [Deferred] public override Bool val __LessEqual__(Integer immutable that) immutable
-    [Deferred] public override Bool val __Greater__(Integer immutable that) immutable
-    [Deferred] public override Bool val __GreaterEqual__(Integer immutable that) immutable
+    [Deferred] public override Bool val __Equal__(Int immutable that) immutable
+    [Deferred] public override Bool val __NotEqual__(Int immutable that) immutable
+    [Deferred] public override Bool val __Less__(Int immutable that) immutable
+    [Deferred] public override Bool val __LessEqual__(Int immutable that) immutable
+    [Deferred] public override Bool val __Greater__(Int immutable that) immutable
+    [Deferred] public override Bool val __GreaterEqual__(Int immutable that) immutable
 
     [Deferred] public override ThisType var __Negative?__() immutable
     [Deferred] public override ThisType var __Positive?__() immutable
     [Deferred] public override ThisType var __BitFlip?__() immutable
 
-    [Deferred] public override Num var __Divide?__(Integer immutable divisor) immutable
-    [Deferred] public override ThisType var __DivideFloor?__(Integer immutable divisor) immutable
-    [Deferred] public override ThisType var __Modulo?__(Integer immutable divisor) immutable
-    [Deferred] public override ThisType var __Multiply?__(Integer immutable multiplier) immutable
-    [Deferred] public override ThisType var __Power?__(Integer immutable exponent) immutable
+    [Deferred] public override Num var __Divide?__(Int immutable divisor) immutable
+    [Deferred] public override ThisType var __DivideFloor?__(Int immutable divisor) immutable
+    [Deferred] public override ThisType var __Modulo?__(Int immutable divisor) immutable
+    [Deferred] public override ThisType var __Multiply?__(Int immutable multiplier) immutable
+    [Deferred] public override ThisType var __Power?__(Int immutable exponent) immutable
 
-    [Deferred] public override ThisType var __Add?__(Integer immutable value) immutable
-    [Deferred] public override ThisType var __Subtract?__(Integer immutable value) immutable
+    [Deferred] public override ThisType var __Add?__(Int immutable value) immutable
+    [Deferred] public override ThisType var __Subtract?__(Int immutable value) immutable
 
-    [Deferred] public override ThisType var __BitShiftLeft?__(Integer immutable places) immutable
-    [Deferred] public override ThisType var __BitShiftRight?__(Integer immutable places) immutable
+    [Deferred] public override ThisType var __BitShiftLeft?__(Int immutable places) immutable
+    [Deferred] public override ThisType var __BitShiftRight?__(Int immutable places) immutable
 
-    [Deferred] public override ThisType var __BitAnd?__(Integer immutable value) immutable
-    [Deferred] public override ThisType var __BitXOr?__(Integer immutable value) immutable
-    [Deferred] public override ThisType var __BitOr?__(Integer immutable value) immutable
+    [Deferred] public override ThisType var __BitAnd?__(Int immutable value) immutable
+    [Deferred] public override ThisType var __BitXOr?__(Int immutable value) immutable
+    [Deferred] public override ThisType var __BitOr?__(Int immutable value) immutable
 
     [Deferred] public override None __BitFlipInplace?__() var
 
-    [Deferred] public override None __DivideFloorInplace?__(Integer immutable divisor) var
-    [Deferred] public override None __ModuloInplace?__(Integer immutable divisor) var
-    [Deferred] public override None __MultiplyInplace?__(Integer immutable multiplier) var
-    [Deferred] public override None __PowerInplace?__(Integer immutable exponent) var
+    [Deferred] public override None __DivideFloorInplace?__(Int immutable divisor) var
+    [Deferred] public override None __ModuloInplace?__(Int immutable divisor) var
+    [Deferred] public override None __MultiplyInplace?__(Int immutable multiplier) var
+    [Deferred] public override None __PowerInplace?__(Int immutable exponent) var
 
-    [Deferred] public override None __AddInplace?__(Integer immutable value) var
-    [Deferred] public override None __SubtractInplace?__(Integer immutable value) var
+    [Deferred] public override None __AddInplace?__(Int immutable value) var
+    [Deferred] public override None __SubtractInplace?__(Int immutable value) var
 
-    [Deferred] public override None __BitShiftLeftInplace?__(Integer immutable places) var
-    [Deferred] public override None __BitShiftRightInplace?__(Integer immutable places) var
+    [Deferred] public override None __BitShiftLeftInplace?__(Int immutable places) var
+    [Deferred] public override None __BitShiftRightInplace?__(Int immutable places) var
 
-    [Deferred] public override None __BitAndInplace?__(Integer immutable value) var
-    [Deferred] public override None __BitXOrInplace?__(Integer immutable value) var
-    [Deferred] public override None __BitOrInplace?__(Integer immutable value) var
+    [Deferred] public override None __BitAndInplace?__(Int immutable value) var
+    [Deferred] public override None __BitXOrInplace?__(Int immutable value) var
+    [Deferred] public override None __BitOrInplace?__(Int immutable value) var
 
 
 # ----------------------------------------------------------------------

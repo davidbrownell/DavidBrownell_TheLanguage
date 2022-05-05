@@ -138,8 +138,6 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
                     region=self.regions__.self__,
                 ),
             )
-        else:
-            pass
 
         if errors:
             raise ErrorException(*errors)

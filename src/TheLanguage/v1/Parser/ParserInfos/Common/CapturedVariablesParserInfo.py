@@ -33,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, Region
+    from ...Error import Error, ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -54,8 +55,17 @@ class CapturedVariablesParserInfo(ParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(CapturedVariablesParserInfo, self).__init__(ParserInfoType.Standard, *args, **kwargs)
 
-        # TODO: Validate that all variables are ultimately variable expressions (dotted notation is OK)
-        # TODO: Is dotted notation OK? Capturing variables is a bit like adding a ref; need to think about this more
+        # Validate
+        errors: List[Error] = []
+
+        for variable in self.variables:
+            try:
+                variable.ValidateAsExpression()
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     @Interface.override

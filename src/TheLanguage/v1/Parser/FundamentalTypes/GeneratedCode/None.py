@@ -6,6 +6,7 @@
 from v1.Lexer.Location import Location
 from v1.Parser.MiniLanguage.Types.BooleanType import BooleanType
 from v1.Parser.MiniLanguage.Types.CustomType import CustomType
+from v1.Parser.MiniLanguage.Types.NoneType import NoneType
 from v1.Parser.MiniLanguage.Types.StringType import StringType
 from v1.Parser.ParserInfos.Common.ClassModifier import ClassModifier
 from v1.Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParameterParserInfo
@@ -132,30 +133,30 @@ region_000104 = Region(begin=Location(line=32, column=16), end=Location(line=32,
 region_000105 = Region(begin=Location(line=34, column=32), end=Location(line=34, column=40))
 region_000106 = Region(begin=Location(line=34, column=32), end=Location(line=34, column=36))
 region_000107 = Region(begin=Location(line=34, column=37), end=Location(line=34, column=40))
-region_000108 = Region(begin=Location(line=34, column=51), end=Location(line=34, column=68))
-region_000109 = Region(begin=Location(line=34, column=51), end=Location(line=34, column=58))
-region_000110 = Region(begin=Location(line=34, column=59), end=Location(line=34, column=68))
-region_000111 = Region(begin=Location(line=34, column=51), end=Location(line=34, column=73))
-region_000112 = Region(begin=Location(line=34, column=69), end=Location(line=34, column=73))
-region_000113 = Region(begin=Location(line=34, column=50), end=Location(line=34, column=74))
+region_000108 = Region(begin=Location(line=34, column=51), end=Location(line=34, column=65))
+region_000109 = Region(begin=Location(line=34, column=51), end=Location(line=34, column=55))
+region_000110 = Region(begin=Location(line=34, column=56), end=Location(line=34, column=65))
+region_000111 = Region(begin=Location(line=34, column=51), end=Location(line=34, column=70))
+region_000112 = Region(begin=Location(line=34, column=66), end=Location(line=34, column=70))
+region_000113 = Region(begin=Location(line=34, column=50), end=Location(line=34, column=71))
 region_000114 = Region(begin=Location(line=34, column=5), end=Location(line=35, column=1))
 region_000115 = Region(begin=Location(line=34, column=16), end=Location(line=34, column=22))
-region_000116 = Region(begin=Location(line=34, column=75), end=Location(line=34, column=84))
+region_000116 = Region(begin=Location(line=34, column=72), end=Location(line=34, column=81))
 region_000117 = Region(begin=Location(line=34, column=23), end=Location(line=34, column=31))
 region_000118 = Region(begin=Location(line=34, column=41), end=Location(line=34, column=50))
 region_000119 = Region(begin=Location(line=34, column=6), end=Location(line=34, column=14))
 region_000120 = Region(begin=Location(line=35, column=32), end=Location(line=35, column=40))
 region_000121 = Region(begin=Location(line=35, column=32), end=Location(line=35, column=36))
 region_000122 = Region(begin=Location(line=35, column=37), end=Location(line=35, column=40))
-region_000123 = Region(begin=Location(line=35, column=54), end=Location(line=35, column=71))
-region_000124 = Region(begin=Location(line=35, column=54), end=Location(line=35, column=61))
-region_000125 = Region(begin=Location(line=35, column=62), end=Location(line=35, column=71))
-region_000126 = Region(begin=Location(line=35, column=54), end=Location(line=35, column=76))
-region_000127 = Region(begin=Location(line=35, column=72), end=Location(line=35, column=76))
-region_000128 = Region(begin=Location(line=35, column=53), end=Location(line=35, column=77))
+region_000123 = Region(begin=Location(line=35, column=54), end=Location(line=35, column=68))
+region_000124 = Region(begin=Location(line=35, column=54), end=Location(line=35, column=58))
+region_000125 = Region(begin=Location(line=35, column=59), end=Location(line=35, column=68))
+region_000126 = Region(begin=Location(line=35, column=54), end=Location(line=35, column=73))
+region_000127 = Region(begin=Location(line=35, column=69), end=Location(line=35, column=73))
+region_000128 = Region(begin=Location(line=35, column=53), end=Location(line=35, column=74))
 region_000129 = Region(begin=Location(line=35, column=5), end=Location(line=36, column=1))
 region_000130 = Region(begin=Location(line=35, column=16), end=Location(line=35, column=22))
-region_000131 = Region(begin=Location(line=35, column=78), end=Location(line=35, column=87))
+region_000131 = Region(begin=Location(line=35, column=75), end=Location(line=35, column=84))
 region_000132 = Region(begin=Location(line=35, column=23), end=Location(line=35, column=31))
 region_000133 = Region(begin=Location(line=35, column=41), end=Location(line=35, column=53))
 region_000134 = Region(begin=Location(line=35, column=6), end=Location(line=35, column=14))
@@ -567,9 +568,9 @@ statement_000034 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000035 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.Configuration,
     regions=[region_000108, region_000109, region_000110],
-    value=CustomType("Integer"),
+    value=NoneType(),
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -623,9 +624,9 @@ statement_000039 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000040 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.Configuration,
     regions=[region_000123, region_000124, region_000125],
-    value=CustomType("Integer"),
+    value=NoneType(),
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,

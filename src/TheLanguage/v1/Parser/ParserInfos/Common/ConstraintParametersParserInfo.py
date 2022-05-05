@@ -52,8 +52,12 @@ DuplicateNameError                          = CreateError(
     prev_region=Region,
 )
 
+InvalidConstraintTypeError                  = CreateError(
+    "Constraint parameter types must be compile-time types",
+)
+
 InvalidConstraintExpressionError            = CreateError(
-    "Constraint parameters must be compile-time expressions",
+    "Constraint parameter values must be compile-time expressions",
 )
 
 
@@ -96,15 +100,33 @@ class ConstraintParameterParserInfo(ParserInfo):
         # Validate
         errors: List[Error] = []
 
-        if (
-            self.default_value is not None
-            and not ParserInfoType.IsCompileTimeValue(self.default_value.parser_info_type__)  # type: ignore
-        ):
-            errors.append(
-                InvalidConstraintExpressionError.Create(
-                    region=self.default_value.regions__.self__,
-                ),
-            )
+        try:
+            self.type.ValidateAsType(self.parser_info_type__)
+
+            if not ParserInfoType.IsConfiguration(self.type.parser_info_type__):
+                errors.append(
+                    InvalidConstraintTypeError.Create(
+                        region=self.type.regions__.self__,
+                    ),
+                )
+        except ErrorException as ex:
+            errors += ex.errors
+
+        if self.default_value is not None:
+            try:
+                self.default_value.ValidateAsExpression()
+
+                if (
+                    not ParserInfoType.IsConfiguration(self.default_value.parser_info_type__)
+                    and self.default_value.parser_info_type__ != ParserInfoType.TypeCustomization
+                ):
+                    errors.append(
+                        InvalidConstraintExpressionError.Create(
+                            region=self.default_value.regions__.self__,
+                        ),
+                    )
+            except ErrorException as ex:
+                errors += ex.errors
 
         if errors:
             raise ErrorException(*errors)

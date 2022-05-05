@@ -38,6 +38,8 @@ with InitRelativeImports():
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
+    from ...Error import Error, ErrorException
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -102,5 +104,17 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
         self.ValidateRegions()
 
         # Validate
-        # TODO: Need to expand type and then call this functionality
-        # self.class_capabilities.ValidateClassAttributeStatementCapabilities(self)
+        errors: List[Error] = []
+
+        for func in [
+            # TODO: lambda: self.class_capabilities.ValidateClassAttributeStatementCapabilities(self),
+            lambda: self.type.ValidateAsType(self.parser_info_type__),
+            self.initialized_value.ValidateAsExpression if self.initialized_value is not None else lambda: None,
+        ]:
+            try:
+                func()
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)

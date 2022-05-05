@@ -67,6 +67,9 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
             regionless_attributes=["expression", ],
         )
 
+        # Validate
+        self.expression.ValidateAsExpression()
+
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor):

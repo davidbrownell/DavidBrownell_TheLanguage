@@ -83,6 +83,8 @@ class IfStatementClauseParserInfo(ParserInfo):
             regionless_attributes=["expression", ],
         )
 
+        self.expression.ValidateAsExpression()
+
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor):
