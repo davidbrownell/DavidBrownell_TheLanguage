@@ -3,4 +3,5 @@
 # file will be overwritten during the next generation!
 # ----------------------------------------------------------------------
 
-pass
+class MyClass(object):
+    pass

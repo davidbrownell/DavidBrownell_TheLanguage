@@ -1660,7 +1660,7 @@ statement_000074 = FuncInvocationStatementParserInfo.Create(
 statement_000075 = SpecialMethodStatementParserInfo.Create(
     regions=[region_000107, region_000108, region_000109],
     parent_class_capabilities=StandardCapabilities,
-    the_type=SpecialMethodType.CompileTimeEvalTemplates,
+    name=SpecialMethodType.CompileTimeEvalTemplates,
     statements=[statement_000074, ],
 )
 
@@ -2271,7 +2271,7 @@ statement_000169 = FuncInvocationStatementParserInfo.Create(
 statement_000170 = SpecialMethodStatementParserInfo.Create(
     regions=[region_000236, region_000237, region_000238],
     parent_class_capabilities=StandardCapabilities,
-    the_type=SpecialMethodType.CompileTimeEvalConstraints,
+    name=SpecialMethodType.CompileTimeEvalConstraints,
     statements=[statement_000094, statement_000120, statement_000148, statement_000169, ],
 )
 
@@ -5695,7 +5695,6 @@ statement_000524 = IfStatementParserInfo.Create(
 )
 
 public_exports = [
-    statement_000356,
     statement_000364,
     statement_000372,
     statement_000380,

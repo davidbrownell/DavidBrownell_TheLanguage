@@ -15,14 +15,13 @@
 # ----------------------------------------------------------------------
 """Contains the BaseMixin object"""
 
-import itertools
 import os
 import types
 
-from contextlib import contextmanager
-from typing import Any, cast, Dict, List, Optional, Union
+from contextlib import contextmanager, ExitStack
+from typing import cast, Dict, List, Optional, Union
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 
@@ -36,35 +35,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StateMaintainer import StateMaintainer
 
-    from ...Error import Error, ErrorException
+    from ...Error import CreateError, Error, ErrorException
+    from ...NamespaceInfo import NamespaceInfo
 
     from ...Helpers import MiniLanguageHelpers
 
-    from ...MiniLanguage.Types.IntegerType import IntegerType
-
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
-    from ...ParserInfos.Statements.StatementParserInfo import ParserInfo, Region, StatementParserInfo
+    from ...ParserInfos.ParserInfo import ParserInfoType, RootParserInfo, VisitResult
+
+    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ...ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+    from ...ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
+    from ...ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
+    from ...ParserInfos.Statements.StatementParserInfo import ParserInfo, ScopeFlag, StatementParserInfo
 
 
 # ----------------------------------------------------------------------
-class CompileTimeTemplateTypeWrapper(object):
-    pass
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ParameterInfo(object):
-    name: str
-    region: Optional[Region]
-    is_optional: bool
-    is_variadic: bool
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ArgumentInfo(object):
-    value: Any
-    region: Region
+UnexpectedStatmentError                     = CreateError(
+    "The statement is not expected at this scope",
+    # In the rewrite, give PhraseInfo objects names so that we can identify the statement by name in this error
+)
 
 
 # ----------------------------------------------------------------------
@@ -72,22 +62,32 @@ class BaseMixin(object):
     """Base class for all mixins associated with this visitor"""
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
     def __init__(
         self,
         configuration_info: Dict[str, MiniLanguageHelpers.CompileTimeValue],
     ):
         self._configuration_info            = configuration_info
 
-        self._errors: List[Error]           = []
+        self._errors: List[Error]                       = []
 
-        self._scope_level                                                   = 0
-        self._scope_delta                                                   = 0
-        self._exports: Dict[VisibilityModifier, List[ParserInfo]]           = {}
+        self._namespace_infos: List[NamespaceInfo]                          = []
+        self._root_namespace_info: Optional[NamespaceInfo]                  = None
 
     # ----------------------------------------------------------------------
     @property
     def errors(self) -> List[Error]:
         return self._errors
+
+    @property
+    def namespaces(self) -> NamespaceInfo:
+        assert not self._namespace_infos
+        assert self._root_namespace_info
+
+        return self._root_namespace_info
 
     # ----------------------------------------------------------------------
     def __getattr__(
@@ -106,11 +106,52 @@ class BaseMixin(object):
         self,
         parser_info: ParserInfo,  # pylint: disable=unused-argument
     ):
-        try:
-            yield
+        if isinstance(parser_info, StatementParserInfo):
+            parent_scope_flag = self._GetParentScopeFlag()
 
-            if self._scope_level + self._scope_delta == 1:
-                pass # TODO
+            if (
+                (not parser_info.scope_flags & ScopeFlag.Root or parent_scope_flag != ScopeFlag.Root)
+                and (not parser_info.scope_flags & ScopeFlag.Class or parent_scope_flag != ScopeFlag.Class)
+                and (not parser_info.scope_flags & ScopeFlag.Function or parent_scope_flag != ScopeFlag.Function)
+            ):
+                self._errors.append(
+                    UnexpectedStatmentError.Create(
+                        region=parser_info.regions__.self__,
+                    ),
+                )
+
+                yield VisitResult.SkipAll
+                return
+
+        if not self.__class__._GetExecuteFlag(parser_info):  # pylint: disable=protected-access
+            yield VisitResult.SkipAll
+            return
+
+        try:
+            with ExitStack() as exit_stack:
+                if parser_info.introduces_scope__:
+                    new_namespace_info = NamespaceInfo.Create(parser_info)
+
+                    if isinstance(parser_info, RootParserInfo):
+                        assert self._root_namespace_info is None
+                        self._root_namespace_info = new_namespace_info
+
+                        assert not self._namespace_infos, self._namespace_infos
+                    else:
+                        assert self._namespace_infos
+                        self._namespace_infos[-1].AddChild(new_namespace_info)
+
+                    self._namespace_infos.append(new_namespace_info)
+                    exit_stack.callback(self._namespace_infos.pop)
+
+                    self._PushScope()
+                    exit_stack.callback(self._PopScope)
+
+                elif isinstance(parser_info, StatementParserInfo):
+                    assert self._namespace_infos
+                    self._namespace_infos[-1].AddChild(parser_info)
+
+                yield
 
         except ErrorException as ex:
             if isinstance(parser_info, StatementParserInfo):
@@ -119,23 +160,9 @@ class BaseMixin(object):
                 raise
 
     # ----------------------------------------------------------------------
-    @contextmanager
-    def OnNewScope(
-        self,
-        parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ):
-        self._PushScope()
-
-        yield
-
-        self._PopScope()
-
-    # ----------------------------------------------------------------------
     @staticmethod
     @contextmanager
-    def OnRootParserInfo(
-        parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ):
+    def OnRootParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
@@ -144,12 +171,11 @@ class BaseMixin(object):
     # |
     # ----------------------------------------------------------------------
     def _PushScope(self):
-        self._scope_level += 1
+        pass # TODO: Update state
 
     # ----------------------------------------------------------------------
     def _PopScope(self):
-        assert self._scope_level
-        self._scope_level -= 1
+        pass # TODO: Update state
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -157,7 +183,7 @@ class BaseMixin(object):
         cls,
         statement: ParserInfo,
         value: bool,
-    ):
+    ) -> None:
         object.__setattr__(statement, cls._EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME, value)
 
     # ----------------------------------------------------------------------
@@ -165,8 +191,19 @@ class BaseMixin(object):
     def _GetExecuteFlag(
         cls,
         statement: ParserInfo,
-    ):
+    ) -> bool:
         return getattr(statement, cls._EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME, True)
+
+    # ----------------------------------------------------------------------
+    def _GetParentScopeFlag(self) -> ScopeFlag:
+        for namespace_info in reversed(self._namespace_infos):
+            if isinstance(namespace_info.parser_info, ClassStatementParserInfo):
+                return ScopeFlag.Class
+
+            if isinstance(namespace_info.parser_info, (FuncDefinitionStatementParserInfo, SpecialMethodStatementParserInfo)):
+                return ScopeFlag.Function
+
+        return ScopeFlag.Root
 
     # ----------------------------------------------------------------------
     # |

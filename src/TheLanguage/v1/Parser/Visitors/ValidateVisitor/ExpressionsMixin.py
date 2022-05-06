@@ -54,114 +54,91 @@ with InitRelativeImports():
 class ExpressionsMixin(BaseMixin):
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnBinaryExpressionParserInfo(
-        self,
-        parser_info: BinaryExpressionParserInfo,
-    ):
+    def OnBinaryExpressionParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
-    def OnBooleanExpressionParserInfo(
-        self,
-        parser_info: BooleanExpressionParserInfo,
-    ):
-        pass
-
-    # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnCallExpressionParserInfo(
-        self,
-        parser_info: CallExpressionParserInfo,
-    ):
+    def OnBooleanExpressionParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
-    def OnCharacterExpressionParserInfo(
-        self,
-        parser_info: CharacterExpressionParserInfo,
-    ):
-        pass
-
-    # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnFuncOrTypeExpressionParserInfo(
-        self,
-        parser_info: FuncOrTypeExpressionParserInfo,
-    ):
+    def OnCallExpressionParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
-    def OnIntegerExpressionParserInfo(
-        self,
-        parser_info: IntegerExpressionParserInfo,
-    ):
-        pass
-
-    # ----------------------------------------------------------------------
-    def OnNoneExpressionParserInfo(
-        self,
-        parser_info: NoneExpressionParserInfo,
-    ):
-        pass
-
-    # ----------------------------------------------------------------------
-    def OnNumberExpressionParserInfo(
-        self,
-        parser_info: NumberExpressionParserInfo,
-    ):
-        pass
-
-    # ----------------------------------------------------------------------
-    def OnStringExpressionParserInfo(
-        self,
-        parser_info: StringExpressionParserInfo,
-    ):
-        pass
-
-    # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTernaryExpressionParserInfo(
-        self,
-        parser_info: TernaryExpressionParserInfo,
-    ):
+    def OnCharacterExpressionParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTupleExpressionParserInfo(
-        self,
-        parser_info: TupleExpressionParserInfo,
-    ):
+    def OnFuncOrTypeExpressionParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTypeCheckExpressionParserInfo(
-        self,
-        parser_info: TypeCheckExpressionParserInfo,
-    ):
+    def OnIntegerExpressionParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnUnaryExpressionParserInfo(
-        self,
-        parser_info: UnaryExpressionParserInfo,
-    ):
+    def OnNoneExpressionParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
-    def OnVariableExpressionParserInfo(
-        self,
-        parser_info: VariableExpressionParserInfo,
-    ):
-        pass
+    @staticmethod
+    @contextmanager
+    def OnNumberExpressionParserInfo(*args, **kwargs):
+        yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnVariantExpressionParserInfo(
-        self,
-        parser_info: VariantExpressionParserInfo,
-    ):
+    def OnStringExpressionParserInfo(*args, **kwargs):
+        yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    def OnTernaryExpressionParserInfo(*args, **kwargs):
+        yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    def OnTupleExpressionParserInfo(*args, **kwargs):
+        yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    def OnTypeCheckExpressionParserInfo(*args, **kwargs):
+        yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    def OnUnaryExpressionParserInfo(*args, **kwargs):
+        yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    def OnVariableExpressionParserInfo(*args, **kwargs):
+        yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    def OnVariantExpressionParserInfo(*args, **kwargs):
         yield

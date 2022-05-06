@@ -592,7 +592,7 @@ statement_000025 = FuncInvocationStatementParserInfo.Create(
 statement_000026 = SpecialMethodStatementParserInfo.Create(
     regions=[region_000034, region_000035, region_000036],
     parent_class_capabilities=ConceptCapabilities,
-    the_type=SpecialMethodType.CompileTimeEvalConstraints,
+    name=SpecialMethodType.CompileTimeEvalConstraints,
     statements=[statement_000025, ],
 )
 
@@ -2073,7 +2073,3 @@ statement_000155 = ClassStatementParserInfo.Create(
     is_abstract=None,
     is_final=None,
 )
-
-public_exports = [
-    statement_000155,
-]

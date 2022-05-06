@@ -21,7 +21,7 @@ from contextlib import contextmanager
 from enum import auto, Enum, Flag
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
-from dataclasses import dataclass, field, fields, make_dataclass, InitVar
+from dataclasses import dataclass, fields, make_dataclass, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -188,13 +188,17 @@ class ParserInfo(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
     def Accept(self, visitor):
-        with self._GenericAccept(visitor):
+        with self._GenericAccept(visitor) as visit_result:
+            if visit_result == VisitResult.SkipAll:
+                return
+
             method_name = "On{}".format(self.__class__.__name__)
 
             method = getattr(visitor, method_name, None)
             assert method is not None, method_name
 
-            method(self)
+            with method(self):
+                pass
 
     # ----------------------------------------------------------------------
     # |
@@ -219,7 +223,10 @@ class ParserInfo(ObjectReprImplBase):
     ):
         """Implementation of Accept for ParserInfos that introduce new scopes or contain details that should be enumerated"""
 
-        with self._GenericAccept(visitor):
+        with self._GenericAccept(visitor) as visit_result:
+            if visit_result == VisitResult.SkipAll:
+                return
+
             method_name = "On{}".format(self.__class__.__name__)
 
             method = getattr(visitor, method_name, None)
@@ -241,19 +248,15 @@ class ParserInfo(ObjectReprImplBase):
 
                             method(detail_value)
 
-                    if children and not visit_result & VisitResult.SkipChildren:
-                        method_name = "OnNewScope"
+                    if children:
+                        assert (
+                            self.introduces_scope__
+                            or all(child.introduces_scope__ for child in children)
+                        )
 
-                        method = getattr(visitor, method_name, None)
-                        assert method is not None, method_name
-
-                        with method(self) as visit_result:
-                            if visit_result is None:
-                                visit_result = VisitResult.Continue
-
-                            if not visit_result & VisitResult.SkipChildren:
-                                for child in children:
-                                    child.Accept(visitor)
+                        if not visit_result & VisitResult.SkipChildren:
+                            for child in children:
+                                child.Accept(visitor)
 
             except AttributeError as ex:
                 if str(ex) == "__enter__":
@@ -324,15 +327,17 @@ class ParserInfo(ObjectReprImplBase):
             yield
             return
 
-        with method(self):
-            yield
+        with method(self) as visit_result:
+            yield visit_result
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class RootParserInfo(ParserInfo):
+    # ----------------------------------------------------------------------
     introduces_scope__                      = True
 
+    # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
 
     statements: Optional[List[ParserInfo]]

@@ -464,10 +464,13 @@ class StatementsMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnImportStatementItemParserInfo(
         self,
         parser_info: ImportStatementItemParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementItemParserInfo")
 
         self._stream.write(
@@ -493,10 +496,13 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  PassStatementParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnPassStatementParserInfo(
         self,
         parser_info: PassStatementParserInfo,  # pylint: disable=unused-argument
-    ) -> None:
+    ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo")
 
         self._stream.write(
@@ -534,9 +540,9 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = SpecialMethodStatementParserInfo.Create(
-                    regions=[{self_region}, {type_region}, {statements_region}],
+                    regions=[{self_region}, {name_region}, {statements_region}],
                     parent_class_capabilities={parent_class_capabilities},
-                    the_type={type},
+                    name={name},
                     statements={statements},
                 )
 
@@ -544,10 +550,10 @@ class StatementsMixin(BaseMixin):
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
-                type_region=self._ToString(parser_info.regions__.type),
+                name_region=self._ToString(parser_info.regions__.name),
                 statements_region=self._ToString(parser_info.regions__.statements),
                 parent_class_capabilities=parent_class_capabilities,
-                type="SpecialMethodType.{}".format(parser_info.type.name),
+                name="SpecialMethodType.{}".format(parser_info.name.name),
                 statements=self._ToString(cast(List[ParserInfo], parser_info.statements)),
             ),
         )
