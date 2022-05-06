@@ -34,7 +34,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
+    from .FuncOrTypeExpressionParserInfo import InvalidCompileTimeTypeError
 
+    from ...Error import Error, ErrorException
     from ...MiniLanguage.Expressions.BinaryExpression import OperatorType as MiniLanguageOperatorType
 
 
@@ -130,6 +132,72 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
                 "right_expression",
             ],
         )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def IsType(self) -> Optional[bool]:
+        return (
+            self.operator == OperatorType.Access
+            and self.left_expression.IsType() is not False
+            and self.right_expression.IsType() is not False
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateAsType(
+        self,
+        parser_info_type: ParserInfoType,
+        *,
+        is_instantiated_type: Optional[bool]=True,
+    ) -> None:
+        errors: List[Error] = []
+
+        if (
+            parser_info_type == ParserInfoType.Configuration
+            or parser_info_type == ParserInfoType.TypeCustomization
+        ):
+            errors.append(
+                InvalidCompileTimeTypeError.Create(
+                    region=self.regions__.self__,
+                ),
+            )
+
+        elif (
+            parser_info_type == ParserInfoType.Standard
+            or parser_info_type == ParserInfoType.Unknown
+        ):
+            if self.operator != OperatorType.Access:
+                errors.append(
+                    InvalidCompileTimeTypeError.Create(
+                        region=self.regions__.self__,
+                    ),
+                )
+            else:
+                try:
+                    self.left_expression.ValidateAsType(
+                        parser_info_type,
+                        is_instantiated_type=False,
+                    )
+
+                    self.right_expression.ValidateAsType(
+                        parser_info_type,
+                        is_instantiated_type=is_instantiated_type,
+                    )
+
+                except ErrorException as ex:
+                    errors += ex.errors
+
+        else:
+            assert False, parser_info_type  # type: ignore
+
+        if errors:
+            raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateAsExpression(self) -> None:
+        self.left_expression.ValidateAsExpression()
+        self.right_expression.ValidateAsExpression()
 
     # ----------------------------------------------------------------------
     @Interface.override

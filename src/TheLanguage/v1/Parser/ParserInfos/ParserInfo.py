@@ -68,23 +68,23 @@ class ParserInfoType(Enum):
         dominant_expression: Optional["ParserInfo"] = None
 
         for expression in expressions:
-            expression_value = expression.parser_info_type__  # type: ignore
+            expression_value = expression.parser_info_type__
 
             if (
                 dominant_expression is None
-                or expression_value.value > dominant_expression.parser_info_type__.value  # type: ignore
+                or expression_value.value > dominant_expression.parser_info_type__.value
             ):
                 dominant_expression = expression
 
-        return dominant_expression.parser_info_type__ if dominant_expression else cls.Unknown  # type: ignore
+        return dominant_expression.parser_info_type__ if dominant_expression else cls.Unknown
 
     # ----------------------------------------------------------------------
     @classmethod
-    def IsCompileTimeValue(
+    def IsConfiguration(
         cls,
         value: "ParserInfoType",
     ) -> bool:
-        return value != cls.Standard
+        return value == cls.Configuration or value == cls.Unknown
 
 
 # ----------------------------------------------------------------------
@@ -102,15 +102,12 @@ class ParserInfo(ObjectReprImplBase):
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        object.__setattr__(self, "parser_info_type__", parser_info_type)
+        object.__setattr__(self, "_parser_info_type", parser_info_type)
 
         regionless_attributes_set = set(regionless_attributes or [])
 
         # Dynamically create the Regions type based on the fields of the class
         all_fields = {f.name : f for f in fields(self)}
-
-        if "parser_info_type__" in all_fields:
-            regionless_attributes_set.add("parser_info_type__")
 
         num_expected_regions = len(all_fields) - len(regionless_attributes_set)
         assert len(regions) == num_expected_regions + 1, (len(regions), num_expected_regions + 1, "The number of regions provided must match the number of attributes that require them")
@@ -174,15 +171,19 @@ class ParserInfo(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @property
     def RegionsType__(self) -> Any:
-        return self._RegionsType  # type: ignore # <Has no member> pylint: disable=E1101
+        return self._RegionsType  # type: ignore  # pylint: disable=no-member
 
     @property
     def regions__(self) -> Any:
-        return self._regions  # type: ignore # <Has no member> pylint: disable=E1101
+        return self._regions  # type: ignore  # pylint: disable=no-member
+
+    @property
+    def parser_info_type__(self) -> ParserInfoType:
+        return self._parser_info_type  # type: ignore  # pylint: disable=no-member
 
     # ----------------------------------------------------------------------
     def ValidateRegions(self) -> None:
-        self._validate_regions_func()  # type: ignore # <Has no member> pylint: disable=E1101
+        self._validate_regions_func()  # type: ignore  # pylint: disable=no-member
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
@@ -331,8 +332,6 @@ class ParserInfo(ObjectReprImplBase):
 @dataclass(frozen=True, repr=False)
 class RootParserInfo(ParserInfo):
     introduces_scope__                      = True
-
-    parser_info_type__: ParserInfoType      = field(init=False)
 
     regions: InitVar[List[Optional[Region]]]
 

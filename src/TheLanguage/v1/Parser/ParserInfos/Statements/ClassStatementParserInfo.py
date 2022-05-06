@@ -15,9 +15,10 @@
 # ----------------------------------------------------------------------
 """Contains the ClassStatementParserInfo object"""
 
+import itertools
 import os
 
-from typing import cast, List, Optional
+from typing import Callable, cast, List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -81,6 +82,20 @@ class ClassStatementDependencyParserInfo(ParserInfo):
             regions,
             regionless_attributes=["type", ],
         )
+
+        # Validate
+        errors: List[Error] = []
+
+        try:
+            self.type.ValidateAsType(
+                self.parser_info_type__,
+                is_instantiated_type=False,
+            )
+        except ErrorException as ex:
+            errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -224,13 +239,20 @@ class ClassStatementParserInfo(StatementParserInfo):
                 ),
             )
 
-        self.class_capabilities.ValidateClassStatementCapabilities(
-            self,
-            has_parent_class=parent_class_capabilities is not None,
-        )
+        try:
+            self.class_capabilities.ValidateClassStatementCapabilities(
+                self,
+                has_parent_class=parent_class_capabilities is not None,
+            )
+        except ErrorException as ex:
+            errors += ex.errors
 
         if parent_class_capabilities is not None:
-            parent_class_capabilities.ValidateNestedClassStatementCapabilities(self)
+            try:
+                parent_class_capabilities.ValidateNestedClassStatementCapabilities(self)
+            except ErrorException as ex:
+                errors += ex.errors
+
         else:
             if self.visibility == VisibilityModifier.protected:
                 errors.append(

@@ -68,8 +68,8 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            ParserInfoType.TypeCustomization,           # type: ignore
-            regions,                                    # type: ignore
+            ParserInfoType.Standard,        # type: ignore
+            regions,                        # type: ignore
             *args,
             **kwargs,
         )
@@ -115,6 +115,14 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
                         region=self.regions__.visibility,
                     ),
                 )
+
+        try:
+            self.type.ValidateAsType(
+                self.parser_info_type__,
+                is_instantiated_type=False,
+            )
+        except ErrorException as ex:
+            errors += ex.errors
 
         if errors:
             raise ErrorException(*errors)

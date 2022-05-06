@@ -271,7 +271,7 @@ class StatementsMixin(BaseMixin):
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
-                parser_info_type=str(parser_info.parser_info_type__),  # type: ignore
+                parser_info_type=str(parser_info.parser_info_type__),
                 self_region=self._ToString(parser_info.regions__.self__),
                 visibility_region=self._ToString(parser_info.regions__.visibility),
                 mutability_region=self._ToString(parser_info.regions__.mutability),

@@ -257,7 +257,7 @@ class CommonMixin(BaseMixin):
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
-                parser_info_type=str(parser_info.parser_info_type__),  # type: ignore
+                parser_info_type=str(parser_info.parser_info_type__),
                 self_region=self._ToString(parser_info.regions__.self__),
                 keyword_region=self._ToString(parser_info.regions__.keyword),
                 expression=self._ToString(parser_info.expression),
@@ -326,7 +326,7 @@ class CommonMixin(BaseMixin):
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
-                parser_info_type=parser_info.parser_info_type__,  # type: ignore
+                parser_info_type=parser_info.parser_info_type__,
                 self_region=self._ToString(parser_info.regions__.self__),
                 is_variadic_region=self._ToString(parser_info.regions__.is_variadic),
                 name_region=self._ToString(parser_info.regions__.name),

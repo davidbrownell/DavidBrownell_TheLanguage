@@ -56,7 +56,15 @@ DuplicateVariadicError                      = CreateError(
     prev_region=Region,
 )
 
-InvalidTemplateExpressionError              = CreateError(
+InvalidTemplateTypeError                    = CreateError(
+    "Template type parameters must be compile-time types",
+)
+
+InvalidTemplateDecoratorTypeError           = CreateError(
+    "Template decorator parameters must be compile-time types",
+)
+
+InvalidTemplateDecoratorExpressionError     = CreateError(
     "Template decorator parameters must be compile-time expressions",
 )
 
@@ -88,6 +96,25 @@ class TemplateTypeParameterParserInfo(ParserInfo):
             **kwargs,
             regionless_attributes=["default_type", ],
         )
+
+        # Validate
+        errors: List[Error] = []
+
+        if self.default_type:
+            try:
+                self.default_type.ValidateAsType(self.parser_info_type__)
+
+                if self.default_type.parser_info_type__ != self.parser_info_type__:
+                    errors.append(
+                        InvalidTemplateTypeError(
+                            region=self.default_type.regions__.self__,
+                        ),
+                    )
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -142,15 +169,35 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
         # Validate
         errors: List[Error] = []
 
-        if (
-            self.default_value is not None
-            and not ParserInfoType.IsCompileTimeValue(self.default_value.parser_info_type__)  # type: ignore
-        ):
-            errors.append(
-                InvalidTemplateExpressionError.Create(
-                    region=self.default_value.regions__.self__,
-                ),
-            )
+        try:
+            self.type.ValidateAsType(ParserInfoType.Configuration)
+
+            if not ParserInfoType.IsConfiguration(self.type.parser_info_type__):
+                errors.append(
+                    InvalidTemplateDecoratorTypeError.Create(
+                        region=self.type.regions__.self__,
+                    ),
+                )
+        except ErrorException as ex:
+            errors += ex.errors
+
+        if self.default_value is not None:
+            try:
+                self.default_value.ValidateAsExpression()
+
+                default_value_parser_info_type = self.default_value.parser_info_type__
+
+                if (
+                    not ParserInfoType.IsConfiguration(default_value_parser_info_type)
+                    and default_value_parser_info_type != self.parser_info_type__
+                ):
+                    errors.append(
+                        InvalidTemplateDecoratorExpressionError.Create(
+                            region=self.default_value.regions__.self__,
+                        ),
+                    )
+            except ErrorException as ex:
+                errors += ex.errors
 
         if errors:
             raise ErrorException(*errors)

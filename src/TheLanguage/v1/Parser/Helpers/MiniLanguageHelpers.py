@@ -15,7 +15,6 @@
 # ----------------------------------------------------------------------
 """Contains functionality that helps when extracting MiniLanguage information"""
 
-import copy
 import os
 
 from typing import (
@@ -59,17 +58,20 @@ with InitRelativeImports():
 
     from ..MiniLanguage.Types.BooleanType import BooleanType
     from ..MiniLanguage.Types.CharacterType import CharacterType
-    from ..MiniLanguage.Types.CustomType import CustomType
     from ..MiniLanguage.Types.IntegerType import IntegerType
+    from ..MiniLanguage.Types.NestedType import NestedType
     from ..MiniLanguage.Types.NoneType import NoneType
     from ..MiniLanguage.Types.NumberType import NumberType
     from ..MiniLanguage.Types.StringType import StringType
+    from ..MiniLanguage.Types.TupleType import TupleType
     from ..MiniLanguage.Types.Type import Type as MiniLanguageType
     from ..MiniLanguage.Types.VariantType import VariantType
 
-    from ..ParserInfos.ParserInfo import ParserInfoType
+    from ..ParserInfos.Expressions.BinaryExpressionParserInfo import (
+        BinaryExpressionParserInfo,
+        OperatorType as BinaryExpressionParserInfoOperatorType,
+    )
 
-    from ..ParserInfos.Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo
     from ..ParserInfos.Expressions.BooleanExpressionParserInfo import BooleanExpressionParserInfo
     from ..ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo
     from ..ParserInfos.Expressions.CharacterExpressionParserInfo import CharacterExpressionParserInfo
@@ -95,11 +97,6 @@ class CompileTimeValue(object):
 
 
 # ----------------------------------------------------------------------
-InvalidParserInfoTypeError                  = CreateError(
-    "This expression is not a valid '{type}' type expression as it is currently written",
-    type=str,
-)
-
 InvalidParserInfoMiniLanguageTypeError      = CreateError(
     "Invalid '{type}' type expression",
     type=str,
@@ -156,45 +153,6 @@ del _AugmentErrorExpressionArguments
 
 
 # ----------------------------------------------------------------------
-def ToConfigurationType(
-    parser_info: ExpressionParserInfo,
-    compile_time_values: Dict[str, CompileTimeValue],
-) -> MiniLanguageType:
-    return _ToTypeImpl(
-        parser_info,
-        compile_time_values,
-        ParserInfoType.Configuration,
-        lambda parser_info: parser_info.ValidateAsConfigurationType(),
-    )
-
-
-# ----------------------------------------------------------------------
-def ToTypeCustomizationType(
-    parser_info: ExpressionParserInfo,
-    compile_time_values: Dict[str, CompileTimeValue],
-) -> MiniLanguageType:
-    return _ToTypeImpl(
-        parser_info,
-        compile_time_values,
-        ParserInfoType.TypeCustomization,
-        lambda parser_info: parser_info.ValidateAsCustomizationType(),
-    )
-
-
-# ----------------------------------------------------------------------
-def ToStandardType(
-    parser_info: ExpressionParserInfo,
-    compile_time_values: Dict[str, CompileTimeValue],
-) -> MiniLanguageType:
-    return _ToTypeImpl(
-        parser_info,
-        compile_time_values,
-        ParserInfoType.Standard,
-        lambda parser_info: parser_info.ValidateAsStandardType(),
-    )
-
-
-# ----------------------------------------------------------------------
 def EvalExpression(
     expression_or_parser_info: Union[MiniLanguageExpression, ExpressionParserInfo],
     compile_time_values: Dict[str, CompileTimeValue],
@@ -224,54 +182,27 @@ def ToExpression(
     parser_info: ExpressionParserInfo,
     compile_time_values: Dict[str, CompileTimeValue],
 ) -> MiniLanguageExpression:
-    parser_info_type = parser_info.parser_info_type__  # type: ignore
-
-    if parser_info_type == ParserInfoType.Configuration:
-        to_type_func = ToConfigurationType
-    elif parser_info_type == ParserInfoType.TypeCustomization:
-        to_type_func = ToTypeCustomizationType
-    elif parser_info_type in [
-        ParserInfoType.Unknown,
-        ParserInfoType.Standard,
-    ]:
-        to_type_func = ToStandardType
-    else:
-        assert False, parser_info_type  # pragma: no cover
-
     return _ToExpressionImpl(
         parser_info,
         compile_time_values,
-        parser_info_type,
-        to_type_func,
         set(),
     )
 
 
 # ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-def _ToTypeImpl(
+def ToType(
     parser_info: ExpressionParserInfo,
     compile_time_values: Dict[str, CompileTimeValue],
-    required_parser_info_type: ParserInfoType,
-    validate_func: Callable[[ExpressionParserInfo], None],
 ) -> MiniLanguageType:
 
-    _ValidateParserInfoType(parser_info, required_parser_info_type)
+    if isinstance(parser_info, BinaryExpressionParserInfo):
+        if parser_info.operator == BinaryExpressionParserInfoOperatorType.Access:
+            return NestedType(
+                ToType(parser_info.left_expression, compile_time_values),
+                ToType(parser_info.right_expression, compile_time_values),
+            )
 
-    if isinstance(parser_info, FuncOrTypeExpressionParserInfo):
-        # Do not validate this as a Configuration type if we are looking at a compile-time
-        # function call. Instead, validate it as a TypeCustomization to ensure that we aren't
-        # overly strict about what values are considered to be valid.
-        if (
-            required_parser_info_type == ParserInfoType.Configuration
-            and isinstance(parser_info.value, CustomType)
-            and parser_info.value.name in COMPILE_TIME_FUNCTION_MAP
-        ):
-            parser_info.ValidateAsCustomizationType()
-        else:
-            validate_func(parser_info)
-
+    elif isinstance(parser_info, FuncOrTypeExpressionParserInfo):
         return parser_info.value
 
     elif isinstance(parser_info, NoneExpressionParserInfo):
@@ -281,24 +212,23 @@ def _ToTypeImpl(
         result = EvalExpression(parser_info.condition_expression, compile_time_values)
         result = result.type.ToBoolValue(result.value)
 
-        return _ToTypeImpl(
+        return ToType(
             parser_info.true_expression if result else parser_info.false_expression,
             compile_time_values,
-            required_parser_info_type,
-            validate_func,
+        )
+
+    elif isinstance(parser_info, TupleExpressionParserInfo):
+        return TupleType(
+            [
+                ToType(type_expression, compile_time_values)
+                for type_expression in parser_info.types
+            ],
         )
 
     elif isinstance(parser_info, VariantExpressionParserInfo):
-        validate_func(parser_info)
-
         return VariantType(
             [
-                _ToTypeImpl(
-                    type_expression,
-                    compile_time_values,
-                    required_parser_info_type,
-                    validate_func,
-                )
+                ToType(type_expression, compile_time_values)
                 for type_expression in parser_info.types
             ],
         )
@@ -306,21 +236,19 @@ def _ToTypeImpl(
     raise ErrorException(
         InvalidParserInfoMiniLanguageTypeError.Create(
             region=parser_info.regions__.self__,
-            type=required_parser_info_type.name,
+            type=parser_info.parser_info_type__.name,
         ),
     )
 
 
 # ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 def _ToExpressionImpl(
     parser_info: ExpressionParserInfo,
     compile_time_values: Dict[str, CompileTimeValue],
-    required_parser_info_type: ParserInfoType,
-    to_type_func: Callable[[ExpressionParserInfo, Dict[str, CompileTimeValue]], MiniLanguageType],
-    suppress_variable_warnings: Set[str],
+    suppress_warnings_set: Set[str],
 ) -> MiniLanguageExpression:
-
-    _ValidateParserInfoType(parser_info, required_parser_info_type)
 
     if isinstance(parser_info, BinaryExpressionParserInfo):
         operator = parser_info.operator.ToMiniLanguageOperatorType()
@@ -330,7 +258,7 @@ def _ToExpressionImpl(
                 InvalidBinaryOperatorError.Create(
                     region=parser_info.regions__.operator,
                     operator=parser_info.operator.name,
-                    type=required_parser_info_type.name,
+                    type=parser_info.parser_info_type__.name,
                 ),
             )
 
@@ -338,17 +266,13 @@ def _ToExpressionImpl(
             _ToExpressionImpl(
                 parser_info.left_expression,
                 compile_time_values,
-                required_parser_info_type,
-                to_type_func,
-                suppress_variable_warnings,
+                suppress_warnings_set,
             ),
             operator,
             _ToExpressionImpl(
                 parser_info.right_expression,
                 compile_time_values,
-                required_parser_info_type,
-                to_type_func,
-                suppress_variable_warnings,
+                suppress_warnings_set,
             ),
             parser_info.left_expression.regions__.self__,
         )
@@ -367,7 +291,7 @@ def _ToExpressionImpl(
                 InvalidFunctionError.Create(
                     region=parser_info.expression.regions__.self__,
                     name=func_name,
-                    type=required_parser_info_type.name,
+                    type=parser_info.parser_info_type__.name,
                 ),
             )
 
@@ -384,7 +308,7 @@ def _ToExpressionImpl(
             and len(parser_info.arguments.arguments) == 1
             and isinstance(parser_info.arguments.arguments[0].expression, VariableExpressionParserInfo)
         ):
-            suppress_variable_warnings.add(parser_info.arguments.arguments[0].expression.name)
+            suppress_warnings_set.add(parser_info.arguments.arguments[0].expression.name)
 
         # Get the parameters for the expression type
         param_infos: List[CallHelpers.ParameterInfo] = []
@@ -416,9 +340,7 @@ def _ToExpressionImpl(
                     _ToExpressionImpl(
                         argument.expression,
                         compile_time_values,
-                        required_parser_info_type,
-                        to_type_func,
-                        suppress_variable_warnings,
+                        suppress_warnings_set,
                     ),
                     argument.regions__.self__,
                 )
@@ -455,7 +377,7 @@ def _ToExpressionImpl(
         return LiteralExpression(CharacterType(), parser_info.value)
 
     elif isinstance(parser_info, FuncOrTypeExpressionParserInfo):
-        the_type = to_type_func(parser_info, compile_time_values)
+        the_type = ToType(parser_info, compile_time_values)
         return LiteralExpression(the_type, the_type.name)
 
     elif isinstance(parser_info, IntegerExpressionParserInfo):
@@ -475,28 +397,23 @@ def _ToExpressionImpl(
             _ToExpressionImpl(
                 parser_info.condition_expression,
                 compile_time_values,
-                required_parser_info_type,
-                to_type_func,
-                suppress_variable_warnings,
+                suppress_warnings_set,
             ),
             _ToExpressionImpl(
                 parser_info.true_expression,
                 compile_time_values,
-                required_parser_info_type,
-                to_type_func,
-                suppress_variable_warnings,
+                suppress_warnings_set,
             ),
             _ToExpressionImpl(
                 parser_info.false_expression,
                 compile_time_values,
-                required_parser_info_type,
-                to_type_func,
-                suppress_variable_warnings,
+                suppress_warnings_set,
             ),
         )
 
-    elif isinstance(parser_info, TupleExpressionParserInfo):
-        raise NotImplementedError("TODO") # TODO: Implement this
+    # TupleExpressionParserInfo is not processed here, as tuple expressions are not supported.
+    # However, TupleExpressionParserInfo objects describing types are handled in the `ToType`
+    # function.
 
     elif isinstance(parser_info, TypeCheckExpressionParserInfo):
         return TypeCheckExpression(
@@ -504,11 +421,9 @@ def _ToExpressionImpl(
             _ToExpressionImpl(
                 parser_info.expression,
                 compile_time_values,
-                required_parser_info_type,
-                to_type_func,
-                suppress_variable_warnings,
+                suppress_warnings_set,
             ),
-            to_type_func(parser_info.type, compile_time_values),
+            ToType(parser_info.type, compile_time_values),
         )
 
     elif isinstance(parser_info, UnaryExpressionParserInfo):
@@ -517,21 +432,19 @@ def _ToExpressionImpl(
             _ToExpressionImpl(
                 parser_info.expression,
                 compile_time_values,
-                required_parser_info_type,
-                to_type_func,
-                suppress_variable_warnings,
+                suppress_warnings_set,
             ),
             parser_info.expression.regions__.self__,
         )
 
     elif isinstance(parser_info, VariableExpressionParserInfo):
         compile_time_value = compile_time_values.get(parser_info.name, None)
-        if compile_time_value is None and parser_info.name not in suppress_variable_warnings:
+        if compile_time_value is None and parser_info.name not in suppress_warnings_set:
             raise ErrorException(
                 InvalidVariableNameError.Create(
                     region=parser_info.regions__.name,
                     name=parser_info.name,
-                    type=required_parser_info_type.name,
+                    type=parser_info.parser_info_type__.name,
                 ),
             )
 
@@ -546,25 +459,9 @@ def _ToExpressionImpl(
     raise ErrorException(
         InvalidParserInfoExpressionError.Create(
             region=parser_info.regions__.self__,
-            type=required_parser_info_type.name,
+            type=parser_info.parser_info_type__.name,
         ),
     )
-
-
-# ----------------------------------------------------------------------
-def _ValidateParserInfoType(
-    parser_info: ExpressionParserInfo,
-    required_parser_info_type: ParserInfoType,
-) -> None:
-    this_parser_info_type = parser_info.parser_info_type__  # type: ignore
-
-    if not ParserInfoType.IsCompileTimeValue(this_parser_info_type):
-        raise ErrorException(
-            InvalidParserInfoTypeError.Create(
-                region=parser_info.regions__.self__,
-                type=required_parser_info_type.name,
-            ),
-        )
 
 
 # ----------------------------------------------------------------------

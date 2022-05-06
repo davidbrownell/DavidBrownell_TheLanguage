@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, List, Optional
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -32,7 +32,19 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
+    from .ExpressionParserInfo import (
+        ExpressionParserInfo,
+        InvalidExpressionError,
+        ParserInfoType,
+        Region,
+    )
+
+    from .FuncOrTypeExpressionParserInfo import (
+        InvalidCompileTimeMutabilityModifierError,
+        InvalidStandardMutabilityModifierError,
+        MutabilityModifierRequiredError,
+    )
+
     from ..Common.MutabilityModifier import MutabilityModifier
 
     from ...Error import CreateError, Error, ErrorException
@@ -80,20 +92,6 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsConfigurationType(self) -> None:
-        self._ValidateImpl(
-            lambda parser_info: parser_info.ValidateAsConfigurationType(),
-        )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def ValidateAsCustomizationType(self) -> None:
-        self._ValidateImpl(
-            lambda parser_info: parser_info.ValidateAsCustomizationType(),
-        )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     def Accept(self, visitor):
         return self._AcceptImpl(
             visitor,
@@ -104,26 +102,69 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
         )
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsType() -> Optional[bool]:
+        return True
+
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    def _ValidateImpl(
+    @Interface.override
+    def ValidateAsType(
         self,
-        validate_func: Callable[[ExpressionParserInfo], None],
+        parser_info_type: ParserInfoType,
+        *,
+        is_instantiated_type: Optional[bool]=True,
     ) -> None:
         errors: List[Error] = []
 
-        if self.mutability_modifier is not None:
-            errors.append(
-                InvalidCompileTimeMutabilityError.Create(
-                    region=self.regions__.mutability_modifier,
-                ),
-            )
-
         for the_type in self.types:
             try:
-                validate_func(the_type)
+                the_type.ValidateAsType(
+                    parser_info_type,
+                    is_instantiated_type=False,
+                )
             except ErrorException as ex:
                 errors += ex.errors
 
+        if (
+            parser_info_type == ParserInfoType.Configuration
+            or parser_info_type == ParserInfoType.TypeCustomization
+        ):
+            if self.mutability_modifier is not None:
+                errors.append(
+                    InvalidCompileTimeMutabilityModifierError.Create(
+                        region=self.regions__.mutability_modifier,
+                    ),
+                )
+
+        elif (
+            parser_info_type == ParserInfoType.Standard
+            or parser_info_type == ParserInfoType.Unknown
+        ):
+            if is_instantiated_type and self.mutability_modifier is None:
+                errors.append(
+                    MutabilityModifierRequiredError.Create(
+                        region=self.regions__.self__,
+                    ),
+                )
+            elif not is_instantiated_type and self.mutability_modifier is not None:
+                errors.append(
+                    InvalidStandardMutabilityModifierError.Create(
+                        region=self.regions__.mutability_modifier,
+                    ),
+                )
+
+        else:
+            assert False, parser_info_type  # pragma: no cover
+
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ValidateAsExpression(self) -> None:
+        raise ErrorException(
+            InvalidExpressionError.Create(
+                region=self.regions__.type__,
+            ),
+        )
