@@ -965,7 +965,7 @@ statement_000044 = FuncInvocationStatementParserInfo.Create(
 statement_000045 = SpecialMethodStatementParserInfo.Create(
     regions=[region_000062, region_000063, region_000064],
     parent_class_capabilities=StandardCapabilities,
-    the_type=SpecialMethodType.CompileTimeEvalTemplates,
+    name=SpecialMethodType.CompileTimeEvalTemplates,
     statements=[statement_000044, ],
 )
 
@@ -3062,7 +3062,6 @@ statement_000269 = TypeAliasStatementParserInfo.Create(
 )
 
 public_exports = [
-    statement_000169,
     statement_000179,
     statement_000189,
     statement_000199,

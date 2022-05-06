@@ -30,10 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .BaseMixin import (
-        BaseMixin,
-        StateMaintainer,
-    )
+    from .BaseMixin import BaseMixin
 
     from ...MiniLanguage.Types.BooleanType import BooleanType
     from ...MiniLanguage.Types.VariantType import VariantType
@@ -67,44 +64,34 @@ MismatchedDefaultValueTypeError             = CreateError(
 
 # ----------------------------------------------------------------------
 class CommonMixin(BaseMixin):
-    # TODO: Validate that all expressions resolve to expected types
-
     # ----------------------------------------------------------------------
     # |  CapturedVariablesParserInfo
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnCapturedVariablesParserInfo(
-        self,
-        parser_info: CapturedVariablesParserInfo,
-    ):
+    def OnCapturedVariablesParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
     # |  ConstraintArgumentsParserInfo
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnConstraintArgumentsParserInfo(
-        self,
-        parser_info: ConstraintArgumentsParserInfo,
-    ):
+    def OnConstraintArgumentsParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnConstraintArgumentParserInfo(
-        self,
-        parser_info: ConstraintArgumentParserInfo,
-    ):
+    def OnConstraintArgumentParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
     # |  ConstraintParametersParserInfo
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnConstraintParametersParserInfo(
-        self,
-        parser_info: ConstraintParametersParserInfo,
-    ):
+    def OnConstraintParametersParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
@@ -131,73 +118,57 @@ class CommonMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  FuncArgumentsParserInfo
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnFuncArgumentsParserInfo(
-        self,
-        parser_info: FuncArgumentsParserInfo,
-    ):
+    def OnFuncArgumentsParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnFuncArgumentParserInfo(
-        self,
-        parser_info: FuncArgumentParserInfo,
-    ):
+    def OnFuncArgumentParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
     # |  FuncParametersParserInfo
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnFuncParametersParserInfo(
-        self,
-        parser_info: FuncParametersParserInfo,
-    ):
+    def OnFuncParametersParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnFuncParameterParserInfo(
-        self,
-        parser_info: FuncParameterParserInfo,
-    ):
+    def OnFuncParameterParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
     # |  TemplateArgumentsParserInfo
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTemplateArgumentsParserInfo(
-        self,
-        parser_info: TemplateArgumentsParserInfo,
-    ):
+    def OnTemplateArgumentsParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTemplateTypeArgumentParserInfo(
-        self,
-        parser_info: TemplateTypeArgumentParserInfo,
-    ):
+    def OnTemplateTypeArgumentParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTemplateDecoratorArgumentParserInfo(
-        self,
-        parser_info: TemplateDecoratorArgumentParserInfo,
-    ):
+    def OnTemplateDecoratorArgumentParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
     # |  TemplateParametersParserInfo
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTemplateParametersParserInfo(
-        self,
-        parser_info: TemplateParametersParserInfo,
-    ):
+    def OnTemplateParametersParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------

@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, ScopeFlag, StatementParserInfo
 
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
@@ -90,6 +90,7 @@ class ImportStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
+            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             *args,

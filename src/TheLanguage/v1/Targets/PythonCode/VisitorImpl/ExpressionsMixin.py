@@ -106,10 +106,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  BooleanExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnBooleanExpressionParserInfo(
         self,
         parser_info: BooleanExpressionParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Expressions.BooleanExpressionParserInfo import BooleanExpressionParserInfo")
 
         self._stream.write(
@@ -162,10 +165,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  CharacterExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnCharacterExpressionParserInfo(
         self,
         parser_info: CharacterExpressionParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Expressions.CharacterExpressionParserInfo import CharacterExpressionParserInfo")
 
         self._stream.write(
@@ -258,10 +264,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  IntegerExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnIntegerExpressionParserInfo(
         self,
         parser_info: IntegerExpressionParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Expressions.IntegerExpressionParserInfo import IntegerExpressionParserInfo")
 
         self._stream.write(
@@ -283,10 +292,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  NoneExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnNoneExpressionParserInfo(
         self,
         parser_info: NoneExpressionParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo")
 
         self._stream.write(
@@ -306,10 +318,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  NumberExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnNumberExpressionParserInfo(
         self,
         parser_info: NumberExpressionParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Expressions.NumberExpressionParserInfo import NumberExpressionParserInfo")
 
         self._stream.write(
@@ -331,10 +346,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  StringExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnStringExpressionParserInfo(
         self,
         parser_info: StringExpressionParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.Expressions.StringExpressionParserInfo import StringExpressionParserInfo")
 
         self._stream.write(
@@ -480,10 +498,13 @@ class ExpressionsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     # |  VariableExpressionParserInfo
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnVariableExpressionParserInfo(
         self,
         parser_info: VariableExpressionParserInfo,
     ):
+        yield
+
         self._imports.add("from v1.Parser.ParserInfos.ParserInfo import ParserInfoType")
         self._imports.add("from v1.Parser.ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo")
 

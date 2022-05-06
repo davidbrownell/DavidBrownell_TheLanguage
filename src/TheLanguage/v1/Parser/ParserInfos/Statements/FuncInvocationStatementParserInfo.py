@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import Region, StatementParserInfo
+    from .StatementParserInfo import Region, ScopeFlag, StatementParserInfo
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
@@ -52,6 +52,7 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
+            ScopeFlag.Function,
             expression.parser_info_type__,  # type: ignore
             regions,                        # type: ignore
             expression,

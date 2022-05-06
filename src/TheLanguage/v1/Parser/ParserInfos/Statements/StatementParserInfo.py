@@ -17,12 +17,12 @@
 
 import os
 
+from enum import auto, Flag
 from typing import Any, Callable, List, Optional
 
 from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -36,22 +36,24 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+class ScopeFlag(Flag):
+    """Indicates at which scope level(s) the statement is valid"""
+
+    Root                                    = auto()
+    Class                                   = auto()
+    Function                                = auto()
+
+
+# ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class StatementParserInfo(ParserInfo):
     """Abstract base class for all statements"""
 
     # ----------------------------------------------------------------------
+    scope_flags: ScopeFlag
+
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[Region]]]
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
     def __post_init__(
@@ -62,10 +64,13 @@ class StatementParserInfo(ParserInfo):
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
+        assert parser_info_type != ParserInfoType.Unknown
+
         super(StatementParserInfo, self).__init__(
             parser_info_type,
             regions,
-            regionless_attributes,
+            (regionless_attributes or []) + ["scope_flags", ],
             validate,
+            scope_flags=None,  # type: ignore
             **custom_display_funcs,
         )

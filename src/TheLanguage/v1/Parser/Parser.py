@@ -237,8 +237,6 @@ def Validate(
 
         root.Accept(visitor)
 
-        # TODO: Handle warnings and infos
-
         if visitor.errors:
             return visitor.errors
 

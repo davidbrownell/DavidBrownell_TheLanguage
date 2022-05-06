@@ -122,6 +122,9 @@ class BaseMixin(object):
         self,
         parser_info: ParserInfo,
     ):
+        if parser_info.introduces_scope__:
+            self._scope_level += 1
+
         yield
 
         if self._scope_level == 1:
@@ -142,18 +145,8 @@ class BaseMixin(object):
                 if should_add:
                     self._public_exports.append(parser_info)
 
-    # ----------------------------------------------------------------------
-    @contextmanager
-    def OnNewScope(
-        self,
-        parser_info: ParserInfo,  # pylint: disable=unused-argument
-    ):
-        self._scope_level += 1
-
-        yield
-
-        assert self._scope_level
-        self._scope_level -= 1
+        if parser_info.introduces_scope__:
+            self._scope_level -= 1
 
     # ----------------------------------------------------------------------
     @contextmanager

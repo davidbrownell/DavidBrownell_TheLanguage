@@ -36,6 +36,7 @@ with InitRelativeImports():
         ParserInfo,
         ParserInfoType,
         Region,
+        ScopeFlag,
         StatementParserInfo,
     )
 
@@ -64,13 +65,26 @@ class IfStatementClauseParserInfo(ParserInfo):
         cls,
         regions: List[Optional[Region]],
         expression: ExpressionParserInfo,
+        statements: List[StatementParserInfo],
         *args,
         **kwargs,
     ):
+        parser_info_type = expression.parser_info_type__
+
+        # If the expression is ambiguous, see if we can get some context from the statements
+        if parser_info_type == ParserInfoType.Unknown:
+            for statement in statements:
+                if (
+                    parser_info_type == ParserInfoType.Unknown
+                    or statement.parser_info_type__.value < parser_info_type.value
+                ):
+                    parser_info_type = statement.parser_info_type__
+
         return cls(
-            expression.parser_info_type__,  # type: ignore
+            parser_info_type,               # type: ignore
             regions,                        # type: ignore
             expression,
+            statements,
             *args,
             **kwargs,
         )
@@ -154,6 +168,7 @@ class IfStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
+            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             ParserInfoType.GetDominantType(*clauses),   # type: ignore
             regions,                                    # type: ignore
             clauses,
@@ -175,15 +190,8 @@ class IfStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor):
-        details = []
-
-        if self.else_clause:
-            details.append(("else_clause", self.else_clause))
-
         return self._AcceptImpl(
             visitor,
-            details=[
-                ("clauses", self.clauses),
-            ] + details,  # type: ignore
-            children=None,
+            details=None,
+            children=cast(List[ParserInfo], self.clauses) + cast(List[ParserInfo], [self.else_clause] if self.else_clause else []),
         )
