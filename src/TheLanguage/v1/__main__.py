@@ -165,8 +165,15 @@ def Execute(
 
         dm.stream.write("\nParsing...")
         with dm.stream.DoneManager() as parse_dm:
+            # Trim the paths off of the filenames
+            parser_input: Dict[str, AST.Node] = {}
+
+            for filename, node in lex_result.items():
+                filename = FileSystem.TrimPath(filename, input_dir)
+                parser_input[filename] = node
+
             parse_result = Parse(
-                lex_result,
+                parser_input,
                 ParseObserver(),
                 max_num_threads=max_num_threads,
             )

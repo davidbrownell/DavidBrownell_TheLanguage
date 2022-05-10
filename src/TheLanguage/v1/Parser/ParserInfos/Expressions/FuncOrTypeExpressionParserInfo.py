@@ -118,6 +118,7 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
         # Validate
         errors: List[Error] = []
 
+        # Checks just for configuration values
         if parser_info_type == ParserInfoType.Configuration:
             if isinstance(self.value, CustomType):
                 errors.append(
@@ -126,10 +127,8 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
                     ),
                 )
 
-        if (
-            parser_info_type == ParserInfoType.Configuration
-            or parser_info_type == ParserInfoType.TypeCustomization
-        ):
+        # Checks for all compile-time values
+        if ParserInfoType.IsCompileTime(parser_info_type):
             if self.templates is not None:
                 errors.append(
                     InvalidCompileTimeTemplatesError.Create(

@@ -43,7 +43,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from . import CallHelpers
 
-    from ..Error import CreateError, ErrorException
+    from ..Error import CreateError, ErrorException, Region
 
     from ..MiniLanguage.Expressions.BinaryExpression import BinaryExpression
     from ..MiniLanguage.Expressions.EnforceExpression import EnforceExpression
@@ -91,9 +91,10 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class CompileTimeValue(object):
+class CompileTimeInfo(object):
     type: MiniLanguageType
     value: Any
+    region: Optional[Region]
 
 
 # ----------------------------------------------------------------------
@@ -155,12 +156,12 @@ del _AugmentErrorExpressionArguments
 # ----------------------------------------------------------------------
 def EvalExpression(
     expression_or_parser_info: Union[MiniLanguageExpression, ExpressionParserInfo],
-    compile_time_values: Dict[str, CompileTimeValue],
+    compile_time_infos: Dict[str, CompileTimeInfo],
 ) -> MiniLanguageExpression.EvalResult:
     if isinstance(expression_or_parser_info, MiniLanguageExpression):
         expression = expression_or_parser_info
     elif isinstance(expression_or_parser_info, ExpressionParserInfo):
-        expression = ToExpression(expression_or_parser_info, compile_time_values)
+        expression = ToExpression(expression_or_parser_info, compile_time_infos)
     else:
         assert False, expression_or_parser_info  # pragma: no cover
 
@@ -170,7 +171,7 @@ def EvalExpression(
     types: Dict[str, MiniLanguageType] = {}
     values: Dict[str, Any] = {}
 
-    for k, v in compile_time_values.items():
+    for k, v in compile_time_infos.items():
         types[k] = v.type
         values[k] = v.value
 
@@ -180,11 +181,11 @@ def EvalExpression(
 # ----------------------------------------------------------------------
 def ToExpression(
     parser_info: ExpressionParserInfo,
-    compile_time_values: Dict[str, CompileTimeValue],
+    compile_time_infos: Dict[str, CompileTimeInfo],
 ) -> MiniLanguageExpression:
     return _ToExpressionImpl(
         parser_info,
-        compile_time_values,
+        compile_time_infos,
         set(),
     )
 
@@ -192,14 +193,14 @@ def ToExpression(
 # ----------------------------------------------------------------------
 def ToType(
     parser_info: ExpressionParserInfo,
-    compile_time_values: Dict[str, CompileTimeValue],
+    compile_time_infos: Dict[str, CompileTimeInfo],
 ) -> MiniLanguageType:
 
     if isinstance(parser_info, BinaryExpressionParserInfo):
         if parser_info.operator == BinaryExpressionParserInfoOperatorType.Access:
             return NestedType(
-                ToType(parser_info.left_expression, compile_time_values),
-                ToType(parser_info.right_expression, compile_time_values),
+                ToType(parser_info.left_expression, compile_time_infos),
+                ToType(parser_info.right_expression, compile_time_infos),
             )
 
     elif isinstance(parser_info, FuncOrTypeExpressionParserInfo):
@@ -209,18 +210,18 @@ def ToType(
         return NoneType()
 
     elif isinstance(parser_info, TernaryExpressionParserInfo):
-        result = EvalExpression(parser_info.condition_expression, compile_time_values)
+        result = EvalExpression(parser_info.condition_expression, compile_time_infos)
         result = result.type.ToBoolValue(result.value)
 
         return ToType(
             parser_info.true_expression if result else parser_info.false_expression,
-            compile_time_values,
+            compile_time_infos,
         )
 
     elif isinstance(parser_info, TupleExpressionParserInfo):
         return TupleType(
             [
-                ToType(type_expression, compile_time_values)
+                ToType(type_expression, compile_time_infos)
                 for type_expression in parser_info.types
             ],
         )
@@ -228,7 +229,7 @@ def ToType(
     elif isinstance(parser_info, VariantExpressionParserInfo):
         return VariantType(
             [
-                ToType(type_expression, compile_time_values)
+                ToType(type_expression, compile_time_infos)
                 for type_expression in parser_info.types
             ],
         )
@@ -246,7 +247,7 @@ def ToType(
 # ----------------------------------------------------------------------
 def _ToExpressionImpl(
     parser_info: ExpressionParserInfo,
-    compile_time_values: Dict[str, CompileTimeValue],
+    compile_time_infos: Dict[str, CompileTimeInfo],
     suppress_warnings_set: Set[str],
 ) -> MiniLanguageExpression:
 
@@ -265,13 +266,13 @@ def _ToExpressionImpl(
         return BinaryExpression(
             _ToExpressionImpl(
                 parser_info.left_expression,
-                compile_time_values,
+                compile_time_infos,
                 suppress_warnings_set,
             ),
             operator,
             _ToExpressionImpl(
                 parser_info.right_expression,
-                compile_time_values,
+                compile_time_infos,
                 suppress_warnings_set,
             ),
             parser_info.left_expression.regions__.self__,
@@ -281,7 +282,7 @@ def _ToExpressionImpl(
         return LiteralExpression(BooleanType(), parser_info.value)
 
     elif isinstance(parser_info, CallExpressionParserInfo):
-        result = EvalExpression(parser_info.expression, compile_time_values)
+        result = EvalExpression(parser_info.expression, compile_time_infos)
         func_name = result.type.ToStringValue(result.value)
 
         # Get the function expression
@@ -339,7 +340,7 @@ def _ToExpressionImpl(
                 arg_info = CallHelpers.ArgumentInfo(
                     _ToExpressionImpl(
                         argument.expression,
-                        compile_time_values,
+                        compile_time_infos,
                         suppress_warnings_set,
                     ),
                     argument.regions__.self__,
@@ -377,7 +378,7 @@ def _ToExpressionImpl(
         return LiteralExpression(CharacterType(), parser_info.value)
 
     elif isinstance(parser_info, FuncOrTypeExpressionParserInfo):
-        the_type = ToType(parser_info, compile_time_values)
+        the_type = ToType(parser_info, compile_time_infos)
         return LiteralExpression(the_type, the_type.name)
 
     elif isinstance(parser_info, IntegerExpressionParserInfo):
@@ -396,17 +397,17 @@ def _ToExpressionImpl(
         return TernaryExpression(
             _ToExpressionImpl(
                 parser_info.condition_expression,
-                compile_time_values,
+                compile_time_infos,
                 suppress_warnings_set,
             ),
             _ToExpressionImpl(
                 parser_info.true_expression,
-                compile_time_values,
+                compile_time_infos,
                 suppress_warnings_set,
             ),
             _ToExpressionImpl(
                 parser_info.false_expression,
-                compile_time_values,
+                compile_time_infos,
                 suppress_warnings_set,
             ),
         )
@@ -420,10 +421,10 @@ def _ToExpressionImpl(
             parser_info.operator,
             _ToExpressionImpl(
                 parser_info.expression,
-                compile_time_values,
+                compile_time_infos,
                 suppress_warnings_set,
             ),
-            ToType(parser_info.type, compile_time_values),
+            ToType(parser_info.type, compile_time_infos),
         )
 
     elif isinstance(parser_info, UnaryExpressionParserInfo):
@@ -431,14 +432,14 @@ def _ToExpressionImpl(
             parser_info.operator,
             _ToExpressionImpl(
                 parser_info.expression,
-                compile_time_values,
+                compile_time_infos,
                 suppress_warnings_set,
             ),
             parser_info.expression.regions__.self__,
         )
 
     elif isinstance(parser_info, VariableExpressionParserInfo):
-        compile_time_value = compile_time_values.get(parser_info.name, None)
+        compile_time_value = compile_time_infos.get(parser_info.name, None)
         if compile_time_value is None and parser_info.name not in suppress_warnings_set:
             raise ErrorException(
                 InvalidVariableNameError.Create(

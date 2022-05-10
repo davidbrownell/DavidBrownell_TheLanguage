@@ -152,10 +152,7 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
     ) -> None:
         errors: List[Error] = []
 
-        if (
-            parser_info_type == ParserInfoType.Configuration
-            or parser_info_type == ParserInfoType.TypeCustomization
-        ):
+        if ParserInfoType.IsCompileTime(parser_info_type):
             errors.append(
                 InvalidCompileTimeTypeError.Create(
                     region=self.regions__.self__,

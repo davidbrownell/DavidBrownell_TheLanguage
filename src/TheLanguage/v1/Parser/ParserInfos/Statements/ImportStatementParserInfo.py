@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import List, Optional
+from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
 
 from dataclasses import dataclass, field, InitVar
 
@@ -39,6 +39,9 @@ with InitRelativeImports():
 
     from ...Error import Error, ErrorException
 
+    if TYPE_CHECKING:
+        from ...NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
+
 
 # ----------------------------------------------------------------------
 class ImportType(Enum):
@@ -51,6 +54,9 @@ class ImportType(Enum):
 class ImportStatementItemParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
+
+    visibility_param: InitVar[Optional[VisibilityModifier]]
+    visibility: VisibilityModifier          = field(init=False)
 
     name: str
     alias: Optional[str]
@@ -65,22 +71,68 @@ class ImportStatementItemParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
-        super(ImportStatementItemParserInfo, self).__init__(ParserInfoType.Standard, *args, **kwargs)
+    def __post_init__(self, regions, visibility_param):
+        super(ImportStatementItemParserInfo, self).__init__(
+            ParserInfoType.Standard,
+            regions,
+            validate=False,
+        )
+
+        # Set defaults
+        if visibility_param is None:
+            visibility_param = VisibilityModifier.private
+            object.__setattr__(self.regions__, "visibility", self.regions__.self__)
+
+        object.__setattr__(self, "visibility", visibility_param)
+
+        # Validate
+        self.ValidateRegions()
+
+        errors: List[Error] = []
+
+        if self.visibility == VisibilityModifier.protected:
+            errors.append(
+                InvalidProtectedError.Create(
+                    region=self.regions__.visibility,
+                ),
+            )
+
+        if errors:
+            raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def GetNameAndRegion(self) -> Tuple[Optional[str], Region]:
+        if self.alias is not None:
+            return self.alias, self.regions__.alias
+
+        return super(ImportStatementItemParserInfo, self).GetNameAndRegion()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ImportStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
-    visibility_param: InitVar[Optional[VisibilityModifier]]
-    visibility: VisibilityModifier          = field(init=False)
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    ImportsType                             = Dict[str, "ParsedNamespaceInfo"]
 
-    source_filename: str
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
+    source_parts: List[str]
     import_items: List[ImportStatementItemParserInfo]
 
     import_type: ImportType
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Members
+    # |
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
@@ -98,7 +150,7 @@ class ImportStatementParserInfo(StatementParserInfo):
         )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, parser_info_type, regions, visibility_param):
+    def __post_init__(self, parser_info_type, regions):
         super(ImportStatementParserInfo, self).__post_init__(
             parser_info_type,
             regions,
@@ -106,30 +158,13 @@ class ImportStatementParserInfo(StatementParserInfo):
                 "import_items",
                 "import_type",
             ],
-            validate=False,
+            imports__=None,  # type: ignore
         )
 
-        # Set defaults
-        if visibility_param is None:
-            visibility_param = VisibilityModifier.private
-            object.__setattr__(self.regions__, "visibility", self.regions__.self__)
-
-        object.__setattr__(self, "visibility", visibility_param)
-
-        # Validate
-        errors: List[Error] = []
-
-        self.ValidateRegions()
-
-        if self.visibility == VisibilityModifier.protected:
-            errors.append(
-                InvalidProtectedError.Create(
-                    region=self.regions__.visibility,
-                ),
-            )
-
-        if errors:
-            raise ErrorException(*errors)
+    # ----------------------------------------------------------------------
+    @property
+    def imports__(self) -> "ImportsType":
+        return getattr(self, self.__class__._IMPORTS_ATTRIBUTE_NAME)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -141,3 +176,18 @@ class ImportStatementParserInfo(StatementParserInfo):
             ],  # type: ignore
             children=None,
         )
+
+    # ----------------------------------------------------------------------
+    # This method is invoked during validation
+    def InitImports(
+        self,
+        value: ImportsType,
+    ) -> None:
+        object.__setattr__(self, self.__class__._IMPORTS_ATTRIBUTE_NAME, value)
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
+    # ----------------------------------------------------------------------
+    _IMPORTS_ATTRIBUTE_NAME                 = "_imports"

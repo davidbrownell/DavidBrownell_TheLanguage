@@ -42,8 +42,6 @@ with InitRelativeImports():
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
-    from ...Error import ErrorException
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
