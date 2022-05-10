@@ -16,10 +16,11 @@
 """Contains the ParserInfo object"""
 
 import os
+import weakref
 
 from contextlib import contextmanager
 from enum import auto, Enum, Flag
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union, TYPE_CHECKING
 
 from dataclasses import dataclass, fields, make_dataclass, InitVar
 
@@ -36,6 +37,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Region import Region
+
+    if TYPE_CHECKING:
+        from ..NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -85,6 +89,14 @@ class ParserInfoType(Enum):
         value: "ParserInfoType",
     ) -> bool:
         return value == cls.Configuration or value == cls.Unknown
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def IsCompileTime(
+        cls,
+        value: "ParserInfoType",
+    ) -> bool:
+        return value != cls.Standard
 
 
 # ----------------------------------------------------------------------
@@ -161,6 +173,7 @@ class ParserInfo(ObjectReprImplBase):
             self,
             introduces_scope__=None,
             parser_info_type__=None,
+            namespace__=None,
             **custom_display_funcs,
         )
 
@@ -181,6 +194,10 @@ class ParserInfo(ObjectReprImplBase):
     def parser_info_type__(self) -> ParserInfoType:
         return self._parser_info_type  # type: ignore  # pylint: disable=no-member
 
+    @property
+    def namespace__(self) -> "ParsedNamespaceInfo":
+        return getattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)()  # pylint: disable=protected-access
+
     # ----------------------------------------------------------------------
     def ValidateRegions(self) -> None:
         self._validate_regions_func()  # type: ignore  # pylint: disable=no-member
@@ -199,6 +216,22 @@ class ParserInfo(ObjectReprImplBase):
 
             with method(self):
                 pass
+
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def GetNameAndRegion(self) -> Tuple[Optional[str], Region]:
+        if hasattr(self, "name"):
+            return self.name, self.regions__.name  # type: ignore  # pylint: disable=no-member
+
+        return None, self.regions__.self__
+
+    # ----------------------------------------------------------------------
+    # This method is invoked during validation
+    def InitNamespace(
+        self,
+        value: "ParsedNamespaceInfo",
+    ) -> None:
+        object.__setattr__(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME, weakref.ref(value))  # pylint: disable=protected-access
 
     # ----------------------------------------------------------------------
     # |
@@ -263,6 +296,13 @@ class ParserInfo(ObjectReprImplBase):
                     assert False, (method_name, "__enter__")
 
                 raise
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
+    # ----------------------------------------------------------------------
+    _NAMESPACE_ATTRIBUTE_NAME               = "_namespace"
 
     # ----------------------------------------------------------------------
     # |

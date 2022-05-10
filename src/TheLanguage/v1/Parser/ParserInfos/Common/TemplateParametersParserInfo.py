@@ -185,12 +185,7 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
             try:
                 self.default_value.ValidateAsExpression()
 
-                default_value_parser_info_type = self.default_value.parser_info_type__
-
-                if (
-                    not ParserInfoType.IsConfiguration(default_value_parser_info_type)
-                    and default_value_parser_info_type != self.parser_info_type__
-                ):
+                if not ParserInfoType.IsCompileTime(self.default_value.parser_info_type__):
                     errors.append(
                         InvalidTemplateDecoratorExpressionError.Create(
                             region=self.default_value.regions__.self__,

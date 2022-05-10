@@ -50,6 +50,9 @@ class StatementParserInfo(ParserInfo):
     """Abstract base class for all statements"""
 
     # ----------------------------------------------------------------------
+    allow_duplicate_named_items__           = False
+
+    # ----------------------------------------------------------------------
     scope_flags: ScopeFlag
 
     parser_info_type: InitVar[ParserInfoType]
@@ -71,6 +74,7 @@ class StatementParserInfo(ParserInfo):
             regions,
             (regionless_attributes or []) + ["scope_flags", ],
             validate,
-            scope_flags=None,  # type: ignore
+            allow_duplicate_named_items__=None,         # type: ignore
+            scope_flags=None,                           # type: ignore
             **custom_display_funcs,
         )

@@ -233,6 +233,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     introduces_scope__                      = True
+    allow_duplicate_named_items__           = True
 
     # ----------------------------------------------------------------------
     parent_class_capabilities: Optional[ClassCapabilities]
