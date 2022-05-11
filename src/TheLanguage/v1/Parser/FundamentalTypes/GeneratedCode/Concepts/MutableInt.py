@@ -1005,7 +1005,3 @@ statement_000074 = ClassStatementParserInfo.Create(
     is_abstract=None,
     is_final=None,
 )
-
-public_exports = [
-    statement_000074,
-]

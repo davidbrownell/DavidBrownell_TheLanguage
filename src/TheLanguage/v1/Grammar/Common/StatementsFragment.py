@@ -51,8 +51,9 @@ with InitRelativeImports():
         ErrorException,
         GetParserInfoNoThrow,
         Region,
-        ParserInfo,
     )
+
+    from ...Parser.ParserInfos.Statements.StatementParserInfo import StatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -103,7 +104,7 @@ def Create() -> PhraseItem:
 def Extract(
     node: AST.Node,
 ) -> Tuple[
-    List[ParserInfo],
+    List[StatementParserInfo],
     Optional[Tuple[AST.Leaf, str]],
 ]:
     nodes = ExtractSequence(node)
@@ -127,7 +128,7 @@ def Extract(
         statement_nodes = [ExtractDynamic(statements_node)]
 
     # Extract phrases and process docstrings (if any)
-    phrases: List[ParserInfo] = []
+    phrases: List[StatementParserInfo] = []
     docstring_leaf: Optional[AST.Leaf] = None
     docstring_info: Optional[str] = None
 
@@ -158,7 +159,7 @@ def Extract(
                 docstring_leaf, docstring_info = docstring_result
 
         else:
-            statement_phrase = GetParserInfoNoThrow(cast(AST.Node, statement_node))
+            statement_phrase = cast(StatementParserInfo, GetParserInfoNoThrow(cast(AST.Node, statement_node)))
             if statement_phrase is not None:
                 phrases.append(statement_phrase)
 

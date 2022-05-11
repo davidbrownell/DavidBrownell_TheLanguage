@@ -19,11 +19,10 @@ import os
 import traceback
 
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, cast, Dict, List, Optional, Tuple, TypeVar, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,6 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Error import CreateError, Error, ErrorException, Region
     from .Helpers import MiniLanguageHelpers
+    from .NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
     from .MiniLanguage.Types.BooleanType import BooleanType                 # pylint: disable=unused-import
     from .MiniLanguage.Types.CharacterType import CharacterType             # pylint: disable=unused-import
@@ -46,7 +46,8 @@ with InitRelativeImports():
     from .MiniLanguage.Types.VariantType import VariantType                 # pylint: disable=unused-import
 
     from .ParserInfos.ParserInfo import ParserInfo, RootParserInfo
-    from .Visitors.ValidateVisitor.ValidateVisitor import ValidateVisitor
+
+    from .Visitors.PassOneVisitor.Visitor import Visitor as PassOneVisitor
 
     from ..Lexer.Lexer import AST, Phrase as LexPhrase
 
@@ -222,37 +223,94 @@ def Validate(
     Dict[str, Union[RootParserInfo, List[Error]]]
 ]:
     mini_language_configuration_values = {
-        k: MiniLanguageHelpers.CompileTimeValue(v[0], v[1])
+        k: MiniLanguageHelpers.CompileTimeInfo(v[0], v[1], None)
         for k, v in configuration_values.items()
     }
 
-    # TODO: Add functionality for deferred processing
+    # ----------------------------------------------------------------------
+    def ExtractErrorsFromResults(
+        results: Dict[str, Any],
+    ) -> Optional[Dict[str, List[Error]]]:
+        error_results = {}
+
+        for k, v in results.items():
+            if isinstance(v, list) and v and isinstance(v[0], Error):
+                error_results[k] = v
+
+        return error_results or None
 
     # ----------------------------------------------------------------------
-    def Execute(
+    def ExecutePassOne(
         fully_qualified_name: str,  # pylint: disable=unused-argument
         root: RootParserInfo,
-    ) -> Union[RootParserInfo, List[Error]]:
-        visitor = ValidateVisitor(mini_language_configuration_values)
+    ) -> Union[
+        Tuple[ParsedNamespaceInfo, PassOneVisitor.PostprocessFuncsType],
+        List[Error],
+    ]:
+        visitor = PassOneVisitor(mini_language_configuration_values)
 
         root.Accept(visitor)
-
-        # TODO: Handle warnings and infos
 
         if visitor.errors:
             return visitor.errors
 
-        return root
+        return visitor.namespace_info, visitor.postprocess_funcs
 
     # ----------------------------------------------------------------------
 
     results = _Execute(
         roots,
-        Execute,
+        ExecutePassOne,
         max_num_threads=max_num_threads,
     )
 
-    return results
+    if results is None:
+        return None
+
+    # Check for errors
+    error_data = ExtractErrorsFromResults(results)
+    if error_data is not None:
+        return error_data  # type: ignore
+
+    # Create a complete namespace and extract postprocess funcs
+    global_namespace = NamespaceInfo(None)
+
+    postprocess_funcs: Dict[str, PassOneVisitor.PostprocessFuncsType] = {}
+    pass_one_results: Dict[str, ParsedNamespaceInfo] = {}
+
+    for fully_qualified_name, (namespace_info, these_postprocess_funcs) in cast(
+        Dict[str, Tuple[ParsedNamespaceInfo, PassOneVisitor.PostprocessFuncsType]],
+        results,
+    ).items():
+        # Update the global namespace
+        name_parts = os.path.splitext(fully_qualified_name)[0]
+        name_parts = name_parts.split(os.path.sep)
+
+        namespace = global_namespace
+
+        for part in name_parts[:-1]:
+            if part not in namespace.children:
+                namespace.children[part] = NamespaceInfo(namespace)
+
+            namespace = namespace.children[part]
+
+        object.__setattr__(namespace_info, "parent", namespace)
+        namespace.children[name_parts[-1]] = namespace_info
+
+        # Update the global postprocess funcs
+        if these_postprocess_funcs:
+            postprocess_funcs[fully_qualified_name] = these_postprocess_funcs
+
+        # Update the results
+        pass_one_results[fully_qualified_name] = namespace_info
+
+    error_data = PassOneVisitor.ExecutePostprocessFuncs(postprocess_funcs)
+    if error_data:
+        return error_data  # type: ignore
+
+    # TODO: Continue
+
+    return roots # type: ignore
 
 
 # ----------------------------------------------------------------------

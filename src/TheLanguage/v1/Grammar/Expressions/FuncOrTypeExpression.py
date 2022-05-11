@@ -113,7 +113,7 @@ class FuncOrTypeExpression(GrammarPhrase):
 
             if CommonTokens.FuncOrTypeName.IsCompileTime(name_info):  # type: ignore
                 # If here, the function could be invoked during Configuration or TypeCustomization.
-                # Pick the earlies of the two.
+                # Pick the smallest of the two.
                 assert ParserInfoType.Configuration.value < ParserInfoType.TypeCustomization.value
                 parser_info_type = ParserInfoType.Configuration
 

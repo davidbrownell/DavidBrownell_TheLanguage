@@ -48,7 +48,7 @@ class StateMaintainer(Generic[T]):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        init_values: Optional[Dict[str, Union[T, List[T]]]]=None,
+        init_values: Optional[Dict[str, T]]=None,
     ):
         initial_scope = {}
 
@@ -165,7 +165,7 @@ class StateMaintainer(Generic[T]):
         scope = self._scopes[-1]
 
         if ensure_unique and name in scope:
-            raise Exception("'{name}' is not unique".format(name))
+            raise Exception("'{}' is not unique".format(name))
 
         scope.setdefault(name, []).append(value)
         return self

@@ -37,7 +37,8 @@ def test_Standard():
     CompareResultsFromFile(str(ExecuteParserInfo(
         textwrap.dedent(
             """\
-            pass
+            public class Class:
+                pass
             """,
         ),
     )))

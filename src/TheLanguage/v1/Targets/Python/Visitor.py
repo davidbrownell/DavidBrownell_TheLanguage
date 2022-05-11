@@ -92,15 +92,6 @@ class Visitor(object):
         return content
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @contextmanager
-    def OnNewScope(
-        parser_info: ParserInfo,
-    ):
-        # Nothing to do here
-        yield
-
-    # ----------------------------------------------------------------------
     @contextmanager
     def OnRootParserInfo(
         self,
@@ -137,11 +128,12 @@ class Visitor(object):
     # |  Expressions
     # |
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnCallExpressionParserInfo(
         self,
         parser_info: CallExpressionParserInfo,
-    ) -> None:
-        pass # TODO
+    ):
+        yield
 
     # ----------------------------------------------------------------------
     @contextmanager
@@ -209,25 +201,29 @@ class Visitor(object):
         yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnIfStatementParserInfo(
         self,
         parser_info: IfStatementParserInfo,
-    ) -> None:
-        pass # TODO
+    ):
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnImportStatementParserInfo(
         self,
         parser_info: ImportStatementParserInfo,
-    ) -> None:
-        pass # TODO
+    ):
+        yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnPassStatementParserInfo(
         self,
         parser_info: PassStatementParserInfo,  # pylint: disable=unused-argument
-    ) -> None:
+    ):
         self._stream.write("pass\n")
+        yield
 
     # ----------------------------------------------------------------------
     @contextmanager
@@ -238,11 +234,12 @@ class Visitor(object):
         yield
 
     # ----------------------------------------------------------------------
+    @contextmanager
     def OnTypeAliasStatementParserInfo(
         self,
         parser_info: TypeAliasStatementParserInfo,
     ):
-        pass # TODO
+        yield
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
