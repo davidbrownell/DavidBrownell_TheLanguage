@@ -37,7 +37,8 @@ def test_Simple():
         ExecutePythonTarget(
             textwrap.dedent(
                 """\
-                pass
+                public class MyClass:
+                    pass
                 """,
             ),
         ),

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ValidateVisitor.py
+# |  Visitor.py
 # |
-# |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-27 13:42:37
+# |  David Brownell <db@DavidBrownell.db@DavidBrownell.com>
+# |      2022-05-10 13:19:10
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ValidateVisitor object"""
+"""Contains the Visitor object"""
 
 import os
 
@@ -27,15 +27,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CommonMixin import CommonMixin
-    from .ExpressionsMixin import ExpressionsMixin
     from .StatementsMixin import StatementsMixin
+    from .ImportStatementMixin import ImportStatementMixin
 
 
 # ----------------------------------------------------------------------
-class ValidateVisitor(
-    CommonMixin,
-    ExpressionsMixin,
+class Visitor(
     StatementsMixin,
+    ImportStatementMixin,
 ):
     pass

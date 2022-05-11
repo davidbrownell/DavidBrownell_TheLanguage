@@ -339,10 +339,16 @@ class ImportStatement(ImportGrammarPhrase):
         source_leaf = cast(AST.Leaf, nodes[2])
         source_info = ExtractToken(source_leaf)
 
+        if source_info.startswith("."):
+            source_info = source_info[1:]
+
+        source_info = source_info.split(".")
+
         # Imports
         import_items = [
             ImportStatementItemParserInfo.Create(
-                CreateRegions(data.node, data.name_leaf, data.alias_leaf),
+                CreateRegions(node, visibility_node, data.name_leaf, data.alias_leaf),
+                visibility_info,
                 data.name_info,
                 data.alias_info,
             )
@@ -350,8 +356,7 @@ class ImportStatement(ImportGrammarPhrase):
         ]
 
         return ImportStatementParserInfo.Create(
-            CreateRegions(node, visibility_node, source_leaf),
-            visibility_info,
+            CreateRegions(node, source_leaf),
             source_info,
             import_items,
             import_type,

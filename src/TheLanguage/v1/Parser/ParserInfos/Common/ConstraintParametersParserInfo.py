@@ -116,10 +116,7 @@ class ConstraintParameterParserInfo(ParserInfo):
             try:
                 self.default_value.ValidateAsExpression()
 
-                if (
-                    not ParserInfoType.IsConfiguration(self.default_value.parser_info_type__)
-                    and self.default_value.parser_info_type__ != ParserInfoType.TypeCustomization
-                ):
+                if not ParserInfoType.IsCompileTime(self.default_value.parser_info_type__):
                     errors.append(
                         InvalidConstraintExpressionError.Create(
                             region=self.default_value.regions__.self__,

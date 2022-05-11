@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import Callable, cast, List, Optional, Union
+from typing import cast, List, Optional, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -34,10 +34,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import (  # pylint: disable=unused-import
+    from .StatementParserInfo import (
         ParserInfo,
-        ParserInfoType,                     # Convenience import
+        ParserInfoType,
         Region,
+        ScopeFlag,
         StatementParserInfo,
     )
 
@@ -232,6 +233,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     introduces_scope__                      = True
+    allow_duplicate_named_items__           = True
 
     # ----------------------------------------------------------------------
     parent_class_capabilities: Optional[ClassCapabilities]
@@ -280,7 +282,8 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
         else:
             parser_info_type = parameters.parser_info_type__
 
-        return cls(
+        return cls(  # pylint: disable=too-many-function-args
+            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             parser_info_type,               # type: ignore
             regions,                        # type: ignore
             parent_class_capabilities,

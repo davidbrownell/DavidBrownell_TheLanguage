@@ -146,10 +146,7 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
         try:
             self.expression.ValidateAsExpression()
 
-            if (
-                not ParserInfoType.IsConfiguration(expression_parser_info_type)
-                and expression_parser_info_type != ParserInfoType.TypeCustomization
-            ):
+            if not ParserInfoType.IsCompileTime(expression_parser_info_type):
                 errors.append(
                     InvalidTemplateExpressionError.Create(
                         region=self.expression.regions__.self__,

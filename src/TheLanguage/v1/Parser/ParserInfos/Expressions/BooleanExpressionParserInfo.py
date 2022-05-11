@@ -17,8 +17,6 @@
 
 import os
 
-from typing import List, Optional
-
 from dataclasses import dataclass
 
 import CommonEnvironment
@@ -31,7 +29,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
+    from .ExpressionParserInfo import ExpressionParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -39,21 +37,6 @@ with InitRelativeImports():
 class BooleanExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     value: bool
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        regions: List[Optional[Region]],
-        *args,
-        **kwargs,
-    ):
-        return cls(
-            ParserInfoType.Unknown,         # type: ignore
-            regions,                        # type: ignore
-            *args,
-            **kwargs,
-        )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):

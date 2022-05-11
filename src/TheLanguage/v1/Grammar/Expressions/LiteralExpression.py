@@ -44,6 +44,8 @@ with InitRelativeImports():
 
     from ...Parser.Parser import CreateRegions
 
+    from ...Parser.ParserInfos.ParserInfo import ParserInfoType
+
     from ...Parser.ParserInfos.Expressions.BooleanExpressionParserInfo import BooleanExpressionParserInfo
     from ...Parser.ParserInfos.Expressions.CharacterExpressionParserInfo import CharacterExpressionParserInfo
     from ...Parser.ParserInfos.Expressions.IntegerExpressionParserInfo import IntegerExpressionParserInfo
@@ -66,6 +68,10 @@ class LiteralExpression(GrammarPhrase):
                 PhraseItem(
                     name="Boolean",
                     item=(
+                        "__True!",
+                        "__False!",
+                        "True!",
+                        "False!",
                         "True",
                         "False",
                     ),
@@ -167,11 +173,24 @@ class LiteralExpression(GrammarPhrase):
                 return_match_contents=True,
             )
 
-            assert value_info == "True" or value_info == "False", value_info
+            if "True" in value_info:
+                value = True
+            elif "False" in value_info:
+                value = False
+            else:
+                assert False, value_info  # pragma: no cover
+
+            if value_info.startswith("__"):
+                parser_info_type = ParserInfoType.Configuration
+            elif value_info.endswith("!"):
+                parser_info_type = ParserInfoType.TypeCustomization
+            else:
+                parser_info_type = ParserInfoType.Unknown
 
             return BooleanExpressionParserInfo.Create(
+                parser_info_type,
                 CreateRegions(value_node),
-                value_info == "True",
+                value,
             )
 
         elif node.type.name == "Character":

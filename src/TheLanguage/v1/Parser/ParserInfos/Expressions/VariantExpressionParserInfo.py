@@ -126,10 +126,7 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
             except ErrorException as ex:
                 errors += ex.errors
 
-        if (
-            parser_info_type == ParserInfoType.Configuration
-            or parser_info_type == ParserInfoType.TypeCustomization
-        ):
+        if ParserInfoType.IsCompileTime(parser_info_type):
             if self.mutability_modifier is not None:
                 errors.append(
                     InvalidCompileTimeMutabilityModifierError.Create(

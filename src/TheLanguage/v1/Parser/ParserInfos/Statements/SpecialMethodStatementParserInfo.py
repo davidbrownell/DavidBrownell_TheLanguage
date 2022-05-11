@@ -20,7 +20,7 @@ import os
 from enum import auto, Enum
 from typing import cast, List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, ScopeFlag, StatementParserInfo
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
@@ -93,7 +93,7 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     parent_class_capabilities: ClassCapabilities
 
-    type: SpecialMethodType
+    name: SpecialMethodType
     statements: List[StatementParserInfo]
 
     # ----------------------------------------------------------------------
@@ -102,20 +102,21 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
         cls,
         regions: List[Optional[Region]],
         parent_class_capabilities: Optional[ClassCapabilities],
-        the_type: SpecialMethodType,
+        name: SpecialMethodType,
         *args,
         **kwargs,
     ):
-        if the_type in cls._CompileTimeMethods:
+        if name in cls._CompileTimeMethods:
             parser_info_type = ParserInfoType.TypeCustomization
         else:
             parser_info_type = ParserInfoType.Standard
 
-        return cls(
+        return cls(  # pylint: disable=too-many-function-args
+            ScopeFlag.Class,
             parser_info_type,               # type: ignore
             regions,                        # type: ignore
             parent_class_capabilities,      # type: ignore
-            the_type,
+            name,
             *args,
             **kwargs,
         )

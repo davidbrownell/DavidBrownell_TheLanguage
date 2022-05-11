@@ -15,10 +15,9 @@
 # ----------------------------------------------------------------------
 """Contains the ClassStatementParserInfo object"""
 
-import itertools
 import os
 
-from typing import Callable, cast, List, Optional
+from typing import cast, List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -33,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, ScopeFlag, StatementParserInfo
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
     from ..Common.ClassModifier import ClassModifier
@@ -159,6 +158,7 @@ class ClassStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
+            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             *args,

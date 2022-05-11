@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import List, Optional
+from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
 
 from dataclasses import dataclass, field, InitVar
 
@@ -33,11 +33,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, ScopeFlag, StatementParserInfo
 
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ...Error import Error, ErrorException
+
+    if TYPE_CHECKING:
+        from ...NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -52,6 +55,9 @@ class ImportStatementItemParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
 
+    visibility_param: InitVar[Optional[VisibilityModifier]]
+    visibility: VisibilityModifier          = field(init=False)
+
     name: str
     alias: Optional[str]
 
@@ -65,46 +71,10 @@ class ImportStatementItemParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
-        super(ImportStatementItemParserInfo, self).__init__(ParserInfoType.Standard, *args, **kwargs)
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ImportStatementParserInfo(StatementParserInfo):
-    # ----------------------------------------------------------------------
-    visibility_param: InitVar[Optional[VisibilityModifier]]
-    visibility: VisibilityModifier          = field(init=False)
-
-    source_filename: str
-    import_items: List[ImportStatementItemParserInfo]
-
-    import_type: ImportType
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        regions: List[Optional[Region]],
-        *args,
-        **kwargs,
-    ):
-        return cls(
-            ParserInfoType.Standard,        # type: ignore
-            regions,                        # type: ignore
-            *args,
-            **kwargs,
-        )
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, parser_info_type, regions, visibility_param):
-        super(ImportStatementParserInfo, self).__post_init__(
-            parser_info_type,
+    def __post_init__(self, regions, visibility_param):
+        super(ImportStatementItemParserInfo, self).__init__(
+            ParserInfoType.Standard,
             regions,
-            regionless_attributes=[
-                "import_items",
-                "import_type",
-            ],
             validate=False,
         )
 
@@ -116,9 +86,9 @@ class ImportStatementParserInfo(StatementParserInfo):
         object.__setattr__(self, "visibility", visibility_param)
 
         # Validate
-        errors: List[Error] = []
-
         self.ValidateRegions()
+
+        errors: List[Error] = []
 
         if self.visibility == VisibilityModifier.protected:
             errors.append(
@@ -132,6 +102,72 @@ class ImportStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def GetNameAndRegion(self) -> Tuple[Optional[str], Region]:
+        if self.alias is not None:
+            return self.alias, self.regions__.alias
+
+        return super(ImportStatementItemParserInfo, self).GetNameAndRegion()
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class ImportStatementParserInfo(StatementParserInfo):
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    ImportsType                             = Dict[str, "ParsedNamespaceInfo"]
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
+    source_parts: List[str]
+    import_items: List[ImportStatementItemParserInfo]
+
+    import_type: ImportType
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Members
+    # |
+    # ----------------------------------------------------------------------
+    @classmethod
+    def Create(
+        cls,
+        regions: List[Optional[Region]],
+        *args,
+        **kwargs,
+    ):
+        return cls(
+            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+            ParserInfoType.Standard,        # type: ignore
+            regions,                        # type: ignore
+            *args,
+            **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, parser_info_type, regions):
+        super(ImportStatementParserInfo, self).__post_init__(
+            parser_info_type,
+            regions,
+            regionless_attributes=[
+                "import_items",
+                "import_type",
+            ],
+            imports__=None,  # type: ignore
+        )
+
+    # ----------------------------------------------------------------------
+    @property
+    def imports__(self) -> "ImportsType":
+        return getattr(self, self.__class__._IMPORTS_ATTRIBUTE_NAME)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def Accept(self, visitor):
         return self._AcceptImpl(
             visitor,
@@ -140,3 +176,18 @@ class ImportStatementParserInfo(StatementParserInfo):
             ],  # type: ignore
             children=None,
         )
+
+    # ----------------------------------------------------------------------
+    # This method is invoked during validation
+    def InitImports(
+        self,
+        value: ImportsType,
+    ) -> None:
+        object.__setattr__(self, self.__class__._IMPORTS_ATTRIBUTE_NAME, value)
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
+    # ----------------------------------------------------------------------
+    _IMPORTS_ATTRIBUTE_NAME                 = "_imports"
