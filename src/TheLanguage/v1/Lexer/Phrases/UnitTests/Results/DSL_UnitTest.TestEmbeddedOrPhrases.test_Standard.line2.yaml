@@ -4,7 +4,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data:
       - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
         data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          is_ignored: False
+          is_ignored: false
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
             begin: "[2, 1] (4)"
             end: "[2, 5] (8)"
@@ -14,7 +14,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
         phrase: "Number Token"
       - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
         data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          is_ignored: False
+          is_ignored: false
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
             begin: "[2, 5] (8)"
             end: "[3, 1] (9)"
@@ -29,4 +29,4 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
   begin: "[2, 1] (4)"
   end: "[3, 1] (9)"
-success: True
+success: true

@@ -4,7 +4,7 @@
 3) OnInternalPhrase, 0, 4
     # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-      is_ignored: False
+      is_ignored: false
       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
         begin: "[1, 1] (0)"
         end: "[1, 5] (4)"
