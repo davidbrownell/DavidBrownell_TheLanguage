@@ -4,7 +4,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
     - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data:
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          is_ignored: True
+          is_ignored: true
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
             begin: "[1, 1] (0)"
             end: "[1, 6] (5)"
@@ -12,7 +12,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
           value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
             match: "<_sre.SRE_Match object; span=(0, 5), match='# one'>"
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          is_ignored: True
+          is_ignored: true
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
             begin: "[1, 6] (5)"
             end: "[2, 1] (6)"
@@ -25,7 +25,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
           data:
             - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
               data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                is_ignored: False
+                is_ignored: false
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[2, 1] (6)"
                   end: "[2, 4] (9)"
@@ -34,7 +34,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   match: "<_sre.SRE_Match object; span=(6, 9), match='one'>"
               phrase: "Word Token"
             - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-              is_ignored: True
+              is_ignored: true
               iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                 begin: "[2, 4] (9)"
                 end: "[2, 9] (14)"
@@ -44,7 +44,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   begin: 9
                   end: 14
             - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-              is_ignored: True
+              is_ignored: true
               iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                 begin: "[2, 9] (14)"
                 end: "[2, 20] (25)"
@@ -53,7 +53,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 match: "<_sre.SRE_Match object; span=(14, 25), match='# After one'>"
             - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
               data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                is_ignored: False
+                is_ignored: false
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[2, 20] (25)"
                   end: "[4, 1] (27)"
@@ -65,7 +65,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
               phrase: "Newline+"
           phrase: "[Word Token, Newline+]"
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          is_ignored: True
+          is_ignored: true
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
             begin: "[4, 1] (27)"
             end: "[4, 6] (32)"
@@ -73,7 +73,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
           value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
             match: "<_sre.SRE_Match object; span=(27, 32), match='# TWO'>"
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          is_ignored: True
+          is_ignored: true
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
             begin: "[4, 6] (32)"
             end: "[6, 1] (34)"
@@ -86,7 +86,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
           data:
             - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
               data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                is_ignored: False
+                is_ignored: false
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[6, 1] (34)"
                   end: "[6, 4] (37)"
@@ -95,7 +95,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   match: "<_sre.SRE_Match object; span=(34, 37), match='TWO'>"
               phrase: "Upper Token"
             - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-              is_ignored: True
+              is_ignored: true
               iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                 begin: "[6, 4] (37)"
                 end: "[6, 9] (42)"
@@ -105,7 +105,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   begin: 37
                   end: 42
             - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-              is_ignored: True
+              is_ignored: true
               iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                 begin: "[6, 9] (42)"
                 end: "[6, 20] (53)"
@@ -114,7 +114,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 match: "<_sre.SRE_Match object; span=(42, 53), match='# After TWO'>"
             - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
               data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                is_ignored: False
+                is_ignored: false
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[6, 20] (53)"
                   end: "[8, 1] (55)"
@@ -126,7 +126,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
               phrase: "Newline+"
           phrase: "[Upper Token, Newline+]"
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          is_ignored: True
+          is_ignored: true
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
             begin: "[8, 1] (55)"
             end: "[8, 9] (63)"
@@ -136,7 +136,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
               begin: 55
               end: 63
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          is_ignored: True
+          is_ignored: true
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
             begin: "[8, 9] (63)"
             end: "[8, 12] (66)"
@@ -144,7 +144,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
           value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
             match: "<_sre.SRE_Match object; span=(63, 66), match='# 3'>"
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          is_ignored: True
+          is_ignored: true
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
             begin: "[8, 12] (66)"
             end: "[9, 1] (67)"
@@ -157,7 +157,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
           data:
             - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
               data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                is_ignored: False
+                is_ignored: false
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[9, 1] (67)"
                   end: "[9, 2] (68)"
@@ -166,7 +166,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   match: "<_sre.SRE_Match object; span=(67, 68), match='3'>"
               phrase: "Number Token"
             - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-              is_ignored: True
+              is_ignored: true
               iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                 begin: "[9, 2] (68)"
                 end: "[9, 9] (75)"
@@ -176,7 +176,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   begin: 68
                   end: 75
             - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-              is_ignored: True
+              is_ignored: true
               iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                 begin: "[9, 9] (75)"
                 end: "[9, 18] (84)"
@@ -185,7 +185,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 match: "<_sre.SRE_Match object; span=(75, 84), match='# After 3'>"
             - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
               data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                is_ignored: False
+                is_ignored: false
                 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                   begin: "[9, 18] (84)"
                   end: "[10, 1] (85)"
@@ -201,4 +201,4 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
   begin: "[1, 1] (0)"
   end: "[10, 1] (85)"
-success: True
+success: true
