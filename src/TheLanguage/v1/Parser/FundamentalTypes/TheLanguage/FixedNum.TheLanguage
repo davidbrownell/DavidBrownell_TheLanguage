@@ -18,8 +18,10 @@ from .Concepts.MutableNum import MutableNum
 
 # ----------------------------------------------------------------------
 public mutable class FixedNum <
-    Int num_bytes!,                         # 2, 4, 8, 16, 32
-    Bool is_checked!,
+    pos:
+        Int num_bytes!,                     # 2, 4, 8, 16, 32
+    key:
+        Bool is_checked!,
 > {
     key:
         (Num | None) min_value! = None,

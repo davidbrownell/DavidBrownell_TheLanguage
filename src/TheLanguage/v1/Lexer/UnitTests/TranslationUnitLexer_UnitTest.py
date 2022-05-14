@@ -869,6 +869,7 @@ class TestCatastrophicInclude(object):
                 ),
             ),
             this_parse_mock,
+            single_threaded=True,
         )
 
         CompareResultsFromFile(str(result))
@@ -894,6 +895,7 @@ class TestCatastrophicInclude(object):
                 ),
             ),
             this_parse_mock,
+            single_threaded=True,
         )
 
         CompareResultsFromFile(str(result))

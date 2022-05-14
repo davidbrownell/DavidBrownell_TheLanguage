@@ -52,7 +52,7 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Function,
+            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             expression.parser_info_type__,  # type: ignore
             regions,                        # type: ignore
             expression,

@@ -57,8 +57,28 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: FuncInvocationStatementParserInfo,
     ):
-        if parser_info.parser_info_type__ == ParserInfoType.Configuration:
-            MiniLanguageHelpers.EvalExpression(parser_info.expression, self._configuration_info)
+        if parser_info.parser_info_type__ != ParserInfoType.Configuration:
+            # Ensure that the statement is only used where it is allowed
+            parent_scope_flag = self._namespace_infos[-1].scope_flag
+
+            if (
+                (parser_info.parser_info_type__ == ParserInfoType.TypeCustomization and parent_scope_flag == ScopeFlag.Root)
+                or (parser_info.parser_info_type__ == ParserInfoType.Standard and parent_scope_flag != ScopeFlag.Function)
+            ):
+                self._errors.append(
+                    InvalidIfStatementScopeError.Create(
+                        region=parser_info.regions__.self__,
+                    ),
+                )
+
+                yield VisitResult.SkipAll
+
+            else:
+                yield
+
+            return
+
+        MiniLanguageHelpers.EvalExpression(parser_info.expression, self._configuration_info)
 
         yield
 
