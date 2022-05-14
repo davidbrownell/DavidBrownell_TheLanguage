@@ -81,7 +81,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 1] (0)"
                         end: "[1, 4] (3)"
@@ -93,7 +93,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 4] (3)"
                         end: "[2, 1] (4)"
@@ -108,7 +108,7 @@ class TestStandard(object):
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
               end: "[2, 1] (4)"
-            success: True
+            success: true
             """,
         )
 
@@ -120,7 +120,7 @@ class TestStandard(object):
             3) OnInternalPhrase, 0, 3
                 # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                  is_ignored: False
+                  is_ignored: false
                   iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                     begin: "[1, 1] (0)"
                     end: "[1, 4] (3)"
@@ -135,7 +135,7 @@ class TestStandard(object):
                 # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                    is_ignored: False
+                    is_ignored: false
                     iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                       begin: "[1, 1] (0)"
                       end: "[1, 4] (3)"
@@ -152,7 +152,7 @@ class TestStandard(object):
             13) OnInternalPhrase, 3, 4
                 # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                  is_ignored: False
+                  is_ignored: false
                   iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                     begin: "[1, 4] (3)"
                     end: "[2, 1] (4)"
@@ -167,7 +167,7 @@ class TestStandard(object):
                 # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                 data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                    is_ignored: False
+                    is_ignored: false
                     iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                       begin: "[1, 4] (3)"
                       end: "[2, 1] (4)"
@@ -185,7 +185,7 @@ class TestStandard(object):
                   - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                        is_ignored: False
+                        is_ignored: false
                         iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                           begin: "[1, 1] (0)"
                           end: "[1, 4] (3)"
@@ -197,7 +197,7 @@ class TestStandard(object):
                   - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                        is_ignored: False
+                        is_ignored: false
                         iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                           begin: "[1, 4] (3)"
                           end: "[2, 1] (4)"
@@ -237,7 +237,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 1] (0)"
                         end: "[1, 4] (3)"
@@ -249,7 +249,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 4] (3)"
                         end: "[2, 1] (4)"
@@ -263,7 +263,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[2, 1] (4)"
                         end: "[2, 4] (7)"
@@ -275,7 +275,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[2, 4] (7)"
                         end: "[3, 1] (8)"
@@ -290,7 +290,7 @@ class TestStandard(object):
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
               end: "[3, 1] (8)"
-            success: True
+            success: true
             """,
         )
 
@@ -321,7 +321,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 1] (0)"
                         end: "[1, 4] (3)"
@@ -333,7 +333,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 4] (3)"
                         end: "[2, 1] (4)"
@@ -347,7 +347,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[2, 1] (4)"
                         end: "[2, 4] (7)"
@@ -359,7 +359,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[2, 4] (7)"
                         end: "[3, 1] (8)"
@@ -374,7 +374,7 @@ class TestStandard(object):
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
               end: "[3, 1] (8)"
-            success: True
+            success: true
             """,
         )
 
@@ -404,17 +404,17 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data:
                     - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
-                      data: None
+                      data: null
                       phrase: "Word"
                     - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
-                      data: None
+                      data: null
                       phrase: "Newline+"
                   phrase: "(Word | Newline+)"
               phrase: "{(Word | Newline+), 2, 4}"
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
               end: "[1, 1] (0)"
-            success: False
+            success: false
             """,
         )
 
@@ -444,7 +444,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 1] (0)"
                         end: "[1, 4] (3)"
@@ -456,17 +456,17 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data:
                     - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
-                      data: None
+                      data: null
                       phrase: "Word"
                     - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
-                      data: None
+                      data: null
                       phrase: "Newline+"
                   phrase: "(Word | Newline+)"
               phrase: "{(Word | Newline+), 2, 4}"
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
               end: "[1, 4] (3)"
-            success: False
+            success: false
             """,
         )
 
@@ -496,7 +496,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 1] (0)"
                         end: "[1, 4] (3)"
@@ -508,7 +508,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 4] (3)"
                         end: "[2, 1] (4)"
@@ -522,7 +522,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[2, 1] (4)"
                         end: "[2, 4] (7)"
@@ -534,7 +534,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[2, 4] (7)"
                         end: "[3, 1] (8)"
@@ -549,7 +549,7 @@ class TestStandard(object):
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
               end: "[3, 1] (8)"
-            success: True
+            success: true
             """,
         )
 
@@ -578,7 +578,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 1] (0)"
                         end: "[1, 4] (3)"
@@ -590,7 +590,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 4] (3)"
                         end: "[2, 1] (4)"
@@ -604,7 +604,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[2, 1] (4)"
                         end: "[2, 4] (7)"
@@ -616,7 +616,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[2, 4] (7)"
                         end: "[3, 1] (8)"
@@ -631,7 +631,7 @@ class TestStandard(object):
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
               end: "[3, 1] (8)"
-            success: True
+            success: true
             """,
         )
 
@@ -652,7 +652,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 1] (0)"
                         end: "[1, 4] (3)"
@@ -664,7 +664,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 4] (3)"
                         end: "[2, 1] (4)"
@@ -679,7 +679,7 @@ class TestStandard(object):
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
               end: "[2, 1] (4)"
-            success: False
+            success: false
             """,
         )
 
@@ -707,7 +707,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 1] (0)"
                         end: "[1, 4] (3)"
@@ -719,7 +719,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 4] (3)"
                         end: "[2, 1] (4)"
@@ -734,7 +734,7 @@ class TestStandard(object):
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
               end: "[2, 1] (4)"
-            success: True
+            success: true
             """,
         )
 
@@ -762,7 +762,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 1] (0)"
                         end: "[1, 4] (3)"
@@ -774,7 +774,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[1, 4] (3)"
                         end: "[2, 1] (4)"
@@ -788,7 +788,7 @@ class TestStandard(object):
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                     data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                      is_ignored: False
+                      is_ignored: false
                       iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                         begin: "[2, 1] (4)"
                         end: "[2, 4] (7)"
@@ -801,7 +801,7 @@ class TestStandard(object):
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
               end: "[2, 4] (7)"
-            success: True
+            success: true
             """,
         )
 
@@ -874,7 +874,7 @@ def test_OnInternalPhrase(parse_mock):
               data:
                 - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
                   data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-                    is_ignored: False
+                    is_ignored: false
                     iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
                       begin: "[1, 1] (0)"
                       end: "[5, 1] (4)"
@@ -888,6 +888,6 @@ def test_OnInternalPhrase(parse_mock):
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[1, 1] (0)"
               end: "[5, 1] (4)"
-            success: True
+            success: true
         """,
     )

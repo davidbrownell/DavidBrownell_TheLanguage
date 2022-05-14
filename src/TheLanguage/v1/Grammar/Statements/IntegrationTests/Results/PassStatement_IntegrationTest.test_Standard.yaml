@@ -1,5 +1,5 @@
 # <class 'v1.Parser.ParserInfos.ParserInfo.RootParserInfo'>
-documentation: None
+documentation: null
 regions__: # <class 'types.RootParserInfoRegions'>
   self__: # <class 'v1.Parser.Region.Region'>
     begin: # <class 'v1.Lexer.Location.Location'>
@@ -19,13 +19,13 @@ statements:
   - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     class_capabilities: "Standard"
     class_modifier: "ClassModifier.immutable"
-    constraints: None
+    constraints: null
     constructor_visibility: "VisibilityModifier.public"
-    documentation: None
-    extends: None
-    implements: None
-    is_abstract: None
-    is_final: None
+    documentation: null
+    extends: null
+    implements: null
+    is_abstract: null
+    is_final: null
     name: "Class"
     regions__: # <class 'types.ClassStatementParserInfoRegions'>
       name: # <class 'v1.Parser.Region.Region'>
@@ -66,6 +66,6 @@ statements:
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 3
-    templates: None
-    uses: None
+    templates: null
+    uses: null
     visibility: "VisibilityModifier.public"
