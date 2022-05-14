@@ -77,7 +77,7 @@ class PythonCodeTarget(Target):
                 output_name = FileSystem.TrimPath(fully_qualified_name, source_dir)
                 break
 
-        assert output_name is not None
+        assert output_name is not None, (fully_qualified_name, self.source_dirs)
         output_name = os.path.splitext(output_name)[0] + ".py"
 
         self._outputs.append(

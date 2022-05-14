@@ -18,13 +18,14 @@ from .Concepts.MutableInt import MutableInt
 
 # ----------------------------------------------------------------------
 public mutable class FixedInt <
-    Int num_bytes!,                         # 1, 2, 4, 8, 16
-    Bool is_checked!,
-> {
+    pos:
+        Int num_bytes!,                     # 1, 2, 4, 8, 16
     key:
+        Bool is_checked!,
         Bool is_signed!,
-        Int min_value! = -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0,
-        Int max_value! = (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1),
+> {
+    Int min_value! = -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0,
+    Int max_value! = (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1),
 }
     implements public MutableInt { min_value!, max_value! }
 :
