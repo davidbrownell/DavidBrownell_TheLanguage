@@ -3,7 +3,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
   data:
     - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-        is_ignored: False
+        is_ignored: false
         iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
           begin: "[4, 1] (32)"
           end: "[4, 5] (36)"
@@ -13,7 +13,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       phrase: "Word Token"
     - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-        is_ignored: False
+        is_ignored: false
         iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
           begin: "[4, 5] (36)"
           end: "[4, 6] (37)"
@@ -23,7 +23,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       phrase: "Colon"
     - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-        is_ignored: False
+        is_ignored: false
         iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
           begin: "[4, 6] (37)"
           end: "[5, 1] (38)"
@@ -35,7 +35,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       phrase: "Newline+"
     - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-        is_ignored: False
+        is_ignored: false
         iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
           begin: "[5, 1] (38)"
           end: "[5, 5] (42)"
@@ -50,7 +50,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data:
         - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
           data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            is_ignored: False
+            is_ignored: false
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[5, 5] (42)"
               end: "[5, 9] (46)"
@@ -59,7 +59,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
               match: "<_sre.SRE_Match object; span=(42, 46), match='FIVE'>"
           phrase: "Upper Token"
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          is_ignored: True
+          is_ignored: true
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
             begin: "[5, 9] (46)"
             end: "[5, 10] (47)"
@@ -69,7 +69,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
               begin: 46
               end: 47
         - # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-          is_ignored: True
+          is_ignored: true
           iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
             begin: "[5, 10] (47)"
             end: "[5, 21] (58)"
@@ -78,7 +78,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
             match: "<_sre.SRE_Match object; span=(47, 58), match='# Comment 5'>"
         - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
           data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            is_ignored: False
+            is_ignored: false
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[5, 21] (58)"
               end: "[6, 1] (59)"
@@ -93,7 +93,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data:
         - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
           data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            is_ignored: False
+            is_ignored: false
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[6, 5] (63)"
               end: "[6, 7] (65)"
@@ -103,7 +103,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
           phrase: "Number Token"
         - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
           data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-            is_ignored: False
+            is_ignored: false
             iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
               begin: "[6, 7] (65)"
               end: "[7, 1] (66)"
@@ -116,7 +116,7 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       phrase: "[Number Token, Newline+]"
     - # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
       data: # <class 'v1.Lexer.Components.Phrase.Phrase.TokenLexResultData'>
-        is_ignored: False
+        is_ignored: false
         iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
           begin: "[7, 1] (66)"
           end: "[7, 1] (66)"
@@ -128,4 +128,4 @@ data: # <class 'v1.Lexer.Components.Phrase.Phrase.LexResultData'>
 iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
   begin: "[4, 1] (32)"
   end: "[7, 1] (66)"
-success: True
+success: true

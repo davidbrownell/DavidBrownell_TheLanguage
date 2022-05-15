@@ -1,7 +1,7 @@
 # <class 'v1.Lexer.Components.AST.Node'>
 children:
   - # <class 'v1.Lexer.Components.AST.Leaf'>
-    is_ignored: True
+    is_ignored: true
     iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
       begin: "[1, 1] (0)"
       end: "[6, 1] (5)"
@@ -11,7 +11,7 @@ children:
         begin: 0
         end: 5
   - # <class 'v1.Lexer.Components.AST.Leaf'>
-    is_ignored: True
+    is_ignored: true
     iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
       begin: "[6, 1] (5)"
       end: "[6, 12] (16)"
@@ -19,7 +19,7 @@ children:
     value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
       match: "<_sre.SRE_Match object; span=(5, 16), match='# Comment 1'>"
   - # <class 'v1.Lexer.Components.AST.Leaf'>
-    is_ignored: True
+    is_ignored: true
     iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
       begin: "[6, 12] (16)"
       end: "[7, 1] (17)"
@@ -29,7 +29,7 @@ children:
         begin: 16
         end: 17
   - # <class 'v1.Lexer.Components.AST.Leaf'>
-    is_ignored: True
+    is_ignored: true
     iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
       begin: "[7, 1] (17)"
       end: "[7, 12] (28)"
@@ -37,7 +37,7 @@ children:
     value: # <class 'v1.Lexer.Components.Tokens.RegexToken.MatchResult'>
       match: "<_sre.SRE_Match object; span=(17, 28), match='# Comment 2'>"
   - # <class 'v1.Lexer.Components.AST.Leaf'>
-    is_ignored: True
+    is_ignored: true
     iter_range: # <class 'v1.Lexer.Components.Phrase.Phrase.NormalizedIteratorRange'>
       begin: "[7, 12] (28)"
       end: "[11, 1] (32)"

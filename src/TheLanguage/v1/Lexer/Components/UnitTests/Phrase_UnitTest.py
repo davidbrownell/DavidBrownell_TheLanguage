@@ -150,8 +150,8 @@ class TestStandard(object):
     #     assert str(Phrase.LexResult(True, Phrase.NormalizedIteratorRange(iterator, iterator), None)) == textwrap.dedent(
     #         """\
     #         # <class 'v1.Lexer.Components.Phrase.Phrase.LexResult'>
-    #         data: None
-    #    #    #         success: True
+    #         data: null
+    #    #    #         success: true
     #         """,
     #     )
 
