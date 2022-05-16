@@ -19,7 +19,7 @@ import os
 import types
 
 from contextlib import contextmanager, ExitStack
-from typing import Callable, cast, Dict, List, Optional, Union
+from typing import Callable, cast, Dict, List, Optional, Tuple, Union
 
 import CommonEnvironment
 
@@ -63,14 +63,11 @@ class BaseMixin(object):
     # |  Public Types
     # |
     # ----------------------------------------------------------------------
-    PostprocessFuncResultType               = Union[
-        Callable[[], None],                             # Function to call when all files have completed
-        "BaseMixin.PostprocessFuncsType",               # Execute additional work
-        None,
-    ]
-
     PostprocessFuncsType                    = List[
-        Callable[[], "BaseMixin.PostprocessFuncResultType"],
+        Tuple[
+            Callable[[], None],             # postprocess_func
+            Callable[[], None],             # finalize_func
+        ],
     ]
 
     # ----------------------------------------------------------------------
@@ -204,52 +201,33 @@ class BaseMixin(object):
         postprocess_funcs: Dict[str, "BaseMixin.PostprocessFuncsType"],
     ) -> Dict[str, List[Error]]:
         errors: Dict[str, List[Error]] = {}
-        close_funcs: Dict[str, List[Callable[[], None]]] = {}
 
-        while postprocess_funcs:
-            new_postprocess_funcs: Dict[str, BaseMixin.PostprocessFuncsType] = {}
-
-            for name, these_postprocess_funcs in postprocess_funcs.items():
-                these_new_postprocess_funcs: BaseMixin.PostprocessFuncsType = []
-                these_close_funcs: List[Callable[[], None]] = []
-                these_errors: List[Error] = []
-
-                for postprocess_func in these_postprocess_funcs:
-                    try:
-                        func_result = postprocess_func()
-
-                        if func_result is None:
-                            # Nothing to do here
-                            pass
-                        elif isinstance(func_result, list):
-                            these_new_postprocess_funcs += func_result
-                        else:
-                            these_close_funcs.append(func_result)
-
-                    except ErrorException as ex:
-                        these_errors += ex.errors
-
-                if these_new_postprocess_funcs:
-                    new_postprocess_funcs.setdefault(name, []).extend(these_new_postprocess_funcs)
-                if these_close_funcs:
-                    close_funcs.setdefault(name, []).extend(these_close_funcs)
-                if these_errors:
-                    errors.setdefault(name, []).extend(these_errors)
-
-            postprocess_funcs = new_postprocess_funcs
-
-        # Run all the closing funcs
-        for name, these_close_funcs in close_funcs.items():
+        for name, funcs in postprocess_funcs.items():
             these_errors: List[Error] = []
 
-            for close_func in these_close_funcs:
+            for postprocess_func, finalize_func in funcs:
                 try:
-                    close_func()
+                    postprocess_func()
                 except ErrorException as ex:
                     these_errors += ex.errors
 
             if these_errors:
-                errors.setdefault(name, []).extend(these_errors)
+                errors[name] = these_errors
+
+        if errors:
+            return errors
+
+        for name, funcs in postprocess_funcs.items():
+            these_errors: List[Error] = []
+
+            for postprocess_func, finalize_func in funcs:
+                try:
+                    finalize_func()
+                except ErrorException as ex:
+                    these_errors += ex.errors
+
+            if these_errors:
+                errors[name] = these_errors
 
         return errors
 

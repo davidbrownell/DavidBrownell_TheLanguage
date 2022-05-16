@@ -443,9 +443,9 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = ImportStatementParserInfo.Create(
-                    regions=[{self_region}, {visibility_region}, {source_filename_region}],
+                    regions=[{self_region}, {visibility_region}, {source_parts_region}],
                     visibility_param={visibility},
-                    source_filename={source_filename},
+                    source_parts={source_parts},
                     import_items={import_items},
                     import_type={import_type},
                 )
@@ -455,9 +455,9 @@ class StatementsMixin(BaseMixin):
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 visibility_region=self._ToString(parser_info.regions__.visibility),
-                source_filename_region=self._ToString(parser_info.regions__.source_filename),
+                source_parts_region=self._ToString(parser_info.regions__.source_parts),
                 visibility=self._ToString(parser_info.visibility),
-                source_filename=self._ToString(parser_info.source_filename),
+                source_parts=str(parser_info.source_parts),
                 import_items=self._ToString(parser_info.import_items),  # type: ignore
                 import_type="ImportStatementParserInfoImportType.{}".format(parser_info.import_type.name),
             ),

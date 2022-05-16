@@ -55,9 +55,6 @@ class ImportStatementItemParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[Region]]]
 
-    visibility_param: InitVar[Optional[VisibilityModifier]]
-    visibility: VisibilityModifier          = field(init=False)
-
     name: str
     alias: Optional[str]
 
@@ -71,34 +68,11 @@ class ImportStatementItemParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, regions, visibility_param):
+    def __post_init__(self, regions):
         super(ImportStatementItemParserInfo, self).__init__(
             ParserInfoType.Standard,
             regions,
-            validate=False,
         )
-
-        # Set defaults
-        if visibility_param is None:
-            visibility_param = VisibilityModifier.private
-            object.__setattr__(self.regions__, "visibility", self.regions__.self__)
-
-        object.__setattr__(self, "visibility", visibility_param)
-
-        # Validate
-        self.ValidateRegions()
-
-        errors: List[Error] = []
-
-        if self.visibility == VisibilityModifier.protected:
-            errors.append(
-                InvalidProtectedError.Create(
-                    region=self.regions__.visibility,
-                ),
-            )
-
-        if errors:
-            raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -124,6 +98,9 @@ class ImportStatementParserInfo(StatementParserInfo):
     # |  Public Data
     # |
     # ----------------------------------------------------------------------
+    visibility_param: InitVar[Optional[VisibilityModifier]]
+    visibility: VisibilityModifier          = field(init=False)
+
     source_parts: List[str]
     import_items: List[ImportStatementItemParserInfo]
 
@@ -150,7 +127,7 @@ class ImportStatementParserInfo(StatementParserInfo):
         )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, parser_info_type, regions):
+    def __post_init__(self, parser_info_type, regions, visibility_param):
         super(ImportStatementParserInfo, self).__post_init__(
             parser_info_type,
             regions,
@@ -158,13 +135,37 @@ class ImportStatementParserInfo(StatementParserInfo):
                 "import_items",
                 "import_type",
             ],
+            validate=False,
             imports__=None,  # type: ignore
         )
+
+        # Set defaults
+        if visibility_param is None:
+            visibility_param = VisibilityModifier.private
+            object.__setattr__(self.regions__, "visibility", self.regions__.self__)
+
+        object.__setattr__(self, "visibility", visibility_param)
+
+        # Validate
+        self.ValidateRegions()
+
+        errors: List[Error] = []
+
+        if self.visibility == VisibilityModifier.protected:
+            errors.append(
+                InvalidProtectedError.Create(
+                    region=self.regions__.visibility,
+                ),
+            )
+
+        if errors:
+            raise ErrorException(*errors)
+
 
     # ----------------------------------------------------------------------
     @property
     def imports__(self) -> "ImportsType":
-        return getattr(self, self.__class__._IMPORTS_ATTRIBUTE_NAME)
+        return getattr(self, self.__class__._IMPORTS_ATTRIBUTE_NAME)  # pylint: disable=protected-access
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -183,7 +184,7 @@ class ImportStatementParserInfo(StatementParserInfo):
         self,
         value: ImportsType,
     ) -> None:
-        object.__setattr__(self, self.__class__._IMPORTS_ATTRIBUTE_NAME, value)
+        object.__setattr__(self, self.__class__._IMPORTS_ATTRIBUTE_NAME, value)  # pylint: disable=protected-access
 
     # ----------------------------------------------------------------------
     # |

@@ -347,8 +347,7 @@ class ImportStatement(ImportGrammarPhrase):
         # Imports
         import_items = [
             ImportStatementItemParserInfo.Create(
-                CreateRegions(node, visibility_node, data.name_leaf, data.alias_leaf),
-                visibility_info,
+                CreateRegions(node, data.name_leaf, data.alias_leaf),
                 data.name_info,
                 data.alias_info,
             )
@@ -356,7 +355,8 @@ class ImportStatement(ImportGrammarPhrase):
         ]
 
         return ImportStatementParserInfo.Create(
-            CreateRegions(node, source_leaf),
+            CreateRegions(node, visibility_node, source_leaf),
+            visibility_info,
             source_info,
             import_items,
             import_type,
