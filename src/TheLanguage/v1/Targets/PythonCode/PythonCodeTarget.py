@@ -70,12 +70,19 @@ class PythonCodeTarget(Target):
 
         root.Accept(visitor)
 
-        output_name = os.path.splitext(fully_qualified_name)[0] + ".py"
+        output_name = os.path.splitext(fully_qualified_name)[0]
+
+        if output_name in [
+            "None",
+            "True",
+            "False",
+        ]:
+            output_name += "Type"
 
         self._outputs.append(
             Target.EnumResult.Create(
                 fully_qualified_name,
-                os.path.join(self.output_dir, output_name),
+                os.path.join(self.output_dir, "{}.py".format(output_name)),
                 visitor.GetContent(),
             ),
         )

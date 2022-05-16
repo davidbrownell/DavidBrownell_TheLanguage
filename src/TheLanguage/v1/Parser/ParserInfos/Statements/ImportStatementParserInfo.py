@@ -136,7 +136,8 @@ class ImportStatementParserInfo(StatementParserInfo):
                 "import_type",
             ],
             validate=False,
-            imports__=None,  # type: ignore
+            imports__=None,                 # type: ignore
+            is_imports__initialized__=None, # type: ignore
         )
 
         # Set defaults
@@ -163,11 +164,6 @@ class ImportStatementParserInfo(StatementParserInfo):
 
 
     # ----------------------------------------------------------------------
-    @property
-    def imports__(self) -> "ImportsType":
-        return getattr(self, self.__class__._IMPORTS_ATTRIBUTE_NAME)  # pylint: disable=protected-access
-
-    # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor):
         return self._AcceptImpl(
@@ -184,7 +180,17 @@ class ImportStatementParserInfo(StatementParserInfo):
         self,
         value: ImportsType,
     ) -> None:
+        assert not self.is_imports__initialized__
         object.__setattr__(self, self.__class__._IMPORTS_ATTRIBUTE_NAME, value)  # pylint: disable=protected-access
+
+    # ----------------------------------------------------------------------
+    @property
+    def imports__(self) -> "ImportsType":
+        return getattr(self, self.__class__._IMPORTS_ATTRIBUTE_NAME)  # pylint: disable=protected-access
+
+    @property
+    def is_imports__initialized__(self) -> bool:
+        return hasattr(self, self.__class__._IMPORTS_ATTRIBUTE_NAME)  # pylint: disable=protected-access
 
     # ----------------------------------------------------------------------
     # |

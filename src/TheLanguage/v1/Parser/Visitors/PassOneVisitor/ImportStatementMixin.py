@@ -20,7 +20,7 @@ import weakref
 
 from collections import OrderedDict
 from contextlib import contextmanager
-from typing import Callable, cast, Dict, List, Optional
+from typing import cast, Dict, List, Optional
 
 import CommonEnvironment
 from CommonEnvironment.DoesNotExist import DoesNotExist
@@ -100,7 +100,7 @@ class ImportStatementMixin(BaseMixin):
             # for different compilation units.
             object.__setattr__(
                 import_item,
-                self.__class__._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME,
+                self.__class__._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME,  # pylint: disable=protected-access
                 weakref.ref(parser_info),
             )
 
@@ -165,6 +165,7 @@ class ImportStatementMixin(BaseMixin):
                     ),
                 )
 
+            assert isinstance(potential_import_namespace, NamespaceInfo)
             import_namespace = potential_import_namespace
 
         assert isinstance(import_namespace, ParsedNamespaceInfo)

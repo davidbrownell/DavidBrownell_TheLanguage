@@ -248,7 +248,6 @@ class CommonMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = FuncArgumentParserInfo.Create(
-                    parser_info_type={parser_info_type},
                     regions=[{self_region}, {keyword_region}],
                     expression={expression},
                     keyword={keyword},
@@ -257,7 +256,6 @@ class CommonMixin(BaseMixin):
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
-                parser_info_type=str(parser_info.parser_info_type__),
                 self_region=self._ToString(parser_info.regions__.self__),
                 keyword_region=self._ToString(parser_info.regions__.keyword),
                 expression=self._ToString(parser_info.expression),
@@ -283,7 +281,7 @@ class CommonMixin(BaseMixin):
                 {statement_name} = FuncParametersParserInfo.Create(
                     regions=[{self_region}, {positional_region}, {any_region}, {keyword_region}],
                     positional={positional},
-                    any_args={any},
+                    any={any},
                     keyword={keyword},
                 )
 

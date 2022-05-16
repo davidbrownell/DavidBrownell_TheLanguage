@@ -34,6 +34,7 @@ from v1.Parser.ParserInfos.Expressions.TernaryExpressionParserInfo import Ternar
 from v1.Parser.ParserInfos.Expressions.UnaryExpressionParserInfo import UnaryExpressionParserInfo, OperatorType as UnaryExpressionParserInfoOperatorType
 from v1.Parser.ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
 from v1.Parser.ParserInfos.ParserInfo import ParserInfoType
+from v1.Parser.ParserInfos.ParserInfo import RootParserInfo
 from v1.Parser.ParserInfos.Statements.ClassCapabilities.StandardCapabilities import StandardCapabilities
 from v1.Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementDependencyParserInfo
 from v1.Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
@@ -1154,6 +1155,7 @@ region_001100 = Region(begin=Location(line=159, column=5), end=Location(line=159
 region_001101 = Region(begin=Location(line=159, column=5), end=Location(line=160, column=1))
 region_001102 = Region(begin=Location(line=158, column=1), end=Location(line=160, column=1))
 region_001103 = Region(begin=Location(line=158, column=5), end=Location(line=160, column=1))
+region_001104 = Region(begin=Location(line=1, column=1), end=Location(line=160, column=1))
 
 
 # ----------------------------------------------------------------------
@@ -1636,7 +1638,6 @@ statement_000070 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000070 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000103, None],
     expression=statement_000070,
     keyword=None,
@@ -1766,7 +1767,6 @@ statement_000090 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000090 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000131, None],
     expression=statement_000090,
     keyword=None,
@@ -1932,7 +1932,6 @@ statement_000116 = TernaryExpressionParserInfo.Create(
 )
 
 statement_000116 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000167, None],
     expression=statement_000116,
     keyword=None,
@@ -2111,7 +2110,6 @@ statement_000144 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000144 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000204, None],
     expression=statement_000144,
     keyword=None,
@@ -2247,7 +2245,6 @@ statement_000165 = BinaryExpressionParserInfo.Create(
 )
 
 statement_000165 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000232, None],
     expression=statement_000165,
     keyword=None,
@@ -2320,12 +2317,11 @@ statement_000174 = FuncParameterParserInfo.Create(
 statement_000175 = FuncParametersParserInfo.Create(
     regions=[region_000250, None, region_000248, None],
     positional=None,
-    any_args=[statement_000174, ],
+    any=[statement_000174, ],
     keyword=None,
 )
 
 statement_000176 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000251, region_000250, region_000252, None, region_000253, region_000254, None, None, None, region_000255, None, None, None, None, region_000256],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000175,
@@ -2381,12 +2377,11 @@ statement_000180 = FuncParameterParserInfo.Create(
 statement_000181 = FuncParametersParserInfo.Create(
     regions=[region_000264, None, region_000262, None],
     positional=None,
-    any_args=[statement_000180, ],
+    any=[statement_000180, ],
     keyword=None,
 )
 
 statement_000182 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000265, region_000264, region_000266, region_000267, region_000268, region_000269, None, None, None, region_000270, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000181,
@@ -2442,12 +2437,11 @@ statement_000186 = FuncParameterParserInfo.Create(
 statement_000187 = FuncParametersParserInfo.Create(
     regions=[region_000278, None, region_000276, None],
     positional=None,
-    any_args=[statement_000186, ],
+    any=[statement_000186, ],
     keyword=None,
 )
 
 statement_000188 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000279, region_000278, region_000280, region_000281, region_000282, region_000283, None, None, None, region_000284, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000187,
@@ -2503,12 +2497,11 @@ statement_000192 = FuncParameterParserInfo.Create(
 statement_000193 = FuncParametersParserInfo.Create(
     regions=[region_000292, None, region_000290, None],
     positional=None,
-    any_args=[statement_000192, ],
+    any=[statement_000192, ],
     keyword=None,
 )
 
 statement_000194 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000293, region_000292, region_000294, region_000295, region_000296, region_000297, None, None, None, region_000298, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000193,
@@ -2564,12 +2557,11 @@ statement_000198 = FuncParameterParserInfo.Create(
 statement_000199 = FuncParametersParserInfo.Create(
     regions=[region_000306, None, region_000304, None],
     positional=None,
-    any_args=[statement_000198, ],
+    any=[statement_000198, ],
     keyword=None,
 )
 
 statement_000200 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000307, region_000306, region_000308, region_000309, region_000310, region_000311, None, None, None, region_000312, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000199,
@@ -2600,7 +2592,6 @@ statement_000201 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000202 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000316, region_000321, region_000317, region_000318, region_000319, region_000320, None, None, None, region_000322, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=True,
@@ -2631,7 +2622,6 @@ statement_000203 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000204 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000326, region_000331, region_000327, region_000328, region_000329, region_000330, None, None, None, region_000332, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=True,
@@ -2662,7 +2652,6 @@ statement_000205 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000206 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000336, region_000341, region_000337, region_000338, region_000339, region_000340, None, None, None, region_000342, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=True,
@@ -2731,12 +2720,11 @@ statement_000211 = FuncParameterParserInfo.Create(
 statement_000212 = FuncParametersParserInfo.Create(
     regions=[region_000356, None, region_000357, None],
     positional=None,
-    any_args=[statement_000209, statement_000211, ],
+    any=[statement_000209, statement_000211, ],
     keyword=None,
 )
 
 statement_000213 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000358, region_000356, region_000359, None, region_000360, region_000361, None, None, None, region_000362, None, None, None, None, region_000363],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000212,
@@ -2787,12 +2775,11 @@ statement_000216 = FuncParameterParserInfo.Create(
 statement_000217 = FuncParametersParserInfo.Create(
     regions=[region_000372, None, region_000370, None],
     positional=None,
-    any_args=[statement_000216, ],
+    any=[statement_000216, ],
     keyword=None,
 )
 
 statement_000218 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000373, region_000372, region_000374, region_000375, region_000376, region_000377, None, None, None, region_000378, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000217,
@@ -2843,12 +2830,11 @@ statement_000221 = FuncParameterParserInfo.Create(
 statement_000222 = FuncParametersParserInfo.Create(
     regions=[region_000387, None, region_000385, None],
     positional=None,
-    any_args=[statement_000221, ],
+    any=[statement_000221, ],
     keyword=None,
 )
 
 statement_000223 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000388, region_000387, region_000389, region_000390, region_000391, region_000392, None, None, None, region_000393, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000222,
@@ -2899,12 +2885,11 @@ statement_000226 = FuncParameterParserInfo.Create(
 statement_000227 = FuncParametersParserInfo.Create(
     regions=[region_000402, None, region_000400, None],
     positional=None,
-    any_args=[statement_000226, ],
+    any=[statement_000226, ],
     keyword=None,
 )
 
 statement_000228 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000403, region_000402, region_000404, region_000405, region_000406, region_000407, None, None, None, region_000408, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000227,
@@ -2955,12 +2940,11 @@ statement_000231 = FuncParameterParserInfo.Create(
 statement_000232 = FuncParametersParserInfo.Create(
     regions=[region_000417, None, region_000415, None],
     positional=None,
-    any_args=[statement_000231, ],
+    any=[statement_000231, ],
     keyword=None,
 )
 
 statement_000233 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000418, region_000417, region_000419, region_000420, region_000421, region_000422, None, None, None, region_000423, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000232,
@@ -3011,12 +2995,11 @@ statement_000236 = FuncParameterParserInfo.Create(
 statement_000237 = FuncParametersParserInfo.Create(
     regions=[region_000432, None, region_000430, None],
     positional=None,
-    any_args=[statement_000236, ],
+    any=[statement_000236, ],
     keyword=None,
 )
 
 statement_000238 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000433, region_000432, region_000434, region_000435, region_000436, region_000437, None, None, None, region_000438, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000237,
@@ -3067,12 +3050,11 @@ statement_000241 = FuncParameterParserInfo.Create(
 statement_000242 = FuncParametersParserInfo.Create(
     regions=[region_000447, None, region_000445, None],
     positional=None,
-    any_args=[statement_000241, ],
+    any=[statement_000241, ],
     keyword=None,
 )
 
 statement_000243 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000448, region_000447, region_000449, region_000450, region_000451, region_000452, None, None, None, region_000453, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000242,
@@ -3103,7 +3085,6 @@ statement_000244 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000245 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000457, region_000462, region_000458, region_000459, region_000460, region_000461, None, None, None, region_000463, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=True,
@@ -3134,7 +3115,6 @@ statement_000246 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000247 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000467, region_000472, region_000468, region_000469, region_000470, region_000471, None, None, None, region_000473, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=True,
@@ -3165,7 +3145,6 @@ statement_000248 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000249 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000477, region_000482, region_000478, region_000479, region_000480, region_000481, None, None, None, region_000483, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=True,
@@ -3216,12 +3195,11 @@ statement_000252 = FuncParameterParserInfo.Create(
 statement_000253 = FuncParametersParserInfo.Create(
     regions=[region_000492, None, region_000490, None],
     positional=None,
-    any_args=[statement_000252, ],
+    any=[statement_000252, ],
     keyword=None,
 )
 
 statement_000254 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000493, region_000492, region_000494, region_000495, region_000496, region_000497, None, None, None, region_000498, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000253,
@@ -3272,12 +3250,11 @@ statement_000257 = FuncParameterParserInfo.Create(
 statement_000258 = FuncParametersParserInfo.Create(
     regions=[region_000507, None, region_000505, None],
     positional=None,
-    any_args=[statement_000257, ],
+    any=[statement_000257, ],
     keyword=None,
 )
 
 statement_000259 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000508, region_000507, region_000509, region_000510, region_000511, region_000512, None, None, None, region_000513, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000258,
@@ -3328,12 +3305,11 @@ statement_000262 = FuncParameterParserInfo.Create(
 statement_000263 = FuncParametersParserInfo.Create(
     regions=[region_000522, None, region_000520, None],
     positional=None,
-    any_args=[statement_000262, ],
+    any=[statement_000262, ],
     keyword=None,
 )
 
 statement_000264 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000523, region_000522, region_000524, region_000525, region_000526, region_000527, None, None, None, region_000528, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000263,
@@ -3384,12 +3360,11 @@ statement_000267 = FuncParameterParserInfo.Create(
 statement_000268 = FuncParametersParserInfo.Create(
     regions=[region_000537, None, region_000535, None],
     positional=None,
-    any_args=[statement_000267, ],
+    any=[statement_000267, ],
     keyword=None,
 )
 
 statement_000269 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000538, region_000537, region_000539, region_000540, region_000541, region_000542, None, None, None, region_000543, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000268,
@@ -3440,12 +3415,11 @@ statement_000272 = FuncParameterParserInfo.Create(
 statement_000273 = FuncParametersParserInfo.Create(
     regions=[region_000552, None, region_000550, None],
     positional=None,
-    any_args=[statement_000272, ],
+    any=[statement_000272, ],
     keyword=None,
 )
 
 statement_000274 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000553, region_000552, region_000554, region_000555, region_000556, region_000557, None, None, None, region_000558, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000273,
@@ -3496,12 +3470,11 @@ statement_000277 = FuncParameterParserInfo.Create(
 statement_000278 = FuncParametersParserInfo.Create(
     regions=[region_000567, None, region_000565, None],
     positional=None,
-    any_args=[statement_000277, ],
+    any=[statement_000277, ],
     keyword=None,
 )
 
 statement_000279 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000568, region_000567, region_000569, region_000570, region_000571, region_000572, None, None, None, region_000573, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000278,
@@ -3552,12 +3525,11 @@ statement_000282 = FuncParameterParserInfo.Create(
 statement_000283 = FuncParametersParserInfo.Create(
     regions=[region_000582, None, region_000580, None],
     positional=None,
-    any_args=[statement_000282, ],
+    any=[statement_000282, ],
     keyword=None,
 )
 
 statement_000284 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000583, region_000582, region_000584, region_000585, region_000586, region_000587, None, None, None, region_000588, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000283,
@@ -3608,12 +3580,11 @@ statement_000287 = FuncParameterParserInfo.Create(
 statement_000288 = FuncParametersParserInfo.Create(
     regions=[region_000597, None, region_000595, None],
     positional=None,
-    any_args=[statement_000287, ],
+    any=[statement_000287, ],
     keyword=None,
 )
 
 statement_000289 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000598, region_000597, region_000599, region_000600, region_000601, region_000602, None, None, None, region_000603, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000288,
@@ -3664,12 +3635,11 @@ statement_000292 = FuncParameterParserInfo.Create(
 statement_000293 = FuncParametersParserInfo.Create(
     regions=[region_000612, None, region_000610, None],
     positional=None,
-    any_args=[statement_000292, ],
+    any=[statement_000292, ],
     keyword=None,
 )
 
 statement_000294 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000613, region_000612, region_000614, region_000615, region_000616, region_000617, None, None, None, region_000618, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000293,
@@ -3720,12 +3690,11 @@ statement_000297 = FuncParameterParserInfo.Create(
 statement_000298 = FuncParametersParserInfo.Create(
     regions=[region_000627, None, region_000625, None],
     positional=None,
-    any_args=[statement_000297, ],
+    any=[statement_000297, ],
     keyword=None,
 )
 
 statement_000299 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000628, region_000627, region_000629, region_000630, region_000631, region_000632, None, None, None, region_000633, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000298,
@@ -3776,12 +3745,11 @@ statement_000302 = FuncParameterParserInfo.Create(
 statement_000303 = FuncParametersParserInfo.Create(
     regions=[region_000642, None, region_000640, None],
     positional=None,
-    any_args=[statement_000302, ],
+    any=[statement_000302, ],
     keyword=None,
 )
 
 statement_000304 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000643, region_000642, region_000644, region_000645, region_000646, region_000647, None, None, None, region_000648, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000303,
@@ -3832,12 +3800,11 @@ statement_000307 = FuncParameterParserInfo.Create(
 statement_000308 = FuncParametersParserInfo.Create(
     regions=[region_000657, None, region_000655, None],
     positional=None,
-    any_args=[statement_000307, ],
+    any=[statement_000307, ],
     keyword=None,
 )
 
 statement_000309 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000658, region_000657, region_000659, region_000660, region_000661, region_000662, None, None, None, region_000663, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000308,
@@ -3859,7 +3826,6 @@ statement_000309 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000310 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000664, region_000669, region_000665, region_000666, region_000667, region_000668, None, None, None, region_000670, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=True,
@@ -3901,12 +3867,11 @@ statement_000312 = FuncParameterParserInfo.Create(
 statement_000313 = FuncParametersParserInfo.Create(
     regions=[region_000676, None, region_000674, None],
     positional=None,
-    any_args=[statement_000312, ],
+    any=[statement_000312, ],
     keyword=None,
 )
 
 statement_000314 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000677, region_000676, region_000678, region_000679, region_000680, region_000681, None, None, None, region_000682, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000313,
@@ -3948,12 +3913,11 @@ statement_000316 = FuncParameterParserInfo.Create(
 statement_000317 = FuncParametersParserInfo.Create(
     regions=[region_000688, None, region_000686, None],
     positional=None,
-    any_args=[statement_000316, ],
+    any=[statement_000316, ],
     keyword=None,
 )
 
 statement_000318 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000689, region_000688, region_000690, region_000691, region_000692, region_000693, None, None, None, region_000694, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000317,
@@ -3995,12 +3959,11 @@ statement_000320 = FuncParameterParserInfo.Create(
 statement_000321 = FuncParametersParserInfo.Create(
     regions=[region_000700, None, region_000698, None],
     positional=None,
-    any_args=[statement_000320, ],
+    any=[statement_000320, ],
     keyword=None,
 )
 
 statement_000322 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000701, region_000700, region_000702, region_000703, region_000704, region_000705, None, None, None, region_000706, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000321,
@@ -4042,12 +4005,11 @@ statement_000324 = FuncParameterParserInfo.Create(
 statement_000325 = FuncParametersParserInfo.Create(
     regions=[region_000712, None, region_000710, None],
     positional=None,
-    any_args=[statement_000324, ],
+    any=[statement_000324, ],
     keyword=None,
 )
 
 statement_000326 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000713, region_000712, region_000714, region_000715, region_000716, region_000717, None, None, None, region_000718, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000325,
@@ -4089,12 +4051,11 @@ statement_000328 = FuncParameterParserInfo.Create(
 statement_000329 = FuncParametersParserInfo.Create(
     regions=[region_000724, None, region_000722, None],
     positional=None,
-    any_args=[statement_000328, ],
+    any=[statement_000328, ],
     keyword=None,
 )
 
 statement_000330 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000725, region_000724, region_000726, region_000727, region_000728, region_000729, None, None, None, region_000730, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000329,
@@ -4136,12 +4097,11 @@ statement_000332 = FuncParameterParserInfo.Create(
 statement_000333 = FuncParametersParserInfo.Create(
     regions=[region_000736, None, region_000734, None],
     positional=None,
-    any_args=[statement_000332, ],
+    any=[statement_000332, ],
     keyword=None,
 )
 
 statement_000334 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000737, region_000736, region_000738, region_000739, region_000740, region_000741, None, None, None, region_000742, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000333,
@@ -4183,12 +4143,11 @@ statement_000336 = FuncParameterParserInfo.Create(
 statement_000337 = FuncParametersParserInfo.Create(
     regions=[region_000748, None, region_000746, None],
     positional=None,
-    any_args=[statement_000336, ],
+    any=[statement_000336, ],
     keyword=None,
 )
 
 statement_000338 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000749, region_000748, region_000750, region_000751, region_000752, region_000753, None, None, None, region_000754, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000337,
@@ -4230,12 +4189,11 @@ statement_000340 = FuncParameterParserInfo.Create(
 statement_000341 = FuncParametersParserInfo.Create(
     regions=[region_000760, None, region_000758, None],
     positional=None,
-    any_args=[statement_000340, ],
+    any=[statement_000340, ],
     keyword=None,
 )
 
 statement_000342 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000761, region_000760, region_000762, region_000763, region_000764, region_000765, None, None, None, region_000766, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000341,
@@ -4277,12 +4235,11 @@ statement_000344 = FuncParameterParserInfo.Create(
 statement_000345 = FuncParametersParserInfo.Create(
     regions=[region_000772, None, region_000770, None],
     positional=None,
-    any_args=[statement_000344, ],
+    any=[statement_000344, ],
     keyword=None,
 )
 
 statement_000346 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000773, region_000772, region_000774, region_000775, region_000776, region_000777, None, None, None, region_000778, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000345,
@@ -4324,12 +4281,11 @@ statement_000348 = FuncParameterParserInfo.Create(
 statement_000349 = FuncParametersParserInfo.Create(
     regions=[region_000784, None, region_000782, None],
     positional=None,
-    any_args=[statement_000348, ],
+    any=[statement_000348, ],
     keyword=None,
 )
 
 statement_000350 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000785, region_000784, region_000786, region_000787, region_000788, region_000789, None, None, None, region_000790, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000349,
@@ -4371,12 +4327,11 @@ statement_000352 = FuncParameterParserInfo.Create(
 statement_000353 = FuncParametersParserInfo.Create(
     regions=[region_000796, None, region_000794, None],
     positional=None,
-    any_args=[statement_000352, ],
+    any=[statement_000352, ],
     keyword=None,
 )
 
 statement_000354 = FuncDefinitionStatementParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
     regions=[region_000797, region_000796, region_000798, region_000799, region_000800, region_000801, None, None, None, region_000802, None, None, None, None, None],
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000353,
@@ -4399,6 +4354,7 @@ statement_000354 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000355 = ClassStatementParserInfo.Create(
     regions=[region_000803, region_000804, region_000805, region_000806, None, None, region_000074, None, region_000807, region_000803, None, None],
+    parent_class_capabilities=None,
     class_capabilities=StandardCapabilities,
     visibility_param=VisibilityModifier.public,
     class_modifier_param=ClassModifier.mutable,
@@ -4427,6 +4383,7 @@ statement_000356 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000357 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000809],
     value=True,
 )
@@ -4438,6 +4395,7 @@ statement_000358 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000359 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000812],
     value=False,
 )
@@ -4467,6 +4425,8 @@ statement_000363 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="Int8",
+    templates=None,
+    constraints=None,
     type=statement_000362,
 )
 
@@ -4482,6 +4442,7 @@ statement_000364 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000365 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000822],
     value=True,
 )
@@ -4493,6 +4454,7 @@ statement_000366 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000367 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000825],
     value=True,
 )
@@ -4522,6 +4484,8 @@ statement_000371 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedInt8",
+    templates=None,
+    constraints=None,
     type=statement_000370,
 )
 
@@ -4537,6 +4501,7 @@ statement_000372 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000373 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000835],
     value=False,
 )
@@ -4548,6 +4513,7 @@ statement_000374 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000375 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000838],
     value=False,
 )
@@ -4577,6 +4543,8 @@ statement_000379 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="UInt8",
+    templates=None,
+    constraints=None,
     type=statement_000378,
 )
 
@@ -4592,6 +4560,7 @@ statement_000380 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000381 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000848],
     value=False,
 )
@@ -4603,6 +4572,7 @@ statement_000382 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000383 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000851],
     value=True,
 )
@@ -4632,6 +4602,8 @@ statement_000387 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedUInt8",
+    templates=None,
+    constraints=None,
     type=statement_000386,
 )
 
@@ -4647,6 +4619,7 @@ statement_000388 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000389 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000861],
     value=True,
 )
@@ -4658,6 +4631,7 @@ statement_000390 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000391 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000864],
     value=False,
 )
@@ -4687,6 +4661,8 @@ statement_000395 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="Int16",
+    templates=None,
+    constraints=None,
     type=statement_000394,
 )
 
@@ -4702,6 +4678,7 @@ statement_000396 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000397 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000874],
     value=True,
 )
@@ -4713,6 +4690,7 @@ statement_000398 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000399 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000877],
     value=True,
 )
@@ -4742,6 +4720,8 @@ statement_000403 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedInt16",
+    templates=None,
+    constraints=None,
     type=statement_000402,
 )
 
@@ -4757,6 +4737,7 @@ statement_000404 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000405 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000887],
     value=False,
 )
@@ -4768,6 +4749,7 @@ statement_000406 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000407 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000890],
     value=False,
 )
@@ -4797,6 +4779,8 @@ statement_000411 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="UInt16",
+    templates=None,
+    constraints=None,
     type=statement_000410,
 )
 
@@ -4812,6 +4796,7 @@ statement_000412 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000413 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000900],
     value=False,
 )
@@ -4823,6 +4808,7 @@ statement_000414 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000415 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000903],
     value=True,
 )
@@ -4852,6 +4838,8 @@ statement_000419 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedUInt16",
+    templates=None,
+    constraints=None,
     type=statement_000418,
 )
 
@@ -4867,6 +4855,7 @@ statement_000420 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000421 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000913],
     value=True,
 )
@@ -4878,6 +4867,7 @@ statement_000422 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000423 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000916],
     value=False,
 )
@@ -4907,6 +4897,8 @@ statement_000427 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="Int32",
+    templates=None,
+    constraints=None,
     type=statement_000426,
 )
 
@@ -4922,6 +4914,7 @@ statement_000428 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000429 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000926],
     value=True,
 )
@@ -4933,6 +4926,7 @@ statement_000430 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000431 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000929],
     value=True,
 )
@@ -4962,6 +4956,8 @@ statement_000435 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedInt32",
+    templates=None,
+    constraints=None,
     type=statement_000434,
 )
 
@@ -4977,6 +4973,7 @@ statement_000436 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000437 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000939],
     value=False,
 )
@@ -4988,6 +4985,7 @@ statement_000438 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000439 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000942],
     value=False,
 )
@@ -5017,6 +5015,8 @@ statement_000443 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="UInt32",
+    templates=None,
+    constraints=None,
     type=statement_000442,
 )
 
@@ -5032,6 +5032,7 @@ statement_000444 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000445 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000952],
     value=False,
 )
@@ -5043,6 +5044,7 @@ statement_000446 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000447 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000955],
     value=True,
 )
@@ -5072,6 +5074,8 @@ statement_000451 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedUInt32",
+    templates=None,
+    constraints=None,
     type=statement_000450,
 )
 
@@ -5087,6 +5091,7 @@ statement_000452 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000453 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000965],
     value=True,
 )
@@ -5098,6 +5103,7 @@ statement_000454 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000455 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000968],
     value=False,
 )
@@ -5127,6 +5133,8 @@ statement_000459 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="Int64",
+    templates=None,
+    constraints=None,
     type=statement_000458,
 )
 
@@ -5142,6 +5150,7 @@ statement_000460 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000461 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000978],
     value=True,
 )
@@ -5153,6 +5162,7 @@ statement_000462 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000463 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000981],
     value=True,
 )
@@ -5182,6 +5192,8 @@ statement_000467 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedInt64",
+    templates=None,
+    constraints=None,
     type=statement_000466,
 )
 
@@ -5197,6 +5209,7 @@ statement_000468 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000469 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000991],
     value=False,
 )
@@ -5208,6 +5221,7 @@ statement_000470 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000471 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_000994],
     value=False,
 )
@@ -5237,6 +5251,8 @@ statement_000475 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="UInt64",
+    templates=None,
+    constraints=None,
     type=statement_000474,
 )
 
@@ -5252,6 +5268,7 @@ statement_000476 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000477 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001004],
     value=False,
 )
@@ -5263,6 +5280,7 @@ statement_000478 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000479 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001007],
     value=True,
 )
@@ -5292,6 +5310,8 @@ statement_000483 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedUInt64",
+    templates=None,
+    constraints=None,
     type=statement_000482,
 )
 
@@ -5307,6 +5327,7 @@ statement_000484 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000485 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001017],
     value=True,
 )
@@ -5318,6 +5339,7 @@ statement_000486 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000487 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001020],
     value=False,
 )
@@ -5347,6 +5369,8 @@ statement_000491 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="Int128",
+    templates=None,
+    constraints=None,
     type=statement_000490,
 )
 
@@ -5362,6 +5386,7 @@ statement_000492 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000493 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001030],
     value=True,
 )
@@ -5373,6 +5398,7 @@ statement_000494 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000495 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001033],
     value=True,
 )
@@ -5402,6 +5428,8 @@ statement_000499 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedInt128",
+    templates=None,
+    constraints=None,
     type=statement_000498,
 )
 
@@ -5417,6 +5445,7 @@ statement_000500 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000501 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001043],
     value=False,
 )
@@ -5428,6 +5457,7 @@ statement_000502 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000503 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001046],
     value=False,
 )
@@ -5457,6 +5487,8 @@ statement_000507 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="UInt128",
+    templates=None,
+    constraints=None,
     type=statement_000506,
 )
 
@@ -5472,6 +5504,7 @@ statement_000508 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000509 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001056],
     value=False,
 )
@@ -5483,6 +5516,7 @@ statement_000510 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000511 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001059],
     value=True,
 )
@@ -5512,6 +5546,8 @@ statement_000515 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedUInt128",
+    templates=None,
+    constraints=None,
     type=statement_000514,
 )
 
@@ -5547,6 +5583,8 @@ statement_000520 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="ArchInt",
+    templates=None,
+    constraints=None,
     type=statement_000519,
 )
 
@@ -5564,6 +5602,8 @@ statement_000522 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedArchInt",
+    templates=None,
+    constraints=None,
     type=statement_000521,
 )
 
@@ -5606,6 +5646,8 @@ statement_000528 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="ArchInt",
+    templates=None,
+    constraints=None,
     type=statement_000527,
 )
 
@@ -5623,6 +5665,8 @@ statement_000530 = TypeAliasStatementParserInfo.Create(
     parent_class_capabilities=None,
     visibility_param=VisibilityModifier.public,
     name="CheckedArchInt",
+    templates=None,
+    constraints=None,
     type=statement_000529,
 )
 
@@ -5648,7 +5692,6 @@ statement_000533 = StringExpressionParserInfo.Create(
 )
 
 statement_000533 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
     regions=[region_001097, None],
     expression=statement_000533,
     keyword=None,
@@ -5661,7 +5704,6 @@ statement_000534 = VariableExpressionParserInfo.Create(
 )
 
 statement_000534 = FuncArgumentParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
     regions=[region_001098, None],
     expression=statement_000534,
     keyword=None,
@@ -5695,26 +5737,8 @@ statement_000523 = IfStatementParserInfo.Create(
     else_clause=statement_000538,
 )
 
-public_exports = [
-    statement_000363,
-    statement_000371,
-    statement_000379,
-    statement_000387,
-    statement_000395,
-    statement_000403,
-    statement_000411,
-    statement_000419,
-    statement_000427,
-    statement_000435,
-    statement_000443,
-    statement_000451,
-    statement_000459,
-    statement_000467,
-    statement_000475,
-    statement_000483,
-    statement_000491,
-    statement_000499,
-    statement_000507,
-    statement_000515,
-    statement_000523,
-]
+root_parser_info = RootParserInfo.Create(
+    regions=[region_001104, region_001104, None],
+    statements=[statement_000000, statement_000355, statement_000363, statement_000371, statement_000379, statement_000387, statement_000395, statement_000403, statement_000411, statement_000419, statement_000427, statement_000435, statement_000443, statement_000451, statement_000459, statement_000467, statement_000475, statement_000483, statement_000491, statement_000499, statement_000507, statement_000515, statement_000523, ],
+    documentation=None,
+)

@@ -15,13 +15,18 @@
 # ----------------------------------------------------------------------
 """Creates and extracts parser information from nodes"""
 
+import copy
+import importlib
 import os
+import sys
 import traceback
 
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import ExitStack
 from typing import Any, Callable, cast, Dict, List, Optional, Tuple, TypeVar, Union
 
 import CommonEnvironment
+from CommonEnvironment import FileSystem
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -38,6 +43,7 @@ with InitRelativeImports():
 
     from .MiniLanguage.Types.BooleanType import BooleanType                 # pylint: disable=unused-import
     from .MiniLanguage.Types.CharacterType import CharacterType             # pylint: disable=unused-import
+    from .MiniLanguage.Types.CustomType import CustomType
     from .MiniLanguage.Types.IntegerType import IntegerType                 # pylint: disable=unused-import
     from .MiniLanguage.Types.NoneType import NoneType                       # pylint: disable=unused-import
     from .MiniLanguage.Types.NumberType import NumberType                   # pylint: disable=unused-import
@@ -46,8 +52,11 @@ with InitRelativeImports():
     from .MiniLanguage.Types.VariantType import VariantType                 # pylint: disable=unused-import
 
     from .ParserInfos.ParserInfo import ParserInfo, RootParserInfo
+    from .ParserInfos.Common.VisibilityModifier import VisibilityModifier
+    from .ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
 
     from .Visitors.PassOneVisitor.Visitor import Visitor as PassOneVisitor
+    from .Visitors.PassTwoVisitor.Visitor import Visitor as PassTwoVisitor
 
     from ..Lexer.Lexer import AST, Phrase as LexPhrase
 
@@ -227,6 +236,35 @@ def Validate(
         for k, v in configuration_values.items()
     }
 
+    # Add all of the fundamental types
+    fundamental_types: Dict[str, RootParserInfo] = {}
+
+    generated_code_directory = os.path.join(_script_dir, "FundamentalTypes", "GeneratedCode")
+
+    for generated_filename in FileSystem.WalkFiles(
+        generated_code_directory,
+        include_file_extensions=[".py", ],
+        exclude_file_names=["__init__.py"],
+    ):
+        dirname, basename = os.path.split(generated_filename)
+        basename = os.path.splitext(basename)[0]
+
+        with ExitStack() as exit_stack:
+            sys.path.insert(0, dirname)
+            exit_stack.callback(lambda: sys.path.pop(0))
+
+            mod = importlib.import_module(basename)
+
+            key = FileSystem.TrimPath(generated_filename, generated_code_directory)
+            fundamental_types[key] = getattr(mod, "root_parser_info")
+
+    # Add the fundamental types to the roots collection
+    roots = copy.deepcopy(roots)
+
+    for key, value in fundamental_types.items():
+        assert key not in roots, (key, roots[key])
+        roots[key] = value
+
     # ----------------------------------------------------------------------
     def ExtractErrorsFromResults(
         results: Dict[str, Any],
@@ -276,7 +314,6 @@ def Validate(
     global_namespace = NamespaceInfo(None)
 
     postprocess_funcs: Dict[str, PassOneVisitor.PostprocessFuncsType] = {}
-    pass_one_results: Dict[str, ParsedNamespaceInfo] = {}
 
     for fully_qualified_name, (namespace_info, these_postprocess_funcs) in cast(
         Dict[str, Tuple[ParsedNamespaceInfo, PassOneVisitor.PostprocessFuncsType]],
@@ -301,12 +338,68 @@ def Validate(
         if these_postprocess_funcs:
             postprocess_funcs[fully_qualified_name] = these_postprocess_funcs
 
-        # Update the results
-        pass_one_results[fully_qualified_name] = namespace_info
-
     error_data = PassOneVisitor.ExecutePostprocessFuncs(postprocess_funcs)
     if error_data:
         return error_data  # type: ignore
+
+    # Add all of the fundamental types to the configuration values
+    for key in list(fundamental_types.keys()):
+        # Remove the fundamental types from the output so it isn't visible to the caller
+        assert key in results
+        namespace = cast(ParsedNamespaceInfo, results.pop(key)[0])
+
+        # TODO (this is too early): assert key in roots
+        # TODO (this is too early): del roots[key]
+
+        for child_name, child_namespace in namespace.children.items():
+            if child_name is None:
+                child_namespace_items = child_namespace if isinstance(child_namespace, list) else [child_namespace]
+
+                for child_namespace_item in child_namespace_items:
+                    assert isinstance(child_namespace_item.parser_info, ImportStatementParserInfo)
+                    assert child_namespace_item.parser_info.visibility != VisibilityModifier.public, child_namespace_item.parser_info.visibility
+
+                continue
+
+            assert isinstance(child_namespace, ParsedNamespaceInfo), child_namespace
+            assert isinstance(child_name, str), child_name
+            assert child_name not in mini_language_configuration_values, child_name
+
+            # TODO: Need full filename here?
+
+            mini_language_configuration_values[child_name] = MiniLanguageHelpers.CompileTimeInfo(
+                CustomType(child_name),
+                child_namespace,
+                child_namespace.parser_info.regions__.self__,
+            )
+
+    # ----------------------------------------------------------------------
+    def ExecutePassTwo(
+        fully_qualified_name: str,  # pylint: disable=unused-argument
+        root: RootParserInfo,
+    ) -> List[Error]:
+        visitor = PassTwoVisitor(mini_language_configuration_values)
+
+        root.Accept(visitor)
+
+        return visitor.errors
+
+    # ----------------------------------------------------------------------
+
+    results = _Execute(
+        roots,
+        ExecutePassTwo,
+        max_num_threads=max_num_threads,
+    )
+
+    if results is None:
+        return None
+
+    # Check for errors
+    error_data = ExtractErrorsFromResults(results)
+    if error_data is not None:
+        return error_data  # type: ignore
+
 
     # TODO: Continue
 

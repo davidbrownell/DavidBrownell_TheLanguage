@@ -79,9 +79,9 @@ class BinaryExpression(GrammarPhrase):
         # The strategy to match longest isn't always the best.
         "|_TODO": OperatorType.BitwiseOr,
 
-        "<": OperatorType.Less,
+        "<_TODO": OperatorType.Less,
         "<=": OperatorType.LessEqual,
-        ">": OperatorType.Greater,
+        ">_TODO": OperatorType.Greater,
         ">=": OperatorType.GreaterEqual,
         "==": OperatorType.Equal,
         "!=": OperatorType.NotEqual,
