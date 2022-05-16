@@ -16,6 +16,7 @@
 """Contains the ImportStatementsMixin object"""
 
 import os
+import weakref
 
 from collections import OrderedDict
 from contextlib import contextmanager
@@ -56,7 +57,7 @@ ImportItemNotFoundError                     = CreateError(
 )
 
 ImportItemVisibilityError                   = CreateError(
-    "The import item '{name}' exists but is not visible to the caller",
+    "The import item '{name}' exists but is not visible here",
     name=str,
     visibility=VisibilityModifier,
     visibility_region=Region,
@@ -93,9 +94,31 @@ class ImportStatementMixin(BaseMixin):
                 ),
             )
 
+            # Associate the parent parser_info with the import item. This will
+            # by used later when postprocessing the imports themselves. Note that
+            # we can use the state of this object, as different visitors are created
+            # for different compilation units.
+            object.__setattr__(
+                import_item,
+                self.__class__._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME,
+                weakref.ref(parser_info),
+            )
+
         yield
 
-        self._postprocess_funcs.append(lambda: self.__class__._PostprocessImportStatement(parent_namespace, parser_info))  # pylint: disable=protected-access
+        self._postprocess_funcs.append(
+            (
+                lambda: self.__class__._PostprocessImportStatement(parent_namespace, parser_info),  # pylint: disable=protected-access
+                lambda: self.__class__._FinalizeImportStatement(parent_namespace, parser_info),  # pylint: disable=protected-access
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
+    # ----------------------------------------------------------------------
+    _IMPORT_ITEM_PARENT_ATTRIBUTE_NAME      = "_import_statement_parser_info"
 
     # ----------------------------------------------------------------------
     # |
@@ -105,35 +128,11 @@ class ImportStatementMixin(BaseMixin):
     @classmethod
     def _PostprocessImportStatement(
         cls,
-        parent_namespace: ParsedNamespaceInfo,
-        parser_info: ImportStatementParserInfo,
-    ) -> BaseMixin.PostprocessFuncResultType:
-        # ----------------------------------------------------------------------
-        def RemoveTemporaryNamespaceItem(
-            import_name: str,
-        ) -> ParsedNamespaceInfo:
-            assert import_name in parent_namespace.children
-            assert isinstance(parent_namespace.children[import_name], ParsedNamespaceInfo)
-
-            return cast(ParsedNamespaceInfo, parent_namespace.children.pop(import_name))
-
-        # ----------------------------------------------------------------------
-        def FinalizeImports():
-            import_items: Dict[str, ParsedNamespaceInfo] = OrderedDict()
-
-            for item_parser_info in parser_info.import_items:
-                item_name = item_parser_info.GetNameAndRegion()[0]
-                assert item_name is not None
-
-                import_items[item_name] = RemoveTemporaryNamespaceItem(item_name)
-
-            parser_info.InitImports(import_items)
-
-        # ----------------------------------------------------------------------
-
-        # Imports are relative to the file, so find the root namespace of this file (and then
-        # jump up a level).
-        root_namespace = parser_info.namespace__.parent
+        namespace: ParsedNamespaceInfo,
+        import_statement_parser_info: ImportStatementParserInfo,
+    ) -> None:
+        # Imports are relative to a file, so find the root namespace of this file
+        root_namespace = import_statement_parser_info.namespace__.parent
 
         while (
             isinstance(root_namespace, ParsedNamespaceInfo)
@@ -144,13 +143,15 @@ class ImportStatementMixin(BaseMixin):
         assert isinstance(root_namespace, ParsedNamespaceInfo)
         assert isinstance(root_namespace.parser_info, RootParserInfo)
 
+        # Since imports are relative to this file, jump up one more level
         root_namespace = root_namespace.parent
-        assert isinstance(root_namespace, NamespaceInfo)
+        assert root_namespace is not None
+        assert not isinstance(root_namespace, ParsedNamespaceInfo)
 
         # Get the namespace for the item(s) being imported
         import_namespace = root_namespace
 
-        for source_part in parser_info.source_parts:
+        for source_part in import_statement_parser_info.source_parts:
             potential_import_namespace = import_namespace.children.get(source_part, DoesNotExist.instance)
 
             if (
@@ -159,18 +160,19 @@ class ImportStatementMixin(BaseMixin):
             ):
                 raise ErrorException(
                     ImportModuleNotFoundError.Create(
-                        region=parser_info.regions__.source_parts,
+                        region=import_statement_parser_info.regions__.source_parts,
                         name=source_part,
                     ),
                 )
 
-            assert isinstance(potential_import_namespace, NamespaceInfo)
             import_namespace = potential_import_namespace
+
+        assert isinstance(import_namespace, ParsedNamespaceInfo)
 
         # Get all the items to import
         errors: List[Error] = []
 
-        if parser_info.import_type == ImportType.source_is_directory:
+        if import_statement_parser_info.import_type == ImportType.source_is_directory:
             # ----------------------------------------------------------------------
             def ProcessDirectoryImport(
                 import_item: ImportStatementItemParserInfo,
@@ -183,9 +185,8 @@ class ImportStatementMixin(BaseMixin):
                     if (
                         child_name is not None
                         and isinstance(child_namespace, ParsedNamespaceInfo)
-                        and hasattr(child_namespace.parser_info, "visibility")
                         and (
-                            child_namespace.parser_info.visibility == VisibilityModifier.public  # type: ignore
+                            getattr(child_namespace.parser_info, cls._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)().visibility == VisibilityModifier.public  # type: ignore
                             # TODO: Internal
                         )
                     ):
@@ -202,8 +203,8 @@ class ImportStatementMixin(BaseMixin):
                     return None
 
                 return ParsedNamespaceInfo(
-                    parent_namespace,
-                    parent_namespace.scope_flag,
+                    namespace,
+                    namespace.scope_flag,
                     import_item,
                     child_imports,
                 )
@@ -212,25 +213,30 @@ class ImportStatementMixin(BaseMixin):
 
             process_import_item_func = ProcessDirectoryImport
 
-        elif parser_info.import_type == ImportType.source_is_module:
+        elif import_statement_parser_info.import_type == ImportType.source_is_module:
             # ----------------------------------------------------------------------
             def ProcessModuleImport(
                 import_item: ImportStatementItemParserInfo,
                 import_item_namespace: ParsedNamespaceInfo,
             ) -> Optional[ParsedNamespaceInfo]:
-                # TODO: In the future rewrite, all things that are exportable should have name and visibility attributes
-                assert hasattr(import_item_namespace.parser_info, "visibility")
+                # TODO: In the future rewrite, all things that are exportable should have a name and visibility
+
+                imported_item_parser_info = import_item_namespace.parser_info
+                if isinstance(imported_item_parser_info, ImportStatementItemParserInfo):
+                    imported_item_parser_info = getattr(import_item_namespace.parser_info, cls._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)()
+
+                assert hasattr(imported_item_parser_info, "visibility")
 
                 if (
-                    import_item_namespace.parser_info.visibility != VisibilityModifier.public  # type: ignore
+                    imported_item_parser_info.visibility != VisibilityModifier.public  # type: ignore
                     # TODO: Internal
                 ):
                     errors.append(
                         ImportItemVisibilityError.Create(
                             region=import_item.regions__.name,
                             name=import_item.name,
-                            visibility=import_item_namespace.parser_info.visibility,  # type: ignore
-                            visibility_region=import_item_namespace.parser_info.regions__.visibility,
+                            visibility=imported_item_parser_info.visibility,  # type: ignore
+                            visibility_region=imported_item_parser_info.regions__.visibility,
                         ),
                     )
 
@@ -243,12 +249,21 @@ class ImportStatementMixin(BaseMixin):
             process_import_item_func = ProcessModuleImport
 
         else:
-            assert False, parser_info.import_type  # pragma: no cover
+            assert False, import_statement_parser_info.import_type  # pragma: no cover
 
-        callback_funcs: BaseMixin.PostprocessFuncsType = []
-        deferred_count = 0
+        for import_item in import_statement_parser_info.import_items:
+            import_item_name = import_item.GetNameAndRegion()[0]
+            assert import_item_name is not None
 
-        for import_item in parser_info.import_items:
+            # Has this item already been processed? This can happen if another compilation unit
+            # too a dependency on this import.
+            existing_import_item_namespace = namespace.children.get(import_item_name)
+            assert isinstance(existing_import_item_namespace, ParsedNamespaceInfo)
+
+            if not isinstance(existing_import_item_namespace.parser_info, ImportStatementItemParserInfo):
+                continue
+
+            # If here, continue with the import process
             import_item_namespace = import_namespace.children.get(import_item.name, DoesNotExist.instance)
 
             if (
@@ -266,59 +281,57 @@ class ImportStatementMixin(BaseMixin):
 
             assert isinstance(import_item_namespace, ParsedNamespaceInfo)
 
-            import_item_name = import_item.GetNameAndRegion()[0]
-            assert import_item_name is not None
-
             import_item_namespace = process_import_item_func(import_item, import_item_namespace)
             if import_item_namespace is None:
-                # Something went wrong, remove this item from the list
-                RemoveTemporaryNamespaceItem(import_item_name)
+                # Something went wrong and we will not be able to import it
+                assert errors
                 continue
 
             if isinstance(import_item_namespace.parser_info, ImportStatementItemParserInfo):
-                deferred_count += 1
+                cls._PostprocessImportStatement(
+                    import_namespace,
+                    getattr(
+                        import_item_namespace.parser_info,
+                        cls._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME,
+                    )(),
+                )
 
-                # ----------------------------------------------------------------------
-                def CallbackFuncFactory(
-                    import_item_name: str=import_item_name,
-                    import_item=import_item,
-                ) -> Callable[[], BaseMixin.PostprocessFuncResultType]:
-                    # Create a function that can be called repeatedly for this set of inputs
-                    impl = None
+                import_item_namespace = import_namespace.children.get(import_item.name)
+                assert isinstance(import_item_namespace, ParsedNamespaceInfo)
 
-                    # ----------------------------------------------------------------------
-                    def Impl() -> BaseMixin.PostprocessFuncResultType:
-                        import_item_namespace = import_namespace.children[import_item.name]
-                        assert isinstance(import_item_namespace, ParsedNamespaceInfo)
-
-                        if isinstance(import_item_namespace.parser_info, ImportStatementItemParserInfo):
-                            assert impl is not None
-                            return [impl, ]
-
-                        parent_namespace.children[import_item_name] = import_item_namespace
-
-                        nonlocal deferred_count
-                        assert deferred_count
-                        deferred_count -= 1
-
-                        if deferred_count == 0:
-                            return FinalizeImports
-
-                        return None
-
-                    # ----------------------------------------------------------------------
-
-                    impl = Impl
-                    return impl
-
-                # ----------------------------------------------------------------------
-
-                callback_funcs.append(CallbackFuncFactory())
-
-            else:
-                parent_namespace.children[import_item_name] = import_item_namespace
+            namespace.children[import_item_name] = import_item_namespace
 
         if errors:
             raise ErrorException(*errors)
 
-        return callback_funcs or FinalizeImports
+    # ----------------------------------------------------------------------
+    @classmethod
+    def _FinalizeImportStatement(
+        cls,
+        namespace: ParsedNamespaceInfo,
+        import_statement_parser_info: ImportStatementParserInfo,
+    ) -> None:
+        # Commit the results and remove temporary working state
+
+        # ----------------------------------------------------------------------
+        def RemoveTemporaryNamespaceItem(
+            import_name: str,
+        ) -> ParsedNamespaceInfo:
+            assert import_name in namespace.children
+            assert isinstance(namespace.children[import_name], ParsedNamespaceInfo)
+
+            return cast(ParsedNamespaceInfo, namespace.children.pop(import_name))
+
+        # ----------------------------------------------------------------------
+
+        import_items: Dict[str, ParsedNamespaceInfo] = OrderedDict()
+
+        for item_parser_info in import_statement_parser_info.import_items:
+            object.__delattr__(item_parser_info, cls._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)
+
+            item_name = item_parser_info.GetNameAndRegion()[0]
+            assert item_name is not None
+
+            import_items[item_name] = RemoveTemporaryNamespaceItem(item_name)
+
+        import_statement_parser_info.InitImports(import_items)

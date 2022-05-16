@@ -33,8 +33,8 @@ from v1.Parser.Region import Region
 
 
 # ----------------------------------------------------------------------
-region_000000 = Region(begin=Location(line=16, column=18), end=Location(line=16, column=21))
-region_000001 = Region(begin=Location(line=16, column=1), end=Location(line=18, column=1))
+region_000000 = Region(begin=Location(line=16, column=1), end=Location(line=18, column=1))
+region_000001 = Region(begin=Location(line=16, column=18), end=Location(line=16, column=21))
 region_000002 = Region(begin=Location(line=16, column=6), end=Location(line=16, column=10))
 region_000003 = Region(begin=Location(line=22, column=6), end=Location(line=22, column=9))
 region_000004 = Region(begin=Location(line=22, column=12), end=Location(line=22, column=16))
@@ -138,20 +138,20 @@ region_000100 = Region(begin=Location(line=26, column=1), end=Location(line=36, 
 
 # ----------------------------------------------------------------------
 statement_000000 = ImportStatementItemParserInfo.Create(
-    regions=[region_000000, region_000000, None],
+    regions=[region_000000, region_000001, None],
     name="Num",
     alias=None,
 )
 
-statement_000001 = ImportStatementParserInfo.Create(
-    regions=[region_000001, region_000001, region_000002],
+statement_000000 = ImportStatementParserInfo.Create(
+    regions=[region_000000, region_000000, region_000002],
     visibility_param=VisibilityModifier.private,
-    source_filename=".Num",
+    source_parts=['Num'],
     import_items=[statement_000000, ],
     import_type=ImportStatementParserInfoImportType.source_is_module,
 )
 
-statement_000002 = FuncOrTypeExpressionParserInfo.Create(
+statement_000001 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
     regions=[region_000003, region_000003, None],
     value=NumberType(),
@@ -160,28 +160,28 @@ statement_000002 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000003 = NoneExpressionParserInfo.Create(
+statement_000002 = NoneExpressionParserInfo.Create(
     regions=[region_000004],
 )
 
-statement_000004 = VariantExpressionParserInfo.Create(
+statement_000003 = VariantExpressionParserInfo.Create(
     regions=[region_000005, None],
-    types=[statement_000002, statement_000003, ],
+    types=[statement_000001, statement_000002, ],
     mutability_modifier=None,
 )
 
-statement_000005 = NoneExpressionParserInfo.Create(
+statement_000004 = NoneExpressionParserInfo.Create(
     regions=[region_000006],
 )
 
-statement_000006 = ConstraintParameterParserInfo.Create(
+statement_000005 = ConstraintParameterParserInfo.Create(
     regions=[region_000007, region_000008],
-    type=statement_000004,
+    type=statement_000003,
     name="min_value!",
-    default_value=statement_000005,
+    default_value=statement_000004,
 )
 
-statement_000007 = FuncOrTypeExpressionParserInfo.Create(
+statement_000006 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
     regions=[region_000009, region_000009, None],
     value=NumberType(),
@@ -190,93 +190,93 @@ statement_000007 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000008 = NoneExpressionParserInfo.Create(
+statement_000007 = NoneExpressionParserInfo.Create(
     regions=[region_000010],
 )
 
-statement_000009 = VariantExpressionParserInfo.Create(
+statement_000008 = VariantExpressionParserInfo.Create(
     regions=[region_000011, None],
-    types=[statement_000007, statement_000008, ],
+    types=[statement_000006, statement_000007, ],
     mutability_modifier=None,
 )
 
-statement_000010 = NoneExpressionParserInfo.Create(
+statement_000009 = NoneExpressionParserInfo.Create(
     regions=[region_000012],
 )
 
-statement_000011 = ConstraintParameterParserInfo.Create(
+statement_000010 = ConstraintParameterParserInfo.Create(
     regions=[region_000013, region_000014],
-    type=statement_000009,
+    type=statement_000008,
     name="max_value!",
-    default_value=statement_000010,
+    default_value=statement_000009,
 )
 
-statement_000012 = ConstraintParametersParserInfo.Create(
+statement_000011 = ConstraintParametersParserInfo.Create(
     regions=[region_000015, None, region_000016, None],
     positional=None,
-    any=[statement_000006, statement_000011, ],
+    any=[statement_000005, statement_000010, ],
     keyword=None,
 )
 
-statement_000013 = VariableExpressionParserInfo.Create(
+statement_000012 = VariableExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000017, region_000017],
     name="min_value!",
 )
 
-statement_000013 = ConstraintArgumentParserInfo.Create(
+statement_000012 = ConstraintArgumentParserInfo.Create(
     regions=[region_000017, None],
-    expression=statement_000013,
+    expression=statement_000012,
     keyword=None,
 )
 
-statement_000014 = VariableExpressionParserInfo.Create(
+statement_000013 = VariableExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
     regions=[region_000018, region_000018],
     name="max_value!",
 )
 
-statement_000014 = ConstraintArgumentParserInfo.Create(
+statement_000013 = ConstraintArgumentParserInfo.Create(
     regions=[region_000018, None],
-    expression=statement_000014,
+    expression=statement_000013,
     keyword=None,
 )
 
-statement_000015 = ConstraintArgumentsParserInfo.Create(
+statement_000014 = ConstraintArgumentsParserInfo.Create(
     regions=[region_000019, region_000019],
-    arguments=[statement_000013, statement_000014, ],
+    arguments=[statement_000012, statement_000013, ],
 )
 
-statement_000016 = FuncOrTypeExpressionParserInfo.Create(
+statement_000015 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
     regions=[region_000020, region_000021, None],
     value=NumberType(),
     templates=None,
-    constraints=statement_000015,
+    constraints=statement_000014,
     mutability_modifier=None,
 )
 
-statement_000016 = ClassStatementDependencyParserInfo.Create(
+statement_000015 = ClassStatementDependencyParserInfo.Create(
     regions=[region_000020, region_000020],
     visibility=VisibilityModifier.public,
-    type=statement_000016,
+    type=statement_000015,
 )
 
-statement_000017 = TemplateTypeParameterParserInfo.Create(
+statement_000016 = TemplateTypeParameterParserInfo.Create(
     regions=[region_000022, region_000022, None],
     name="ArchiveT",
     is_variadic=None,
     default_type=None,
 )
 
-statement_000018 = TemplateParametersParserInfo.Create(
+statement_000017 = TemplateParametersParserInfo.Create(
     regions=[region_000023, None, region_000022, None],
     positional=None,
-    any=[statement_000017, ],
+    any=[statement_000016, ],
     keyword=None,
 )
 
-statement_000019 = FuncOrTypeExpressionParserInfo.Create(
+statement_000018 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[region_000024, region_000025, region_000026],
     value=CustomType("ArchiveT"),
@@ -285,34 +285,34 @@ statement_000019 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=MutabilityModifier.ref,
 )
 
-statement_000020 = FuncParameterParserInfo.Create(
+statement_000019 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000027, None, region_000028],  # type: ignore
-    type=statement_000019,
+    type=statement_000018,
     is_variadic=None,
     name="archive",
     default_value=None,
 )
 
-statement_000021 = FuncParametersParserInfo.Create(
+statement_000020 = FuncParametersParserInfo.Create(
     regions=[region_000029, None, region_000027, None],
     positional=None,
-    any_args=[statement_000020, ],
+    any_args=[statement_000019, ],
     keyword=None,
 )
 
-statement_000022 = FuncDefinitionStatementParserInfo.Create(
+statement_000021 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000030, region_000029, region_000031, region_000032, region_000030, region_000033, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000021,
+    parameters=statement_000020,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.Serialize,
     documentation=None,
-    templates=statement_000018,
+    templates=statement_000017,
     captured_variables=None,
     statements=None,
     is_deferred=None,
@@ -323,21 +323,21 @@ statement_000022 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000023 = TemplateTypeParameterParserInfo.Create(
+statement_000022 = TemplateTypeParameterParserInfo.Create(
     regions=[region_000034, region_000034, None],
     name="VisitorT",
     is_variadic=None,
     default_type=None,
 )
 
-statement_000024 = TemplateParametersParserInfo.Create(
+statement_000023 = TemplateParametersParserInfo.Create(
     regions=[region_000035, None, region_000034, None],
     positional=None,
-    any=[statement_000023, ],
+    any=[statement_000022, ],
     keyword=None,
 )
 
-statement_000025 = FuncOrTypeExpressionParserInfo.Create(
+statement_000024 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[region_000036, region_000037, region_000038],
     value=CustomType("VisitorT"),
@@ -346,34 +346,34 @@ statement_000025 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=MutabilityModifier.ref,
 )
 
-statement_000026 = FuncParameterParserInfo.Create(
+statement_000025 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000039, None, region_000040],  # type: ignore
-    type=statement_000025,
+    type=statement_000024,
     is_variadic=None,
     name="visitor",
     default_value=None,
 )
 
-statement_000027 = FuncParametersParserInfo.Create(
+statement_000026 = FuncParametersParserInfo.Create(
     regions=[region_000041, None, region_000039, None],
     positional=None,
-    any_args=[statement_000026, ],
+    any_args=[statement_000025, ],
     keyword=None,
 )
 
-statement_000028 = FuncDefinitionStatementParserInfo.Create(
+statement_000027 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000042, region_000041, region_000043, region_000044, region_000042, region_000045, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000027,
+    parameters=statement_000026,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
     name=FuncDefinitionStatementParserInfoOperatorType.Accept,
     documentation=None,
-    templates=statement_000024,
+    templates=statement_000023,
     captured_variables=None,
     statements=None,
     is_deferred=None,
@@ -384,7 +384,7 @@ statement_000028 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000029 = FuncOrTypeExpressionParserInfo.Create(
+statement_000028 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
     regions=[region_000046, region_000047, region_000048],
     value=NumberType(),
@@ -393,27 +393,27 @@ statement_000029 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000030 = FuncParameterParserInfo.Create(
+statement_000029 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000049, None, region_000050],  # type: ignore
-    type=statement_000029,
+    type=statement_000028,
     is_variadic=None,
     name="divisor",
     default_value=None,
 )
 
-statement_000031 = FuncParametersParserInfo.Create(
+statement_000030 = FuncParametersParserInfo.Create(
     regions=[region_000051, None, region_000049, None],
     positional=None,
-    any_args=[statement_000030, ],
+    any_args=[statement_000029, ],
     keyword=None,
 )
 
-statement_000032 = FuncDefinitionStatementParserInfo.Create(
+statement_000031 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000052, region_000051, region_000053, region_000054, region_000052, region_000055, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000031,
+    parameters=statement_000030,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
@@ -431,7 +431,7 @@ statement_000032 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000033 = FuncOrTypeExpressionParserInfo.Create(
+statement_000032 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
     regions=[region_000056, region_000057, region_000058],
     value=NumberType(),
@@ -440,27 +440,27 @@ statement_000033 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000034 = FuncParameterParserInfo.Create(
+statement_000033 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000059, None, region_000060],  # type: ignore
-    type=statement_000033,
+    type=statement_000032,
     is_variadic=None,
     name="multiplier",
     default_value=None,
 )
 
-statement_000035 = FuncParametersParserInfo.Create(
+statement_000034 = FuncParametersParserInfo.Create(
     regions=[region_000061, None, region_000059, None],
     positional=None,
-    any_args=[statement_000034, ],
+    any_args=[statement_000033, ],
     keyword=None,
 )
 
-statement_000036 = FuncDefinitionStatementParserInfo.Create(
+statement_000035 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000062, region_000061, region_000063, region_000064, region_000062, region_000065, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000035,
+    parameters=statement_000034,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
@@ -478,7 +478,7 @@ statement_000036 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000037 = FuncOrTypeExpressionParserInfo.Create(
+statement_000036 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
     regions=[region_000066, region_000067, region_000068],
     value=NumberType(),
@@ -487,27 +487,27 @@ statement_000037 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000038 = FuncParameterParserInfo.Create(
+statement_000037 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000069, None, region_000070],  # type: ignore
-    type=statement_000037,
+    type=statement_000036,
     is_variadic=None,
     name="exponent",
     default_value=None,
 )
 
-statement_000039 = FuncParametersParserInfo.Create(
+statement_000038 = FuncParametersParserInfo.Create(
     regions=[region_000071, None, region_000069, None],
     positional=None,
-    any_args=[statement_000038, ],
+    any_args=[statement_000037, ],
     keyword=None,
 )
 
-statement_000040 = FuncDefinitionStatementParserInfo.Create(
+statement_000039 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000072, region_000071, region_000073, region_000074, region_000072, region_000075, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000039,
+    parameters=statement_000038,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
@@ -525,7 +525,7 @@ statement_000040 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000041 = FuncOrTypeExpressionParserInfo.Create(
+statement_000040 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
     regions=[region_000076, region_000077, region_000078],
     value=NumberType(),
@@ -534,27 +534,27 @@ statement_000041 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000042 = FuncParameterParserInfo.Create(
+statement_000041 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000079, None, region_000080],  # type: ignore
-    type=statement_000041,
+    type=statement_000040,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement_000043 = FuncParametersParserInfo.Create(
+statement_000042 = FuncParametersParserInfo.Create(
     regions=[region_000081, None, region_000079, None],
     positional=None,
-    any_args=[statement_000042, ],
+    any_args=[statement_000041, ],
     keyword=None,
 )
 
-statement_000044 = FuncDefinitionStatementParserInfo.Create(
+statement_000043 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000082, region_000081, region_000083, region_000084, region_000082, region_000085, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000043,
+    parameters=statement_000042,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
@@ -572,7 +572,7 @@ statement_000044 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000045 = FuncOrTypeExpressionParserInfo.Create(
+statement_000044 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
     regions=[region_000086, region_000087, region_000088],
     value=NumberType(),
@@ -581,27 +581,27 @@ statement_000045 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000046 = FuncParameterParserInfo.Create(
+statement_000045 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000089, None, region_000090],  # type: ignore
-    type=statement_000045,
+    type=statement_000044,
     is_variadic=None,
     name="value",
     default_value=None,
 )
 
-statement_000047 = FuncParametersParserInfo.Create(
+statement_000046 = FuncParametersParserInfo.Create(
     regions=[region_000091, None, region_000089, None],
     positional=None,
-    any_args=[statement_000046, ],
+    any_args=[statement_000045, ],
     keyword=None,
 )
 
-statement_000048 = FuncDefinitionStatementParserInfo.Create(
+statement_000047 = FuncDefinitionStatementParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[region_000092, region_000091, region_000093, region_000094, region_000092, region_000095, None, None, None, None, None, None, None, None, None],
     parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000047,
+    parameters=statement_000046,
     visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
@@ -619,7 +619,7 @@ statement_000048 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000049 = ClassStatementParserInfo.Create(
+statement_000048 = ClassStatementParserInfo.Create(
     regions=[region_000096, region_000097, region_000098, region_000099, None, region_000020, None, None, region_000100, region_000096, None, None],
     class_capabilities=ConceptCapabilities,
     visibility_param=VisibilityModifier.public,
@@ -627,11 +627,11 @@ statement_000049 = ClassStatementParserInfo.Create(
     name="MutableNum",
     documentation=None,
     templates=None,
-    constraints=statement_000012,
-    extends=[statement_000016, ],
+    constraints=statement_000011,
+    extends=[statement_000015, ],
     implements=None,
     uses=None,
-    statements=[statement_000022, statement_000028, statement_000032, statement_000036, statement_000040, statement_000044, statement_000048, ],
+    statements=[statement_000021, statement_000027, statement_000031, statement_000035, statement_000039, statement_000043, statement_000047, ],
     constructor_visibility_param=VisibilityModifier.public,
     is_abstract=None,
     is_final=None,
