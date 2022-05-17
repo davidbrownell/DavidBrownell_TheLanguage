@@ -20,7 +20,7 @@ import weakref
 
 from collections import OrderedDict
 from contextlib import contextmanager
-from typing import Callable, cast, Dict, List, Optional
+from typing import cast, Dict, List, Optional
 
 import CommonEnvironment
 from CommonEnvironment.DoesNotExist import DoesNotExist
@@ -96,11 +96,11 @@ class ImportStatementMixin(BaseMixin):
 
             # Associate the parent parser_info with the import item. This will
             # by used later when postprocessing the imports themselves. Note that
-            # we can use the state of this object, as different visitors are created
+            # we can't use the state of this object, as different visitors are created
             # for different compilation units.
             object.__setattr__(
                 import_item,
-                self.__class__._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME,
+                self.__class__._TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME,  # pylint: disable=protected-access
                 weakref.ref(parser_info),
             )
 
@@ -118,7 +118,7 @@ class ImportStatementMixin(BaseMixin):
     # |  Private Data
     # |
     # ----------------------------------------------------------------------
-    _IMPORT_ITEM_PARENT_ATTRIBUTE_NAME      = "_import_statement_parser_info"
+    _TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME        = "_import_statement_parser_info"
 
     # ----------------------------------------------------------------------
     # |
@@ -132,7 +132,7 @@ class ImportStatementMixin(BaseMixin):
         import_statement_parser_info: ImportStatementParserInfo,
     ) -> None:
         # Imports are relative to a file, so find the root namespace of this file
-        root_namespace = import_statement_parser_info.namespace__.parent
+        root_namespace = namespace
 
         while (
             isinstance(root_namespace, ParsedNamespaceInfo)
@@ -165,6 +165,7 @@ class ImportStatementMixin(BaseMixin):
                     ),
                 )
 
+            assert isinstance(potential_import_namespace, NamespaceInfo)
             import_namespace = potential_import_namespace
 
         assert isinstance(import_namespace, ParsedNamespaceInfo)
@@ -186,7 +187,7 @@ class ImportStatementMixin(BaseMixin):
                         child_name is not None
                         and isinstance(child_namespace, ParsedNamespaceInfo)
                         and (
-                            getattr(child_namespace.parser_info, cls._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)().visibility == VisibilityModifier.public  # type: ignore
+                            getattr(child_namespace.parser_info, cls._TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)().visibility == VisibilityModifier.public  # type: ignore
                             # TODO: Internal
                         )
                     ):
@@ -223,7 +224,7 @@ class ImportStatementMixin(BaseMixin):
 
                 imported_item_parser_info = import_item_namespace.parser_info
                 if isinstance(imported_item_parser_info, ImportStatementItemParserInfo):
-                    imported_item_parser_info = getattr(import_item_namespace.parser_info, cls._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)()
+                    imported_item_parser_info = getattr(import_item_namespace.parser_info, cls._TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)()
 
                 assert hasattr(imported_item_parser_info, "visibility")
 
@@ -292,7 +293,7 @@ class ImportStatementMixin(BaseMixin):
                     import_namespace,
                     getattr(
                         import_item_namespace.parser_info,
-                        cls._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME,
+                        cls._TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME,
                     )(),
                 )
 
@@ -327,7 +328,7 @@ class ImportStatementMixin(BaseMixin):
         import_items: Dict[str, ParsedNamespaceInfo] = OrderedDict()
 
         for item_parser_info in import_statement_parser_info.import_items:
-            object.__delattr__(item_parser_info, cls._IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)
+            object.__delattr__(item_parser_info, cls._TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)
 
             item_name = item_parser_info.GetNameAndRegion()[0]
             assert item_name is not None

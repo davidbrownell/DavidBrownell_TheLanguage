@@ -131,10 +131,17 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def Accept(self, visitor):
+        details = []
+
+        if self.templates:
+            details.append(("templates", self.templates))
+        if self.constraints:
+            details.append(("constraints", self.constraints))
+
         return self._AcceptImpl(
             visitor,
             details=[
                 ("type", self.type),
-            ],
+            ] + details,  # type: ignore
             children=None,
         )
