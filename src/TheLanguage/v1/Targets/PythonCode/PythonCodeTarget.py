@@ -70,15 +70,7 @@ class PythonCodeTarget(Target):
 
         root.Accept(visitor)
 
-        output_name: Optional[str] = None
-
-        for source_dir in self.source_dirs:
-            if fully_qualified_name.startswith(source_dir):
-                output_name = FileSystem.TrimPath(fully_qualified_name, source_dir)
-                break
-
-        assert output_name is not None, (fully_qualified_name, self.source_dirs)
-        output_name = os.path.splitext(output_name)[0] + ".py"
+        output_name = os.path.splitext(fully_qualified_name)[0] + ".py"
 
         self._outputs.append(
             Target.EnumResult.Create(
