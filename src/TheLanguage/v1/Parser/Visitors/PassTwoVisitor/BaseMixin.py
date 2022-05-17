@@ -67,11 +67,6 @@ class BaseMixin(object):
         self._errors: List[Error]           = []
 
     # ----------------------------------------------------------------------
-    @property
-    def errors(self) -> List[Error]:
-        return self._errors
-
-    # ----------------------------------------------------------------------
     def __getattr__(
         self,
         name: str,
@@ -144,8 +139,9 @@ class BaseMixin(object):
         type_result = MiniLanguageHelpers.EvalExpression(parser_info, snapshot)
 
         type_name = type_result.type.name
+        type_info = snapshot.get(type_name, None)
 
-        if type_name not in snapshot:
+        if type_info is None:
             raise ErrorException(
                 InvalidTypeError.Create(
                     region=parser_info.regions__.self__,
@@ -153,8 +149,7 @@ class BaseMixin(object):
                 ),
             )
 
-        # TODO: Return ParsedNamespaceInfo
-        return type_result.type
+        return type_info.value
 
     # ----------------------------------------------------------------------
     # |

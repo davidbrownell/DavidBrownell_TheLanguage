@@ -27,6 +27,7 @@ import pytest
 pytest.register_assert_rewrite("CommonEnvironment.AutomatedTestHelpers")
 
 import CommonEnvironment
+from CommonEnvironment import FileSystem
 
 from CommonEnvironment.AutomatedTestHelpers import (
     CompareResultsFromFile                  # This is imported as a convenience  # pylint: disable=unused-import
@@ -69,21 +70,27 @@ class PatchAndExecuteFlag(Flag):
 # ----------------------------------------------------------------------
 def PatchAndExecute(
     simulated_file_content: Dict[
-        str,                                # fully_qualified_name
-        str                                 # content
+        str,                                # workspace
+        Dict[
+            str,                            # relative path
+            str                             # content
+        ],
     ],
-    source_roots: List[str],
     flag=PatchAndExecuteFlag.Validate,
     *,
-    fully_qualified_names: Optional[List[str]]=None,
     max_num_threads: Optional[int]=None,
+    include_fundamental_types=True,
 ) -> Union[
-    Dict[str, AST.Node],                    # PatchAndExecuteFlag.Lex
+    Dict[str, Dict[str, AST.Node]],         # PatchAndExecuteFlag.Lex
     List[Exception],                        # PatchAndExecuteFlag.Lex
-    Dict[str,                               # PatchAndExecuteFlag.Parse
-        Union[
-            RootParserInfo,
-            List[ParserError],
+    Dict[
+        str,
+        Dict[
+            str,
+            Union[
+                RootParserInfo,
+                List[ParserError],
+            ],
         ],
     ],
 ]:
@@ -99,35 +106,57 @@ def PatchAndExecute(
 
     # ----------------------------------------------------------------------
     def IsFile(filename):
-        return filename in simulated_file_content
+        dirname, basename = os.path.split(filename)
+
+        items = simulated_file_content.get(dirname, None)
+        if items is None:
+            return False
+
+        return basename in items
 
     # ----------------------------------------------------------------------
     def IsDir(dirname):
         for key in simulated_file_content.keys():
-            if dirname == os.path.dirname(key):
+            if dirname == key:
                 return True
 
         return False
+
+    # ----------------------------------------------------------------------
+    def Open(filename):
+        for workspace_name, items in simulated_file_content.items():
+            if not filename.startswith(workspace_name):
+                continue
+
+            relative_path = FileSystem.TrimPath(filename, workspace_name)
+            return StringIO(items[relative_path])
+
+        assert False, filename
 
     # ----------------------------------------------------------------------
 
     with \
         patch("os.path.isfile", side_effect=IsFile), \
         patch("os.path.isdir", side_effect=IsDir), \
-        patch("builtins.open", side_effect=lambda filename: StringIO(simulated_file_content[filename])) \
+        patch("builtins.open", side_effect=Open) \
     :
-        result = Lex(
+        inputs: Dict[str, List[str]] = {}
+
+        for workspace_name, workspace_items in simulated_file_content.items():
+            inputs[workspace_name] = list(workspace_items.keys())
+
+        results = Lex(
             GrammarCommentToken,
             Grammar,
-            fully_qualified_names or list(simulated_file_content.keys()),
-            LexObserver(source_roots),
+            inputs,
+            LexObserver(list(inputs.keys())),
             max_num_threads=max_num_threads,
         )
 
-        assert result is not None
+        assert results is not None
 
-        if isinstance(result, list):
-            if len(result) == 1:
+        if isinstance(results, list):
+            if len(results) == 1:
                 print(
                     textwrap.dedent(
                         """\
@@ -139,54 +168,75 @@ def PatchAndExecute(
                         # ----------------------------------------------------------------------
                         # ----------------------------------------------------------------------
                         """,
-                    ).format(str(result[0])),
+                    ).format(str(results[0])),
                 )
 
-                raise result[0]
+                raise results[0]
 
-            return result
+            return results
 
-        result = cast(Dict[str, AST.Node], result)
+        results = cast(Dict[str, Dict[str, AST.Node]], results)
 
         if flag & PatchAndExecuteFlag.prune_flag:
             Prune(
-                result,
+                results,
                 max_num_threads=max_num_threads,
             )
 
         if not flag & PatchAndExecuteFlag.parse_flag:
-            return result
+            return results
 
-        result = Parse(
-            result,
+        results = Parse(
+            results,
             ParseObserver(),
             max_num_threads=max_num_threads,
         )
 
-        assert result is not None
+        assert results is not None
 
-        roots: Dict[str, RootParserInfo] = {}
+        errors: Dict[str, Dict[str, List[ParserError]]] = {}
 
-        for key, value in result.items():
-            if isinstance(value, list):
-                return result
+        for workspace_name, workspace_items in results.items():
+            these_errors: Dict[str, List[ParserError]] = {}
 
-            roots[key] = value
+            for relative_path, result in workspace_items.items():
+                if isinstance(result, list):
+                    these_errors[relative_path] = result
+
+            if these_errors:
+                errors[workspace_name] = these_errors
+
+        if errors:
+            return errors  # type: ignore
+
+        results = cast(Dict[str, Dict[str, RootParserInfo]], results)
 
         if flag & PatchAndExecuteFlag.validate_flag:
-            result = Validate(
-                roots,
+            results = Validate(
+                results,
                 {}, # TODO
                 max_num_threads=max_num_threads,
+                include_fundamental_types=include_fundamental_types,
             )
 
-            assert result is not None
+            assert results is not None
 
-            for key, value in result.items():
-                if isinstance(value, list):
-                    return result
+            for workspace_name, workspace_items in results.items():
+                these_errors: Dict[str, List[ParserError]] = {}
 
-        return cast(Dict[str, Union[RootParserInfo, List[ParserError]]], roots)
+                for relative_path, result in workspace_items.items():
+                    if isinstance(result, list):
+                        these_errors[relative_path] = result
+
+                if these_errors:
+                    errors[workspace_name] = these_errors
+
+            if errors:
+                return errors  # type: ignore
+
+            results = cast(Dict[str, Dict[str, RootParserInfo]], results)
+
+        return results  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -197,12 +247,17 @@ def ExecuteNode(
 ) -> AST.Node:
     result = PatchAndExecute(
         {
-            "filename": content,
+            "workspace" : {
+                "filename": content,
+            },
         },
-        [],
         flag=PatchAndExecuteFlag.Prune,
         max_num_threads=max_num_threads,
     )
+
+    assert isinstance(result, dict), result
+    assert len(result) == 1
+    result = result["workspace"]
 
     assert isinstance(result, dict), result
     assert len(result) == 1, result
@@ -216,15 +271,22 @@ def ExecuteParserInfo(
     content: str,
     *,
     max_num_threads: Optional[int]=None,
+    include_fundamental_types=True,
 ) -> RootParserInfo:
     result = PatchAndExecute(
         {
-            "filename": content,
+            "workspace": {
+                "filename": content,
+            },
         },
-        [],
         flag=PatchAndExecuteFlag.Validate,
         max_num_threads=max_num_threads,
+        include_fundamental_types=include_fundamental_types,
     )
+
+    assert isinstance(result, dict), result
+    assert len(result) == 1
+    result = result["workspace"]
 
     assert isinstance(result, dict), result
     assert len(result) == 1, result
@@ -243,20 +305,25 @@ def ExecutePythonTarget(
     content: str,
     *,
     max_num_threads: Optional[int]=None,
+    include_fundamental_types=True,
 ) -> str:
-    result = ExecuteParserInfo(
-        content,
+    result = PatchAndExecute(
+        {
+            "workspace": {
+                "filename": content,
+            },
+        },
+        flag=PatchAndExecuteFlag.Validate,
         max_num_threads=max_num_threads,
+        include_fundamental_types=include_fundamental_types,
     )
+
+    assert isinstance(result, dict), result
 
     target = PythonTarget(
-        source_dirs=[],
+        result,
         output_dir=None,
     )
-
-    target.PreInvoke(["filename"])
-    target.Invoke("filename", result)
-    target.PostInvoke(["filename"])
 
     outputs = list(target.EnumOutputs())
 

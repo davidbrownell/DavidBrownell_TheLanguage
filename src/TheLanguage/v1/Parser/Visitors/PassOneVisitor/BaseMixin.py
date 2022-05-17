@@ -59,52 +59,22 @@ DuplicateNameError                          = CreateError(
 # ----------------------------------------------------------------------
 class BaseMixin(object):
     # ----------------------------------------------------------------------
-    # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    PostprocessFuncsType                    = List[
-        Tuple[
-            Callable[[], None],             # postprocess_func
-            Callable[[], None],             # finalize_func
-        ],
-    ]
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
-    # ----------------------------------------------------------------------
     def __init__(
         self,
         configuration_info: Dict[str, MiniLanguageHelpers.CompileTimeInfo],
     ):
         self._configuration_info            = configuration_info
 
-        self._errors: List[Error]                                           = []
-        self._postprocess_funcs: BaseMixin.PostprocessFuncsType             = []
+        self._errors: List[Error]           = []
+        self._postprocess_funcs: List[
+            Tuple[
+                Callable[[], None],         # postprocess_func
+                Callable[[], None],         # finalize_func
+            ],
+        ]                                   = []
 
         self._namespace_infos: List[ParsedNamespaceInfo]                    = []
         self._root_namespace_info: Optional[ParsedNamespaceInfo]            = None
-
-    # ----------------------------------------------------------------------
-    @property
-    def errors(self) -> List[Error]:
-        assert not self._namespace_infos, self._namespace_infos
-        assert self._root_namespace_info is not None
-        return self._errors
-
-    @property
-    def postprocess_funcs(self) -> "BaseMixin.PostprocessFuncsType":
-        assert not self._namespace_infos, self._namespace_infos
-        assert self._root_namespace_info is not None
-        return self._postprocess_funcs
-
-    @property
-    def namespace_info(self) -> ParsedNamespaceInfo:
-        assert not self._namespace_infos, self._namespace_infos
-        assert self._root_namespace_info is not None
-        return self._root_namespace_info
 
     # ----------------------------------------------------------------------
     def __getattr__(
@@ -193,43 +163,6 @@ class BaseMixin(object):
                 self._errors += ex.errors
             else:
                 raise
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def ExecutePostprocessFuncs(
-        cls,
-        postprocess_funcs: Dict[str, "BaseMixin.PostprocessFuncsType"],
-    ) -> Dict[str, List[Error]]:
-        errors: Dict[str, List[Error]] = {}
-
-        for name, funcs in postprocess_funcs.items():
-            these_errors: List[Error] = []
-
-            for postprocess_func, finalize_func in funcs:
-                try:
-                    postprocess_func()
-                except ErrorException as ex:
-                    these_errors += ex.errors
-
-            if these_errors:
-                errors[name] = these_errors
-
-        if errors:
-            return errors
-
-        for name, funcs in postprocess_funcs.items():
-            these_errors: List[Error] = []
-
-            for postprocess_func, finalize_func in funcs:
-                try:
-                    finalize_func()
-                except ErrorException as ex:
-                    these_errors += ex.errors
-
-            if these_errors:
-                errors[name] = these_errors
-
-        return errors
 
     # ----------------------------------------------------------------------
     # |

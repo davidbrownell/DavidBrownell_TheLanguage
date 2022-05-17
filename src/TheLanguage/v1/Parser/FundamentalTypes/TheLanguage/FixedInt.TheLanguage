@@ -17,13 +17,13 @@ from .Concepts.MutableInt import MutableInt
 
 
 # ----------------------------------------------------------------------
-public mutable class FixedInt <
+public mutable class FixedInt <TEMPLATE
     pos:
         Int num_bytes!,                     # 1, 2, 4, 8, 16
     key:
         Bool is_checked!,
         Bool is_signed!,
-> {
+TEMPLATE> {
     Int min_value! = -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0,
     Int max_value! = (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1),
 }
@@ -47,12 +47,12 @@ public mutable class FixedInt <
         Enforce!(max_value! - min_value! <= ((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1)))
         Enforce!(min_value! - max_value! >= (-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0))
 
-    [Deferred, Static] public override ThisType var __Deserialize?__<ArchiveT>(ArchiveT ref archive)
-    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) immutable
-    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) var
+    [Deferred, Static] public override ThisType var __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
+    [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) immutable
+    [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) var
 
-    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) immutable
-    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) val
+    [Deferred] public override None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) immutable
+    [Deferred] public override None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) val
 
     [Deferred] public override ThisType var __Clone?__() immutable
 

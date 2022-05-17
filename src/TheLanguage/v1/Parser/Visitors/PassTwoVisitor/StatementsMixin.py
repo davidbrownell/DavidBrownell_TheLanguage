@@ -53,8 +53,6 @@ class StatementsMixin(BaseMixin):
         if not parser_info.is_type__initialized__:
             parser_info.InitType(self._GetNamespaceInfo(parser_info.type))
 
-            # TODO: Resolve type, ensure not concept
-
         yield
 
     # ----------------------------------------------------------------------

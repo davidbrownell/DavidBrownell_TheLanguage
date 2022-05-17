@@ -128,7 +128,8 @@ def Create() -> PhraseItem:
 
     return ParametersFragmentImpl.Create(
         "Template Parameters",
-        "<", ">",
+        # TODO: Change these to: "<", ">" when lexer is updated
+        "<TEMPLATE", "TEMPLATE>",
         parameter_element,
         allow_empty=False,
     )

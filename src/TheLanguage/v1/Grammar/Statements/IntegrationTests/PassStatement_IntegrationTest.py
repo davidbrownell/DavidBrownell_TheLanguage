@@ -41,4 +41,5 @@ def test_Standard():
                 pass
             """,
         ),
+        include_fundamental_types=False,
     )))

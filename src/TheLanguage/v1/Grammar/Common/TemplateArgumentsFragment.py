@@ -64,6 +64,8 @@ def Create() -> PhraseItem:
     argument_element = PhraseItem(
         name="Template Argument",
         item=(
+            # TODO: Can't tell the difference between a type and an expression anymore for arguments.
+
             # (<parameter_name> '=')? <type>
             PhraseItem(
                 name="Template Type",
@@ -104,7 +106,8 @@ def Create() -> PhraseItem:
 
     return ArgumentsFragmentImpl.Create(
         "Template Arguments",
-        "<", ">",
+        # TODO: Change these to: "<", ">" when lexer is updated
+        "<TEMPLATE", "TEMPLATE>",
         argument_element,
         allow_empty=True,
     )

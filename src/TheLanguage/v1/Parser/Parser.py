@@ -15,18 +15,13 @@
 # ----------------------------------------------------------------------
 """Creates and extracts parser information from nodes"""
 
-import copy
-import importlib
 import os
-import sys
 import traceback
 
 from concurrent.futures import ThreadPoolExecutor
-from contextlib import ExitStack
 from typing import Any, Callable, cast, Dict, List, Optional, Tuple, TypeVar, Union
 
 import CommonEnvironment
-from CommonEnvironment import FileSystem
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -39,11 +34,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Error import CreateError, Error, ErrorException, Region
     from .Helpers import MiniLanguageHelpers
-    from .NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
     from .MiniLanguage.Types.BooleanType import BooleanType                 # pylint: disable=unused-import
     from .MiniLanguage.Types.CharacterType import CharacterType             # pylint: disable=unused-import
-    from .MiniLanguage.Types.CustomType import CustomType
     from .MiniLanguage.Types.IntegerType import IntegerType                 # pylint: disable=unused-import
     from .MiniLanguage.Types.NoneType import NoneType                       # pylint: disable=unused-import
     from .MiniLanguage.Types.NumberType import NumberType                   # pylint: disable=unused-import
@@ -52,8 +45,6 @@ with InitRelativeImports():
     from .MiniLanguage.Types.VariantType import VariantType                 # pylint: disable=unused-import
 
     from .ParserInfos.ParserInfo import ParserInfo, RootParserInfo
-    from .ParserInfos.Common.VisibilityModifier import VisibilityModifier
-    from .ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
 
     from .Visitors.PassOneVisitor.Visitor import Visitor as PassOneVisitor
     from .Visitors.PassTwoVisitor.Visitor import Visitor as PassTwoVisitor
@@ -108,12 +99,30 @@ class ParseObserver(Interface.Interface):
 
 # ----------------------------------------------------------------------
 def Parse(
-    roots: Dict[str, AST.Node],
+    workspaces: Dict[
+        str,                                # workspace name
+        Dict[
+            str,                            # relative path
+            AST.Node,
+        ],
+    ],
     observer: ParseObserver,
     *,
     max_num_threads: Optional[int]=None,
 ) -> Optional[
-    Dict[str, Union[RootParserInfo, List[Error]]]
+    Dict[
+        str,                                # workspace name
+        Dict[
+            str,                            # relative path
+            Union[
+                # Unsuccessful result
+                List[Error],
+
+                # Successful result
+                RootParserInfo,
+            ],
+        ],
+    ]
 ]:
     # ----------------------------------------------------------------------
     def CreateAndExtract(
@@ -216,7 +225,7 @@ def Parse(
     # ----------------------------------------------------------------------
 
     return _Execute(
-        roots,
+        workspaces,
         CreateAndExtract,
         max_num_threads=max_num_threads,
     )
@@ -224,81 +233,70 @@ def Parse(
 
 # ----------------------------------------------------------------------
 def Validate(
-    roots: Dict[str, RootParserInfo],
+    workspaces: Dict[
+        str,                                # workspace root
+        Dict[
+            str,                            # relative path to file
+            RootParserInfo
+        ]
+    ],
     configuration_values: Dict[str, Tuple[MiniLanguageType, Any]],
     *,
+    include_fundamental_types=True,
     max_num_threads: Optional[int]=None,
 ) -> Optional[
-    Dict[str, Union[RootParserInfo, List[Error]]]
+    Dict[
+        str,                                # workspace root
+        Dict[
+            str,                            # relative path to file
+            Union[
+                RootParserInfo,
+                List[Error],
+            ],
+        ],
+    ]
 ]:
     mini_language_configuration_values = {
         k: MiniLanguageHelpers.CompileTimeInfo(v[0], v[1], None)
         for k, v in configuration_values.items()
     }
 
-    # Add all of the fundamental types
-    fundamental_types: Dict[str, RootParserInfo] = {}
+    # ----------------------------------------------------------------------
+    # |  Pass 1
+    with PassOneVisitor.ScopedExecutor(
+        workspaces,
+        mini_language_configuration_values,
+        include_fundamental_types=include_fundamental_types,
+    ) as executor:
+        results = _Execute(
+            workspaces,
+            executor.Execute,
+            max_num_threads=max_num_threads,
+        )
 
-    generated_code_directory = os.path.join(_script_dir, "FundamentalTypes", "GeneratedCode")
+        if results is None:
+            return None
 
-    for generated_filename in FileSystem.WalkFiles(
-        generated_code_directory,
-        include_file_extensions=[".py", ],
-        exclude_file_names=["__init__.py"],
-    ):
-        dirname, basename = os.path.split(generated_filename)
-        basename = os.path.splitext(basename)[0]
+        # Check for errors
+        error_data = _ExtractErrorsFromResults(results)
+        if error_data is not None:
+            return error_data  # type: ignore
 
-        with ExitStack() as exit_stack:
-            sys.path.insert(0, dirname)
-            exit_stack.callback(lambda: sys.path.pop(0))
+        results = cast(Dict[str, Dict[str, PassOneVisitor.PositiveExecuteResultType]], results)
+        results = executor.ExecutePostprocessFuncs(results)
 
-            mod = importlib.import_module(basename)
+        if results is None:
+            return results
 
-            key = FileSystem.TrimPath(generated_filename, generated_code_directory)
-            fundamental_types[key] = getattr(mod, "root_parser_info")
-
-    # Add the fundamental types to the roots collection
-    roots = copy.deepcopy(roots)
-
-    for key, value in fundamental_types.items():
-        assert key not in roots, (key, roots[key])
-        roots[key] = value
+        error_data = _ExtractErrorsFromResults(results)
+        if error_data is not None:
+            return error_data  # type: ignore
 
     # ----------------------------------------------------------------------
-    def ExtractErrorsFromResults(
-        results: Dict[str, Any],
-    ) -> Optional[Dict[str, List[Error]]]:
-        error_results = {}
-
-        for k, v in results.items():
-            if isinstance(v, list) and v and isinstance(v[0], Error):
-                error_results[k] = v
-
-        return error_results or None
-
-    # ----------------------------------------------------------------------
-    def ExecutePassOne(
-        fully_qualified_name: str,  # pylint: disable=unused-argument
-        root: RootParserInfo,
-    ) -> Union[
-        Tuple[ParsedNamespaceInfo, PassOneVisitor.PostprocessFuncsType],
-        List[Error],
-    ]:
-        visitor = PassOneVisitor(mini_language_configuration_values)
-
-        root.Accept(visitor)
-
-        if visitor.errors:
-            return visitor.errors
-
-        return visitor.namespace_info, visitor.postprocess_funcs
-
-    # ----------------------------------------------------------------------
-
+    # |  Pass 2
     results = _Execute(
-        roots,
-        ExecutePassOne,
+        workspaces,
+        lambda *args, **kwargs: PassTwoVisitor.Execute(mini_language_configuration_values, *args, **kwargs),
         max_num_threads=max_num_threads,
     )
 
@@ -306,104 +304,11 @@ def Validate(
         return None
 
     # Check for errors
-    error_data = ExtractErrorsFromResults(results)
+    error_data = _ExtractErrorsFromResults(results)
     if error_data is not None:
         return error_data  # type: ignore
 
-    # Create a complete namespace and extract postprocess funcs
-    global_namespace = NamespaceInfo(None)
-
-    postprocess_funcs: Dict[str, PassOneVisitor.PostprocessFuncsType] = {}
-
-    for fully_qualified_name, (namespace_info, these_postprocess_funcs) in cast(
-        Dict[str, Tuple[ParsedNamespaceInfo, PassOneVisitor.PostprocessFuncsType]],
-        results,
-    ).items():
-        # Update the global namespace
-        name_parts = os.path.splitext(fully_qualified_name)[0]
-        name_parts = name_parts.split(os.path.sep)
-
-        namespace = global_namespace
-
-        for part in name_parts[:-1]:
-            if part not in namespace.children:
-                namespace.children[part] = NamespaceInfo(namespace)
-
-            namespace = namespace.children[part]
-
-        object.__setattr__(namespace_info, "parent", namespace)
-        namespace.children[name_parts[-1]] = namespace_info
-
-        # Update the global postprocess funcs
-        if these_postprocess_funcs:
-            postprocess_funcs[fully_qualified_name] = these_postprocess_funcs
-
-    error_data = PassOneVisitor.ExecutePostprocessFuncs(postprocess_funcs)
-    if error_data:
-        return error_data  # type: ignore
-
-    # Add all of the fundamental types to the configuration values
-    for key in list(fundamental_types.keys()):
-        # Remove the fundamental types from the output so it isn't visible to the caller
-        assert key in results
-        namespace = cast(ParsedNamespaceInfo, results.pop(key)[0])
-
-        # TODO (this is too early): assert key in roots
-        # TODO (this is too early): del roots[key]
-
-        for child_name, child_namespace in namespace.children.items():
-            if child_name is None:
-                child_namespace_items = child_namespace if isinstance(child_namespace, list) else [child_namespace]
-
-                for child_namespace_item in child_namespace_items:
-                    assert isinstance(child_namespace_item.parser_info, ImportStatementParserInfo)
-                    assert child_namespace_item.parser_info.visibility != VisibilityModifier.public, child_namespace_item.parser_info.visibility
-
-                continue
-
-            assert isinstance(child_namespace, ParsedNamespaceInfo), child_namespace
-            assert isinstance(child_name, str), child_name
-            assert child_name not in mini_language_configuration_values, child_name
-
-            # TODO: Need full filename here?
-
-            mini_language_configuration_values[child_name] = MiniLanguageHelpers.CompileTimeInfo(
-                CustomType(child_name),
-                child_namespace,
-                child_namespace.parser_info.regions__.self__,
-            )
-
-    # ----------------------------------------------------------------------
-    def ExecutePassTwo(
-        fully_qualified_name: str,  # pylint: disable=unused-argument
-        root: RootParserInfo,
-    ) -> List[Error]:
-        visitor = PassTwoVisitor(mini_language_configuration_values)
-
-        root.Accept(visitor)
-
-        return visitor.errors
-
-    # ----------------------------------------------------------------------
-
-    results = _Execute(
-        roots,
-        ExecutePassTwo,
-        max_num_threads=max_num_threads,
-    )
-
-    if results is None:
-        return None
-
-    # Check for errors
-    error_data = ExtractErrorsFromResults(results)
-    if error_data is not None:
-        return error_data  # type: ignore
-
-
-    # TODO: Continue
-
-    return roots # type: ignore
+    return workspaces  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -532,11 +437,25 @@ _ExecuteOutputType                          = TypeVar("_ExecuteOutputType")
 
 
 def _Execute(
-    inputs: Dict[str, _ExecuteInputType],
+    inputs: Dict[
+        str,                                # workspace root
+        Dict[
+            str,                            # relative path
+            _ExecuteInputType
+        ]
+    ],
     execute_func: Callable[[str, _ExecuteInputType], Optional[_ExecuteOutputType]],
     *,
     max_num_threads: Optional[int]=None,
-) -> Optional[Dict[str, _ExecuteOutputType]]:
+) -> Optional[
+    Dict[
+        str,                                # workspace root
+        Dict[
+            str,                            # relative path
+            _ExecuteOutputType
+        ]
+    ]
+]:
     # ----------------------------------------------------------------------
     def Execute(
         fully_qualified_name: str,
@@ -555,23 +474,34 @@ def _Execute(
 
     # ----------------------------------------------------------------------
 
-    results: List[_ExecuteOutputType] = []
+    # Flatten the inputs
+    flattened_inputs: Dict[str, _ExecuteInputType] = {}
 
-    if max_num_threads == 1 or len(inputs) == 1:
-        for k, v in inputs.items():
-            result = Execute(k, v)
+    for workspace_root, workspace_items in inputs.items():
+        for relative_path, input_value in workspace_items.items():
+            key = os.path.join(workspace_root, relative_path)
+
+            assert key not in flattened_inputs, key
+            flattened_inputs[key] = input_value
+
+    # Execute
+    raw_results: List[_ExecuteOutputType] = []
+
+    if max_num_threads == 1 or len(flattened_inputs) == 1:
+        for k, v in flattened_inputs.items():
+            result = Execute(k, cast(_ExecuteInputType, v))
             if result is None:
                 return None
 
-            results.append(result)
+            raw_results.append(result)
 
     else:
         with ThreadPoolExecutor(
             max_workers=max_num_threads,
         ) as executor:
             futures = [
-                executor.submit(Execute, k, v)
-                for k, v in inputs.items()
+                executor.submit(Execute, k, cast(_ExecuteInputType, v))
+                for k, v in flattened_inputs.items()
             ]
 
             for future in futures:
@@ -579,9 +509,56 @@ def _Execute(
                 if result is None:
                     return None
 
-                results.append(result)
+                raw_results.append(result)
 
-    return {
-        fully_qualified_name: result
-        for fully_qualified_name, result in zip(inputs.keys(), results)
-    }
+    # Unflatten the results
+    results: Dict[
+        str,                        # workspace root
+        Dict[
+            str,                    # relative path
+            _ExecuteOutputType
+        ]
+    ] = {}
+
+    raw_results_iter = iter(raw_results)
+
+    for workspace_root, workspace_items in inputs.items():
+        workspace_results: Dict[str, _ExecuteOutputType] = {}
+
+        for relative_path in workspace_items.keys():
+            workspace_results[relative_path] = next(raw_results_iter)
+
+        results[workspace_root] = workspace_results
+
+    return results
+
+
+# ----------------------------------------------------------------------
+def _ExtractErrorsFromResults(
+    results: Dict[str, Dict[str, Any]],
+) -> Optional[
+    Dict[
+        str,                                # workspace root
+        Dict[
+            str,                            # relative path
+            List[Error]
+        ]
+    ]
+]:
+    error_results: Dict[str, Dict[str, List[Error]]] = {}
+
+    for workspace_root, workspace_items in results.items():
+        these_error_results: Dict[str, List[Error]] = {}
+
+        for relative_path, result in workspace_items.items():
+            if (
+                isinstance(result, list)
+                and result
+                and isinstance(result[0], Error)
+            ):
+                these_error_results[relative_path] = result
+
+        if these_error_results:
+            error_results[workspace_root] = these_error_results
+
+    return error_results or None

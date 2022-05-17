@@ -35,7 +35,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class BooleanType(Type):
-    name                                    = Interface.DerivedProperty("Boolean")  # type: ignore
+    name                                    = Interface.DerivedProperty("Bool")  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod

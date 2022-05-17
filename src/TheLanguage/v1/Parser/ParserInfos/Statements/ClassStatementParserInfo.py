@@ -183,6 +183,7 @@ class ClassStatementParserInfo(StatementParserInfo):
                 "constraints",
             ],
             validate=False,
+            parent_class_capabilities=lambda value: None if value is None else value.name,
             class_capabilities=lambda value: value.name,
         )
 

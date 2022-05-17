@@ -17,9 +17,8 @@
 
 import os
 import sys
-import threading
 
-from typing import Any, cast, Dict, Tuple
+from typing import Any, cast, Dict, List, Tuple
 
 import inflect as inflect_mod
 
@@ -46,13 +45,10 @@ with StreamDecorator(
         from .Lexer.Lexer import AST, Lex, Prune
 
         from .Parser.Parser import (
-            Error as ParseError,
-            ErrorException as ParseErrorException,
             IntegerType,
             MiniLanguageType,
             NoneType,
             Parse,
-            ParserInfo,
             RootParserInfo,
             Validate,
             VariantType,
@@ -74,14 +70,15 @@ _TARGETS                                    = {
 # ----------------------------------------------------------------------
 @CommandLine.EntryPoint()                                                   # type: ignore
 @CommandLine.Constraints(                                                   # type: ignore
-    input_directory_or_filename=CommandLine.FilenameTypeInfo(
-        match_any=True,
+    target=CommandLine.EnumTypeInfo(
+        list(_TARGETS.keys()),
     ),
     output_directory=CommandLine.DirectoryTypeInfo(
         ensure_exists=False,
     ),
-    target=CommandLine.EnumTypeInfo(
-        list(_TARGETS.keys()),
+    input_directory_or_filename=CommandLine.FilenameTypeInfo(
+        match_any=True,
+        arity="+",
     ),
     configuration=CommandLine.EnumTypeInfo(
         values=["Debug", "ReleaseNoOptimizations", "Release"],
@@ -94,13 +91,16 @@ _TARGETS                                    = {
     output_stream=None,
 )
 def Execute(
-    input_directory_or_filename,
-    output_directory,
     target,
+    output_directory,
+    input_directory_or_filename,
     configuration="Debug",
     max_num_threads=None,
     output_stream=sys.stdout,
 ):
+    input_directory_or_filename_items = input_directory_or_filename
+    del input_directory_or_filename
+
     max_num_threads = 1
 
     with StreamDecorator(output_stream).DoneManager(
@@ -108,26 +108,42 @@ def Execute(
         prefix="\nResults: ",
         suffix="\n",
     ) as dm:
-        filenames = []
+        workspaces: Dict[str, List[str]] = {}
+        num_files = 0
 
         dm.stream.write("Gathering input...")
         with dm.stream.DoneManager(
-            done_suffix=lambda: "{} found".format(inflect.no("file", len(filenames))),
+            done_suffixes=[
+                lambda: "{} found".format(inflect.no("workspace", len(workspaces))),
+                lambda: "{} found".format(inflect.no("file", num_files)),
+            ],
         ):
-            if os.path.isfile(input_directory_or_filename):
-                filenames.append(input_directory_or_filename)
-                input_dir = os.path.dirname(input_directory_or_filename)
-            elif os.path.isdir(input_directory_or_filename):
-                filenames = list(FileSystem.WalkFiles(
-                    input_directory_or_filename,
-                    include_file_extensions=[".TheLanguage"],
-                ))
+            for input_directory_or_filename in input_directory_or_filename_items:
+                if os.path.isfile(input_directory_or_filename):
+                    dirname, basename = os.path.split(os.path.realpath(input_directory_or_filename))
 
-                input_dir = input_directory_or_filename
-            else:
-                assert False, input_directory_or_filename  # pragma: no cover
+                    workspaces.setdefault(dirname, []).append(basename)
+                    num_files += 1
 
-        if not filenames:
+                elif os.path.isdir(input_directory_or_filename):
+                    input_directory_or_filename = os.path.realpath(input_directory_or_filename)
+
+                    relative_paths: List[str] = []
+
+                    for filename in FileSystem.WalkFiles(
+                        input_directory_or_filename,
+                        include_file_extensions=[".TheLanguage", ],
+                    ):
+                        relative_paths.append(FileSystem.TrimPath(filename, input_directory_or_filename))
+
+
+                    num_files += len(relative_paths)
+                    workspaces[input_directory_or_filename] = relative_paths
+
+                else:
+                    assert False, input_directory_or_filename  # pragma: no cover
+
+        if num_files == 0:
             return dm.result
 
         dm.stream.write("\nLexing...\n\n")
@@ -135,8 +151,8 @@ def Execute(
             lex_result = Lex(
                 GrammarCommentToken,
                 Grammar,
-                filenames,
-                LexObserver([input_dir]),
+                workspaces,
+                LexObserver(list(workspaces.keys())),
                 max_num_threads=max_num_threads,
             )
 
@@ -151,8 +167,7 @@ def Execute(
                 return lex_dm.result
 
             assert lex_result is not None
-
-            lex_result = cast(Dict[str, AST.Node], lex_result)
+            lex_result = cast(Dict[str, Dict[str, AST.Node]], lex_result)
 
             lex_dm.stream.write("\n")
 
@@ -165,34 +180,32 @@ def Execute(
 
         dm.stream.write("\nParsing...")
         with dm.stream.DoneManager() as parse_dm:
-            # Trim the paths off of the filenames
-            parser_input: Dict[str, AST.Node] = {}
-
-            for filename, node in lex_result.items():
-                filename = FileSystem.TrimPath(filename, input_dir)
-                parser_input[filename] = node
-
             parse_result = Parse(
-                parser_input,
+                lex_result,
                 ParseObserver(),
                 max_num_threads=max_num_threads,
             )
 
             assert parse_result is not None
 
-            for key, result in list(parse_result.items()):
-                if isinstance(result, list):
-                    for error in result:
-                        parse_dm.stream.write("{} [{}]\n{}\n\n".format(key, error.region, error))
+            for workspace, results in parse_result.items():
+                for relative_path, result in results.items():
+                    if isinstance(result, list):
+                        for error in result:
+                            parse_dm.stream.write(
+                                "{} [{}]\n{}\n\n".format(
+                                    os.path.join(workspace, relative_path),
+                                    error.region,
+                                    error,
+                                ),
+                            )
 
-                    parse_dm.result = -1
-                else:
-                    parse_result[key] = cast(RootParserInfo, result)
+                        parse_dm.result = -1
 
             if parse_dm.result != 0:
                 return parse_dm.result
 
-            parse_result = cast(Dict[str, RootParserInfo], parse_result)
+            parse_result = cast(Dict[str, Dict[str, RootParserInfo]], parse_result)
 
         dm.stream.write("\nValidating...")
         with dm.stream.DoneManager() as validate_dm:
@@ -208,35 +221,28 @@ def Execute(
 
             assert validate_result is not None
 
-            for key, result in list(validate_result.items()):
-                if isinstance(result, list):
-                    for error in result:
-                        validate_dm.stream.write("{} [{}]\n{}\n\n".format(key, error.region, error))
+            for workspace, results in validate_result.items():
+                for relative_path, result in results.items():
+                    if isinstance(result, list):
+                        for error in result:
+                            validate_dm.stream.write(
+                                "{} [{}]\n{}\n\n".format(
+                                    os.path.join(workspace, relative_path),
+                                    error.region,
+                                    error,
+                                ),
+                            )
 
-                    validate_dm.result = -1
-                else:
-                    validate_result[key] = cast(RootParserInfo, result)
+                        validate_dm.result = -1
 
             if validate_dm.result != 0:
                 return validate_dm.result
 
-            validate_result = cast(Dict[str, RootParserInfo], validate_result)
+            validate_result = parse_result
 
         dm.stream.write("\nGenerating output...")
         with dm.stream.DoneManager() as target_dm:
-            target = _TARGETS[target](
-                [input_dir],
-                output_directory,
-            )
-
-            all_names = list(validate_result.keys())
-
-            target.PreInvoke(all_names)
-
-            for key, result in validate_result.items():
-                target.Invoke(key, cast(ParserInfo, result))
-
-            target.PostInvoke(all_names)
+            target = _TARGETS[target](validate_result, output_directory)
 
             for output in target.EnumOutputs():
                 target_dm.stream.write(

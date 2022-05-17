@@ -23,12 +23,12 @@ public mutable class FixedSizeStr {
 }
     extends FixedSizeMutableStr { allow_empty! = allow_empty! }
 :
-    [Deferred, Static] public override ThisType var __Deserialize?__<ArchiveT>(ArchiveT ref archive)
-    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) immutable
-    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) var
+    [Deferred, Static] public override ThisType var __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
+    [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) immutable
+    [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) var
 
-    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) immutable
-    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) var
+    [Deferred] public override None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) immutable
+    [Deferred] public override None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) var
 
     [Deferred] public override ThisType var __Clone?__() immutable
 
