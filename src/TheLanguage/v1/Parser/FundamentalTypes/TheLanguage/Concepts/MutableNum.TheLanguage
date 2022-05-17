@@ -24,8 +24,8 @@ public mutable concept MutableNum {
 }
     extends Num { min_value!, max_value! }
 :
-    public None __Serialize?__<ArchiveT>(ArchiveT ref archive) var
-    public None __Accept?__<VisitorT>(VisitorT ref visitor) var
+    public None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) var
+    public None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) var
 
     public None __DivideInplace?__(Num immutable divisor) var
     public None __MultiplyInplace?__(Num immutable multiplier) var

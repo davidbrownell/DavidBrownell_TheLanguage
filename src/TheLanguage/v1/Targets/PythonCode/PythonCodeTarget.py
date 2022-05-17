@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Generator, List, Optional
+from typing import Generator, Dict, List
 
 import CommonEnvironment
 from CommonEnvironment import FileSystem
@@ -43,62 +43,39 @@ class PythonCodeTarget(Target):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        source_dirs: List[str],
+        workspaces: Dict[
+            str,                            # workspace name
+            Dict[
+                str,                        # relative path
+                RootParserInfo,
+            ],
+        ],
         output_dir: str,
     ):
-        self.source_dirs                                = source_dirs
-        self.output_dir                                 = output_dir
-
-        self._outputs: List[Target.EnumResult]          = []
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def PreInvoke(
-        fully_qualified_names: List[str],
-    ) -> None:
-        pass
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Invoke(
-        self,
-        fully_qualified_name: str,
-        root: RootParserInfo,
-    ) -> None:
-        visitor = Visitor()
-
-        root.Accept(visitor)
-
-        output_name = os.path.splitext(fully_qualified_name)[0] + ".py"
-
-        self._outputs.append(
-            Target.EnumResult.Create(
-                fully_qualified_name,
-                os.path.join(self.output_dir, output_name),
-                visitor.GetContent(),
-            ),
-        )
-
-        # ----------------------------------------------------------------------
-    @Interface.override
-    def PostInvoke(
-        self,
-        fully_qualified_names: List[str],
-    ) -> None:
-        for output in self._outputs:
-            output_dir = os.path.dirname(output.output_name)
-            FileSystem.MakeDirs(output_dir)
-
-            init_filename = os.path.join(output_dir, "__init__.py")
-            if not os.path.isfile(init_filename):
-                with open(init_filename, "w") as f:
-                    pass
-
-            with open(output.output_name, "w") as f:
-                f.write(output.content)
+        self._workspaces                    = workspaces
+        self._output_dir                    = output_dir
 
     # ----------------------------------------------------------------------
     @Interface.override
     def EnumOutputs(self) -> Generator[Target.EnumResult, None, None]:
-        yield from self._outputs
+        for workspace_name, workspace_items in self._workspaces.items():
+            for relative_path, root in workspace_items.items():
+                visitor = Visitor()
+
+                root.Accept(visitor)
+
+                relative_name = os.path.splitext(relative_path)[0]
+                relative_name, basename = os.path.split(relative_name)
+
+                if basename in [
+                    "None",
+                    "True",
+                    "False",
+                ]:
+                    basename += "Type"
+
+                yield Target.EnumResult.Create(
+                    os.path.join(workspace_name, relative_path),
+                    os.path.join(self._output_dir, relative_name, "{}.py".format(basename)),
+                    visitor.GetContent(),
+                )

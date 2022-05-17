@@ -17,12 +17,12 @@ from .Concepts.MutableNum import MutableNum
 
 
 # ----------------------------------------------------------------------
-public mutable class FixedNum <
+public mutable class FixedNum <TEMPLATE
     pos:
         Int num_bytes!,                     # 2, 4, 8, 16, 32
     key:
         Bool is_checked!,
-> {
+TEMPLATE> {
     key:
         (Num | None) min_value! = None,
         (Num | None) max_value! = None,
@@ -40,11 +40,11 @@ public mutable class FixedNum <
             or num_bytes! == 32
         )
 
-    [Deferred, Static] public override ThisType var __Deserialize?__<ArchiveT>(ArchiveT ref archive)
-    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) immutable
-    [Deferred] public override None __Serialize?__<ArchiveT>(ArchiveT ref archive) var
+    [Deferred, Static] public override ThisType var __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
+    [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) immutable
+    [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) var
 
-    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) immutable
+    [Deferred] public override None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) immutable
 
     [Deferred] public override ThisType var __Clone?__() immutable
 
@@ -70,7 +70,7 @@ public mutable class FixedNum <
     [Deferred] public override ThisType var __Add?__(Num immutable value) immutable
     [Deferred] public override ThisType var __Subtract?__(Num immutable value) immutable
 
-    [Deferred] public override None __Accept?__<VisitorT>(VisitorT ref visitor) var
+    [Deferred] public override None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) var
 
     [Deferred] public override None __DivideInplace?__(Num immutable divisor) var
     [Deferred] public override None __MultiplyInplace?__(Num immutable multiplier) var

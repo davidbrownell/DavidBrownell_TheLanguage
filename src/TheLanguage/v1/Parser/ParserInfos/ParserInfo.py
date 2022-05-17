@@ -174,6 +174,7 @@ class ParserInfo(ObjectReprImplBase):
             introduces_scope__=None,
             parser_info_type__=None,
             namespace__=None,
+            is_namespace__initialized__=None,
             **custom_display_funcs,
         )
 
@@ -193,10 +194,6 @@ class ParserInfo(ObjectReprImplBase):
     @property
     def parser_info_type__(self) -> ParserInfoType:
         return self._parser_info_type  # type: ignore  # pylint: disable=no-member
-
-    @property
-    def namespace__(self) -> "ParsedNamespaceInfo":
-        return getattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)()  # pylint: disable=protected-access
 
     # ----------------------------------------------------------------------
     def ValidateRegions(self) -> None:
@@ -231,7 +228,17 @@ class ParserInfo(ObjectReprImplBase):
         self,
         value: "ParsedNamespaceInfo",
     ) -> None:
+        assert not self.is_namespace__initialized__
         object.__setattr__(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME, weakref.ref(value))  # pylint: disable=protected-access
+
+    # ----------------------------------------------------------------------
+    @property
+    def namespace__(self) -> "ParsedNamespaceInfo":
+        return getattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)()  # pylint: disable=protected-access
+
+    @property
+    def is_namespace__initialized__(self) -> bool:
+        return hasattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
 
     # ----------------------------------------------------------------------
     # |

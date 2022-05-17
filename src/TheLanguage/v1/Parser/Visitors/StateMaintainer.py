@@ -20,6 +20,7 @@ import os
 from typing import cast, Dict, Generator, Generic, List, Optional, TypeVar, Union
 
 import CommonEnvironment
+from CommonEnvironment.DoesNotExist import DoesNotExist
 
 # ----------------------------------------------------------------------
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
@@ -33,18 +34,6 @@ T = TypeVar("T")
 class StateMaintainer(Generic[T]):
     """Maintains state for named objects across scopes"""
 
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    class DoesNotExist(object):
-        pass
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
     # ----------------------------------------------------------------------
     def __init__(
         self,
@@ -115,12 +104,12 @@ class StateMaintainer(Generic[T]):
         name: str,
     ) -> Union[
         List[T],
-        "StateMaintainer.DoesNotExist",
+        DoesNotExist,
     ]:
         for items in self.EnumItems(name):
             return items
 
-        return self._does_not_exist
+        return DoesNotExist.instance
 
     # ----------------------------------------------------------------------
     def GetItems(
@@ -128,7 +117,7 @@ class StateMaintainer(Generic[T]):
         name: str,
     ) -> List[T]:
         result = self.GetItemsNoThrow(name)
-        assert result != self._does_not_exist
+        assert result is not DoesNotExist.instance
 
         return cast(List[T], result)
 
@@ -138,12 +127,12 @@ class StateMaintainer(Generic[T]):
         name: str,
     ) -> Union[
         T,
-        "StateMaintainer.DoesNotExist",
+        DoesNotExist,
     ]:
         for item in self.EnumItem(name):
             return item
 
-        return self._does_not_exist
+        return DoesNotExist.instance
 
     # ----------------------------------------------------------------------
     def GetItem(
@@ -151,7 +140,7 @@ class StateMaintainer(Generic[T]):
         name: str,
     ) -> T:
         result = self.GetItemNoThrow(name)
-        assert result != self._does_not_exist
+        assert result is not DoesNotExist.instance
 
         return cast(T, result)
 
@@ -184,8 +173,15 @@ class StateMaintainer(Generic[T]):
         return result
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _does_not_exist                         = DoesNotExist()
+    def CreateFlatSnapshot(self) -> Dict[str, T]:
+        result = {}
+
+        for scope in self.EnumScopes():
+            for key, values in scope.items():
+                if key in result:
+                    continue
+
+                assert len(values) == 1, values
+                result[key] = values[0]
+
+        return result

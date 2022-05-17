@@ -17,9 +17,10 @@
 
 import os
 
-from typing import Dict, List, Optional, Union
+from typing import cast, Dict, List, Optional, Union
 
 import CommonEnvironment
+from CommonEnvironment import FileSystem
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -74,14 +75,30 @@ class Observer(Interface.Interface):
 def Lex(
     comment_token: RegexToken,
     grammar: DynamicPhrasesInfo,
-    fully_qualified_names: List[str],
+    workspaces: Dict[
+        str,                                # workspace
+        List[
+            str                             # relative path
+        ],
+    ],
     observer: Observer,
     *,
     max_num_threads: Optional[int]=None,
 ) -> Union[
-    None,                                   # Cancelled
-    Dict[str, AST.Node],                    # Successful results
-    List[Exception],                        # Errors
+    # Cancelled
+    None,
+
+    # Errors
+    List[Exception],
+
+    # Successful results
+    Dict[
+        str,                                # workspace
+        Dict[
+            str,                            # relative path
+            AST.Node,
+        ],
+    ],
 ]:
     """\
     Returns AST(s) for the given names (where each name represents content).
@@ -95,9 +112,15 @@ def Lex(
     parsing is invoked.
     """
 
+    fully_qualified_names: List[str] = []
+
+    for workspace_name, relative_paths in workspaces.items():
+        for relative_path in relative_paths:
+            fully_qualified_names.append(os.path.join(workspace_name, relative_path))
+
     translation_units_observer = _TranslationUnitsObserver(observer, max_num_threads)
 
-    return TranslationUnitsLex(
+    raw_results = TranslationUnitsLex(
         comment_token,
         fully_qualified_names,
         grammar,
@@ -105,19 +128,53 @@ def Lex(
         single_threaded=max_num_threads == 1,
     )
 
+    if raw_results is None or isinstance(raw_results, list):
+        return raw_results
+
+    # The number of results we get back may be different that the number of inputs (in the case
+    # of includes) and might be in different order. Take care in reassembling the workspaces.
+    workspace_results: Dict[str, Dict[str, AST.Node]] = {}
+
+    for fqn, raw_result in raw_results.items():
+        workspace_name: Optional[str] = None
+
+        for potential_workspace_name in workspaces.keys():
+            if fqn.startswith(potential_workspace_name):
+                workspace_name = potential_workspace_name
+                break
+
+        assert workspace_name is not None, fqn
+
+        relative_path = FileSystem.TrimPath(fqn, workspace_name)
+
+        workspace_results.setdefault(workspace_name, {})[relative_path] = raw_result
+
+    return workspace_results
+
 
 # ----------------------------------------------------------------------
 def Prune(
-    roots: Dict[str, AST.Node],
+    workspaces: Dict[
+        str,
+        Dict[
+            str,
+            AST.Node,
+        ],
+    ],
     *,
     max_num_threads: Optional[int]=None,
 ) -> None:
     """Removes notes that have been explicitly ignored (for easier parsing)"""
 
-    single_threaded = max_num_threads == 1 or len(roots) == 1
+    nodes: List[AST.Node] = []
+
+    for workspace_items in workspaces.values():
+        nodes += workspace_items.values()
+
+    single_threaded = max_num_threads == 1 or len(nodes) == 1
 
     if single_threaded:
-        for v in roots.values():
+        for v in nodes:
             _Prune(v)
     else:
         with ThreadPoolExecutor(
@@ -125,7 +182,7 @@ def Prune(
         ) as executor:
             futures = [
                 executor.submit(lambda v=v: _Prune(v))
-                for v in roots.values()
+                for v in nodes
             ]
 
             [future.result() for future in futures]  # pylint: disable=expression-not-assigned

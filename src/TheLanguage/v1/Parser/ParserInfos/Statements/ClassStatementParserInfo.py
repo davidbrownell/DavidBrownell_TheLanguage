@@ -121,8 +121,7 @@ class ClassStatementParserInfo(StatementParserInfo):
     introduces_scope__                      = True
 
     # ----------------------------------------------------------------------
-    parent_class_capabilities: InitVar[Optional[ClassCapabilities]]
-
+    parent_class_capabilities: Optional[ClassCapabilities]
     class_capabilities: ClassCapabilities
 
     visibility_param: InitVar[Optional[VisibilityModifier]]
@@ -170,7 +169,6 @@ class ClassStatementParserInfo(StatementParserInfo):
         self,
         parser_info_type,
         regions,
-        parent_class_capabilities,
         visibility_param,
         class_modifier_param,
         constructor_visibility_param,
@@ -179,18 +177,20 @@ class ClassStatementParserInfo(StatementParserInfo):
             parser_info_type,
             regions,
             regionless_attributes=[
+                "parent_class_capabilities",
                 "class_capabilities",
                 "templates",
                 "constraints",
             ],
             validate=False,
+            parent_class_capabilities=lambda value: None if value is None else value.name,
             class_capabilities=lambda value: value.name,
         )
 
         # Set defaults
         if visibility_param is None:
-            if parent_class_capabilities is not None:
-                visibility_param = parent_class_capabilities.default_nested_class_visibility
+            if self.parent_class_capabilities is not None:
+                visibility_param = self.parent_class_capabilities.default_nested_class_visibility
             else:
                 visibility_param = self.class_capabilities.default_visibility
 
@@ -242,14 +242,14 @@ class ClassStatementParserInfo(StatementParserInfo):
         try:
             self.class_capabilities.ValidateClassStatementCapabilities(
                 self,
-                has_parent_class=parent_class_capabilities is not None,
+                has_parent_class=self.parent_class_capabilities is not None,
             )
         except ErrorException as ex:
             errors += ex.errors
 
-        if parent_class_capabilities is not None:
+        if self.parent_class_capabilities is not None:
             try:
-                parent_class_capabilities.ValidateNestedClassStatementCapabilities(self)
+                self.parent_class_capabilities.ValidateNestedClassStatementCapabilities(self)
             except ErrorException as ex:
                 errors += ex.errors
 

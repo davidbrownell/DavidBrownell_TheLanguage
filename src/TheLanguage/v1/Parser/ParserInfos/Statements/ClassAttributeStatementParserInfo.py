@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
 from dataclasses import dataclass, field, InitVar
 
@@ -39,6 +39,9 @@ with InitRelativeImports():
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
     from ...Error import Error, ErrorException
+
+    if TYPE_CHECKING:
+        from ...NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -93,6 +96,8 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
             ],
             validate=False,
             class_capabilities=lambda value: value.name,
+            type__=None,                    # type: ignore
+            is_type__initialized__=None,    # type: ignore
         )
 
         # Set defaults
@@ -119,3 +124,28 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    # This method is invoked during validation
+    def InitType(
+        self,
+        value: "ParsedNamespaceInfo",
+    ) -> None:
+        assert not self.is_type__initialized__
+        object.__setattr__(self, self.__class__._TYPE_ATTRIBUTE_NAME, value)  # pylint: disable=protected-access
+
+    # ----------------------------------------------------------------------
+    @property
+    def type__(self) -> "ParsedNamespaceInfo":
+        return getattr(self, self.__class__._TYPE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
+
+    @property
+    def is_type__initialized__(self) -> bool:
+        return hasattr(self, self.__class__._TYPE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
+    # ----------------------------------------------------------------------
+    _TYPE_ATTRIBUTE_NAME                    = "_type"

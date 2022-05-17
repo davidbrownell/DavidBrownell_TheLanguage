@@ -155,8 +155,8 @@ def Lex(
     single_threaded=False,
 ) -> Union[
     None,
-    Dict[str, AST.Node],
     List[Exception],
+    Dict[str, AST.Node],
 ]:
     if len(fully_qualified_names) == 1:
         single_threaded = True

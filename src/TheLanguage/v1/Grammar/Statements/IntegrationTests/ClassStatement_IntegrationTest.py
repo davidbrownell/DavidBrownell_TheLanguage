@@ -56,6 +56,7 @@ def test_AllDefaults():
                 pass
             """,
         ),
+        include_fundamental_types=False,
     )))
 
 
@@ -69,4 +70,5 @@ def test_Visibility():
             private class PrivateClass: pass
             """,
         ),
+        include_fundamental_types=False,
     )))

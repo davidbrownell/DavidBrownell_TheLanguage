@@ -44,6 +44,7 @@ def test_Simple():
                     pass
                 """,
             ),
+            include_fundamental_types=False,
         ),
         file_ext=".py",
     )
@@ -68,6 +69,7 @@ def test_Bases():
                     pass
                 """,
             ),
+            include_fundamental_types=False,
         ),
         file_ext=".py",
     )
@@ -87,6 +89,7 @@ def test_UnusualOrdering():
                     pass
                 """,
             ),
+            include_fundamental_types=False,
         ),
         file_ext=".py",
     )

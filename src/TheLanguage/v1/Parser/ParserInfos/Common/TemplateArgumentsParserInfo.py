@@ -87,9 +87,9 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
         try:
             self.type.ValidateAsType(self.parser_info_type__)
 
-            if self.type.parser_info_type__ != self.parser_info_type__:
+            if not ParserInfoType.IsCompileTime(self.type.parser_info_type__):
                 errors.append(
-                    InvalidTemplateTypeError(
+                    InvalidTemplateTypeError.Create(
                         region=self.type.regions__.self__,
                     ),
                 )

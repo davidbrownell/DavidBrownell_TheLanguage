@@ -18,7 +18,7 @@ from .Str import Str
 # TODO: Use perfect forwarding
 
 # ----------------------------------------------------------------------
-public mutable concept FixedMutableStr {
+public mutable concept FixedSizeMutableStr {
     Bool allow_empty! = False
 }
     extends Str { allow_empty! = allow_empty! }
@@ -28,8 +28,8 @@ public mutable concept FixedMutableStr {
     are <= the number of chars before the operation was invoked.
     >>>
 
-    public None __Serialize?__<ArchiveT>(ArchiveT ref archive) var
-    public None __Accept?__<VisitorT>(VisitorT ref visitor) var
+    public None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) var
+    public None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) var
 
     # TODO: Range concept for __Iter?__
 
@@ -50,7 +50,7 @@ public mutable concept FixedMutableStr {
 public mutable concept MutableStr {
     Bool allow_empty! = False
 }
-    extends FixedMutableStr { allow_empty! = allow_empty! }
+    extends FixedSizeMutableStr { allow_empty! = allow_empty! }
 :
     <<<
     Contains functionality that may increase the number of chars as a result

@@ -137,7 +137,7 @@ class LexObserver(LexObserverBase):
 
             result = grammar_phrase.GetDynamicContent(node)
 
-            # TODO: Process result
+            # TODO: Process result in case the syntax is changing
 
         return True
 
