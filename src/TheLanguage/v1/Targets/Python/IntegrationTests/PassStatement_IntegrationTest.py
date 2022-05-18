@@ -41,6 +41,7 @@ def test_Simple():
                     pass
                 """,
             ),
+            include_fundamental_types=False,
         ),
         file_ext=".py",
     )

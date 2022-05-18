@@ -77,9 +77,6 @@ class BaseMixin(object):
         self._region_id_lookup: Dict[str, str]          = {}
         self._statement_id_lookup: Dict[Region, str]    = {}
 
-        self._scope_level                               = 0
-        self._public_exports: List[ParserInfo]          = []
-
     # ----------------------------------------------------------------------
     def __getattr__(
         self,
@@ -117,36 +114,10 @@ class BaseMixin(object):
         )
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnPhrase(
-        self,
-        parser_info: ParserInfo,
-    ):
-        if parser_info.introduces_scope__:
-            self._scope_level += 1
-
+    def OnPhrase(*args, **kwargs):
         yield
-
-        if self._scope_level == 1:
-            if isinstance(parser_info, StatementParserInfo):
-                should_add = False
-
-                potential_visibility = getattr(parser_info, "visibility", None)
-                if potential_visibility is not None:
-                    if potential_visibility == VisibilityModifier.public:
-                        should_add = True
-
-                elif isinstance(parser_info, IfStatementParserInfo):
-                    should_add = True
-
-                else:
-                    assert False, type(parser_info)  # pragma: no cover
-
-                if should_add:
-                    self._public_exports.append(parser_info)
-
-        if parser_info.introduces_scope__:
-            self._scope_level -= 1
 
     # ----------------------------------------------------------------------
     @contextmanager
@@ -168,18 +139,26 @@ class BaseMixin(object):
 
         yield
 
-        if self._public_exports:
-            self._stream.write(
-                textwrap.dedent(
-                    """\
-                    public_exports = [
-                        {exports},
-                    ]
-                    """,
-                ).format(
-                    exports=",\n    ".join(self._CreateStatementName(pi) for pi in self._public_exports),
-                ),
-            )
+        self._imports.add("from v1.Parser.ParserInfos.ParserInfo import RootParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                root_parser_info = RootParserInfo.Create(
+                    regions=[{self_region}, {statements_region}, {documentation_region}],
+                    statements={statements},
+                    documentation={documentation},
+                )
+
+                """,
+            ).format(
+                self_region=self._ToString(parser_info.regions__.self__),
+                statements_region=self._ToString(parser_info.regions__.statements),
+                documentation_region=self._ToString(parser_info.regions__.documentation),
+                statements=self._ToString(parser_info.statements),
+                documentation=self._ToString(parser_info.documentation),
+            ),
+        )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

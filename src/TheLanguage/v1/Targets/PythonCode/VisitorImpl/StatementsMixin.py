@@ -138,11 +138,23 @@ class StatementsMixin(BaseMixin):
             ),
         )
 
+        if parser_info.parent_class_capabilities is None:
+            parent_class_capabilities = None
+        else:
+            parent_class_capabilities = "{}Capabilities".format(parser_info.parent_class_capabilities.name)
+
+            self._imports.add(
+                "from v1.Parser.ParserInfos.Statements.ClassCapabilities.{parent_class_capabilities} import {parent_class_capabilities}".format(
+                    parent_class_capabilities=parent_class_capabilities,
+                ),
+            )
+
         self._stream.write(
             textwrap.dedent(
                 """\
                 {statement_name} = ClassStatementParserInfo.Create(
                     regions=[{self_region}, {visibility_region}, {class_modifier_region}, {name_region}, {documentation_region}, {extends_region}, {implements_region}, {uses_region}, {statements_region}, {constructor_visibility_region}, {is_abstract_region}, {is_final_region}],
+                    parent_class_capabilities={parent_class_capabilities},
                     class_capabilities={class_capabilities},
                     visibility_param={visibility},
                     class_modifier_param={class_modifier},
@@ -174,6 +186,7 @@ class StatementsMixin(BaseMixin):
                 constructor_visibility_region=self._ToString(parser_info.regions__.constructor_visibility),
                 is_abstract_region=self._ToString(parser_info.regions__.is_abstract),
                 is_final_region=self._ToString(parser_info.regions__.is_final),
+                parent_class_capabilities=parent_class_capabilities,
                 class_capabilities=class_capabilities,
                 visibility=self._ToString(parser_info.visibility),
                 class_modifier=self._ToString(parser_info.class_modifier),
@@ -247,7 +260,6 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = FuncDefinitionStatementParserInfo.Create(
-                    parser_info_type={parser_info_type},
                     regions=[{self_region}, {parameters_region}, {visibility_region}, {mutability_region}, {method_modifier_region}, {name_region}, {documentation_region}, {captured_variables_region}, {statements_region}, {is_deferred_region}, {is_exceptional_region}, {is_generator_region}, {is_reentrant_region}, {is_scoped_region}, {is_static_region}],
                     parent_class_capabilities={parent_class_capabilities},
                     parameters={parameters},
@@ -271,7 +283,6 @@ class StatementsMixin(BaseMixin):
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
-                parser_info_type=str(parser_info.parser_info_type__),
                 self_region=self._ToString(parser_info.regions__.self__),
                 visibility_region=self._ToString(parser_info.regions__.visibility),
                 mutability_region=self._ToString(parser_info.regions__.mutability),
@@ -589,6 +600,8 @@ class StatementsMixin(BaseMixin):
                     parent_class_capabilities={parent_class_capabilities},
                     visibility_param={visibility},
                     name={name},
+                    templates={templates},
+                    constraints={constraints},
                     type={type},
                 )
 
@@ -601,6 +614,8 @@ class StatementsMixin(BaseMixin):
                 visibility=self._ToString(parser_info.visibility),
                 parent_class_capabilities=parent_class_capabilities,
                 name=self._ToString(parser_info.name),
+                templates=self._ToString(parser_info.templates),
+                constraints=self._ToString(parser_info.constraints),
                 type=self._ToString(parser_info.type),
             ),
         )

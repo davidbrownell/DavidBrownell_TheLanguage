@@ -80,33 +80,6 @@ class Target(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def PreInvoke(
-        fully_qualified_names: List[str],
-    ) -> None:
-        """Called before invoking functionality for any files"""
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def Invoke(
-        fully_qualified_name: str,
-        root: RootParserInfo,
-    ) -> None:
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def PostInvoke(
-        fully_qualified_names: List[str],
-    ) -> None:
-        """Called after invoking functionality for all of the files"""
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
     def EnumOutputs() -> Generator["Target.EnumResult", None, None]:
         """Enumerates the output of every input provided to `Invoke`"""
         raise Exception("Abstract method")  # pragma: no cover

@@ -106,7 +106,7 @@ class TemplateTypeParameterParserInfo(ParserInfo):
 
                 if self.default_type.parser_info_type__ != self.parser_info_type__:
                     errors.append(
-                        InvalidTemplateTypeError(
+                        InvalidTemplateTypeError.Create(
                             region=self.default_type.regions__.self__,
                         ),
                     )

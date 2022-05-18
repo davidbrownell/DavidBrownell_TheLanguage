@@ -455,7 +455,17 @@ def _ToExpressionImpl(
             parser_info.regions__.name,
         )
 
-    # VariantExpressionParserInfo is not processed here, as it results in a type and not an expression
+    # elif isinstance(parser_info, VariantExpressionParserInfo):
+    #     return VariantType(
+    #         [
+    #             _ToExpressionImpl(
+    #                 the_type,
+    #                 compile_time_infos,
+    #                 suppress_warnings_set,
+    #             )
+    #             for the_type in parser_info.types
+    #         ],
+    #     )
 
     raise ErrorException(
         InvalidParserInfoExpressionError.Create(

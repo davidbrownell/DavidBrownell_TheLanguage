@@ -28,10 +28,10 @@ public immutable concept Str {
     # ----------------------------------------------------------------------
     # |  Public Methods
 
-    [Static] public ThisType new __Deserialize?__<ArchiveT>(ArchiveT ref archive)
-    public None __Serialize?__<ArchiveT>(ArchiveT ref archive) immutable
+    [Static] public ThisType new __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
+    public None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) immutable
 
-    public None __Accept?__<VisitorT>(VisitorT ref visitor) immutable
+    public None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) immutable
 
     public ThisType new __Clone?__() immutable
 

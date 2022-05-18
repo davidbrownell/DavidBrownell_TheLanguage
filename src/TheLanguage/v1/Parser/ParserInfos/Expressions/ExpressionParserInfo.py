@@ -38,7 +38,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 InvalidTypeError                            = CreateError(
-    "Expresion is not a type",
+    "Expression is not a type",
 )
 
 InvalidExpressionError                      = CreateError(
