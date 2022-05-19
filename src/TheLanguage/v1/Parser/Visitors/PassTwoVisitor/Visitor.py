@@ -35,11 +35,11 @@ with InitRelativeImports():
     from .ExpressionsMixin import ExpressionsMixin
     from .StatementsMixin import StatementsMixin
 
+    from ..NamespaceInfo import ParsedNamespaceInfo
     from ..StateMaintainer import StateMaintainer
 
     from ...Error import CreateError, Error, ErrorException
     from ...Helpers import MiniLanguageHelpers
-    from ...NamespaceInfo import ParsedNamespaceInfo
 
     from ...MiniLanguage.Types.CustomType import CustomType
 

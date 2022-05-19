@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Expression import Expression, Type
 
-    from ...Error import CreateError, ErrorException, Region
+    from ...Error import CreateError, ErrorException, TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -49,7 +49,7 @@ InvalidNameError                            = CreateError(
 class VariableExpression(Expression):
     type: Type
     name: str
-    name_region: Region
+    name_region: TranslationUnitRegion
 
     # ----------------------------------------------------------------------
     def __post_init__(self):

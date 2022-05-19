@@ -37,7 +37,7 @@ with InitRelativeImports():
         ExpressionParserInfo,
         ParserInfo,
         ParserInfoType,
-        Region,
+        TranslationUnitRegion,
     )
 
     from ...Error import CreateError, Error, ErrorException
@@ -49,7 +49,7 @@ with InitRelativeImports():
 DuplicateNameError                          = CreateError(
     "The constraint parameter '{name}' has already been defined",
     name=str,
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 InvalidConstraintTypeError                  = CreateError(
@@ -65,7 +65,7 @@ InvalidConstraintExpressionError            = CreateError(
 @dataclass(frozen=True, repr=False)
 class ConstraintParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     type: ExpressionParserInfo
 
@@ -129,27 +129,21 @@ class ConstraintParameterParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        details = []
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "type", self.type  # type: ignore
 
         if self.default_value is not None:
-            details.append(("default_value", self.default_value))
-
-        return self._AcceptImpl(
-            visitor,
-            [
-                ("type", self.type),
-            ] + details,  # type: ignore
-            children=None,
-        )
+            yield "default_value", self.default_value  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ConstraintParametersParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     positional: Optional[List[ConstraintParameterParserInfo]]
     any: Optional[List[ConstraintParameterParserInfo]]
@@ -207,19 +201,13 @@ class ConstraintParametersParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        details = []
-
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         if self.positional:
-            details.append(("positional", self.positional))
+            yield "positional", self.positional  # type: ignore
         if self.any:
-            details.append(("any", self.any))
+            yield "any", self.any  # type: ignore
         if self.keyword:
-            details.append(("keyword", self.keyword))
-
-        return self._AcceptImpl(
-            visitor,
-            details=details,
-            children=None,
-        )
+            yield "keyword", self.keyword  # type: ignore

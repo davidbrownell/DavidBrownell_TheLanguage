@@ -33,14 +33,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, ScopeFlag, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
 
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ...Error import Error, ErrorException
 
     if TYPE_CHECKING:
-        from ...NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
+        # TODO: I'm not sure that this is importing the correct type
+        from ...Visitors.NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -53,7 +54,7 @@ class ImportType(Enum):
 @dataclass(frozen=True, repr=False)
 class ImportStatementItemParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     name: str
     alias: Optional[str]
@@ -76,7 +77,7 @@ class ImportStatementItemParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def GetNameAndRegion(self) -> Tuple[Optional[str], Region]:
+    def GetNameAndRegion(self) -> Tuple[Optional[str], TranslationUnitRegion]:
         if self.alias is not None:
             return self.alias, self.regions__.alias
 
@@ -114,7 +115,7 @@ class ImportStatementParserInfo(StatementParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         *args,
         **kwargs,
     ):
@@ -164,17 +165,6 @@ class ImportStatementParserInfo(StatementParserInfo):
 
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("import_items", self.import_items),
-            ],  # type: ignore
-            children=None,
-        )
-
-    # ----------------------------------------------------------------------
     # This method is invoked during validation
     def InitImports(
         self,
@@ -191,6 +181,15 @@ class ImportStatementParserInfo(StatementParserInfo):
     @property
     def is_imports__initialized__(self) -> bool:
         return hasattr(self, self.__class__._IMPORTS_ATTRIBUTE_NAME)  # pylint: disable=protected-access
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Protected Methods
+    # |
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "import_items", self.import_items  # type: ignore
 
     # ----------------------------------------------------------------------
     # |

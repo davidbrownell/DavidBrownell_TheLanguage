@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -44,7 +44,7 @@ class CharacterExpressionParserInfo(ExpressionParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         *args,
         **kwargs,
     ):

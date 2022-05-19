@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Region.py
+# |  TranslationUnitRegion.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-03-01 09:12:33
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the Region object"""
+"""Contains the TranslationUnitRegion object"""
 
 import os
 
@@ -38,8 +38,8 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @ComparisonOperators
 @dataclass(frozen=True, repr=False)
-class Region(ObjectReprImplBase):
-    """Begining and ending for interesting blocks of code within a source file"""
+class TranslationUnitRegion(ObjectReprImplBase):
+    """Beginning and ending for interesting blocks of code within a source file"""
 
     begin: Location
     end: Location

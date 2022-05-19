@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import cast, List, Optional, Union
+from typing import List, Optional, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -37,9 +37,9 @@ with InitRelativeImports():
     from .StatementParserInfo import (
         ParserInfo,
         ParserInfoType,
-        Region,
         ScopeFlag,
         StatementParserInfo,
+        TranslationUnitRegion,
     )
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
@@ -271,7 +271,7 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         parent_class_capabilities: Optional[ClassCapabilities],
         parameters: Union[bool, FuncParametersParserInfo],
         *args,
@@ -457,21 +457,24 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        details = []
-
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         if self.return_type:
-            details.append(("return_type", self.return_type))
-        if self.templates:
-            details.append(("templates", self.templates))
-        if self.captured_variables:
-            details.append(("captured_variables", self.captured_variables))
-        if not isinstance(self.parameters, bool):
-            details.append(("parameters", self.parameters))
+            yield "return_type", self.return_type  # type: ignore
 
-        return self._AcceptImpl(
-            visitor,
-            details=details,
-            children=cast(List[ParserInfo], self.statements) or None,
-        )
+        if self.templates:
+            yield "templates", self.templates  # type: ignore
+
+        if self.captured_variables:
+            yield "captured_variables", self.captured_variables  # type: ignore
+
+        if not isinstance(self.parameters, bool):
+            yield "parameters", self.parameters  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
+        if self.statements:
+            yield from self.statements  # type: ignore

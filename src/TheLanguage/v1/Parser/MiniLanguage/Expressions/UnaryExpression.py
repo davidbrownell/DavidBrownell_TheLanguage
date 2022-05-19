@@ -40,7 +40,7 @@ with InitRelativeImports():
     from ..Types.IntegerType import IntegerType
     from ..Types.NumberType import NumberType
 
-    from ...Error import CreateError, ErrorException, Region
+    from ...Error import CreateError, ErrorException, TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -64,7 +64,7 @@ IntegerOrNumberRequiredError                = CreateError(
 class UnaryExpression(Expression):
     operator: OperatorType
     expression: Expression
-    expression_region: Region
+    expression_region: TranslationUnitRegion
 
     # ----------------------------------------------------------------------
     def __post_init__(self):

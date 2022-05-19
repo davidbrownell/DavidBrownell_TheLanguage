@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import cast, List, Optional
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, ScopeFlag, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
@@ -100,7 +100,7 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         parent_class_capabilities: Optional[ClassCapabilities],
         name: SpecialMethodType,
         *args,
@@ -144,16 +144,18 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Protected Methods
+    # |
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=None,
-            children=cast(List[ParserInfo], self.statements),
-        )
+    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
+        yield from self.statements  # type: ignore
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
     # ----------------------------------------------------------------------
     _CompileTimeMethods                     = set(
         [

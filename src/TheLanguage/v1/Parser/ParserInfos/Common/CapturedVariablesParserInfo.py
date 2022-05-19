@@ -32,14 +32,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, Region
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
     from ...Error import Error, ErrorException
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class CapturedVariablesParserInfo(ParserInfo):
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
     variables: List[ExpressionParserInfo]
 
     # ----------------------------------------------------------------------
@@ -68,12 +68,8 @@ class CapturedVariablesParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("variables", self.variables),
-            ],  # type: ignore
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptChildrenResultType:
+        yield "variables", self.variables  # type: ignore
