@@ -16,11 +16,10 @@
 """Contains the ParserInfo object"""
 
 import os
-import weakref
 
 from contextlib import contextmanager
 from enum import auto, Enum, Flag
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union, TYPE_CHECKING
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 from dataclasses import dataclass, fields, make_dataclass, InitVar
 
@@ -37,9 +36,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..Region import Region
-
-    if TYPE_CHECKING:
-        from ..NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -175,8 +171,6 @@ class ParserInfo(ObjectReprImplBase):
             introduces_scope__=None,
             parser_info_type__=None,
             is_disabled__=None,
-            namespace__=None,
-            is_namespace__initialized__=None,
             **custom_display_funcs,
         )
 
@@ -234,24 +228,6 @@ class ParserInfo(ObjectReprImplBase):
             return self.name, self.regions__.name  # type: ignore  # pylint: disable=no-member
 
         return None, self.regions__.self__
-
-    # ----------------------------------------------------------------------
-    # This method is invoked during validation
-    def InitNamespace(
-        self,
-        value: "ParsedNamespaceInfo",
-    ) -> None:
-        assert not self.is_namespace__initialized__
-        object.__setattr__(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME, weakref.ref(value))  # pylint: disable=protected-access
-
-    # ----------------------------------------------------------------------
-    @property
-    def namespace__(self) -> "ParsedNamespaceInfo":
-        return getattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)()  # pylint: disable=protected-access
-
-    @property
-    def is_namespace__initialized__(self) -> bool:
-        return hasattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
 
     # ----------------------------------------------------------------------
     # |
@@ -319,13 +295,6 @@ class ParserInfo(ObjectReprImplBase):
                     assert False, (method_name, "__enter__")
 
                 raise
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _NAMESPACE_ATTRIBUTE_NAME               = "_namespace"
 
     # ----------------------------------------------------------------------
     # |

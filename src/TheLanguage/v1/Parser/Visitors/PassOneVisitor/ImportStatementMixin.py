@@ -35,8 +35,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
+    from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
+
     from ...Error import CreateError, Error, ErrorException, Region
-    from ...NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
     from ...ParserInfos.ParserInfo import RootParserInfo
 
@@ -80,7 +81,7 @@ class ImportStatementMixin(BaseMixin):
         # We want to introduce the name into the namespace, but don't yet know
         # what the item refers to. Create a placeholder ParsedNamespaceInfo object
         # and then populate it later. These items will be removed during the
-        # postprocessing below.
+        # postprocessing below, as they should only be available after the import statement.
 
         assert self._namespace_infos
         parent_namespace = self._namespace_infos[-1]
@@ -95,9 +96,10 @@ class ImportStatementMixin(BaseMixin):
             )
 
             # Associate the parent parser_info with the import item. This will
-            # by used later when postprocessing the imports themselves. Note that
+            # be used later when postprocessing the imports themselves. Note that
             # we can't use the state of this object, as different visitors are created
-            # for different compilation units.
+            # for different compilation units. This information will be removed during
+            # finalization.
             object.__setattr__(
                 import_item,
                 self.__class__._TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME,  # pylint: disable=protected-access

@@ -31,9 +31,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..NamespaceInfo import ParsedNamespaceInfo
+
     from ...Error import CreateError, Error, ErrorException, Region
     from ...Helpers import MiniLanguageHelpers
-    from ...NamespaceInfo import ParsedNamespaceInfo
 
     from ...ParserInfos.ParserInfo import ParserInfo, RootParserInfo, VisitResult
 
@@ -195,7 +196,6 @@ class BaseMixin(object):
                     )
 
         self._namespace_infos[-1].AddChild(item_name, namespace)
-        namespace.parser_info.InitNamespace(namespace)
 
     # ----------------------------------------------------------------------
     # |
