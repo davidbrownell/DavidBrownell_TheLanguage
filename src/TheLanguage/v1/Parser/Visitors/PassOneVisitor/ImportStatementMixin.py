@@ -37,7 +37,7 @@ with InitRelativeImports():
 
     from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
-    from ...Error import CreateError, Error, ErrorException, Region
+    from ...Error import CreateError, Error, ErrorException, TranslationUnitRegion
 
     from ...ParserInfos.ParserInfo import RootParserInfo
 
@@ -61,7 +61,7 @@ ImportItemVisibilityError                   = CreateError(
     "The import item '{name}' exists but is not visible here",
     name=str,
     visibility=VisibilityModifier,
-    visibility_region=Region,
+    visibility_region=TranslationUnitRegion,
 )
 
 ImportNoExportedItemsError                  = CreateError(

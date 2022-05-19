@@ -37,7 +37,7 @@ with InitRelativeImports():
         ExpressionParserInfo,
         ParserInfo,
         ParserInfoType,
-        Region,
+        TranslationUnitRegion,
     )
 
     from ...Error import CreateError, Error, ErrorException
@@ -47,12 +47,12 @@ with InitRelativeImports():
 DuplicateNameError                          = CreateError(
     "The parameter name '{name}' has already been defined",
     name=str,
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 DuplicateVariadicError                      = CreateError(
     "A variadic parameter has already been defined",
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 
@@ -61,7 +61,7 @@ DuplicateVariadicError                      = CreateError(
 class FuncParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     parser_info_type: InitVar[ParserInfoType]
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     type: ExpressionParserInfo
     is_variadic: Optional[bool]
@@ -106,27 +106,21 @@ class FuncParameterParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        details = []
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "type", self.type  # type: ignore
 
         if self.default_value is not None:
-            details.append(("default_value", self.default_value))
-
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("type", self.type),
-            ] + details,  # type: ignore
-            children=None,
-        )
+            yield "default_value", self.default_value  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncParametersParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     positional: Optional[List[FuncParameterParserInfo]]
     any: Optional[List[FuncParameterParserInfo]]
@@ -197,19 +191,15 @@ class FuncParametersParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        details = []
-
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         if self.positional:
-            details.append(("positional", self.positional))
-        if self.any:
-            details.append(("any", self.any))
-        if self.keyword:
-            details.append(("keyword", self.keyword))
+            yield "positional", self.positional  # type: ignore
 
-        return self._AcceptImpl(
-            visitor,
-            details=details,
-            children=None,
-        )
+        if self.any:
+            yield "any", self.any  # type: ignore
+
+        if self.keyword:
+            yield "keyword", self.keyword  # type: ignore

@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ....Lexer.Location import Location
 
-    from ....Parser.Parser import Region, RootParserInfo
+    from ....Parser.Parser import RootParserInfo, TranslationUnitRegion
 
     from ....Parser.ParserInfos.ParserInfo import ParserInfo
 
@@ -56,8 +56,8 @@ class BaseMixin(object):
         imports: Set[str] = set()
 
         imports.add("from v1.Lexer.Location import Location")
-        imports.add("from v1.Parser.Region import Region")
         imports.add("from v1.Parser.ParserInfos.ParserInfo import ParserInfoType")
+        imports.add("from v1.Parser.TranslationUnitRegion import TranslationUnitRegion")
 
         for common_import in [
             "ClassModifier",
@@ -75,7 +75,7 @@ class BaseMixin(object):
         self._stream                        = StringIO()
 
         self._region_id_lookup: Dict[str, str]          = {}
-        self._statement_id_lookup: Dict[Region, str]    = {}
+        self._statement_id_lookup: Dict[TranslationUnitRegion, str]    = {}
 
     # ----------------------------------------------------------------------
     def __getattr__(
@@ -189,7 +189,7 @@ class BaseMixin(object):
             MutabilityModifier,
             VisibilityModifier,
             Location,
-            Region,
+            TranslationUnitRegion,
             ParserInfo,
             List[ParserInfo],
         ],
@@ -210,8 +210,8 @@ class BaseMixin(object):
             return "VisibilityModifier.{}".format(value.name)
         elif isinstance(value, Location):
             return "Location(line={}, column={})".format(value.line, value.column)
-        elif isinstance(value, Region):
-            region_statement = "Region(begin={}, end={})".format(
+        elif isinstance(value, TranslationUnitRegion):
+            region_statement = "TranslationUnitRegion(begin={}, end={})".format(
                 self._ToString(value.begin),
                 self._ToString(value.end),
             )
@@ -220,7 +220,7 @@ class BaseMixin(object):
             if potential_var_name is not None:
                 return potential_var_name
 
-            var_name = "region_{:0>6}".format(len(self._region_id_lookup))
+            var_name = "tu_region_{:0>6}".format(len(self._region_id_lookup))
 
             self._region_id_lookup[region_statement] = var_name
 

@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..NamespaceInfo import ParsedNamespaceInfo
 
-    from ...Error import CreateError, Error, ErrorException, Region
+    from ...Error import CreateError, Error, ErrorException, TranslationUnitRegion
     from ...Helpers import MiniLanguageHelpers
 
     from ...ParserInfos.ParserInfo import ParserInfo, RootParserInfo, VisitResult
@@ -53,7 +53,7 @@ UnexpectedStatementError                    = CreateError(
 DuplicateNameError                          = CreateError(
     "'{name}' already exists",
     name=str,
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 

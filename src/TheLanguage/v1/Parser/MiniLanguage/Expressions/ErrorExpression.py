@@ -35,7 +35,7 @@ with InitRelativeImports():
     from .Expression import Expression, Type
     from ..Types.NoneType import NoneType
 
-    from ...Error import CreateError, ErrorException, Region
+    from ...Error import CreateError, ErrorException, TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -49,7 +49,7 @@ ErrorError                                  = CreateError(
 @dataclass(frozen=True, repr=False)
 class ErrorExpression(Expression):
     messages: List[Expression]
-    error_region: Region
+    error_region: TranslationUnitRegion
 
     # ----------------------------------------------------------------------
     def __post_init__(self):

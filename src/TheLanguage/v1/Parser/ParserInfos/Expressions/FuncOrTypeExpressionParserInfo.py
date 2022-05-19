@@ -35,6 +35,7 @@ with InitRelativeImports():
     from .ExpressionParserInfo import (  # pylint: disable=unused-import
         ExpressionParserInfo,
         InvalidExpressionError,
+        ParserInfo,
         ParserInfoType,
     )
 
@@ -183,17 +184,12 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
         )
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        details = []
-
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         if self.templates:
-            details.append(("templates", self.templates))
-        if self.constraints:
-            details.append(("constraints", self.constraints))
+            yield "templates", self.templates  # type: ignore
 
-        return self._AcceptImpl(
-            visitor,
-            details,
-            children=None,
-        )
+        if self.constraints:
+            yield "constraints", self.constraints  # type: ignore

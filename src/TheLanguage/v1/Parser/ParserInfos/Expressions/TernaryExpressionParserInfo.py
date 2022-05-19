@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         condition_expression: ExpressionParserInfo,
         true_expression: ExpressionParserInfo,
         false_expression: ExpressionParserInfo,
@@ -117,14 +117,10 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
         self.false_expression.ValidateAsExpression()
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("conditional_expression", self.condition_expression),
-                ("true_expression", self.true_expression),
-                ("false_expression", self.false_expression),
-            ],
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "conditional_expression", self.condition_expression  # type: ignore
+        yield "true_expression", self.true_expression  # type: ignore
+        yield "false_expression", self.false_expression  # type: ignore

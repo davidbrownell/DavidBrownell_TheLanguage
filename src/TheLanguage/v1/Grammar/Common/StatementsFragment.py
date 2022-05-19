@@ -50,7 +50,7 @@ with InitRelativeImports():
         Error,
         ErrorException,
         GetParserInfoNoThrow,
-        Region,
+        TranslationUnitRegion,
     )
 
     from ...Parser.ParserInfos.Statements.StatementParserInfo import StatementParserInfo
@@ -59,7 +59,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 MultipleDocstringsError                     = CreateError(
     "There may only be one docstring within a scope",
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 MisplacedDocstringError                     = CreateError(

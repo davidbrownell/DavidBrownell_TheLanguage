@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Region import Region
+    from .TranslationUnitRegion import TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -42,7 +42,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class _Diagnostic(Interface.Interface):
-    region: Region
+    region: TranslationUnitRegion
     _message: Optional[str]                 = field(init=False, default_factory=lambda: None)
 
     # ----------------------------------------------------------------------

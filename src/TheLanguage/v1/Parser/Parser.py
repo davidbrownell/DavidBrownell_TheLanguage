@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Error import CreateError, Error, ErrorException, Region
+    from .Error import CreateError, Error, ErrorException, TranslationUnitRegion
     from .Helpers import MiniLanguageHelpers
 
     from .MiniLanguage.Types.BooleanType import BooleanType                 # pylint: disable=unused-import
@@ -346,23 +346,23 @@ def GetParserInfo(
 def CreateRegionNoThrow(
     node: Union[
         None,
-        Region,
+        TranslationUnitRegion,
         LexPhrase.NormalizedIteratorRange,
         AST.Leaf,
         AST.Node,
     ],
-) -> Optional[Region]:
+) -> Optional[TranslationUnitRegion]:
     if node is None:
         return None
-    elif isinstance(node, Region):
+    elif isinstance(node, TranslationUnitRegion):
         return node
     elif isinstance(node, LexPhrase.NormalizedIteratorRange):
-        return Region.Create(node.begin.ToLocation(), node.end.ToLocation())
+        return TranslationUnitRegion.Create(node.begin.ToLocation(), node.end.ToLocation())
     elif isinstance(node, (AST.Leaf, AST.Node)):
         if node.iter_range is None:
             return None
 
-        return Region.Create(node.iter_range.begin.ToLocation(), node.iter_range.end.ToLocation())
+        return TranslationUnitRegion.Create(node.iter_range.begin.ToLocation(), node.iter_range.end.ToLocation())
     else:
         assert False, node  # pragma: no cover
 
@@ -370,7 +370,7 @@ def CreateRegionNoThrow(
 # ----------------------------------------------------------------------
 def CreateRegion(
     node: Any,
-) -> Region:
+) -> TranslationUnitRegion:
     result = CreateRegionNoThrow(node)
     assert result is not None
 
@@ -380,7 +380,7 @@ def CreateRegion(
 # ----------------------------------------------------------------------
 def CreateRegions(
     *nodes: Any,
-) -> List[Optional[Region]]:
+) -> List[Optional[TranslationUnitRegion]]:
     return [CreateRegionNoThrow(node) for node in nodes]
 
 
