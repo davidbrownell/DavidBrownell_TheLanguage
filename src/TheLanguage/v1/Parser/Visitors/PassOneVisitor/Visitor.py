@@ -103,9 +103,9 @@ class Visitor(
                     dirname, basename = os.path.split(generated_filename)
                     basename = os.path.splitext(basename)[0]
 
-                    with ExitStack() as exit_stack:
+                    with ExitStack() as mod_exit_stack:
                         sys.path.insert(0, dirname)
-                        exit_stack.callback(lambda: sys.path.pop(0))
+                        mod_exit_stack.callback(lambda: sys.path.pop(0))
 
                         mod = importlib.import_module(basename)
 
