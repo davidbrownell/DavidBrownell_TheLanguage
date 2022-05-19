@@ -32,43 +32,43 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Error import CreateError, Error, ErrorException, Region
+    from ..Error import CreateError, Error, ErrorException, TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
 InvalidKeywordError                         = CreateError(
     "Arguments for the positional parameter '{name}' can not be explicitly named in the call to '{destination}'",
     destination=str,
-    destination_region=Optional[Region],
+    destination_region=Optional[TranslationUnitRegion],
     name=str,
-    parameter_region=Optional[Region],
+    parameter_region=Optional[TranslationUnitRegion],
 )
 
 InvalidKeywordArgumentError                 = CreateError(
     "'{name}' is not a valid parameter in '{destination}'",
     destination=str,
-    destination_region=Optional[Region],
+    destination_region=Optional[TranslationUnitRegion],
     name=str,
 )
 
 DuplicateKeywordArgumentError               = CreateError(
     "The argument '{name}' has already been provided in the call to '{destination}'",
     destination=str,
-    destination_region=Optional[Region],
+    destination_region=Optional[TranslationUnitRegion],
     name=str,
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 TooManyArgumentsError                       = CreateError(
     "Too many arguments in the call to '{destination}'",
     destination=str,
-    destination_region=Optional[Region],
+    destination_region=Optional[TranslationUnitRegion],
 )
 
 RequiredArgumentMissingError                = CreateError(
     "An argument for the parameter '{name}' is missing in the call to '{destination}'",
     destination=str,
-    destination_region=Optional[Region],
+    destination_region=Optional[TranslationUnitRegion],
     name=str,
 )
 
@@ -77,7 +77,7 @@ RequiredArgumentMissingError                = CreateError(
 @dataclass(frozen=True)
 class ParameterInfo(object):
     name: str
-    region: Optional[Region]
+    region: Optional[TranslationUnitRegion]
     is_optional: bool
     is_variadic: bool
 
@@ -86,13 +86,13 @@ class ParameterInfo(object):
 @dataclass(frozen=True)
 class ArgumentInfo(object):
     value: Any
-    region: Optional[Region]
+    region: Optional[TranslationUnitRegion]
 
 
 # ----------------------------------------------------------------------
 def CreateArgumentMap(
     destination: str,
-    destination_region: Optional[Region],
+    destination_region: Optional[TranslationUnitRegion],
     positional_parameters: List[ParameterInfo],
     any_parameters: List[ParameterInfo],
     keyword_parameters: List[ParameterInfo],

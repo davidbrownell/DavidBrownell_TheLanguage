@@ -35,8 +35,9 @@ with InitRelativeImports():
     from .ExpressionParserInfo import (
         ExpressionParserInfo,
         InvalidExpressionError,
+        ParserInfo,
         ParserInfoType,
-        Region,
+        TranslationUnitRegion,
     )
 
     from .FuncOrTypeExpressionParserInfo import (
@@ -67,7 +68,7 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         types: List[ExpressionParserInfo],
         *args,
         **kwargs,
@@ -89,17 +90,6 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
         )
 
         # TODO: flatten
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("types", self.types),
-            ],  # type: ignore
-            children=None,
-        )
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -165,3 +155,10 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
                 region=self.regions__.type__,
             ),
         )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "types", self.types  # type: ignore

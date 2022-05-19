@@ -1,14 +1,14 @@
 # <class 'v1.Parser.ParserInfos.ParserInfo.RootParserInfo'>
 documentation: null
 regions__: # <class 'types.RootParserInfoRegions'>
-  self__: # <class 'v1.Parser.Region.Region'>
+  self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
     end: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 3
-  statements: # <class 'v1.Parser.Region.Region'>
+  statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
@@ -30,28 +30,28 @@ statements:
     name: "Func1"
     parameters: true
     regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
-      name: # <class 'v1.Parser.Region.Region'>
+      name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 9
           line: 1
         end: # <class 'v1.Lexer.Location.Location'>
           column: 14
           line: 1
-      parameters: # <class 'v1.Parser.Region.Region'>
+      parameters: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 14
           line: 1
         end: # <class 'v1.Lexer.Location.Location'>
           column: 16
           line: 1
-      self__: # <class 'v1.Parser.Region.Region'>
+      self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 1
         end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 2
-      statements: # <class 'v1.Parser.Region.Region'>
+      statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 16
           line: 1
@@ -62,21 +62,21 @@ statements:
       constraints: null
       mutability_modifier: "MutabilityModifier.val"
       regions__: # <class 'types.FuncOrTypeExpressionParserInfoRegions'>
-        mutability_modifier: # <class 'v1.Parser.Region.Region'>
+        mutability_modifier: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
           begin: # <class 'v1.Lexer.Location.Location'>
             column: 5
             line: 1
           end: # <class 'v1.Lexer.Location.Location'>
             column: 8
             line: 1
-        self__: # <class 'v1.Parser.Region.Region'>
+        self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
           begin: # <class 'v1.Lexer.Location.Location'>
             column: 1
             line: 1
           end: # <class 'v1.Lexer.Location.Location'>
             column: 8
             line: 1
-        value: # <class 'v1.Parser.Region.Region'>
+        value: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
           begin: # <class 'v1.Lexer.Location.Location'>
             column: 1
             line: 1
@@ -89,7 +89,7 @@ statements:
     statements:
       - # <class 'v1.Parser.ParserInfos.Statements.PassStatementParserInfo.PassStatementParserInfo'>
         regions__: # <class 'types.PassStatementParserInfoRegions'>
-          self__: # <class 'v1.Parser.Region.Region'>
+          self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
             begin: # <class 'v1.Lexer.Location.Location'>
               column: 18
               line: 1
@@ -117,14 +117,14 @@ statements:
           is_variadic: null
           name: "a"
           regions__: # <class 'types.FuncParameterParserInfoRegions'>
-            name: # <class 'v1.Parser.Region.Region'>
+            name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
               begin: # <class 'v1.Lexer.Location.Location'>
                 column: 33
                 line: 2
               end: # <class 'v1.Lexer.Location.Location'>
                 column: 34
                 line: 2
-            self__: # <class 'v1.Parser.Region.Region'>
+            self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
               begin: # <class 'v1.Lexer.Location.Location'>
                 column: 24
                 line: 2
@@ -135,21 +135,21 @@ statements:
             constraints: null
             mutability_modifier: "MutabilityModifier.val"
             regions__: # <class 'types.FuncOrTypeExpressionParserInfoRegions'>
-              mutability_modifier: # <class 'v1.Parser.Region.Region'>
+              mutability_modifier: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
                 begin: # <class 'v1.Lexer.Location.Location'>
                   column: 29
                   line: 2
                 end: # <class 'v1.Lexer.Location.Location'>
                   column: 32
                   line: 2
-              self__: # <class 'v1.Parser.Region.Region'>
+              self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
                 begin: # <class 'v1.Lexer.Location.Location'>
                   column: 24
                   line: 2
                 end: # <class 'v1.Lexer.Location.Location'>
                   column: 32
                   line: 2
-              value: # <class 'v1.Parser.Region.Region'>
+              value: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
                 begin: # <class 'v1.Lexer.Location.Location'>
                   column: 24
                   line: 2
@@ -164,14 +164,14 @@ statements:
           is_variadic: null
           name: "b"
           regions__: # <class 'types.FuncParameterParserInfoRegions'>
-            name: # <class 'v1.Parser.Region.Region'>
+            name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
               begin: # <class 'v1.Lexer.Location.Location'>
                 column: 45
                 line: 2
               end: # <class 'v1.Lexer.Location.Location'>
                 column: 46
                 line: 2
-            self__: # <class 'v1.Parser.Region.Region'>
+            self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
               begin: # <class 'v1.Lexer.Location.Location'>
                 column: 36
                 line: 2
@@ -182,21 +182,21 @@ statements:
             constraints: null
             mutability_modifier: "MutabilityModifier.var"
             regions__: # <class 'types.FuncOrTypeExpressionParserInfoRegions'>
-              mutability_modifier: # <class 'v1.Parser.Region.Region'>
+              mutability_modifier: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
                 begin: # <class 'v1.Lexer.Location.Location'>
                   column: 41
                   line: 2
                 end: # <class 'v1.Lexer.Location.Location'>
                   column: 44
                   line: 2
-              self__: # <class 'v1.Parser.Region.Region'>
+              self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
                 begin: # <class 'v1.Lexer.Location.Location'>
                   column: 36
                   line: 2
                 end: # <class 'v1.Lexer.Location.Location'>
                   column: 44
                   line: 2
-              value: # <class 'v1.Parser.Region.Region'>
+              value: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
                 begin: # <class 'v1.Lexer.Location.Location'>
                   column: 36
                   line: 2
@@ -209,14 +209,14 @@ statements:
       keyword: null
       positional: null
       regions__: # <class 'types.FuncParametersParserInfoRegions'>
-        any: # <class 'v1.Parser.Region.Region'>
+        any: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
           begin: # <class 'v1.Lexer.Location.Location'>
             column: 24
             line: 2
           end: # <class 'v1.Lexer.Location.Location'>
             column: 46
             line: 2
-        self__: # <class 'v1.Parser.Region.Region'>
+        self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
           begin: # <class 'v1.Lexer.Location.Location'>
             column: 23
             line: 2
@@ -224,28 +224,28 @@ statements:
             column: 47
             line: 2
     regions__: # <class 'types.FuncDefinitionStatementParserInfoRegions'>
-      name: # <class 'v1.Parser.Region.Region'>
+      name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 18
           line: 2
         end: # <class 'v1.Lexer.Location.Location'>
           column: 23
           line: 2
-      parameters: # <class 'v1.Parser.Region.Region'>
+      parameters: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 23
           line: 2
         end: # <class 'v1.Lexer.Location.Location'>
           column: 47
           line: 2
-      self__: # <class 'v1.Parser.Region.Region'>
+      self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 2
         end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 3
-      statements: # <class 'v1.Parser.Region.Region'>
+      statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 47
           line: 2
@@ -255,14 +255,14 @@ statements:
     return_type: # <class 'v1.Parser.ParserInfos.Expressions.VariantExpressionParserInfo.VariantExpressionParserInfo'>
       mutability_modifier: "MutabilityModifier.var"
       regions__: # <class 'types.VariantExpressionParserInfoRegions'>
-        mutability_modifier: # <class 'v1.Parser.Region.Region'>
+        mutability_modifier: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
           begin: # <class 'v1.Lexer.Location.Location'>
             column: 14
             line: 2
           end: # <class 'v1.Lexer.Location.Location'>
             column: 17
             line: 2
-        self__: # <class 'v1.Parser.Region.Region'>
+        self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
           begin: # <class 'v1.Lexer.Location.Location'>
             column: 1
             line: 2
@@ -274,14 +274,14 @@ statements:
           constraints: null
           mutability_modifier: null
           regions__: # <class 'types.FuncOrTypeExpressionParserInfoRegions'>
-            self__: # <class 'v1.Parser.Region.Region'>
+            self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
               begin: # <class 'v1.Lexer.Location.Location'>
                 column: 2
                 line: 2
               end: # <class 'v1.Lexer.Location.Location'>
                 column: 5
                 line: 2
-            value: # <class 'v1.Parser.Region.Region'>
+            value: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
               begin: # <class 'v1.Lexer.Location.Location'>
                 column: 2
                 line: 2
@@ -295,14 +295,14 @@ statements:
           constraints: null
           mutability_modifier: null
           regions__: # <class 'types.FuncOrTypeExpressionParserInfoRegions'>
-            self__: # <class 'v1.Parser.Region.Region'>
+            self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
               begin: # <class 'v1.Lexer.Location.Location'>
                 column: 8
                 line: 2
               end: # <class 'v1.Lexer.Location.Location'>
                 column: 12
                 line: 2
-            value: # <class 'v1.Parser.Region.Region'>
+            value: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
               begin: # <class 'v1.Lexer.Location.Location'>
                 column: 8
                 line: 2
@@ -315,7 +315,7 @@ statements:
     statements:
       - # <class 'v1.Parser.ParserInfos.Statements.PassStatementParserInfo.PassStatementParserInfo'>
         regions__: # <class 'types.PassStatementParserInfoRegions'>
-          self__: # <class 'v1.Parser.Region.Region'>
+          self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
             begin: # <class 'v1.Lexer.Location.Location'>
               column: 49
               line: 2

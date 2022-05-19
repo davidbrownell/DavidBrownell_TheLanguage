@@ -37,7 +37,7 @@ with InitRelativeImports():
         ExpressionParserInfo,
         ParserInfo,
         ParserInfoType,
-        Region,
+        TranslationUnitRegion,
     )
 
     from ...Error import CreateError, Error, ErrorException
@@ -48,12 +48,12 @@ with InitRelativeImports():
 DuplicateNameError                          = CreateError(
     "The template parameter '{name}' has already been defined",
     name=str,
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 DuplicateVariadicError                      = CreateError(
     "A variadic template parameter has already been defined",
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 InvalidTemplateTypeError                    = CreateError(
@@ -73,7 +73,7 @@ InvalidTemplateDecoratorExpressionError     = CreateError(
 @dataclass(frozen=True, repr=False)
 class TemplateTypeParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     name: str
     is_variadic: Optional[bool]
@@ -117,25 +117,19 @@ class TemplateTypeParameterParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        details = []
-
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         if self.default_type is not None:
-            details.append(("default_type", self.default_type))
-
-        return self._AcceptImpl(
-            visitor,
-            details=details,
-            children=None,
-        )
+            yield "default_type", self.default_type  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TemplateDecoratorParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     type: ExpressionParserInfo
     name: str
@@ -198,20 +192,14 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        details = []
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "type", self.type  # type: ignore
 
         if self.default_value is not None:
-            details.append(("default_value", self.default_value))
-
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("type", self.type),
-            ] + details,  # type: ignore
-            children=None,
-        )
+            yield "default_value", self.default_value  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -226,7 +214,7 @@ class TemplateParametersParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     # |  Public Data
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     positional: Optional[List["TemplateParametersParserInfo.ParameterType"]]
     any: Optional[List["TemplateParametersParserInfo.ParameterType"]]
@@ -298,19 +286,15 @@ class TemplateParametersParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        details = []
-
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         if self.positional is not None:
-            details.append(("positional", self.positional))
-        if self.any is not None:
-            details.append(("any", self.any))
-        if self.keyword is not None:
-            details.append(("keyword", self.keyword))
+            yield "positional", self.positional  # type: ignore
 
-        return self._AcceptImpl(
-            visitor,
-            details=details,
-            children=None,
-        )
+        if self.any is not None:
+            yield "any", self.any  # type: ignore
+
+        if self.keyword is not None:
+            yield "keyword", self.keyword  # type: ignore

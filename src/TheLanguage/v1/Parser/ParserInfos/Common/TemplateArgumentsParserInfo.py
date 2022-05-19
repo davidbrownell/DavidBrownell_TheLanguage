@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, ParserInfoType, Region
+    from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
@@ -42,7 +42,7 @@ with InitRelativeImports():
 DuplicateNameError                          = CreateError(
     "The keyword template argument '{name}' has already been provided",
     name=str,
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 InvalidTemplateTypeError                    = CreateError(
@@ -58,7 +58,7 @@ InvalidTemplateExpressionError              = CreateError(
 @dataclass(frozen=True, repr=False)
 class TemplateTypeArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     type: ExpressionParserInfo
     keyword: Optional[str]
@@ -100,22 +100,18 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("type", self.type),
-            ],
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "type", self.type  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TemplateDecoratorArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     expression: ExpressionParserInfo
     keyword: Optional[str]
@@ -159,15 +155,11 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("expression", self.expression),
-            ],
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "expression", self.expression  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -182,7 +174,7 @@ class TemplateArgumentsParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     # |  Public Data
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     arguments: List["TemplateArgumentsParserInfo.ArgumentType"]
 
@@ -228,12 +220,8 @@ class TemplateArgumentsParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("arguments", self.arguments),
-            ],  # type: ignore
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "arguments", self.arguments  # type: ignore

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional
+from typing import List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -35,9 +35,9 @@ with InitRelativeImports():
     from .StatementParserInfo import (
         ParserInfo,
         ParserInfoType,
-        Region,
         ScopeFlag,
         StatementParserInfo,
+        TranslationUnitRegion,
     )
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
@@ -51,7 +51,7 @@ class IfStatementClauseParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     parser_info_type: InitVar[ParserInfoType]
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     expression: ExpressionParserInfo
     statements: List[StatementParserInfo]
@@ -61,7 +61,7 @@ class IfStatementClauseParserInfo(ParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         expression: ExpressionParserInfo,
         statements: List[StatementParserInfo],
         *args,
@@ -98,15 +98,16 @@ class IfStatementClauseParserInfo(ParserInfo):
         self.expression.ValidateAsExpression()
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("expression", self.expression),
-            ],
-            children=cast(List[ParserInfo], self.statements),
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "expression", self.expression  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
+        yield from self.statements
 
 
 # ----------------------------------------------------------------------
@@ -116,7 +117,7 @@ class IfStatementElseClauseParserInfo(ParserInfo):
     introduces_scope__                      = True
 
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     statements: List[StatementParserInfo]
     documentation: Optional[str]
@@ -140,13 +141,11 @@ class IfStatementElseClauseParserInfo(ParserInfo):
         )
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=None,
-            children=cast(List[ParserInfo], self.statements),
-        )
+    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
+        yield from self.statements
 
 
 # ----------------------------------------------------------------------
@@ -160,7 +159,7 @@ class IfStatementParserInfo(StatementParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         clauses: List[IfStatementClauseParserInfo],
         *args,
         **kwargs,
@@ -186,10 +185,11 @@ class IfStatementParserInfo(StatementParserInfo):
         )
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=None,
-            children=cast(List[ParserInfo], self.clauses) + cast(List[ParserInfo], [self.else_clause] if self.else_clause else []),
-        )
+    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
+        yield from self.clauses  # type: ignore
+
+        if self.else_clause:
+            yield self.else_clause  # type: ignore

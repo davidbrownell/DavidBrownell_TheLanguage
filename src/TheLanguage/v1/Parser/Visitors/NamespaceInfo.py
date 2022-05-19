@@ -31,9 +31,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ParserInfos.Statements.StatementParserInfo import ParserInfo, ScopeFlag
-    from .ParserInfos.Statements.FuncDefinitionStatementParserInfo import OperatorType as FuncOperatorType
-    from .ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodType as SpecialMethodType
+    from ..ParserInfos.Statements.StatementParserInfo import ParserInfo, ScopeFlag
+    from ..ParserInfos.Statements.FuncDefinitionStatementParserInfo import OperatorType as FuncOperatorType
+    from ..ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodType as SpecialMethodType
 
 
 # ----------------------------------------------------------------------

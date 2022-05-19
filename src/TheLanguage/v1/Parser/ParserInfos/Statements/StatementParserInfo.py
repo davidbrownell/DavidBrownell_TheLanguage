@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, ParserInfoType, Region
+    from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -56,7 +56,7 @@ class StatementParserInfo(ParserInfo):
     scope_flags: ScopeFlag
 
     parser_info_type: InitVar[ParserInfoType]
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     # ----------------------------------------------------------------------
     def __post_init__(

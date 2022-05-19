@@ -17,7 +17,7 @@
 
 import os
 
-from typing import cast, List, Optional
+from typing import List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, Region, ScopeFlag, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
     from ..Common.ClassModifier import ClassModifier
@@ -58,7 +58,7 @@ class ClassStatementDependencyParserInfo(ParserInfo):
     """Dependency of a class"""
 
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     visibility: Optional[VisibilityModifier]            # Note that instances may be created with this value as None,
                                                         # but a default will be provided once the instance is associated
@@ -97,15 +97,11 @@ class ClassStatementDependencyParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("type", self.type),
-            ],
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "type", self.type  # type: ignore
 
 
 # ----------------------------------------------------------------------
@@ -152,7 +148,7 @@ class ClassStatementParserInfo(StatementParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         *args,
         **kwargs,
     ):
@@ -231,7 +227,7 @@ class ClassStatementParserInfo(StatementParserInfo):
         if self.extends and len(self.extends) > 1:
             errors.append(
                 MultipleExtendsError.Create(
-                    region=Region.Create(
+                    region=TranslationUnitRegion.Create(
                         self.extends[1].regions__.self__.begin,
                         self.extends[-1].regions__.self__.end,
                     ),
@@ -268,26 +264,30 @@ class ClassStatementParserInfo(StatementParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        details = []
-
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         if self.templates:
-            details.append(("templates", self.templates))
-        if self.constraints:
-            details.append(("constraints", self.constraints))
-        if self.extends:
-            details.append(("extends", self.extends))
-        if self.implements:
-            details.append(("implements", self.implements))
-        if self.uses:
-            details.append(("uses", self.uses))
+            yield "templates", self.templates  # type: ignore
 
-        return self._AcceptImpl(
-            visitor,
-            details=details,
-            children=cast(List[ParserInfo], self.statements),
-        )
+        if self.constraints:
+            yield "constraints", self.constraints  # type: ignore
+
+        if self.extends:
+            yield "extends", self.extends  # type: ignore
+
+        if self.implements:
+            yield "implements", self.implements  # type: ignore
+
+        if self.uses:
+            yield "uses", self.uses  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
+        yield from self.statements
+
 
 # TODO: Not valid to have a protected class without a class ancestor
 # TODO: Ensure that all contents have mutability values consistent with the class decoration

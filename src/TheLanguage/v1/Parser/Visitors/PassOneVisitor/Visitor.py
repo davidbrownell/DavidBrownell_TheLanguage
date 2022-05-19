@@ -36,10 +36,11 @@ with InitRelativeImports():
     from .StatementsMixin import StatementsMixin
     from .ImportStatementMixin import ImportStatementMixin
 
+    from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
+
     from ...Error import Error, ErrorException
     from ...Helpers import MiniLanguageHelpers
     from ...MiniLanguage.Types.CustomType import CustomType
-    from ...NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
     from ...ParserInfos.ParserInfo import RootParserInfo
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
@@ -89,7 +90,8 @@ class Visitor(
         global_namespace = NamespaceInfo(None)
 
         with ExitStack() as exit_stack:
-            # Add all of the fundamental types
+            # Add all of the fundamental types to the workspaces. This will be processed to validate
+            # types, then removed so that the caller isn't impacted.
             if include_fundamental_types:
                 generated_code_directory = os.path.realpath(os.path.join(_script_dir, "..", "..", "FundamentalTypes", "GeneratedCode"))
 
