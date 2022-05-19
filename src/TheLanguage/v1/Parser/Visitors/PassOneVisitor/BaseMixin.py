@@ -113,10 +113,6 @@ class BaseMixin(object):
                 yield VisitResult.SkipAll
                 return
 
-        if not self.__class__._GetExecuteFlag(parser_info):  # pylint: disable=protected-access
-            yield VisitResult.SkipAll
-            return
-
         try:
             with ExitStack() as exit_stack:
                 if parser_info.introduces_scope__:
@@ -169,23 +165,6 @@ class BaseMixin(object):
     # |  Protected Methods
     # |
     # ----------------------------------------------------------------------
-    @classmethod
-    def _SetExecuteFlag(
-        cls,
-        statement: ParserInfo,
-        value: bool,
-    ) -> None:
-        object.__setattr__(statement, cls._EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME, value)
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _GetExecuteFlag(
-        cls,
-        statement: ParserInfo,
-    ) -> bool:
-        return getattr(statement, cls._EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME, True)
-
-    # ----------------------------------------------------------------------
     def _AddNamespaceItem(
         self,
         namespace: ParsedNamespaceInfo,
@@ -217,13 +196,6 @@ class BaseMixin(object):
 
         self._namespace_infos[-1].AddChild(item_name, namespace)
         namespace.parser_info.InitNamespace(namespace)
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME = "_execute_statement"
 
     # ----------------------------------------------------------------------
     # |

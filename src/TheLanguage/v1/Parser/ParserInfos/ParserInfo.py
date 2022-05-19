@@ -115,6 +115,7 @@ class ParserInfo(ObjectReprImplBase):
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
         object.__setattr__(self, "_parser_info_type", parser_info_type)
+        object.__setattr__(self, "_disabled", False)
 
         regionless_attributes_set = set(regionless_attributes or [])
 
@@ -173,6 +174,7 @@ class ParserInfo(ObjectReprImplBase):
             self,
             introduces_scope__=None,
             parser_info_type__=None,
+            is_disabled__=None,
             namespace__=None,
             is_namespace__initialized__=None,
             **custom_display_funcs,
@@ -195,13 +197,24 @@ class ParserInfo(ObjectReprImplBase):
     def parser_info_type__(self) -> ParserInfoType:
         return self._parser_info_type  # type: ignore  # pylint: disable=no-member
 
+    @property
+    def is_disabled__(self) -> bool:
+        return self._disabled  # type: ignore  # pylint: disable=no-member
+
     # ----------------------------------------------------------------------
     def ValidateRegions(self) -> None:
         self._validate_regions_func()  # type: ignore  # pylint: disable=no-member
 
     # ----------------------------------------------------------------------
+    def Disable(self) -> None:
+        object.__setattr__(self, "_disabled", True)
+
+    # ----------------------------------------------------------------------
     @Interface.extensionmethod
     def Accept(self, visitor):
+        if self.is_disabled__:
+            return VisitResult.SkipAll
+
         with self._GenericAccept(visitor) as visit_result:
             if visit_result == VisitResult.SkipAll:
                 return
@@ -262,6 +275,9 @@ class ParserInfo(ObjectReprImplBase):
         children: Optional[List["ParserInfo"]],
     ):
         """Implementation of Accept for ParserInfos that introduce new scopes or contain details that should be enumerated"""
+
+        if self.is_disabled__:
+            return VisitResult.SkipAll
 
         with self._GenericAccept(visitor) as visit_result:
             if visit_result == VisitResult.SkipAll:
