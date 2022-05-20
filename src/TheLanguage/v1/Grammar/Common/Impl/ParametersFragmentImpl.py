@@ -55,7 +55,7 @@ with InitRelativeImports():
         Error,
         ErrorException,
         ParserInfo,
-        Region,
+        TranslationUnitRegion,
     )
 
 # TODO: Add perfect forwarding
@@ -82,13 +82,13 @@ ExtractTraditionalParameterDelimiter                    = ModifierImpl.ByValueEx
 # ----------------------------------------------------------------------
 RequiredParameterAfterDefaultError          = CreateError(
     "A required parameter may not appear after a parameter with a default value",
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 NewStyleParameterGroupDuplicateError        = CreateError(
     "The parameter group '{name}' has already been specified",
     name=str,
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 TraditionalDelimiterPositionalError         = CreateError(
@@ -101,7 +101,7 @@ TraditionalDelimiterDuplicatePositionalError            = CreateError(
     "The positional delimiter ('{}') may only appear once in a list of parameters".format(
         TraditionalParameterDelimiter.positional.value,
     ),
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 TraditionalDelimiterOrderError              = CreateError(
@@ -109,14 +109,14 @@ TraditionalDelimiterOrderError              = CreateError(
         TraditionalParameterDelimiter.positional.value,
         TraditionalParameterDelimiter.keyword.value,
     ),
-    keyword_region=Region,
+    keyword_region=TranslationUnitRegion,
 )
 
 TraditionalDelimiterDuplicateKeywordError   = CreateError(
     "The keyword delimiter ('{}') may only appear once in a list of parameters".format(
         TraditionalParameterDelimiter.keyword.value,
     ),
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 TraditionalDelimiterKeywordError            = CreateError(

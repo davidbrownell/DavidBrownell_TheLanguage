@@ -51,7 +51,7 @@ with InitRelativeImports():
         Error,
         ErrorException,
         ParserInfo,
-        Region,
+        TranslationUnitRegion,
     )
 
 
@@ -60,7 +60,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 KeywordRequiredError                        = CreateError(
     "Positional arguments may not appear after keyword arguments",
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 

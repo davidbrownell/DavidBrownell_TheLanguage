@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, ParserInfoType, Region
+    from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
@@ -43,7 +43,7 @@ with InitRelativeImports():
 DuplicateNameError                          = CreateError(
     "The keyword argument '{name}' has already been provided",
     name=str,
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 
@@ -51,7 +51,7 @@ DuplicateNameError                          = CreateError(
 @dataclass(frozen=True, repr=False)
 class FuncArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     expression: ExpressionParserInfo
     keyword: Optional[str]
@@ -81,22 +81,18 @@ class FuncArgumentParserInfo(ParserInfo):
         self.expression.ValidateAsExpression()
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("expression", self.expression),
-            ],
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "expression", self.expression
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncArgumentsParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     arguments: List[FuncArgumentParserInfo]
 
@@ -141,12 +137,8 @@ class FuncArgumentsParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("arguments", self.arguments),
-            ],  # type: ignore
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "arguments", self.arguments  # type: ignore

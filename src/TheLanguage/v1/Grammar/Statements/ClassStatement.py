@@ -63,7 +63,7 @@ with InitRelativeImports():
         Error,
         ErrorException,
         GetParserInfo,
-        Region,
+        TranslationUnitRegion,
     )
 
     from ...Parser.ParserInfos.Common.ClassModifier import ClassModifier
@@ -87,7 +87,7 @@ with InitRelativeImports():
 DuplicateBaseTypeError                      = CreateError(
     "The base type indicator '{type}' may only appear once.",
     type=str,
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 

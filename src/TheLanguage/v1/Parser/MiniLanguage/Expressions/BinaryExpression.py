@@ -41,7 +41,7 @@ with InitRelativeImports():
     from ..Types.NumberType import NumberType
     from ..Types.VariantType import VariantType
 
-    from ...Error import CreateError, ErrorException, Region
+    from ...Error import CreateError, ErrorException, TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -109,7 +109,7 @@ class BinaryExpression(Expression):
     left: Expression
     operator: OperatorType
     right: Expression
-    left_region: Region
+    left_region: TranslationUnitRegion
 
     # ----------------------------------------------------------------------
     def __post_init__(self):

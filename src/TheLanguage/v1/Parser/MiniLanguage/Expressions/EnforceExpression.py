@@ -35,7 +35,7 @@ with InitRelativeImports():
     from .Expression import Expression, Type
     from ..Types.NoneType import NoneType
 
-    from ...Error import CreateError, ErrorException, Region
+    from ...Error import CreateError, ErrorException, TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ EnforceError                                = CreateError(
 @dataclass(frozen=True, repr=False)
 class EnforceExpression(Expression):
     expression: Expression
-    expression_region: Region
+    expression_region: TranslationUnitRegion
     messages: Optional[List[Expression]]
 
     # ----------------------------------------------------------------------

@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfoType, Region, ScopeFlag, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
 
     from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
     from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo
@@ -63,7 +63,7 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         *args,
         **kwargs,
     ):
@@ -129,19 +129,14 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        details = []
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "type", self.type  # type: ignore
 
         if self.templates:
-            details.append(("templates", self.templates))
-        if self.constraints:
-            details.append(("constraints", self.constraints))
+            yield "templates", self.templates  # type: ignore
 
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("type", self.type),
-            ] + details,  # type: ignore
-            children=None,
-        )
+        if self.constraints:
+            yield "constraints", self.constraints  # type: ignore

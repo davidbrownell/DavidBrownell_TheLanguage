@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, ParserInfoType, Region
+    from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
     from ...Error import CreateError, ErrorException
 
 
@@ -53,7 +53,7 @@ class ExpressionParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     parser_info_type: InitVar[ParserInfoType]
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     # ----------------------------------------------------------------------
     @classmethod

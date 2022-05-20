@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfo import ParserInfo, ParserInfoType, Region
+    from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
@@ -43,7 +43,7 @@ with InitRelativeImports():
 DuplicateNameError                          = CreateError(
     "The constraint keyword argument '{name}' has already been provided",
     name=str,
-    prev_region=Region,
+    prev_region=TranslationUnitRegion,
 )
 
 InvalidConstraintExpressionError            = CreateError(
@@ -55,7 +55,7 @@ InvalidConstraintExpressionError            = CreateError(
 @dataclass(frozen=True, repr=False)
 class ConstraintArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     expression: ExpressionParserInfo
     keyword: Optional[str]
@@ -100,22 +100,18 @@ class ConstraintArgumentParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("expression", self.expression),
-            ],
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "expression", self.expression
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ConstraintArgumentsParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     arguments: List[ConstraintArgumentParserInfo]
 
@@ -160,12 +156,8 @@ class ConstraintArgumentsParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("arguments", self.arguments),
-            ],  # type: ignore
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "arguments", self.arguments  # type: ignore

@@ -62,7 +62,10 @@ class PythonCodeTarget(Target):
             for relative_path, root in workspace_items.items():
                 visitor = Visitor()
 
-                root.Accept(visitor)
+                root.Accept(
+                    visitor,
+                    include_disabled=True,
+                )
 
                 relative_name = os.path.splitext(relative_path)[0]
                 relative_name, basename = os.path.split(relative_name)
@@ -74,8 +77,16 @@ class PythonCodeTarget(Target):
                 ]:
                     basename += "Type"
 
+                output_filename = os.path.join(self._output_dir, relative_name, "{}.py".format(basename))
+                content = visitor.GetContent()
+
+                FileSystem.MakeDirs(os.path.dirname(output_filename))
+
+                with open(output_filename, "w") as output_file:
+                    output_file.write(content)
+
                 yield Target.EnumResult.Create(
                     os.path.join(workspace_name, relative_path),
-                    os.path.join(self._output_dir, relative_name, "{}.py".format(basename)),
-                    visitor.GetContent(),
+                    output_filename,
+                    content,
                 )

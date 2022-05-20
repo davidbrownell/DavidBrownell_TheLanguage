@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
     from .FuncOrTypeExpressionParserInfo import (
         MutabilityModifierRequiredError,
         InvalidStandardMutabilityModifierError,
@@ -60,7 +60,7 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         types: List[ExpressionParserInfo],
         *args,
         **kwargs,
@@ -162,12 +162,8 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("types", self.types),
-            ],  # type: ignore
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "types", self.types  # type: ignore

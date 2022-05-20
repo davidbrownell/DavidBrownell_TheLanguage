@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import Region, ScopeFlag, StatementParserInfo
+    from .StatementParserInfo import ParserInfo, ScopeFlag, StatementParserInfo, TranslationUnitRegion
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
@@ -46,7 +46,7 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         expression: ExpressionParserInfo,
         *args,
         **kwargs,
@@ -72,12 +72,8 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
         self.expression.ValidateAsExpression()
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("expression", self.expression),
-            ],
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "expression", self.expression  # type: ignore

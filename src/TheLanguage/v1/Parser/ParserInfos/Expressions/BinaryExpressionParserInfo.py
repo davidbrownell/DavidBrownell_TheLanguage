@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, Region
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
     from .FuncOrTypeExpressionParserInfo import InvalidCompileTimeTypeError
 
     from ...Error import Error, ErrorException
@@ -105,7 +105,7 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         left_expression: ExpressionParserInfo,
         operator: OperatorType,
         right_expression: ExpressionParserInfo,
@@ -197,13 +197,9 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
         self.right_expression.ValidateAsExpression()
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=[
-                ("left_expression", self.left_expression),
-                ("right_expression", self.right_expression),
-            ],
-            children=None,
-        )
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "left_expression", self.left_expression  # type: ignore
+        yield "right_expression", self.right_expression  # type: ignore

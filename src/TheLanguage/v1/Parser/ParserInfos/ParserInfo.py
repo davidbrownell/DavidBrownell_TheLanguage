@@ -16,11 +16,10 @@
 """Contains the ParserInfo object"""
 
 import os
-import weakref
 
 from contextlib import contextmanager
 from enum import auto, Enum, Flag
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union, TYPE_CHECKING
+from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 
 from dataclasses import dataclass, fields, make_dataclass, InitVar
 
@@ -36,10 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Region import Region
-
-    if TYPE_CHECKING:
-        from ..NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
+    from ..TranslationUnitRegion import TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -109,12 +105,13 @@ class ParserInfo(ObjectReprImplBase):
     def __init__(
         self,
         parser_info_type: ParserInfoType,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         regionless_attributes: Optional[List[str]]=None,
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
         object.__setattr__(self, "_parser_info_type", parser_info_type)
+        object.__setattr__(self, "_disabled", False)
 
         regionless_attributes_set = set(regionless_attributes or [])
 
@@ -141,7 +138,7 @@ class ParserInfo(ObjectReprImplBase):
         # Create the class
         new_regions_class = make_dataclass(
             "{}Regions".format(self.__class__.__name__),
-            [(k, Optional[Region]) for k in new_regions.keys()],  # type: ignore
+            [(k, Optional[TranslationUnitRegion]) for k in new_regions.keys()],  # type: ignore
             bases=(ObjectReprImplBase,),
             frozen=True,
             repr=False,
@@ -173,8 +170,7 @@ class ParserInfo(ObjectReprImplBase):
             self,
             introduces_scope__=None,
             parser_info_type__=None,
-            namespace__=None,
-            is_namespace__initialized__=None,
+            is_disabled__=None,
             **custom_display_funcs,
         )
 
@@ -195,13 +191,28 @@ class ParserInfo(ObjectReprImplBase):
     def parser_info_type__(self) -> ParserInfoType:
         return self._parser_info_type  # type: ignore  # pylint: disable=no-member
 
+    @property
+    def is_disabled__(self) -> bool:
+        return self._disabled  # type: ignore  # pylint: disable=no-member
+
     # ----------------------------------------------------------------------
     def ValidateRegions(self) -> None:
         self._validate_regions_func()  # type: ignore  # pylint: disable=no-member
 
     # ----------------------------------------------------------------------
-    @Interface.extensionmethod
-    def Accept(self, visitor):
+    def Disable(self) -> None:
+        object.__setattr__(self, "_disabled", True)
+
+    # ----------------------------------------------------------------------
+    def Accept(
+        self,
+        visitor,
+        *,
+        include_disabled=False,
+    ):
+        if self.is_disabled__ and not include_disabled:
+            return VisitResult.SkipAll
+
         with self._GenericAccept(visitor) as visit_result:
             if visit_result == VisitResult.SkipAll:
                 return
@@ -211,105 +222,76 @@ class ParserInfo(ObjectReprImplBase):
             method = getattr(visitor, method_name, None)
             assert method is not None, method_name
 
-            with method(self):
-                pass
+            with method(self) as visit_result:
+                if visit_result is None:
+                    visit_result = VisitResult.Continue
+
+                if not visit_result & VisitResult.SkipDetails:
+                    method_name_prefix = "On{}__".format(self.__class__.__name__)
+
+                    for detail_name, detail_value in self._GenerateAcceptDetails():
+                        method_name = "{}{}".format(method_name_prefix, detail_name)
+
+                        method = getattr(visitor, method_name, None)
+                        assert method is not None, method_name
+
+                        visit_result = method(detail_value)
+
+                    if visit_result is None:
+                        visit_result = VisitResult.Continue
+
+                if not visit_result & VisitResult.SkipChildren:
+                    for child in self._GenerateAcceptChildren():
+                        assert self.introduces_scope__ or child.introduces_scope__
+
+                        visit_result = child.Accept(
+                            visitor,
+                            include_disabled=include_disabled,
+                        )
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def GetNameAndRegion(self) -> Tuple[Optional[str], Region]:
+    def GetNameAndRegion(self) -> Tuple[Optional[str], TranslationUnitRegion]:
         if hasattr(self, "name"):
             return self.name, self.regions__.name  # type: ignore  # pylint: disable=no-member
 
         return None, self.regions__.self__
 
     # ----------------------------------------------------------------------
-    # This method is invoked during validation
-    def InitNamespace(
-        self,
-        value: "ParsedNamespaceInfo",
-    ) -> None:
-        assert not self.is_namespace__initialized__
-        object.__setattr__(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME, weakref.ref(value))  # pylint: disable=protected-access
+    # |
+    # |  Protected Types
+    # |
+    # ----------------------------------------------------------------------
+    _GenerateAcceptDetailsResultType        = Generator[
+        Tuple[str, Union["ParserInfo", List["ParserInfo"]]],
+        None,
+        None,
+    ]
 
     # ----------------------------------------------------------------------
-    @property
-    def namespace__(self) -> "ParsedNamespaceInfo":
-        return getattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)()  # pylint: disable=protected-access
-
-    @property
-    def is_namespace__initialized__(self) -> bool:
-        return hasattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
+    _GenerateAcceptChildrenResultType       = Generator[
+        "ParserInfo",
+        None,
+        None,
+    ]
 
     # ----------------------------------------------------------------------
     # |
     # |  Protected Methods
     # |
     # ----------------------------------------------------------------------
-    def _AcceptImpl(
-        self,
-        visitor,
-        details: Optional[
-            List[
-                Tuple[
-                    str,
-                    Union[
-                        "ParserInfo",
-                        List["ParserInfo"],
-                    ],
-                ],
-            ]
-        ],
-        children: Optional[List["ParserInfo"]],
-    ):
-        """Implementation of Accept for ParserInfos that introduce new scopes or contain details that should be enumerated"""
-
-        with self._GenericAccept(visitor) as visit_result:
-            if visit_result == VisitResult.SkipAll:
-                return
-
-            method_name = "On{}".format(self.__class__.__name__)
-
-            method = getattr(visitor, method_name, None)
-            assert method is not None, method_name
-
-            try:
-                with method(self) as visit_result:
-                    if visit_result is None:
-                        visit_result = VisitResult.Continue
-
-                    if details and not visit_result & VisitResult.SkipDetails:
-                        method_name_prefix = "On{}__".format(self.__class__.__name__)
-
-                        for detail_name, detail_value in details:
-                            method_name = "{}{}".format(method_name_prefix, detail_name)
-
-                            method = getattr(visitor, method_name, None)
-                            assert method is not None, method_name
-
-                            method(detail_value)
-
-                    if children:
-                        assert (
-                            self.introduces_scope__
-                            or all(child.introduces_scope__ for child in children)
-                        )
-
-                        if not visit_result & VisitResult.SkipChildren:
-                            for child in children:
-                                child.Accept(visitor)
-
-            except AttributeError as ex:
-                if str(ex) == "__enter__":
-                    assert False, (method_name, "__enter__")
-
-                raise
+    @Interface.extensionmethod
+    def _GenerateAcceptDetails(self) -> "ParserInfo._GenerateAcceptDetailsResultType":
+        # Nothing by default
+        if False:
+            yield
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _NAMESPACE_ATTRIBUTE_NAME               = "_namespace"
+    @Interface.extensionmethod
+    def _GenerateAcceptChildren(self) -> "ParserInfo._GenerateAcceptChildrenResultType":
+        # No children by default
+        if False:
+            yield
 
     # ----------------------------------------------------------------------
     # |
@@ -385,7 +367,7 @@ class RootParserInfo(ParserInfo):
     introduces_scope__                      = True
 
     # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[Region]]]
+    regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     statements: Optional[List[ParserInfo]]
     documentation: Optional[str]
@@ -404,10 +386,9 @@ class RootParserInfo(ParserInfo):
         super(RootParserInfo, self).__init__(ParserInfoType.Standard, regions)
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def Accept(self, visitor):
-        return self._AcceptImpl(
-            visitor,
-            details=None,
-            children=self.statements,
-        )
+    def _GenerateAcceptChildren(self) -> Generator["ParserInfo", None, None]:
+        if self.statements:
+            yield from self.statements

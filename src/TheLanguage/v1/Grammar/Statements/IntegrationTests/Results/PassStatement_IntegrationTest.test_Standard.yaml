@@ -1,14 +1,14 @@
 # <class 'v1.Parser.ParserInfos.ParserInfo.RootParserInfo'>
 documentation: null
 regions__: # <class 'types.RootParserInfoRegions'>
-  self__: # <class 'v1.Parser.Region.Region'>
+  self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
     end: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 3
-  statements: # <class 'v1.Parser.Region.Region'>
+  statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
@@ -28,28 +28,28 @@ statements:
     is_final: null
     name: "Class"
     regions__: # <class 'types.ClassStatementParserInfoRegions'>
-      name: # <class 'v1.Parser.Region.Region'>
+      name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 14
           line: 1
         end: # <class 'v1.Lexer.Location.Location'>
           column: 19
           line: 1
-      self__: # <class 'v1.Parser.Region.Region'>
+      self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 1
         end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 3
-      statements: # <class 'v1.Parser.Region.Region'>
+      statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 19
           line: 1
         end: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 3
-      visibility: # <class 'v1.Parser.Region.Region'>
+      visibility: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
           line: 1
@@ -59,7 +59,7 @@ statements:
     statements:
       - # <class 'v1.Parser.ParserInfos.Statements.PassStatementParserInfo.PassStatementParserInfo'>
         regions__: # <class 'types.PassStatementParserInfoRegions'>
-          self__: # <class 'v1.Parser.Region.Region'>
+          self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
             begin: # <class 'v1.Lexer.Location.Location'>
               column: 5
               line: 2

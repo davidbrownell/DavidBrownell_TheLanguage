@@ -32,9 +32,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
+    from ..NamespaceInfo import ParsedNamespaceInfo
+
     from ...Error import CreateError
     from ...Helpers import MiniLanguageHelpers
-    from ...NamespaceInfo import ParsedNamespaceInfo
 
     from ...ParserInfos.ParserInfo import ParserInfoType, VisitResult
 
@@ -125,10 +126,11 @@ class StatementsMixin(BaseMixin):
                     found_true_clause = True
                     execute_flag = True
 
-            self.__class__._SetExecuteFlag(clause, execute_flag)  # pylint: disable=protected-access
+            if not execute_flag:
+                clause.Disable()
 
-        if parser_info.else_clause:
-            self.__class__._SetExecuteFlag(parser_info.else_clause, not found_true_clause)  # pylint: disable=protected-access
+        if parser_info.else_clause and found_true_clause:
+            parser_info.else_clause.Disable()
 
         yield
 

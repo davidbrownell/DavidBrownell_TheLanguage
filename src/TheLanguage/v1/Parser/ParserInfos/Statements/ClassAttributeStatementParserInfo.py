@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfoType, Region, ScopeFlag, StatementParserInfo
+    from .StatementParserInfo import ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
     from ..Common.VisibilityModifier import VisibilityModifier
@@ -41,7 +41,8 @@ with InitRelativeImports():
     from ...Error import Error, ErrorException
 
     if TYPE_CHECKING:
-        from ...NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
+        # TODO: I'm not sure that this should be used
+        from ...Visitors.NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -72,7 +73,7 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[Region]],
+        regions: List[Optional[TranslationUnitRegion]],
         *args,
         **kwargs,
     ):
