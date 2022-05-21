@@ -44,7 +44,7 @@ with InitRelativeImports():
     from .MiniLanguage.Types.Type import Type as MiniLanguageType
     from .MiniLanguage.Types.VariantType import VariantType                 # pylint: disable=unused-import
 
-    from .ParserInfos.ParserInfo import ParserInfo, RootParserInfo
+    from .ParserInfos.Statements.RootStatementParserInfo import ParserInfo, RootStatementParserInfo
 
     from .Visitors.PassOneVisitor.Visitor import Visitor as PassOneVisitor
     from .Visitors.PassTwoVisitor.Visitor import Visitor as PassTwoVisitor
@@ -119,16 +119,16 @@ def Parse(
                 List[Error],
 
                 # Successful result
-                RootParserInfo,
+                RootStatementParserInfo,
             ],
         ],
     ]
 ]:
     # ----------------------------------------------------------------------
     def CreateAndExtract(
-        fully_qualified_name: str,  # pylint: disable=unused-argument
+        names: Tuple[str, str],  # pylint: disable=unused-argument
         root: AST.Node,
-    ) -> Optional[Union[RootParserInfo, List[Error]]]:
+    ) -> Optional[Union[RootStatementParserInfo, List[Error]]]:
         errors: List[Error] = []
 
         callback_funcs: List[Tuple[AST.Node, Callable[[], Any]]] = []
@@ -214,8 +214,9 @@ def Parse(
             else:
                 statements_node = root
 
-            return RootParserInfo.Create(
+            return RootStatementParserInfo.Create(
                 CreateRegions(root, statements_node, docstring_node),
+                names[1],
                 statements,
                 docstring_info,
             )
@@ -237,7 +238,7 @@ def Validate(
         str,                                # workspace root
         Dict[
             str,                            # relative path to file
-            RootParserInfo
+            RootStatementParserInfo
         ]
     ],
     configuration_values: Dict[str, Tuple[MiniLanguageType, Any]],
@@ -250,7 +251,7 @@ def Validate(
         Dict[
             str,                            # relative path to file
             Union[
-                RootParserInfo,
+                RootStatementParserInfo,
                 List[Error],
             ],
         ],
@@ -292,11 +293,24 @@ def Validate(
         if error_data is not None:
             return error_data  # type: ignore
 
+        global_namespace = executor.global_namespace
+        fundamental_types_namespace = executor.fundamental_types_namespace
+
     # ----------------------------------------------------------------------
     # |  Pass 2
+    pass2_state = PassTwoVisitor.CreateState(mini_language_configuration_values, fundamental_types_namespace)
+
     results = _Execute(
         workspaces,
-        lambda *args, **kwargs: PassTwoVisitor.Execute(mini_language_configuration_values, *args, **kwargs),
+        (
+            lambda *args, **kwargs:
+                PassTwoVisitor.Execute(
+                    pass2_state,
+                    global_namespace,
+                    *args,
+                    **kwargs,
+                )
+        ),
         max_num_threads=max_num_threads,
     )
 
@@ -444,7 +458,7 @@ def _Execute(
             _ExecuteInputType
         ]
     ],
-    execute_func: Callable[[str, _ExecuteInputType], Optional[_ExecuteOutputType]],
+    execute_func: Callable[[Tuple[str, str], _ExecuteInputType], Optional[_ExecuteOutputType]],
     *,
     max_num_threads: Optional[int]=None,
 ) -> Optional[
@@ -458,14 +472,14 @@ def _Execute(
 ]:
     # ----------------------------------------------------------------------
     def Execute(
-        fully_qualified_name: str,
+        names: Tuple[str, str],
         input_value: _ExecuteInputType,
     ) -> Optional[_ExecuteOutputType]:
         try:
-            return execute_func(fully_qualified_name, input_value)
+            return execute_func(names, input_value)
         except Exception as ex:
             if not hasattr(ex, "fully_qualified_name"):
-                object.__setattr__(ex, "full_qualified_name", fully_qualified_name)
+                object.__setattr__(ex, "full_qualified_name", os.path.join(*names))
 
             if not hasattr(ex, "traceback"):
                 object.__setattr__(ex, "traceback", traceback.format_exc())
@@ -475,11 +489,11 @@ def _Execute(
     # ----------------------------------------------------------------------
 
     # Flatten the inputs
-    flattened_inputs: Dict[str, _ExecuteInputType] = {}
+    flattened_inputs: Dict[Tuple[str, str], _ExecuteInputType] = {}
 
     for workspace_root, workspace_items in inputs.items():
         for relative_path, input_value in workspace_items.items():
-            key = os.path.join(workspace_root, relative_path)
+            key = (workspace_root, relative_path)
 
             assert key not in flattened_inputs, key
             flattened_inputs[key] = input_value

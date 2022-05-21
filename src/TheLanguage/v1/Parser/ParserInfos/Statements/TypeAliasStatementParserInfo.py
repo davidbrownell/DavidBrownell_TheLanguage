@@ -32,7 +32,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+    from .StatementParserInfo import (
+        NamedStatementTrait,
+        ParserInfo,
+        ParserInfoType,
+        ScopeFlag,
+        StatementParserInfo,
+        TranslationUnitRegion,
+    )
 
     from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
     from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo
@@ -46,13 +53,11 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TypeAliasStatementParserInfo(StatementParserInfo):
+class TypeAliasStatementParserInfo(
+    NamedStatementTrait,
+    StatementParserInfo,
+):
     parent_class_capabilities: Optional[ClassCapabilities]
-
-    visibility_param: InitVar[Optional[VisibilityModifier]]
-    visibility: VisibilityModifier          = field(init=False)
-
-    name: str
 
     templates: Optional[TemplateParametersParserInfo]
     constraints: Optional[ConstraintParametersParserInfo]
@@ -77,7 +82,8 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, parser_info_type, regions, visibility_param):
-        super(TypeAliasStatementParserInfo, self).__post_init__(
+        StatementParserInfo.__post_init__(
+            self,
             parser_info_type,
             regions,
             regionless_attributes=[
@@ -85,9 +91,16 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
                 "templates",
                 "constraints",
                 "type",
-            ],
+            ]
+                + NamedStatementTrait.RegionlessAttributesArgs()
+            ,
             validate=False,
-            parent_class_capabilities=lambda value: None if value is None else value.name,
+            **{
+                **{
+                    "parent_class_capabilities": lambda value: None if value is None else value.name,
+                },
+                **NamedStatementTrait.ObjectReprImplBaseInitKwargs(),
+            },
         )
 
         # Set defaults
@@ -100,7 +113,7 @@ class TypeAliasStatementParserInfo(StatementParserInfo):
                 visibility_param = VisibilityModifier.private
                 object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
-        object.__setattr__(self, "visibility", visibility_param)
+        NamedStatementTrait.__post_init__(self, visibility_param)
 
         self.ValidateRegions()
 

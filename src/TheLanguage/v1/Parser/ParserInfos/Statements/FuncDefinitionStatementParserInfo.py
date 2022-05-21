@@ -35,6 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
+        NewNamespaceScopedStatementTrait,
         ParserInfo,
         ParserInfoType,
         ScopeFlag,
@@ -228,20 +229,17 @@ StatementsRequiredError                     = CreateError(
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncDefinitionStatementParserInfo(StatementParserInfo):
+class FuncDefinitionStatementParserInfo(
+    NewNamespaceScopedStatementTrait,
+    StatementParserInfo,
+):
     """Function or method definition"""
 
     # ----------------------------------------------------------------------
-    introduces_scope__                      = True
-    allow_duplicate_named_items__           = True
-
-    # ----------------------------------------------------------------------
     parent_class_capabilities: Optional[ClassCapabilities]
+    operator_type: Optional[OperatorType]
 
     parameters: Union[bool, FuncParametersParserInfo]
-
-    visibility_param: InitVar[Optional[VisibilityModifier]]
-    visibility: VisibilityModifier                      = field(init=False)
 
     mutability_param: InitVar[Optional[MutabilityModifier]]
     mutability: Optional[MutabilityModifier]            = field(init=False)
@@ -250,7 +248,6 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     method_modifier: Optional[MethodModifier]           = field(init=False)
 
     return_type: Optional[ExpressionParserInfo]
-    name: Union[str, OperatorType]
     documentation: Optional[str]
 
     templates: Optional[TemplateParametersParserInfo]
@@ -272,6 +269,8 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
     def Create(
         cls,
         regions: List[Optional[TranslationUnitRegion]],
+        name: Union[str, OperatorType],
+        visibility_param: Optional[VisibilityModifier],
         parent_class_capabilities: Optional[ClassCapabilities],
         parameters: Union[bool, FuncParametersParserInfo],
         *args,
@@ -286,7 +285,10 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
             ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             parser_info_type,               # type: ignore
             regions,                        # type: ignore
+            str(name),
+            visibility_param,               # type: ignore
             parent_class_capabilities,
+            name if isinstance(name, OperatorType) else None,
             parameters,
             *args,
             **kwargs,
@@ -301,16 +303,29 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
         mutability_param,
         method_modifier_param,
     ):
-        super(FuncDefinitionStatementParserInfo, self).__post_init__(
+        self._InitTraits(
+            allow_duplicate_names=False,
+            allow_name_to_be_duplicated=True,
+        )
+
+        StatementParserInfo.__post_init__(
+            self,
             parser_info_type,
             regions,
             regionless_attributes=[
                 "parent_class_capabilities",
+                "operator_type",
                 "return_type",
                 "templates",
-            ],
+            ] + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
             validate=False,
-            parent_class_capabilities=lambda value: None if value is None else value.name,
+            **{
+                **{
+                    "parent_class_capabilities": lambda value: None if value is None else value.name,
+                    "operator_type": None,
+                },
+                **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+            },
         )
 
         # Set defaults
@@ -337,7 +352,8 @@ class FuncDefinitionStatementParserInfo(StatementParserInfo):
 
             desc = "{} methods".format(self.parent_class_capabilities.name)
 
-        object.__setattr__(self, "visibility", visibility_param)
+        NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
+
         object.__setattr__(self, "mutability", mutability_param)
         object.__setattr__(self, "method_modifier", method_modifier_param)
 

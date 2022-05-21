@@ -19,7 +19,7 @@ import os
 import types
 
 from contextlib import contextmanager, ExitStack
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
 import CommonEnvironment
 
@@ -38,11 +38,11 @@ with InitRelativeImports():
     from ...Error import CreateError, Error, ErrorException
     from ...Helpers import MiniLanguageHelpers
 
-    from ...MiniLanguage.Types.CustomType import CustomType
+    from ...ParserInfos.ParserInfo import ParserInfo
+    from ...ParserInfos.AggregateParserInfo import AggregateParserInfo
 
-    from ...ParserInfos.ParserInfo import ParserInfo, VisitResult
-    from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
+    from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
+    from ...ParserInfos.Statements.StatementParserInfo import ScopedStatementTrait, StatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -61,11 +61,12 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        configuration_info: Dict[str, MiniLanguageHelpers.CompileTimeInfo],
+        state: StateMaintainer[MiniLanguageHelpers.CompileTimeInfo],
+        this_namespace: ParsedNamespaceInfo,
     ):
-        self._state: StateMaintainer[MiniLanguageHelpers.CompileTimeInfo]   = StateMaintainer(configuration_info)
-
-        self._errors: List[Error]           = []
+        self._state                                                         = state
+        self._namespace_stack: List[ParsedNamespaceInfo]                    = [this_namespace]
+        self._errors: List[Error]                                           = []
 
     # ----------------------------------------------------------------------
     def __getattr__(
@@ -86,9 +87,24 @@ class BaseMixin(object):
     ):
         try:
             with ExitStack() as exit_stack:
-                if parser_info.introduces_scope__:
-                    self._state.PushScope()
-                    exit_stack.callback(self._state.PopScope)
+                # TODO: get_namespace_info = False
+                # TODO:
+                # TODO: # The logic of determining when to traverse namespaces is the same as what is found
+                # TODO: # in `PassOneVisitor`.
+                # TODO: if isinstance(parser_info, ScopedStatementTrait):
+                # TODO:     self._state.PushScope()
+                # TODO:     exit_stack.callback(self._state.PopScope)
+                # TODO:
+                # TODO:     get_namespace_info = not isinstance(parser_info, RootStatementParserInfo)
+                # TODO:
+                # TODO: elif isinstance(parser_info, StatementParserInfo):
+                # TODO:     get_namespace_info = True
+                # TODO:
+                # TODO: if get_namespace_info:
+                # TODO:     namespace_info = self._GetNamespaceInfo(parser_info)
+                # TODO:     if namespace_info is not None:
+                # TODO:         self._namespace_stack.append(namespace_info)
+                # TODO:         exit_stack.callback(self._namespace_stack.pop)
 
                 yield
 
@@ -101,7 +117,18 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     @staticmethod
     @contextmanager
-    def OnRootParserInfo(*args, **kwargs):
+    def OnRootStatementParserInfo(*args, **kwargs):
+        yield
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnAggregateParserInfo(
+        self,
+        parser_info: AggregateParserInfo,
+    ):
+        for parser_info in parser_info.parser_infos:
+            parser_info.Accept(self)
+
         yield
 
     # ----------------------------------------------------------------------
@@ -111,32 +138,24 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     def _GetNamespaceInfo(
         self,
-        parser_info: ExpressionParserInfo,
-        snapshot: Optional[Dict[str, MiniLanguageHelpers.CompileTimeInfo]]=None,
-    ) -> ParsedNamespaceInfo:
-        snapshot = snapshot or self._state.CreateFlatSnapshot()
+        parser_info: ParserInfo,
+    ) -> Optional[ParsedNamespaceInfo]:
+        item_name = parser_info.GetNameAndRegion()[0]
+        if item_name is None:
+            return None
 
-        type_result = MiniLanguageHelpers.EvalExpression(parser_info, snapshot)
+        assert self._namespace_stack
+        results = self._namespace_stack[-1].children[item_name]
 
-        type_name = type_result.type.name
-        type_info = snapshot.get(type_name, None)
+        if isinstance(results, ParsedNamespaceInfo):
+            assert results.parser_info == parser_info
+            return results
 
-        if type_info is None:
-            raise ErrorException(
-                InvalidTypeError.Create(
-                    region=parser_info.regions__.self__,
-                    name=type_name,
-                ),
-            )
+        for result in results:
+            if result.parser_info == parser_info:
+                return result
 
-        return type_info.value
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _EXECUTE_STATEMENT_FLAG_ATTTRIBUTE_NAME = "_execute_statement"
+        assert False, parser_info
 
     # ----------------------------------------------------------------------
     # |

@@ -18,7 +18,7 @@
 import os
 
 from contextlib import contextmanager
-from typing import cast, List
+from typing import cast, List, Optional
 
 import CommonEnvironment
 
@@ -60,7 +60,7 @@ class StatementsMixin(BaseMixin):
     ):
         if parser_info.parser_info_type__ != ParserInfoType.Configuration:
             # Ensure that the statement is only used where it is allowed
-            parent_scope_flag = self._namespace_infos[-1].scope_flag
+            parent_scope_flag = self._namespaces[-1].scope_flag
 
             if (
                 (parser_info.parser_info_type__ == ParserInfoType.TypeCustomization and parent_scope_flag == ScopeFlag.Root)
@@ -89,11 +89,11 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: IfStatementParserInfo,
     ):
-        assert self._namespace_infos
+        assert self._namespaces
 
         if parser_info.parser_info_type__ != ParserInfoType.Configuration:
             # Ensure that the statement is only used where it is allowed
-            parent_scope_flag = self._namespace_infos[-1].scope_flag
+            parent_scope_flag = self._namespaces[-1].scope_flag
 
             if (
                 (parser_info.parser_info_type__ == ParserInfoType.TypeCustomization and parent_scope_flag == ScopeFlag.Root)
@@ -113,42 +113,30 @@ class StatementsMixin(BaseMixin):
             return
 
         # Determine which clause evaluates to true
-        found_true_clause = False
+        true_clause_name: Optional[str] = None
 
         for clause in parser_info.clauses:
             execute_flag = False
 
-            if not found_true_clause:
+            if true_clause_name is None:
                 clause_result = MiniLanguageHelpers.EvalExpression(clause.expression, self._configuration_info)
                 clause_result = clause_result.type.ToBoolValue(clause_result.value)
 
                 if clause_result:
-                    found_true_clause = True
+                    true_clause_name = clause.name
                     execute_flag = True
 
             if not execute_flag:
                 clause.Disable()
 
-        if parser_info.else_clause and found_true_clause:
+        if parser_info.else_clause and true_clause_name is not None:
             parser_info.else_clause.Disable()
 
         yield
 
-        if found_true_clause:
+        if true_clause_name is not None:
             # Move everything from the if clause to the proper namespace
-            assert isinstance(self._namespace_infos[-1], ParsedNamespaceInfo)
-            assert None in self._namespace_infos[-1].children
-            assert isinstance(self._namespace_infos[-1].children[None], list)
+            clause_namespace = self._namespaces[-1].children.pop(true_clause_name)
+            assert isinstance(clause_namespace, ParsedNamespaceInfo)
 
-            namespace_items = cast(List[ParsedNamespaceInfo], self._namespace_infos[-1].children[None])
-            assert len(namespace_items) >= 2
-            assert isinstance(namespace_items[-1].parser_info, (IfStatementClauseParserInfo, IfStatementElseClauseParserInfo))
-            assert isinstance(namespace_items[-2].parser_info, IfStatementParserInfo)
-
-            source_info = namespace_items.pop()         # IfStatementClauseParserInfo | IfStatementElseClauseParserInfo
-            namespace_items.pop()                       # IfStatementParserInfo
-
-            if not namespace_items:
-                del self._namespace_infos[-1].children[None]
-
-            self._namespace_infos[-1].AugmentChildren(source_info.children)
+            self._namespaces[-1].AugmentChildren(clause_namespace.children)

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Generator, Dict, List
+from typing import Generator, Dict
 
 import CommonEnvironment
 from CommonEnvironment import FileSystem
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .VisitorImpl.Visitor import Visitor
-    from ..Target import RootParserInfo, Target
+    from ..Target import RootStatementParserInfo, Target
 
 
 # ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ class PythonCodeTarget(Target):
             str,                            # workspace name
             Dict[
                 str,                        # relative path
-                RootParserInfo,
+                RootStatementParserInfo,
             ],
         ],
         output_dir: str,

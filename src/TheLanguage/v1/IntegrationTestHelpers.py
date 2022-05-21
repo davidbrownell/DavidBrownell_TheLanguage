@@ -30,7 +30,7 @@ import CommonEnvironment
 from CommonEnvironment import FileSystem
 
 from CommonEnvironment.AutomatedTestHelpers import (
-    CompareResultsFromFile                  # This is imported as a convenience  # pylint: disable=unused-import
+    CompareResultsFromFile                  # pylint: disable=unused-import
 )
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -48,9 +48,10 @@ with InitRelativeImports():
         Error as ParserError,
         ErrorException as ParserErrorException,
         Parse,
-        RootParserInfo,
         Validate,
     )
+
+    from .Parser.ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
 
     from .Targets.Python.PythonTarget import PythonTarget
 
@@ -88,7 +89,7 @@ def PatchAndExecute(
         Dict[
             str,
             Union[
-                RootParserInfo,
+                RootStatementParserInfo,
                 List[ParserError],
             ],
         ],
@@ -209,7 +210,7 @@ def PatchAndExecute(
         if errors:
             return errors  # type: ignore
 
-        results = cast(Dict[str, Dict[str, RootParserInfo]], results)
+        results = cast(Dict[str, Dict[str, RootStatementParserInfo]], results)
 
         if flag & PatchAndExecuteFlag.validate_flag:
             results = Validate(
@@ -234,7 +235,7 @@ def PatchAndExecute(
             if errors:
                 return errors  # type: ignore
 
-            results = cast(Dict[str, Dict[str, RootParserInfo]], results)
+            results = cast(Dict[str, Dict[str, RootStatementParserInfo]], results)
 
         return results  # type: ignore
 
@@ -272,7 +273,7 @@ def ExecuteParserInfo(
     *,
     max_num_threads: Optional[int]=None,
     include_fundamental_types=True,
-) -> RootParserInfo:
+) -> RootStatementParserInfo:
     result = PatchAndExecute(
         {
             "workspace": {
@@ -297,7 +298,7 @@ def ExecuteParserInfo(
     if isinstance(result, list):
         raise ParserErrorException(*result)
 
-    return cast(RootParserInfo, result)
+    return cast(RootStatementParserInfo, result)
 
 
 # ----------------------------------------------------------------------
@@ -321,7 +322,7 @@ def ExecutePythonTarget(
     assert isinstance(result, dict), result
 
     target = PythonTarget(
-        result,
+        cast(Dict[str, Dict[str, RootStatementParserInfo]], result),
         output_dir=None,
     )
 

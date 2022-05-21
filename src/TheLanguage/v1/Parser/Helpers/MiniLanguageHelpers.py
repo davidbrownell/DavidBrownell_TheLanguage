@@ -43,7 +43,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from . import CallHelpers
 
-    from ..Error import CreateError, ErrorException, TranslationUnitRegion
+    from ..Error import CreateError, ErrorException
+    from ..GlobalRegion import GlobalRegion
 
     from ..MiniLanguage.Expressions.BinaryExpression import BinaryExpression
     from ..MiniLanguage.Expressions.EnforceExpression import EnforceExpression
@@ -94,7 +95,7 @@ with InitRelativeImports():
 class CompileTimeInfo(object):
     type: MiniLanguageType
     value: Any
-    region: Optional[TranslationUnitRegion]
+    region: Optional[GlobalRegion]
 
 
 # ----------------------------------------------------------------------

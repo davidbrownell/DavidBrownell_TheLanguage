@@ -19,7 +19,7 @@ import os
 import types
 
 from contextlib import contextmanager, ExitStack
-from typing import Callable, cast, Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import CommonEnvironment
 
@@ -36,12 +36,20 @@ with InitRelativeImports():
     from ...Error import CreateError, Error, ErrorException, TranslationUnitRegion
     from ...Helpers import MiniLanguageHelpers
 
-    from ...ParserInfos.ParserInfo import ParserInfo, RootParserInfo, VisitResult
+    from ...ParserInfos.ParserInfo import ParserInfo, VisitResult
 
     from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
     from ...ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+    from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ...ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
-    from ...ParserInfos.Statements.StatementParserInfo import ScopeFlag, StatementParserInfo
+
+    from ...ParserInfos.Statements.StatementParserInfo import (
+        NamedStatementTrait,
+        NewNamespaceScopedStatementTrait,
+        ScopeFlag,
+        ScopedStatementTrait,
+        StatementParserInfo,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -74,8 +82,8 @@ class BaseMixin(object):
             ],
         ]                                   = []
 
-        self._namespace_infos: List[ParsedNamespaceInfo]                    = []
-        self._root_namespace_info: Optional[ParsedNamespaceInfo]            = None
+        self._namespaces: List[ParsedNamespaceInfo]                         = []
+        self._root_namespace: Optional[ParsedNamespaceInfo]                 = None
 
     # ----------------------------------------------------------------------
     def __getattr__(
@@ -97,7 +105,7 @@ class BaseMixin(object):
         self,
         parser_info: ParserInfo,
     ):
-        parent_scope_flag = self._namespace_infos[-1].scope_flag if self._namespace_infos else ScopeFlag.Root
+        parent_scope_flag = self._namespaces[-1].scope_flag if self._namespaces else ScopeFlag.Root
 
         if isinstance(parser_info, StatementParserInfo):
             if (
@@ -114,44 +122,88 @@ class BaseMixin(object):
                 yield VisitResult.SkipAll
                 return
 
+        # ----------------------------------------------------------------------
+        def ValidateNamespace(
+            namespace: ParsedNamespaceInfo,
+        ) -> None:
+            # Get the ancestor that sets scoping rules; collect matching names as we go
+            matching_names: List[ParsedNamespaceInfo] = []
+            ancestor_namespace = namespace.parent
+
+            while isinstance(ancestor_namespace, ParsedNamespaceInfo):
+                potential_namespace = ancestor_namespace.children.get(namespace.parser_info.name, None)
+
+                if isinstance(potential_namespace, list):
+                    matching_names += potential_namespace
+                elif isinstance(potential_namespace, ParsedNamespaceInfo):
+                    matching_names.append(potential_namespace)
+
+                if isinstance(ancestor_namespace.parser_info, NewNamespaceScopedStatementTrait):
+                    break
+
+                ancestor_namespace = ancestor_namespace.parent
+
+            if matching_names:
+                assert isinstance(ancestor_namespace, ParsedNamespaceInfo)
+                assert isinstance(ancestor_namespace.parser_info, NewNamespaceScopedStatementTrait)
+
+                if not ancestor_namespace.parser_info.allow_duplicate_names__:
+                    raise ErrorException(
+                        DuplicateNameError.Create(
+                            region=namespace.parser_info.regions__.name,
+                            name=namespace.parser_info.name,
+                            prev_region=matching_names[0].parser_info.regions__.name,
+                        ),
+                    )
+
+                for matching_name in matching_names:
+                    if not matching_name.parser_info.allow_name_to_be_duplicated__:
+                        raise ErrorException(
+                            DuplicateNameError.Create(
+                                region=namespace.parser_info.regions__.name,
+                                name=namespace.parser_info.name,
+                                prev_region=matching_name.parser_info.regions__.name,
+                            ),
+                        )
+
+        # ----------------------------------------------------------------------
+
         try:
             with ExitStack() as exit_stack:
-                if parser_info.introduces_scope__:
+                if isinstance(parser_info, NamedStatementTrait):
                     if isinstance(parser_info, ClassStatementParserInfo):
-                        this_scope_flag = ScopeFlag.Class
+                        scope_flag = ScopeFlag.Class
                     elif isinstance(parser_info, (FuncDefinitionStatementParserInfo, SpecialMethodStatementParserInfo)):
-                        this_scope_flag = ScopeFlag.Function
+                        scope_flag = ScopeFlag.Function
                     else:
-                        this_scope_flag = parent_scope_flag
+                        scope_flag = parent_scope_flag
 
-                    new_namespace_info = ParsedNamespaceInfo(
-                        self._namespace_infos[-1] if self._namespace_infos else None,
-                        this_scope_flag,
+                    new_namespace = ParsedNamespaceInfo(
+                        self._namespaces[-1] if self._namespaces else None,
+                        scope_flag,
                         parser_info,
                     )
 
-                    if isinstance(parser_info, RootParserInfo):
-                        assert self._root_namespace_info is None
-                        self._root_namespace_info = new_namespace_info
+                    try:
+                        ValidateNamespace(new_namespace)
+                    except ErrorException as ex:
+                        self._errors += ex.errors
+                        yield VisitResult.SkipAll
 
-                        assert not self._namespace_infos, self._namespace_infos
+                        return
 
+                    if isinstance(parser_info, RootStatementParserInfo):
+                        assert self._root_namespace is None
+                        self._root_namespace = new_namespace
                     else:
-                        self._AddNamespaceItem(new_namespace_info)
+                        assert self._root_namespace is not None
+                        assert self._namespaces
 
-                    self._namespace_infos.append(new_namespace_info)
-                    exit_stack.callback(self._namespace_infos.pop)
+                        self._namespaces[-1].AddChild(new_namespace)
 
-                elif isinstance(parser_info, StatementParserInfo):
-                    assert self._namespace_infos
-
-                    self._AddNamespaceItem(
-                        ParsedNamespaceInfo(
-                            self._namespace_infos[-1],
-                            self._namespace_infos[-1].scope_flag,
-                            parser_info,
-                        ),
-                    )
+                    if isinstance(parser_info, ScopedStatementTrait):
+                        self._namespaces.append(new_namespace)
+                        exit_stack.callback(self._namespaces.pop)
 
                 yield
 
@@ -160,42 +212,6 @@ class BaseMixin(object):
                 self._errors += ex.errors
             else:
                 raise
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Methods
-    # |
-    # ----------------------------------------------------------------------
-    def _AddNamespaceItem(
-        self,
-        namespace: ParsedNamespaceInfo,
-    ) -> None:
-        item_name, item_name_region = namespace.parser_info.GetNameAndRegion()
-
-        if item_name is not None:
-            assert self._namespace_infos
-
-            prev_item = self._namespace_infos[-1].GetScopedNamespaceInfo(item_name)
-            if prev_item is not None:
-                assert isinstance(prev_item, ParsedNamespaceInfo)
-
-                if (
-                    # Does this new item allow for duplicated names?
-                    not getattr(namespace.parser_info, "allow_duplicate_named_items__", False)
-
-                    # Do the previous items allow for duplicated names?
-                    or (isinstance(prev_item, list) and not getattr(cast(ParsedNamespaceInfo, prev_item[0]).parser_info, "allow_duplicate_named_items__", False))
-                    or (isinstance(prev_item, ParsedNamespaceInfo) and not getattr(prev_item.parser_info, "allow_duplicate_named_items__", False))
-                ):
-                    self._errors.append(
-                        DuplicateNameError.Create(
-                            region=item_name_region,
-                            name=item_name,
-                            prev_region=prev_item.parser_info.GetNameAndRegion()[1],
-                        ),
-                    )
-
-        self._namespace_infos[-1].AddChild(item_name, namespace)
 
     # ----------------------------------------------------------------------
     # |
