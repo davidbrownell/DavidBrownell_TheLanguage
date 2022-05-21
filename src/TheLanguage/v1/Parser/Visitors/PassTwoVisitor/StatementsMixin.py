@@ -50,15 +50,17 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: ClassAttributeStatementParserInfo,
     ):
-        if not parser_info.is_type__initialized__:
-            parser_info.InitType(self._GetNamespaceInfo(parser_info.type))
+        # TODO if not parser_info.is_type__initialized__:
+        # TODO     parser_info.InitType(self._GetNamespaceInfo(parser_info.type))
 
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnClassStatementParserInfo(*args, **kwargs):
+    def OnClassStatementParserInfo(
+        self,
+        parser_info: ClassStatementParserInfo,
+    ):
         yield
 
     # ----------------------------------------------------------------------
@@ -98,15 +100,11 @@ class StatementsMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnImportStatementParserInfo(*args, **kwargs):
-        yield
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @contextmanager
-    def OnImportStatementItemParserInfo(*args, **kwargs):
+    def OnImportStatementParserInfo(
+        self,
+        parser_info: ImportStatementParserInfo,
+    ):
         yield
 
     # ----------------------------------------------------------------------

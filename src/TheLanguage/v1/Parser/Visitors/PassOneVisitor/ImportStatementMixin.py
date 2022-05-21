@@ -16,14 +16,11 @@
 """Contains the ImportStatementsMixin object"""
 
 import os
-import weakref
 
-from collections import OrderedDict
 from contextlib import contextmanager
-from typing import cast, Dict, List, Optional
+from typing import Callable, cast
 
 import CommonEnvironment
-from CommonEnvironment.DoesNotExist import DoesNotExist
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -37,13 +34,10 @@ with InitRelativeImports():
 
     from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
-    from ...Error import CreateError, Error, ErrorException, TranslationUnitRegion
-
-    from ...ParserInfos.ParserInfo import RootParserInfo
-
+    from ...Error import CreateError, ErrorException
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
-
-    from ...ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportStatementItemParserInfo, ImportType
+    from ...ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportType
+    from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -60,8 +54,6 @@ ImportItemNotFoundError                     = CreateError(
 ImportItemVisibilityError                   = CreateError(
     "The import item '{name}' exists but is not visible here",
     name=str,
-    visibility=VisibilityModifier,
-    visibility_region=TranslationUnitRegion,
 )
 
 ImportNoExportedItemsError                  = CreateError(
@@ -78,49 +70,22 @@ class ImportStatementMixin(BaseMixin):
         self,
         parser_info: ImportStatementParserInfo,
     ):
+        yield
+
         # We want to introduce the name into the namespace, but don't yet know
         # what the item refers to. Create a placeholder ParsedNamespaceInfo object
         # and then populate it later. These items will be removed during the
         # postprocessing below, as they should only be available after the import statement.
 
-        assert self._namespace_infos
-        parent_namespace = self._namespace_infos[-1]
-
-        for import_item in parser_info.import_items:
-            self._AddNamespaceItem(
-                ParsedNamespaceInfo(
-                    parent_namespace,
-                    parent_namespace.scope_flag,
-                    import_item,
-                ),
-            )
-
-            # Associate the parent parser_info with the import item. This will
-            # be used later when postprocessing the imports themselves. Note that
-            # we can't use the state of this object, as different visitors are created
-            # for different compilation units. This information will be removed during
-            # finalization.
-            object.__setattr__(
-                import_item,
-                self.__class__._TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME,  # pylint: disable=protected-access
-                weakref.ref(parser_info),
-            )
-
-        yield
+        assert self._namespaces
+        parent_namespace = self._namespaces[-1]
 
         self._postprocess_funcs.append(
             (
-                lambda: self.__class__._PostprocessImportStatement(parent_namespace, parser_info),  # pylint: disable=protected-access
-                lambda: self.__class__._FinalizeImportStatement(parent_namespace, parser_info),  # pylint: disable=protected-access
+                cast(Callable[[], None], lambda: self.__class__._PostprocessImportStatement(parent_namespace, parser_info)),  # pylint: disable=protected-access
+                cast(Callable[[], None], lambda: self.__class__._FinalizeImportStatement(parent_namespace, parser_info)),  # pylint: disable=protected-access
             ),
         )
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME        = "_import_statement_parser_info"
 
     # ----------------------------------------------------------------------
     # |
@@ -130,20 +95,30 @@ class ImportStatementMixin(BaseMixin):
     @classmethod
     def _PostprocessImportStatement(
         cls,
-        namespace: ParsedNamespaceInfo,
-        import_statement_parser_info: ImportStatementParserInfo,
-    ) -> None:
+        parent_namespace: ParsedNamespaceInfo,
+        import_parser_info: ImportStatementParserInfo,
+    ) -> ParsedNamespaceInfo:
+        # Has this item already been processed? This can happen if another compilation unit
+        # with a dependency on this import has already been processed.
+        existing_namespace = parent_namespace.children[import_parser_info.name]
+        assert isinstance(existing_namespace, ParsedNamespaceInfo)
+
+        if not isinstance(existing_namespace.parser_info, ImportStatementParserInfo):
+            return existing_namespace
+
+        # If here, continue with the import process
+
         # Imports are relative to a file, so find the root namespace of this file
-        root_namespace = namespace
+        root_namespace = parent_namespace
 
         while (
             isinstance(root_namespace, ParsedNamespaceInfo)
-            and not isinstance(root_namespace.parser_info, RootParserInfo)
+            and not isinstance(root_namespace.parser_info, RootStatementParserInfo)
         ):
             root_namespace = root_namespace.parent
 
         assert isinstance(root_namespace, ParsedNamespaceInfo)
-        assert isinstance(root_namespace.parser_info, RootParserInfo)
+        assert isinstance(root_namespace.parser_info, RootStatementParserInfo)
 
         # Since imports are relative to this file, jump up one more level
         root_namespace = root_namespace.parent
@@ -153,16 +128,16 @@ class ImportStatementMixin(BaseMixin):
         # Get the namespace for the item(s) being imported
         import_namespace = root_namespace
 
-        for source_part in import_statement_parser_info.source_parts:
-            potential_import_namespace = import_namespace.children.get(source_part, DoesNotExist.instance)
+        for source_part in import_parser_info.source_parts:
+            potential_import_namespace = import_namespace.children.get(source_part, None)
 
             if (
-                potential_import_namespace is DoesNotExist.instance
+                potential_import_namespace is None
                 or isinstance(potential_import_namespace, list)
             ):
                 raise ErrorException(
                     ImportModuleNotFoundError.Create(
-                        region=import_statement_parser_info.regions__.source_parts,
+                        region=import_parser_info.regions__.source_parts,
                         name=source_part,
                     ),
                 )
@@ -173,168 +148,116 @@ class ImportStatementMixin(BaseMixin):
         assert isinstance(import_namespace, ParsedNamespaceInfo)
 
         # Get all the items to import
-        errors: List[Error] = []
 
-        if import_statement_parser_info.import_type == ImportType.source_is_directory:
-            # ----------------------------------------------------------------------
-            def ProcessDirectoryImport(
-                import_item: ImportStatementItemParserInfo,
-                import_item_namespace: ParsedNamespaceInfo,
-            ) -> Optional[ParsedNamespaceInfo]:
-                # Import everything that is public
-                child_imports = OrderedDict()
+        # ----------------------------------------------------------------------
+        def ResolveNamespaceItem(
+            item: ParsedNamespaceInfo,
+            parent: ParsedNamespaceInfo,
+        ) -> ParsedNamespaceInfo:
+            if isinstance(item.parser_info, ImportStatementParserInfo) and not item.children:
+                item = cls._PostprocessImportStatement(parent, item.parser_info)
 
-                for child_name, child_namespace in import_item_namespace.children.items():
-                    if (
-                        child_name is not None
-                        and isinstance(child_namespace, ParsedNamespaceInfo)
-                        and (
-                            getattr(child_namespace.parser_info, cls._TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)().visibility == VisibilityModifier.public  # type: ignore
-                            # TODO: Internal
-                        )
-                    ):
-                        child_imports[child_name] = child_namespace
+            return ParsedNamespaceInfo(
+                parent_namespace,
+                item.scope_flag,
+                item.parser_info,
+                item.children,
+                import_parser_info.visibility,
+            )
 
-                if not child_imports:
-                    errors.append(
-                        ImportNoExportedItemsError.Create(
-                            region=import_item.regions__.name,
-                            name=import_item.name,
-                        ),
-                    )
+        # ----------------------------------------------------------------------
 
-                    return None
-
-                return ParsedNamespaceInfo(
-                    namespace,
-                    namespace.scope_flag,
-                    import_item,
-                    child_imports,
-                )
-
-            # ----------------------------------------------------------------------
-
-            process_import_item_func = ProcessDirectoryImport
-
-        elif import_statement_parser_info.import_type == ImportType.source_is_module:
-            # ----------------------------------------------------------------------
-            def ProcessModuleImport(
-                import_item: ImportStatementItemParserInfo,
-                import_item_namespace: ParsedNamespaceInfo,
-            ) -> Optional[ParsedNamespaceInfo]:
-                # TODO: In the future rewrite, all things that are exportable should have a name and visibility
-
-                imported_item_parser_info = import_item_namespace.parser_info
-                if isinstance(imported_item_parser_info, ImportStatementItemParserInfo):
-                    imported_item_parser_info = getattr(import_item_namespace.parser_info, cls._TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)()
-
-                assert hasattr(imported_item_parser_info, "visibility")
-
-                if (
-                    imported_item_parser_info.visibility != VisibilityModifier.public  # type: ignore
-                    # TODO: Internal
-                ):
-                    errors.append(
-                        ImportItemVisibilityError.Create(
-                            region=import_item.regions__.name,
-                            name=import_item.name,
-                            visibility=imported_item_parser_info.visibility,  # type: ignore
-                            visibility_region=imported_item_parser_info.regions__.visibility,
-                        ),
-                    )
-
-                    return None
-
-                return import_item_namespace
-
-            # ----------------------------------------------------------------------
-
-            process_import_item_func = ProcessModuleImport
-
-        else:
-            assert False, import_statement_parser_info.import_type  # pragma: no cover
-
-        for import_item in import_statement_parser_info.import_items:
-            import_item_name = import_item.GetNameAndRegion()[0]
-            assert import_item_name is not None
-
-            # Has this item already been processed? This can happen if another compilation unit
-            # too a dependency on this import.
-            existing_import_item_namespace = namespace.children.get(import_item_name)
-            assert isinstance(existing_import_item_namespace, ParsedNamespaceInfo)
-
-            if not isinstance(existing_import_item_namespace.parser_info, ImportStatementItemParserInfo):
-                continue
-
-            # If here, continue with the import process
-            import_item_namespace = import_namespace.children.get(import_item.name, DoesNotExist.instance)
+        if import_parser_info.import_type == ImportType.source_is_module:
+            item_namespace = import_namespace.children.get(import_parser_info.importing_name, None)
 
             if (
-                import_item_namespace is DoesNotExist.instance
-                or isinstance(import_item_namespace, list)
+                item_namespace is None
+                or isinstance(item_namespace, list)
             ):
-                errors.append(
+                raise ErrorException(
                     ImportItemNotFoundError.Create(
-                        region=import_item.regions__.name,
-                        name=import_item.name,
+                        region=import_parser_info.regions__.importing_name,
+                        name=import_parser_info.importing_name,
                     ),
                 )
 
-                continue
+            assert isinstance(item_namespace, ParsedNamespaceInfo)
 
-            assert isinstance(import_item_namespace, ParsedNamespaceInfo)
-
-            import_item_namespace = process_import_item_func(import_item, import_item_namespace)
-            if import_item_namespace is None:
-                # Something went wrong and we will not be able to import it
-                assert errors
-                continue
-
-            if isinstance(import_item_namespace.parser_info, ImportStatementItemParserInfo):
-                cls._PostprocessImportStatement(
-                    import_namespace,
-                    getattr(
-                        import_item_namespace.parser_info,
-                        cls._TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME,
-                    )(),
+            if (
+                item_namespace.visibility != VisibilityModifier.public
+                # TODO: internal
+            ):
+                raise ErrorException(
+                    ImportItemVisibilityError.Create(
+                        region=import_parser_info.regions__.importing_name,
+                        name=import_parser_info.importing_name,
+                    ),
                 )
 
-                import_item_namespace = import_namespace.children.get(import_item.name)
-                assert isinstance(import_item_namespace, ParsedNamespaceInfo)
+            new_namespace = ResolveNamespaceItem(item_namespace, parent_namespace)
 
-            namespace.children[import_item_name] = import_item_namespace
+        elif import_parser_info.import_type == ImportType.source_is_directory:
+            module_namespace = import_namespace.children.get(import_parser_info.importing_name, None)
 
-        if errors:
-            raise ErrorException(*errors)
+            if (
+                module_namespace is None
+                or isinstance(module_namespace, list)
+            ):
+                raise ErrorException(
+                    ImportModuleNotFoundError.Create(
+                        region=import_parser_info.regions__.importing_name,
+                        name=import_parser_info.importing_name,
+                    ),
+                )
+
+            assert isinstance(module_namespace, ParsedNamespaceInfo)
+
+            child_imports = {}
+
+            for child_name, child_namespace in module_namespace.children.items():
+                if (
+                    isinstance(child_namespace, ParsedNamespaceInfo)
+                    and (
+                        child_namespace.visibility == VisibilityModifier.public
+                        # TODO: Internal
+                    )
+                ):
+                    child_imports[child_name] = ResolveNamespaceItem(child_namespace, module_namespace)
+
+            if not child_imports:
+                raise ErrorException(
+                    ImportNoExportedItemsError.Create(
+                        region=import_parser_info.regions__.importing_name,
+                        name=import_parser_info.importing_name,
+                    ),
+                )
+
+            new_namespace = ParsedNamespaceInfo(
+                parent_namespace,
+                parent_namespace.scope_flag,
+                import_parser_info,
+                child_imports,
+                import_parser_info.visibility,
+            )
+
+        else:
+            assert False, import_parser_info.import_type  # pragma: no cover
+
+        parent_namespace.children[import_parser_info.name] = new_namespace
+
+        return new_namespace
 
     # ----------------------------------------------------------------------
     @classmethod
     def _FinalizeImportStatement(
         cls,
-        namespace: ParsedNamespaceInfo,
-        import_statement_parser_info: ImportStatementParserInfo,
+        parent_namespace: ParsedNamespaceInfo,
+        import_parser_info: ImportStatementParserInfo,
     ) -> None:
         # Commit the results and remove temporary working state
-
-        # ----------------------------------------------------------------------
-        def RemoveTemporaryNamespaceItem(
-            import_name: str,
-        ) -> ParsedNamespaceInfo:
-            assert import_name in namespace.children
-            assert isinstance(namespace.children[import_name], ParsedNamespaceInfo)
-
-            return cast(ParsedNamespaceInfo, namespace.children.pop(import_name))
-
-        # ----------------------------------------------------------------------
-
-        import_items: Dict[str, ParsedNamespaceInfo] = OrderedDict()
-
-        for item_parser_info in import_statement_parser_info.import_items:
-            object.__delattr__(item_parser_info, cls._TEMPORARY_IMPORT_ITEM_PARENT_ATTRIBUTE_NAME)
-
-            item_name = item_parser_info.GetNameAndRegion()[0]
-            assert item_name is not None
-
-            import_items[item_name] = RemoveTemporaryNamespaceItem(item_name)
-
-        import_statement_parser_info.InitImports(import_items)
+        import_parser_info.InitNamespace(
+            cast(
+                ParsedNamespaceInfo,
+                parent_namespace.children.pop(import_parser_info.name),
+            ),
+        )

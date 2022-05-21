@@ -18,7 +18,7 @@
 import os
 
 from collections import OrderedDict
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, cast, Dict, List, Optional, Union
 
 import CommonEnvironment
 from CommonEnvironment.YamlRepr import ObjectReprImplBase
@@ -31,7 +31,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..ParserInfos.Statements.StatementParserInfo import ParserInfo, ScopeFlag
+    from ..ParserInfos.Common.VisibilityModifier import VisibilityModifier
+
+    from ..ParserInfos.ParserInfo import ParserInfo
+
+    from ..ParserInfos.Statements.StatementParserInfo import (
+        NamedStatementTrait,
+        ScopeFlag,
+        StatementParserInfo,
+    )
+
     from ..ParserInfos.Statements.FuncDefinitionStatementParserInfo import OperatorType as FuncOperatorType
     from ..ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodType as SpecialMethodType
 
@@ -54,6 +63,29 @@ class NamespaceInfo(ObjectReprImplBase):
         )
 
     # ----------------------------------------------------------------------
+    def GetOrAddChild(
+        self,
+        name: str,
+    ) -> "NamespaceInfo":
+        namespace = self.children.get(name, None)
+        if namespace is None:
+            namespace = NamespaceInfo(self)
+            self.children[name] = namespace
+
+        return namespace
+
+    # ----------------------------------------------------------------------
+    def AddChild(
+        self,
+        key: str,
+        namespace: "NamespaceInfo",
+    ) -> None:
+        assert key not in self.children, key
+
+        object.__setattr__(namespace, "parent", self)
+        self.children[key] = namespace
+
+    # ----------------------------------------------------------------------
     def Accept(self, visitor, *args, **kwargs):
         for child in self.children.values():
             child.Accept(visitor, *args, **kwargs)
@@ -64,7 +96,6 @@ class ParsedNamespaceInfo(NamespaceInfo):
     # ----------------------------------------------------------------------
     ChildrenType                            = Dict[
         Union[
-            None,
             str,
             FuncOperatorType,
             SpecialMethodType,
@@ -82,36 +113,49 @@ class ParsedNamespaceInfo(NamespaceInfo):
         scope_flag: ScopeFlag,
         parser_info: ParserInfo,
         children: Optional[ChildrenType]=None,
+        visibility: Optional[VisibilityModifier]=None,
     ):
+        assert isinstance(parser_info, NamedStatementTrait)
+
         super(ParsedNamespaceInfo, self).__init__(
             parent,
             children=None,
-            parser_info=type,
-            introduces_new_namespace_scope=None,
         )
 
         self.scope_flag                     = scope_flag
         self.parser_info                    = parser_info
+        self.visibility                     = visibility or parser_info.visibility
+
         self.children                       = children or OrderedDict()
-        self.introduces_new_namespace_scope = scope_flag == ScopeFlag.Class or scope_flag == ScopeFlag.Function
 
     # ----------------------------------------------------------------------
     def AddChild(
         self,
-        name: Optional[str],
         child: "ParsedNamespaceInfo",
     ) -> None:
-        existing_value = self.children.get(name, None)
+        assert isinstance(child.parser_info, NamedStatementTrait)
+
+        existing_value = self.children.get(child.parser_info.name, None)
 
         if isinstance(existing_value, list):
             existing_value.append(child)
+
+            value = existing_value
         else:
             if existing_value is None:
                 value = child
             else:
                 value = [existing_value, child]
 
-            self.children[name] = value
+            self.children[child.parser_info.name] = value
+
+        assert (
+            not isinstance(value, list)
+            or all(
+                isinstance(v.parser_info, NamedStatementTrait) and v.parser_info.allow_name_to_be_duplicated__
+                for v in value
+            )
+        )
 
     # ----------------------------------------------------------------------
     def AugmentChildren(
@@ -127,6 +171,8 @@ class ParsedNamespaceInfo(NamespaceInfo):
                 else:
                     existing_value.append(source_value)
 
+                value = existing_value
+
             else:
                 if existing_value is None:
                     value = source_value
@@ -137,34 +183,19 @@ class ParsedNamespaceInfo(NamespaceInfo):
 
                 self.children[source_key] = value
 
+            assert (
+                not isinstance(value, list)
+                or all(
+                    isinstance(v.parser_info, NamedStatementTrait) and v.parser_info.allow_name_to_be_duplicated__
+                    for v in value
+                )
+            )
+
     # ----------------------------------------------------------------------
     def Accept(self, visitor):
         for child in self.children.values():
             if isinstance(child, list):
                 for child_item in child:
-                    child_item.parser_info.Accept(visitor)
+                    cast(StatementParserInfo, child_item.parser_info).Accept(visitor)
             else:
-                child.parser_info.Accept(visitor)
-
-    # ----------------------------------------------------------------------
-    def GetScopedNamespaceInfo(
-        self,
-        name: str,
-    ) -> Union[
-        None,
-        "ParsedNamespaceInfo",
-        List["ParsedNamespaceInfo"],
-    ]:
-        namespace = self
-
-        while isinstance(namespace, ParsedNamespaceInfo):
-            potential_child = namespace.children.get(name, None)
-            if potential_child is not None:
-                return potential_child
-
-            if namespace.introduces_new_namespace_scope:
-                break
-
-            namespace = namespace.parent
-
-        return None
+                cast(StatementParserInfo, child.parser_info).Accept(visitor)

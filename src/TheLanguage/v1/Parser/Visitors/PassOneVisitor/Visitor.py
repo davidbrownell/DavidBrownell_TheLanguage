@@ -20,7 +20,7 @@ import os
 import sys
 
 from contextlib import contextmanager, ExitStack
-from typing import Callable, Dict, List, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import FileSystem
@@ -40,11 +40,8 @@ with InitRelativeImports():
 
     from ...Error import Error, ErrorException
     from ...Helpers import MiniLanguageHelpers
-    from ...MiniLanguage.Types.CustomType import CustomType
 
-    from ...ParserInfos.ParserInfo import RootParserInfo
-    from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
-    from ...ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
+    from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -80,7 +77,7 @@ class Visitor(
             str,
             Dict[
                 str,
-                RootParserInfo,
+                RootStatementParserInfo,
             ],
         ],
         mini_language_configuration_values: Dict[str, MiniLanguageHelpers.CompileTimeInfo],
@@ -95,7 +92,7 @@ class Visitor(
             if include_fundamental_types:
                 generated_code_directory = os.path.realpath(os.path.join(_script_dir, "..", "..", "FundamentalTypes", "GeneratedCode"))
 
-                fundamental_types: Dict[str, RootParserInfo] = {}
+                fundamental_types: Dict[str, RootStatementParserInfo] = {}
 
                 for generated_filename in FileSystem.WalkFiles(
                     generated_code_directory,
@@ -119,18 +116,30 @@ class Visitor(
                 assert fundamental_types
 
                 # Add the fundamental types to the workspaces collection
-                assert "__fundamental_types__" not in workspaces
-                workspaces["__fundamental_types__"] = fundamental_types
+                assert cls._FUNDAMENTAL_TYPES_ATTRIBUTE_NAME not in workspaces
+                workspaces[cls._FUNDAMENTAL_TYPES_ATTRIBUTE_NAME] = fundamental_types
 
-                exit_stack.callback(lambda: workspaces.pop("__fundamental_types__"))
+                exit_stack.callback(lambda: workspaces.pop(cls._FUNDAMENTAL_TYPES_ATTRIBUTE_NAME))
 
             # ----------------------------------------------------------------------
             class Executor(object):
                 # ----------------------------------------------------------------------
+                def __init__(
+                    self,
+                    global_namespace: NamespaceInfo,
+                ):
+                    self.global_namespace               = global_namespace
+
+                # ----------------------------------------------------------------------
+                @property
+                def fundamental_types_namespace(self) -> Optional[NamespaceInfo]:
+                    return global_namespace.children.get(cls._FUNDAMENTAL_TYPES_ATTRIBUTE_NAME, None)  # pylint: disable=protected-access
+
+                # ----------------------------------------------------------------------
                 @staticmethod
                 def Execute(
-                    fully_qualifed_name: str,  # pylint: disable=unused-argument
-                    root: RootParserInfo,
+                    names: Tuple[str, str],  # pylint: disable=unused-argument
+                    root: RootStatementParserInfo,
                 ) -> Union[
                     Visitor.PositiveExecuteResultType,
                     List[Error],
@@ -142,7 +151,7 @@ class Visitor(
                     if visitor._errors:                 # pylint: disable=protected-access
                         return visitor._errors          # pylint: disable=protected-access
 
-                    return visitor._root_namespace_info, visitor._postprocess_funcs  # type: ignore  # pylint: disable=protected-access
+                    return visitor._root_namespace, visitor._postprocess_funcs  # type: ignore  # pylint: disable=protected-access
 
                 # ----------------------------------------------------------------------
                 @staticmethod
@@ -186,20 +195,15 @@ class Visitor(
                             namespace = workspace_namespace
 
                             for part in name_parts[:-1]:
-                                if part not in namespace.children:
-                                    namespace.children[part] = NamespaceInfo(namespace)
+                                namespace = namespace.GetOrAddChild(part)
 
-                                namespace = namespace.children[part]
-
-                            object.__setattr__(namespace_info, "parent", namespace)
-                            namespace.children[name_parts[-1]] = namespace_info
+                            namespace.AddChild(name_parts[-1], namespace_info)
 
                             # Update the postprocess_funcs
                             if these_postprocess_funcs:
                                 postprocess_func_infos.append((workspace_name, relative_path, these_postprocess_funcs))
 
-                        assert workspace_name not in global_namespace.children
-                        global_namespace.children[workspace_name] = workspace_namespace
+                        global_namespace.AddChild(workspace_name, workspace_namespace)
 
                     for get_func_func in [
                         lambda this_postprocess_funcs: this_postprocess_funcs[0],       # postprocess_func
@@ -227,43 +231,11 @@ class Visitor(
 
             # ----------------------------------------------------------------------
 
-            yield Executor()
+            yield Executor(global_namespace)
 
-            # Add all of the fundamental types to the configuration info
-            if include_fundamental_types:
-                # ----------------------------------------------------------------------
-                def EnumNamespace(
-                    namespace: NamespaceInfo,
-                ) -> None:
-                    for type_name, namespace_info in namespace.children.items():
-                        if type_name is None:
-                            type_namespaces = namespace_info if isinstance(namespace_info, list) else [namespace_info]
-
-                            for namespace in type_namespaces:
-                                assert isinstance(namespace, ParsedNamespaceInfo)
-                                assert isinstance(namespace.parser_info, ImportStatementParserInfo)
-                                assert namespace.parser_info.visibility != VisibilityModifier.public
-
-                            continue
-
-                        if not isinstance(namespace_info, ParsedNamespaceInfo):
-                            EnumNamespace(namespace_info)
-                            continue
-
-                        assert isinstance(namespace_info, ParsedNamespaceInfo), namespace_info
-                        assert isinstance(type_name, str), type_name
-                        assert type_name not in mini_language_configuration_values, type_name
-
-                        # TODO: fullname
-
-                        mini_language_configuration_values[type_name] = MiniLanguageHelpers.CompileTimeInfo(
-                            CustomType(type_name),
-                            namespace_info,
-                            namespace_info.parser_info.regions__.self__,
-                        )
-
-                # ----------------------------------------------------------------------
-
-                fundamental_types_namespace = global_namespace.children.get("__fundamental_types__", None)
-                if fundamental_types_namespace is not None:
-                    EnumNamespace(fundamental_types_namespace)
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Data
+    # |
+    # ----------------------------------------------------------------------
+    _FUNDAMENTAL_TYPES_ATTRIBUTE_NAME       = "__fundamental_types__"

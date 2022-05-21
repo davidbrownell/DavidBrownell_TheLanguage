@@ -37,8 +37,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 sys.stdout.write("Importing content...")
 with StreamDecorator(
     sys.stdout,
-).DoneManager() as dm:
-    dm.stream.flush()
+).DoneManager() as import_dm:
+    import_dm.stream.flush()
 
     with InitRelativeImports():
         from .AllGrammars import Grammar, GrammarCommentToken, LexObserver, ParseObserver
@@ -47,12 +47,11 @@ with StreamDecorator(
         from .Parser.Parser import (
             IntegerType,
             MiniLanguageType,
-            NoneType,
             Parse,
-            RootParserInfo,
             Validate,
-            VariantType,
         )
+
+        from .Parser.ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
 
         from .Targets.Python.PythonTarget import PythonTarget
         from .Targets.PythonCode.PythonCodeTarget import PythonCodeTarget
@@ -136,7 +135,6 @@ def Execute(
                     ):
                         relative_paths.append(FileSystem.TrimPath(filename, input_directory_or_filename))
 
-
                     num_files += len(relative_paths)
                     workspaces[input_directory_or_filename] = relative_paths
 
@@ -205,7 +203,7 @@ def Execute(
             if parse_dm.result != 0:
                 return parse_dm.result
 
-            parse_result = cast(Dict[str, Dict[str, RootParserInfo]], parse_result)
+            parse_result = cast(Dict[str, Dict[str, RootStatementParserInfo]], parse_result)
 
         dm.stream.write("\nValidating...")
         with dm.stream.DoneManager() as validate_dm:

@@ -6,6 +6,7 @@
 from v1.Lexer.Location import Location
 from v1.Parser.MiniLanguage.Types.CustomType import CustomType
 from v1.Parser.MiniLanguage.Types.IntegerType import IntegerType
+from v1.Parser.ParserInfos.AggregateParserInfo import AggregateParserInfo
 from v1.Parser.ParserInfos.Common.ClassModifier import ClassModifier
 from v1.Parser.ParserInfos.Common.ConstraintArgumentsParserInfo import ConstraintArgumentParserInfo
 from v1.Parser.ParserInfos.Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
@@ -23,13 +24,12 @@ from v1.Parser.ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpre
 from v1.Parser.ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
 from v1.Parser.ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 from v1.Parser.ParserInfos.ParserInfo import ParserInfoType
-from v1.Parser.ParserInfos.ParserInfo import RootParserInfo
 from v1.Parser.ParserInfos.Statements.ClassCapabilities.ConceptCapabilities import ConceptCapabilities
 from v1.Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementDependencyParserInfo
 from v1.Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
 from v1.Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo, OperatorType as FuncDefinitionStatementParserInfoOperatorType
-from v1.Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementItemParserInfo
 from v1.Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportType as ImportStatementParserInfoImportType
+from v1.Parser.ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
 from v1.Parser.TranslationUnitRegion import TranslationUnitRegion
 
 
@@ -204,21 +204,20 @@ tu_region_000166 = TranslationUnitRegion(begin=Location(line=1, column=1), end=L
 
 
 # ----------------------------------------------------------------------
-statement_000000 = ImportStatementItemParserInfo.Create(
-    regions=[tu_region_000000, tu_region_000001, None],
-    name="Int",
-    alias=None,
-)
-
 statement_000000 = ImportStatementParserInfo.Create(
-    regions=[tu_region_000000, tu_region_000000, tu_region_000002],
+    regions=[tu_region_000000, tu_region_000001, tu_region_000000, tu_region_000002, tu_region_000001],
+    name=r"Int",
     visibility_param=VisibilityModifier.private,
     source_parts=['Int'],
-    import_items=[statement_000000, ],
+    importing_name=r"Int",
     import_type=ImportStatementParserInfoImportType.source_is_module,
 )
 
-statement_000001 = FuncOrTypeExpressionParserInfo.Create(
+statement_000001 = AggregateParserInfo(
+    parser_infos=[statement_000000, ],
+)
+
+statement_000002 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
     regions=[tu_region_000003, tu_region_000003, None],
     value=IntegerType(),
@@ -227,28 +226,28 @@ statement_000001 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000002 = NoneExpressionParserInfo.Create(
+statement_000003 = NoneExpressionParserInfo.Create(
     regions=[tu_region_000004],
 )
 
-statement_000003 = VariantExpressionParserInfo.Create(
+statement_000004 = VariantExpressionParserInfo.Create(
     regions=[tu_region_000005, None],
-    types=[statement_000001, statement_000002, ],
+    types=[statement_000002, statement_000003, ],
     mutability_modifier=None,
 )
 
-statement_000004 = NoneExpressionParserInfo.Create(
+statement_000005 = NoneExpressionParserInfo.Create(
     regions=[tu_region_000006],
 )
 
-statement_000005 = ConstraintParameterParserInfo.Create(
+statement_000006 = ConstraintParameterParserInfo.Create(
     regions=[tu_region_000007, tu_region_000008],
-    type=statement_000003,
-    name="min_value!",
-    default_value=statement_000004,
+    type=statement_000004,
+    name=r"min_value!",
+    default_value=statement_000005,
 )
 
-statement_000006 = FuncOrTypeExpressionParserInfo.Create(
+statement_000007 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
     regions=[tu_region_000009, tu_region_000009, None],
     value=IntegerType(),
@@ -257,93 +256,93 @@ statement_000006 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000007 = NoneExpressionParserInfo.Create(
+statement_000008 = NoneExpressionParserInfo.Create(
     regions=[tu_region_000010],
 )
 
-statement_000008 = VariantExpressionParserInfo.Create(
+statement_000009 = VariantExpressionParserInfo.Create(
     regions=[tu_region_000011, None],
-    types=[statement_000006, statement_000007, ],
+    types=[statement_000007, statement_000008, ],
     mutability_modifier=None,
 )
 
-statement_000009 = NoneExpressionParserInfo.Create(
+statement_000010 = NoneExpressionParserInfo.Create(
     regions=[tu_region_000012],
 )
 
-statement_000010 = ConstraintParameterParserInfo.Create(
+statement_000011 = ConstraintParameterParserInfo.Create(
     regions=[tu_region_000013, tu_region_000014],
-    type=statement_000008,
-    name="max_value!",
-    default_value=statement_000009,
+    type=statement_000009,
+    name=r"max_value!",
+    default_value=statement_000010,
 )
 
-statement_000011 = ConstraintParametersParserInfo.Create(
+statement_000012 = ConstraintParametersParserInfo.Create(
     regions=[tu_region_000015, None, tu_region_000016, None],
     positional=None,
-    any=[statement_000005, statement_000010, ],
-    keyword=None,
-)
-
-statement_000012 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000017, tu_region_000017],
-    name="min_value!",
-)
-
-statement_000012 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000017, None],
-    expression=statement_000012,
+    any=[statement_000006, statement_000011, ],
     keyword=None,
 )
 
 statement_000013 = VariableExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000018, tu_region_000018],
-    name="max_value!",
+    regions=[tu_region_000017, tu_region_000017],
+    name=r"min_value!",
 )
 
-statement_000013 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000018, None],
+statement_000014 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000017, None],
     expression=statement_000013,
     keyword=None,
 )
 
-statement_000014 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000019, tu_region_000019],
-    arguments=[statement_000012, statement_000013, ],
+statement_000015 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000018, tu_region_000018],
+    name=r"max_value!",
 )
 
-statement_000015 = FuncOrTypeExpressionParserInfo.Create(
+statement_000016 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000018, None],
+    expression=statement_000015,
+    keyword=None,
+)
+
+statement_000017 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000019, tu_region_000019],
+    arguments=[statement_000014, statement_000016, ],
+)
+
+statement_000018 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
     regions=[tu_region_000020, tu_region_000021, None],
     value=IntegerType(),
     templates=None,
-    constraints=statement_000014,
+    constraints=statement_000017,
     mutability_modifier=None,
 )
 
-statement_000015 = ClassStatementDependencyParserInfo.Create(
+statement_000019 = ClassStatementDependencyParserInfo.Create(
     regions=[tu_region_000020, tu_region_000020],
     visibility=VisibilityModifier.public,
-    type=statement_000015,
+    type=statement_000018,
 )
 
-statement_000016 = TemplateTypeParameterParserInfo.Create(
+statement_000020 = TemplateTypeParameterParserInfo.Create(
     regions=[tu_region_000022, tu_region_000022, None],
-    name="ArchiveT",
+    name=r"ArchiveT",
     is_variadic=None,
     default_type=None,
 )
 
-statement_000017 = TemplateParametersParserInfo.Create(
+statement_000021 = TemplateParametersParserInfo.Create(
     regions=[tu_region_000023, None, tu_region_000022, None],
     positional=None,
-    any=[statement_000016, ],
+    any=[statement_000020, ],
     keyword=None,
 )
 
-statement_000018 = FuncOrTypeExpressionParserInfo.Create(
+statement_000022 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000024, tu_region_000025, tu_region_000026],
     value=CustomType("ArchiveT"),
@@ -352,33 +351,33 @@ statement_000018 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=MutabilityModifier.ref,
 )
 
-statement_000019 = FuncParameterParserInfo.Create(
+statement_000023 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000027, None, tu_region_000028],  # type: ignore
-    type=statement_000018,
+    type=statement_000022,
     is_variadic=None,
-    name="archive",
+    name=r"archive",
     default_value=None,
 )
 
-statement_000020 = FuncParametersParserInfo.Create(
+statement_000024 = FuncParametersParserInfo.Create(
     regions=[tu_region_000029, None, tu_region_000027, None],
     positional=None,
-    any=[statement_000019, ],
+    any=[statement_000023, ],
     keyword=None,
 )
 
-statement_000021 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000030, tu_region_000029, tu_region_000031, tu_region_000032, tu_region_000030, tu_region_000033, None, None, None, None, None, None, None, None, None],
-    parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000020,
+statement_000025 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000030, tu_region_000033, tu_region_000031, tu_region_000029, tu_region_000032, tu_region_000030, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.Serialize",
     visibility_param=VisibilityModifier.public,
+    parent_class_capabilities=ConceptCapabilities,
+    parameters=statement_000024,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.Serialize,
     documentation=None,
-    templates=statement_000017,
+    templates=statement_000021,
     captured_variables=None,
     statements=None,
     is_deferred=None,
@@ -389,21 +388,21 @@ statement_000021 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000022 = TemplateTypeParameterParserInfo.Create(
+statement_000026 = TemplateTypeParameterParserInfo.Create(
     regions=[tu_region_000034, tu_region_000034, None],
-    name="VisitorT",
+    name=r"VisitorT",
     is_variadic=None,
     default_type=None,
 )
 
-statement_000023 = TemplateParametersParserInfo.Create(
+statement_000027 = TemplateParametersParserInfo.Create(
     regions=[tu_region_000035, None, tu_region_000034, None],
     positional=None,
-    any=[statement_000022, ],
+    any=[statement_000026, ],
     keyword=None,
 )
 
-statement_000024 = FuncOrTypeExpressionParserInfo.Create(
+statement_000028 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000036, tu_region_000037, tu_region_000038],
     value=CustomType("VisitorT"),
@@ -412,33 +411,33 @@ statement_000024 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=MutabilityModifier.ref,
 )
 
-statement_000025 = FuncParameterParserInfo.Create(
+statement_000029 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000039, None, tu_region_000040],  # type: ignore
-    type=statement_000024,
+    type=statement_000028,
     is_variadic=None,
-    name="visitor",
+    name=r"visitor",
     default_value=None,
 )
 
-statement_000026 = FuncParametersParserInfo.Create(
+statement_000030 = FuncParametersParserInfo.Create(
     regions=[tu_region_000041, None, tu_region_000039, None],
     positional=None,
-    any=[statement_000025, ],
+    any=[statement_000029, ],
     keyword=None,
 )
 
-statement_000027 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000042, tu_region_000041, tu_region_000043, tu_region_000044, tu_region_000042, tu_region_000045, None, None, None, None, None, None, None, None, None],
-    parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000026,
+statement_000031 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000042, tu_region_000045, tu_region_000043, tu_region_000041, tu_region_000044, tu_region_000042, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.Accept",
     visibility_param=VisibilityModifier.public,
+    parent_class_capabilities=ConceptCapabilities,
+    parameters=statement_000030,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.Accept,
     documentation=None,
-    templates=statement_000023,
+    templates=statement_000027,
     captured_variables=None,
     statements=None,
     is_deferred=None,
@@ -447,63 +446,17 @@ statement_000027 = FuncDefinitionStatementParserInfo.Create(
     is_reentrant=None,
     is_scoped=None,
     is_static=None,
-)
-
-statement_000028 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000046, tu_region_000050, tu_region_000047, tu_region_000048, tu_region_000046, tu_region_000049, None, None, None, None, None, None, None, None, None],
-    parent_class_capabilities=ConceptCapabilities,
-    parameters=True,
-    visibility_param=VisibilityModifier.public,
-    mutability_param=MutabilityModifier.var,
-    method_modifier_param=MethodModifier.abstract,
-    return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.BitFlipInplace,
-    documentation=None,
-    templates=None,
-    captured_variables=None,
-    statements=None,
-    is_deferred=None,
-    is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
-    is_static=None,
-)
-
-statement_000029 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000051, tu_region_000052, tu_region_000053],
-    value=IntegerType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000030 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000054, None, tu_region_000055],  # type: ignore
-    type=statement_000029,
-    is_variadic=None,
-    name="divisor",
-    default_value=None,
-)
-
-statement_000031 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000056, None, tu_region_000054, None],
-    positional=None,
-    any=[statement_000030, ],
-    keyword=None,
 )
 
 statement_000032 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000057, tu_region_000056, tu_region_000058, tu_region_000059, tu_region_000057, tu_region_000060, None, None, None, None, None, None, None, None, None],
-    parent_class_capabilities=ConceptCapabilities,
-    parameters=statement_000031,
+    regions=[tu_region_000046, tu_region_000049, tu_region_000047, tu_region_000050, tu_region_000048, tu_region_000046, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.BitFlipInplace",
     visibility_param=VisibilityModifier.public,
+    parent_class_capabilities=ConceptCapabilities,
+    parameters=True,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.DivideFloorInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -518,7 +471,7 @@ statement_000032 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000033 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000061, tu_region_000062, tu_region_000063],
+    regions=[tu_region_000051, tu_region_000052, tu_region_000053],
     value=IntegerType(),
     templates=None,
     constraints=None,
@@ -527,29 +480,29 @@ statement_000033 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000034 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000064, None, tu_region_000065],  # type: ignore
+    regions=[tu_region_000054, None, tu_region_000055],  # type: ignore
     type=statement_000033,
     is_variadic=None,
-    name="divisor",
+    name=r"divisor",
     default_value=None,
 )
 
 statement_000035 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000066, None, tu_region_000064, None],
+    regions=[tu_region_000056, None, tu_region_000054, None],
     positional=None,
     any=[statement_000034, ],
     keyword=None,
 )
 
 statement_000036 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000067, tu_region_000066, tu_region_000068, tu_region_000069, tu_region_000067, tu_region_000070, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000057, tu_region_000060, tu_region_000058, tu_region_000056, tu_region_000059, tu_region_000057, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.DivideFloorInplace",
+    visibility_param=VisibilityModifier.public,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000035,
-    visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.ModuloInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -564,7 +517,7 @@ statement_000036 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000037 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000071, tu_region_000072, tu_region_000073],
+    regions=[tu_region_000061, tu_region_000062, tu_region_000063],
     value=IntegerType(),
     templates=None,
     constraints=None,
@@ -573,29 +526,29 @@ statement_000037 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000038 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000074, None, tu_region_000075],  # type: ignore
+    regions=[tu_region_000064, None, tu_region_000065],  # type: ignore
     type=statement_000037,
     is_variadic=None,
-    name="multiplier",
+    name=r"divisor",
     default_value=None,
 )
 
 statement_000039 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000076, None, tu_region_000074, None],
+    regions=[tu_region_000066, None, tu_region_000064, None],
     positional=None,
     any=[statement_000038, ],
     keyword=None,
 )
 
 statement_000040 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000077, tu_region_000076, tu_region_000078, tu_region_000079, tu_region_000077, tu_region_000080, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000067, tu_region_000070, tu_region_000068, tu_region_000066, tu_region_000069, tu_region_000067, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.ModuloInplace",
+    visibility_param=VisibilityModifier.public,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000039,
-    visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.MultiplyInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -610,7 +563,7 @@ statement_000040 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000041 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000081, tu_region_000082, tu_region_000083],
+    regions=[tu_region_000071, tu_region_000072, tu_region_000073],
     value=IntegerType(),
     templates=None,
     constraints=None,
@@ -619,29 +572,29 @@ statement_000041 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000042 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000084, None, tu_region_000085],  # type: ignore
+    regions=[tu_region_000074, None, tu_region_000075],  # type: ignore
     type=statement_000041,
     is_variadic=None,
-    name="exponent",
+    name=r"multiplier",
     default_value=None,
 )
 
 statement_000043 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000086, None, tu_region_000084, None],
+    regions=[tu_region_000076, None, tu_region_000074, None],
     positional=None,
     any=[statement_000042, ],
     keyword=None,
 )
 
 statement_000044 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000087, tu_region_000086, tu_region_000088, tu_region_000089, tu_region_000087, tu_region_000090, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000077, tu_region_000080, tu_region_000078, tu_region_000076, tu_region_000079, tu_region_000077, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.MultiplyInplace",
+    visibility_param=VisibilityModifier.public,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000043,
-    visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.PowerInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -656,7 +609,7 @@ statement_000044 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000045 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000091, tu_region_000092, tu_region_000093],
+    regions=[tu_region_000081, tu_region_000082, tu_region_000083],
     value=IntegerType(),
     templates=None,
     constraints=None,
@@ -665,29 +618,29 @@ statement_000045 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000046 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000094, None, tu_region_000095],  # type: ignore
+    regions=[tu_region_000084, None, tu_region_000085],  # type: ignore
     type=statement_000045,
     is_variadic=None,
-    name="value",
+    name=r"exponent",
     default_value=None,
 )
 
 statement_000047 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000096, None, tu_region_000094, None],
+    regions=[tu_region_000086, None, tu_region_000084, None],
     positional=None,
     any=[statement_000046, ],
     keyword=None,
 )
 
 statement_000048 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000097, tu_region_000096, tu_region_000098, tu_region_000099, tu_region_000097, tu_region_000100, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000087, tu_region_000090, tu_region_000088, tu_region_000086, tu_region_000089, tu_region_000087, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.PowerInplace",
+    visibility_param=VisibilityModifier.public,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000047,
-    visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.AddInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -702,7 +655,7 @@ statement_000048 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000049 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000101, tu_region_000102, tu_region_000103],
+    regions=[tu_region_000091, tu_region_000092, tu_region_000093],
     value=IntegerType(),
     templates=None,
     constraints=None,
@@ -711,29 +664,29 @@ statement_000049 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000050 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000104, None, tu_region_000105],  # type: ignore
+    regions=[tu_region_000094, None, tu_region_000095],  # type: ignore
     type=statement_000049,
     is_variadic=None,
-    name="value",
+    name=r"value",
     default_value=None,
 )
 
 statement_000051 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000106, None, tu_region_000104, None],
+    regions=[tu_region_000096, None, tu_region_000094, None],
     positional=None,
     any=[statement_000050, ],
     keyword=None,
 )
 
 statement_000052 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000107, tu_region_000106, tu_region_000108, tu_region_000109, tu_region_000107, tu_region_000110, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000097, tu_region_000100, tu_region_000098, tu_region_000096, tu_region_000099, tu_region_000097, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.AddInplace",
+    visibility_param=VisibilityModifier.public,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000051,
-    visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.SubtractInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -748,7 +701,7 @@ statement_000052 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000053 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000111, tu_region_000112, tu_region_000113],
+    regions=[tu_region_000101, tu_region_000102, tu_region_000103],
     value=IntegerType(),
     templates=None,
     constraints=None,
@@ -757,29 +710,29 @@ statement_000053 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000054 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000114, None, tu_region_000115],  # type: ignore
+    regions=[tu_region_000104, None, tu_region_000105],  # type: ignore
     type=statement_000053,
     is_variadic=None,
-    name="places",
+    name=r"value",
     default_value=None,
 )
 
 statement_000055 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000116, None, tu_region_000114, None],
+    regions=[tu_region_000106, None, tu_region_000104, None],
     positional=None,
     any=[statement_000054, ],
     keyword=None,
 )
 
 statement_000056 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000117, tu_region_000116, tu_region_000118, tu_region_000119, tu_region_000117, tu_region_000120, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000107, tu_region_000110, tu_region_000108, tu_region_000106, tu_region_000109, tu_region_000107, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.SubtractInplace",
+    visibility_param=VisibilityModifier.public,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000055,
-    visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.BitShiftLeftInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -794,7 +747,7 @@ statement_000056 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000057 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000121, tu_region_000122, tu_region_000123],
+    regions=[tu_region_000111, tu_region_000112, tu_region_000113],
     value=IntegerType(),
     templates=None,
     constraints=None,
@@ -803,29 +756,29 @@ statement_000057 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000058 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000124, None, tu_region_000125],  # type: ignore
+    regions=[tu_region_000114, None, tu_region_000115],  # type: ignore
     type=statement_000057,
     is_variadic=None,
-    name="places",
+    name=r"places",
     default_value=None,
 )
 
 statement_000059 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000126, None, tu_region_000124, None],
+    regions=[tu_region_000116, None, tu_region_000114, None],
     positional=None,
     any=[statement_000058, ],
     keyword=None,
 )
 
 statement_000060 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000127, tu_region_000126, tu_region_000128, tu_region_000129, tu_region_000127, tu_region_000130, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000117, tu_region_000120, tu_region_000118, tu_region_000116, tu_region_000119, tu_region_000117, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.BitShiftLeftInplace",
+    visibility_param=VisibilityModifier.public,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000059,
-    visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.BitShiftRightInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -840,7 +793,7 @@ statement_000060 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000061 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000131, tu_region_000132, tu_region_000133],
+    regions=[tu_region_000121, tu_region_000122, tu_region_000123],
     value=IntegerType(),
     templates=None,
     constraints=None,
@@ -849,29 +802,29 @@ statement_000061 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000062 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000134, None, tu_region_000135],  # type: ignore
+    regions=[tu_region_000124, None, tu_region_000125],  # type: ignore
     type=statement_000061,
     is_variadic=None,
-    name="value",
+    name=r"places",
     default_value=None,
 )
 
 statement_000063 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000136, None, tu_region_000134, None],
+    regions=[tu_region_000126, None, tu_region_000124, None],
     positional=None,
     any=[statement_000062, ],
     keyword=None,
 )
 
 statement_000064 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000137, tu_region_000136, tu_region_000138, tu_region_000139, tu_region_000137, tu_region_000140, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000127, tu_region_000130, tu_region_000128, tu_region_000126, tu_region_000129, tu_region_000127, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.BitShiftRightInplace",
+    visibility_param=VisibilityModifier.public,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000063,
-    visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.BitAndInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -886,7 +839,7 @@ statement_000064 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000065 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000141, tu_region_000142, tu_region_000143],
+    regions=[tu_region_000131, tu_region_000132, tu_region_000133],
     value=IntegerType(),
     templates=None,
     constraints=None,
@@ -895,29 +848,29 @@ statement_000065 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000066 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000144, None, tu_region_000145],  # type: ignore
+    regions=[tu_region_000134, None, tu_region_000135],  # type: ignore
     type=statement_000065,
     is_variadic=None,
-    name="value",
+    name=r"value",
     default_value=None,
 )
 
 statement_000067 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000146, None, tu_region_000144, None],
+    regions=[tu_region_000136, None, tu_region_000134, None],
     positional=None,
     any=[statement_000066, ],
     keyword=None,
 )
 
 statement_000068 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000147, tu_region_000146, tu_region_000148, tu_region_000149, tu_region_000147, tu_region_000150, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000137, tu_region_000140, tu_region_000138, tu_region_000136, tu_region_000139, tu_region_000137, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.BitAndInplace",
+    visibility_param=VisibilityModifier.public,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000067,
-    visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.BitXorInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -932,7 +885,7 @@ statement_000068 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000069 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000151, tu_region_000152, tu_region_000153],
+    regions=[tu_region_000141, tu_region_000142, tu_region_000143],
     value=IntegerType(),
     templates=None,
     constraints=None,
@@ -941,29 +894,29 @@ statement_000069 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000070 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000154, None, tu_region_000155],  # type: ignore
+    regions=[tu_region_000144, None, tu_region_000145],  # type: ignore
     type=statement_000069,
     is_variadic=None,
-    name="value",
+    name=r"value",
     default_value=None,
 )
 
 statement_000071 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000156, None, tu_region_000154, None],
+    regions=[tu_region_000146, None, tu_region_000144, None],
     positional=None,
     any=[statement_000070, ],
     keyword=None,
 )
 
 statement_000072 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000157, tu_region_000156, tu_region_000158, tu_region_000159, tu_region_000157, tu_region_000160, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000147, tu_region_000150, tu_region_000148, tu_region_000146, tu_region_000149, tu_region_000147, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.BitXorInplace",
+    visibility_param=VisibilityModifier.public,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000071,
-    visibility_param=VisibilityModifier.public,
     mutability_param=MutabilityModifier.var,
     method_modifier_param=MethodModifier.abstract,
     return_type=None,
-    name=FuncDefinitionStatementParserInfoOperatorType.BitOrInplace,
     documentation=None,
     templates=None,
     captured_variables=None,
@@ -976,27 +929,74 @@ statement_000072 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000073 = ClassStatementParserInfo.Create(
-    regions=[tu_region_000161, tu_region_000162, tu_region_000163, tu_region_000164, None, tu_region_000020, None, None, tu_region_000165, tu_region_000161, None, None],
-    parent_class_capabilities=None,
-    class_capabilities=ConceptCapabilities,
+statement_000073 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Configuration,
+    regions=[tu_region_000151, tu_region_000152, tu_region_000153],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000074 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000154, None, tu_region_000155],  # type: ignore
+    type=statement_000073,
+    is_variadic=None,
+    name=r"value",
+    default_value=None,
+)
+
+statement_000075 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000156, None, tu_region_000154, None],
+    positional=None,
+    any=[statement_000074, ],
+    keyword=None,
+)
+
+statement_000076 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000157, tu_region_000160, tu_region_000158, tu_region_000156, tu_region_000159, tu_region_000157, None, None, None, None, None, None, None, None, None],
+    name=r"OperatorType.BitOrInplace",
     visibility_param=VisibilityModifier.public,
-    class_modifier_param=ClassModifier.mutable,
-    name="MutableInt",
+    parent_class_capabilities=ConceptCapabilities,
+    parameters=statement_000075,
+    mutability_param=MutabilityModifier.var,
+    method_modifier_param=MethodModifier.abstract,
+    return_type=None,
     documentation=None,
     templates=None,
-    constraints=statement_000011,
-    extends=[statement_000015, ],
+    captured_variables=None,
+    statements=None,
+    is_deferred=None,
+    is_exceptional=None,
+    is_generator=None,
+    is_reentrant=None,
+    is_scoped=None,
+    is_static=None,
+)
+
+statement_000077 = ClassStatementParserInfo.Create(
+    regions=[tu_region_000161, tu_region_000162, tu_region_000163, tu_region_000164, None, tu_region_000020, None, None, tu_region_000165, tu_region_000161, None, None],
+    name=r"MutableInt",
+    visibility_param=VisibilityModifier.public,
+    parent_class_capabilities=None,
+    class_capabilities=ConceptCapabilities,
+    class_modifier_param=ClassModifier.mutable,
+    documentation=None,
+    templates=None,
+    constraints=statement_000012,
+    extends=[statement_000019, ],
     implements=None,
     uses=None,
-    statements=[statement_000021, statement_000027, statement_000028, statement_000032, statement_000036, statement_000040, statement_000044, statement_000048, statement_000052, statement_000056, statement_000060, statement_000064, statement_000068, statement_000072, ],
+    statements=[statement_000025, statement_000031, statement_000032, statement_000036, statement_000040, statement_000044, statement_000048, statement_000052, statement_000056, statement_000060, statement_000064, statement_000068, statement_000072, statement_000076, ],
     constructor_visibility_param=VisibilityModifier.public,
     is_abstract=None,
     is_final=None,
 )
 
-root_parser_info = RootParserInfo.Create(
+root_parser_info = RootStatementParserInfo.Create(
     regions=[tu_region_000166, tu_region_000166, None],
-    statements=[statement_000000, statement_000073, ],
+    name=r"Concepts\MutableInt.TheLanguage",
+    statements=[statement_000001, statement_000077, ],
     documentation=None,
 )

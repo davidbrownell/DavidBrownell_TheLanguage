@@ -19,7 +19,7 @@ import os
 import textwrap
 
 from contextlib import contextmanager
-from typing import cast, List
+from typing import cast, List, Optional
 
 import CommonEnvironment
 
@@ -40,8 +40,9 @@ with InitRelativeImports():
     from ....Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
     from ....Parser.ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from ....Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo, IfStatementClauseParserInfo, IfStatementElseClauseParserInfo
-    from ....Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportStatementItemParserInfo
+    from ....Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
     from ....Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
+    from ....Parser.ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ....Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
     from ....Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
@@ -154,11 +155,11 @@ class StatementsMixin(BaseMixin):
                 """\
                 {statement_name} = ClassStatementParserInfo.Create(
                     regions=[{self_region}, {visibility_region}, {class_modifier_region}, {name_region}, {documentation_region}, {extends_region}, {implements_region}, {uses_region}, {statements_region}, {constructor_visibility_region}, {is_abstract_region}, {is_final_region}],
+                    name={name},
+                    visibility_param={visibility},
                     parent_class_capabilities={parent_class_capabilities},
                     class_capabilities={class_capabilities},
-                    visibility_param={visibility},
                     class_modifier_param={class_modifier},
-                    name={name},
                     documentation={documentation},
                     templates={templates},
                     constraints={constraints},
@@ -260,14 +261,14 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = FuncDefinitionStatementParserInfo.Create(
-                    regions=[{self_region}, {parameters_region}, {visibility_region}, {mutability_region}, {method_modifier_region}, {name_region}, {documentation_region}, {captured_variables_region}, {statements_region}, {is_deferred_region}, {is_exceptional_region}, {is_generator_region}, {is_reentrant_region}, {is_scoped_region}, {is_static_region}],
+                    regions=[{self_region}, {name_region}, {visibility_region}, {parameters_region}, {mutability_region}, {method_modifier_region}, {documentation_region}, {captured_variables_region}, {statements_region}, {is_deferred_region}, {is_exceptional_region}, {is_generator_region}, {is_reentrant_region}, {is_scoped_region}, {is_static_region}],
+                    name={name},
+                    visibility_param={visibility},
                     parent_class_capabilities={parent_class_capabilities},
                     parameters={parameters},
-                    visibility_param={visibility},
                     mutability_param={mutability},
                     method_modifier_param={method_modifier},
                     return_type={return_type},
-                    name={name},
                     documentation={documentation},
                     templates={templates},
                     captured_variables={captured_variables},
@@ -454,10 +455,11 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = ImportStatementParserInfo.Create(
-                    regions=[{self_region}, {visibility_region}, {source_parts_region}],
+                    regions=[{self_region}, {name_region}, {visibility_region}, {source_parts_region}, {importing_name_region}],
+                    name={name},
                     visibility_param={visibility},
                     source_parts={source_parts},
-                    import_items={import_items},
+                    importing_name={importing_name},
                     import_type={import_type},
                 )
 
@@ -465,42 +467,15 @@ class StatementsMixin(BaseMixin):
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
+                name_region=self._ToString(parser_info.regions__.name),
                 visibility_region=self._ToString(parser_info.regions__.visibility),
                 source_parts_region=self._ToString(parser_info.regions__.source_parts),
+                importing_name_region=self._ToString(parser_info.regions__.importing_name),
                 visibility=self._ToString(parser_info.visibility),
                 source_parts=str(parser_info.source_parts),
-                import_items=self._ToString(parser_info.import_items),  # type: ignore
-                import_type="ImportStatementParserInfoImportType.{}".format(parser_info.import_type.name),
-            ),
-        )
-
-    # ----------------------------------------------------------------------
-    @contextmanager
-    def OnImportStatementItemParserInfo(
-        self,
-        parser_info: ImportStatementItemParserInfo,
-    ):
-        yield
-
-        self._imports.add("from v1.Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementItemParserInfo")
-
-        self._stream.write(
-            textwrap.dedent(
-                """\
-                {statement_name} = ImportStatementItemParserInfo.Create(
-                    regions=[{self_region}, {name_region}, {alias_region}],
-                    name={name},
-                    alias={alias},
-                )
-
-                """,
-            ).format(
-                statement_name=self._CreateStatementName(parser_info),
-                self_region=self._ToString(parser_info.regions__.self__),
-                name_region=self._ToString(parser_info.regions__.name),
-                alias_region=self._ToString(parser_info.regions__.alias),
+                importing_name=self._ToString(parser_info.importing_name),
                 name=self._ToString(parser_info.name),
-                alias=self._ToString(parser_info.alias),
+                import_type="ImportStatementParserInfoImportType.{}".format(parser_info.import_type.name),
             ),
         )
 
@@ -524,6 +499,51 @@ class StatementsMixin(BaseMixin):
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    # |  RootStatementParserInfo
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnRootStatementParserInfo(
+        self,
+        parser_info: RootStatementParserInfo,
+    ):
+        if parser_info.documentation is not None:
+            self._stream.write(
+                textwrap.dedent(
+                    '''
+                    """\\
+                    {}
+                    """
+
+                    ''',
+                ).format(parser_info.documentation),
+            )
+
+        yield
+
+        self._imports.add("from v1.Parser.ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                root_parser_info = RootStatementParserInfo.Create(
+                    regions=[{self_region}, {statements_region}, {documentation_region}],
+                    name={name},
+                    statements={statements},
+                    documentation={documentation},
+                )
+
+                """,
+            ).format(
+                self_region=self._ToString(parser_info.regions__.self__),
+                statements_region=self._ToString(parser_info.regions__.statements),
+                name=self._ToString(parser_info.name),
+                documentation_region=self._ToString(parser_info.regions__.documentation),
+                statements=self._ToString(cast(Optional[List[ParserInfo]], parser_info.statements)),
+                documentation=self._ToString(parser_info.documentation),
             ),
         )
 
@@ -564,7 +584,7 @@ class StatementsMixin(BaseMixin):
                 name_region=self._ToString(parser_info.regions__.name),
                 statements_region=self._ToString(parser_info.regions__.statements),
                 parent_class_capabilities=parent_class_capabilities,
-                name="SpecialMethodType.{}".format(parser_info.name.name),
+                name="SpecialMethodType.{}".format(parser_info.special_method_type.name),
                 statements=self._ToString(cast(List[ParserInfo], parser_info.statements)),
             ),
         )
@@ -596,10 +616,10 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = TypeAliasStatementParserInfo.Create(
-                    regions=[{self_region}, {visibility_region}, {name_region}],
-                    parent_class_capabilities={parent_class_capabilities},
-                    visibility_param={visibility},
+                    regions=[{self_region}, {name_region}, {visibility_region}],
                     name={name},
+                    visibility_param={visibility},
+                    parent_class_capabilities={parent_class_capabilities},
                     templates={templates},
                     constraints={constraints},
                     type={type},
