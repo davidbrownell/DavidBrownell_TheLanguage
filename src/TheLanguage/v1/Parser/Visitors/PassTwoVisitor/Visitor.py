@@ -19,7 +19,7 @@ import os
 import types
 
 from contextlib import contextmanager, ExitStack
-from typing import Dict, List, Optional, Union
+from typing import cast, Dict, List, Optional, Union, Tuple
 
 import CommonEnvironment
 
@@ -35,17 +35,17 @@ with InitRelativeImports():
     from .ExpressionsMixin import ExpressionsMixin
     from .StatementsMixin import StatementsMixin
 
-    from ..NamespaceInfo import ParsedNamespaceInfo
+    from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
     from ..StateMaintainer import StateMaintainer
 
-    from ...Error import CreateError, Error, ErrorException
+    from ...Error import Error, ErrorException
+    from ...GlobalRegion import GlobalRegion
     from ...Helpers import MiniLanguageHelpers
-
     from ...MiniLanguage.Types.CustomType import CustomType
 
-    from ...ParserInfos.ParserInfo import ParserInfo, RootParserInfo, VisitResult
-    from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
+    from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
+    from ...ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
+    from ...ParserInfos.Statements.RootStatementParserInfo import ParserInfo, RootStatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -56,13 +56,74 @@ class Visitor(
 ):
     # ----------------------------------------------------------------------
     @classmethod
+    def CreateState(
+        cls,
+        mini_language_configuration_values: Dict[str, MiniLanguageHelpers.CompileTimeInfo],
+        fundamental_types_namespace: Optional[NamespaceInfo],
+    ) -> StateMaintainer[MiniLanguageHelpers.CompileTimeInfo]:
+        state = StateMaintainer[MiniLanguageHelpers.CompileTimeInfo](mini_language_configuration_values)
+
+        # Add the fundamental types
+        if fundamental_types_namespace is not None:
+            # ----------------------------------------------------------------------
+            def EnumNamespace(
+                namespace: NamespaceInfo,
+            ) -> None:
+                for namespace_info in namespace.children.values():
+                    if not isinstance(namespace_info, ParsedNamespaceInfo):
+                        EnumNamespace(namespace_info)
+                        continue
+
+                    assert isinstance(namespace_info.parser_info, RootStatementParserInfo), namespace_info.parser_info
+
+                    for type_name, type_namespace_info in namespace_info.children.items():
+                        if type_name is None:
+                            continue
+
+                        assert isinstance(type_name, str), type_name
+                        assert isinstance(type_namespace_info, ParsedNamespaceInfo)
+
+                        state.AddItem(
+                            type_name,
+                            MiniLanguageHelpers.CompileTimeInfo(
+                                CustomType(type_name),
+                                type_namespace_info.parser_info,
+                                GlobalRegion.Create(
+                                    cast(ParserInfo, type_namespace_info.parser_info).regions__.self__.begin,
+                                    cast(ParserInfo, type_namespace_info.parser_info).regions__.self__.end,
+                                    "__fundamental_types__",
+                                    namespace_info.parser_info.name,
+                                ),
+                            ),
+                        )
+
+            # ----------------------------------------------------------------------
+
+            EnumNamespace(fundamental_types_namespace)
+
+        return state
+
+    # ----------------------------------------------------------------------
+    @classmethod
     def Execute(
         cls,
-        minilanguage_configuration_values: Dict[str, MiniLanguageHelpers.CompileTimeInfo],
-        fully_qualified_name: str,  # pylint: disable=unused-argument
-        root: RootParserInfo,
+        state: StateMaintainer[MiniLanguageHelpers.CompileTimeInfo],
+        global_namespace: NamespaceInfo,
+        names: Tuple[str, str],  # pylint: disable=unused-argument
+        root: RootStatementParserInfo,
     ) -> List[Error]:
-        visitor = cls(minilanguage_configuration_values)
+        # Get this namespace
+        this_namespace = global_namespace.children[names[0]]
+
+        name_parts = os.path.splitext(names[1])[0]
+        name_parts = name_parts.split(os.path.sep)
+
+        for name_part in name_parts:
+            this_namespace = this_namespace.children[name_part]
+
+        assert isinstance(this_namespace, ParsedNamespaceInfo)
+
+        visitor = cls(state, this_namespace)
 
         root.Accept(visitor)
 

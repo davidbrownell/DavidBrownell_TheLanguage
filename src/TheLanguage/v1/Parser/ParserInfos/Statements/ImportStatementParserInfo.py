@@ -33,14 +33,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+    from .StatementParserInfo import (
+        NamedStatementTrait,
+        ParserInfo,
+        ParserInfoType,
+        ScopeFlag,
+        StatementParserInfo,
+        TranslationUnitRegion,
+    )
 
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ...Error import Error, ErrorException
 
     if TYPE_CHECKING:
-        # TODO: I'm not sure that this is importing the correct type
         from ...Visitors.NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
 
 
@@ -52,59 +58,17 @@ class ImportType(Enum):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ImportStatementItemParserInfo(ParserInfo):
-    # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[TranslationUnitRegion]]]
-
-    name: str
-    alias: Optional[str]
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(ImportStatementItemParserInfo, self).__init__(
-            ParserInfoType.Standard,
-            regions,
-        )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def GetNameAndRegion(self) -> Tuple[Optional[str], TranslationUnitRegion]:
-        if self.alias is not None:
-            return self.alias, self.regions__.alias
-
-        return super(ImportStatementItemParserInfo, self).GetNameAndRegion()
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ImportStatementParserInfo(StatementParserInfo):
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    ImportsType                             = Dict[str, "ParsedNamespaceInfo"]
-
+class ImportStatementParserInfo(
+    NamedStatementTrait,
+    StatementParserInfo,
+):
     # ----------------------------------------------------------------------
     # |
     # |  Public Data
     # |
     # ----------------------------------------------------------------------
-    visibility_param: InitVar[Optional[VisibilityModifier]]
-    visibility: VisibilityModifier          = field(init=False)
-
     source_parts: List[str]
-    import_items: List[ImportStatementItemParserInfo]
-
+    importing_name: str
     import_type: ImportType
 
     # ----------------------------------------------------------------------
@@ -129,16 +93,23 @@ class ImportStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, parser_info_type, regions, visibility_param):
-        super(ImportStatementParserInfo, self).__post_init__(
+        StatementParserInfo.__post_init__(
+            self,
             parser_info_type,
             regions,
             regionless_attributes=[
-                "import_items",
                 "import_type",
-            ],
+            ]
+                + NamedStatementTrait.RegionlessAttributesArgs()
+            ,
             validate=False,
-            imports__=None,                 # type: ignore
-            is_imports__initialized__=None, # type: ignore
+            **{
+                **{
+                    "namespace__": None,
+                    "is_namespace_initialized__": None,
+                },
+                **NamedStatementTrait.ObjectReprImplBaseInitKwargs(),
+            },
         )
 
         # Set defaults
@@ -146,7 +117,7 @@ class ImportStatementParserInfo(StatementParserInfo):
             visibility_param = VisibilityModifier.private
             object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
-        object.__setattr__(self, "visibility", visibility_param)
+        NamedStatementTrait.__post_init__(self, visibility_param)
 
         # Validate
         self.ValidateRegions()
@@ -166,34 +137,34 @@ class ImportStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     # This method is invoked during validation
-    def InitImports(
+    def InitNamespace(
         self,
-        value: ImportsType,
+        value: "ParsedNamespaceInfo",
     ) -> None:
-        assert not self.is_imports__initialized__
-        object.__setattr__(self, self.__class__._IMPORTS_ATTRIBUTE_NAME, value)  # pylint: disable=protected-access
+        assert not self.is_namespace_initialized__
+        object.__setattr__(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME, value)  # pylint: disable=protected-access
 
     # ----------------------------------------------------------------------
     @property
-    def imports__(self) -> "ImportsType":
-        return getattr(self, self.__class__._IMPORTS_ATTRIBUTE_NAME)  # pylint: disable=protected-access
+    def namespace__(self) -> "ParsedNamespaceInfo":
+        return getattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
 
     @property
-    def is_imports__initialized__(self) -> bool:
-        return hasattr(self, self.__class__._IMPORTS_ATTRIBUTE_NAME)  # pylint: disable=protected-access
+    def is_namespace_initialized__(self) -> bool:
+        return hasattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
 
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Methods
-    # |
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        yield "import_items", self.import_items  # type: ignore
+    # BugBUg: # ----------------------------------------------------------------------
+    # BugBUg: # |
+    # BugBUg: # |  Protected Methods
+    # BugBUg: # |
+    # BugBUg: # ----------------------------------------------------------------------
+    # BugBUg: @Interface.override
+    # BugBUg: def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+    # BugBUg:     yield "import_items", self.import_items  # type: ignore
 
     # ----------------------------------------------------------------------
     # |
     # |  Private Data
     # |
     # ----------------------------------------------------------------------
-    _IMPORTS_ATTRIBUTE_NAME                 = "_imports"
+    _NAMESPACE_ATTRIBUTE_NAME                 = "_imports"

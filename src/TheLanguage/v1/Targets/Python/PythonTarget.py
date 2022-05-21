@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Visitor import Visitor
 
-    from ..Target import RootParserInfo, Target
+    from ..Target import RootStatementParserInfo, Target
 
 
 # ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ class PythonTarget(Target):
             str,
             Dict[
                 str,
-                RootParserInfo,
+                RootStatementParserInfo,
             ],
         ],
         output_dir: Optional[str],

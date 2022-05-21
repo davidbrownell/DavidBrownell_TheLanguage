@@ -36,19 +36,21 @@ with InitRelativeImports():
         ParserInfo,
         ParserInfoType,
         ScopeFlag,
+        ScopedStatementTrait,
         StatementParserInfo,
         TranslationUnitRegion,
     )
 
+    from ..Common.VisibilityModifier import VisibilityModifier
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class IfStatementClauseParserInfo(ParserInfo):
-    # ----------------------------------------------------------------------
-    introduces_scope__                      = True
-
+class IfStatementClauseParserInfo(
+    ScopedStatementTrait,
+    ParserInfo,
+):
     # ----------------------------------------------------------------------
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
@@ -78,9 +80,16 @@ class IfStatementClauseParserInfo(ParserInfo):
                 ):
                     parser_info_type = statement.parser_info_type__
 
+        # Duplicate regions for items that we are generating automatically
+        assert regions and regions[0] is not None
+        regions.insert(0, regions[0])       # name
+        regions.insert(0, regions[0])       # visibility
+
         return cls(
-            parser_info_type,               # type: ignore
-            regions,                        # type: ignore
+            "IfStatementClauseParserInfo ({})".format(regions[0].begin.line),
+            VisibilityModifier.private,                                         # type: ignore
+            parser_info_type,                                                   # type: ignore
+            regions,                                                            # type: ignore
             expression,
             statements,
             *args,
@@ -88,11 +97,25 @@ class IfStatementClauseParserInfo(ParserInfo):
         )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
-        super(IfStatementClauseParserInfo, self).__init__(
+    def __post_init__(self, visibility_param, parser_info_type, regions, *args, **kwargs):
+        ScopedStatementTrait.__post_init__(self, visibility_param)
+
+        self._InitTraits(
+            allow_name_to_be_duplicated=False,
+        )
+
+        ParserInfo.__init__(
+            self,
+            parser_info_type,
+            regions,
             *args,
-            **kwargs,
-            regionless_attributes=["expression", ],
+            regionless_attributes=[
+                "expression",
+            ] + ScopedStatementTrait.RegionlessAttributesArgs(),
+            **{
+                **kwargs,
+                **ScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+            },
         )
 
         self.expression.ValidateAsExpression()
@@ -112,11 +135,12 @@ class IfStatementClauseParserInfo(ParserInfo):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class IfStatementElseClauseParserInfo(ParserInfo):
+class IfStatementElseClauseParserInfo(
+    ScopedStatementTrait,
+    ParserInfo,
+):
     # ----------------------------------------------------------------------
-    introduces_scope__                      = True
-
-    # ----------------------------------------------------------------------
+    parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     statements: List[StatementParserInfo]
@@ -124,20 +148,55 @@ class IfStatementElseClauseParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+    def Create(
+        cls,
+        regions: List[Optional[TranslationUnitRegion]],
+        statements: List[StatementParserInfo],
+        *args,
+        **kwargs,
+    ):
+        parser_info_type = ParserInfoType.Unknown
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions, *args, **kwargs):
-        super(IfStatementElseClauseParserInfo, self).__init__(
-            ParserInfoType.Unknown,
-            regions,
+        for statement in statements:
+            if (
+                parser_info_type == ParserInfoType.Unknown
+                or statement.parser_info_type__.value < parser_info_type.value
+            ):
+                parser_info_type = statement.parser_info_type__
+
+        # Duplicate regions for items that we are generating automatically
+        assert regions and regions[0] is not None
+        regions.insert(0, regions[0])       # name
+        regions.insert(0, regions[0])       # visibility
+
+        return cls(
+            "IfStatementElseClauseParserInfo ({})".format(regions[0].begin.line),
+            VisibilityModifier.private,                                             # type: ignore
+            parser_info_type,                                                       # type: ignore
+            regions,                                                                # type: ignore
+            statements,
             *args,
             **kwargs,
+        )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self, visibility_param, parser_info_type, regions, *args, **kwargs):
+        self._InitTraits(
+            allow_name_to_be_duplicated=False,
+        )
+
+        ScopedStatementTrait.__post_init__(self, visibility_param)
+
+        ParserInfo.__init__(
+            self,
+            parser_info_type,
+            regions,
+            regionless_attributes=ScopedStatementTrait.RegionlessAttributesArgs(),
+            *args,
+            **{
+                **kwargs,
+                **ScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+            },
         )
 
     # ----------------------------------------------------------------------

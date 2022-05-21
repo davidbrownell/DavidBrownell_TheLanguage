@@ -1,6 +1,6 @@
-# <class 'v1.Parser.ParserInfos.ParserInfo.RootParserInfo'>
+# <class 'v1.Parser.ParserInfos.Statements.RootStatementParserInfo.RootStatementParserInfo'>
 documentation: null
-regions__: # <class 'types.RootParserInfoRegions'>
+regions__: # <class 'types.RootStatementParserInfoRegions'>
   self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1

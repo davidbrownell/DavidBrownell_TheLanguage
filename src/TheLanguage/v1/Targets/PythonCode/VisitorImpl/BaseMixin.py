@@ -35,16 +35,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ....Lexer.Location import Location
 
-    from ....Parser.Parser import RootParserInfo, TranslationUnitRegion
+    from ....Parser.Parser import TranslationUnitRegion
 
     from ....Parser.ParserInfos.ParserInfo import ParserInfo
+    from ....Parser.ParserInfos.AggregateParserInfo import AggregateParserInfo
 
     from ....Parser.ParserInfos.Common.ClassModifier import ClassModifier
     from ....Parser.ParserInfos.Common.MethodModifier import MethodModifier
     from ....Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier
     from ....Parser.ParserInfos.Common.VisibilityModifier import VisibilityModifier
-
-    from ....Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo, StatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -75,7 +74,7 @@ class BaseMixin(object):
         self._stream                        = StringIO()
 
         self._region_id_lookup: Dict[str, str]          = {}
-        self._statement_id_lookup: Dict[TranslationUnitRegion, str]    = {}
+        self._statement_id_lookup: Dict[int, str]       = {}
 
     # ----------------------------------------------------------------------
     def __getattr__(
@@ -116,47 +115,30 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     @staticmethod
     @contextmanager
-    def OnPhrase(*args, **kwargs):
+    def OnPhrase(*args, **kwargs):  # pylint: disable=unused-argument
         yield
 
     # ----------------------------------------------------------------------
     @contextmanager
-    def OnRootParserInfo(
+    def OnAggregateParserInfo(
         self,
-        parser_info: RootParserInfo,
+        parser_info: AggregateParserInfo,
     ):
-        if parser_info.documentation is not None:
-            self._stream.write(
-                textwrap.dedent(
-                    '''
-                    """\\
-                    {}
-                    """
-
-                    ''',
-                ).format(parser_info.documentation),
-            )
-
         yield
 
-        self._imports.add("from v1.Parser.ParserInfos.ParserInfo import RootParserInfo")
+        self._imports.add("from v1.Parser.ParserInfos.AggregateParserInfo import AggregateParserInfo")
 
         self._stream.write(
             textwrap.dedent(
                 """\
-                root_parser_info = RootParserInfo.Create(
-                    regions=[{self_region}, {statements_region}, {documentation_region}],
-                    statements={statements},
-                    documentation={documentation},
+                {statement_name} = AggregateParserInfo(
+                    parser_infos={parser_infos},
                 )
 
                 """,
             ).format(
-                self_region=self._ToString(parser_info.regions__.self__),
-                statements_region=self._ToString(parser_info.regions__.statements),
-                documentation_region=self._ToString(parser_info.regions__.documentation),
-                statements=self._ToString(parser_info.statements),
-                documentation=self._ToString(parser_info.documentation),
+                statement_name=self._CreateStatementName(parser_info),
+                parser_infos=self._ToString(parser_info.parser_infos),
             ),
         )
 
@@ -167,13 +149,15 @@ class BaseMixin(object):
         self,
         parser_info: ParserInfo,
     ) -> str:
-        potential_statement_id = self._statement_id_lookup.get(parser_info.regions__.self__, None)
+        key = id(parser_info)
+
+        potential_statement_id = self._statement_id_lookup.get(key, None)
         if potential_statement_id is not None:
             return potential_statement_id
 
         statement_id = "statement_{:0>6}".format(len(self._statement_id_lookup))
 
-        self._statement_id_lookup[parser_info.regions__.self__] = statement_id
+        self._statement_id_lookup[key] = statement_id
 
         return statement_id
 
@@ -197,7 +181,7 @@ class BaseMixin(object):
         if value is None:
             return "None"
         elif isinstance(value, str):
-            return '"{}"'.format(value.replace("\n", "\\n"))
+            return 'r"{}"'.format(value.replace("\n", "\\n"))
         elif isinstance(value, bool):
             return str(value)
         elif isinstance(value, ClassModifier):

@@ -59,9 +59,9 @@ with InitRelativeImports():
         ErrorException,
     )
 
+    from ...Parser.ParserInfos.AggregateParserInfo import AggregateParserInfo
     from ...Parser.ParserInfos.Statements.ImportStatementParserInfo import (
         ImportStatementParserInfo,
-        ImportStatementItemParserInfo,
         ImportType,
     )
 
@@ -345,21 +345,18 @@ class ImportStatement(ImportGrammarPhrase):
         source_info = source_info.split(".")
 
         # Imports
-        import_items = [
-            ImportStatementItemParserInfo.Create(
-                CreateRegions(node, data.name_leaf, data.alias_leaf),
-                data.name_info,
-                data.alias_info,
-            )
-            for data in self.__class__._EnumImportItemsData(nodes)  # pylint: disable=protected-access
-        ]
-
-        return ImportStatementParserInfo.Create(
-            CreateRegions(node, visibility_node, source_leaf),
-            visibility_info,
-            source_info,
-            import_items,
-            import_type,
+        return AggregateParserInfo.Create(
+            [
+                ImportStatementParserInfo.Create(
+                    CreateRegions(node, data.name_leaf, visibility_node, source_leaf, data.importing_name_leaf),
+                    data.name_info,
+                    visibility_info,
+                    source_info,
+                    data.importing_name_info,
+                    import_type,
+                )
+                for data in self.__class__._EnumImportItemsData(nodes)  # pylint: disable=protected-access
+            ],
         )
 
     # ----------------------------------------------------------------------
@@ -372,20 +369,11 @@ class ImportStatement(ImportGrammarPhrase):
     # ----------------------------------------------------------------------
     @dataclass
     class ImportStatementItemParserInfoData(object):
-        node: AST.Node
+        importing_name_leaf: AST.Leaf
+        importing_name_info: str
 
         name_leaf: AST.Leaf
         name_info: str
-
-        alias_leaf: Optional[AST.Leaf]
-        alias_info: Optional[str]
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            assert (
-                (self.alias_leaf is None and self.alias_info is None)
-                or (self.alias_leaf is not None and self.alias_info is not None)
-            )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -421,24 +409,24 @@ class ImportStatement(ImportGrammarPhrase):
             assert len(content_item_nodes) == 2
 
             # <name>
-            name_leaf = cast(AST.Leaf, content_item_nodes[0])
-            name_info = ExtractToken(name_leaf)
+            importing_name_leaf = cast(AST.Leaf, content_item_nodes[0])
+            importing_name_info = ExtractToken(importing_name_leaf)
 
             # ('as' <alias>)?
             alias_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], content_item_nodes[1])))
             if alias_node is None:
-                alias_info = None
+                name_leaf = importing_name_leaf
+                name_info = importing_name_info
             else:
                 alias_nodes = ExtractSequence(alias_node)
                 assert len(alias_nodes) == 2
 
-                alias_node = cast(AST.Leaf, alias_nodes[1])
-                alias_info = ExtractToken(alias_node)
+                name_leaf = cast(AST.Leaf, alias_nodes[1])
+                name_info = ExtractToken(name_leaf)
 
             yield cls.ImportStatementItemParserInfoData(
-                content_item_node,
+                importing_name_leaf,
+                importing_name_info,
                 name_leaf,
                 name_info,
-                alias_node,
-                alias_info,
             )
