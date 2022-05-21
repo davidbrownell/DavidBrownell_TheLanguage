@@ -40,8 +40,6 @@ with InitRelativeImports():
     from ....Parser.MiniLanguage.Types.NoneType import NoneType
     from ....Parser.MiniLanguage.Types.NumberType import NumberType
     from ....Parser.MiniLanguage.Types.StringType import StringType
-    from ....Parser.MiniLanguage.Types.Type import Type as MiniLanguageType
-    from ....Parser.MiniLanguage.Types.VariantType import VariantType
 
     from ....Parser.ParserInfos.ParserInfo import ParserInfo
 

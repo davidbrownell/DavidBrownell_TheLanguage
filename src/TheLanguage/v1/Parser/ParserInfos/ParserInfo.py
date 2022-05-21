@@ -99,8 +99,6 @@ class ParserInfoType(Enum):
 class ParserInfo(ObjectReprImplBase):
     """A collection of lexical tokens that may or may not be valid"""
 
-    introduces_scope__                      = False
-
     # ----------------------------------------------------------------------
     def __init__(
         self,
@@ -168,7 +166,6 @@ class ParserInfo(ObjectReprImplBase):
 
         ObjectReprImplBase.__init__(
             self,
-            introduces_scope__=None,
             parser_info_type__=None,
             is_disabled__=None,
             **custom_display_funcs,
@@ -242,20 +239,10 @@ class ParserInfo(ObjectReprImplBase):
 
                 if not visit_result & VisitResult.SkipChildren:
                     for child in self._GenerateAcceptChildren():
-                        assert self.introduces_scope__ or child.introduces_scope__
-
                         visit_result = child.Accept(
                             visitor,
                             include_disabled=include_disabled,
                         )
-
-    # ----------------------------------------------------------------------
-    @Interface.extensionmethod
-    def GetNameAndRegion(self) -> Tuple[Optional[str], TranslationUnitRegion]:
-        if hasattr(self, "name"):
-            return self.name, self.regions__.name  # type: ignore  # pylint: disable=no-member
-
-        return None, self.regions__.self__
 
     # ----------------------------------------------------------------------
     # |
@@ -358,37 +345,3 @@ class ParserInfo(ObjectReprImplBase):
 
         with method(self) as visit_result:
             yield visit_result
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class RootParserInfo(ParserInfo):
-    # ----------------------------------------------------------------------
-    introduces_scope__                      = True
-
-    # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[TranslationUnitRegion]]]
-
-    statements: Optional[List[ParserInfo]]
-    documentation: Optional[str]
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, regions):
-        super(RootParserInfo, self).__init__(ParserInfoType.Standard, regions)
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptChildren(self) -> Generator["ParserInfo", None, None]:
-        if self.statements:
-            yield from self.statements

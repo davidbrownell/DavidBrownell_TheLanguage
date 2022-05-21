@@ -149,7 +149,7 @@ class ParseObserver(ParseObserverBase):
     @Interface.override
     def ExtractParserInfo(
         node: AST.Node,
-    ) -> Optional[ParseObserverBase.ExtractParserInfoReturnType]:
+    ) -> ParseObserverBase.ExtractParserInfoReturnType:
         if isinstance(node.type, LexerPhrase):
             grammar_phrase = GrammarPhraseLookup.get(node.type, None)
             if grammar_phrase is not None:

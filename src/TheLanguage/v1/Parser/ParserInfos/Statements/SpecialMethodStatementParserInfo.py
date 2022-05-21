@@ -33,9 +33,18 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+    from .StatementParserInfo import (
+        NewNamespaceScopedStatementTrait,
+        ParserInfo,
+        ParserInfoType,
+        ScopeFlag,
+        StatementParserInfo,
+        TranslationUnitRegion,
+    )
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
+
+    from ..Common.VisibilityModifier import VisibilityModifier
 
     from ...Parser import (
         CreateError,
@@ -85,15 +94,14 @@ class SpecialMethodType(Enum):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class SpecialMethodStatementParserInfo(StatementParserInfo):
-
-    # ----------------------------------------------------------------------
-    introduces_scope__                      = True
-
+class SpecialMethodStatementParserInfo(
+    NewNamespaceScopedStatementTrait,
+    StatementParserInfo,
+):
     # ----------------------------------------------------------------------
     parent_class_capabilities: ClassCapabilities
 
-    name: SpecialMethodType
+    special_method_type: SpecialMethodType
     statements: List[StatementParserInfo]
 
     # ----------------------------------------------------------------------
@@ -115,6 +123,8 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
             ScopeFlag.Class,
             parser_info_type,               # type: ignore
             regions,                        # type: ignore
+            str(name),
+            VisibilityModifier.private,     # type: ignore
             parent_class_capabilities,      # type: ignore
             name,
             *args,
@@ -122,12 +132,30 @@ class SpecialMethodStatementParserInfo(StatementParserInfo):
         )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, parser_info_type, regions):
-        super(SpecialMethodStatementParserInfo, self).__post_init__(
+    def __post_init__(self, parser_info_type, regions, visibility_param):
+        self._InitTraits(
+            allow_duplicate_names=False,
+            allow_name_to_be_duplicated=False,
+        )
+
+        NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
+
+        StatementParserInfo.__post_init__(
+            self,
             parser_info_type,
             regions,
-            regionless_attributes=["parent_class_capabilities", ],
-            parent_class_capabilities=lambda value: value.name,
+            regionless_attributes=[
+                "visibility",               # Value is hard coded during creation
+                "parent_class_capabilities",
+                "special_method_type",      # Value is calculated
+            ] + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
+            **{
+                **{
+                    "parent_class_capabilities": lambda value: value.name,
+                    "special_method_type": None,
+                },
+                **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+            },
         )
 
         # Validate

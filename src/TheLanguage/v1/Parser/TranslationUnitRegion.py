@@ -34,7 +34,6 @@ with InitRelativeImports():
     from ..Lexer.Location import Location
 
 
-
 # ----------------------------------------------------------------------
 @ComparisonOperators
 @dataclass(frozen=True, repr=False)

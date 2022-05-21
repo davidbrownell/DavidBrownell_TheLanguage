@@ -1,6 +1,14 @@
-# <class 'v1.Parser.ParserInfos.ParserInfo.RootParserInfo'>
+# <class 'v1.Parser.ParserInfos.Statements.RootStatementParserInfo.RootStatementParserInfo'>
 documentation: null
-regions__: # <class 'types.RootParserInfoRegions'>
+name: "filename"
+regions__: # <class 'types.RootStatementParserInfoRegions'>
+  name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+    begin: # <class 'v1.Lexer.Location.Location'>
+      column: 1
+      line: 1
+    end: # <class 'v1.Lexer.Location.Location'>
+      column: 1
+      line: 18
   self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
@@ -9,6 +17,13 @@ regions__: # <class 'types.RootParserInfoRegions'>
       column: 1
       line: 18
   statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+    begin: # <class 'v1.Lexer.Location.Location'>
+      column: 1
+      line: 1
+    end: # <class 'v1.Lexer.Location.Location'>
+      column: 1
+      line: 18
+  visibility: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
@@ -314,3 +329,4 @@ statements:
     templates: null
     uses: null
     visibility: "VisibilityModifier.private"
+visibility: "VisibilityModifier.public"

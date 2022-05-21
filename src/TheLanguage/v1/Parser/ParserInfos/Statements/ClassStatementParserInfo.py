@@ -32,7 +32,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+    from .StatementParserInfo import (
+        NewNamespaceScopedStatementTrait,
+        ParserInfo,
+        ParserInfoType,
+        ScopeFlag,
+        StatementParserInfo,
+        TranslationUnitRegion,
+    )
+
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
     from ..Common.ClassModifier import ClassModifier
@@ -106,7 +114,10 @@ class ClassStatementDependencyParserInfo(ParserInfo):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassStatementParserInfo(StatementParserInfo):
+class ClassStatementParserInfo(
+    NewNamespaceScopedStatementTrait,
+    StatementParserInfo,
+):
     """\
     Statement that defines a class-like object. The capabilities provided during instantiation
     control many aspects of what is an isn't valid for a particular class type (e.g. class vs.
@@ -114,19 +125,12 @@ class ClassStatementParserInfo(StatementParserInfo):
     """
 
     # ----------------------------------------------------------------------
-    introduces_scope__                      = True
-
-    # ----------------------------------------------------------------------
     parent_class_capabilities: Optional[ClassCapabilities]
     class_capabilities: ClassCapabilities
-
-    visibility_param: InitVar[Optional[VisibilityModifier]]
-    visibility: VisibilityModifier          = field(init=False)
 
     class_modifier_param: InitVar[Optional[ClassModifier]]
     class_modifier: ClassModifier           = field(init=False)
 
-    name: str
     documentation: Optional[str]
 
     templates: Optional[TemplateParametersParserInfo]
@@ -169,7 +173,13 @@ class ClassStatementParserInfo(StatementParserInfo):
         class_modifier_param,
         constructor_visibility_param,
     ):
-        super(ClassStatementParserInfo, self).__post_init__(
+        self._InitTraits(
+            allow_duplicate_names=True,
+            allow_name_to_be_duplicated=False,
+        )
+
+        StatementParserInfo.__post_init__(
+            self,
             parser_info_type,
             regions,
             regionless_attributes=[
@@ -177,10 +187,15 @@ class ClassStatementParserInfo(StatementParserInfo):
                 "class_capabilities",
                 "templates",
                 "constraints",
-            ],
+            ] + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
             validate=False,
-            parent_class_capabilities=lambda value: None if value is None else value.name,
-            class_capabilities=lambda value: value.name,
+            **{
+                **{
+                    "parent_class_capabilities": lambda value: None if value is None else value.name,
+                    "class_capabilities": lambda value: value.name,
+                },
+                **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+            },
         )
 
         # Set defaults
@@ -192,7 +207,7 @@ class ClassStatementParserInfo(StatementParserInfo):
 
             object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
-        object.__setattr__(self, "visibility", visibility_param)
+        NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
 
         if class_modifier_param is None:
             class_modifier_param = self.class_capabilities.default_class_modifier

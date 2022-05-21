@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Parser.Parser import ParserInfo, RootParserInfo
+    from ...Parser.Parser import ParserInfo, RootStatementParserInfo
 
     from ...Parser.ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo
     from ...Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
@@ -93,9 +93,9 @@ class Visitor(object):
 
     # ----------------------------------------------------------------------
     @contextmanager
-    def OnRootParserInfo(
+    def OnRootStatementParserInfo(
         self,
-        parser_info: RootParserInfo,
+        parser_info: RootStatementParserInfo,
     ):
         self._stream.write(
             textwrap.dedent(
