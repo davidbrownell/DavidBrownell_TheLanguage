@@ -306,6 +306,7 @@ class FuncDefinitionStatementParserInfo(
         self._InitTraits(
             allow_duplicate_names=False,
             allow_name_to_be_duplicated=True,
+            name_is_ordered=False,
         )
 
         StatementParserInfo.__post_init__(
