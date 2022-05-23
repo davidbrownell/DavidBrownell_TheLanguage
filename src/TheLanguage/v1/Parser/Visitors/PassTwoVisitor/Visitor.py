@@ -116,7 +116,7 @@ class Visitor(
         this_namespace = global_namespace.children[names[0]]
 
         name_parts = os.path.splitext(names[1])[0]
-        name_parts = name_parts.split(os.path.sep)
+        name_parts = name_parts.split(".")
 
         for name_part in name_parts:
             this_namespace = this_namespace.children[name_part]

@@ -147,6 +147,13 @@ def Lex(
 
         relative_path = FileSystem.TrimPath(fqn, workspace_name)
 
+        # Ensure that the relative path doesn't have embedded dots
+        extensionless_relative_path = os.path.splitext(relative_path)[0]
+        if "." in extensionless_relative_path:
+            raise Exception("Filenames may not contain the '.' character ('{}')".format(extensionless_relative_path))
+
+        relative_path = relative_path.replace(os.path.sep, ".")
+
         workspace_results.setdefault(workspace_name, {})[relative_path] = raw_result
 
     return workspace_results

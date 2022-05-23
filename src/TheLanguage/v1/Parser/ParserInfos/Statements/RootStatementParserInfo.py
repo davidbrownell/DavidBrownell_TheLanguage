@@ -89,6 +89,7 @@ class RootStatementParserInfo(
         self._InitTraits(
             allow_duplicate_names=False,
             allow_name_to_be_duplicated=False,
+            name_is_ordered=False,
         )
 
         NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
