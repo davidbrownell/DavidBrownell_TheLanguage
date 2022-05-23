@@ -67,7 +67,7 @@ class PythonCodeTarget(Target):
                     include_disabled=True,
                 )
 
-                relative_name = os.path.splitext(relative_path)[0]
+                relative_name = os.path.splitext(relative_path)[0].replace(".", os.path.sep)
                 relative_name, basename = os.path.split(relative_name)
 
                 if basename in [

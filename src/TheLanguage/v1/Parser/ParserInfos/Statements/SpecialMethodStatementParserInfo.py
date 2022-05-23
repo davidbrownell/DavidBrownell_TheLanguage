@@ -58,6 +58,15 @@ NoClassError                                = CreateError(
     "Special methods may only be defined within a class-like object",
 )
 
+# TODO: Need to enforce this at some point
+EvalTemplatesNoTemplatesError               = CreateError(
+    "A method to evaluate templates is not allowed without templates",
+)
+
+EvalConstraintsNoConstraintsError           = CreateError(
+    "A method to evaluate constraints is not allowed without constraints",
+)
+
 
 # ----------------------------------------------------------------------
 class SpecialMethodType(Enum):
@@ -136,6 +145,7 @@ class SpecialMethodStatementParserInfo(
         self._InitTraits(
             allow_duplicate_names=False,
             allow_name_to_be_duplicated=False,
+            name_is_ordered=False,
         )
 
         NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)

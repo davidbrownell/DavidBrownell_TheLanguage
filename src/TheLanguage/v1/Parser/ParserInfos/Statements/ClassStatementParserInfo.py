@@ -176,6 +176,7 @@ class ClassStatementParserInfo(
         self._InitTraits(
             allow_duplicate_names=True,
             allow_name_to_be_duplicated=False,
+            name_is_ordered=False,
         )
 
         StatementParserInfo.__post_init__(

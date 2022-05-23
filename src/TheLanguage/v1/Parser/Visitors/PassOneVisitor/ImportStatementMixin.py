@@ -80,12 +80,7 @@ class ImportStatementMixin(BaseMixin):
         assert self._namespaces
         parent_namespace = self._namespaces[-1]
 
-        self._postprocess_funcs.append(
-            (
-                cast(Callable[[], None], lambda: self.__class__._PostprocessImportStatement(parent_namespace, parser_info)),  # pylint: disable=protected-access
-                cast(Callable[[], None], lambda: self.__class__._FinalizeImportStatement(parent_namespace, parser_info)),  # pylint: disable=protected-access
-            ),
-        )
+        self._postprocess_funcs.append(cast(Callable[[], None], lambda: self.__class__._PostprocessImportStatement(parent_namespace, parser_info)))  # pylint: disable=protected-access
 
     # ----------------------------------------------------------------------
     # |
@@ -243,21 +238,7 @@ class ImportStatementMixin(BaseMixin):
         else:
             assert False, import_parser_info.import_type  # pragma: no cover
 
+        import_parser_info.InitNamespace(new_namespace)
         parent_namespace.children[import_parser_info.name] = new_namespace
 
         return new_namespace
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def _FinalizeImportStatement(
-        cls,
-        parent_namespace: ParsedNamespaceInfo,
-        import_parser_info: ImportStatementParserInfo,
-    ) -> None:
-        # Commit the results and remove temporary working state
-        import_parser_info.InitNamespace(
-            cast(
-                ParsedNamespaceInfo,
-                parent_namespace.children.pop(import_parser_info.name),
-            ),
-        )
