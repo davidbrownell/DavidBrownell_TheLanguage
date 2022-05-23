@@ -297,15 +297,13 @@ def Validate(
 
     # ----------------------------------------------------------------------
     # |  Pass 2
-    pass2_state = PassTwoVisitor.CreateState(mini_language_configuration_values, fundamental_types_namespace)
-
     results = _Execute(
         workspaces,
         (
             lambda *args, **kwargs:
                 PassTwoVisitor.Execute(
-                    pass2_state,
                     global_namespace,
+                    fundamental_types_namespace,
                     *args,
                     **kwargs,
                 )

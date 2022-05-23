@@ -19,7 +19,7 @@ import os
 import types
 
 from contextlib import contextmanager, ExitStack
-from typing import Callable, cast, Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Union
 
 import CommonEnvironment
 
@@ -239,6 +239,9 @@ class BaseMixin(object):
                 # ----------------------------------------------------------------------
 
                 self._finalize_funcs.append(PopChildItem)
+
+                assert new_namespace.parser_info.name not in parent_namespace.ordered_children, new_namespace.parser_info.name
+                parent_namespace.ordered_children[new_namespace.parser_info.name] = new_namespace
 
     # ----------------------------------------------------------------------
     # |

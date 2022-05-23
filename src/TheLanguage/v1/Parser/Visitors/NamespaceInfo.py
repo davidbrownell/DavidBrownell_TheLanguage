@@ -126,7 +126,8 @@ class ParsedNamespaceInfo(NamespaceInfo):
         self.parser_info                    = parser_info
         self.visibility                     = visibility or parser_info.visibility
 
-        self.children                       = children or OrderedDict()
+        self.children                                                       = children or OrderedDict()
+        self.ordered_children: Dict[str, ParsedNamespaceInfo]               = {}
 
     # ----------------------------------------------------------------------
     def AddChild(

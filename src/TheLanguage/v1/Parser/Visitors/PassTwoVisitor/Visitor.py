@@ -56,59 +56,10 @@ class Visitor(
 ):
     # ----------------------------------------------------------------------
     @classmethod
-    def CreateState(
-        cls,
-        mini_language_configuration_values: Dict[str, MiniLanguageHelpers.CompileTimeInfo],
-        fundamental_types_namespace: Optional[NamespaceInfo],
-    ) -> StateMaintainer[MiniLanguageHelpers.CompileTimeInfo]:
-        state = StateMaintainer[MiniLanguageHelpers.CompileTimeInfo](mini_language_configuration_values)
-
-        # Add the fundamental types
-        if fundamental_types_namespace is not None:
-            # ----------------------------------------------------------------------
-            def EnumNamespace(
-                namespace: NamespaceInfo,
-            ) -> None:
-                for namespace_info in namespace.children.values():
-                    if not isinstance(namespace_info, ParsedNamespaceInfo):
-                        EnumNamespace(namespace_info)
-                        continue
-
-                    assert isinstance(namespace_info.parser_info, RootStatementParserInfo), namespace_info.parser_info
-
-                    for type_name, type_namespace_info in namespace_info.children.items():
-                        if type_name is None:
-                            continue
-
-                        assert isinstance(type_name, str), type_name
-                        assert isinstance(type_namespace_info, ParsedNamespaceInfo)
-
-                        state.AddItem(
-                            type_name,
-                            MiniLanguageHelpers.CompileTimeInfo(
-                                CustomType(type_name),
-                                type_namespace_info.parser_info,
-                                GlobalRegion.Create(
-                                    cast(ParserInfo, type_namespace_info.parser_info).regions__.self__.begin,
-                                    cast(ParserInfo, type_namespace_info.parser_info).regions__.self__.end,
-                                    "__fundamental_types__",
-                                    namespace_info.parser_info.name,
-                                ),
-                            ),
-                        )
-
-            # ----------------------------------------------------------------------
-
-            EnumNamespace(fundamental_types_namespace)
-
-        return state
-
-    # ----------------------------------------------------------------------
-    @classmethod
     def Execute(
         cls,
-        state: StateMaintainer[MiniLanguageHelpers.CompileTimeInfo],
         global_namespace: NamespaceInfo,
+        fundamental_types_namespace: Optional[NamespaceInfo],
         names: Tuple[str, str],  # pylint: disable=unused-argument
         root: RootStatementParserInfo,
     ) -> List[Error]:
@@ -123,7 +74,7 @@ class Visitor(
 
         assert isinstance(this_namespace, ParsedNamespaceInfo)
 
-        visitor = cls(state, this_namespace)
+        visitor = cls(this_namespace, fundamental_types_namespace)
 
         root.Accept(visitor)
 

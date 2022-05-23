@@ -238,7 +238,6 @@ class ImportStatementMixin(BaseMixin):
         else:
             assert False, import_parser_info.import_type  # pragma: no cover
 
-        import_parser_info.InitNamespace(new_namespace)
         parent_namespace.children[import_parser_info.name] = new_namespace
 
         return new_namespace

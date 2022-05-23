@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..StateMaintainer import StateMaintainer
 
-    from ..NamespaceInfo import ParsedNamespaceInfo
+    from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
     from ...Error import CreateError, Error, ErrorException
     from ...Helpers import MiniLanguageHelpers
@@ -42,7 +42,11 @@ with InitRelativeImports():
     from ...ParserInfos.AggregateParserInfo import AggregateParserInfo
 
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
-    from ...ParserInfos.Statements.StatementParserInfo import ScopedStatementTrait, StatementParserInfo
+    from ...ParserInfos.Statements.StatementParserInfo import (
+        NamedStatementTrait,
+        ScopedStatementTrait,
+        StatementParserInfo,
+    )
 
 
 # ----------------------------------------------------------------------
@@ -61,12 +65,18 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        state: StateMaintainer[MiniLanguageHelpers.CompileTimeInfo],
         this_namespace: ParsedNamespaceInfo,
+        fundamental_types_namespace: Optional[NamespaceInfo],
     ):
-        self._state                                                         = state
-        self._namespace_stack: List[ParsedNamespaceInfo]                    = [this_namespace]
-        self._errors: List[Error]                                           = []
+        namespace_stack: List[NamespaceInfo] = []
+
+        if fundamental_types_namespace is not None:
+            namespace_stack.append(fundamental_types_namespace)
+
+        self._namespace_stack               = namespace_stack
+        self._root_namespace                = this_namespace
+
+        self._errors: List[Error]           = []
 
     # ----------------------------------------------------------------------
     def __getattr__(
@@ -87,24 +97,23 @@ class BaseMixin(object):
     ):
         try:
             with ExitStack() as exit_stack:
-                # TODO: get_namespace_info = False
-                # TODO:
-                # TODO: # The logic of determining when to traverse namespaces is the same as what is found
-                # TODO: # in `PassOneVisitor`.
-                # TODO: if isinstance(parser_info, ScopedStatementTrait):
-                # TODO:     self._state.PushScope()
-                # TODO:     exit_stack.callback(self._state.PopScope)
-                # TODO:
-                # TODO:     get_namespace_info = not isinstance(parser_info, RootStatementParserInfo)
-                # TODO:
-                # TODO: elif isinstance(parser_info, StatementParserInfo):
-                # TODO:     get_namespace_info = True
-                # TODO:
-                # TODO: if get_namespace_info:
-                # TODO:     namespace_info = self._GetNamespaceInfo(parser_info)
-                # TODO:     if namespace_info is not None:
-                # TODO:         self._namespace_stack.append(namespace_info)
-                # TODO:         exit_stack.callback(self._namespace_stack.pop)
+                if isinstance(parser_info, NamedStatementTrait):
+                    if parser_info.name_is_ordered__:
+                        # Add the item
+                        assert self._namespace_stack
+                        assert isinstance(self._namespace_stack[-1], ParsedNamespaceInfo)
+
+                        self._namespace_stack[-1].children[parser_info.name] = self._namespace_stack[-1].ordered_children[parser_info.name]
+
+                    if isinstance(parser_info, ScopedStatementTrait):
+                        if isinstance(parser_info, RootStatementParserInfo):
+                            namespace = self._root_namespace
+                        else:
+                            assert self._namespace_stack
+                            namespace = self._namespace_stack[-1].children[parser_info.name]
+
+                        self._namespace_stack.append(namespace)
+                        exit_stack.callback(self._namespace_stack.pop)
 
                 yield
 
@@ -126,8 +135,8 @@ class BaseMixin(object):
         self,
         parser_info: AggregateParserInfo,
     ):
-        for parser_info in parser_info.parser_infos:
-            parser_info.Accept(self)
+        for agg_parser_info in parser_info.parser_infos:
+            agg_parser_info.Accept(self)
 
         yield
 

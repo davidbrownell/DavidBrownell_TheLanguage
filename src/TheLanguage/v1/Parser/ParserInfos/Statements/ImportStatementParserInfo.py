@@ -103,13 +103,7 @@ class ImportStatementParserInfo(
                 + NamedStatementTrait.RegionlessAttributesArgs()
             ,
             validate=False,
-            **{
-                **{
-                    "namespace__": None,
-                    "is_namespace_initialized__": None,
-                },
-                **NamedStatementTrait.ObjectReprImplBaseInitKwargs(),
-            },
+            **NamedStatementTrait.ObjectReprImplBaseInitKwargs(),
         )
 
         # Set defaults
@@ -133,38 +127,3 @@ class ImportStatementParserInfo(
 
         if errors:
             raise ErrorException(*errors)
-
-
-    # ----------------------------------------------------------------------
-    # This method is invoked during validation
-    def InitNamespace(
-        self,
-        value: "ParsedNamespaceInfo",
-    ) -> None:
-        assert not self.is_namespace_initialized__
-        object.__setattr__(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME, value)  # pylint: disable=protected-access
-
-    # ----------------------------------------------------------------------
-    @property
-    def namespace__(self) -> "ParsedNamespaceInfo":
-        return getattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
-
-    @property
-    def is_namespace_initialized__(self) -> bool:
-        return hasattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
-
-    # BugBUg: # ----------------------------------------------------------------------
-    # BugBUg: # |
-    # BugBUg: # |  Protected Methods
-    # BugBUg: # |
-    # BugBUg: # ----------------------------------------------------------------------
-    # BugBUg: @Interface.override
-    # BugBUg: def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-    # BugBUg:     yield "import_items", self.import_items  # type: ignore
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _NAMESPACE_ATTRIBUTE_NAME                 = "_imports"
