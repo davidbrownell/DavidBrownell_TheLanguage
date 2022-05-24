@@ -149,6 +149,8 @@ class ParsedNamespaceInfo(NamespaceInfo):
 
             self.children[child.parser_info.name] = value
 
+        object.__setattr__(child, "parent", self)
+
         assert (
             not isinstance(value, list)
             or all(
@@ -156,40 +158,6 @@ class ParsedNamespaceInfo(NamespaceInfo):
                 for v in value
             )
         )
-
-    # ----------------------------------------------------------------------
-    def AugmentChildren(
-        self,
-        source_children: ChildrenType,
-    ) -> None:
-        for source_key, source_value in source_children.items():
-            existing_value = self.children.get(source_key, None)
-
-            if isinstance(existing_value, list):
-                if isinstance(source_value, list):
-                    existing_value.extend(source_value)
-                else:
-                    existing_value.append(source_value)
-
-                value = existing_value
-
-            else:
-                if existing_value is None:
-                    value = source_value
-                elif isinstance(source_value, list):
-                    value = [existing_value] + source_value
-                else:
-                    value = [existing_value, source_value]
-
-                self.children[source_key] = value
-
-            assert (
-                not isinstance(value, list)
-                or all(
-                    isinstance(v.parser_info, NamedStatementTrait) and v.parser_info.allow_name_to_be_duplicated__
-                    for v in value
-                )
-            )
 
     # ----------------------------------------------------------------------
     def Accept(self, visitor):

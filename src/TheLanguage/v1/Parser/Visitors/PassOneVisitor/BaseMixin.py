@@ -19,7 +19,7 @@ import os
 import types
 
 from contextlib import contextmanager, ExitStack
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, cast, Dict, List, Optional, Union
 
 import CommonEnvironment
 
@@ -74,13 +74,10 @@ class BaseMixin(object):
     ):
         self._configuration_info            = configuration_info
 
-        self._errors: List[Error]           = []
-        self._postprocess_funcs: List[
-            Tuple[
-                Callable[[], None],         # postprocess_func
-                Callable[[], None],         # finalize_func
-            ],
-        ]                                   = []
+        self._errors: List[Error]                                           = []
+
+        self._postprocess_funcs: List[Callable[[], None]]                   = []
+        self._finalize_funcs: List[Callable[[], None]]                      = []
 
         self._namespaces: List[ParsedNamespaceInfo]                         = []
         self._root_namespace: Optional[ParsedNamespaceInfo]                 = None
@@ -122,52 +119,6 @@ class BaseMixin(object):
                 yield VisitResult.SkipAll
                 return
 
-        # ----------------------------------------------------------------------
-        def ValidateNamespace(
-            namespace: ParsedNamespaceInfo,
-        ) -> None:
-            # Get the ancestor that sets scoping rules; collect matching names as we go
-            matching_names: List[ParsedNamespaceInfo] = []
-            ancestor_namespace = namespace.parent
-
-            while isinstance(ancestor_namespace, ParsedNamespaceInfo):
-                potential_namespace = ancestor_namespace.children.get(namespace.parser_info.name, None)
-
-                if isinstance(potential_namespace, list):
-                    matching_names += potential_namespace
-                elif isinstance(potential_namespace, ParsedNamespaceInfo):
-                    matching_names.append(potential_namespace)
-
-                if isinstance(ancestor_namespace.parser_info, NewNamespaceScopedStatementTrait):
-                    break
-
-                ancestor_namespace = ancestor_namespace.parent
-
-            if matching_names:
-                assert isinstance(ancestor_namespace, ParsedNamespaceInfo)
-                assert isinstance(ancestor_namespace.parser_info, NewNamespaceScopedStatementTrait)
-
-                if not ancestor_namespace.parser_info.allow_duplicate_names__:
-                    raise ErrorException(
-                        DuplicateNameError.Create(
-                            region=namespace.parser_info.regions__.name,
-                            name=namespace.parser_info.name,
-                            prev_region=matching_names[0].parser_info.regions__.name,
-                        ),
-                    )
-
-                for matching_name in matching_names:
-                    if not matching_name.parser_info.allow_name_to_be_duplicated__:
-                        raise ErrorException(
-                            DuplicateNameError.Create(
-                                region=namespace.parser_info.regions__.name,
-                                name=namespace.parser_info.name,
-                                prev_region=matching_name.parser_info.regions__.name,
-                            ),
-                        )
-
-        # ----------------------------------------------------------------------
-
         try:
             with ExitStack() as exit_stack:
                 if isinstance(parser_info, NamedStatementTrait):
@@ -185,21 +136,12 @@ class BaseMixin(object):
                     )
 
                     try:
-                        ValidateNamespace(new_namespace)
+                        self._AddNamespaceItem(new_namespace)
                     except ErrorException as ex:
                         self._errors += ex.errors
                         yield VisitResult.SkipAll
 
                         return
-
-                    if isinstance(parser_info, RootStatementParserInfo):
-                        assert self._root_namespace is None
-                        self._root_namespace = new_namespace
-                    else:
-                        assert self._root_namespace is not None
-                        assert self._namespaces
-
-                        self._namespaces[-1].AddChild(new_namespace)
 
                     if isinstance(parser_info, ScopedStatementTrait):
                         self._namespaces.append(new_namespace)
@@ -212,6 +154,91 @@ class BaseMixin(object):
                 self._errors += ex.errors
             else:
                 raise
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Protected Methods
+    # |
+    # ----------------------------------------------------------------------
+    def _AddNamespaceItem(
+        self,
+        new_namespace_or_namespaces: Union[ParsedNamespaceInfo, List[ParsedNamespaceInfo]],
+    ) -> None:
+        if isinstance(new_namespace_or_namespaces, list):
+            new_namespaces = new_namespace_or_namespaces
+        else:
+            new_namespaces = [new_namespace_or_namespaces]
+
+        for new_namespace in new_namespaces:
+            assert isinstance(new_namespace.parser_info, NamedStatementTrait)
+
+            if isinstance(new_namespace.parser_info, RootStatementParserInfo):
+                assert self._root_namespace is None
+                self._root_namespace = new_namespace
+
+                continue
+
+            assert self._root_namespace is not None
+            assert self._namespaces
+
+            # Is it valid to add this item?
+
+            # Get the ancestor that sets scoping rules, collecting matching names as we go
+            matching_namespaces: List[ParsedNamespaceInfo] = []
+
+            ancestor_namespace = self._namespaces[-1]
+
+            while isinstance(ancestor_namespace, ParsedNamespaceInfo):
+                potential_matching_namespace = ancestor_namespace.children.get(new_namespace.parser_info.name, None)
+
+                if isinstance(potential_matching_namespace, list):
+                    matching_namespaces += potential_matching_namespace
+                elif isinstance(potential_matching_namespace, ParsedNamespaceInfo):
+                    matching_namespaces.append(potential_matching_namespace)
+
+                if isinstance(ancestor_namespace.parser_info, NewNamespaceScopedStatementTrait):
+                    break
+
+                ancestor_namespace = ancestor_namespace.parent
+
+            if matching_namespaces:
+                assert isinstance(ancestor_namespace, ParsedNamespaceInfo)
+                assert isinstance(ancestor_namespace.parser_info, NewNamespaceScopedStatementTrait)
+
+                if not ancestor_namespace.parser_info.allow_duplicate_names__:
+                    raise ErrorException(
+                        DuplicateNameError.Create(
+                            region=new_namespace.parser_info.regions__.name,
+                            name=new_namespace.parser_info.name,
+                            prev_region=matching_namespaces[0].parser_info.regions__.name,
+                        ),
+                    )
+
+                for matching_namespace in matching_namespaces:
+                    if not matching_namespace.parser_info.allow_name_to_be_duplicated__:
+                        raise ErrorException(
+                            DuplicateNameError.Create(
+                                region=new_namespace.parser_info.regions__.name,
+                                name=new_namespace.parser_info.name,
+                                prev_region=matching_namespace.parser_info.regions__.name,
+                            ),
+                        )
+
+            # Add it to the parent namespace
+            parent_namespace = self._namespaces[-1]
+            parent_namespace.AddChild(new_namespace)
+
+            if new_namespace.parser_info.name_is_ordered__:
+                # ----------------------------------------------------------------------
+                def PopChildItem(
+                    new_namespace=new_namespace,
+                    parent_namespace=parent_namespace,
+                ):
+                    parent_namespace.children.pop(new_namespace.parser_info.name)
+
+                # ----------------------------------------------------------------------
+
+                self._finalize_funcs.append(PopChildItem)
 
     # ----------------------------------------------------------------------
     # |

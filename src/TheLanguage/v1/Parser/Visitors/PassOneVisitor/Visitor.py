@@ -18,9 +18,12 @@
 import importlib
 import os
 import sys
+import threading
 
 from contextlib import contextmanager, ExitStack
 from typing import Callable, Dict, List, Optional, Tuple, Union
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import FileSystem
@@ -36,7 +39,7 @@ with InitRelativeImports():
     from .StatementsMixin import StatementsMixin
     from .ImportStatementMixin import ImportStatementMixin
 
-    from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
+    from ..NamespaceInfo import NamespaceInfo
 
     from ...Error import Error, ErrorException
     from ...Helpers import MiniLanguageHelpers
@@ -49,25 +52,6 @@ class Visitor(
     StatementsMixin,
     ImportStatementMixin,
 ):
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    PositiveExecuteResultType               = Tuple[
-        ParsedNamespaceInfo,
-        List[
-            Tuple[
-                Callable[[], None],         # postprocess_func
-                Callable[[], None],         # finalize_func
-            ],
-        ],
-    ]
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
     # ----------------------------------------------------------------------
     @classmethod
     @contextmanager
@@ -109,7 +93,9 @@ class Visitor(
                         mod = importlib.import_module(basename)
 
                         assert generated_filename.startswith(generated_code_directory), (generated_filename, generated_code_directory)
+
                         relative_path = FileSystem.TrimPath(generated_filename, generated_code_directory)
+                        relative_path = relative_path.replace(os.path.sep, ".")
 
                         fundamental_types[relative_path] = getattr(mod, "root_parser_info")
 
@@ -124,11 +110,17 @@ class Visitor(
             # ----------------------------------------------------------------------
             class Executor(object):
                 # ----------------------------------------------------------------------
-                def __init__(
-                    self,
-                    global_namespace: NamespaceInfo,
-                ):
+                def __init__(self):
                     self.global_namespace               = global_namespace
+
+                    self._execute_results_lock          = threading.Lock()
+                    self._execute_results: Dict[
+                        str,                            # Workspace name
+                        Dict[
+                            str,                        # Relative path
+                            Executor._ExecuteResult,
+                        ],
+                    ]                       = {}
 
                 # ----------------------------------------------------------------------
                 @property
@@ -136,12 +128,12 @@ class Visitor(
                     return global_namespace.children.get(cls._FUNDAMENTAL_TYPES_ATTRIBUTE_NAME, None)  # pylint: disable=protected-access
 
                 # ----------------------------------------------------------------------
-                @staticmethod
                 def Execute(
+                    self,
                     names: Tuple[str, str],  # pylint: disable=unused-argument
                     root: RootStatementParserInfo,
                 ) -> Union[
-                    Visitor.PositiveExecuteResultType,
+                    bool,                   # Doesn't matter what the return value is as long as it looks different than List[Error]
                     List[Error],
                 ]:
                     visitor = cls(mini_language_configuration_values)
@@ -151,77 +143,72 @@ class Visitor(
                     if visitor._errors:                 # pylint: disable=protected-access
                         return visitor._errors          # pylint: disable=protected-access
 
-                    return visitor._root_namespace, visitor._postprocess_funcs  # type: ignore  # pylint: disable=protected-access
+                    with self._execute_results_lock:
+                        assert visitor._root_namespace is not None  # pylint: disable=protected-access
+
+                        self._execute_results.setdefault(names[0], {})[names[1]] = Executor._ExecuteResult(
+                            visitor._root_namespace,    # pylint: disable=protected-access
+                            visitor._postprocess_funcs, # pylint: disable=protected-access
+                            visitor._finalize_funcs,    # pylint: disable=protected-access
+                        )
+
+                    return True
 
                 # ----------------------------------------------------------------------
-                @staticmethod
-                def ExecutePostprocessFuncs(
-                    results: Dict[
-                        str,
-                        Dict[
-                            str,
-                            Visitor.PositiveExecuteResultType,
-                        ],
-                    ],
-                ) -> Dict[
+                def ExecutePostprocessFuncs(self) -> Dict[
                     str,
                     Dict[
                         str,
                         List[Error],
                     ],
                 ]:
-                    # Create a complete namespace and extract postprocess funcs
-                    postprocess_func_infos: List[
-                        Tuple[
-                            str,                                    # workspace name
-                            str,                                    # relative path
-                            List[
-                                Tuple[
-                                    Callable[[], None],             # postprocess_func
-                                    Callable[[], None],             # finalize_func
-                                ],
-                            ],
-                        ]
-                    ] = []
-
-                    for workspace_name, workspace_items in results.items():
+                    # Create a complete namespace
+                    for workspace_name, workspace_items in self._execute_results.items():
                         workspace_namespace = NamespaceInfo(global_namespace)
 
-                        for relative_path, (namespace_info, these_postprocess_funcs) in workspace_items.items():
-                            # Update the namespace
+                        for relative_path, execute_result in workspace_items.items():
                             name_parts = os.path.splitext(relative_path)[0]
-                            name_parts = name_parts.split(os.path.sep)
+                            name_parts = name_parts.split(".")
 
                             namespace = workspace_namespace
 
                             for part in name_parts[:-1]:
                                 namespace = namespace.GetOrAddChild(part)
 
-                            namespace.AddChild(name_parts[-1], namespace_info)
-
-                            # Update the postprocess_funcs
-                            if these_postprocess_funcs:
-                                postprocess_func_infos.append((workspace_name, relative_path, these_postprocess_funcs))
+                            namespace.AddChild(name_parts[-1], execute_result.namespace)
 
                         global_namespace.AddChild(workspace_name, workspace_namespace)
 
-                    for get_func_func in [
-                        lambda this_postprocess_funcs: this_postprocess_funcs[0],       # postprocess_func
-                        lambda this_postprocess_funcs: this_postprocess_funcs[1],       # finalize_func
+                    # Execute all of the postprocess funcs
+                    for funcs_attribute in [
+                        "postprocess_funcs",
+                        "finalize_funcs",
                     ]:
-                        errors: Dict[str, Dict[str, List[Error]]] = {}
+                        errors: Dict[
+                            str,
+                            Dict[
+                                str,
+                                List[Error],
+                            ],
+                        ] = {}
 
-                        for workspace_name, relative_path, these_postprocess_funcs in postprocess_func_infos:
-                            these_errors: List[Error] = []
+                        for workspace_name, workspace_items in self._execute_results.items():
+                            workspace_errors: Dict[str, List[Error]] = {}
 
-                            for this_postprocess_funcs in these_postprocess_funcs:
-                                try:
-                                    get_func_func(this_postprocess_funcs)()
-                                except ErrorException as ex:
-                                    these_errors += ex.errors
+                            for relative_path, execute_result in workspace_items.items():
+                                these_errors: List[Error] = []
 
-                            if these_errors:
-                                errors.setdefault(workspace_name, {})[relative_path] = these_errors
+                                for func in getattr(execute_result, funcs_attribute):
+                                    try:
+                                        func()
+                                    except ErrorException as ex:
+                                        these_errors += ex.errors
+
+                                if these_errors:
+                                    workspace_errors[relative_path] = these_errors
+
+                            if workspace_errors:
+                                errors[workspace_name] = workspace_errors
 
                         if errors:
                             return errors
@@ -229,9 +216,20 @@ class Visitor(
                     # Can't return None here, as that has special meaning for the caller (cancellation)
                     return {}
 
+                # ----------------------------------------------------------------------
+                # |
+                # |  Private Types
+                # |
+                # ----------------------------------------------------------------------
+                @dataclass(frozen=True)
+                class _ExecuteResult(object):
+                    namespace: NamespaceInfo
+                    postprocess_funcs: List[Callable[[], None]]
+                    finalize_funcs: List[Callable[[], None]]
+
             # ----------------------------------------------------------------------
 
-            yield Executor(global_namespace)
+            yield Executor()
 
     # ----------------------------------------------------------------------
     # |

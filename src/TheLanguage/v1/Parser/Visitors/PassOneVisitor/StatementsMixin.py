@@ -135,8 +135,9 @@ class StatementsMixin(BaseMixin):
         yield
 
         if true_clause_name is not None:
-            # Move everything from the if clause to the proper namespace
-            clause_namespace = self._namespaces[-1].children.pop(true_clause_name)
+            # Move everything from the if clause to the parent namespace
+            clause_namespace = self._namespaces[-1].children[true_clause_name]
             assert isinstance(clause_namespace, ParsedNamespaceInfo)
 
-            self._namespaces[-1].AugmentChildren(clause_namespace.children)
+            for namespace in clause_namespace.children.values():
+                self._AddNamespaceItem(namespace)

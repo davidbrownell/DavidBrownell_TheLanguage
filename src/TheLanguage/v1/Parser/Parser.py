@@ -283,8 +283,7 @@ def Validate(
         if error_data is not None:
             return error_data  # type: ignore
 
-        results = cast(Dict[str, Dict[str, PassOneVisitor.PositiveExecuteResultType]], results)
-        results = executor.ExecutePostprocessFuncs(results)
+        results = executor.ExecutePostprocessFuncs()
 
         if results is None:
             return results
