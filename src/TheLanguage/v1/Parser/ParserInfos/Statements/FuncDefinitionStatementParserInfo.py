@@ -264,9 +264,6 @@ class FuncDefinitionStatementParserInfo(
     # Valid only for methods
     is_static: Optional[bool]
 
-    # Values set during validation
-    _return_type_parser_info__: Optional[ParserInfo]    = field(init=False, default=None)
-
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
@@ -475,22 +472,6 @@ class FuncDefinitionStatementParserInfo(
 
         if errors:
             raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    # The following values are set during validation
-    def InitReturnType(
-        self,
-        type_parser_info: ParserInfo
-    ) -> None:
-        assert self.return_type is not None
-        assert self._return_type_parser_info__ is None, self._return_type_parser_info__
-        object.__setattr__(self, "_return_type_parser_info__", type_parser_info)
-
-    # ----------------------------------------------------------------------
-    @property
-    def return_type_parser_info__(self) -> ParserInfo:
-        assert self._return_type_parser_info__ is not None
-        return self._return_type_parser_info__
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

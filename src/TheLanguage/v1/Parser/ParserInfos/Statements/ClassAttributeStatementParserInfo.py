@@ -66,9 +66,6 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
     no_compare: Optional[bool]
     is_override: Optional[bool]
 
-    # Values set during validation
-    _type_parser_info__: Optional[ParserInfo]           = field(init=False, default=None)
-
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
@@ -125,21 +122,6 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
 
         if errors:
             raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    # The following values are set during validation
-    def InitType(
-        self,
-        type_parser_info: ParserInfo
-    ) -> None:
-        assert self._type_parser_info__ is None, self._type_parser_info__
-        object.__setattr__(self, "_type_parser_info__", type_parser_info)
-
-    # ----------------------------------------------------------------------
-    @property
-    def type_parser_info__(self) -> ParserInfo:
-        assert self._type_parser_info__ is not None
-        return self._type_parser_info__
 
     # ----------------------------------------------------------------------
     # |

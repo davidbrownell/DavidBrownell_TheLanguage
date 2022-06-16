@@ -80,9 +80,6 @@ class TemplateTypeParameterParserInfo(ParserInfo):
     is_variadic: Optional[bool]
     default_type: Optional[ExpressionParserInfo]
 
-    # Values set during validation
-    _default_type_parser_info__: Union[None, StatementParserInfo, "TemplateTypeParameterParserInfo"]    = field(init=False, default=None)
-
     # ----------------------------------------------------------------------
     @classmethod
     def Create(cls, *args, **kwargs):
@@ -121,21 +118,6 @@ class TemplateTypeParameterParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
-    # The following values are set during validation
-    def InitDefaultType(
-        self,
-        type_parser_info: Union[StatementParserInfo, "TemplateTypeParameterParserInfo"],
-    ) -> None:
-        assert self._default_type_parser_info__ is None, self._default_type_parser_info__
-        object.__setattr__(self, "_default_type_parser_info__", type_parser_info)
-
-    # ----------------------------------------------------------------------
-    @property
-    def default_type_parser_info__(self) -> Union[StatementParserInfo, "TemplateTypeParameterParserInfo"]:
-        assert self._default_type_parser_info__ is not None
-        return self._default_type_parser_info__
-
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
@@ -153,9 +135,6 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
     type: ExpressionParserInfo
     name: str
     default_value: Optional[ExpressionParserInfo]
-
-    # Values set during validation
-    _type_parser_info__: Optional[ParserInfo]           = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -208,21 +187,6 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    # The following values are set during validation
-    def InitType(
-        self,
-        type_parser_info: ParserInfo
-    ) -> None:
-        assert self._type_parser_info__ is None, self._type_parser_info__
-        object.__setattr__(self, "_type_parser_info__", type_parser_info)
-
-    # ----------------------------------------------------------------------
-    @property
-    def type_parser_info__(self) -> ParserInfo:
-        assert self._type_parser_info__ is not None
-        return self._type_parser_info__
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

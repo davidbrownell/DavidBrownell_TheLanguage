@@ -19,10 +19,11 @@ import os
 
 from typing import Any, Callable, List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
+from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -52,9 +53,34 @@ class ExpressionParserInfo(ParserInfo):
     """Abstract base class for all expressions"""
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
+    class ResolvedType(ObjectReprImplBase):
+        parser_info: ParserInfo
+        translation_unit_region: TranslationUnitRegion
+
+        # ----------------------------------------------------------------------
+        def __post_init__(self):
+            ObjectReprImplBase.__init__(
+                self,
+                parser_info=lambda value: value.__class__.__name__,
+            )
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
     # ----------------------------------------------------------------------
     @classmethod
     def Create(cls, *args, **kwargs):

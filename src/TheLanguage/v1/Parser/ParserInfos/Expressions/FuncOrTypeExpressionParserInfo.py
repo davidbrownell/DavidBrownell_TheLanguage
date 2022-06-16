@@ -110,9 +110,6 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
     constraints: Optional[ConstraintArgumentsParserInfo]
     mutability_modifier: Optional[MutabilityModifier]
 
-    # The following values are set during validation
-    _value_parser_info: Union[None, StatementParserInfo, TemplateTypeParameterParserInfo]           = field(init=False, default=None)
-
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(FuncOrTypeExpressionParserInfo, self).__post_init__(
@@ -214,20 +211,6 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
                 self.regions__.self__,
             ),
         )
-
-    # ----------------------------------------------------------------------
-    def InitValueParserInfo(
-        self,
-        parser_info: Union[StatementParserInfo, TemplateTypeParameterParserInfo],
-    ) -> None:
-        assert self._value_parser_info is None
-        object.__setattr__(self, "_value_parser_info", parser_info)
-
-    # ----------------------------------------------------------------------
-    @property
-    def value_parser_info__(self) -> Union[StatementParserInfo, TemplateTypeParameterParserInfo]:
-        assert self._value_parser_info is not None
-        return self._value_parser_info
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
