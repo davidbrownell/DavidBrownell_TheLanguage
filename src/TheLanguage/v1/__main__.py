@@ -48,7 +48,7 @@ with StreamDecorator(
             IntegerType,
             MiniLanguageType,
             Parse,
-            Validate,
+            ResolveExpressionTypes,
         )
 
         from .Parser.ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
@@ -211,21 +211,21 @@ def Execute(
 
             parse_result = cast(Dict[str, Dict[str, RootStatementParserInfo]], parse_result)
 
-        dm.stream.write("\nValidating...")
+        dm.stream.write("Resolving Expression Types...")
         with dm.stream.DoneManager() as validate_dm:
             configuration_values: Dict[str, Tuple[MiniLanguageType, Any]] = {
                 "__architecture_bytes!": (IntegerType(), 8),
             }
 
-            validate_result = Validate(
+            resolve_expression_types_result = ResolveExpressionTypes(
                 parse_result,
                 configuration_values,
                 max_num_threads=max_num_threads,
             )
 
-            assert validate_result is not None
+            assert resolve_expression_types_result is not None
 
-            for workspace, results in validate_result.items():
+            for workspace, results in resolve_expression_types_result.items():
                 for relative_path, result in results.items():
                     if isinstance(result, list):
                         for error in result:
@@ -242,11 +242,11 @@ def Execute(
             if validate_dm.result != 0:
                 return validate_dm.result
 
-            validate_result = parse_result
+            resolve_expression_types_result = parse_result
 
         dm.stream.write("\nGenerating output...")
         with dm.stream.DoneManager() as target_dm:
-            target = _TARGETS[target](validate_result, output_directory)
+            target = _TARGETS[target](resolve_expression_types_result, output_directory)
 
             for output in target.EnumOutputs():
                 target_dm.stream.write(

@@ -233,7 +233,7 @@ def Parse(
 
 
 # ----------------------------------------------------------------------
-def Validate(
+def ResolveExpressionTypes(
     workspaces: Dict[
         str,                                # workspace root
         Dict[

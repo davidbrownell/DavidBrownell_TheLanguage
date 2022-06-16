@@ -110,7 +110,7 @@ class StatementsMixin(BaseMixin):
 
         MiniLanguageHelpers.EvalExpression(
             parser_info.expression,
-            self._configuration_info,
+            [self._configuration_info],
             [],
         )
 
@@ -156,7 +156,7 @@ class StatementsMixin(BaseMixin):
             if true_clause_name is None:
                 clause_result = MiniLanguageHelpers.EvalExpression(
                     clause.expression,
-                    self._configuration_info,
+                    [self._configuration_info],
                     [],
                 )
 

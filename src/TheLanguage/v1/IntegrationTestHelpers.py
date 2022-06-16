@@ -48,7 +48,7 @@ with InitRelativeImports():
         Error as ParserError,
         ErrorException as ParserErrorException,
         Parse,
-        Validate,
+        ResolveExpressionTypes,
     )
 
     from .Parser.ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
@@ -60,12 +60,12 @@ with InitRelativeImports():
 class PatchAndExecuteFlag(Flag):
     prune_flag                              = auto()
     parse_flag                              = auto()
-    validate_flag                           = auto()
+    resolve_expression_types_flag           = auto()
 
     Lex                                     = 0
     Prune                                   = prune_flag
     Parse                                   = Prune | parse_flag
-    Validate                                = Parse | validate_flag
+    ResolveExpressionTypes                  = Parse | resolve_expression_types_flag
 
 
 # ----------------------------------------------------------------------
@@ -77,7 +77,7 @@ def PatchAndExecute(
             str                             # content
         ],
     ],
-    flag=PatchAndExecuteFlag.Validate,
+    flag=PatchAndExecuteFlag.ResolveExpressionTypes,
     *,
     max_num_threads: Optional[int]=None,
     include_fundamental_types=True,
@@ -212,8 +212,8 @@ def PatchAndExecute(
 
         results = cast(Dict[str, Dict[str, RootStatementParserInfo]], results)
 
-        if flag & PatchAndExecuteFlag.validate_flag:
-            results = Validate(
+        if flag & PatchAndExecuteFlag.resolve_expression_types_flag:
+            results = ResolveExpressionTypes(
                 results,
                 {}, # TODO
                 max_num_threads=max_num_threads,
@@ -280,7 +280,7 @@ def ExecuteParserInfo(
                 "filename": content,
             },
         },
-        flag=PatchAndExecuteFlag.Validate,
+        flag=PatchAndExecuteFlag.ResolveExpressionTypes,
         max_num_threads=max_num_threads,
         include_fundamental_types=include_fundamental_types,
     )
@@ -314,7 +314,7 @@ def ExecutePythonTarget(
                 "filename": content,
             },
         },
-        flag=PatchAndExecuteFlag.Validate,
+        flag=PatchAndExecuteFlag.ResolveExpressionTypes,
         max_num_threads=max_num_threads,
         include_fundamental_types=include_fundamental_types,
     )

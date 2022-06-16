@@ -97,7 +97,7 @@ class ExpressionsMixin(BaseMixin):
         if parser_info.parser_info_type__ == ParserInfoType.Configuration:
             condition_result = MiniLanguageHelpers.EvalExpression(
                 parser_info.condition_expression,
-                self._configuration_info,
+                [self._configuration_info],
                 [],
             )
             condition_result = condition_result.type.ToBoolValue(condition_result.value)
