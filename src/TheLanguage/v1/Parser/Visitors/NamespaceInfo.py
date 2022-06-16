@@ -42,10 +42,8 @@ with InitRelativeImports():
         StatementParserInfo,
     )
 
-    from ..ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
-    from ..ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo, OperatorType as FuncOperatorType
+    from ..ParserInfos.Statements.FuncDefinitionStatementParserInfo import OperatorType as FuncOperatorType
     from ..ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodType as SpecialMethodType
-    from ..ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -53,10 +51,17 @@ class NamespaceInfo(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
+        name: Optional[str],
         parent: Optional["NamespaceInfo"],
         children: Optional[Dict[str, "NamespaceInfo"]]=None,
         **custom_display_funcs: Optional[Callable[[Any], Optional[Any]]],
     ):
+        assert (
+            (name is not None and parent is not None)
+            or (name is None and parent is None)
+        ), (name, parent)
+
+        self.name                           = name
         self.parent                         = parent
         self.children                       = children or OrderedDict()
 
@@ -72,7 +77,7 @@ class NamespaceInfo(ObjectReprImplBase):
     ) -> "NamespaceInfo":
         namespace = self.children.get(name, None)
         if namespace is None:
-            namespace = NamespaceInfo(self)
+            namespace = NamespaceInfo(name, self)
             self.children[name] = namespace
 
         return namespace
@@ -90,11 +95,20 @@ class NamespaceInfo(ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     def Flatten(self) -> "NamespaceInfo":
-        result = NamespaceInfo(None)
+        result = NamespaceInfo(None, None)
 
-        for key, value in self._FlattenImpl(result):
+        for key, value in self._FlattenImpl():
             assert key not in result.children, key
-            result.children[key] = value
+            assert isinstance(value, ParsedNamespaceInfo), value
+
+            result.children[key] = ParsedNamespaceInfo(
+                result,
+                value.scope_flag,
+                value.parser_info,
+                name=value.name,
+                children=value.children,
+                visibility=value.visibility,
+            )
 
         return result
 
@@ -102,12 +116,9 @@ class NamespaceInfo(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def _FlattenImpl(
-        self,
-        parent: "NamespaceInfo",
-    ) -> Generator[Tuple[str, "ParsedNamespaceInfo"], None, None]:
+    def _FlattenImpl(self) -> Generator[Tuple[str, "ParsedNamespaceInfo"], None, None]:
         for value in self.children.values():
-            yield from value._FlattenImpl(parent)  # pylint: disable=protected-access
+            yield from value._FlattenImpl()  # pylint: disable=protected-access
 
 
 # ----------------------------------------------------------------------
@@ -131,14 +142,24 @@ class ParsedNamespaceInfo(NamespaceInfo):
         parent: Optional[NamespaceInfo],
         scope_flag: ScopeFlag,
         parser_info: Union[StatementParserInfo, TemplateTypeParameterParserInfo],
+        *,
+        name: Optional[str]=None,
         children: Optional[ChildrenType]=None,
         visibility: Optional[VisibilityModifier]=None,
     ):
+        if name is None:
+            assert isinstance(parser_info, NamedStatementTrait)
+            name = parser_info.name
+
+        if children is None:
+            children = OrderedDict()
+
         if visibility is None:
             assert isinstance(parser_info, NamedStatementTrait)
             visibility = parser_info.visibility
 
         super(ParsedNamespaceInfo, self).__init__(
+            name,
             parent,
             children=None,
         )
@@ -147,10 +168,11 @@ class ParsedNamespaceInfo(NamespaceInfo):
         self.parser_info                    = parser_info
         self.visibility                     = visibility
 
-        # BugBug: What is the difference between children and ordered_children?
-        # Answer: It doesn't look like ordered_children is used anymore, but I am
-        #         hesitant to remove it until validation is fully implemented.
-        self.children                                                       = children or OrderedDict()
+        self.children                                                       = children
+
+        # Ordered children are those items that are only valid when they are introduced within the code.
+        # For example, a type alias can only be used after it is defined. Compare this with a class
+        # definition, which can be used as a base class before it is officially defined.
         self.ordered_children: Dict[str, ParsedNamespaceInfo]               = {}
 
     # ----------------------------------------------------------------------
@@ -187,34 +209,35 @@ class ParsedNamespaceInfo(NamespaceInfo):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
+    @staticmethod
+    def _ShouldFlatten(
+        key: str,
+        value: "ParsedNamespaceInfo",
+    ) -> bool:
+        if not isinstance(key, str):
+            return False
+
+        # Don't return things without a first-class name, as they should never be a part of
+        # a flattened namespace.
+        if not isinstance(value.parser_info, NamedStatementTrait):
+            return False
+
+        if value.parser_info.visibility != VisibilityModifier.public:
+            return False
+
+        return True
+
+    # ----------------------------------------------------------------------
     @Interface.override
-    def _FlattenImpl(
-        self,
-        parent: NamespaceInfo,
-    ) -> Generator[Tuple[str, "ParsedNamespaceInfo"], None, None]:
-        for key, value in self.children.items():
-            if isinstance(value, NamespaceInfo):
-                if (
-                    isinstance(key, str)
-                    and isinstance(value, ParsedNamespaceInfo)
-                    and isinstance(
-                        value.parser_info,
-                        (
-                            FuncDefinitionStatementParserInfo,
-                            ClassStatementParserInfo,
-                            TypeAliasStatementParserInfo,
-                        ),
-                    )
-                ):
-                    yield (
-                        key,
-                        ParsedNamespaceInfo(
-                            parent,
-                            value.scope_flag,
-                            value.parser_info,
-                            value.children,
-                            value.visibility,
-                        ),
-                    )
+    def _FlattenImpl(self) -> Generator[Tuple[str, "ParsedNamespaceInfo"], None, None]:
+        for container in [self.children, self.ordered_children]:
+            for key, value in container.items():
+                # Don't process lists of values, as they should never be a part of a flattened namespace
+                if not isinstance(value, NamespaceInfo):
+                    continue
+
+                if isinstance(value, ParsedNamespaceInfo):
+                    if self.__class__._ShouldFlatten(key, value):  # pylint: disable=protected-access
+                        yield key, value
                 else:
-                    yield from value._FlattenImpl(parent)  # pylint: disable=protected-access
+                    yield from value._FlattenImpl()  # pylint: disable=protected-access

@@ -448,7 +448,7 @@ def _ToExpressionImpl(
 
     elif isinstance(parser_info, VariableExpressionParserInfo):
         # BugBug: Fix this
-        compile_time_value = compile_time_infos_items.get(parser_info.name, None)
+        compile_time_value = compile_time_infos_items[-1].get(parser_info.name, None)
         if compile_time_value is None and parser_info.name not in suppress_warnings_set:
             raise ErrorException(
                 InvalidVariableNameError.Create(

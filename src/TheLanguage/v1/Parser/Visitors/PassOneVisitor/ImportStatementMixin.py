@@ -73,7 +73,7 @@ class ImportStatementMixin(BaseMixin):
         parser_info: ImportStatementParserInfo,
     ):
         assert parser_info.parser_info_type__ == ParserInfoType.Configuration, parser_info.parser_info_type__
-        parser_info.SetValidatedFlag()
+        self._FlagAsProcessed(parser_info)
 
         yield
 
@@ -161,8 +161,8 @@ class ImportStatementMixin(BaseMixin):
                 parent_namespace,
                 item.scope_flag,
                 item.parser_info,
-                item.children,
-                import_parser_info.visibility,
+                children=item.children,
+                visibility=import_parser_info.visibility,
             )
 
         # ----------------------------------------------------------------------
@@ -236,8 +236,8 @@ class ImportStatementMixin(BaseMixin):
                 parent_namespace,
                 parent_namespace.scope_flag,
                 import_parser_info,
-                child_imports,
-                import_parser_info.visibility,
+                children=child_imports,
+                visibility=import_parser_info.visibility,
             )
 
         else:

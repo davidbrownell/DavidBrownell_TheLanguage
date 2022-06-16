@@ -117,7 +117,6 @@ class ParserInfo(ObjectReprImplBase):
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
         object.__setattr__(self, "_disabled", False)
-        object.__setattr__(self, "_validated", False)
         object.__setattr__(self, "_parser_info_type", parser_info_type)
 
         regionless_attributes_set = set(regionless_attributes or [])
@@ -173,7 +172,6 @@ class ParserInfo(ObjectReprImplBase):
             self,
             parser_info_type__=None,
             is_disabled__=None,
-            is_validated__=None,
             **custom_display_funcs,
         )
 
@@ -198,10 +196,6 @@ class ParserInfo(ObjectReprImplBase):
     def is_disabled__(self) -> bool:
         return self._disabled  # type: ignore  # pylint: disable=no-member
 
-    @property
-    def is_validated__(self) -> bool:
-        return self._validated  # type: ignore  # pylint: disable=no-member
-
     # ----------------------------------------------------------------------
     def ValidateRegions(self) -> None:
         self._validate_regions_func()  # type: ignore  # pylint: disable=no-member
@@ -210,11 +204,6 @@ class ParserInfo(ObjectReprImplBase):
     def Disable(self) -> None:
         assert self.is_disabled__ is False
         object.__setattr__(self, "_disabled", True)
-
-    # ----------------------------------------------------------------------
-    def SetValidatedFlag(self) -> None:
-        assert self.is_validated__ is False
-        object.__setattr__(self, "_validated", True)
 
     # ----------------------------------------------------------------------
     def Accept(

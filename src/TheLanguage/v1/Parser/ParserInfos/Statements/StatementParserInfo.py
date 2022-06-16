@@ -18,11 +18,12 @@
 import os
 
 from enum import auto, Flag
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Generator, List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -175,3 +176,10 @@ class StatementParserInfo(ParserInfo):
             scope_flags=None,                           # type: ignore
             **custom_display_funcs,
         )
+
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def GenerateDynamicTypeNames(self) -> Generator[str, None, None]:
+        # By default, no dynamic types are generated
+        if False:
+            yield ""

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional, Union
+from typing import Generator, List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -278,6 +278,11 @@ class ClassStatementParserInfo(
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def GenerateDynamicTypeNames(self) -> Generator[str, None, None]:
+        yield "ThisType"
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

@@ -15,6 +15,8 @@
 # ----------------------------------------------------------------------
 """Contains the StateMaintainer object"""
 
+# TODO: This is not used here, but may be useful in the future. Keep for now, but potentially remove later.
+
 import os
 
 from typing import cast, Dict, Generator, Generic, List, Optional, TypeVar, Union

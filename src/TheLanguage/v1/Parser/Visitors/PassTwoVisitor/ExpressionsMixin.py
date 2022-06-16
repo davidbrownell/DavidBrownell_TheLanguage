@@ -150,7 +150,7 @@ class ExpressionsMixin(BaseMixin):
                     self._namespaces_stack[-1],
                 )
 
-                parser_info.InitValueParserInfo(result.value)
+                # BugBug parser_info.InitValueParserInfo(result.value)
 
             except ErrorException as ex:
                 self._errors += ex.errors

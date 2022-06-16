@@ -72,7 +72,7 @@ class Visitor(
         *,
         include_fundamental_types: bool,
     ):
-        global_namespace = NamespaceInfo(None)
+        global_namespace = NamespaceInfo(None, None)
 
         with ExitStack() as exit_stack:
             # Add all of the fundamental types to the workspaces. This will be processed to validate
@@ -113,8 +113,6 @@ class Visitor(
             class Executor(object):
                 # ----------------------------------------------------------------------
                 def __init__(self):
-                    self.global_namespace               = global_namespace
-
                     self._execute_results_lock          = threading.Lock()
                     self._execute_results: Dict[
                         str,                            # Workspace name
@@ -126,19 +124,23 @@ class Visitor(
 
                 # ----------------------------------------------------------------------
                 @property
+                def global_namespace(self) -> NamespaceInfo:
+                    return global_namespace
+
+                @property
                 def fundamental_types_namespace(self) -> Optional[NamespaceInfo]:
                     return global_namespace.children.get(cls._FUNDAMENTAL_TYPES_ATTRIBUTE_NAME, None)  # pylint: disable=protected-access
 
                 # ----------------------------------------------------------------------
                 def Execute(
                     self,
-                    names: Tuple[str, str],  # pylint: disable=unused-argument
+                    names: Tuple[str, str],
                     root: RootStatementParserInfo,
                 ) -> Union[
                     bool,                   # Doesn't matter what the return value is as long as it looks different than List[Error]
                     List[Error],
                 ]:
-                    visitor = cls(mini_language_configuration_values)
+                    visitor = cls(mini_language_configuration_values, global_namespace, names)
 
                     root.Accept(visitor)
 
@@ -166,7 +168,7 @@ class Visitor(
                 ]:
                     # Create a complete namespace
                     for workspace_name, workspace_items in self._execute_results.items():
-                        workspace_namespace = NamespaceInfo(global_namespace)
+                        workspace_namespace = NamespaceInfo(workspace_name, global_namespace)
 
                         for relative_path, execute_result in workspace_items.items():
                             name_parts = os.path.splitext(relative_path)[0]

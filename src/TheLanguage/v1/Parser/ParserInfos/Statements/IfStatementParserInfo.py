@@ -69,26 +69,15 @@ class IfStatementClauseParserInfo(
         *args,
         **kwargs,
     ):
-        parser_info_type = expression.parser_info_type__
-
-        # If the expression is ambiguous, see if we can get some context from the statements
-        if parser_info_type == ParserInfoType.Unknown:
-            for statement in statements:
-                if (
-                    parser_info_type == ParserInfoType.Unknown
-                    or statement.parser_info_type__.value < parser_info_type.value
-                ):
-                    parser_info_type = statement.parser_info_type__
-
         # Duplicate regions for items that we are generating automatically
         assert regions and regions[0] is not None
         regions.insert(0, regions[0])       # name
         regions.insert(0, regions[0])       # visibility
 
-        return cls(
+        return cls(  # pylint: disable=too-many-function-args
             "IfStatementClauseParserInfo ({})".format(regions[0].begin.line),
             VisibilityModifier.private,                                         # type: ignore
-            parser_info_type,                                                   # type: ignore
+            expression.parser_info_type__,                                                   # type: ignore
             regions,                                                            # type: ignore
             expression,
             statements,
@@ -155,24 +144,15 @@ class IfStatementElseClauseParserInfo(
         *args,
         **kwargs,
     ):
-        parser_info_type = ParserInfoType.Unknown
-
-        for statement in statements:
-            if (
-                parser_info_type == ParserInfoType.Unknown
-                or statement.parser_info_type__.value < parser_info_type.value
-            ):
-                parser_info_type = statement.parser_info_type__
-
         # Duplicate regions for items that we are generating automatically
         assert regions and regions[0] is not None
         regions.insert(0, regions[0])       # name
         regions.insert(0, regions[0])       # visibility
 
-        return cls(
+        return cls(  # pylint: disable=too-many-function-args
             "IfStatementElseClauseParserInfo ({})".format(regions[0].begin.line),
             VisibilityModifier.private,                                             # type: ignore
-            parser_info_type,                                                       # type: ignore
+            ParserInfoType.Unknown,                                                       # type: ignore
             regions,                                                                # type: ignore
             statements,
             *args,

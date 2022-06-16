@@ -19,7 +19,7 @@ import os
 import types
 
 from contextlib import contextmanager, ExitStack
-from typing import Callable, cast, Dict, List, Optional, Union
+from typing import Callable, cast, Dict, List, Optional, Set, Tuple, Union
 
 import CommonEnvironment
 
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .. import MiniLanguageHelpers
-    from ..NamespaceInfo import ParsedNamespaceInfo
+    from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo, VisibilityModifier
 
     from ...Error import CreateError, Error, ErrorException, TranslationUnitRegion
 
@@ -71,8 +71,12 @@ class BaseMixin(object):
     def __init__(
         self,
         configuration_info: Dict[str, MiniLanguageHelpers.CompileTimeInfo],
+        global_namespace: NamespaceInfo,
+        names: Tuple[str, str],
     ):
+        self._global_namespace              = global_namespace
         self._configuration_info            = configuration_info
+        self._names                         = names
 
         self._errors: List[Error]                                           = []
 
@@ -81,6 +85,8 @@ class BaseMixin(object):
 
         self._namespace_stack: List[ParsedNamespaceInfo]                    = []
         self._root_namespace: Optional[ParsedNamespaceInfo]                 = None
+
+        self._processed: Set[int]           = set()
 
     # ----------------------------------------------------------------------
     def __getattr__(
@@ -130,7 +136,7 @@ class BaseMixin(object):
                         scope_flag = parent_scope_flag
 
                     new_namespace = ParsedNamespaceInfo(
-                        self._namespace_stack[-1] if self._namespace_stack else None,
+                        self._namespace_stack[-1] if self._namespace_stack else self._global_namespace,
                         scope_flag,
                         cast(StatementParserInfo, parser_info),
                     )
@@ -147,9 +153,24 @@ class BaseMixin(object):
                         self._namespace_stack.append(new_namespace)
                         exit_stack.callback(self._namespace_stack.pop)
 
+                if isinstance(parser_info, StatementParserInfo):
+                    for dynamic_type_name in parser_info.GenerateDynamicTypeNames():
+                        assert isinstance(self._namespace_stack[-1], ParsedNamespaceInfo), self._namespace_stack[-1]
+                        target_namespace = self._namespace_stack[-1]
+
+                        new_namespace = ParsedNamespaceInfo(
+                            target_namespace,
+                            ScopeFlag.Class | ScopeFlag.Function,
+                            target_namespace.parser_info,
+                            name=dynamic_type_name,
+                            children=target_namespace.children,
+                            visibility=VisibilityModifier.private,
+                        )
+
+                        self._AddNamespaceItem(new_namespace)
                 yield
 
-                assert parser_info.parser_info_type__ != ParserInfoType.Configuration or parser_info.is_validated__, (
+                assert parser_info.parser_info_type__ != ParserInfoType.Configuration or id(parser_info) in self._processed, (
                     "Internal Error",
                     parser_info.__class__.__name__,
                 )
@@ -164,6 +185,16 @@ class BaseMixin(object):
     # |
     # |  Protected Methods
     # |
+    # ----------------------------------------------------------------------
+    def _FlagAsProcessed(
+        self,
+        parser_info: ParserInfo,
+    ) -> None:
+        key = id(parser_info)
+
+        assert key not in self._processed, key
+        self._processed.add(key)
+
     # ----------------------------------------------------------------------
     def _AddNamespaceItem(
         self,

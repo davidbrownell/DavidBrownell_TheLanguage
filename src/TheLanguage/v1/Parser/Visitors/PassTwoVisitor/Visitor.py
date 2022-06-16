@@ -37,7 +37,6 @@ with InitRelativeImports():
 
     from .. import MiniLanguageHelpers
     from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
-    from ..StateMaintainer import StateMaintainer
 
     from ...Error import Error, ErrorException
     from ...GlobalRegion import GlobalRegion
@@ -63,6 +62,8 @@ class Visitor(
         names: Tuple[str, str],  # pylint: disable=unused-argument
         root: RootStatementParserInfo,
     ) -> List[Error]:
+        return [] # BugBug
+
         # Get this namespace
         this_namespace = global_namespace.children[names[0]]
 

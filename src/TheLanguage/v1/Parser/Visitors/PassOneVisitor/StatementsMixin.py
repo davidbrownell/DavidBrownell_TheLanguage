@@ -33,88 +33,38 @@ with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
     from .. import MiniLanguageHelpers
-    from ..NamespaceInfo import ParsedNamespaceInfo, ScopeFlag, VisibilityModifier
+    from ..NamespaceInfo import ParsedNamespaceInfo
 
-    from ...Error import CreateError
+    from ...Error import ErrorException
 
     from ...ParserInfos.ParserInfo import ParserInfoType, VisitResult
 
-    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
     from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
-    from ...ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo, IfStatementClauseParserInfo, IfStatementElseClauseParserInfo
-
-
-# ----------------------------------------------------------------------
-InvalidFuncInvocationStatementScopeError    = CreateError(
-    "Function invocations without compile-time expressions are not valid at this level",
-)
-
-InvalidIfStatementScopeError                = CreateError(
-    "If statements without compile-time expressions are not valid at this level",
-)
+    from ...ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
 
 
 # ----------------------------------------------------------------------
 class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     @contextmanager
-    def OnClassStatementParserInfo(
-        self,
-        parser_info: ClassStatementParserInfo,
-    ):
-        assert self._namespace_stack
-        namespace = self._namespace_stack[-1]
-
-        assert isinstance(namespace, ParsedNamespaceInfo), namespace
-        assert namespace.parser_info == parser_info, namespace.parser_info
-
-        assert "ThisType" not in namespace.children
-        namespace.children["ThisType"] = ParsedNamespaceInfo(
-            namespace,
-            ScopeFlag.Class | ScopeFlag.Function,
-            parser_info,
-            children=None,
-            visibility=VisibilityModifier.private,
-        )
-
-        yield
-
-    # ----------------------------------------------------------------------
-    @contextmanager
     def OnFuncInvocationStatementParserInfo(
         self,
         parser_info: FuncInvocationStatementParserInfo,
     ):
-        # BugBug: If method, add "this" and "self"
+        if parser_info.parser_info_type__ == ParserInfoType.Configuration:
+            self._FlagAsProcessed(parser_info)
 
-        if parser_info.parser_info_type__ != ParserInfoType.Configuration:
-            # Ensure that the statement is only used where it is allowed
-            parent_scope_flag = self._namespace_stack[-1].scope_flag
-
-            if (
-                (parser_info.parser_info_type__ == ParserInfoType.TypeCustomization and parent_scope_flag == ScopeFlag.Root)
-                or (parser_info.parser_info_type__ == ParserInfoType.Standard and parent_scope_flag != ScopeFlag.Function)
-            ):
-                self._errors.append(
-                    InvalidFuncInvocationStatementScopeError.Create(
-                        region=parser_info.regions__.self__,
-                    ),
+            try:
+                MiniLanguageHelpers.EvalExpression(
+                    parser_info.expression,
+                    [self._configuration_info],
+                    [],
                 )
+            except ErrorException as ex:
+                self._errors += ex.errors
 
                 yield VisitResult.SkipAll
-
-            else:
-                yield
-
-            return
-
-        MiniLanguageHelpers.EvalExpression(
-            parser_info.expression,
-            [self._configuration_info],
-            [],
-        )
-
-        parser_info.SetValidatedFlag()
+                return
 
         yield
 
@@ -124,60 +74,43 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: IfStatementParserInfo,
     ):
-        assert self._namespace_stack
-
-        if parser_info.parser_info_type__ != ParserInfoType.Configuration:
-            # Ensure that the statement is only used where it is allowed
-            parent_scope_flag = self._namespace_stack[-1].scope_flag
-
-            if (
-                (parser_info.parser_info_type__ == ParserInfoType.TypeCustomization and parent_scope_flag == ScopeFlag.Root)
-                or (parser_info.parser_info_type__ == ParserInfoType.Standard and parent_scope_flag != ScopeFlag.Function)
-            ):
-                self._errors.append(
-                    InvalidIfStatementScopeError.Create(
-                        region=parser_info.regions__.self__,
-                    ),
-                )
-
-                yield VisitResult.SkipAll
-
-            else:
-                yield
-
-            return
-
-        # Determine which clause evaluates to true
         true_clause_name: Optional[str] = None
 
-        for clause in parser_info.clauses:
-            execute_flag = False
+        if parser_info.parser_info_type__ == ParserInfoType.Configuration:
+            self._FlagAsProcessed(parser_info)
 
-            if true_clause_name is None:
-                clause_result = MiniLanguageHelpers.EvalExpression(
-                    clause.expression,
-                    [self._configuration_info],
-                    [],
-                )
+            try:
+                for clause in parser_info.clauses:
+                    self._FlagAsProcessed(clause)
 
-                clause_result = clause_result.type.ToBoolValue(clause_result.value)
+                    execute_flag = False
 
-                if clause_result:
-                    true_clause_name = clause.name
-                    execute_flag = True
+                    if true_clause_name is None:
+                        clause_result = MiniLanguageHelpers.EvalExpression(
+                            clause.expression,
+                            [self._configuration_info],
+                            [],
+                        )
 
-            if not execute_flag:
-                clause.Disable()
+                        clause_result = clause_result.type.ToBoolValue(clause_result.value)
+                        if clause_result:
+                            true_clause_name = clause.name
+                            execute_flag = True
 
-            clause.SetValidatedFlag()
+                    if not execute_flag:
+                        clause.Disable()
 
-        if parser_info.else_clause:
-            if true_clause_name is not None:
-                parser_info.else_clause.Disable()
+                if parser_info.else_clause:
+                    self._FlagAsProcessed(parser_info.else_clause)
 
-            parser_info.else_clause.SetValidatedFlag()
+                    if true_clause_name is not None:
+                        parser_info.else_clause.Disable()
 
-        parser_info.SetValidatedFlag()
+            except ErrorException as ex:
+                self._errors += ex.errors
+
+                yield VisitResult.SkipAll
+                return
 
         yield
 
@@ -188,5 +121,3 @@ class StatementsMixin(BaseMixin):
 
             for namespace in clause_namespace.children.values():
                 self._AddNamespaceItem(namespace)
-
-    # BugBug: On Special methods, add "this" and/or "self"?

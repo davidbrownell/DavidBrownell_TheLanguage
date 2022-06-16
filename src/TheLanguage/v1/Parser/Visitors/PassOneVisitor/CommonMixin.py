@@ -45,7 +45,7 @@ class CommonMixin(BaseMixin):
         parser_info: ConstraintParametersParserInfo,
     ):
         assert parser_info.parser_info_type__ == ParserInfoType.Configuration, parser_info.parser_info_type__
-        parser_info.SetValidatedFlag()
+        self._FlagAsProcessed(parser_info)
 
         yield
 
@@ -56,6 +56,6 @@ class CommonMixin(BaseMixin):
         parser_info: ConstraintParameterParserInfo,
     ):
         assert parser_info.parser_info_type__ == ParserInfoType.Configuration, parser_info.parser_info_type__
-        parser_info.SetValidatedFlag()
+        self._FlagAsProcessed(parser_info)
 
         yield

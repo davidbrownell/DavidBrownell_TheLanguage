@@ -162,6 +162,7 @@ class CommonMixin(BaseMixin):
             ScopeFlag.Class | ScopeFlag.Function,
             parser_info,
             children=None,
+            name=parser_info.name,
             visibility=VisibilityModifier.private,
         )
 
