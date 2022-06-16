@@ -106,7 +106,7 @@ class TemplateTypeParameterParserInfo(ParserInfo):
 
         if self.default_type:
             try:
-                self.default_type.ValidateAsType(self.parser_info_type__)
+                self.default_type.InitializeAsType(self.parser_info_type__)
 
                 if self.default_type.parser_info_type__ != self.parser_info_type__:
                     errors.append(
@@ -182,7 +182,7 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
         errors: List[Error] = []
 
         try:
-            self.type.ValidateAsType(ParserInfoType.Configuration)
+            self.type.InitializeAsType(ParserInfoType.Configuration)
 
             if not ParserInfoType.IsConfiguration(self.type.parser_info_type__):
                 errors.append(
@@ -195,7 +195,7 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
 
         if self.default_value is not None:
             try:
-                self.default_value.ValidateAsExpression()
+                self.default_value.InitializeAsExpression()
 
                 if not ParserInfoType.IsCompileTime(self.default_value.parser_info_type__):
                     errors.append(

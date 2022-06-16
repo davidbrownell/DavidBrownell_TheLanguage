@@ -469,7 +469,7 @@ class FuncDefinitionStatementParserInfo(
 
         if self.return_type is not None:
             try:
-                self.return_type.ValidateAsType(self.parser_info_type__)
+                self.return_type.InitializeAsType(self.parser_info_type__)
             except ErrorException as ex:
                 errors += ex.errors
 

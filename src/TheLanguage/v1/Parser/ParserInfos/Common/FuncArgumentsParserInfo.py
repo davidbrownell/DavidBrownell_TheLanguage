@@ -78,7 +78,7 @@ class FuncArgumentParserInfo(ParserInfo):
         )
 
         # Validate
-        self.expression.ValidateAsExpression()
+        self.expression.InitializeAsExpression()
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

@@ -115,8 +115,8 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
 
         for func in [
             # TODO: lambda: self.class_capabilities.ValidateClassAttributeStatementCapabilities(self),
-            lambda: self.type.ValidateAsType(self.parser_info_type__),
-            self.initialized_value.ValidateAsExpression if self.initialized_value is not None else lambda: None,
+            lambda: self.type.InitializeAsType(self.parser_info_type__),
+            self.initialized_value.InitializeAsExpression if self.initialized_value is not None else lambda: None,
         ]:
             try:
                 func()

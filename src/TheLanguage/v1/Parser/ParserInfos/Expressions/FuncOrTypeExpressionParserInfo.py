@@ -134,7 +134,7 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsType(
+    def InitializeAsType(
         self,
         parser_info_type: ParserInfoType,
         *,
@@ -208,7 +208,7 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsExpression(self) -> None:
+    def InitializeAsExpression(self) -> None:
         raise ErrorException(
             InvalidExpressionError.Create(
                 self.regions__.self__,

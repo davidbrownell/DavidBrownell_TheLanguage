@@ -82,7 +82,7 @@ class ConstraintArgumentParserInfo(ParserInfo):
         errors: List[Error] = []
 
         try:
-            self.expression.ValidateAsExpression()
+            self.expression.InitializeAsExpression()
 
             if not ParserInfoType.IsCompileTime(self.expression.parser_info_type__):
                 errors.append(

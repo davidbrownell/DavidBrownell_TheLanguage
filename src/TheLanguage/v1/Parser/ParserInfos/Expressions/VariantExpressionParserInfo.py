@@ -99,7 +99,7 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsType(
+    def InitializeAsType(
         self,
         parser_info_type: ParserInfoType,
         *,
@@ -109,7 +109,7 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
 
         for the_type in self.types:
             try:
-                the_type.ValidateAsType(
+                the_type.InitializeAsType(
                     parser_info_type,
                     is_instantiated_type=False,
                 )
@@ -149,7 +149,7 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsExpression(self) -> None:
+    def InitializeAsExpression(self) -> None:
         raise ErrorException(
             InvalidExpressionError.Create(
                 region=self.regions__.type__,

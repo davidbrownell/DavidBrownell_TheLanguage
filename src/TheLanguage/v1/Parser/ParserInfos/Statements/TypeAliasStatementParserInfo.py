@@ -134,7 +134,7 @@ class TypeAliasStatementParserInfo(
                 )
 
         try:
-            self.type.ValidateAsType(
+            self.type.InitializeAsType(
                 self.parser_info_type__,
                 is_instantiated_type=False,
             )

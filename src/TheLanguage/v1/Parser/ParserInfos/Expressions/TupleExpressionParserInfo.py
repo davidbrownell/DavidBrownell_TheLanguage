@@ -93,7 +93,7 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsType(
+    def InitializeAsType(
         self,
         parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
         *,
@@ -114,7 +114,7 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
         ):
             for the_type in self.types:
                 try:
-                    the_type.ValidateAsType(
+                    the_type.InitializeAsType(
                         parser_info_type,
                         is_instantiated_type=True,
                     )
@@ -142,12 +142,12 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsExpression(self) -> None:
+    def InitializeAsExpression(self) -> None:
         errors: List[Error] = []
 
         for the_type in self.types:
             try:
-                the_type.ValidateAsExpression()
+                the_type.InitializeAsExpression()
             except ErrorException as ex:
                 errors += ex.errors
 

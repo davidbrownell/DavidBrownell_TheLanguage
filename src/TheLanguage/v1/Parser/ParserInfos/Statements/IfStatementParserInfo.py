@@ -118,7 +118,7 @@ class IfStatementClauseParserInfo(
             },
         )
 
-        self.expression.ValidateAsExpression()
+        self.expression.InitializeAsExpression()
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

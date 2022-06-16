@@ -97,7 +97,7 @@ class ClassStatementDependencyParserInfo(ParserInfo):
         errors: List[Error] = []
 
         try:
-            self.type.ValidateAsType(
+            self.type.InitializeAsType(
                 self.parser_info_type__,
                 is_instantiated_type=False,
             )

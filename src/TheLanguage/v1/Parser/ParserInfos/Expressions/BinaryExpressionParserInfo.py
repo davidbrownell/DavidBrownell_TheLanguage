@@ -144,7 +144,7 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsType(
+    def InitializeAsType(
         self,
         parser_info_type: ParserInfoType,
         *,
@@ -171,12 +171,12 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
                 )
             else:
                 try:
-                    self.left_expression.ValidateAsType(
+                    self.left_expression.InitializeAsType(
                         parser_info_type,
                         is_instantiated_type=False,
                     )
 
-                    self.right_expression.ValidateAsType(
+                    self.right_expression.InitializeAsType(
                         parser_info_type,
                         is_instantiated_type=is_instantiated_type,
                     )
@@ -192,9 +192,9 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsExpression(self) -> None:
-        self.left_expression.ValidateAsExpression()
-        self.right_expression.ValidateAsExpression()
+    def InitializeAsExpression(self) -> None:
+        self.left_expression.InitializeAsExpression()
+        self.right_expression.InitializeAsExpression()
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

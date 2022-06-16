@@ -102,7 +102,7 @@ class ConstraintParameterParserInfo(ParserInfo):
         errors: List[Error] = []
 
         try:
-            self.type.ValidateAsType(self.parser_info_type__)
+            self.type.InitializeAsType(self.parser_info_type__)
 
             if not ParserInfoType.IsConfiguration(self.type.parser_info_type__):
                 errors.append(
@@ -115,7 +115,7 @@ class ConstraintParameterParserInfo(ParserInfo):
 
         if self.default_value is not None:
             try:
-                self.default_value.ValidateAsExpression()
+                self.default_value.InitializeAsExpression()
 
                 if not ParserInfoType.IsCompileTime(self.default_value.parser_info_type__):
                     errors.append(

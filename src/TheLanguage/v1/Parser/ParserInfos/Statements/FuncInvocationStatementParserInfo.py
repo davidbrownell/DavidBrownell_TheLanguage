@@ -69,7 +69,7 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
         )
 
         # Validate
-        self.expression.ValidateAsExpression()
+        self.expression.InitializeAsExpression()
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

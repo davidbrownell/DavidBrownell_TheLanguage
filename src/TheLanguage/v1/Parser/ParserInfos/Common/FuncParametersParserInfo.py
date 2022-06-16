@@ -99,13 +99,13 @@ class FuncParameterParserInfo(ParserInfo):
         errors: List[Error] = []
 
         try:
-            self.type.ValidateAsType(self.parser_info_type__)
+            self.type.InitializeAsType(self.parser_info_type__)
         except ErrorException as ex:
             errors += ex.errors
 
         if self.default_value is not None:
             try:
-                self.default_value.ValidateAsExpression()
+                self.default_value.InitializeAsExpression()
             except ErrorException as ex:
                 errors += ex.errors
 

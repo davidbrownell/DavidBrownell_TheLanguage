@@ -89,7 +89,7 @@ class ExpressionParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def ValidateAsType(
+    def InitializeAsType(
         self,
         parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
         *,
@@ -105,6 +105,6 @@ class ExpressionParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def ValidateAsExpression(self) -> None:
+    def InitializeAsExpression(self) -> None:
         # Most expressions are expressions
         pass

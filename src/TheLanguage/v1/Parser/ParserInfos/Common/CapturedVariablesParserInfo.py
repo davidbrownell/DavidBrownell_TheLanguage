@@ -60,7 +60,7 @@ class CapturedVariablesParserInfo(ParserInfo):
 
         for variable in self.variables:
             try:
-                variable.ValidateAsExpression()
+                variable.InitializeAsExpression()
             except ErrorException as ex:
                 errors += ex.errors
 

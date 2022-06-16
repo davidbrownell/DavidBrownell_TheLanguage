@@ -61,7 +61,7 @@ class NoneExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsType(
+    def InitializeAsType(
         self,
         parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
         *,
@@ -73,6 +73,6 @@ class NoneExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ValidateAsExpression() -> None:
+    def InitializeAsExpression() -> None:
         # This can be an expression or a type
         pass

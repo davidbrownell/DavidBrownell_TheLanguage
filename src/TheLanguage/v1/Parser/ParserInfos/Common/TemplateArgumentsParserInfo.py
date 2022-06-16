@@ -91,7 +91,7 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
         errors: List[Error] = []
 
         try:
-            self.type.ValidateAsType(self.parser_info_type__)
+            self.type.InitializeAsType(self.parser_info_type__)
 
             if not ParserInfoType.IsCompileTime(self.type.parser_info_type__):
                 errors.append(
@@ -161,7 +161,7 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
         errors: List[Error] = []
 
         try:
-            self.expression.ValidateAsExpression()
+            self.expression.InitializeAsExpression()
 
             if not ParserInfoType.IsCompileTime(expression_parser_info_type):
                 errors.append(
