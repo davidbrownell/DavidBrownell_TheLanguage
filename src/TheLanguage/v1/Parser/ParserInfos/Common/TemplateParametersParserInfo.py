@@ -40,8 +40,9 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
+    from ..Statements.StatementParserInfo import StatementParserInfo
+
     from ...Error import CreateError, Error, ErrorException
-    from ...Helpers import MiniLanguageHelpers
 
 
 # ----------------------------------------------------------------------
@@ -78,6 +79,9 @@ class TemplateTypeParameterParserInfo(ParserInfo):
     name: str
     is_variadic: Optional[bool]
     default_type: Optional[ExpressionParserInfo]
+
+    # Values set during validation
+    _default_type_parser_info__: Union[None, StatementParserInfo, "TemplateTypeParameterParserInfo"]    = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -117,6 +121,21 @@ class TemplateTypeParameterParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    # The following values are set during validation
+    def InitDefaultType(
+        self,
+        type_parser_info: Union[StatementParserInfo, "TemplateTypeParameterParserInfo"],
+    ) -> None:
+        assert self._default_type_parser_info__ is None, self._default_type_parser_info__
+        object.__setattr__(self, "_default_type_parser_info__", type_parser_info)
+
+    # ----------------------------------------------------------------------
+    @property
+    def default_type_parser_info__(self) -> Union[StatementParserInfo, "TemplateTypeParameterParserInfo"]:
+        assert self._default_type_parser_info__ is not None
+        return self._default_type_parser_info__
+
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
@@ -136,7 +155,7 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
     default_value: Optional[ExpressionParserInfo]
 
     # Values set during validation
-    mini_language_type: MiniLanguageHelpers.MiniLanguageType                = field(init=False)
+    _type_parser_info__: Optional[ParserInfo]           = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -156,7 +175,6 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
             regionless_attributes=[
                 "type",
                 "default_value",
-                "mini_language_type",
             ],
         )
 
@@ -190,6 +208,21 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    # The following values are set during validation
+    def InitType(
+        self,
+        type_parser_info: ParserInfo
+    ) -> None:
+        assert self._type_parser_info__ is None, self._type_parser_info__
+        object.__setattr__(self, "_type_parser_info__", type_parser_info)
+
+    # ----------------------------------------------------------------------
+    @property
+    def type_parser_info__(self) -> ParserInfo:
+        assert self._type_parser_info__ is not None
+        return self._type_parser_info__
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

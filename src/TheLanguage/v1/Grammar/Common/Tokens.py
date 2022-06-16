@@ -141,7 +141,6 @@ FuncOrTypeName                              = RegexToken(
     ),
 )
 
-# TODO: Do not allow a 'T' suffix
 # TODO: Do not allow compile_time when not expected / require compile time when expected
 
 FuncOrTypeName.Extract                      = _ExtractFuncFactory(True)                             # type: ignore

@@ -5,9 +5,6 @@
 
 from v1.Lexer.Location import Location
 from v1.Parser.MiniLanguage.Types.BooleanType import BooleanType
-from v1.Parser.MiniLanguage.Types.CharacterType import CharacterType
-from v1.Parser.MiniLanguage.Types.CustomType import CustomType
-from v1.Parser.MiniLanguage.Types.StringType import StringType
 from v1.Parser.ParserInfos.AggregateParserInfo import AggregateParserInfo
 from v1.Parser.ParserInfos.Common.ClassModifier import ClassModifier
 from v1.Parser.ParserInfos.Common.ConstraintArgumentsParserInfo import ConstraintArgumentParserInfo
@@ -41,10 +38,10 @@ from v1.Parser.TranslationUnitRegion import TranslationUnitRegion
 tu_region_000000 = TranslationUnitRegion(begin=Location(line=16, column=1), end=Location(line=18, column=1))
 tu_region_000001 = TranslationUnitRegion(begin=Location(line=16, column=34), end=Location(line=16, column=53))
 tu_region_000002 = TranslationUnitRegion(begin=Location(line=16, column=6), end=Location(line=16, column=26))
-tu_region_000003 = TranslationUnitRegion(begin=Location(line=22, column=5), end=Location(line=22, column=9))
-tu_region_000004 = TranslationUnitRegion(begin=Location(line=22, column=25), end=Location(line=22, column=30))
+tu_region_000003 = TranslationUnitRegion(begin=Location(line=22, column=5), end=Location(line=22, column=10))
+tu_region_000004 = TranslationUnitRegion(begin=Location(line=22, column=26), end=Location(line=22, column=31))
 tu_region_000005 = TranslationUnitRegion(begin=Location(line=22, column=5), end=Location(line=23, column=1))
-tu_region_000006 = TranslationUnitRegion(begin=Location(line=22, column=10), end=Location(line=22, column=22))
+tu_region_000006 = TranslationUnitRegion(begin=Location(line=22, column=11), end=Location(line=22, column=23))
 tu_region_000007 = TranslationUnitRegion(begin=Location(line=21, column=35), end=Location(line=23, column=2))
 tu_region_000008 = TranslationUnitRegion(begin=Location(line=24, column=50), end=Location(line=24, column=62))
 tu_region_000009 = TranslationUnitRegion(begin=Location(line=24, column=35), end=Location(line=24, column=62))
@@ -1120,7 +1117,7 @@ statement_000008 = ConstraintArgumentsParserInfo.Create(
 statement_000009 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000012, tu_region_000013, None],
-    value=CustomType("FixedSizeMutableStr"),
+    value="FixedSizeMutableStr",
     templates=None,
     constraints=statement_000008,
     mutability_modifier=None,
@@ -1135,7 +1132,7 @@ statement_000010 = ClassStatementDependencyParserInfo.Create(
 statement_000011 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000014, tu_region_000015, tu_region_000016],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.var,
@@ -1158,7 +1155,7 @@ statement_000013 = TemplateParametersParserInfo.Create(
 statement_000014 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000019, tu_region_000020, tu_region_000021],
-    value=CustomType("ArchiveT"),
+    value="ArchiveT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
@@ -1218,7 +1215,7 @@ statement_000019 = TemplateParametersParserInfo.Create(
 statement_000020 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000033, tu_region_000034, tu_region_000035],
-    value=CustomType("ArchiveT"),
+    value="ArchiveT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
@@ -1278,7 +1275,7 @@ statement_000025 = TemplateParametersParserInfo.Create(
 statement_000026 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000047, tu_region_000048, tu_region_000049],
-    value=CustomType("ArchiveT"),
+    value="ArchiveT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
@@ -1338,7 +1335,7 @@ statement_000031 = TemplateParametersParserInfo.Create(
 statement_000032 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000061, tu_region_000062, tu_region_000063],
-    value=CustomType("VisitorT"),
+    value="VisitorT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
@@ -1398,7 +1395,7 @@ statement_000037 = TemplateParametersParserInfo.Create(
 statement_000038 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000075, tu_region_000076, tu_region_000077],
-    value=CustomType("VisitorT"),
+    value="VisitorT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
@@ -1444,7 +1441,7 @@ statement_000041 = FuncDefinitionStatementParserInfo.Create(
 statement_000042 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000087, tu_region_000088, tu_region_000089],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.var,
@@ -1472,9 +1469,9 @@ statement_000043 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000044 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000097, tu_region_000098, tu_region_000099],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -1502,9 +1499,9 @@ statement_000045 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000046 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000107, tu_region_000108, tu_region_000109],
-    value=StringType(),
+    value="Str",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -1534,7 +1531,7 @@ statement_000047 = FuncDefinitionStatementParserInfo.Create(
 statement_000048 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000117, tu_region_000118, tu_region_000119],
-    value=CustomType("CompareResult"),
+    value="CompareResult",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -1543,7 +1540,7 @@ statement_000048 = FuncOrTypeExpressionParserInfo.Create(
 statement_000049 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000120, tu_region_000121, tu_region_000122],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -1559,9 +1556,9 @@ statement_000050 = FuncParameterParserInfo.Create(
 )
 
 statement_000051 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000125, tu_region_000126, tu_region_000127],
-    value=StringType(),
+    value="Str",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -1605,18 +1602,18 @@ statement_000054 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000055 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000138, tu_region_000139, tu_region_000140],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000056 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000141, tu_region_000142, tu_region_000143],
-    value=StringType(),
+    value="Str",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -1660,18 +1657,18 @@ statement_000059 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000060 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000153, tu_region_000154, tu_region_000155],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000061 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000156, tu_region_000157, tu_region_000158],
-    value=StringType(),
+    value="Str",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -1715,18 +1712,18 @@ statement_000064 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000065 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000168, tu_region_000169, tu_region_000170],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000066 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000171, tu_region_000172, tu_region_000173],
-    value=StringType(),
+    value="Str",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -1770,18 +1767,18 @@ statement_000069 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000070 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000183, tu_region_000184, tu_region_000185],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000071 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000186, tu_region_000187, tu_region_000188],
-    value=StringType(),
+    value="Str",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -1825,18 +1822,18 @@ statement_000074 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000075 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000198, tu_region_000199, tu_region_000200],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000076 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000201, tu_region_000202, tu_region_000203],
-    value=StringType(),
+    value="Str",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -1880,18 +1877,18 @@ statement_000079 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000080 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000213, tu_region_000214, tu_region_000215],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000081 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000216, tu_region_000217, tu_region_000218],
-    value=StringType(),
+    value="Str",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -1937,7 +1934,7 @@ statement_000084 = FuncDefinitionStatementParserInfo.Create(
 statement_000085 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000228, tu_region_000228, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -1954,9 +1951,9 @@ statement_000087 = VariantExpressionParserInfo.Create(
 )
 
 statement_000088 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000232, tu_region_000233, tu_region_000234],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2002,7 +1999,7 @@ statement_000091 = FuncDefinitionStatementParserInfo.Create(
 statement_000092 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000244, tu_region_000244, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -2021,7 +2018,7 @@ statement_000094 = VariantExpressionParserInfo.Create(
 statement_000095 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000248, tu_region_000249, tu_region_000250],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2065,18 +2062,18 @@ statement_000098 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000099 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000260, tu_region_000261, tu_region_000262],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000100 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000263, tu_region_000264, tu_region_000265],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2120,9 +2117,9 @@ statement_000103 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000104 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000275, tu_region_000276, tu_region_000277],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2131,7 +2128,7 @@ statement_000104 = FuncOrTypeExpressionParserInfo.Create(
 statement_000105 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000278, tu_region_000279, tu_region_000280],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2175,18 +2172,18 @@ statement_000108 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000109 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000290, tu_region_000291, tu_region_000292],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000110 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000293, tu_region_000294, tu_region_000295],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2230,9 +2227,9 @@ statement_000113 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000114 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000305, tu_region_000306, tu_region_000307],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2241,7 +2238,7 @@ statement_000114 = FuncOrTypeExpressionParserInfo.Create(
 statement_000115 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000308, tu_region_000309, tu_region_000310],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2287,7 +2284,7 @@ statement_000118 = FuncDefinitionStatementParserInfo.Create(
 statement_000119 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000320, tu_region_000321, tu_region_000322],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2317,7 +2314,7 @@ statement_000120 = FuncDefinitionStatementParserInfo.Create(
 statement_000121 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000330, tu_region_000331, tu_region_000332],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2345,9 +2342,9 @@ statement_000122 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000123 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000340, tu_region_000341, tu_region_000342],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2375,9 +2372,9 @@ statement_000124 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000125 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000350, tu_region_000351, tu_region_000352],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2405,9 +2402,9 @@ statement_000126 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000127 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000360, tu_region_000361, tu_region_000362],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2435,9 +2432,9 @@ statement_000128 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000129 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000370, tu_region_000371, tu_region_000372],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2465,9 +2462,9 @@ statement_000130 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000131 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000380, tu_region_000381, tu_region_000382],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2495,9 +2492,9 @@ statement_000132 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000133 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000390, tu_region_000391, tu_region_000392],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2525,9 +2522,9 @@ statement_000134 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000135 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000400, tu_region_000401, tu_region_000402],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2555,9 +2552,9 @@ statement_000136 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000137 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000410, tu_region_000411, tu_region_000412],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2585,9 +2582,9 @@ statement_000138 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000139 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000420, tu_region_000421, tu_region_000422],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2615,9 +2612,9 @@ statement_000140 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000141 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000430, tu_region_000431, tu_region_000432],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2647,16 +2644,16 @@ statement_000142 = FuncDefinitionStatementParserInfo.Create(
 statement_000143 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000440, tu_region_000441, tu_region_000442],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000144 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000443, tu_region_000444, tu_region_000445],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2702,7 +2699,7 @@ statement_000147 = FuncDefinitionStatementParserInfo.Create(
 statement_000148 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000455, tu_region_000456, tu_region_000457],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2711,7 +2708,7 @@ statement_000148 = FuncOrTypeExpressionParserInfo.Create(
 statement_000149 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000458, tu_region_000459, tu_region_000460],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2755,18 +2752,18 @@ statement_000152 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000153 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000470, tu_region_000471, tu_region_000472],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000154 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000473, tu_region_000474, tu_region_000475],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2810,9 +2807,9 @@ statement_000157 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000158 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000485, tu_region_000486, tu_region_000487],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2821,7 +2818,7 @@ statement_000158 = FuncOrTypeExpressionParserInfo.Create(
 statement_000159 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000488, tu_region_000489, tu_region_000490],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2865,18 +2862,18 @@ statement_000162 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000163 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000500, tu_region_000501, tu_region_000502],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000164 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000503, tu_region_000504, tu_region_000505],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2920,9 +2917,9 @@ statement_000167 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000168 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000515, tu_region_000516, tu_region_000517],
-    value=BooleanType(),
+    value="Bool",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -2931,7 +2928,7 @@ statement_000168 = FuncOrTypeExpressionParserInfo.Create(
 statement_000169 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000518, tu_region_000519, tu_region_000520],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -2977,7 +2974,7 @@ statement_000172 = FuncDefinitionStatementParserInfo.Create(
 statement_000173 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000530, tu_region_000530, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -2994,9 +2991,9 @@ statement_000175 = VariantExpressionParserInfo.Create(
 )
 
 statement_000176 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000534, tu_region_000535, tu_region_000536],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -3014,7 +3011,7 @@ statement_000177 = FuncParameterParserInfo.Create(
 statement_000178 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000539, tu_region_000539, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3046,7 +3043,7 @@ statement_000182 = FuncParameterParserInfo.Create(
 statement_000183 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000546, tu_region_000546, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3106,7 +3103,7 @@ statement_000189 = FuncDefinitionStatementParserInfo.Create(
 statement_000190 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000561, tu_region_000561, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3125,7 +3122,7 @@ statement_000192 = VariantExpressionParserInfo.Create(
 statement_000193 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000565, tu_region_000566, tu_region_000567],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -3143,7 +3140,7 @@ statement_000194 = FuncParameterParserInfo.Create(
 statement_000195 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000570, tu_region_000570, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3175,7 +3172,7 @@ statement_000199 = FuncParameterParserInfo.Create(
 statement_000200 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000577, tu_region_000577, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3235,7 +3232,7 @@ statement_000206 = FuncDefinitionStatementParserInfo.Create(
 statement_000207 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000592, tu_region_000592, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3252,9 +3249,9 @@ statement_000209 = VariantExpressionParserInfo.Create(
 )
 
 statement_000210 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000596, tu_region_000597, tu_region_000598],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -3272,7 +3269,7 @@ statement_000211 = FuncParameterParserInfo.Create(
 statement_000212 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000601, tu_region_000601, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3332,7 +3329,7 @@ statement_000218 = FuncDefinitionStatementParserInfo.Create(
 statement_000219 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000616, tu_region_000616, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3351,7 +3348,7 @@ statement_000221 = VariantExpressionParserInfo.Create(
 statement_000222 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000620, tu_region_000621, tu_region_000622],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -3369,7 +3366,7 @@ statement_000223 = FuncParameterParserInfo.Create(
 statement_000224 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000625, tu_region_000625, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3429,7 +3426,7 @@ statement_000230 = FuncDefinitionStatementParserInfo.Create(
 statement_000231 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000640, tu_region_000640, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3446,9 +3443,9 @@ statement_000233 = VariantExpressionParserInfo.Create(
 )
 
 statement_000234 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000644, tu_region_000645, tu_region_000646],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -3466,7 +3463,7 @@ statement_000235 = FuncParameterParserInfo.Create(
 statement_000236 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000649, tu_region_000649, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3526,7 +3523,7 @@ statement_000242 = FuncDefinitionStatementParserInfo.Create(
 statement_000243 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000664, tu_region_000664, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3545,7 +3542,7 @@ statement_000245 = VariantExpressionParserInfo.Create(
 statement_000246 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000668, tu_region_000669, tu_region_000670],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -3563,7 +3560,7 @@ statement_000247 = FuncParameterParserInfo.Create(
 statement_000248 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000673, tu_region_000673, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3623,7 +3620,7 @@ statement_000254 = FuncDefinitionStatementParserInfo.Create(
 statement_000255 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000688, tu_region_000688, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3640,9 +3637,9 @@ statement_000257 = VariantExpressionParserInfo.Create(
 )
 
 statement_000258 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000692, tu_region_000693, tu_region_000694],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -3660,7 +3657,7 @@ statement_000259 = FuncParameterParserInfo.Create(
 statement_000260 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000697, tu_region_000697, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3720,7 +3717,7 @@ statement_000266 = FuncDefinitionStatementParserInfo.Create(
 statement_000267 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000712, tu_region_000712, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3739,7 +3736,7 @@ statement_000269 = VariantExpressionParserInfo.Create(
 statement_000270 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000716, tu_region_000717, tu_region_000718],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -3757,7 +3754,7 @@ statement_000271 = FuncParameterParserInfo.Create(
 statement_000272 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000721, tu_region_000721, None],
-    value=CustomType("PosInt"),
+    value="PosInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -3817,7 +3814,7 @@ statement_000278 = FuncDefinitionStatementParserInfo.Create(
 statement_000279 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000736, tu_region_000737, tu_region_000738],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -3847,7 +3844,7 @@ statement_000280 = FuncDefinitionStatementParserInfo.Create(
 statement_000281 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000746, tu_region_000747, tu_region_000748],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -3877,7 +3874,7 @@ statement_000282 = FuncDefinitionStatementParserInfo.Create(
 statement_000283 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000756, tu_region_000757, tu_region_000758],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -3907,7 +3904,7 @@ statement_000284 = FuncDefinitionStatementParserInfo.Create(
 statement_000285 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000766, tu_region_000767, tu_region_000768],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -3937,7 +3934,7 @@ statement_000286 = FuncDefinitionStatementParserInfo.Create(
 statement_000287 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000776, tu_region_000777, tu_region_000778],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -3967,7 +3964,7 @@ statement_000288 = FuncDefinitionStatementParserInfo.Create(
 statement_000289 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000786, tu_region_000787, tu_region_000788],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -3997,7 +3994,7 @@ statement_000290 = FuncDefinitionStatementParserInfo.Create(
 statement_000291 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000796, tu_region_000797, tu_region_000798],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -4006,7 +4003,7 @@ statement_000291 = FuncOrTypeExpressionParserInfo.Create(
 statement_000292 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000799, tu_region_000800, tu_region_000801],
-    value=CustomType("NonZeroInt"),
+    value="NonZeroInt",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -4022,9 +4019,9 @@ statement_000293 = FuncParameterParserInfo.Create(
 )
 
 statement_000294 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000804, tu_region_000805, tu_region_000806],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -4075,7 +4072,7 @@ statement_000298 = FuncDefinitionStatementParserInfo.Create(
 statement_000299 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000818, tu_region_000819, tu_region_000820],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -4084,7 +4081,7 @@ statement_000299 = FuncOrTypeExpressionParserInfo.Create(
 statement_000300 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000821, tu_region_000822, tu_region_000823],
-    value=CustomType("NonZeroInt"),
+    value="NonZeroInt",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -4100,9 +4097,9 @@ statement_000301 = FuncParameterParserInfo.Create(
 )
 
 statement_000302 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000826, tu_region_000827, tu_region_000828],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -4153,7 +4150,7 @@ statement_000306 = FuncDefinitionStatementParserInfo.Create(
 statement_000307 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000840, tu_region_000841, tu_region_000842],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -4162,7 +4159,7 @@ statement_000307 = FuncOrTypeExpressionParserInfo.Create(
 statement_000308 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000843, tu_region_000844, tu_region_000845],
-    value=CustomType("NonZeroInt"),
+    value="NonZeroInt",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -4178,9 +4175,9 @@ statement_000309 = FuncParameterParserInfo.Create(
 )
 
 statement_000310 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000848, tu_region_000849, tu_region_000850],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -4231,7 +4228,7 @@ statement_000314 = FuncDefinitionStatementParserInfo.Create(
 statement_000315 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000862, tu_region_000863, tu_region_000864],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -4261,7 +4258,7 @@ statement_000316 = FuncDefinitionStatementParserInfo.Create(
 statement_000317 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000872, tu_region_000873, tu_region_000874],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -4291,7 +4288,7 @@ statement_000318 = FuncDefinitionStatementParserInfo.Create(
 statement_000319 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000882, tu_region_000883, tu_region_000884],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -4321,16 +4318,16 @@ statement_000320 = FuncDefinitionStatementParserInfo.Create(
 statement_000321 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000892, tu_region_000893, tu_region_000894],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
 )
 
 statement_000322 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000895, tu_region_000896, tu_region_000897],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -4346,9 +4343,9 @@ statement_000323 = FuncParameterParserInfo.Create(
 )
 
 statement_000324 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000900, tu_region_000901, tu_region_000902],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -4366,7 +4363,7 @@ statement_000325 = FuncParameterParserInfo.Create(
 statement_000326 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000905, tu_region_000905, None],
-    value=CustomType("NonZeroInt"),
+    value="NonZeroInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -4426,7 +4423,7 @@ statement_000332 = FuncDefinitionStatementParserInfo.Create(
 statement_000333 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000920, tu_region_000921, tu_region_000922],
-    value=CustomType("ThisType"),
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.val,
@@ -4435,7 +4432,7 @@ statement_000333 = FuncOrTypeExpressionParserInfo.Create(
 statement_000334 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000923, tu_region_000924, tu_region_000925],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -4451,9 +4448,9 @@ statement_000335 = FuncParameterParserInfo.Create(
 )
 
 statement_000336 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000928, tu_region_000929, tu_region_000930],
-    value=StringType(),
+    value="Str",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -4471,7 +4468,7 @@ statement_000337 = FuncParameterParserInfo.Create(
 statement_000338 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000933, tu_region_000933, None],
-    value=CustomType("NonZeroInt"),
+    value="NonZeroInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,

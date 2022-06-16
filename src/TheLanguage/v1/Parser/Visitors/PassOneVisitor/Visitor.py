@@ -36,19 +36,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .CommonMixin import CommonMixin
+    from .ExpressionsMixin import ExpressionsMixin
     from .StatementsMixin import StatementsMixin
     from .ImportStatementMixin import ImportStatementMixin
 
+    from .. import MiniLanguageHelpers
     from ..NamespaceInfo import NamespaceInfo
 
     from ...Error import Error, ErrorException
-    from ...Helpers import MiniLanguageHelpers
 
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
 
 
 # ----------------------------------------------------------------------
 class Visitor(
+    CommonMixin,
+    ExpressionsMixin,
     StatementsMixin,
     ImportStatementMixin,
 ):
@@ -98,8 +102,6 @@ class Visitor(
                         relative_path = relative_path.replace(os.path.sep, ".")
 
                         fundamental_types[relative_path] = getattr(mod, "root_parser_info")
-
-                assert fundamental_types
 
                 # Add the fundamental types to the workspaces collection
                 assert cls._FUNDAMENTAL_TYPES_ATTRIBUTE_NAME not in workspaces

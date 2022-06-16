@@ -19,8 +19,8 @@ from .Num import Num
 
 # ----------------------------------------------------------------------
 public mutable concept MutableNum {
-    (Num | None) min_value! = None,
-    (Num | None) max_value! = None,
+    (Num! | None!) min_value! = None,
+    (Num! | None!) max_value! = None,
 }
     extends Num { min_value!, max_value! }
 :

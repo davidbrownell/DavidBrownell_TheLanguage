@@ -17,9 +17,9 @@
 
 import os
 
-from typing import List, Optional
+from typing import List, Optional, Type, Union
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -42,24 +42,33 @@ with InitRelativeImports():
     from ..Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
     from ..Common.MutabilityModifier import MutabilityModifier
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
+    from ..Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
+
+    from ..Statements.StatementParserInfo import StatementParserInfo
 
     from ...Error import CreateError, Error, ErrorException
 
-    from ...MiniLanguage.Types.CustomType import CustomType
+    from ...MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
     from ...MiniLanguage.Types.Type import Type as MiniLanguageType
 
     # Convenience imports
+    from ...MiniLanguage.Expressions.EnforceExpression import EnforceExpression         # pylint: disable=unused-import
+    from ...MiniLanguage.Expressions.ErrorExpression import ErrorExpression             # pylint: disable=unused-import
+    from ...MiniLanguage.Expressions.IsDefinedExpression import IsDefinedExpression     # pylint: disable=unused-import
+
     from ...MiniLanguage.Types.BooleanType import BooleanType               # pylint: disable=unused-import
     from ...MiniLanguage.Types.CharacterType import CharacterType           # pylint: disable=unused-import
     from ...MiniLanguage.Types.IntegerType import IntegerType               # pylint: disable=unused-import
     from ...MiniLanguage.Types.NoneType import NoneType                     # pylint: disable=unused-import
     from ...MiniLanguage.Types.NumberType import NumberType                 # pylint: disable=unused-import
     from ...MiniLanguage.Types.StringType import StringType                 # pylint: disable=unused-import
+    from ...MiniLanguage.Types.VariantType import VariantType               # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
 InvalidCompileTimeTypeError                 = CreateError(
-    "Invalid compile-time type",
+    "'{name}' is not a valid compile-time type",
+    name=str,
 )
 
 InvalidCompileTimeTemplatesError            = CreateError(
@@ -82,25 +91,40 @@ InvalidStandardMutabilityModifierError      = CreateError(
     "A mutability modifier is not allowed in this context",
 )
 
+InvalidStandardTypeError                    = CreateError(
+    "Compile-time types are not allowed in this context",
+)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
-    value: MiniLanguageType
+    value: Union[
+        MiniLanguageType,
+        Type[MiniLanguageExpression],
+        str,
+    ]
+
     templates: Optional[TemplateArgumentsParserInfo]
     constraints: Optional[ConstraintArgumentsParserInfo]
     mutability_modifier: Optional[MutabilityModifier]
+
+    # The following values are set during validation
+    _value_parser_info: Union[None, StatementParserInfo, TemplateTypeParameterParserInfo]           = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(FuncOrTypeExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
             regionless_attributes=[
                 "templates",
                 "constraints",
             ],
+            **{
+                "value_parser_info__": None,
+                **kwargs,
+            },
         )
 
     # ----------------------------------------------------------------------
@@ -121,10 +145,11 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
 
         # Checks just for configuration values
         if parser_info_type == ParserInfoType.Configuration:
-            if isinstance(self.value, CustomType):
+            if isinstance(self.value, str):
                 errors.append(
                     InvalidCompileTimeTypeError.Create(
                         region=self.regions__.value,
+                        name=self.value,
                     ),
                 )
 
@@ -155,6 +180,13 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
             parser_info_type == ParserInfoType.Standard
             or parser_info_type == ParserInfoType.Unknown
         ):
+            if not isinstance(self.value, str):
+                errors.append(
+                    InvalidStandardTypeError.Create(
+                        region=self.regions__.value,
+                    ),
+                )
+
             if is_instantiated_type and self.mutability_modifier is None:
                 errors.append(
                     MutabilityModifierRequiredError.Create(
@@ -182,6 +214,20 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
                 self.regions__.self__,
             ),
         )
+
+    # ----------------------------------------------------------------------
+    def InitValueParserInfo(
+        self,
+        parser_info: Union[StatementParserInfo, TemplateTypeParameterParserInfo],
+    ) -> None:
+        assert self._value_parser_info is None
+        object.__setattr__(self, "_value_parser_info", parser_info)
+
+    # ----------------------------------------------------------------------
+    @property
+    def value_parser_info__(self) -> Union[StatementParserInfo, TemplateTypeParameterParserInfo]:
+        assert self._value_parser_info is not None
+        return self._value_parser_info
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

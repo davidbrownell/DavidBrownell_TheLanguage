@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -45,7 +45,7 @@ with InitRelativeImports():
 
     from ..Common.ClassModifier import ClassModifier
     from ..Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo
-    from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo
+    from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo, TemplateTypeParameterParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
@@ -72,6 +72,9 @@ class ClassStatementDependencyParserInfo(ParserInfo):
                                                         # but a default will be provided once the instance is associated
                                                         # with a ClassStatement instance.
     type: ExpressionParserInfo
+
+    # Values set during validation
+    _type_parser_info__: Optional[ParserInfo]           = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -103,6 +106,21 @@ class ClassStatementDependencyParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    # The following values are set during validation
+    def InitType(
+        self,
+        type_parser_info: ParserInfo
+    ) -> None:
+        assert self._type_parser_info__ is None, self._type_parser_info__
+        object.__setattr__(self, "_type_parser_info__", type_parser_info)
+
+    # ----------------------------------------------------------------------
+    @property
+    def type_parser_info__(self) -> ParserInfo:
+        assert self._type_parser_info__ is not None
+        return self._type_parser_info__
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

@@ -35,6 +35,8 @@ with InitRelativeImports():
     from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
     from ...Error import CreateError, ErrorException
+    from ...ParserInfos.ParserInfo import ParserInfoType
+
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
     from ...ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportType
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
@@ -70,6 +72,9 @@ class ImportStatementMixin(BaseMixin):
         self,
         parser_info: ImportStatementParserInfo,
     ):
+        assert parser_info.parser_info_type__ == ParserInfoType.Configuration, parser_info.parser_info_type__
+        parser_info.SetValidatedFlag()
+
         yield
 
         # We want to introduce the name into the namespace, but don't yet know
@@ -77,8 +82,8 @@ class ImportStatementMixin(BaseMixin):
         # and then populate it later. These items will be removed during the
         # postprocessing below, as they should only be available after the import statement.
 
-        assert self._namespaces
-        parent_namespace = self._namespaces[-1]
+        assert self._namespace_stack
+        parent_namespace = self._namespace_stack[-1]
 
         self._postprocess_funcs.append(cast(Callable[[], None], lambda: self.__class__._PostprocessImportStatement(parent_namespace, parser_info)))  # pylint: disable=protected-access
 

@@ -70,7 +70,7 @@ class OperatorType(Enum):
     GreaterEqual                            = ">="
 
     LogicalAnd                              = "and"
-    LogicalOr                                = "or"
+    LogicalOr                               = "or"
 
 
 # ----------------------------------------------------------------------

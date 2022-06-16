@@ -35,13 +35,12 @@ with InitRelativeImports():
     from .ExpressionsMixin import ExpressionsMixin
     from .StatementsMixin import StatementsMixin
 
+    from .. import MiniLanguageHelpers
     from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
     from ..StateMaintainer import StateMaintainer
 
     from ...Error import Error, ErrorException
     from ...GlobalRegion import GlobalRegion
-    from ...Helpers import MiniLanguageHelpers
-    from ...MiniLanguage.Types.CustomType import CustomType
 
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
     from ...ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
@@ -58,6 +57,7 @@ class Visitor(
     @classmethod
     def Execute(
         cls,
+        mini_language_configuration_values: Dict[str, MiniLanguageHelpers.CompileTimeInfo],
         global_namespace: NamespaceInfo,
         fundamental_types_namespace: Optional[NamespaceInfo],
         names: Tuple[str, str],  # pylint: disable=unused-argument
@@ -74,7 +74,11 @@ class Visitor(
 
         assert isinstance(this_namespace, ParsedNamespaceInfo)
 
-        visitor = cls(this_namespace, fundamental_types_namespace)
+        visitor = cls(
+            mini_language_configuration_values,
+            fundamental_types_namespace,
+            this_namespace,
+        )
 
         root.Accept(visitor)
 

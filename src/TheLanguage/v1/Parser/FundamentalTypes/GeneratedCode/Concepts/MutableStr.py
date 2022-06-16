@@ -5,9 +5,6 @@
 
 from v1.Lexer.Location import Location
 from v1.Parser.MiniLanguage.Types.BooleanType import BooleanType
-from v1.Parser.MiniLanguage.Types.CharacterType import CharacterType
-from v1.Parser.MiniLanguage.Types.CustomType import CustomType
-from v1.Parser.MiniLanguage.Types.StringType import StringType
 from v1.Parser.ParserInfos.AggregateParserInfo import AggregateParserInfo
 from v1.Parser.ParserInfos.Common.ClassModifier import ClassModifier
 from v1.Parser.ParserInfos.Common.ConstraintArgumentsParserInfo import ConstraintArgumentParserInfo
@@ -41,10 +38,10 @@ from v1.Parser.TranslationUnitRegion import TranslationUnitRegion
 tu_region_000000 = TranslationUnitRegion(begin=Location(line=16, column=1), end=Location(line=18, column=1))
 tu_region_000001 = TranslationUnitRegion(begin=Location(line=16, column=18), end=Location(line=16, column=21))
 tu_region_000002 = TranslationUnitRegion(begin=Location(line=16, column=6), end=Location(line=16, column=10))
-tu_region_000003 = TranslationUnitRegion(begin=Location(line=22, column=5), end=Location(line=22, column=9))
-tu_region_000004 = TranslationUnitRegion(begin=Location(line=22, column=25), end=Location(line=22, column=30))
+tu_region_000003 = TranslationUnitRegion(begin=Location(line=22, column=5), end=Location(line=22, column=10))
+tu_region_000004 = TranslationUnitRegion(begin=Location(line=22, column=26), end=Location(line=22, column=31))
 tu_region_000005 = TranslationUnitRegion(begin=Location(line=22, column=5), end=Location(line=23, column=1))
-tu_region_000006 = TranslationUnitRegion(begin=Location(line=22, column=10), end=Location(line=22, column=22))
+tu_region_000006 = TranslationUnitRegion(begin=Location(line=22, column=11), end=Location(line=22, column=23))
 tu_region_000007 = TranslationUnitRegion(begin=Location(line=21, column=44), end=Location(line=23, column=2))
 tu_region_000008 = TranslationUnitRegion(begin=Location(line=24, column=34), end=Location(line=24, column=46))
 tu_region_000009 = TranslationUnitRegion(begin=Location(line=24, column=19), end=Location(line=24, column=46))
@@ -127,10 +124,10 @@ tu_region_000085 = TranslationUnitRegion(begin=Location(line=21, column=8), end=
 tu_region_000086 = TranslationUnitRegion(begin=Location(line=21, column=24), end=Location(line=21, column=43))
 tu_region_000087 = TranslationUnitRegion(begin=Location(line=26, column=5), end=Location(line=29, column=8))
 tu_region_000088 = TranslationUnitRegion(begin=Location(line=25, column=1), end=Location(line=50, column=1))
-tu_region_000089 = TranslationUnitRegion(begin=Location(line=51, column=5), end=Location(line=51, column=9))
-tu_region_000090 = TranslationUnitRegion(begin=Location(line=51, column=25), end=Location(line=51, column=30))
+tu_region_000089 = TranslationUnitRegion(begin=Location(line=51, column=5), end=Location(line=51, column=10))
+tu_region_000090 = TranslationUnitRegion(begin=Location(line=51, column=26), end=Location(line=51, column=31))
 tu_region_000091 = TranslationUnitRegion(begin=Location(line=51, column=5), end=Location(line=52, column=1))
-tu_region_000092 = TranslationUnitRegion(begin=Location(line=51, column=10), end=Location(line=51, column=22))
+tu_region_000092 = TranslationUnitRegion(begin=Location(line=51, column=11), end=Location(line=51, column=23))
 tu_region_000093 = TranslationUnitRegion(begin=Location(line=50, column=35), end=Location(line=52, column=2))
 tu_region_000094 = TranslationUnitRegion(begin=Location(line=53, column=50), end=Location(line=53, column=62))
 tu_region_000095 = TranslationUnitRegion(begin=Location(line=53, column=35), end=Location(line=53, column=62))
@@ -305,9 +302,9 @@ statement_000008 = ConstraintArgumentsParserInfo.Create(
 )
 
 statement_000009 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000012, tu_region_000013, None],
-    value=StringType(),
+    value="Str",
     templates=None,
     constraints=statement_000008,
     mutability_modifier=None,
@@ -336,7 +333,7 @@ statement_000012 = TemplateParametersParserInfo.Create(
 statement_000013 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000016, tu_region_000017, tu_region_000018],
-    value=CustomType("ArchiveT"),
+    value="ArchiveT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
@@ -396,7 +393,7 @@ statement_000018 = TemplateParametersParserInfo.Create(
 statement_000019 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000028, tu_region_000029, tu_region_000030],
-    value=CustomType("VisitorT"),
+    value="VisitorT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
@@ -696,7 +693,7 @@ statement_000039 = ConstraintArgumentsParserInfo.Create(
 statement_000040 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000098, tu_region_000099, None],
-    value=CustomType("FixedSizeMutableStr"),
+    value="FixedSizeMutableStr",
     templates=None,
     constraints=statement_000039,
     mutability_modifier=None,
@@ -711,7 +708,7 @@ statement_000041 = ClassStatementDependencyParserInfo.Create(
 statement_000042 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000100, tu_region_000101, tu_region_000102],
-    value=CustomType("NonZeroInt"),
+    value="NonZeroInt",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -727,9 +724,9 @@ statement_000043 = FuncParameterParserInfo.Create(
 )
 
 statement_000044 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000105, tu_region_000106, tu_region_000107],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -780,7 +777,7 @@ statement_000048 = FuncDefinitionStatementParserInfo.Create(
 statement_000049 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000117, tu_region_000118, tu_region_000119],
-    value=CustomType("NonZeroInt"),
+    value="NonZeroInt",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -796,9 +793,9 @@ statement_000050 = FuncParameterParserInfo.Create(
 )
 
 statement_000051 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000122, tu_region_000123, tu_region_000124],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -849,7 +846,7 @@ statement_000055 = FuncDefinitionStatementParserInfo.Create(
 statement_000056 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000134, tu_region_000135, tu_region_000136],
-    value=CustomType("NonZeroInt"),
+    value="NonZeroInt",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -865,9 +862,9 @@ statement_000057 = FuncParameterParserInfo.Create(
 )
 
 statement_000058 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000139, tu_region_000140, tu_region_000141],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -916,9 +913,9 @@ statement_000062 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000063 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000151, tu_region_000152, tu_region_000153],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -934,9 +931,9 @@ statement_000064 = FuncParameterParserInfo.Create(
 )
 
 statement_000065 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000156, tu_region_000157, tu_region_000158],
-    value=CharacterType(),
+    value="Char",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -954,7 +951,7 @@ statement_000066 = FuncParameterParserInfo.Create(
 statement_000067 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000161, tu_region_000161, None],
-    value=CustomType("NonZeroInt"),
+    value="NonZeroInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,
@@ -1014,7 +1011,7 @@ statement_000073 = FuncDefinitionStatementParserInfo.Create(
 statement_000074 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000174, tu_region_000175, tu_region_000176],
-    value=CustomType("NonEmptyStr"),
+    value="NonEmptyStr",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -1030,9 +1027,9 @@ statement_000075 = FuncParameterParserInfo.Create(
 )
 
 statement_000076 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000179, tu_region_000180, tu_region_000181],
-    value=StringType(),
+    value="Str",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
@@ -1050,7 +1047,7 @@ statement_000077 = FuncParameterParserInfo.Create(
 statement_000078 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000184, tu_region_000184, None],
-    value=CustomType("NonZeroInt"),
+    value="NonZeroInt",
     templates=None,
     constraints=None,
     mutability_modifier=None,

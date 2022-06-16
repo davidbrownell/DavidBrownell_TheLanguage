@@ -66,14 +66,23 @@ class LiteralExpression(GrammarPhrase):
             (
                 # <Boolean>
                 PhraseItem(
-                    name="Boolean",
-                    item=(
-                        "__True!",
-                        "__False!",
-                        "True!",
-                        "False!",
-                        "True",
-                        "False",
+                    RegexToken(
+                        "Boolean",
+                        re.compile(
+                            textwrap.dedent(
+                                r"""(?#
+                                One of                      )(?:(?#
+                                    True [Configuration]    )__True!(?#
+                                    False [Configuration]   )|__False!(?#
+                                    True [Type Cust]        )|True!(?#
+                                    False [Type Cust]       )|False!(?#
+                                    True                    )|True(?#
+                                    False                   )|False(?#
+                                End                         ))(?#
+                                Whole match only            )(?![A-Za-z0-9_!])(?#
+                                )""",
+                            ),
+                        ),
                     ),
                 ),
 
@@ -166,8 +175,7 @@ class LiteralExpression(GrammarPhrase):
         assert node.type is not None
 
         if node.type.name == "Boolean":
-            value_node = cast(AST.Leaf, ExtractOr(node))
-
+            value_node = cast(AST.Leaf, node)
             value_info = ExtractToken(
                 value_node,
                 return_match_contents=True,

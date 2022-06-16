@@ -88,7 +88,7 @@ class Type(Interface.Interface, ObjectReprImplBase):
     def ToStringValue(
         value: Any,
     ) -> str:
-        """Convers the value to a string value"""
+        """Converts the value to a string value"""
         return str(value)
 
     # ----------------------------------------------------------------------

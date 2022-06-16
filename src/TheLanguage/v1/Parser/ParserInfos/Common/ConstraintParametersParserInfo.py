@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -33,6 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
+
     from ..Expressions.ExpressionParserInfo import (
         ExpressionParserInfo,
         ParserInfo,
@@ -40,9 +42,9 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
-    from ...Error import CreateError, Error, ErrorException
+    from ..Statements.StatementParserInfo import StatementParserInfo
 
-    from ...Helpers import MiniLanguageHelpers
+    from ...Error import CreateError, Error, ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -73,7 +75,7 @@ class ConstraintParameterParserInfo(ParserInfo):
     default_value: Optional[ExpressionParserInfo]
 
     # Values set during validation
-    mini_language_type: MiniLanguageHelpers.MiniLanguageType                = field(init=False)
+    _type_parser_info__: Optional[ParserInfo]           = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -92,7 +94,6 @@ class ConstraintParameterParserInfo(ParserInfo):
             **kwargs,
             regionless_attributes=[
                 "type",
-                "mini_language_type",
                 "default_value",
             ],
         )
@@ -127,6 +128,21 @@ class ConstraintParameterParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    # The following values are set during validation
+    def InitType(
+        self,
+        type_parser_info: ParserInfo,
+    ) -> None:
+        assert self._type_parser_info__ is None, self._type_parser_info__
+        object.__setattr__(self, "_type_parser_info__", type_parser_info)
+
+    # ----------------------------------------------------------------------
+    @property
+    def type_parser_info__(self) -> ParserInfo:
+        assert self._type_parser_info__ is not None
+        return self._type_parser_info__
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

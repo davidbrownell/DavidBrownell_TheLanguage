@@ -19,7 +19,7 @@ import os
 import types
 
 from contextlib import contextmanager, ExitStack
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import CommonEnvironment
 
@@ -31,15 +31,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..StateMaintainer import StateMaintainer
-
+    from .. import MiniLanguageHelpers
     from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
-    from ...Error import CreateError, Error, ErrorException
-    from ...Helpers import MiniLanguageHelpers
+    from ...Error import Error, ErrorException
 
-    from ...ParserInfos.ParserInfo import ParserInfo
+    from ...ParserInfos.ParserInfo import ParserInfo, ParserInfoType
     from ...ParserInfos.AggregateParserInfo import AggregateParserInfo
+
+    from ...ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
+    from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
 
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ...ParserInfos.Statements.StatementParserInfo import (
@@ -47,13 +48,6 @@ with InitRelativeImports():
         ScopedStatementTrait,
         StatementParserInfo,
     )
-
-
-# ----------------------------------------------------------------------
-InvalidTypeError                            = CreateError(
-    "'{name}' is not a valid type",
-    name=str,
-)
 
 
 # ----------------------------------------------------------------------
@@ -65,16 +59,19 @@ class BaseMixin(object):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        this_namespace: ParsedNamespaceInfo,
+        configuration_info: Dict[str, MiniLanguageHelpers.CompileTimeInfo],
         fundamental_types_namespace: Optional[NamespaceInfo],
+        this_namespace: ParsedNamespaceInfo,
     ):
         namespace_stack: List[NamespaceInfo] = []
 
         if fundamental_types_namespace is not None:
             namespace_stack.append(fundamental_types_namespace)
 
-        self._namespace_stack               = namespace_stack
+        self._namespaces_stack              = [namespace_stack, ]
         self._root_namespace                = this_namespace
+
+        self._configuration_info            = configuration_info
 
         self._errors: List[Error]           = []
 
@@ -98,24 +95,49 @@ class BaseMixin(object):
         try:
             with ExitStack() as exit_stack:
                 if isinstance(parser_info, NamedStatementTrait):
+                    assert self._namespaces_stack
+
                     if parser_info.name_is_ordered__:
                         # Add the item
-                        assert self._namespace_stack
-                        assert isinstance(self._namespace_stack[-1], ParsedNamespaceInfo)
+                        namespace_stack = self._namespaces_stack[-1]
+                        assert namespace_stack
 
-                        self._namespace_stack[-1].children[parser_info.name] = self._namespace_stack[-1].ordered_children[parser_info.name]
+                        assert isinstance(namespace_stack[-1], ParsedNamespaceInfo)
+
+                        namespace_stack[-1].children[parser_info.name] = namespace_stack[-1].ordered_children[parser_info.name]
 
                     if isinstance(parser_info, ScopedStatementTrait):
                         if isinstance(parser_info, RootStatementParserInfo):
                             namespace = self._root_namespace
                         else:
-                            assert self._namespace_stack
-                            namespace = self._namespace_stack[-1].children[parser_info.name]
+                            namespace_stack = self._namespaces_stack[-1]
+                            assert namespace_stack
 
-                        self._namespace_stack.append(namespace)
-                        exit_stack.callback(self._namespace_stack.pop)
+                            namespace = namespace_stack[-1].children[parser_info.name]
+
+                            if isinstance(namespace, list):
+                                for potential_namespace in namespace:
+                                    if potential_namespace.parser_info == parser_info:
+                                        namespace = potential_namespace
+                                        break
+
+                        assert isinstance(namespace, NamespaceInfo)
+
+                        assert self._namespaces_stack
+                        namespace_stack = self._namespaces_stack[-1]
+
+                        namespace_stack.append(namespace)
+                        exit_stack.callback(namespace_stack.pop)
 
                 yield
+
+                assert (
+                    parser_info.parser_info_type__ != ParserInfoType.Configuration
+                    and parser_info.parser_info_type__ != ParserInfoType.TypeCustomization
+                ) or parser_info.is_validated__, (
+                    "Internal Error",
+                    parser_info.__class__.__name__,
+                )
 
         except ErrorException as ex:
             if isinstance(parser_info, StatementParserInfo):
@@ -142,41 +164,23 @@ class BaseMixin(object):
 
     # ----------------------------------------------------------------------
     # |
-    # |  Protected Methods
-    # |
-    # ----------------------------------------------------------------------
-    def _GetNamespaceInfo(
-        self,
-        parser_info: ParserInfo,
-    ) -> Optional[ParsedNamespaceInfo]:
-        item_name = parser_info.GetNameAndRegion()[0]
-        if item_name is None:
-            return None
-
-        assert self._namespace_stack
-        results = self._namespace_stack[-1].children[item_name]
-
-        if isinstance(results, ParsedNamespaceInfo):
-            assert results.parser_info == parser_info
-            return results
-
-        for result in results:
-            if result.parser_info == parser_info:
-                return result
-
-        assert False, parser_info
-
-    # ----------------------------------------------------------------------
-    # |
     # |  Private Methods
     # |
     # ----------------------------------------------------------------------
     def _DefaultDetailMethod(
         self,
         parser_info_or_infos: Union[ParserInfo, List[ParserInfo]],
+        *,
+        include_disabled: bool,
     ):
         if isinstance(parser_info_or_infos, list):
             for parser_info in parser_info_or_infos:
-                parser_info.Accept(self)
+                parser_info.Accept(
+                    self,
+                    include_disabled=include_disabled,
+                )
         else:
-            parser_info_or_infos.Accept(self)
+            parser_info_or_infos.Accept(
+                self,
+                include_disabled=include_disabled,
+            )

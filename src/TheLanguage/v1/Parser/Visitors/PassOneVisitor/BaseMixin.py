@@ -19,7 +19,7 @@ import os
 import types
 
 from contextlib import contextmanager, ExitStack
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, cast, Dict, List, Optional, Union
 
 import CommonEnvironment
 
@@ -31,12 +31,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .. import MiniLanguageHelpers
     from ..NamespaceInfo import ParsedNamespaceInfo
 
     from ...Error import CreateError, Error, ErrorException, TranslationUnitRegion
-    from ...Helpers import MiniLanguageHelpers
 
-    from ...ParserInfos.ParserInfo import ParserInfo, VisitResult
+    from ...ParserInfos.ParserInfo import ParserInfo, ParserInfoType, VisitResult
 
     from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
     from ...ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
@@ -79,7 +79,7 @@ class BaseMixin(object):
         self._postprocess_funcs: List[Callable[[], None]]                   = []
         self._finalize_funcs: List[Callable[[], None]]                      = []
 
-        self._namespaces: List[ParsedNamespaceInfo]                         = []
+        self._namespace_stack: List[ParsedNamespaceInfo]                    = []
         self._root_namespace: Optional[ParsedNamespaceInfo]                 = None
 
     # ----------------------------------------------------------------------
@@ -102,7 +102,7 @@ class BaseMixin(object):
         self,
         parser_info: ParserInfo,
     ):
-        parent_scope_flag = self._namespaces[-1].scope_flag if self._namespaces else ScopeFlag.Root
+        parent_scope_flag = self._namespace_stack[-1].scope_flag if self._namespace_stack else ScopeFlag.Root
 
         if isinstance(parser_info, StatementParserInfo):
             if (
@@ -130,9 +130,9 @@ class BaseMixin(object):
                         scope_flag = parent_scope_flag
 
                     new_namespace = ParsedNamespaceInfo(
-                        self._namespaces[-1] if self._namespaces else None,
+                        self._namespace_stack[-1] if self._namespace_stack else None,
                         scope_flag,
-                        parser_info,
+                        cast(StatementParserInfo, parser_info),
                     )
 
                     try:
@@ -144,10 +144,15 @@ class BaseMixin(object):
                         return
 
                     if isinstance(parser_info, ScopedStatementTrait):
-                        self._namespaces.append(new_namespace)
-                        exit_stack.callback(self._namespaces.pop)
+                        self._namespace_stack.append(new_namespace)
+                        exit_stack.callback(self._namespace_stack.pop)
 
                 yield
+
+                assert parser_info.parser_info_type__ != ParserInfoType.Configuration or parser_info.is_validated__, (
+                    "Internal Error",
+                    parser_info.__class__.__name__,
+                )
 
         except ErrorException as ex:
             if isinstance(parser_info, StatementParserInfo):
@@ -179,14 +184,14 @@ class BaseMixin(object):
                 continue
 
             assert self._root_namespace is not None
-            assert self._namespaces
+            assert self._namespace_stack
 
             # Is it valid to add this item?
 
             # Get the ancestor that sets scoping rules, collecting matching names as we go
             matching_namespaces: List[ParsedNamespaceInfo] = []
 
-            ancestor_namespace = self._namespaces[-1]
+            ancestor_namespace = self._namespace_stack[-1]
 
             while isinstance(ancestor_namespace, ParsedNamespaceInfo):
                 potential_matching_namespace = ancestor_namespace.children.get(new_namespace.parser_info.name, None)
@@ -215,6 +220,7 @@ class BaseMixin(object):
                     )
 
                 for matching_namespace in matching_namespaces:
+                    assert isinstance(matching_namespace.parser_info, NamedStatementTrait), matching_namespace.parser_info
                     if not matching_namespace.parser_info.allow_name_to_be_duplicated__:
                         raise ErrorException(
                             DuplicateNameError.Create(
@@ -225,7 +231,7 @@ class BaseMixin(object):
                         )
 
             # Add it to the parent namespace
-            parent_namespace = self._namespaces[-1]
+            parent_namespace = self._namespace_stack[-1]
             parent_namespace.AddChild(new_namespace)
 
             if new_namespace.parser_info.name_is_ordered__:
@@ -234,6 +240,7 @@ class BaseMixin(object):
                     new_namespace=new_namespace,
                     parent_namespace=parent_namespace,
                 ):
+                    assert isinstance(new_namespace.parser_info, NamedStatementTrait)
                     parent_namespace.children.pop(new_namespace.parser_info.name)
 
                 # ----------------------------------------------------------------------
@@ -257,9 +264,17 @@ class BaseMixin(object):
     def _DefaultDetailMethod(
         self,
         parser_info_or_infos: Union[ParserInfo, List[ParserInfo]],
+        *,
+        include_disabled: bool,
     ):
         if isinstance(parser_info_or_infos, list):
             for parser_info in parser_info_or_infos:
-                parser_info.Accept(self)
+                parser_info.Accept(
+                    self,
+                    include_disabled=include_disabled,
+                )
         else:
-            parser_info_or_infos.Accept(self)
+            parser_info_or_infos.Accept(
+                self,
+                include_disabled=include_disabled,
+            )

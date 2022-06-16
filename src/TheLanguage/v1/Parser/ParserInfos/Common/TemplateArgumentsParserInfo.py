@@ -19,7 +19,7 @@ import os
 
 from typing import Dict, List, Optional, Union
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,9 +32,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .TemplateParametersParserInfo import TemplateTypeParameterParserInfo
+
     from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..Statements.StatementParserInfo import StatementParserInfo
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -62,6 +65,9 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
 
     type: ExpressionParserInfo
     keyword: Optional[str]
+
+    # Values set during validation
+    _type_parser_info__: Optional[ParserInfo]           = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -98,6 +104,21 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    # The following values are set during validation
+    def InitType(
+        self,
+        type_parser_info: ParserInfo
+    ) -> None:
+        assert self._type_parser_info__ is None, self._type_parser_info__
+        object.__setattr__(self, "_type_parser_info__", type_parser_info)
+
+    # ----------------------------------------------------------------------
+    @property
+    def type_parser_info__(self) -> ParserInfo:
+        assert self._type_parser_info__ is not None
+        return self._type_parser_info__
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

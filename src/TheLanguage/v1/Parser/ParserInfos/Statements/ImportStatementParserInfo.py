@@ -18,12 +18,11 @@
 import os
 
 from enum import auto, Enum
-from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -35,7 +34,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .StatementParserInfo import (
         NamedStatementTrait,
-        ParserInfo,
         ParserInfoType,
         ScopeFlag,
         StatementParserInfo,
@@ -45,9 +43,6 @@ with InitRelativeImports():
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ...Error import Error, ErrorException
-
-    if TYPE_CHECKING:
-        from ...Visitors.NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -85,7 +80,7 @@ class ImportStatementParserInfo(
     ):
         return cls(
             ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
-            ParserInfoType.Standard,        # type: ignore
+            ParserInfoType.Configuration,   # type: ignore
             regions,                        # type: ignore
             *args,
             **kwargs,

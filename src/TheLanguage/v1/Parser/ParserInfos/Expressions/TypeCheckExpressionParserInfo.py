@@ -17,8 +17,8 @@
 
 import os
 
-from typing import List, Optional
-from dataclasses import dataclass
+from typing import List, Optional, Union
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -43,6 +43,9 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
     expression: ExpressionParserInfo
     type: ExpressionParserInfo
 
+    # Values set during validation
+    _type_parser_info__: Optional[ParserInfo]           = field(init=False, default=None)
+
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
@@ -51,17 +54,13 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
         operator: OperatorType,
         expression: ExpressionParserInfo,
         the_type: ExpressionParserInfo,
-        *args,
-        **kwargs,
     ):
         return cls(  # pylint: disable=too-many-function-args
-            ParserInfoType.GetDominantType(expression, the_type),           # type: ignore
-            regions,                                                        # type: ignore
+            ParserInfoType.TypeCustomization,           # type: ignore
+            regions,                                    # type: ignore
             operator,
             expression,
             the_type,
-            *args,
-            **kwargs,
         )
 
     # ----------------------------------------------------------------------
@@ -74,6 +73,21 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
                 "type",
             ],
         )
+
+    # ----------------------------------------------------------------------
+    # The following values are set during validation
+    def InitType(
+        self,
+        type_parser_info: ParserInfo
+    ) -> None:
+        assert self._type_parser_info__ is None, self._type_parser_info__
+        object.__setattr__(self, "_type_parser_info__", type_parser_info)
+
+    # ----------------------------------------------------------------------
+    @property
+    def type_parser_info__(self) -> ParserInfo:
+        assert self._type_parser_info__ is not None
+        return self._type_parser_info__
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

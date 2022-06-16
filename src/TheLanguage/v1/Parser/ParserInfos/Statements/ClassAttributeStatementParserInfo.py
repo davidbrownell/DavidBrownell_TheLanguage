@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -37,12 +37,9 @@ with InitRelativeImports():
     from ..Common.VisibilityModifier import VisibilityModifier
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..Statements.StatementParserInfo import ParserInfo, StatementParserInfo
 
     from ...Error import Error, ErrorException
-
-    if TYPE_CHECKING:
-        # TODO: I'm not sure that this should be used
-        from ...Visitors.NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -68,6 +65,9 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
     no_serialize: Optional[bool]
     no_compare: Optional[bool]
     is_override: Optional[bool]
+
+    # Values set during validation
+    _type_parser_info__: Optional[ParserInfo]           = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -96,9 +96,9 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
                 "initialized_value",
             ],
             validate=False,
-            class_capabilities=lambda value: value.name,
-            type__=None,                    # type: ignore
-            is_type__initialized__=None,    # type: ignore
+            **{
+                "class_capabilities": lambda value: value.name,
+            },
         )
 
         # Set defaults
@@ -127,22 +127,19 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
-    # This method is invoked during validation
+    # The following values are set during validation
     def InitType(
         self,
-        value: "ParsedNamespaceInfo",
+        type_parser_info: ParserInfo
     ) -> None:
-        assert not self.is_type__initialized__
-        object.__setattr__(self, self.__class__._TYPE_ATTRIBUTE_NAME, value)  # pylint: disable=protected-access
+        assert self._type_parser_info__ is None, self._type_parser_info__
+        object.__setattr__(self, "_type_parser_info__", type_parser_info)
 
     # ----------------------------------------------------------------------
     @property
-    def type__(self) -> "ParsedNamespaceInfo":
-        return getattr(self, self.__class__._TYPE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
-
-    @property
-    def is_type__initialized__(self) -> bool:
-        return hasattr(self, self.__class__._TYPE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
+    def type_parser_info__(self) -> ParserInfo:
+        assert self._type_parser_info__ is not None
+        return self._type_parser_info__
 
     # ----------------------------------------------------------------------
     # |

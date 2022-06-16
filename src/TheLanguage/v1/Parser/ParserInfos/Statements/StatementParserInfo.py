@@ -106,7 +106,7 @@ class ScopedStatementTrait(NamedStatementTrait):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class NewNamespaceScopedStatementTrait(ScopedStatementTrait):
-    """Add to statements to introducing new scoping rules"""
+    """Add to statements to introduce new scoping rules"""
 
     # ----------------------------------------------------------------------
     allow_duplicate_names__: bool            = field(init=False, default=False)

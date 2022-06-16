@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CustomType.py
+# |  CommonMixin.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-05-02 21:59:52
+# |      2022-06-15 07:25:44
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,14 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CustomType object"""
+"""Contains the CommonMixin object"""
 
 import os
 
-from typing import Any
+from contextlib import contextmanager
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -30,46 +29,33 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Type import Type
+    from .BaseMixin import BaseMixin
+
+    from ...ParserInfos.ParserInfo import ParserInfoType
+
+    from ...ParserInfos.Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo, ConstraintParameterParserInfo
 
 
 # ----------------------------------------------------------------------
-class CustomType(Type):
+class CommonMixin(BaseMixin):
     # ----------------------------------------------------------------------
-    def __init__(
+    @contextmanager
+    def OnConstraintParametersParserInfo(
         self,
-        name: str,
+        parser_info: ConstraintParametersParserInfo,
     ):
-        super(CustomType, self).__init__()
+        assert parser_info.parser_info_type__ == ParserInfoType.Configuration, parser_info.parser_info_type__
+        parser_info.SetValidatedFlag()
 
-        self._name                          = name
-
-    # ----------------------------------------------------------------------
-    @property
-    @Interface.override
-    def name(self) -> str:
-        return self._name
+        yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def IsSupportedValue(
-        value: Any,
-    ) -> bool:
-        raise Exception("Not supported for custom types")
+    @contextmanager
+    def OnConstraintParameterParserInfo(
+        self,
+        parser_info: ConstraintParameterParserInfo,
+    ):
+        assert parser_info.parser_info_type__ == ParserInfoType.Configuration, parser_info.parser_info_type__
+        parser_info.SetValidatedFlag()
 
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def ToBoolValue(
-        value: Any,
-    ) -> bool:
-        raise Exception("Not supported for custom types")
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def ToStringValue(
-        value: Any,
-    ) -> str:
-        return value
+        yield

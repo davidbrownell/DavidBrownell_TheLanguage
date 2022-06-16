@@ -44,14 +44,16 @@ with InitRelativeImports():
         OptionalPhraseItem,
     )
 
-    from ...Parser.Parser import CreateRegions
+    from ...Parser.Parser import CreateError, CreateRegion, CreateRegions, ErrorException
 
     from ...Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import (
         BooleanType,
         CharacterType,
-        CustomType,
+        EnforceExpression,
+        ErrorExpression,
         FuncOrTypeExpressionParserInfo,
         IntegerType,
+        IsDefinedExpression,
         NoneType,
         NumberType,
         ParserInfoType,
@@ -60,16 +62,29 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+InvalidCompileTimeTypeError                 = CreateError(
+    "'{name}' is not a valid compile-time type or function",
+    name=str,
+)
+
+
+# ----------------------------------------------------------------------
 class FuncOrTypeExpression(GrammarPhrase):
     PHRASE_NAME                             = "Func or Type Expression"
 
     MINILANGUAGE_TYPE_MAP                   = {
-        "Bool" : BooleanType(),
-        "Char" : CharacterType(),
-        "Int" : IntegerType(),
-        "None" : NoneType(),
-        "Num" : NumberType(),
-        "Str" : StringType(),
+        # Expressions
+        "Enforce!": EnforceExpression,
+        "Error!": ErrorExpression,
+        "IsDefined!": IsDefinedExpression,
+
+        # Types
+        "Bool!" : BooleanType(),
+        "Char!" : CharacterType(),
+        "Int!" : IntegerType(),
+        "None!" : NoneType(),
+        "Num!" : NumberType(),
+        "Str!" : StringType(),
     }
 
     # ----------------------------------------------------------------------
@@ -117,17 +132,19 @@ class FuncOrTypeExpression(GrammarPhrase):
                 assert ParserInfoType.Configuration.value < ParserInfoType.TypeCustomization.value
                 parser_info_type = ParserInfoType.Configuration
 
-                name_info = CustomType(name_info)
+                potential_mini_language_type = cls.MINILANGUAGE_TYPE_MAP.get(name_info, None)
+                if potential_mini_language_type is None:
+                    raise ErrorException(
+                        InvalidCompileTimeTypeError.Create(
+                            region=CreateRegion(name_leaf),
+                            name=name_info,
+                        ),
+                    )
+
+                name_info = potential_mini_language_type
 
             else:
-                potential_mini_language_type = cls.MINILANGUAGE_TYPE_MAP.get(name_info, None)
-                if potential_mini_language_type is not None:
-                    name_info = potential_mini_language_type
-                    parser_info_type = ParserInfoType.Configuration
-
-                else:
-                    name_info = CustomType(name_info)
-                    parser_info_type = ParserInfoType.Unknown
+                parser_info_type = ParserInfoType.Unknown
 
             # <template_arguments>?
             template_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))

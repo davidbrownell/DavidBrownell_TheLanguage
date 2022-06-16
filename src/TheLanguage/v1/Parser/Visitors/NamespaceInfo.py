@@ -18,9 +18,10 @@
 import os
 
 from collections import OrderedDict
-from typing import Any, Callable, cast, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -33,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..ParserInfos.Common.VisibilityModifier import VisibilityModifier
 
-    from ..ParserInfos.ParserInfo import ParserInfo
+    from ..ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
 
     from ..ParserInfos.Statements.StatementParserInfo import (
         NamedStatementTrait,
@@ -41,8 +42,10 @@ with InitRelativeImports():
         StatementParserInfo,
     )
 
-    from ..ParserInfos.Statements.FuncDefinitionStatementParserInfo import OperatorType as FuncOperatorType
+    from ..ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ..ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo, OperatorType as FuncOperatorType
     from ..ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodType as SpecialMethodType
+    from ..ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -86,9 +89,25 @@ class NamespaceInfo(ObjectReprImplBase):
         self.children[key] = namespace
 
     # ----------------------------------------------------------------------
-    def Accept(self, visitor, *args, **kwargs):
-        for child in self.children.values():
-            child.Accept(visitor, *args, **kwargs)
+    def Flatten(self) -> "NamespaceInfo":
+        result = NamespaceInfo(None)
+
+        for key, value in self._FlattenImpl(result):
+            assert key not in result.children, key
+            result.children[key] = value
+
+        return result
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def _FlattenImpl(
+        self,
+        parent: "NamespaceInfo",
+    ) -> Generator[Tuple[str, "ParsedNamespaceInfo"], None, None]:
+        for value in self.children.values():
+            yield from value._FlattenImpl(parent)  # pylint: disable=protected-access
 
 
 # ----------------------------------------------------------------------
@@ -111,11 +130,13 @@ class ParsedNamespaceInfo(NamespaceInfo):
         self,
         parent: Optional[NamespaceInfo],
         scope_flag: ScopeFlag,
-        parser_info: ParserInfo,
+        parser_info: Union[StatementParserInfo, TemplateTypeParameterParserInfo],
         children: Optional[ChildrenType]=None,
         visibility: Optional[VisibilityModifier]=None,
     ):
-        assert isinstance(parser_info, NamedStatementTrait)
+        if visibility is None:
+            assert isinstance(parser_info, NamedStatementTrait)
+            visibility = parser_info.visibility
 
         super(ParsedNamespaceInfo, self).__init__(
             parent,
@@ -124,8 +145,11 @@ class ParsedNamespaceInfo(NamespaceInfo):
 
         self.scope_flag                     = scope_flag
         self.parser_info                    = parser_info
-        self.visibility                     = visibility or parser_info.visibility
+        self.visibility                     = visibility
 
+        # BugBug: What is the difference between children and ordered_children?
+        # Answer: It doesn't look like ordered_children is used anymore, but I am
+        #         hesitant to remove it until validation is fully implemented.
         self.children                                                       = children or OrderedDict()
         self.ordered_children: Dict[str, ParsedNamespaceInfo]               = {}
 
@@ -161,10 +185,36 @@ class ParsedNamespaceInfo(NamespaceInfo):
         )
 
     # ----------------------------------------------------------------------
-    def Accept(self, visitor):
-        for child in self.children.values():
-            if isinstance(child, list):
-                for child_item in child:
-                    cast(StatementParserInfo, child_item.parser_info).Accept(visitor)
-            else:
-                cast(StatementParserInfo, child.parser_info).Accept(visitor)
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _FlattenImpl(
+        self,
+        parent: NamespaceInfo,
+    ) -> Generator[Tuple[str, "ParsedNamespaceInfo"], None, None]:
+        for key, value in self.children.items():
+            if isinstance(value, NamespaceInfo):
+                if (
+                    isinstance(key, str)
+                    and isinstance(value, ParsedNamespaceInfo)
+                    and isinstance(
+                        value.parser_info,
+                        (
+                            FuncDefinitionStatementParserInfo,
+                            ClassStatementParserInfo,
+                            TypeAliasStatementParserInfo,
+                        ),
+                    )
+                ):
+                    yield (
+                        key,
+                        ParsedNamespaceInfo(
+                            parent,
+                            value.scope_flag,
+                            value.parser_info,
+                            value.children,
+                            value.visibility,
+                        ),
+                    )
+                else:
+                    yield from value._FlattenImpl(parent)  # pylint: disable=protected-access

@@ -33,13 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
-    from ....Parser.MiniLanguage.Types.BooleanType import BooleanType
-    from ....Parser.MiniLanguage.Types.CharacterType import CharacterType
-    from ....Parser.MiniLanguage.Types.CustomType import CustomType
-    from ....Parser.MiniLanguage.Types.IntegerType import IntegerType
-    from ....Parser.MiniLanguage.Types.NoneType import NoneType
-    from ....Parser.MiniLanguage.Types.NumberType import NumberType
-    from ....Parser.MiniLanguage.Types.StringType import StringType
+    from ....Parser.MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
+    from ....Parser.MiniLanguage.Types.Type import Type as MiniLanguageType
 
     from ....Parser.ParserInfos.ParserInfo import ParserInfo
 
@@ -204,33 +199,28 @@ class ExpressionsMixin(BaseMixin):
         self._imports.add("from v1.Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo")
 
         # Get the type name
-        value_contents = None
+        if isinstance(parser_info.value, str):
+            value = '"{}"'.format(parser_info.value)
 
-        if isinstance(parser_info.value, BooleanType):
-            type_name = "BooleanType"
-        elif isinstance(parser_info.value, CharacterType):
-            type_name = "CharacterType"
-        elif isinstance(parser_info.value, CustomType):
-            type_name = "CustomType"
-            value_contents = '"{}"'.format(parser_info.value.name)
-        elif isinstance(parser_info.value, IntegerType):
-            type_name = "IntegerType"
-        elif isinstance(parser_info.value, NoneType):
-            type_name = "NoneType"
-        elif isinstance(parser_info.value, NumberType):
-            type_name = "NumberType"
-        elif isinstance(parser_info.value, StringType):
-            type_name = "StringType"
+        elif isinstance(parser_info.value, MiniLanguageType):
+            value = parser_info.value.__class__.__name__
+
+            self._imports.add(
+                "from v1.Parser.MiniLanguage.Types.{value} import {value}".format(
+                    value=value,
+                ),
+            )
+
+            value = "{}()".format(value)
+
         else:
-            assert False, parser_info.value  # pragma: no cover
+            value = parser_info.value.__name__
 
-        self._imports.add(
-            "from v1.Parser.MiniLanguage.Types.{type_name} import {type_name}".format(
-                type_name=type_name,
-            ),
-        )
-
-        value = "{}({})".format(type_name, value_contents or "")
+            self._imports.add(
+                "from v1.Parser.MiniLanguage.Expressions.{value} import {value}".format(
+                    value=value,
+                ),
+            )
 
         if parser_info.mutability_modifier is not None:
             self._imports.add("from v1.Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier")

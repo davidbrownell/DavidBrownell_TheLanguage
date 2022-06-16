@@ -221,9 +221,17 @@ class BaseMixin(object):
     def _DefaultDetailMethod(
         self,
         parser_info_or_infos: Union[ParserInfo, List[ParserInfo]],
+        *,
+        include_disabled: bool,
     ):
         if isinstance(parser_info_or_infos, list):
             for parser_info in parser_info_or_infos:
-                parser_info.Accept(self)
+                parser_info.Accept(
+                    self,
+                    include_disabled=include_disabled,
+                )
         else:
-            parser_info_or_infos.Accept(self)
+            parser_info_or_infos.Accept(
+                self,
+                include_disabled=include_disabled,
+            )

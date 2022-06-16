@@ -17,7 +17,7 @@
 
 import os
 
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
 
 import CommonEnvironment
 
@@ -31,42 +31,41 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
+    from .. import MiniLanguageHelpers
+    from ..NamespaceInfo import ParsedNamespaceInfo, ScopeFlag, VisibilityModifier
+
+    from ...ParserInfos.ParserInfo import ParserInfoType, VisitResult
+
     from ...ParserInfos.Statements.ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo
-    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
     from ...ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
     from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from ...ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
     from ...ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
     from ...ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
-    from ...ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
+    from ...ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo, SpecialMethodType
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
 
 # ----------------------------------------------------------------------
 class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnClassAttributeStatementParserInfo(
-        self,
-        parser_info: ClassAttributeStatementParserInfo,
-    ):
-        # TODO if not parser_info.is_type__initialized__:
-        # TODO     parser_info.InitType(self._GetNamespaceInfo(parser_info.type))
-
+    def OnClassAttributeStatementParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnClassStatementParserInfo(
-        self,
-        parser_info: ClassStatementParserInfo,
-    ):
+    def OnClassStatementParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
     @staticmethod
     @contextmanager
     def OnClassStatementDependencyParserInfo(*args, **kwargs):
+        # BugBug: Validate is single type
         yield
 
     # ----------------------------------------------------------------------
@@ -76,15 +75,25 @@ class StatementsMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnFuncInvocationStatementParserInfo(*args, **kwargs):
+    def OnFuncInvocationStatementParserInfo(
+        self,
+        parser_info: FuncInvocationStatementParserInfo,
+    ):
+        if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
+            MiniLanguageHelpers.EvalExpression(
+                parser_info.expression,
+                [self._configuration_info], # BugBug: Is this right?
+                self._namespaces_stack[-1],
+            )
+
         yield
 
     # ----------------------------------------------------------------------
     @staticmethod
     @contextmanager
     def OnIfStatementParserInfo(*args, **kwargs):
+        # BugBug: Do this
         yield
 
     # ----------------------------------------------------------------------
@@ -100,11 +109,9 @@ class StatementsMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnImportStatementParserInfo(
-        self,
-        parser_info: ImportStatementParserInfo,
-    ):
+    def OnImportStatementParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
@@ -114,10 +121,37 @@ class StatementsMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnSpecialMethodStatementParserInfo(*args, **kwargs):
-        yield
+    def OnSpecialMethodStatementParserInfo(
+        self,
+        parser_info: SpecialMethodStatementParserInfo,
+    ):
+        assert self._namespaces_stack
+        namespace_stack = self._namespaces_stack[-1]
+
+        assert namespace_stack
+        namespace = namespace_stack[-1]
+
+        assert namespace.parent
+        parent_namespace = namespace.parent
+
+        assert isinstance(parent_namespace, ParsedNamespaceInfo), parent_namespace
+        assert isinstance(parent_namespace.parser_info, ClassStatementParserInfo), parent_namespace.parser_info
+
+        class_statement_parser_info = parent_namespace.parser_info
+
+        with ExitStack() as exit_stack:
+            if parser_info.special_method_type == SpecialMethodType.CompileTimeEvalConstraints:
+                # Add all of the constraints
+                BugBug = 10
+
+
+        # BugBug: Add constraints to stack
+
+            assert parser_info.parser_info_type__ == ParserInfoType.TypeCustomization, parser_info.parser_info_type__
+            parser_info.SetValidatedFlag()
+
+            yield
 
     # ----------------------------------------------------------------------
     @staticmethod

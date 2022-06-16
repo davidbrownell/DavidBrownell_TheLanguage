@@ -33,7 +33,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Error import CreateError, Error, ErrorException, TranslationUnitRegion
-    from .Helpers import MiniLanguageHelpers
 
     from .MiniLanguage.Types.BooleanType import BooleanType                 # pylint: disable=unused-import
     from .MiniLanguage.Types.CharacterType import CharacterType             # pylint: disable=unused-import
@@ -46,6 +45,7 @@ with InitRelativeImports():
 
     from .ParserInfos.Statements.RootStatementParserInfo import ParserInfo, RootStatementParserInfo
 
+    from .Visitors import MiniLanguageHelpers
     from .Visitors.PassOneVisitor.Visitor import Visitor as PassOneVisitor
     from .Visitors.PassTwoVisitor.Visitor import Visitor as PassTwoVisitor
 
@@ -297,13 +297,22 @@ def Validate(
 
     # ----------------------------------------------------------------------
     # |  Pass 2
+
+    # Now that all the imports have been resolved, flatten the fundamental types
+    # for more easier access.
+    if fundamental_types_namespace is None:
+        flattened_fundamental_types_namespace = None
+    else:
+        flattened_fundamental_types_namespace = fundamental_types_namespace.Flatten()
+
     results = _Execute(
         workspaces,
         (
             lambda *args, **kwargs:
                 PassTwoVisitor.Execute(
+                    mini_language_configuration_values,
                     global_namespace,
-                    fundamental_types_namespace,
+                    flattened_fundamental_types_namespace,
                     *args,
                     **kwargs,
                 )

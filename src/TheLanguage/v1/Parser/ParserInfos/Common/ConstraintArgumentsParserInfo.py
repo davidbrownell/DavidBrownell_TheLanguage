@@ -71,10 +71,8 @@ class ConstraintArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        expression_parser_info_type = self.expression.parser_info_type__
-
         super(ConstraintArgumentParserInfo, self).__init__(
-            expression_parser_info_type,
+            ParserInfoType.TypeCustomization,
             *args,
             **kwargs,
             regionless_attributes=["expression", ],
@@ -86,7 +84,7 @@ class ConstraintArgumentParserInfo(ParserInfo):
         try:
             self.expression.ValidateAsExpression()
 
-            if not ParserInfoType.IsCompileTime(expression_parser_info_type):
+            if not ParserInfoType.IsCompileTime(self.expression.parser_info_type__):
                 errors.append(
                     InvalidConstraintExpressionError.Create(
                         region=self.expression.regions__.self__,

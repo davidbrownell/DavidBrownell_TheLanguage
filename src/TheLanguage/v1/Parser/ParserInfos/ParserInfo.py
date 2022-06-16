@@ -94,6 +94,14 @@ class ParserInfoType(Enum):
     ) -> bool:
         return value != cls.Standard
 
+    # ----------------------------------------------------------------------
+    @classmethod
+    def IsCompileTimeStrict(
+        cls,
+        value: "ParserInfoType",
+    ) -> bool:
+        return cls.IsCompileTime(value) and value != cls.Unknown
+
 
 # ----------------------------------------------------------------------
 class ParserInfo(ObjectReprImplBase):
@@ -108,13 +116,14 @@ class ParserInfo(ObjectReprImplBase):
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        object.__setattr__(self, "_parser_info_type", parser_info_type)
         object.__setattr__(self, "_disabled", False)
+        object.__setattr__(self, "_validated", False)
+        object.__setattr__(self, "_parser_info_type", parser_info_type)
 
         regionless_attributes_set = set(regionless_attributes or [])
 
         # Dynamically create the Regions type based on the fields of the class
-        all_fields = {f.name : f for f in fields(self)}
+        all_fields = {f.name : f for f in fields(self) if not f.name.startswith("_")}
 
         num_expected_regions = len(all_fields) - len(regionless_attributes_set)
         assert len(regions) == num_expected_regions + 1, (len(regions), num_expected_regions + 1, "The number of regions provided must match the number of attributes that require them")
@@ -153,10 +162,6 @@ class ParserInfo(ObjectReprImplBase):
         object.__setattr__(self, "_RegionsType", new_regions_class)
         object.__setattr__(self, "_regions", new_regions_instance)
 
-        regionless_attributes_set.add("_RegionsType")
-        regionless_attributes_set.add("_regions")
-        regionless_attributes_set.add("_validate_regions_func")
-
         # Create the dynamic validate func
         object.__setattr__(
             self,
@@ -168,6 +173,7 @@ class ParserInfo(ObjectReprImplBase):
             self,
             parser_info_type__=None,
             is_disabled__=None,
+            is_validated__=None,
             **custom_display_funcs,
         )
 
@@ -192,13 +198,23 @@ class ParserInfo(ObjectReprImplBase):
     def is_disabled__(self) -> bool:
         return self._disabled  # type: ignore  # pylint: disable=no-member
 
+    @property
+    def is_validated__(self) -> bool:
+        return self._validated  # type: ignore  # pylint: disable=no-member
+
     # ----------------------------------------------------------------------
     def ValidateRegions(self) -> None:
         self._validate_regions_func()  # type: ignore  # pylint: disable=no-member
 
     # ----------------------------------------------------------------------
     def Disable(self) -> None:
+        assert self.is_disabled__ is False
         object.__setattr__(self, "_disabled", True)
+
+    # ----------------------------------------------------------------------
+    def SetValidatedFlag(self) -> None:
+        assert self.is_validated__ is False
+        object.__setattr__(self, "_validated", True)
 
     # ----------------------------------------------------------------------
     def Accept(
@@ -210,7 +226,8 @@ class ParserInfo(ObjectReprImplBase):
         if self.is_disabled__ and not include_disabled:
             return VisitResult.SkipAll
 
-        with self._GenericAccept(visitor) as visit_result:
+        method = getattr(visitor, "OnPhrase", None) or self.__class__._GenericAcceptGenerator  # pylint: disable=protected-access
+        with method(self) as visit_result:
             if visit_result == VisitResult.SkipAll:
                 return
 
@@ -224,25 +241,49 @@ class ParserInfo(ObjectReprImplBase):
                     visit_result = VisitResult.Continue
 
                 if not visit_result & VisitResult.SkipDetails:
-                    method_name_prefix = "On{}__".format(self.__class__.__name__)
+                    all_accept_details = list(self._GenerateAcceptDetails())
 
-                    for detail_name, detail_value in self._GenerateAcceptDetails():
-                        method_name = "{}{}".format(method_name_prefix, detail_name)
+                    if all_accept_details:
+                        method = getattr(visitor, "OnPhraseDetails", None) or self.__class__._GenericAcceptGenerator  # pylint: disable=protected-access
+                        with method(self) as details_visit_result:
+                            if details_visit_result is None:
+                                details_visit_result = VisitResult.Continue
 
-                        method = getattr(visitor, method_name, None)
-                        assert method is not None, method_name
+                            if (
+                                not details_visit_result & VisitResult.SkipAll
+                                and not details_visit_result & VisitResult.SkipDetails
+                            ):
+                                method_name_prefix = "On{}__".format(self.__class__.__name__)
 
-                        visit_result = method(detail_value)
+                                for detail_name, detail_value in all_accept_details:
+                                    method_name = "{}{}".format(method_name_prefix, detail_name)
 
-                    if visit_result is None:
-                        visit_result = VisitResult.Continue
+                                    method = getattr(visitor, method_name, None)
+                                    assert method is not None, method_name
+
+                                    method(
+                                        detail_value,
+                                        include_disabled=include_disabled,
+                                    )
 
                 if not visit_result & VisitResult.SkipChildren:
-                    for child in self._GenerateAcceptChildren():
-                        visit_result = child.Accept(
-                            visitor,
-                            include_disabled=include_disabled,
-                        )
+                    all_children = list(self._GenerateAcceptChildren())
+
+                    if all_children:
+                        method = getattr(visitor, "OnPhraseChildren", None) or self.__class__._GenericAcceptGenerator  # pylint: disable=protected-access
+                        with method(self) as children_visit_result:
+                            if children_visit_result is None:
+                                children_visit_result = VisitResult.Continue
+
+                            if (
+                                not children_visit_result & VisitResult.SkipAll
+                                and not children_visit_result & VisitResult.SkipChildren
+                            ):
+                                for child in self._GenerateAcceptChildren():
+                                    child.Accept(
+                                        visitor,
+                                        include_disabled=include_disabled,
+                                    )
 
     # ----------------------------------------------------------------------
     # |
@@ -334,14 +375,7 @@ class ParserInfo(ObjectReprImplBase):
         return Func
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def _GenericAccept(self, visitor):
-        method_name = "OnPhrase"
-        method = getattr(visitor, method_name, None)
-
-        if method is None:
-            yield
-            return
-
-        with method(self) as visit_result:
-            yield visit_result
+    def _GenericAcceptGenerator(*args, **kwargs):
+        yield VisitResult.Continue
