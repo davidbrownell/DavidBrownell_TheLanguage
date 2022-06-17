@@ -76,6 +76,8 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: BinaryExpressionParserInfo,
     ):
+        parser_info.InitInTemplate(self._InTemplate())
+
         if (
             parser_info.operator == BinaryExpressionOperatorType.Access
             or parser_info.operator == BinaryExpressionOperatorType.AccessReturnSelf
@@ -84,7 +86,7 @@ class ExpressionsMixin(BaseMixin):
             try:
                 left_result = MiniLanguageHelpers.EvalExpression(
                     parser_info.left_expression,
-                    [self._configuration_info], # BugBug: Is this right?
+                    self._compile_time_stack,
                     self._namespaces_stack[-1],
                 )
 
@@ -118,22 +120,29 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: BooleanExpressionParserInfo,
     ):
-        if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
-            # Nothing to validate, as the expression is based on a literal
-            parser_info.SetValidatedFlag()
+        parser_info.InitInTemplate(self._InTemplate())
+        parser_info.InitResolvedType(self._GetResolvedType("Bool", parser_info))
 
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnCallExpressionParserInfo(*args, **kwargs):
+    def OnCallExpressionParserInfo(
+        self,
+        parser_info: CallExpressionParserInfo,
+    ):
+        parser_info.InitInTemplate(self._InTemplate())
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnCharacterExpressionParserInfo(*args, **kwargs):
+    def OnCharacterExpressionParserInfo(
+        self,
+        parser_info: CharacterExpressionParserInfo,
+    ):
+        parser_info.InitInTemplate(self._InTemplate())
+        parser_info.InitResolvedType(self._GetResolvedType("Char", parser_info))
+
         yield
 
     # ----------------------------------------------------------------------
@@ -142,11 +151,24 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: FuncOrTypeExpressionParserInfo,
     ):
+        parser_info.InitInTemplate(self._InTemplate())
+
+        if parser_info.parser_info_type__ != ParserInfoType.Configuration:
+            if not isinstance(parser_info.value, str):
+                assert False, "BugBug"
+            else:
+                parser_info.InitResolvedType(self._GetResolvedType(parser_info.value, parser_info))
+
+            BugBug = 10
+
+        yield
+        return # BugBUg
+
         if isinstance(parser_info.value, str):
             try:
                 result = MiniLanguageHelpers.EvalExpression(
                     parser_info,
-                    [self._configuration_info], # BugBug: Is this right?
+                    self._compile_time_stack,
                     self._namespaces_stack[-1],
                 )
 
@@ -161,33 +183,56 @@ class ExpressionsMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnIndexExpressionParserInfo(*args, **kwargs):
+    def OnIndexExpressionParserInfo(
+        self,
+        parser_info: IndexExpressionParserInfo,
+    ):
+        parser_info.InitInTemplate(self._InTemplate())
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnIntegerExpressionParserInfo(*args, **kwargs):
+    def OnIntegerExpressionParserInfo(
+        self,
+        parser_info: IntegerExpressionParserInfo,
+    ):
+        parser_info.InitInTemplate(self._InTemplate())
+        parser_info.InitResolvedType(self._GetResolvedType("ArchInt", parser_info))
+
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnNoneExpressionParserInfo(*args, **kwargs):
+    def OnNoneExpressionParserInfo(
+        self,
+        parser_info: NoneExpressionParserInfo,
+    ):
+        parser_info.InitInTemplate(self._InTemplate())
+        parser_info.InitResolvedType(self._GetResolvedType("None", parser_info))
+
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnNumberExpressionParserInfo(*args, **kwargs):
+    def OnNumberExpressionParserInfo(
+        self,
+        parser_info: NumberExpressionParserInfo,
+    ):
+        parser_info.InitInTemplate(self._InTemplate())
+        parser_info.InitResolvedType(self._GetResolvedType("ArchNum", parser_info))
+
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnStringExpressionParserInfo(*args, **kwargs):
+    def OnStringExpressionParserInfo(
+        self,
+        parser_info: StringExpressionParserInfo,
+    ):
+        parser_info.InitInTemplate(self._InTemplate())
+        parser_info.InitResolvedType(self._GetResolvedType("FixedSizeStr", parser_info))
+
         yield
 
     # ----------------------------------------------------------------------
@@ -196,6 +241,8 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: TernaryExpressionParserInfo,
     ):
+        parser_info.InitInTemplate(self._InTemplate())
+
         # This expression should be able to be evaluated if it isn't at the function
         # level. We can make this statement with confidence, because we aren't visiting
         # templated items.
@@ -204,7 +251,7 @@ class ExpressionsMixin(BaseMixin):
             # Determine if the condition is True or False
             condition_result = MiniLanguageHelpers.EvalExpression(
                 parser_info.condition_expression,
-                [self._configuration_info], # BugBug: Is this right?
+                self._compile_time_stack,
                 self._namespaces_stack[-1],
             )
             condition_result = condition_result.type.ToBoolValue(condition_result.value)
@@ -215,14 +262,15 @@ class ExpressionsMixin(BaseMixin):
             else:
                 parser_info.true_expression.Disable()
 
-            parser_info.SetValidatedFlag()
-
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnTupleExpressionParserInfo(*args, **kwargs):
+    def OnTupleExpressionParserInfo(
+        self,
+        parser_info: TupleExpressionParserInfo,
+    ):
+        parser_info.InitInTemplate(self._InTemplate())
         yield
 
     # ----------------------------------------------------------------------
@@ -231,24 +279,31 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: TypeCheckExpressionParserInfo,
     ):
-        assert parser_info.parser_info_type__ == ParserInfoType.TypeCustomization, parser_info.parser_info_type__
-        parser_info.SetValidatedFlag()
 
+        parser_info.InitInTemplate(self._InTemplate())
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnUnaryExpressionParserInfo(*args, **kwargs):
+    def OnUnaryExpressionParserInfo(
+        self,
+        parser_info: UnaryExpressionParserInfo,
+    ):
+        parser_info.InitInTemplate(self._InTemplate())
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnVariableExpressionParserInfo(parser_info):
+    def OnVariableExpressionParserInfo(
+        self,
+        parser_info: VariableExpressionParserInfo,
+    ):
+        parser_info.InitInTemplate(self._InTemplate())
+
         if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
+            print("BugBug____", parser_info.name)
             # BugBug: Ensure no overwrites
-            parser_info.SetValidatedFlag()
+            pass
 
         yield
 
@@ -258,12 +313,12 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: VariantExpressionParserInfo,
     ):
+        parser_info.InitInTemplate(self._InTemplate())
+
         if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
             assert all(
                 ParserInfoType.IsCompileTime(type_parser_info.parser_info_type__)
                 for type_parser_info in parser_info.types
             )
-
-            parser_info.SetValidatedFlag()
 
         yield

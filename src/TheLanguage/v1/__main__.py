@@ -145,10 +145,10 @@ def Execute(
             return dm.result
 
         # BugBug
-        workspaces = {
-            r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["FixedInt.TheLanguage"],
-            #r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["BugBug.TheLanguage"],
-        }
+        # workspaces = {
+        #     r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["FixedInt.TheLanguage"],
+        #     #r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["BugBug.TheLanguage"],
+        # }
 
         dm.stream.write("\nLexing...\n\n")
         with dm.stream.DoneManager() as lex_dm:

@@ -101,14 +101,7 @@ class NamespaceInfo(ObjectReprImplBase):
             assert key not in result.children, key
             assert isinstance(value, ParsedNamespaceInfo), value
 
-            result.children[key] = ParsedNamespaceInfo(
-                result,
-                value.scope_flag,
-                value.parser_info,
-                name=value.name,
-                children=value.children,
-                visibility=value.visibility,
-            )
+            result.children[key] = value
 
         return result
 
@@ -180,9 +173,10 @@ class ParsedNamespaceInfo(NamespaceInfo):
         self,
         child: "ParsedNamespaceInfo",
     ) -> None:
+        assert child.name is not None
         assert isinstance(child.parser_info, NamedStatementTrait)
 
-        existing_value = self.children.get(child.parser_info.name, None)
+        existing_value = self.children.get(child.name, None)
 
         if isinstance(existing_value, list):
             existing_value.append(child)
@@ -194,7 +188,7 @@ class ParsedNamespaceInfo(NamespaceInfo):
             else:
                 value = [existing_value, child]
 
-            self.children[child.parser_info.name] = value
+            self.children[child.name] = value
 
         object.__setattr__(child, "parent", self)
 

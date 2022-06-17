@@ -148,12 +148,18 @@ public CheckedUInt128                       = FixedInt {16, is_signed! = False, 
 
 # ----------------------------------------------------------------------
 if __architecture_bytes! == 4:
-    public ArchInt                          = UInt32
-    public CheckedArchInt                   = CheckedUInt32
+    public ArchInt                          = Int32
+    public CheckedArchInt                   = CheckedInt32
+
+    public UArchInt                         = UInt32
+    public CheckedUArchInt                  = CheckedUInt32
 
 elif __architecture_bytes! == 8:
-    public ArchInt                          = UInt64
-    public CheckedArchInt                   = CheckedUInt64
+    public ArchInt                          = Int64
+    public CheckedArchInt                   = CheckedInt64
+
+    public UArchInt                         = UInt64
+    public CheckedUArchInt                  = CheckedUInt64
 
 else:
     Error!("Unsupported architecture", __architecture_bytes!)

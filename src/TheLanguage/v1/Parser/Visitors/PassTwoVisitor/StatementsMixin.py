@@ -56,10 +56,17 @@ class StatementsMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnClassStatementParserInfo(*args, **kwargs):
-        yield
+    def OnClassStatementParserInfo(
+        self,
+        parser_info: ClassStatementParserInfo,
+    ):
+        with ExitStack() as exit_stack:
+            if parser_info.templates:
+                self._IncrementTemplateCtr()
+                exit_stack.callback(self._DecrementTemplateCtr)
+
+            yield
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -69,10 +76,17 @@ class StatementsMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnFuncDefinitionStatementParserInfo(*args, **kwargs):
-        yield
+    def OnFuncDefinitionStatementParserInfo(
+        self,
+        parser_info: FuncDefinitionStatementParserInfo,
+    ):
+        with ExitStack() as exit_stack:
+            if parser_info.templates:
+                self._IncrementTemplateCtr()
+                exit_stack.callback(self._DecrementTemplateCtr)
+
+            yield
 
     # ----------------------------------------------------------------------
     @contextmanager
@@ -80,12 +94,8 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: FuncInvocationStatementParserInfo,
     ):
-        if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
-            MiniLanguageHelpers.EvalExpression(
-                parser_info.expression,
-                [self._configuration_info], # BugBug: Is this right?
-                self._namespaces_stack[-1],
-            )
+        if not ParserInfoType.IsCompileTime(parser_info.parser_info_type__):
+            assert False, "BugBug"
 
         yield
 
@@ -149,12 +159,18 @@ class StatementsMixin(BaseMixin):
         # BugBug: Add constraints to stack
 
             assert parser_info.parser_info_type__ == ParserInfoType.TypeCustomization, parser_info.parser_info_type__
-            parser_info.SetValidatedFlag()
 
             yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnTypeAliasStatementParserInfo(*args, **kwargs):
-        yield
+    def OnTypeAliasStatementParserInfo(
+        self,
+        parser_info: TypeAliasStatementParserInfo,
+    ):
+        with ExitStack() as exit_stack:
+            if parser_info.templates:
+                self._IncrementTemplateCtr()
+                exit_stack.callback(self._DecrementTemplateCtr)
+
+            yield

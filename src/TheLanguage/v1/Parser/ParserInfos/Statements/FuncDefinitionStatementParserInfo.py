@@ -117,11 +117,11 @@ class OperatorType(Enum):
     Equal                       = auto()  #                                                     Result based on Comapre         No              <visibility> Boolean __Equal__(<type> immutable value) immutable
     NotEqual                    = auto()  #                                                     Result based on Comapre         No              <visibility> Boolean __NotEqual__(<type> immutable value) immutable
 
-    BitAnd                      = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitAnd?__(<type> immutable value) immutable
+    BitwiseAnd                  = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitAnd?__(<type> immutable value) immutable
 
-    BitXor                      = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitXor?__(<type> immutable value) immutable
+    BitwiseXor                  = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitXor?__(<type> immutable value) immutable
 
-    BitOr                       = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitOr?__(<type> immutable value) immutable
+    BitwiseOr                   = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitOr?__(<type> immutable value) immutable
 
     Contains                    = auto()  #                                                     N/A                             No              <visibility> Boolean __Contains__(<type> immutable value) immutable
     NotContains                 = auto()  #                                                     N/A                             No              <visibility> Boolean __NotContains__(<type> immutable value) immutable
@@ -146,11 +146,11 @@ class OperatorType(Enum):
     BitShiftLeftInplace         = auto()  #                                                     N/A                             Yes             <visibility> None __BitShiftLeftInplace?__(<type> immutable value) mutable
     BitShiftRightInplace        = auto()  #                                                     N/A                             Yes             <visibility> None __BitShiftRightInplace?__(<type> immutable value) mutable
 
-    BitAndInplace               = auto()  #                                                     N/A                             Yes             <visibility> None __BitAndInplace?__(<type> immutable value) mutable
+    BitwiseAndInplace           = auto()  #                                                     N/A                             Yes             <visibility> None __BitAndInplace?__(<type> immutable value) mutable
 
-    BitXorInplace               = auto()  #                                                     N/A                             Yes             <visibility> None __BitXorInplace?__(<type> immutable value) mutable
+    BitwiseXorInplace           = auto()  #                                                     N/A                             Yes             <visibility> None __BitXorInplace?__(<type> immutable value) mutable
 
-    BitOrInplace                = auto()  #                                                     N/A                             Yes             <visibility> None __BitOrInplace?__(<type> immutable value) mutable
+    BitwiseOrInplace            = auto()  #                                                     N/A                             Yes             <visibility> None __BitOrInplace?__(<type> immutable value) mutable
 
 
 # ----------------------------------------------------------------------

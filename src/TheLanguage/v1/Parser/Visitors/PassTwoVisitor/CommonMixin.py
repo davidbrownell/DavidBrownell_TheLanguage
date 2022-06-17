@@ -53,26 +53,15 @@ class CommonMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnConstraintArgumentsParserInfo(
-        self,
-        parser_info: ConstraintArgumentsParserInfo,
-    ):
-        assert parser_info.parser_info_type__ == ParserInfoType.TypeCustomization, parser_info.parser_info_type__
-        parser_info.SetValidatedFlag()
-
+    def OnConstraintArgumentsParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnConstraintArgumentParserInfo(
-        self,
-        parser_info: ConstraintArgumentsParserInfo,
-    ):
-        assert parser_info.parser_info_type__ == ParserInfoType.TypeCustomization, parser_info.parser_info_type__
-        parser_info.SetValidatedFlag()
-
-        # BugBug: Handle name; only valid in special methods
+    def OnConstraintArgumentParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
@@ -130,14 +119,9 @@ class CommonMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTemplateParametersParserInfo(
-        self,
-        parser_info: TemplateParametersParserInfo,
-    ):
-        assert parser_info.parser_info_type__ == ParserInfoType.TypeCustomization, parser_info.parser_info_type__
-        parser_info.SetValidatedFlag()
-
+    def OnTemplateParametersParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
@@ -166,7 +150,6 @@ class CommonMixin(BaseMixin):
             visibility=VisibilityModifier.private,
         )
 
-        parser_info.SetValidatedFlag()
         yield
 
     # ----------------------------------------------------------------------
@@ -176,6 +159,5 @@ class CommonMixin(BaseMixin):
         parser_info: TemplateDecoratorParameterParserInfo,
     ):
         assert parser_info.parser_info_type__ == ParserInfoType.TypeCustomization, parser_info.parser_info_type__
-        parser_info.SetValidatedFlag()
 
         yield

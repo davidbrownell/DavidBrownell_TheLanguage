@@ -33,8 +33,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .CallExpressionParserInfo import CallExpressionParserInfo
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
+
     from .FuncOrTypeExpressionParserInfo import InvalidCompileTimeTypeError
+
+    from ..Statements.FuncDefinitionStatementParserInfo import OperatorType as FuncOperatorType
 
     from ...Error import Error, ErrorException
     from ...MiniLanguage.Expressions.BinaryExpression import OperatorType as MiniLanguageOperatorType
@@ -59,7 +63,7 @@ class OperatorType(Enum):
     Multiply                                = MiniLanguageOperatorType.Multiply
     Divide                                  = MiniLanguageOperatorType.Divide
     DivideFloor                             = MiniLanguageOperatorType.DivideFloor
-    Modulus                                 = MiniLanguageOperatorType.Modulus
+    Modulo                                  = MiniLanguageOperatorType.Modulo
     Power                                   = MiniLanguageOperatorType.Power
     Add                                     = MiniLanguageOperatorType.Add
     Subtract                                = MiniLanguageOperatorType.Subtract
@@ -81,6 +85,19 @@ class OperatorType(Enum):
     Access                                  = auto()
     AccessReturnSelf                        = auto()
 
+    MultiplyInplace                         = auto()
+    DivideInplace                           = auto()
+    DivideFloorInplace                      = auto()
+    ModuloInplace                           = auto()
+    PowerInplace                            = auto()
+    AddInplace                              = auto()
+    SubtractInplace                         = auto()
+    BitShiftLeftInplace                     = auto()
+    BitShiftRightInplace                    = auto()
+    BitwiseAndInplace                       = auto()
+    BitwiseXorInplace                       = auto()
+    BitwiseOrInplace                        = auto()
+
     # ----------------------------------------------------------------------
     def ToMiniLanguageOperatorType(self) -> Optional[MiniLanguageOperatorType]:
         try:
@@ -92,6 +109,46 @@ class OperatorType(Enum):
 assert _initial_num_mini_language_operator_types == len(MiniLanguageOperatorType)
 del _initial_num_mini_language_operator_types
 
+
+# ----------------------------------------------------------------------
+_expression_to_func_map                     = {
+    OperatorType.Multiply:                  FuncOperatorType.Multiply,
+    OperatorType.Divide:                    FuncOperatorType.Divide,
+    OperatorType.DivideFloor:               FuncOperatorType.DivideFloor,
+    OperatorType.Modulo:                    FuncOperatorType.Modulo,
+    OperatorType.Power:                     FuncOperatorType.Power,
+    OperatorType.Add:                       FuncOperatorType.Add,
+    OperatorType.Subtract:                  FuncOperatorType.Subtract,
+    OperatorType.BitShiftLeft:              FuncOperatorType.BitShiftLeft,
+    OperatorType.BitShiftRight:             FuncOperatorType.BitShiftRight,
+    OperatorType.BitwiseAnd:                FuncOperatorType.BitwiseAnd,
+    OperatorType.BitwiseXor:                FuncOperatorType.BitwiseXor,
+    OperatorType.BitwiseOr:                 FuncOperatorType.BitwiseOr,
+    OperatorType.Less:                      FuncOperatorType.Less,
+    OperatorType.LessEqual:                 FuncOperatorType.LessEqual,
+    OperatorType.Greater:                   FuncOperatorType.Greater,
+    OperatorType.GreaterEqual:              FuncOperatorType.GreaterEqual,
+    OperatorType.Equal:                     FuncOperatorType.Equal,
+    OperatorType.NotEqual:                  FuncOperatorType.NotEqual,
+    OperatorType.LogicalAnd:                FuncOperatorType.LogicalAnd,
+    OperatorType.LogicalOr:                 FuncOperatorType.LogicalOr,
+    OperatorType.Access:                    FuncOperatorType.GetAttribute,
+    OperatorType.AccessReturnSelf:          None,
+    OperatorType.MultiplyInplace:           FuncOperatorType.MultiplyInplace,
+    OperatorType.DivideInplace:             FuncOperatorType.DivideInplace,
+    OperatorType.DivideFloorInplace:        FuncOperatorType.DivideFloorInplace,
+    OperatorType.ModuloInplace:             FuncOperatorType.ModuloInplace,
+    OperatorType.PowerInplace:              FuncOperatorType.PowerInplace,
+    OperatorType.AddInplace:                FuncOperatorType.AddInplace,
+    OperatorType.SubtractInplace:           FuncOperatorType.SubtractInplace,
+    OperatorType.BitShiftLeftInplace:       FuncOperatorType.BitShiftLeftInplace,
+    OperatorType.BitShiftRightInplace:      FuncOperatorType.BitShiftRightInplace,
+    OperatorType.BitwiseAndInplace:         FuncOperatorType.BitwiseAndInplace,
+    OperatorType.BitwiseXorInplace:         FuncOperatorType.BitwiseXorInplace,
+    OperatorType.BitwiseOrInplace:          FuncOperatorType.BitwiseOrInplace,
+}
+
+assert len(_expression_to_func_map) == len(OperatorType)
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -195,6 +252,20 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
     def InitializeAsExpression(self) -> None:
         self.left_expression.InitializeAsExpression()
         self.right_expression.InitializeAsExpression()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Lower(self) -> Optional[ParserInfo]:
+        assert not ParserInfoType.IsCompileTimeStrict(self.parser_info_type__), self.parser_info_type__
+
+        if self.IsType():
+            return None
+
+        func_operator = _expression_to_func_map[self.operator]
+        if func_operator is None:
+            return None
+
+        # BugBug
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

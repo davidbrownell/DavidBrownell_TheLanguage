@@ -275,6 +275,22 @@ class ParserInfo(ObjectReprImplBase):
                                     )
 
     # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def Lower(self) -> Optional["ParserInfo"]:
+        """\
+        Opportunity for a ParserInfo object to return a simplified version of itself.
+
+        Lowering is helpful in that it provides a robust collection of ParserInfo objects to make
+        parsing more natural, but a reducing layer to ensure that other components don't need
+        knowledge of a broad set of ParserInfo objects.
+        """
+
+        assert not ParserInfoType.IsCompileTimeStrict(self.parser_info_type__), self.parser_info_type__
+
+        # By default, no lowering
+        return None
+
+    # ----------------------------------------------------------------------
     # |
     # |  Protected Types
     # |

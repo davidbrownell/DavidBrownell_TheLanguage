@@ -59,8 +59,19 @@ class ExpressionParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @dataclass(frozen=True, repr=False)
     class ResolvedType(ObjectReprImplBase):
+        # ----------------------------------------------------------------------
         parser_info: ParserInfo
-        translation_unit_region: TranslationUnitRegion
+        workspace_name: str
+        relative_name: str
+
+        # ----------------------------------------------------------------------
+        @classmethod
+        def Create(cls, *args, **kwargs):
+            """\
+            This hack avoids pylint warnings associated with invoking dynamically
+            generated constructors with too many methods.
+            """
+            return cls(*args, **kwargs)
 
         # ----------------------------------------------------------------------
         def __post_init__(self):
@@ -76,6 +87,12 @@ class ExpressionParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
+
+    # BugBug: Add Flag to set if this expression is followed by a call expression
+
+    # Set during
+    _in_template: Optional[None]            = field(init=False, default=None)
+    _resolved_type: Optional[ResolvedType]  = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
     # |
@@ -104,7 +121,11 @@ class ExpressionParserInfo(ParserInfo):
             regions,
             regionless_attributes,
             validate,
-            **custom_display_funcs,
+            **{
+                "has_resolved_type__": None,
+                "resolved_type__": lambda value: value.__class__.__name__,
+                **custom_display_funcs,
+            },
         )
 
     # ----------------------------------------------------------------------
@@ -134,3 +155,35 @@ class ExpressionParserInfo(ParserInfo):
     def InitializeAsExpression(self) -> None:
         # Most expressions are expressions
         pass
+
+    # ----------------------------------------------------------------------
+    def InitInTemplate(
+        self,
+        in_template: bool,
+    ) -> None:
+        assert self._in_template is None
+        object.__setattr__(self, "_in_template", in_template)
+
+    # ----------------------------------------------------------------------
+    @property
+    def in_template__(self) -> bool:
+        assert self._in_template is not None
+        return self._in_template
+
+    # ----------------------------------------------------------------------
+    def InitResolvedType(
+        self,
+        resolved_type: ResolvedType,
+    ) -> None:
+        assert self._resolved_type is None
+        object.__setattr__(self, "_resolved_type", resolved_type)
+
+    # ----------------------------------------------------------------------
+    @property
+    def has_resolved_type__(self) -> bool:
+        return self._resolved_type is not None
+
+    @property
+    def resolved_type__(self) -> "ExpressionParserInfo.ResolvedType":
+        assert self._resolved_type is not None
+        return self._resolved_type

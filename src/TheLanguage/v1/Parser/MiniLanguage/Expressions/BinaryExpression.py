@@ -49,7 +49,7 @@ class OperatorType(Enum):
     Multiply                                = "*"
     Divide                                  = "/"
     DivideFloor                             = "//"
-    Modulus                                 = "%"
+    Modulo                                  = "%"
     Power                                   = "**"
 
     Add                                     = "+"
