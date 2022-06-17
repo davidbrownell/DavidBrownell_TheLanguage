@@ -122,42 +122,18 @@ class CommonMixin(BaseMixin):
     @staticmethod
     @contextmanager
     def OnTemplateParametersParserInfo(*args, **kwargs):
+        # Anything with a template should have prevented visitation. Ensure that all statements
+        # with templates have been properly handled.
+        raise Exception("Internal compiler error")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    def OnTemplateTypeParameterParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTemplateTypeParameterParserInfo(
-        self,
-        parser_info: TemplateTypeParameterParserInfo,
-    ):
-        assert parser_info.parser_info_type__ == ParserInfoType.TypeCustomization, parser_info.parser_info_type__
-
-        assert self._namespaces_stack
-        namespace_stack = self._namespaces_stack[-1]
-
-        assert namespace_stack
-        namespace = namespace_stack[-1]
-
-        assert isinstance(namespace, ParsedNamespaceInfo), namespace
-
-        assert parser_info.name not in namespace.children
-        namespace.children[parser_info.name] = ParsedNamespaceInfo(
-            namespace,
-            ScopeFlag.Class | ScopeFlag.Function,
-            parser_info,
-            children=None,
-            name=parser_info.name,
-            visibility=VisibilityModifier.private,
-        )
-
-        yield
-
-    # ----------------------------------------------------------------------
-    @contextmanager
-    def OnTemplateDecoratorParameterParserInfo(
-        self,
-        parser_info: TemplateDecoratorParameterParserInfo,
-    ):
-        assert parser_info.parser_info_type__ == ParserInfoType.TypeCustomization, parser_info.parser_info_type__
-
+    def OnTemplateDecoratorParameterParserInfo(*args, **kwargs):
         yield

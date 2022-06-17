@@ -61,12 +61,11 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: ClassStatementParserInfo,
     ):
-        with ExitStack() as exit_stack:
-            if parser_info.templates:
-                self._IncrementTemplateCtr()
-                exit_stack.callback(self._DecrementTemplateCtr)
+        if parser_info.templates:
+            yield VisitResult.SkipAll
+            return
 
-            yield
+        yield
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -81,12 +80,11 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: FuncDefinitionStatementParserInfo,
     ):
-        with ExitStack() as exit_stack:
-            if parser_info.templates:
-                self._IncrementTemplateCtr()
-                exit_stack.callback(self._DecrementTemplateCtr)
+        if parser_info.templates:
+            yield VisitResult.SkipAll
+            return
 
-            yield
+        yield
 
     # ----------------------------------------------------------------------
     @contextmanager
@@ -168,9 +166,8 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: TypeAliasStatementParserInfo,
     ):
-        with ExitStack() as exit_stack:
-            if parser_info.templates:
-                self._IncrementTemplateCtr()
-                exit_stack.callback(self._DecrementTemplateCtr)
+        if parser_info.templates:
+            yield VisitResult.SkipAll
+            return
 
-            yield
+        yield

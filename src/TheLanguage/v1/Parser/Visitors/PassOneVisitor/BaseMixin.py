@@ -42,14 +42,11 @@ with InitRelativeImports():
     from ...ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ...ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
+    from ...ParserInfos.Statements.StatementParserInfo import ScopeFlag, StatementParserInfo
 
-    from ...ParserInfos.Statements.StatementParserInfo import (
-        NamedStatementTrait,
-        NewNamespaceScopedStatementTrait,
-        ScopeFlag,
-        ScopedStatementTrait,
-        StatementParserInfo,
-    )
+    from ...ParserInfos.Statements.Traits.NamedStatementTrait import NamedStatementTrait
+    from ...ParserInfos.Statements.Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
+    from ...ParserInfos.Statements.Traits.ScopedStatementTrait import ScopedStatementTrait
 
 
 # ----------------------------------------------------------------------

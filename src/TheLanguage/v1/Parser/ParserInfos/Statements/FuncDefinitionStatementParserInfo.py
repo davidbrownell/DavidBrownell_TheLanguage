@@ -35,13 +35,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
-        NewNamespaceScopedStatementTrait,
         ParserInfo,
         ParserInfoType,
         ScopeFlag,
         StatementParserInfo,
         TranslationUnitRegion,
     )
+
+    from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
+    from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
@@ -234,6 +236,7 @@ StatementsRequiredError                     = CreateError(
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncDefinitionStatementParserInfo(
+    TemplatedStatementTrait,
     NewNamespaceScopedStatementTrait,
     StatementParserInfo,
 ):
@@ -254,8 +257,6 @@ class FuncDefinitionStatementParserInfo(
     return_type: Optional[ExpressionParserInfo]
     documentation: Optional[str]
 
-    templates: Optional[TemplateParametersParserInfo]
-
     captured_variables: Optional[List[VariableExpressionParserInfo]]
     statements: Optional[List[StatementParserInfo]]
 
@@ -275,6 +276,7 @@ class FuncDefinitionStatementParserInfo(
         regions: List[Optional[TranslationUnitRegion]],
         name: Union[str, OperatorType],
         visibility_param: Optional[VisibilityModifier],
+        templates_param: Optional[TemplateParametersParserInfo],
         parent_class_capabilities: Optional[ClassCapabilities],
         parameters: Union[bool, FuncParametersParserInfo],
         *args,
@@ -291,6 +293,7 @@ class FuncDefinitionStatementParserInfo(
             regions,                        # type: ignore
             str(name),
             visibility_param,               # type: ignore
+            templates_param,                # type: ignore
             parent_class_capabilities,
             name if isinstance(name, OperatorType) else None,
             parameters,
@@ -304,6 +307,7 @@ class FuncDefinitionStatementParserInfo(
         parser_info_type,
         regions,
         visibility_param,
+        templates_param,
         mutability_param,
         method_modifier_param,
     ):
@@ -322,7 +326,10 @@ class FuncDefinitionStatementParserInfo(
                 "operator_type",
                 "return_type",
                 "templates",
-            ] + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
+            ]
+                + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
+                + TemplatedStatementTrait.RegionlessAttributesArgs()
+            ,
             validate=False,
             **{
                 **{
@@ -330,6 +337,7 @@ class FuncDefinitionStatementParserInfo(
                     "operator_type": None,
                 },
                 **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
         )
 
@@ -358,6 +366,7 @@ class FuncDefinitionStatementParserInfo(
             desc = "{} methods".format(self.parent_class_capabilities.name)
 
         NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
+        TemplatedStatementTrait.__post_init__(self, templates_param)
 
         object.__setattr__(self, "mutability", mutability_param)
         object.__setattr__(self, "method_modifier", method_modifier_param)

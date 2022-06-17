@@ -36,10 +36,11 @@ with InitRelativeImports():
         ParserInfo,
         ParserInfoType,
         ScopeFlag,
-        ScopedStatementTrait,
         StatementParserInfo,
         TranslationUnitRegion,
     )
+
+    from .Traits.ScopedStatementTrait import ScopedStatementTrait
 
     from ..Common.VisibilityModifier import VisibilityModifier
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo

@@ -33,13 +33,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
-        NewNamespaceScopedStatementTrait,
         ParserInfo,
         ParserInfoType,
         ScopeFlag,
         StatementParserInfo,
         TranslationUnitRegion,
     )
+
+    from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
 
     from ..Common.VisibilityModifier import VisibilityModifier
 

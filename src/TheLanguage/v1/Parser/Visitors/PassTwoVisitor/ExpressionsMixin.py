@@ -86,8 +86,7 @@ class ExpressionsMixin(BaseMixin):
             try:
                 left_result = MiniLanguageHelpers.EvalExpression(
                     parser_info.left_expression,
-                    self._compile_time_stack,
-                    self._namespaces_stack[-1],
+                    [self._compile_time_stack],
                 )
 
                 assert isinstance(left_result.value, NamespaceInfo), left_result.value
@@ -168,8 +167,7 @@ class ExpressionsMixin(BaseMixin):
             try:
                 result = MiniLanguageHelpers.EvalExpression(
                     parser_info,
-                    self._compile_time_stack,
-                    self._namespaces_stack[-1],
+                    [self._compile_time_stack],
                 )
 
                 # BugBug parser_info.InitValueParserInfo(result.value)
@@ -251,8 +249,7 @@ class ExpressionsMixin(BaseMixin):
             # Determine if the condition is True or False
             condition_result = MiniLanguageHelpers.EvalExpression(
                 parser_info.condition_expression,
-                self._compile_time_stack,
-                self._namespaces_stack[-1],
+                [self._compile_time_stack],
             )
             condition_result = condition_result.type.ToBoolValue(condition_result.value)
 

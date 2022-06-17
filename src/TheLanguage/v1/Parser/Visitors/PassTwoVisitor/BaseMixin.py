@@ -36,7 +36,7 @@ with InitRelativeImports():
 
     from ...Error import CreateError, Error, ErrorException
 
-    from ...ParserInfos.ParserInfo import ParserInfo, ParserInfoType
+    from ...ParserInfos.ParserInfo import ParserInfo, ParserInfoType, VisitResult
     from ...ParserInfos.AggregateParserInfo import AggregateParserInfo
 
     from ...ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
@@ -45,11 +45,11 @@ with InitRelativeImports():
     from ...ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
 
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
-    from ...ParserInfos.Statements.StatementParserInfo import (
-        NamedStatementTrait,
-        ScopedStatementTrait,
-        StatementParserInfo,
-    )
+    from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
+
+    from ...ParserInfos.Statements.Traits.NamedStatementTrait import NamedStatementTrait
+    from ...ParserInfos.Statements.Traits.ScopedStatementTrait import ScopedStatementTrait
+
 
 
 # ----------------------------------------------------------------------
@@ -148,6 +148,10 @@ class BaseMixin(object):
                         namespace_stack.append(namespace)
                         exit_stack.callback(namespace_stack.pop)
 
+                if isinstance(parser_info, ExpressionParserInfo) and not parser_info.IsType():
+                    yield VisitResult.SkipAll
+                    return
+
                 yield
 
                 assert (
@@ -188,19 +192,6 @@ class BaseMixin(object):
     # |
     # |  Protected Methods
     # |
-    # ----------------------------------------------------------------------
-    def _InTemplate(self) -> bool:
-        return self._template_ctr != 0
-
-    # ----------------------------------------------------------------------
-    def _IncrementTemplateCtr(self) -> None:
-        self._template_ctr += 1
-
-    # ----------------------------------------------------------------------
-    def _DecrementTemplateCtr(self) -> None:
-        assert self._template_ctr
-        self._template_ctr -= 1
-
     # ----------------------------------------------------------------------
     def _GetResolvedType(
         self,

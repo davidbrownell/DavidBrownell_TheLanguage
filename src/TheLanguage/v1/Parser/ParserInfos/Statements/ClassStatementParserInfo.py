@@ -33,13 +33,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
-        NewNamespaceScopedStatementTrait,
         ParserInfo,
         ParserInfoType,
         ScopeFlag,
         StatementParserInfo,
         TranslationUnitRegion,
     )
+
+    from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
+    from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
@@ -115,6 +117,7 @@ class ClassStatementDependencyParserInfo(ParserInfo):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ClassStatementParserInfo(
+    TemplatedStatementTrait,
     NewNamespaceScopedStatementTrait,
     StatementParserInfo,
 ):
@@ -133,7 +136,6 @@ class ClassStatementParserInfo(
 
     documentation: Optional[str]
 
-    templates: Optional[TemplateParametersParserInfo]
     constraints: Optional[ConstraintParameterParserInfo]
 
     extends: Optional[List[ClassStatementDependencyParserInfo]]
@@ -170,6 +172,7 @@ class ClassStatementParserInfo(
         parser_info_type,
         regions,
         visibility_param,
+        templates_param,
         class_modifier_param,
         constructor_visibility_param,
     ):
@@ -188,7 +191,10 @@ class ClassStatementParserInfo(
                 "class_capabilities",
                 "templates",
                 "constraints",
-            ] + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
+            ]
+                + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
+                + TemplatedStatementTrait.RegionlessAttributesArgs()
+            ,
             validate=False,
             **{
                 **{
@@ -196,6 +202,7 @@ class ClassStatementParserInfo(
                     "class_capabilities": lambda value: value.name,
                 },
                 **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
         )
 
@@ -209,6 +216,7 @@ class ClassStatementParserInfo(
             object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
         NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
+        TemplatedStatementTrait.__post_init__(self, templates_param)
 
         if class_modifier_param is None:
             class_modifier_param = self.class_capabilities.default_class_modifier
@@ -240,16 +248,17 @@ class ClassStatementParserInfo(
         # Validate
         errors: List[Error] = []
 
-        if self.extends and len(self.extends) > 1:
-            errors.append(
-                MultipleExtendsError.Create(
-                    region=TranslationUnitRegion.Create(
-                        self.extends[1].regions__.self__.begin,
-                        self.extends[-1].regions__.self__.end,
-                    ),
-                    type=self.class_capabilities.name,
-                ),
-            )
+        # TODO: Don't check for this yet, may have multiple dependencies that resolve to None
+        # TODO: if self.extends and len(self.extends) > 1:
+        # TODO:     errors.append(
+        # TODO:         MultipleExtendsError.Create(
+        # TODO:             region=TranslationUnitRegion.Create(
+        # TODO:                 self.extends[1].regions__.self__.begin,
+        # TODO:                 self.extends[-1].regions__.self__.end,
+        # TODO:             ),
+        # TODO:             type=self.class_capabilities.name,
+        # TODO:         ),
+        # TODO:     )
 
         try:
             self.class_capabilities.ValidateClassStatementCapabilities(

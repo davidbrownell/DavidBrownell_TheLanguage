@@ -33,12 +33,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
-        NamedStatementTrait,
         ParserInfoType,
         ScopeFlag,
         StatementParserInfo,
         TranslationUnitRegion,
     )
+
+    from .Traits.NamedStatementTrait import NamedStatementTrait
 
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 

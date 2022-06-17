@@ -36,11 +36,8 @@ with InitRelativeImports():
 
     from ..ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
 
-    from ..ParserInfos.Statements.StatementParserInfo import (
-        NamedStatementTrait,
-        ScopeFlag,
-        StatementParserInfo,
-    )
+    from ..ParserInfos.Statements.StatementParserInfo import ScopeFlag, StatementParserInfo
+    from ..ParserInfos.Statements.Traits.NamedStatementTrait import NamedStatementTrait
 
     from ..ParserInfos.Statements.FuncDefinitionStatementParserInfo import OperatorType as FuncOperatorType
     from ..ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodType as SpecialMethodType
