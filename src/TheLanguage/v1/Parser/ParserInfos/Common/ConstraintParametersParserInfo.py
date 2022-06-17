@@ -86,7 +86,7 @@ class ConstraintParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(ConstraintParameterParserInfo, self).__init__(
-            ParserInfoType.Configuration,
+            ParserInfoType.TypeCustomization,
             *args,
             **kwargs,
             regionless_attributes=[

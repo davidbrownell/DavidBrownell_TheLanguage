@@ -93,6 +93,10 @@ class OperatorType(Enum):
     Iter                        = auto()  #                                                     N/A                             No              <visibility> Iterator<type> __Iter__() <ref|val>
     Cast                        = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __Cast?__<OtherT>() TODO: This needs some work!
 
+    Assign                      = auto()  #                                                     Assign                          Yes             <visibility> None __Assign?__<ValueT>(ValueT val value) mutable # TODO: This needs some work!
+    # TODO: Contains
+    # TODO: NotContains
+
     Negative                    = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __Negative?__() immutable
     Positive                    = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __Positive?__() immutable
     BitFlip                     = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitFlip?__() immutable

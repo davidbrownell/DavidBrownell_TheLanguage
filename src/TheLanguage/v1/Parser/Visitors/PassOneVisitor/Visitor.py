@@ -36,7 +36,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CommonMixin import CommonMixin
     from .ExpressionsMixin import ExpressionsMixin
     from .StatementsMixin import StatementsMixin
     from .ImportStatementMixin import ImportStatementMixin
@@ -51,7 +50,6 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class Visitor(
-    CommonMixin,
     ExpressionsMixin,
     StatementsMixin,
     ImportStatementMixin,

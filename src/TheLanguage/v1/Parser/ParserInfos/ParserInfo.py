@@ -21,7 +21,7 @@ from contextlib import contextmanager
 from enum import auto, Enum, Flag
 from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 
-from dataclasses import dataclass, fields, make_dataclass, InitVar
+from dataclasses import fields, make_dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -104,7 +104,7 @@ class ParserInfoType(Enum):
 
 
 # ----------------------------------------------------------------------
-class ParserInfo(ObjectReprImplBase):
+class ParserInfo(Interface.Interface, ObjectReprImplBase):
     """A collection of lexical tokens that may or may not be valid"""
 
     # ----------------------------------------------------------------------

@@ -99,6 +99,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         "__Index__": OperatorType.Index,
         "__Iter__": OperatorType.Iter,
         "__Cast?__": OperatorType.Cast,
+        "__Assign?__": OperatorType.Assign,
         "__Negative?__": OperatorType.Negative,
         "__Positive?__": OperatorType.Positive,
         "__BitFlip?__": OperatorType.BitFlip,
@@ -117,9 +118,9 @@ class FuncDefinitionStatement(GrammarPhrase):
         "__LessEqual__": OperatorType.LessEqual,
         "__Equal__": OperatorType.Equal,
         "__NotEqual__": OperatorType.NotEqual,
-        "__BitAnd?__": OperatorType.BitAnd,
-        "__BitXOr?__": OperatorType.BitXor,
-        "__BitOr?__": OperatorType.BitOr,
+        "__BitAnd?__": OperatorType.BitwiseAnd,
+        "__BitXOr?__": OperatorType.BitwiseXor,
+        "__BitOr?__": OperatorType.BitwiseOr,
         "__Contains__": OperatorType.Contains,
         "__NotContains__": OperatorType.NotContains,
         "__Not__": OperatorType.Not,
@@ -135,9 +136,9 @@ class FuncDefinitionStatement(GrammarPhrase):
         "__SubtractInplace?__": OperatorType.SubtractInplace,
         "__BitShiftLeftInplace?__": OperatorType.BitShiftLeftInplace,
         "__BitShiftRightInplace?__": OperatorType.BitShiftRightInplace,
-        "__BitAndInplace?__": OperatorType.BitAndInplace,
-        "__BitXOrInplace?__": OperatorType.BitXorInplace,
-        "__BitOrInplace?__": OperatorType.BitOrInplace,
+        "__BitAndInplace?__": OperatorType.BitwiseAndInplace,
+        "__BitXOrInplace?__": OperatorType.BitwiseXorInplace,
+        "__BitOrInplace?__": OperatorType.BitwiseOrInplace,
     }
 
     assert len(OPERATOR_MAP) == len(OperatorType), (len(OPERATOR_MAP), len(OperatorType))

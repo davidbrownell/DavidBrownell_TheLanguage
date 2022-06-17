@@ -88,8 +88,6 @@ class ExpressionParserInfo(ParserInfo):
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
-    # BugBug: Add Flag to set if this expression is followed by a call expression
-
     # Set during
     _in_template: Optional[None]            = field(init=False, default=None)
     _resolved_type: Optional[ResolvedType]  = field(init=False, default=None)
@@ -135,26 +133,40 @@ class ExpressionParserInfo(ParserInfo):
         return False
 
     # ----------------------------------------------------------------------
-    @Interface.extensionmethod
     def InitializeAsType(
         self,
         parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
         *,
         is_instantiated_type: Optional[bool]=True,      # pylint: disable=unused-argument
     ) -> None:
-        # Most expressions are not types.
+        is_type_result = self.IsType()
 
-        raise ErrorException(
-            InvalidTypeError.Create(
-                region=self.regions__.self__,
-            ),
-        )
+        if is_type_result is False:
+            raise ErrorException(
+                InvalidTypeError.Create(
+                    region=self.regions__.self__,
+                ),
+            )
+
+        if is_type_result is True:
+            self._InitializeAsTypeImpl(
+                parser_info_type,
+                is_instantiated_type=is_instantiated_type,
+            )
 
     # ----------------------------------------------------------------------
-    @Interface.extensionmethod
     def InitializeAsExpression(self) -> None:
-        # Most expressions are expressions
-        pass
+        is_type_result = self.IsType()
+
+        if is_type_result is True:
+            raise ErrorException(
+                InvalidExpressionError.Create(
+                    region=self.regions__.self__,
+                ),
+            )
+
+        if is_type_result is False:
+            self._InitializeAsExpressionImpl()
 
     # ----------------------------------------------------------------------
     def InitInTemplate(
@@ -187,3 +199,24 @@ class ExpressionParserInfo(ParserInfo):
     def resolved_type__(self) -> "ExpressionParserInfo.ResolvedType":
         assert self._resolved_type is not None
         return self._resolved_type
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def _InitializeAsTypeImpl(
+        self,
+        parser_info_type: ParserInfoType,
+        *,
+        is_instantiated_type: Optional[bool]=True,
+    ) -> None:
+        # Nothing to do here by default
+        pass
+
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def _InitializeAsExpressionImpl(self) -> None:
+        # Nothing to do here by default
+        pass

@@ -36,6 +36,8 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class VariantType(Type):
+    supported_scope                         = Interface.DerivedProperty(Type.Scope.Configuration | Type.Scope.TypeCustomization)  # type: ignore
+
     # ----------------------------------------------------------------------
     def __init__(
         self,
@@ -51,7 +53,7 @@ class VariantType(Type):
     # ----------------------------------------------------------------------
     @property
     @Interface.override
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     # ----------------------------------------------------------------------

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  LiteralExpression.py
+# |  TupleType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-05-02 22:54:35
+# |      2022-06-17 07:51:45
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the LiteralExpression object"""
+"""Contains the TupleType object"""
 
 import os
 
-from typing import Any, Dict
-
-from dataclasses import dataclass
+from typing import Any, List
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,37 +30,46 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Expression import Expression, Type
+    from .Type import Type
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class LiteralExpression(Expression):
-    type: Type
-    value: Any
+class TupleType(Type):
+    supported_scope                         = Interface.DerivedProperty(Type.Scope.TypeCustomization)  # type: ignore
 
     # ----------------------------------------------------------------------
-    def __post_init__(self):
-        super(LiteralExpression, self).__init__()
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def EvalType(self) -> Type:
-        return self.type
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Eval(
+    def __init__(
         self,
-        args: Dict[str, Any],
-        type_overrides: Dict[str, Type],
-    ) -> Expression.EvalResult:
-        return Expression.EvalResult(self.value, self.type, None)
+        types: List[Type],
+    ):
+        super(TupleType, self).__init__()
+
+        assert types
+
+        self.types                          = types
+        self._name                          = "Tuple({}, )".format(", ".join(the_type.name for the_type in types))
+
+    # ----------------------------------------------------------------------
+    @property
+    @Interface.override
+    def name(self) -> str:
+        return self._name
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ToString(
+    def IsSupportedValue(
         self,
-        args: Dict[str, Any],
-    ) -> str:
-        return self.type.ToStringValue(self.value)
+        value: Any,
+    ) -> bool:
+        return (
+            isinstance(value, tuple)
+            and len(value) == len(self.types)
+            and all(the_type.IsSupportedValue(value) for the_type, value in zip(self.types, value))
+        )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def ToBoolValue(
+        value: Any,
+    ) -> bool:
+        return bool(value)

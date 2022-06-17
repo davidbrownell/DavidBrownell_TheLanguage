@@ -17,6 +17,7 @@
 
 import os
 
+from enum import auto, Flag
 from typing import Any, Optional
 
 from dataclasses import dataclass
@@ -29,8 +30,6 @@ from CommonEnvironment.YamlRepr import ObjectReprImplBase
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
-
-# TODO: Add alias type
 
 # ----------------------------------------------------------------------
 class Type(Interface.Interface, ObjectReprImplBase):
@@ -52,6 +51,11 @@ class Type(Interface.Interface, ObjectReprImplBase):
         refined_type: Optional["Type"]
 
     # ----------------------------------------------------------------------
+    class Scope(Flag):
+        Configuration                       = auto()
+        TypeCustomization                   = auto()
+
+    # ----------------------------------------------------------------------
     # |
     # |  Public Methods
     # |
@@ -63,6 +67,11 @@ class Type(Interface.Interface, ObjectReprImplBase):
     @Interface.abstractproperty
     def name(self) -> str:
         raise Exception("Abstract property")  # pragma: no cover
+
+    @Interface.abstractproperty
+    def supported_scope(self) -> "Type.Scope":
+        """Indicates the scopes in which type type can be used"""
+        raise Exception("Abstract property")
 
     # ----------------------------------------------------------------------
     @staticmethod

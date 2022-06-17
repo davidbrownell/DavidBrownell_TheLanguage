@@ -38,8 +38,6 @@ with InitRelativeImports():
 
     from .FuncOrTypeExpressionParserInfo import InvalidCompileTimeTypeError
 
-    from ..Statements.FuncDefinitionStatementParserInfo import OperatorType as FuncOperatorType
-
     from ...Error import Error, ErrorException
     from ...MiniLanguage.Expressions.BinaryExpression import OperatorType as MiniLanguageOperatorType
 
@@ -82,21 +80,30 @@ class OperatorType(Enum):
     LogicalOr                               = MiniLanguageOperatorType.LogicalOr
 
     # Operators that are not valid within the MiniLanguage
+
+    # Make sure to update `../../../../Grammar/PrecedenceFunc.py` when values are added.
     Access                                  = auto()
     AccessReturnSelf                        = auto()
 
-    MultiplyInplace                         = auto()
-    DivideInplace                           = auto()
-    DivideFloorInplace                      = auto()
-    ModuloInplace                           = auto()
-    PowerInplace                            = auto()
-    AddInplace                              = auto()
-    SubtractInplace                         = auto()
-    BitShiftLeftInplace                     = auto()
-    BitShiftRightInplace                    = auto()
-    BitwiseAndInplace                       = auto()
-    BitwiseXorInplace                       = auto()
-    BitwiseOrInplace                        = auto()
+    Assign                                  = auto()
+
+    In                                      = auto()
+    NotIn                                   = auto()
+
+    # TODO: Need a binary statement type for these
+    # BitflipInplace                          = auto()
+    # MultiplyInplace                         = auto()
+    # DivideInplace                           = auto()
+    # DivideFloorInplace                      = auto()
+    # ModuloInplace                           = auto()
+    # PowerInplace                            = auto()
+    # AddInplace                              = auto()
+    # SubtractInplace                         = auto()
+    # BitShiftLeftInplace                     = auto()
+    # BitShiftRightInplace                    = auto()
+    # BitwiseAndInplace                       = auto()
+    # BitwiseXorInplace                       = auto()
+    # BitwiseOrInplace                        = auto()
 
     # ----------------------------------------------------------------------
     def ToMiniLanguageOperatorType(self) -> Optional[MiniLanguageOperatorType]:
@@ -109,46 +116,6 @@ class OperatorType(Enum):
 assert _initial_num_mini_language_operator_types == len(MiniLanguageOperatorType)
 del _initial_num_mini_language_operator_types
 
-
-# ----------------------------------------------------------------------
-_expression_to_func_map                     = {
-    OperatorType.Multiply:                  FuncOperatorType.Multiply,
-    OperatorType.Divide:                    FuncOperatorType.Divide,
-    OperatorType.DivideFloor:               FuncOperatorType.DivideFloor,
-    OperatorType.Modulo:                    FuncOperatorType.Modulo,
-    OperatorType.Power:                     FuncOperatorType.Power,
-    OperatorType.Add:                       FuncOperatorType.Add,
-    OperatorType.Subtract:                  FuncOperatorType.Subtract,
-    OperatorType.BitShiftLeft:              FuncOperatorType.BitShiftLeft,
-    OperatorType.BitShiftRight:             FuncOperatorType.BitShiftRight,
-    OperatorType.BitwiseAnd:                FuncOperatorType.BitwiseAnd,
-    OperatorType.BitwiseXor:                FuncOperatorType.BitwiseXor,
-    OperatorType.BitwiseOr:                 FuncOperatorType.BitwiseOr,
-    OperatorType.Less:                      FuncOperatorType.Less,
-    OperatorType.LessEqual:                 FuncOperatorType.LessEqual,
-    OperatorType.Greater:                   FuncOperatorType.Greater,
-    OperatorType.GreaterEqual:              FuncOperatorType.GreaterEqual,
-    OperatorType.Equal:                     FuncOperatorType.Equal,
-    OperatorType.NotEqual:                  FuncOperatorType.NotEqual,
-    OperatorType.LogicalAnd:                FuncOperatorType.LogicalAnd,
-    OperatorType.LogicalOr:                 FuncOperatorType.LogicalOr,
-    OperatorType.Access:                    FuncOperatorType.GetAttribute,
-    OperatorType.AccessReturnSelf:          None,
-    OperatorType.MultiplyInplace:           FuncOperatorType.MultiplyInplace,
-    OperatorType.DivideInplace:             FuncOperatorType.DivideInplace,
-    OperatorType.DivideFloorInplace:        FuncOperatorType.DivideFloorInplace,
-    OperatorType.ModuloInplace:             FuncOperatorType.ModuloInplace,
-    OperatorType.PowerInplace:              FuncOperatorType.PowerInplace,
-    OperatorType.AddInplace:                FuncOperatorType.AddInplace,
-    OperatorType.SubtractInplace:           FuncOperatorType.SubtractInplace,
-    OperatorType.BitShiftLeftInplace:       FuncOperatorType.BitShiftLeftInplace,
-    OperatorType.BitShiftRightInplace:      FuncOperatorType.BitShiftRightInplace,
-    OperatorType.BitwiseAndInplace:         FuncOperatorType.BitwiseAndInplace,
-    OperatorType.BitwiseXorInplace:         FuncOperatorType.BitwiseXorInplace,
-    OperatorType.BitwiseOrInplace:          FuncOperatorType.BitwiseOrInplace,
-}
-
-assert len(_expression_to_func_map) == len(OperatorType)
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -200,8 +167,16 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
         )
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def InitializeAsType(
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "left_expression", self.left_expression  # type: ignore
+        yield "right_expression", self.right_expression  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _InitializeAsTypeImpl(
         self,
         parser_info_type: ParserInfoType,
         *,
@@ -249,28 +224,6 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def InitializeAsExpression(self) -> None:
+    def _InitializeAsExpressionImpl(self) -> None:
         self.left_expression.InitializeAsExpression()
         self.right_expression.InitializeAsExpression()
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Lower(self) -> Optional[ParserInfo]:
-        assert not ParserInfoType.IsCompileTimeStrict(self.parser_info_type__), self.parser_info_type__
-
-        if self.IsType():
-            return None
-
-        func_operator = _expression_to_func_map[self.operator]
-        if func_operator is None:
-            return None
-
-        # BugBug
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        yield "left_expression", self.left_expression  # type: ignore
-        yield "right_expression", self.right_expression  # type: ignore

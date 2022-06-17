@@ -34,7 +34,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ExpressionParserInfo import (  # pylint: disable=unused-import
         ExpressionParserInfo,
-        InvalidExpressionError,
         ParserInfo,
         ParserInfoType,
     )
@@ -127,11 +126,22 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def IsType(self) -> Optional[bool]:
-        return True
+        return isinstance(self.value, (str, MiniLanguageType))
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        if self.templates:
+            yield "templates", self.templates  # type: ignore
+
+        if self.constraints:
+            yield "constraints", self.constraints  # type: ignore
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def InitializeAsType(
+    def _InitializeAsTypeImpl(
         self,
         parser_info_type: ParserInfoType,
         *,
@@ -202,23 +212,3 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
 
         if errors:
             raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def InitializeAsExpression(self) -> None:
-        raise ErrorException(
-            InvalidExpressionError.Create(
-                self.regions__.self__,
-            ),
-        )
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        if self.templates:
-            yield "templates", self.templates  # type: ignore
-
-        if self.constraints:
-            yield "constraints", self.constraints  # type: ignore

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CommonMixin.py
+# |  ExternalType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-06-15 07:25:44
+# |      2022-06-17 09:14:34
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,14 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CommonMixin object"""
+"""Contains the ExternalType object"""
 
 import os
 
-from contextlib import contextmanager
+from typing import Any
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,33 +30,45 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .BaseMixin import BaseMixin
-
-    from ...ParserInfos.ParserInfo import ParserInfoType
-
-    from ...ParserInfos.Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo, ConstraintParameterParserInfo
+    from .Type import Type
 
 
 # ----------------------------------------------------------------------
-class CommonMixin(BaseMixin):
-    # ----------------------------------------------------------------------
-    @contextmanager
-    def OnConstraintParametersParserInfo(
-        self,
-        parser_info: ConstraintParametersParserInfo,
-    ):
-        assert parser_info.parser_info_type__ == ParserInfoType.Configuration, parser_info.parser_info_type__
-        self._FlagAsProcessed(parser_info)
-
-        yield
+class ExternalType(Type):
+    supported_scope                         = Interface.DerivedProperty(Type.Scope.TypeCustomization)  # type: ignore
 
     # ----------------------------------------------------------------------
-    @contextmanager
-    def OnConstraintParameterParserInfo(
+    def __init__(
         self,
-        parser_info: ConstraintParameterParserInfo,
+        name: str,
     ):
-        assert parser_info.parser_info_type__ == ParserInfoType.Configuration, parser_info.parser_info_type__
-        self._FlagAsProcessed(parser_info)
+        self._name                          = name
 
-        yield
+    # ----------------------------------------------------------------------
+    @property
+    @Interface.override
+    def name(self) -> str:
+        return self._name
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def IsSupportedValue(
+        self,
+        value: Any,
+    ) -> bool:
+        return isinstance(value, str) and value == self._name
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def ToBoolValue(
+        value: Any,
+    ) -> bool:
+        return True
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ToStringValue(
+        value: Any,
+    ) -> str:
+        return value

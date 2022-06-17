@@ -27,7 +27,7 @@ public immutable class Char:
 
     [Deferred] public override ThisType var __Clone?__() immutable
 
-    [Deferred] public override Bool val __ToBool__() immutable
+    [Deferred] public override Bool val __ToBool__() immutable              # value != 0
     [Deferred] public override Str val __ToString?__() immutable
 
     [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, ThisType immutable that)

@@ -2752,7 +2752,7 @@ statement_000182 = FuncParametersParserInfo.Create(
 
 statement_000183 = FuncDefinitionStatementParserInfo.Create(
     regions=[tu_region_000463, tu_region_000467, tu_region_000464, tu_region_000462, tu_region_000465, tu_region_000466, None, None, None, tu_region_000468, None, None, None, None, None],
-    name=r"OperatorType.BitAnd",
+    name=r"OperatorType.BitwiseAnd",
     visibility_param=VisibilityModifier.public,
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000182,
@@ -2807,7 +2807,7 @@ statement_000187 = FuncParametersParserInfo.Create(
 
 statement_000188 = FuncDefinitionStatementParserInfo.Create(
     regions=[tu_region_000478, tu_region_000482, tu_region_000479, tu_region_000477, tu_region_000480, tu_region_000481, None, None, None, tu_region_000483, None, None, None, None, None],
-    name=r"OperatorType.BitXor",
+    name=r"OperatorType.BitwiseXor",
     visibility_param=VisibilityModifier.public,
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000187,
@@ -2862,7 +2862,7 @@ statement_000192 = FuncParametersParserInfo.Create(
 
 statement_000193 = FuncDefinitionStatementParserInfo.Create(
     regions=[tu_region_000493, tu_region_000497, tu_region_000494, tu_region_000492, tu_region_000495, tu_region_000496, None, None, None, tu_region_000498, None, None, None, None, None],
-    name=r"OperatorType.BitOr",
+    name=r"OperatorType.BitwiseOr",
     visibility_param=VisibilityModifier.public,
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000192,
@@ -3297,7 +3297,7 @@ statement_000229 = FuncParametersParserInfo.Create(
 
 statement_000230 = FuncDefinitionStatementParserInfo.Create(
     regions=[tu_region_000608, tu_region_000612, tu_region_000609, tu_region_000607, tu_region_000610, tu_region_000611, None, None, None, tu_region_000613, None, None, None, None, None],
-    name=r"OperatorType.BitAndInplace",
+    name=r"OperatorType.BitwiseAndInplace",
     visibility_param=VisibilityModifier.public,
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000229,
@@ -3343,7 +3343,7 @@ statement_000233 = FuncParametersParserInfo.Create(
 
 statement_000234 = FuncDefinitionStatementParserInfo.Create(
     regions=[tu_region_000620, tu_region_000624, tu_region_000621, tu_region_000619, tu_region_000622, tu_region_000623, None, None, None, tu_region_000625, None, None, None, None, None],
-    name=r"OperatorType.BitXorInplace",
+    name=r"OperatorType.BitwiseXorInplace",
     visibility_param=VisibilityModifier.public,
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000233,
@@ -3389,7 +3389,7 @@ statement_000237 = FuncParametersParserInfo.Create(
 
 statement_000238 = FuncDefinitionStatementParserInfo.Create(
     regions=[tu_region_000632, tu_region_000636, tu_region_000633, tu_region_000631, tu_region_000634, tu_region_000635, None, None, None, tu_region_000637, None, None, None, None, None],
-    name=r"OperatorType.BitOrInplace",
+    name=r"OperatorType.BitwiseOrInplace",
     visibility_param=VisibilityModifier.public,
     parent_class_capabilities=StandardCapabilities,
     parameters=statement_000237,

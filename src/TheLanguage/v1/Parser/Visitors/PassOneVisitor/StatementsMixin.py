@@ -35,9 +35,7 @@ with InitRelativeImports():
     from .. import MiniLanguageHelpers
     from ..NamespaceInfo import ParsedNamespaceInfo
 
-    from ...Error import ErrorException
-
-    from ...ParserInfos.ParserInfo import ParserInfoType, VisitResult
+    from ...ParserInfos.ParserInfo import ParserInfoType
 
     from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from ...ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
@@ -53,18 +51,7 @@ class StatementsMixin(BaseMixin):
     ):
         if parser_info.parser_info_type__ == ParserInfoType.Configuration:
             self._FlagAsProcessed(parser_info)
-
-            try:
-                MiniLanguageHelpers.EvalExpression(
-                    parser_info.expression,
-                    [self._configuration_info],
-                    [],
-                )
-            except ErrorException as ex:
-                self._errors += ex.errors
-
-                yield VisitResult.SkipAll
-                return
+            MiniLanguageHelpers.EvalExpression(parser_info.expression, [self._configuration_info])
 
         yield
 
@@ -79,38 +66,30 @@ class StatementsMixin(BaseMixin):
         if parser_info.parser_info_type__ == ParserInfoType.Configuration:
             self._FlagAsProcessed(parser_info)
 
-            try:
-                for clause in parser_info.clauses:
-                    self._FlagAsProcessed(clause)
+            for clause in parser_info.clauses:
+                self._FlagAsProcessed(clause)
 
-                    execute_flag = False
+                execute_flag = False
 
-                    if true_clause_name is None:
-                        clause_result = MiniLanguageHelpers.EvalExpression(
-                            clause.expression,
-                            [self._configuration_info],
-                            [],
-                        )
+                if true_clause_name is None:
+                    clause_result = MiniLanguageHelpers.EvalExpression(
+                        clause.expression,
+                        [self._configuration_info],
+                    )
 
-                        clause_result = clause_result.type.ToBoolValue(clause_result.value)
-                        if clause_result:
-                            true_clause_name = clause.name
-                            execute_flag = True
+                    clause_result = clause_result.type.ToBoolValue(clause_result.value)
+                    if clause_result:
+                        true_clause_name = clause.name
+                        execute_flag = True
 
-                    if not execute_flag:
-                        clause.Disable()
+                if not execute_flag:
+                    clause.Disable()
 
-                if parser_info.else_clause:
-                    self._FlagAsProcessed(parser_info.else_clause)
+            if parser_info.else_clause:
+                self._FlagAsProcessed(parser_info.else_clause)
 
-                    if true_clause_name is not None:
-                        parser_info.else_clause.Disable()
-
-            except ErrorException as ex:
-                self._errors += ex.errors
-
-                yield VisitResult.SkipAll
-                return
+                if true_clause_name is not None:
+                    parser_info.else_clause.Disable()
 
         yield
 

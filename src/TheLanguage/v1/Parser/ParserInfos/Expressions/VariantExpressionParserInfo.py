@@ -34,7 +34,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ExpressionParserInfo import (
         ExpressionParserInfo,
-        InvalidExpressionError,
         ParserInfo,
         ParserInfoType,
         TranslationUnitRegion,
@@ -98,8 +97,15 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
         return True
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def InitializeAsType(
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "types", self.types  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _InitializeAsTypeImpl(
         self,
         parser_info_type: ParserInfoType,
         *,
@@ -146,19 +152,3 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
 
         if errors:
             raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def InitializeAsExpression(self) -> None:
-        raise ErrorException(
-            InvalidExpressionError.Create(
-                region=self.regions__.type__,
-            ),
-        )
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        yield "types", self.types  # type: ignore

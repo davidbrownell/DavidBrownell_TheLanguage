@@ -26,7 +26,7 @@ public immutable class None:
 
     [Deferred] public override ThisType var __Clone?__() immutable
 
-    [Deferred] public override Bool val __ToBool__() immutable
+    [Deferred] public override Bool val __ToBool__() immutable              # False
     [Deferred] public override Str val __ToString?__() immutable
 
     [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, ThisType immutable that)

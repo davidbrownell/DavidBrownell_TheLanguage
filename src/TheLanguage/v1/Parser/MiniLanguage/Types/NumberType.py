@@ -36,6 +36,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class NumberType(Type):
     name                                    = Interface.DerivedProperty("Num")  # type: ignore
+    supported_scope                         = Interface.DerivedProperty(Type.Scope.Configuration | Type.Scope.TypeCustomization)  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod

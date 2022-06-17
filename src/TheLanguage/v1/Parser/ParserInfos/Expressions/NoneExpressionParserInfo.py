@@ -58,21 +58,3 @@ class NoneExpressionParserInfo(ExpressionParserInfo):
     @Interface.override
     def IsType() -> Optional[bool]:
         return None
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def InitializeAsType(
-        self,
-        parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
-        *,
-        is_instantiated_type: Optional[bool]=True,      # pylint: disable=unused-argument
-    ) -> None:
-        # This can be an expression or a type
-        pass
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def InitializeAsExpression() -> None:
-        # This can be an expression or a type
-        pass

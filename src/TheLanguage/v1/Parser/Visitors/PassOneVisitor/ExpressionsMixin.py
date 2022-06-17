@@ -87,8 +87,6 @@ class ExpressionsMixin(BaseMixin):
         if parser_info.parser_info_type__ == ParserInfoType.Configuration:
             self._FlagAsProcessed(parser_info)
 
-            assert not isinstance(parser_info.value, str), parser_info.value
-
         yield
 
     # ----------------------------------------------------------------------
@@ -103,8 +101,8 @@ class ExpressionsMixin(BaseMixin):
             condition_result = MiniLanguageHelpers.EvalExpression(
                 parser_info.condition_expression,
                 [self._configuration_info],
-                [],
             )
+
             condition_result = condition_result.type.ToBoolValue(condition_result.value)
 
             if condition_result:
@@ -145,10 +143,6 @@ class ExpressionsMixin(BaseMixin):
         if parser_info.parser_info_type__ == ParserInfoType.Configuration:
             self._FlagAsProcessed(parser_info)
 
-            # Unfortunately, we can't validate that the variable exists here as does so will break
-            # statements such as `if IsDefined!(__architecture_bytes!) and __architecture_bytes! == 8: ...`
-            # (as we want to lazily evaluate the existence of `__architecture_bytes!`).
-
         yield
 
     # ----------------------------------------------------------------------
@@ -159,10 +153,5 @@ class ExpressionsMixin(BaseMixin):
     ):
         if parser_info.parser_info_type__ == ParserInfoType.Configuration:
             self._FlagAsProcessed(parser_info)
-
-            assert all(
-                type_parser_info.parser_info_type__ == ParserInfoType.Configuration
-                for type_parser_info in parser_info.types
-            )
 
         yield

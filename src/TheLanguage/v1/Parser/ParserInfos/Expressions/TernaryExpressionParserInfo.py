@@ -90,8 +90,17 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
         )
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def InitializeAsType(
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "conditional_expression", self.condition_expression  # type: ignore
+        yield "true_expression", self.true_expression  # type: ignore
+        yield "false_expression", self.false_expression  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _InitializeAsTypeImpl(
         self,
         parser_info_type: ParserInfoType,
         *,
@@ -111,16 +120,7 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def InitializeAsExpression(self) -> None:
+    def _InitializeAsExpressionImpl(self) -> None:
         self.condition_expression.InitializeAsExpression()
         self.true_expression.InitializeAsExpression()
         self.false_expression.InitializeAsExpression()
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        yield "conditional_expression", self.condition_expression  # type: ignore
-        yield "true_expression", self.true_expression  # type: ignore
-        yield "false_expression", self.false_expression  # type: ignore

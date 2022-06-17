@@ -92,8 +92,15 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
         return True
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def InitializeAsType(
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "types", self.types  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _InitializeAsTypeImpl(
         self,
         parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
         *,
@@ -142,7 +149,7 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def InitializeAsExpression(self) -> None:
+    def _InitializeAsExpressionImpl(self) -> None:
         errors: List[Error] = []
 
         for the_type in self.types:
@@ -160,10 +167,3 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
 
         if errors:
             raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        yield "types", self.types  # type: ignore

@@ -17,9 +17,9 @@
 
 import os
 
-from typing import List, Optional, Union
+from typing import List, Optional
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -42,7 +42,7 @@ with InitRelativeImports():
     )
 
     from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
-    from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo, TemplateTypeParameterParserInfo
+    from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
@@ -82,6 +82,12 @@ class TypeAliasStatementParserInfo(
 
     # ----------------------------------------------------------------------
     def __post_init__(self, parser_info_type, regions, visibility_param):
+        self._InitTraits(
+            allow_name_to_be_duplicated=False,
+            # Aliases within classes are not ordered, aliases outside of classes are
+            name_is_ordered=self.parent_class_capabilities is None,
+        )
+
         StatementParserInfo.__post_init__(
             self,
             parser_info_type,

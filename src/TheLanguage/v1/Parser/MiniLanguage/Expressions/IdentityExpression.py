@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  StringType.py
+# |  IdentityExpression.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-05-02 22:12:23
+# |      2022-05-02 22:54:35
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the StringType object"""
+"""Contains the IdentityExpression object"""
 
 import os
 
-from typing import Any
+from typing import Any, Dict
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,34 +32,37 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Type import Type
+    from .Expression import Expression, Type
 
 
 # ----------------------------------------------------------------------
-class StringType(Type):
-    name                                    = Interface.DerivedProperty("Str")  # type: ignore
-    supported_scope                         = Interface.DerivedProperty(Type.Scope.Configuration | Type.Scope.TypeCustomization)  # type: ignore
+@dataclass(frozen=True, repr=False)
+class IdentityExpression(Expression):
+    type: Type
+    value: Any
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def IsSupportedValue(
-        value: Any,
-    ) -> bool:
-        return isinstance(value, str)
+    def __post_init__(self):
+        super(IdentityExpression, self).__init__()
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @Interface.override
-    def ToStringValue(
-        value: Any,
+    def EvalType(self) -> Type:
+        return self.type
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Eval(
+        self,
+        args: Dict[str, Any],
+        type_overrides: Dict[str, Type],
+    ) -> Expression.EvalResult:
+        return Expression.EvalResult(self.value, self.type, None)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def ToString(
+        self,
+        args: Dict[str, Any],
     ) -> str:
-        return '"{}"'.format(value.replace("\n", "\\n"))
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def ToBoolValue(
-        value: Any,
-    ) -> bool:
-        return bool(value)
+        return self.type.ToStringValue(self.value)
