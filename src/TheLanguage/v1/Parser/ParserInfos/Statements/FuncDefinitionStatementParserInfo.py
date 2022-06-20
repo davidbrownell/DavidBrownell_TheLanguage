@@ -258,7 +258,6 @@ class FuncDefinitionStatementParserInfo(
     documentation: Optional[str]
 
     captured_variables: Optional[List[VariableExpressionParserInfo]]
-    statements: Optional[List[StatementParserInfo]]
 
     is_deferred: Optional[bool]
     is_exceptional: Optional[bool]
@@ -276,6 +275,7 @@ class FuncDefinitionStatementParserInfo(
         regions: List[Optional[TranslationUnitRegion]],
         name: Union[str, OperatorType],
         visibility_param: Optional[VisibilityModifier],
+        statements: Optional[List[StatementParserInfo]],
         templates_param: Optional[TemplateParametersParserInfo],
         parent_class_capabilities: Optional[ClassCapabilities],
         parameters: Union[bool, FuncParametersParserInfo],
@@ -292,6 +292,7 @@ class FuncDefinitionStatementParserInfo(
             regions,                        # type: ignore
             str(name),
             visibility_param,               # type: ignore
+            statements,                     # type: ignore
             templates_param,                # type: ignore
             parent_class_capabilities,
             name if isinstance(name, OperatorType) else None,
@@ -310,12 +311,6 @@ class FuncDefinitionStatementParserInfo(
         mutability_param,
         method_modifier_param,
     ):
-        self._InitTraits(
-            allow_duplicate_names=False,
-            allow_name_to_be_duplicated=True,
-            name_is_ordered=False,
-        )
-
         StatementParserInfo.__post_init__(
             self,
             parser_info_type,
@@ -338,6 +333,12 @@ class FuncDefinitionStatementParserInfo(
                 **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
                 **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
+        )
+
+        self._InitTraits(
+            allow_duplicate_names=False,
+            allow_name_to_be_duplicated=True,
+            name_is_ordered=False,
         )
 
         # Set defaults
@@ -510,9 +511,3 @@ class FuncDefinitionStatementParserInfo(
 
         if not isinstance(self.parameters, bool):
             yield "parameters", self.parameters  # type: ignore
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
-        if self.statements:
-            yield from self.statements  # type: ignore

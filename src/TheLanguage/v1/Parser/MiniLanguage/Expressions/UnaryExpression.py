@@ -82,7 +82,7 @@ class UnaryExpression(Expression):
         if self.operator == OperatorType.Not:
             eval_type_impl = self._NotEvalTypeImpl
             eval_impl = self._NotEvalImpl
-        if self.operator == OperatorType.Bitflip:
+        elif self.operator == OperatorType.Bitflip:
             eval_type_impl, eval_impl = self._IntegerEvalImplFactory(lambda value: ~value)
         elif self.operator == OperatorType.Positive:
             eval_type_impl, eval_impl = self._IntegerOrNumberEvalImplFactory(lambda value: +value)

@@ -28,9 +28,10 @@ tu_region_000005 = TranslationUnitRegion(begin=Location(line=1, column=1), end=L
 # ----------------------------------------------------------------------
 statement_000000 = PassStatementParserInfo.Create([tu_region_000000])
 statement_000001 = ClassStatementParserInfo.Create(
-    regions=[tu_region_000001, tu_region_000002, tu_region_000001, tu_region_000003, None, None, None, None, tu_region_000004, tu_region_000001, None, None],
+    regions=[tu_region_000001, tu_region_000002, tu_region_000004, tu_region_000001, tu_region_000003, None, None, None, None, tu_region_000001, None, None],
     name=r"CompareResult",
     visibility_param=VisibilityModifier.public,
+    statements=[statement_000000, ],
     templates_param=None,
     parent_class_capabilities=None,
     class_capabilities=StandardCapabilities,
@@ -40,7 +41,6 @@ statement_000001 = ClassStatementParserInfo.Create(
     extends=None,
     implements=None,
     uses=None,
-    statements=[statement_000000, ],
     constructor_visibility_param=VisibilityModifier.public,
     is_abstract=None,
     is_final=None,

@@ -38,7 +38,9 @@ with InitRelativeImports():
     from ...ParserInfos.ParserInfo import ParserInfoType, VisitResult
 
     from ...ParserInfos.Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo
+    from ...ParserInfos.Expressions.BooleanExpressionParserInfo import BooleanExpressionParserInfo
     from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
+    from ...ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
     from ...ParserInfos.Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo
     from ...ParserInfos.Expressions.TypeCheckExpressionParserInfo import TypeCheckExpressionParserInfo
     from ...ParserInfos.Expressions.UnaryExpressionParserInfo import UnaryExpressionParserInfo
@@ -80,9 +82,31 @@ class ExpressionsMixin(BaseMixin):
 
     # ----------------------------------------------------------------------
     @contextmanager
+    def OnBooleanExpressionParserInfo(
+        self,
+        parser_info: BooleanExpressionParserInfo,
+    ):
+        if parser_info.parser_info_type__ == ParserInfoType.Configuration:
+            self._FlagAsProcessed(parser_info)
+
+        yield
+
+    # ----------------------------------------------------------------------
+    @contextmanager
     def OnFuncOrTypeExpressionParserInfo(
         self,
         parser_info: FuncOrTypeExpressionParserInfo,
+    ):
+        if parser_info.parser_info_type__ == ParserInfoType.Configuration:
+            self._FlagAsProcessed(parser_info)
+
+        yield
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnNoneExpressionParserInfo(
+        self,
+        parser_info: NoneExpressionParserInfo,
     ):
         if parser_info.parser_info_type__ == ParserInfoType.Configuration:
             self._FlagAsProcessed(parser_info)

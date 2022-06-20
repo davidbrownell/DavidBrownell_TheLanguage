@@ -141,9 +141,9 @@ class SpecialMethodStatement(GrammarPhrase):
 
             return SpecialMethodStatementParserInfo.Create(
                 CreateRegions(node, name_leaf, statements_node),
+                statements_info,
                 ClassStatement.GetParentClassCapabilities(node),
                 cast(SpecialMethodType, name_info),
-                statements_info,
             )
 
         # ----------------------------------------------------------------------

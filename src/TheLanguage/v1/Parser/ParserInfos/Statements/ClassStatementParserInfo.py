@@ -142,8 +142,6 @@ class ClassStatementParserInfo(
     implements: Optional[List[ClassStatementDependencyParserInfo]]
     uses: Optional[List[ClassStatementDependencyParserInfo]]
 
-    statements: List[StatementParserInfo]
-
     constructor_visibility_param: InitVar[Optional[VisibilityModifier]]
     constructor_visibility: VisibilityModifier          = field(init=False)
 
@@ -175,26 +173,19 @@ class ClassStatementParserInfo(
         class_modifier_param,
         constructor_visibility_param,
     ):
-        self._InitTraits(
-            allow_duplicate_names=True,
-            allow_name_to_be_duplicated=False,
-            name_is_ordered=False,
-        )
-
         StatementParserInfo.__post_init__(
             self,
             parser_info_type,
             regions,
+            validate=False,
             regionless_attributes=[
                 "parent_class_capabilities",
                 "class_capabilities",
-                "templates",
                 "constraints",
             ]
                 + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
                 + TemplatedStatementTrait.RegionlessAttributesArgs()
             ,
-            validate=False,
             **{
                 **{
                     "parent_class_capabilities": lambda value: None if value is None else value.name,
@@ -203,6 +194,12 @@ class ClassStatementParserInfo(
                 **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
                 **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
+        )
+
+        self._InitTraits(
+            allow_duplicate_names=True,
+            allow_name_to_be_duplicated=False,
+            name_is_ordered=False,
         )
 
         # Set defaults
@@ -319,11 +316,6 @@ class ClassStatementParserInfo(
 
         if self.uses:
             yield "uses", self.uses  # type: ignore
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
-        yield from self.statements
 
 
 # TODO: Not valid to have a protected class without a class ancestor

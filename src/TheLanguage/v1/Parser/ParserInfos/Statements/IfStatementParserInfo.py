@@ -57,16 +57,15 @@ class IfStatementClauseParserInfo(
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     expression: ExpressionParserInfo
-    statements: List[StatementParserInfo]
     documentation: Optional[str]
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
+        statements: List[StatementParserInfo],
         regions: List[Optional[TranslationUnitRegion]],
         expression: ExpressionParserInfo,
-        statements: List[StatementParserInfo],
         *args,
         **kwargs,
     ):
@@ -77,28 +76,23 @@ class IfStatementClauseParserInfo(
 
         return cls(  # pylint: disable=too-many-function-args
             "IfStatementClauseParserInfo ({})".format(regions[0].begin.line),
-            VisibilityModifier.private,                                         # type: ignore
-            expression.parser_info_type__,                                                   # type: ignore
-            regions,                                                            # type: ignore
+            VisibilityModifier.private,     # type: ignore
+            statements,                     # type: ignore
+            expression.parser_info_type__,  # type: ignore
+            regions,                        # type: ignore
             expression,
-            statements,
             *args,
             **kwargs,
         )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, visibility_param, parser_info_type, regions, *args, **kwargs):
-        ScopedStatementTrait.__post_init__(self, visibility_param)
-
-        self._InitTraits(
-            allow_name_to_be_duplicated=False,
-        )
-
         ParserInfo.__init__(
             self,
             parser_info_type,
             regions,
             *args,
+            validate=False,
             regionless_attributes=[
                 "expression",
             ] + ScopedStatementTrait.RegionlessAttributesArgs(),
@@ -106,6 +100,14 @@ class IfStatementClauseParserInfo(
                 **kwargs,
                 **ScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
+        )
+
+        ScopedStatementTrait.__post_init__(self, visibility_param)
+
+        self.ValidateRegions()
+
+        self._InitTraits(
+            allow_name_to_be_duplicated=False,
         )
 
         self.expression.InitializeAsExpression()
@@ -116,11 +118,6 @@ class IfStatementClauseParserInfo(
     @Interface.override
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         yield "expression", self.expression  # type: ignore
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
-        yield from self.statements
 
 
 # ----------------------------------------------------------------------
@@ -133,15 +130,14 @@ class IfStatementElseClauseParserInfo(
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
-    statements: List[StatementParserInfo]
     documentation: Optional[str]
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[TranslationUnitRegion]],
         statements: List[StatementParserInfo],
+        regions: List[Optional[TranslationUnitRegion]],
         *args,
         **kwargs,
     ):
@@ -152,27 +148,22 @@ class IfStatementElseClauseParserInfo(
 
         return cls(  # pylint: disable=too-many-function-args
             "IfStatementElseClauseParserInfo ({})".format(regions[0].begin.line),
-            VisibilityModifier.private,                                             # type: ignore
-            ParserInfoType.Unknown,                                                       # type: ignore
-            regions,                                                                # type: ignore
-            statements,
+            VisibilityModifier.private,     # type: ignore
+            statements,                     # type: ignore
+            ParserInfoType.Unknown,         # type: ignore
+            regions,                        # type: ignore
             *args,
             **kwargs,
         )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, visibility_param, parser_info_type, regions, *args, **kwargs):
-        self._InitTraits(
-            allow_name_to_be_duplicated=False,
-        )
-
-        ScopedStatementTrait.__post_init__(self, visibility_param)
-
         ParserInfo.__init__(
             self,
             parser_info_type,
             regions,
             regionless_attributes=ScopedStatementTrait.RegionlessAttributesArgs(),
+            validate=False,
             *args,
             **{
                 **kwargs,
@@ -180,12 +171,13 @@ class IfStatementElseClauseParserInfo(
             },
         )
 
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
-        yield from self.statements
+        ScopedStatementTrait.__post_init__(self, visibility_param)
+
+        self.ValidateRegions()
+
+        self._InitTraits(
+            allow_name_to_be_duplicated=False,
+        )
 
 
 # ----------------------------------------------------------------------

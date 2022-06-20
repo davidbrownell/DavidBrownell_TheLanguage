@@ -95,6 +95,8 @@ class BaseMixin(object):
         self,
         name: str,
     ):
+        # TODO: Use ParserInfoVisitorHelper
+
         index = name.find("ParserInfo__")
         if index != -1 and index + len("ParserInfo__") + 1 < len(name):
             return types.MethodType(self.__class__._DefaultDetailMethod, self)  # pylint: disable=protected-access

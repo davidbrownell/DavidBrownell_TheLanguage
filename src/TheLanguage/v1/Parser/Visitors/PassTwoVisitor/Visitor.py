@@ -43,7 +43,7 @@ with InitRelativeImports():
 
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
     from ...ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
-    from ...ParserInfos.Statements.RootStatementParserInfo import ParserInfo, RootStatementParserInfo
+    from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -62,7 +62,6 @@ class Visitor(
         names: Tuple[str, str],  # pylint: disable=unused-argument
         root: RootStatementParserInfo,
     ) -> List[Error]:
-
         # Get this namespace
         this_namespace = global_namespace.children[names[0]]
 

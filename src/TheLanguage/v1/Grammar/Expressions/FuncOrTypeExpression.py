@@ -54,6 +54,7 @@ with InitRelativeImports():
         FuncOrTypeExpressionParserInfo,
         IntegerType,
         IsDefinedExpression,
+        MiniLanguageType,
         NoneType,
         NumberType,
         ParserInfoType,
@@ -127,13 +128,8 @@ class FuncOrTypeExpression(GrammarPhrase):
             name_info = CommonTokens.FuncOrTypeName.Extract(name_leaf)  # type: ignore
 
             if CommonTokens.FuncOrTypeName.IsCompileTime(name_info):  # type: ignore
-                # If here, the function could be invoked during Configuration or TypeCustomization.
-                # Pick the smallest of the two.
-                assert ParserInfoType.Configuration.value < ParserInfoType.TypeCustomization.value
-                parser_info_type = ParserInfoType.Configuration
-
-                potential_mini_language_type = cls.MINILANGUAGE_TYPE_MAP.get(name_info, None)
-                if potential_mini_language_type is None:
+                potential_mini_language_type_or_expression = cls.MINILANGUAGE_TYPE_MAP.get(name_info, None)
+                if potential_mini_language_type_or_expression is None:
                     raise ErrorException(
                         InvalidCompileTimeTypeError.Create(
                             region=CreateRegion(name_leaf),
@@ -141,7 +137,14 @@ class FuncOrTypeExpression(GrammarPhrase):
                         ),
                     )
 
-                name_info = potential_mini_language_type
+                name_info = potential_mini_language_type_or_expression
+
+                if isinstance(potential_mini_language_type_or_expression, MiniLanguageType):
+                    parser_info_type = ParserInfoType.TypeCustomization
+                else:
+                    # We don't have enough information to know if this is a configuration or type customization
+                    # expression.
+                    parser_info_type = ParserInfoType.CompileTimeTemporary
 
             else:
                 parser_info_type = ParserInfoType.Unknown

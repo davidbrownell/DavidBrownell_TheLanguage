@@ -47,7 +47,7 @@ class NewNamespaceScopedStatementTrait(ScopedStatementTrait):
     def RegionlessAttributesArgs(cls) -> List[str]:
         return [
             "allow_duplicate_names__",
-        ] + super(NewNamespaceScopedStatementTrait, cls).RegionlessAttributesArgs()
+        ] + ScopedStatementTrait.RegionlessAttributesArgs()
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -56,7 +56,7 @@ class NewNamespaceScopedStatementTrait(ScopedStatementTrait):
             **{
                 "allow_duplicate_names__": None,
             },
-            **super(NewNamespaceScopedStatementTrait, cls).ObjectReprImplBaseInitKwargs(),
+            **ScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
         }
 
     # ----------------------------------------------------------------------
@@ -73,4 +73,4 @@ class NewNamespaceScopedStatementTrait(ScopedStatementTrait):
         if allow_duplicate_names is not None:
             object.__setattr__(self, "allow_duplicate_names__", allow_duplicate_names)
 
-        super(NewNamespaceScopedStatementTrait, self)._InitTraits(**kwargs)
+        ScopedStatementTrait._InitTraits(self, **kwargs)

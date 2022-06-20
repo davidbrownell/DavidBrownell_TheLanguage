@@ -306,9 +306,10 @@ statement_000024 = FuncParametersParserInfo.Create(
 )
 
 statement_000025 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000030, tu_region_000033, tu_region_000031, tu_region_000029, tu_region_000032, tu_region_000030, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000030, tu_region_000033, tu_region_000031, None, tu_region_000029, tu_region_000032, tu_region_000030, None, None, None, None, None, None, None, None],
     name=r"OperatorType.Serialize",
     visibility_param=VisibilityModifier.public,
+    statements=None,
     templates_param=statement_000021,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000024,
@@ -317,7 +318,6 @@ statement_000025 = FuncDefinitionStatementParserInfo.Create(
     return_type=None,
     documentation=None,
     captured_variables=None,
-    statements=None,
     is_deferred=None,
     is_exceptional=None,
     is_generator=None,
@@ -366,9 +366,10 @@ statement_000030 = FuncParametersParserInfo.Create(
 )
 
 statement_000031 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000042, tu_region_000045, tu_region_000043, tu_region_000041, tu_region_000044, tu_region_000042, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000042, tu_region_000045, tu_region_000043, None, tu_region_000041, tu_region_000044, tu_region_000042, None, None, None, None, None, None, None, None],
     name=r"OperatorType.Accept",
     visibility_param=VisibilityModifier.public,
+    statements=None,
     templates_param=statement_000027,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000030,
@@ -377,7 +378,6 @@ statement_000031 = FuncDefinitionStatementParserInfo.Create(
     return_type=None,
     documentation=None,
     captured_variables=None,
-    statements=None,
     is_deferred=None,
     is_exceptional=None,
     is_generator=None,
@@ -412,9 +412,10 @@ statement_000034 = FuncParametersParserInfo.Create(
 )
 
 statement_000035 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000052, tu_region_000055, tu_region_000053, tu_region_000051, tu_region_000054, tu_region_000052, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000052, tu_region_000055, tu_region_000053, None, tu_region_000051, tu_region_000054, tu_region_000052, None, None, None, None, None, None, None, None],
     name=r"OperatorType.DivideInplace",
     visibility_param=VisibilityModifier.public,
+    statements=None,
     templates_param=None,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000034,
@@ -423,7 +424,6 @@ statement_000035 = FuncDefinitionStatementParserInfo.Create(
     return_type=None,
     documentation=None,
     captured_variables=None,
-    statements=None,
     is_deferred=None,
     is_exceptional=None,
     is_generator=None,
@@ -458,9 +458,10 @@ statement_000038 = FuncParametersParserInfo.Create(
 )
 
 statement_000039 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000062, tu_region_000065, tu_region_000063, tu_region_000061, tu_region_000064, tu_region_000062, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000062, tu_region_000065, tu_region_000063, None, tu_region_000061, tu_region_000064, tu_region_000062, None, None, None, None, None, None, None, None],
     name=r"OperatorType.MultiplyInplace",
     visibility_param=VisibilityModifier.public,
+    statements=None,
     templates_param=None,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000038,
@@ -469,7 +470,6 @@ statement_000039 = FuncDefinitionStatementParserInfo.Create(
     return_type=None,
     documentation=None,
     captured_variables=None,
-    statements=None,
     is_deferred=None,
     is_exceptional=None,
     is_generator=None,
@@ -504,9 +504,10 @@ statement_000042 = FuncParametersParserInfo.Create(
 )
 
 statement_000043 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000072, tu_region_000075, tu_region_000073, tu_region_000071, tu_region_000074, tu_region_000072, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000072, tu_region_000075, tu_region_000073, None, tu_region_000071, tu_region_000074, tu_region_000072, None, None, None, None, None, None, None, None],
     name=r"OperatorType.PowerInplace",
     visibility_param=VisibilityModifier.public,
+    statements=None,
     templates_param=None,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000042,
@@ -515,7 +516,6 @@ statement_000043 = FuncDefinitionStatementParserInfo.Create(
     return_type=None,
     documentation=None,
     captured_variables=None,
-    statements=None,
     is_deferred=None,
     is_exceptional=None,
     is_generator=None,
@@ -550,9 +550,10 @@ statement_000046 = FuncParametersParserInfo.Create(
 )
 
 statement_000047 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000082, tu_region_000085, tu_region_000083, tu_region_000081, tu_region_000084, tu_region_000082, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000082, tu_region_000085, tu_region_000083, None, tu_region_000081, tu_region_000084, tu_region_000082, None, None, None, None, None, None, None, None],
     name=r"OperatorType.AddInplace",
     visibility_param=VisibilityModifier.public,
+    statements=None,
     templates_param=None,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000046,
@@ -561,7 +562,6 @@ statement_000047 = FuncDefinitionStatementParserInfo.Create(
     return_type=None,
     documentation=None,
     captured_variables=None,
-    statements=None,
     is_deferred=None,
     is_exceptional=None,
     is_generator=None,
@@ -596,9 +596,10 @@ statement_000050 = FuncParametersParserInfo.Create(
 )
 
 statement_000051 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000092, tu_region_000095, tu_region_000093, tu_region_000091, tu_region_000094, tu_region_000092, None, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000092, tu_region_000095, tu_region_000093, None, tu_region_000091, tu_region_000094, tu_region_000092, None, None, None, None, None, None, None, None],
     name=r"OperatorType.SubtractInplace",
     visibility_param=VisibilityModifier.public,
+    statements=None,
     templates_param=None,
     parent_class_capabilities=ConceptCapabilities,
     parameters=statement_000050,
@@ -607,7 +608,6 @@ statement_000051 = FuncDefinitionStatementParserInfo.Create(
     return_type=None,
     documentation=None,
     captured_variables=None,
-    statements=None,
     is_deferred=None,
     is_exceptional=None,
     is_generator=None,
@@ -617,9 +617,10 @@ statement_000051 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000052 = ClassStatementParserInfo.Create(
-    regions=[tu_region_000096, tu_region_000097, tu_region_000098, tu_region_000099, None, tu_region_000020, None, None, tu_region_000100, tu_region_000096, None, None],
+    regions=[tu_region_000096, tu_region_000097, tu_region_000100, tu_region_000098, tu_region_000099, None, tu_region_000020, None, None, tu_region_000096, None, None],
     name=r"MutableNum",
     visibility_param=VisibilityModifier.public,
+    statements=[statement_000025, statement_000031, statement_000035, statement_000039, statement_000043, statement_000047, statement_000051, ],
     templates_param=None,
     parent_class_capabilities=None,
     class_capabilities=ConceptCapabilities,
@@ -629,7 +630,6 @@ statement_000052 = ClassStatementParserInfo.Create(
     extends=[statement_000019, ],
     implements=None,
     uses=None,
-    statements=[statement_000025, statement_000031, statement_000035, statement_000039, statement_000043, statement_000047, statement_000051, ],
     constructor_visibility_param=VisibilityModifier.public,
     is_abstract=None,
     is_final=None,

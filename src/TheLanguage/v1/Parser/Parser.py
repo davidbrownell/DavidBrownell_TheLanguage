@@ -43,7 +43,8 @@ with InitRelativeImports():
     from .MiniLanguage.Types.Type import Type as MiniLanguageType
     from .MiniLanguage.Types.VariantType import VariantType                 # pylint: disable=unused-import
 
-    from .ParserInfos.Statements.RootStatementParserInfo import ParserInfo, RootStatementParserInfo
+    from .ParserInfos.ParserInfo import ParserInfo
+    from .ParserInfos.Statements.RootStatementParserInfo import StatementParserInfo, RootStatementParserInfo
 
     from .Visitors import MiniLanguageHelpers
     from .Visitors.PassOneVisitor.Visitor import Visitor as PassOneVisitor
@@ -217,7 +218,7 @@ def Parse(
             return RootStatementParserInfo.Create(
                 CreateRegions(root, statements_node, docstring_node),
                 names[1],
-                statements,
+                cast(List[StatementParserInfo], statements),
                 docstring_info,
             )
         except ErrorException as ex:

@@ -112,13 +112,13 @@ class SpecialMethodStatementParserInfo(
     parent_class_capabilities: ClassCapabilities
 
     special_method_type: SpecialMethodType
-    statements: List[StatementParserInfo]
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
         regions: List[Optional[TranslationUnitRegion]],
+        statements: List[StatementParserInfo],
         parent_class_capabilities: Optional[ClassCapabilities],
         name: SpecialMethodType,
         *args,
@@ -134,6 +134,7 @@ class SpecialMethodStatementParserInfo(
             regions,                        # type: ignore
             str(name),
             VisibilityModifier.private,     # type: ignore
+            statements,                     # type: ignore
             parent_class_capabilities,      # type: ignore
             name,
             *args,
@@ -142,18 +143,11 @@ class SpecialMethodStatementParserInfo(
 
     # ----------------------------------------------------------------------
     def __post_init__(self, parser_info_type, regions, visibility_param):
-        self._InitTraits(
-            allow_duplicate_names=False,
-            allow_name_to_be_duplicated=False,
-            name_is_ordered=False,
-        )
-
-        NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
-
         StatementParserInfo.__post_init__(
             self,
             parser_info_type,
             regions,
+            validate=False,
             regionless_attributes=[
                 "visibility",               # Value is hard coded during creation
                 "parent_class_capabilities",
@@ -167,6 +161,16 @@ class SpecialMethodStatementParserInfo(
                 **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
         )
+
+        self._InitTraits(
+            allow_duplicate_names=False,
+            allow_name_to_be_duplicated=False,
+            name_is_ordered=False,
+        )
+
+        NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
+
+        self.ValidateRegions()
 
         # Validate
         errors: List[Error] = []
@@ -189,15 +193,6 @@ class SpecialMethodStatementParserInfo(
             ParserInfoType.TypeCustomization: ScopeFlag.Class,
             ParserInfoType.Standard: ScopeFlag.Class,
         }
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Methods
-    # |
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
-        yield from self.statements  # type: ignore
 
     # ----------------------------------------------------------------------
     # |

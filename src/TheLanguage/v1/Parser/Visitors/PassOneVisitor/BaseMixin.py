@@ -90,6 +90,11 @@ class BaseMixin(object):
         self,
         name: str,
     ):
+        # TODO: Use ParserInfoVisitorHelper
+
+        if name == "OnPhraseDetails" or name == "OnPhraseChildren":
+            return None
+
         if name.endswith("ParserInfo"):
             return self.__class__._DefaultParserInfoMethod  # pylint: disable=protected-access
 
@@ -105,6 +110,8 @@ class BaseMixin(object):
         self,
         parser_info: ParserInfo,
     ):
+        assert parser_info.parser_info_type__ != ParserInfoType.CompileTimeTemporary
+
         parent_scope_flag = self._namespace_stack[-1].scope_flag if self._namespace_stack else ScopeFlag.Root
 
         if isinstance(parser_info, StatementParserInfo):
@@ -119,20 +126,6 @@ class BaseMixin(object):
 
                 yield VisitResult.SkipAll
                 return
-
-            # BugBug if (
-            # BugBug     (parent_scope_flag == ScopeFlag.Root and not parser_info.scope_flags & ScopeFlag.Root)
-            # BugBug     or (parent_scope_flag == ScopeFlag.Class and not parser_info.scope_flags & ScopeFlag.Class)
-            # BugBug     or (parent_scope_flag == ScopeFlag.Function and not parser_info.scope_flags & ScopeFlag.Function)
-            # BugBug ):
-            # BugBug     self._errors.append(
-            # BugBug         UnexpectedStatementError.Create(
-            # BugBug             region=parser_info.regions__.self__,
-            # BugBug         ),
-            # BugBug     )
-            # BugBug
-            # BugBug     yield VisitResult.SkipAll
-            # BugBug     return
 
         try:
             with ExitStack() as exit_stack:

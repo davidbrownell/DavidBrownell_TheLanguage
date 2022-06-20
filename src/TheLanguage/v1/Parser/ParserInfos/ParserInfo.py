@@ -35,6 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .ParserInfoVisitorHelper import ParserInfoVisitorHelper
     from ..TranslationUnitRegion import TranslationUnitRegion
 
 
@@ -53,6 +54,9 @@ class ParserInfoType(Enum):
     Unknown                                 = auto()    # Unknown (this value should only be applied for very low-level phrases (like types))
 
     # Compile-Time Flags
+    CompileTimeTemporary                    = auto()    # Indicates that the ParserInfo is applicable at compile-time, but it isn't clear if this means Configuration or TypeCustomization.
+                                                        #     Parent types should override this value when additional context is understood.
+
     Configuration                           = auto()    # Can be used in the specification of basic compile-time types
     TypeCustomization                       = auto()    # Can be used in the evaluation of compile-time constraints
 
@@ -204,6 +208,28 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     def Disable(self) -> None:
         assert self.is_disabled__ is False
         object.__setattr__(self, "_disabled", True)
+
+    # ----------------------------------------------------------------------
+    def OverrideParserInfoType(
+        self,
+        new_parser_info_type: ParserInfoType,
+    ) -> None:
+        # ----------------------------------------------------------------------
+        class Visitor(ParserInfoVisitorHelper):
+            # ----------------------------------------------------------------------
+            @staticmethod
+            @contextmanager
+            def OnPhrase(
+                parser_info: ParserInfo,
+            ):
+                if parser_info.parser_info_type__ == ParserInfoType.CompileTimeTemporary:
+                    object.__setattr__(parser_info, "_parser_info_type", new_parser_info_type)
+
+                yield
+
+        # ----------------------------------------------------------------------
+
+        self.Accept(Visitor())
 
     # ----------------------------------------------------------------------
     def Accept(

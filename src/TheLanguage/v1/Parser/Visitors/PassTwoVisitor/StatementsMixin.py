@@ -18,6 +18,7 @@
 import os
 
 from contextlib import contextmanager, ExitStack
+from typing import Optional
 
 import CommonEnvironment
 
@@ -61,11 +62,9 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: ClassStatementParserInfo,
     ):
-        if parser_info.templates:
-            yield VisitResult.SkipAll
-            return
-
         yield
+
+        # BugBug: Validate here
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -75,15 +74,9 @@ class StatementsMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnFuncDefinitionStatementParserInfo(
-        self,
-        parser_info: FuncDefinitionStatementParserInfo,
-    ):
-        if parser_info.templates:
-            yield VisitResult.SkipAll
-            return
-
+    def OnFuncDefinitionStatementParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
@@ -98,10 +91,15 @@ class StatementsMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnIfStatementParserInfo(*args, **kwargs):
-        # BugBug: Do this
+    def OnIfStatementParserInfo(
+        self,
+        parser_info: IfStatementParserInfo,
+    ):
+        # BugBug if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
+        # BugBug     # We shouldn't get here, as we have skipped all templated statements in BaseMixin.
+        # BugBug     raise Exception("Internal compiler error")
+
         yield
 
     # ----------------------------------------------------------------------
@@ -161,13 +159,7 @@ class StatementsMixin(BaseMixin):
             yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTypeAliasStatementParserInfo(
-        self,
-        parser_info: TypeAliasStatementParserInfo,
-    ):
-        if parser_info.templates:
-            yield VisitResult.SkipAll
-            return
-
+    def OnTypeAliasStatementParserInfo(*args, **kwargs):
         yield

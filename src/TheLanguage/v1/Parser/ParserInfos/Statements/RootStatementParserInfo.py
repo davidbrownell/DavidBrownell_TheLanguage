@@ -33,7 +33,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
-        ParserInfo,
         ParserInfoType,
         ScopeFlag,
         StatementParserInfo,
@@ -52,7 +51,6 @@ class RootStatementParserInfo(
     StatementParserInfo,
 ):
     # ----------------------------------------------------------------------
-    statements: Optional[List[StatementParserInfo]]
     documentation: Optional[str]
 
     # ----------------------------------------------------------------------
@@ -61,6 +59,7 @@ class RootStatementParserInfo(
         cls,
         regions: List[Optional[TranslationUnitRegion]],
         name: str,
+        statements: List[StatementParserInfo],
         *args,
         **kwargs,
     ):
@@ -73,6 +72,7 @@ class RootStatementParserInfo(
             regions,                        # type: ignore
             name,
             VisibilityModifier.public,      # type: ignore
+            statements,
             *args,
             **kwargs,
         )
@@ -86,18 +86,11 @@ class RootStatementParserInfo(
         *args,
         **kwargs,
     ):
-        self._InitTraits(
-            allow_duplicate_names=False,
-            allow_name_to_be_duplicated=False,
-            name_is_ordered=False,
-        )
-
-        NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
-
         StatementParserInfo.__post_init__(
             self,
             parser_info_type,
             regions,
+            validate=False,
             regionless_attributes=NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
             *args,
             **{
@@ -106,6 +99,16 @@ class RootStatementParserInfo(
             },
         )
 
+        self._InitTraits(
+            allow_duplicate_names=False,
+            allow_name_to_be_duplicated=False,
+            name_is_ordered=False,
+        )
+
+        NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
+
+        self.ValidateRegions()
+
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
@@ -113,11 +116,3 @@ class RootStatementParserInfo(
         return {
             ParserInfoType.Standard: ScopeFlag.Root,
         }
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptChildren(self) -> Generator[ParserInfo, None, None]:
-        if self.statements:
-            yield from self.statements

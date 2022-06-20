@@ -155,9 +155,10 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = ClassStatementParserInfo.Create(
-                    regions=[{self_region}, {visibility_region}, {class_modifier_region}, {name_region}, {documentation_region}, {extends_region}, {implements_region}, {uses_region}, {statements_region}, {constructor_visibility_region}, {is_abstract_region}, {is_final_region}],
+                    regions=[{self_region}, {visibility_region}, {statements_region}, {class_modifier_region}, {name_region}, {documentation_region}, {extends_region}, {implements_region}, {uses_region}, {constructor_visibility_region}, {is_abstract_region}, {is_final_region}],
                     name={name},
                     visibility_param={visibility},
+                    statements={statements},
                     templates_param={templates},
                     parent_class_capabilities={parent_class_capabilities},
                     class_capabilities={class_capabilities},
@@ -167,7 +168,6 @@ class StatementsMixin(BaseMixin):
                     extends={extends},
                     implements={implements},
                     uses={uses},
-                    statements={statements},
                     constructor_visibility_param={constructor_visibility},
                     is_abstract={is_abstract},
                     is_final={is_final},
@@ -293,9 +293,10 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = FuncDefinitionStatementParserInfo.Create(
-                    regions=[{self_region}, {name_region}, {visibility_region}, {parameters_region}, {mutability_region}, {method_modifier_region}, {documentation_region}, {captured_variables_region}, {statements_region}, {is_deferred_region}, {is_exceptional_region}, {is_generator_region}, {is_reentrant_region}, {is_scoped_region}, {is_static_region}],
+                    regions=[{self_region}, {name_region}, {visibility_region}, {statements_region}, {parameters_region}, {mutability_region}, {method_modifier_region}, {documentation_region}, {captured_variables_region}, {is_deferred_region}, {is_exceptional_region}, {is_generator_region}, {is_reentrant_region}, {is_scoped_region}, {is_static_region}],
                     name={name},
                     visibility_param={visibility},
+                    statements={statements},
                     templates_param={templates},
                     parent_class_capabilities={parent_class_capabilities},
                     parameters={parameters},
@@ -304,7 +305,6 @@ class StatementsMixin(BaseMixin):
                     return_type={return_type},
                     documentation={documentation},
                     captured_variables={captured_variables},
-                    statements={statements},
                     is_deferred={is_deferred},
                     is_exceptional={is_exceptional},
                     is_generator={is_generator},
@@ -423,9 +423,9 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = IfStatementClauseParserInfo.Create(
+                    statements={statements},
                     regions=[{self_region}, {statements_region}, {documentation_region}],
                     expression={expression},
-                    statements={statements},
                     documentation={documentation},
                 )
 
@@ -455,8 +455,8 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = IfStatementElseClauseParserInfo.Create(
-                    regions=[{self_region}, {statements_region}, {documentation_region}],
                     statements={statements},
+                    regions=[{self_region}, {statements_region}, {documentation_region}],
                     documentation={documentation},
                 )
 
