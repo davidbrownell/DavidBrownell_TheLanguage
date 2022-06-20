@@ -19,7 +19,7 @@ from .Str import Str
 
 # ----------------------------------------------------------------------
 public mutable concept FixedSizeMutableStr {
-    Bool! allow_empty! = False
+    Bool! allow_empty! = False!
 }
     extends Str { allow_empty! = allow_empty! }
 :
@@ -33,13 +33,6 @@ public mutable concept FixedSizeMutableStr {
 
     # TODO: Range concept for __Iter?__
 
-    public None ToLowerInplace?() var
-    public None ToCamelCaseInplace?() var
-    public None ToPascalCaseInplace?() var
-    public None ToSnakeCaseInplace?() var
-    public None ToTitleInplace?() var
-    public None ToUpperInplace?() var
-
     # TODO: Pass in variadic chars to strip
     public None LeftStripInplace?() var
     public None RightStripInplace?() var
@@ -48,7 +41,7 @@ public mutable concept FixedSizeMutableStr {
 
 # ----------------------------------------------------------------------
 public mutable concept MutableStr {
-    Bool! allow_empty! = False
+    Bool! allow_empty! = False!
 }
     extends FixedSizeMutableStr { allow_empty! = allow_empty! }
 :
@@ -56,6 +49,13 @@ public mutable concept MutableStr {
     Contains functionality that may increase the number of chars as a result
     of the operation.
     >>>
+
+    public None ToLowerInplace?() var
+    public None ToCamelCaseInplace?() var
+    public None ToPascalCaseInplace?() var
+    public None ToSnakeCaseInplace?() var
+    public None ToTitleInplace?() var
+    public None ToUpperInplace?() var
 
     public None CenterInplace?(
         NonZeroInt immutable length,

@@ -101,7 +101,7 @@ class ConstraintParameterParserInfo(ParserInfo):
         try:
             self.type.InitializeAsType(self.parser_info_type__)
 
-            if not ParserInfoType.IsConfiguration(self.type.parser_info_type__):
+            if not ParserInfoType.IsCompileTime(self.type.parser_info_type__):
                 errors.append(
                     InvalidConstraintTypeError.Create(
                         region=self.type.regions__.self__,

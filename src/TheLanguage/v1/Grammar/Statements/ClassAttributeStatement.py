@@ -64,7 +64,7 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 InvalidClassAttributeError                  = CreateError(
-    "'Attributes may only be used in class-like types"
+    "Attributes may only be used in class-like types",
 )
 
 

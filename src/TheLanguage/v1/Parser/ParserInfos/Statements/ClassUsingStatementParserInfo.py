@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassAttributeStatementParserInfo.py
+# |  ClassUsingStatementParserInfo.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-11 11:53:57
+# |      2022-06-20 09:35:26
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ClassAttributeStatementParserInfo object"""
+"""Contains the ClasSUsingStatementParserInfo object"""
 
 import os
 
@@ -36,15 +36,22 @@ with InitRelativeImports():
 
     from ..Common.VisibilityModifier import VisibilityModifier
 
-    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo, OperatorType as BinaryExpressionOperatorType
+    from ..Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
-    from ...Error import Error, ErrorException
+    from ...Error import CreateError, Error, ErrorException
+
+
+# ----------------------------------------------------------------------
+InvalidUsingExpressionError                 = CreateError(
+    "Invalid 'using' expression",
+)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassAttributeStatementParserInfo(StatementParserInfo):
-    """Attribute of a class"""
+class ClassUsingStatementParserInfo(StatementParserInfo):
+    """Exposes statements from a base class within the scope of the current class"""
 
     # ----------------------------------------------------------------------
     class_capabilities: ClassCapabilities
@@ -52,18 +59,7 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
     visibility_param: InitVar[Optional[VisibilityModifier]]
     visibility: VisibilityModifier          = field(init=False)
 
-    type: ExpressionParserInfo
-
-    name: str
-    documentation: Optional[str]
-
-    initialized_value: Optional[ExpressionParserInfo]
-
-    keyword_initialization: Optional[bool]
-    no_initialization: Optional[bool]
-    no_serialize: Optional[bool]
-    no_compare: Optional[bool]
-    is_override: Optional[bool]
+    type: BinaryExpressionParserInfo
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -75,21 +71,20 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
     ):
         return cls(
             ScopeFlag.Class,
-            ParserInfoType.Standard,        # type: ignore
-            regions,                        # type: ignore
+            ParserInfoType.TypeCustomization,           # type: ignore
+            regions,                                    # type: ignore
             *args,
             **kwargs,
         )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, parser_info_type, regions, visibility_param):
-        super(ClassAttributeStatementParserInfo, self).__post_init__(
+        super(ClassUsingStatementParserInfo, self).__post_init__(
             parser_info_type,
             regions,
             regionless_attributes=[
                 "class_capabilities",
                 "type",
-                "initialized_value",
             ],
             validate=False,
             **{
@@ -98,8 +93,8 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
         )
 
         # Set defaults
-        if visibility_param is None and self.class_capabilities.default_attribute_visibility is not None:
-            visibility_param = self.class_capabilities.default_attribute_visibility
+        if visibility_param is None and self.class_capabilities.default_using_visibility is not None:
+            visibility_param = self.class_capabilities.default_using_visibility
             object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
         object.__setattr__(self, "visibility", visibility_param)
@@ -107,24 +102,21 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
         self.ValidateRegions()
 
         # Validate
+        self.class_capabilities.ValidateUsingStatementCapabilities(self)
+
         errors: List[Error] = []
 
-        for func in [
-            lambda: self.class_capabilities.ValidateClassAttributeStatementCapabilities(self),
-            lambda: self.type.InitializeAsType(self.parser_info_type__),
-            self.initialized_value.InitializeAsExpression if self.initialized_value is not None else lambda: None,
-        ]:
-            try:
-                func()
-            except ErrorException as ex:
-                errors += ex.errors
+        if (
+            not isinstance(self.type, BinaryExpressionParserInfo)
+            or self.type.operator != BinaryExpressionOperatorType.Access
+            or not isinstance(self.type.left_expression, FuncOrTypeExpressionParserInfo)
+            or not isinstance(self.type.right_expression, FuncOrTypeExpressionParserInfo)
+        ):
+            errors.append(
+                InvalidUsingExpressionError.Create(
+                    region=self.type.regions__.self__,
+                ),
+            )
 
         if errors:
             raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _TYPE_ATTRIBUTE_NAME                    = "_type"

@@ -88,10 +88,6 @@ class ExpressionParserInfo(ParserInfo):
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
-    # Set during
-    _in_template: Optional[None]            = field(init=False, default=None)
-    _resolved_type: Optional[ResolvedType]  = field(init=False, default=None)
-
     # ----------------------------------------------------------------------
     # |
     # |  Public Methods
@@ -119,11 +115,7 @@ class ExpressionParserInfo(ParserInfo):
             regions,
             regionless_attributes,
             validate,
-            **{
-                "has_resolved_type__": None,
-                "resolved_type__": lambda value: value.__class__.__name__,
-                **custom_display_funcs,
-            },
+            **custom_display_funcs,
         )
 
     # ----------------------------------------------------------------------
@@ -167,38 +159,6 @@ class ExpressionParserInfo(ParserInfo):
 
         if is_type_result is False:
             self._InitializeAsExpressionImpl()
-
-    # ----------------------------------------------------------------------
-    def InitInTemplate(
-        self,
-        in_template: bool,
-    ) -> None:
-        assert self._in_template is None
-        object.__setattr__(self, "_in_template", in_template)
-
-    # ----------------------------------------------------------------------
-    @property
-    def in_template__(self) -> bool:
-        assert self._in_template is not None
-        return self._in_template
-
-    # ----------------------------------------------------------------------
-    def InitResolvedType(
-        self,
-        resolved_type: ResolvedType,
-    ) -> None:
-        assert self._resolved_type is None
-        object.__setattr__(self, "_resolved_type", resolved_type)
-
-    # ----------------------------------------------------------------------
-    @property
-    def has_resolved_type__(self) -> bool:
-        return self._resolved_type is not None
-
-    @property
-    def resolved_type__(self) -> "ExpressionParserInfo.ResolvedType":
-        assert self._resolved_type is not None
-        return self._resolved_type
 
     # ----------------------------------------------------------------------
     # |

@@ -27,6 +27,7 @@ from typing import (
     Optional,
     Set,
     Type as TypingType,
+    TypeVar as TypingTypeVar,
     Union,
 )
 
@@ -168,65 +169,75 @@ del _AugmentErrorExpressionArguments
 # ----------------------------------------------------------------------
 def EvalExpression(
     expression_or_parser_info: Union[MiniLanguageExpression, ExpressionParserInfo],
-    compile_time_infos_items: List[Dict[str, CompileTimeInfo]],
+    compile_time_info_items: List[Dict[str, CompileTimeInfo]],
 ) -> MiniLanguageExpression.EvalResult:
+    return _EvalExpression(
+        expression_or_parser_info,
+        _CreateLazyValuesDict(compile_time_info_items),
+        _CreateLazyTypesDict(compile_time_info_items),
+    )
+
+
+# ----------------------------------------------------------------------
+def EvalType(
+    expression_or_parser_info: ExpressionParserInfo,
+    compile_time_info_items: List[Dict[str, CompileTimeInfo]],
+) -> MiniLanguageType:
+    return _EvalType(
+        expression_or_parser_info,
+        _CreateLazyValuesDict(compile_time_info_items),
+        _CreateLazyTypesDict(compile_time_info_items),
+    )
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+_LazyDictValueT                             = TypingTypeVar("_LazyDictValueT")
+
+def _CreateLazyDictImpl(
+    compile_time_info_items: List[Dict[str, CompileTimeInfo]],
+    get_value_func: Callable[[CompileTimeInfo], _LazyDictValueT],
+) -> Callable[[], Dict[str, _LazyDictValueT]]:
     # We are splitting the values here rather than taking the types and values as input parameters,
     # as evaluating the expression may alter the types dictionary; we don't want those changes to
     # be visible outside of this method (unless used explicitly be the return value of this method).
 
     # ----------------------------------------------------------------------
-    def CreateDictImpl(
-        get_value_func: Callable[[Any], Any],
-    ):
+    def Impl():
         result = {}
 
-        for compile_time_info_item in compile_time_infos_items:
-            for k, v in compile_time_info_item.items():
-                result[k] = get_value_func(v)
+        for compile_time_info_item in compile_time_info_items:
+            for key, value in compile_time_info_item.items():
+                result[key] = get_value_func(value)
 
         return result
 
     # ----------------------------------------------------------------------
-    def CreateValuesDict() -> Dict[str, Any]:
-        return CreateDictImpl(lambda value: value.value)
 
-    # ----------------------------------------------------------------------
-    def CreateTypesDict() -> Dict[str, MiniLanguageType]:
-        return CreateDictImpl(lambda value: value.type)
-
-    # ----------------------------------------------------------------------
-
-    return _EvalExpression(
-        expression_or_parser_info,
-        LazyContainer(CreateValuesDict),
-        LazyContainer(CreateTypesDict),
-    )
+    return Impl
 
 
 # ----------------------------------------------------------------------
+def _CreateLazyValuesDict(
+    compile_time_info_items: List[Dict[str, CompileTimeInfo]],
+) -> LazyContainer[Dict[str, Any]]:
+    return LazyContainer(_CreateLazyDictImpl(compile_time_info_items, lambda value: value.value))
+
+
 # ----------------------------------------------------------------------
+def _CreateLazyTypesDict(
+    compile_time_info_items: List[Dict[str, CompileTimeInfo]],
+) -> LazyContainer[Dict[str, MiniLanguageType]]:
+    return LazyContainer(_CreateLazyDictImpl(compile_time_info_items, lambda value: value.type))
+
+
 # ----------------------------------------------------------------------
-def _EvalExpression(
-    expression_or_parser_info: Union[MiniLanguageExpression, ExpressionParserInfo],
+def _EvalType(
+    parser_info: ExpressionParserInfo,
     compile_time_values: LazyContainer[Dict[str, Any]],
     compile_time_types: LazyContainer[Dict[str, MiniLanguageType]],
-):
-    if isinstance(expression_or_parser_info, MiniLanguageExpression):
-        expression = expression_or_parser_info
-    elif isinstance(expression_or_parser_info, ExpressionParserInfo):
-        expression = _ToExpression(
-            expression_or_parser_info,
-            compile_time_values.Clone(),
-            compile_time_types.Clone(),
-            set(),
-        )
-    else:
-        assert False, expression_or_parser_info  # pragma: no cover
-
-    return expression.Eval(
-        compile_time_values.Clone(),        # type: ignore
-        compile_time_types.Clone(),         # type: ignore
-    )
+) -> MiniLanguageType:
+    return _ToType(parser_info, compile_time_values, compile_time_types)
 
 
 # ----------------------------------------------------------------------
@@ -235,8 +246,6 @@ def _ToType(
     compile_time_values: LazyContainer[Dict[str, Any]],
     compile_time_types: LazyContainer[Dict[str, MiniLanguageType]],
 ) -> MiniLanguageType:
-    assert ParserInfoType.IsCompileTime(parser_info.parser_info_type__), parser_info.parser_info_type__
-
     if isinstance(parser_info, FuncOrTypeExpressionParserInfo):
         if parser_info.IsType():
             if isinstance(parser_info.value, str):
@@ -292,6 +301,30 @@ def _ToType(
         InvalidParserInfoMiniLanguageTypeError.Create(
             region=parser_info.regions__.self__,
         ),
+    )
+
+
+# ----------------------------------------------------------------------
+def _EvalExpression(
+    expression_or_parser_info: Union[MiniLanguageExpression, ExpressionParserInfo],
+    compile_time_values: LazyContainer[Dict[str, Any]],
+    compile_time_types: LazyContainer[Dict[str, MiniLanguageType]],
+) -> Any:
+    if isinstance(expression_or_parser_info, MiniLanguageExpression):
+        expression = expression_or_parser_info
+    elif isinstance(expression_or_parser_info, ExpressionParserInfo):
+        expression = _ToExpression(
+            expression_or_parser_info,
+            compile_time_values.Clone(),
+            compile_time_types.Clone(),
+            set(),
+        )
+    else:
+        assert False, expression_or_parser_info  # pragma: no cover
+
+    return expression.Eval(
+        compile_time_values.Clone(),        # type: ignore
+        compile_time_types.Clone(),         # type: ignore
     )
 
 

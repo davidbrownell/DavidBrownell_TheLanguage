@@ -124,8 +124,21 @@ class LiteralExpression(GrammarPhrase):
 
                 # None
                 PhraseItem(
-                    name="None",
-                    item="None",
+                    RegexToken(
+                        "None",
+                        re.compile(
+                            textwrap.dedent(
+                                r"""(?#
+                                One of                      )(?:(?#
+                                    None [Configuration]    )__None!(?#
+                                    None [Type Cust]        )|None!(?#
+                                    None                    )|None(?#
+                                End                         ))(?#
+                                While match only            )(?![A-Za-z0-9_!])(?#
+                                )""",
+                            ),
+                        ),
+                    ),
                 ),
 
                 # <Number>
@@ -193,6 +206,11 @@ class LiteralExpression(GrammarPhrase):
             elif value_info.endswith("!"):
                 parser_info_type = ParserInfoType.TypeCustomization
             else:
+                # Allow maximum flexibility and declare the type as unknown. Doing this means that
+                # the following are valid statement:
+                #
+                #   Bool! value! = True     # <- Not valid if the type is set to Standard, as this is a compile-time-statement
+                #
                 parser_info_type = ParserInfoType.Unknown
 
             return BooleanExpressionParserInfo.Create(
@@ -222,7 +240,25 @@ class LiteralExpression(GrammarPhrase):
             )
 
         elif node.type.name == "None":
-            return NoneExpressionParserInfo.Create(CreateRegions(node))
+            value_node = cast(AST.Leaf, node)
+            value_info = ExtractToken(
+                value_node,
+                return_match_contents=True,
+            )
+
+            if value_info.startswith("__"):
+                parser_info_type = ParserInfoType.Configuration
+            elif value_info.endswith("!"):
+                parser_info_type = ParserInfoType.TypeCustomization
+            else:
+                # Allow maximum flexibility and declare the type as unknown. Doing this means that
+                # the following are valid statement:
+                #
+                #   Bool! value! = True     # <- Not valid if the type is set to Standard, as this is a compile-time-statement
+                #
+                parser_info_type = ParserInfoType.Unknown
+
+            return NoneExpressionParserInfo.Create(parser_info_type, CreateRegions(node))
 
         elif node.type.name == "Number":
             value_node = cast(AST.Leaf, node)

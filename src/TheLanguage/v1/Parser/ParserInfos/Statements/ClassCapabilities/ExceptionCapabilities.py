@@ -103,6 +103,8 @@ ExceptionCapabilities                       = _ClassCapabilities(
     ],
     default_method_mutability=MutabilityModifier.val,
     allow_static_methods=True,
+    valid_using_visibilities=[],
+    default_using_visibility=None,
     valid_attribute_visibilities=[
         VisibilityModifier.public,
     ],

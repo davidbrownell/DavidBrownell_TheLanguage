@@ -34,11 +34,11 @@ from v1.Parser.TranslationUnitRegion import TranslationUnitRegion
 
 # ----------------------------------------------------------------------
 tu_region_000000 = TranslationUnitRegion(begin=Location(line=20, column=5), end=Location(line=20, column=10))
-tu_region_000001 = TranslationUnitRegion(begin=Location(line=20, column=26), end=Location(line=20, column=31))
-tu_region_000002 = TranslationUnitRegion(begin=Location(line=20, column=5), end=Location(line=20, column=31))
+tu_region_000001 = TranslationUnitRegion(begin=Location(line=20, column=26), end=Location(line=20, column=32))
+tu_region_000002 = TranslationUnitRegion(begin=Location(line=20, column=5), end=Location(line=20, column=32))
 tu_region_000003 = TranslationUnitRegion(begin=Location(line=20, column=11), end=Location(line=20, column=23))
 tu_region_000004 = TranslationUnitRegion(begin=Location(line=19, column=30), end=Location(line=21, column=2))
-tu_region_000005 = TranslationUnitRegion(begin=Location(line=20, column=5), end=Location(line=20, column=32))
+tu_region_000005 = TranslationUnitRegion(begin=Location(line=20, column=5), end=Location(line=20, column=33))
 tu_region_000006 = TranslationUnitRegion(begin=Location(line=24, column=66), end=Location(line=24, column=67))
 tu_region_000007 = TranslationUnitRegion(begin=Location(line=24, column=53), end=Location(line=24, column=67))
 tu_region_000008 = TranslationUnitRegion(begin=Location(line=24, column=53), end=Location(line=24, column=63))
@@ -57,11 +57,11 @@ tu_region_000020 = TranslationUnitRegion(begin=Location(line=25, column=47), end
 tu_region_000021 = TranslationUnitRegion(begin=Location(line=25, column=5), end=Location(line=26, column=1))
 tu_region_000022 = TranslationUnitRegion(begin=Location(line=25, column=5), end=Location(line=25, column=11))
 tu_region_000023 = TranslationUnitRegion(begin=Location(line=25, column=12), end=Location(line=25, column=22))
-tu_region_000024 = TranslationUnitRegion(begin=Location(line=26, column=68), end=Location(line=26, column=73))
-tu_region_000025 = TranslationUnitRegion(begin=Location(line=26, column=53), end=Location(line=26, column=73))
+tu_region_000024 = TranslationUnitRegion(begin=Location(line=26, column=68), end=Location(line=26, column=74))
+tu_region_000025 = TranslationUnitRegion(begin=Location(line=26, column=53), end=Location(line=26, column=74))
 tu_region_000026 = TranslationUnitRegion(begin=Location(line=26, column=53), end=Location(line=26, column=65))
-tu_region_000027 = TranslationUnitRegion(begin=Location(line=26, column=51), end=Location(line=26, column=75))
-tu_region_000028 = TranslationUnitRegion(begin=Location(line=26, column=47), end=Location(line=26, column=75))
+tu_region_000027 = TranslationUnitRegion(begin=Location(line=26, column=51), end=Location(line=26, column=76))
+tu_region_000028 = TranslationUnitRegion(begin=Location(line=26, column=47), end=Location(line=26, column=76))
 tu_region_000029 = TranslationUnitRegion(begin=Location(line=26, column=47), end=Location(line=26, column=50))
 tu_region_000030 = TranslationUnitRegion(begin=Location(line=26, column=5), end=Location(line=28, column=1))
 tu_region_000031 = TranslationUnitRegion(begin=Location(line=26, column=5), end=Location(line=26, column=11))
@@ -873,7 +873,7 @@ statement_000000 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000001 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000001],
     value=False,
 )
@@ -963,7 +963,7 @@ statement_000013 = TypeAliasStatementParserInfo.Create(
 )
 
 statement_000014 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000024],
     value=False,
 )
@@ -1690,6 +1690,7 @@ statement_000081 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000082 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000194],
 )
 
@@ -1755,6 +1756,7 @@ statement_000088 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000089 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000208],
 )
 
@@ -2730,6 +2732,7 @@ statement_000169 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000170 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000448],
 )
 
@@ -2767,6 +2770,7 @@ statement_000174 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000175 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000457],
 )
 
@@ -2777,6 +2781,7 @@ statement_000176 = VariantExpressionParserInfo.Create(
 )
 
 statement_000177 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000460],
 )
 
@@ -2799,6 +2804,7 @@ statement_000179 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000180 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000464],
 )
 
@@ -2809,6 +2815,7 @@ statement_000181 = VariantExpressionParserInfo.Create(
 )
 
 statement_000182 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000467],
 )
 
@@ -2859,6 +2866,7 @@ statement_000186 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000187 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000477],
 )
 
@@ -2896,6 +2904,7 @@ statement_000191 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000192 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000486],
 )
 
@@ -2906,6 +2915,7 @@ statement_000193 = VariantExpressionParserInfo.Create(
 )
 
 statement_000194 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000489],
 )
 
@@ -2928,6 +2938,7 @@ statement_000196 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000197 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000493],
 )
 
@@ -2938,6 +2949,7 @@ statement_000198 = VariantExpressionParserInfo.Create(
 )
 
 statement_000199 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000496],
 )
 
@@ -2988,6 +3000,7 @@ statement_000203 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000204 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000506],
 )
 
@@ -3025,6 +3038,7 @@ statement_000208 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000209 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000515],
 )
 
@@ -3035,6 +3049,7 @@ statement_000210 = VariantExpressionParserInfo.Create(
 )
 
 statement_000211 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000518],
 )
 
@@ -3085,6 +3100,7 @@ statement_000215 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000216 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000528],
 )
 
@@ -3122,6 +3138,7 @@ statement_000220 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000221 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000537],
 )
 
@@ -3132,6 +3149,7 @@ statement_000222 = VariantExpressionParserInfo.Create(
 )
 
 statement_000223 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000540],
 )
 
@@ -3182,6 +3200,7 @@ statement_000227 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000228 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000550],
 )
 
@@ -3219,6 +3238,7 @@ statement_000232 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000233 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000559],
 )
 
@@ -3229,6 +3249,7 @@ statement_000234 = VariantExpressionParserInfo.Create(
 )
 
 statement_000235 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000562],
 )
 
@@ -3279,6 +3300,7 @@ statement_000239 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000240 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000572],
 )
 
@@ -3316,6 +3338,7 @@ statement_000244 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000245 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000581],
 )
 
@@ -3326,6 +3349,7 @@ statement_000246 = VariantExpressionParserInfo.Create(
 )
 
 statement_000247 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000584],
 )
 
@@ -3376,6 +3400,7 @@ statement_000251 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000252 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000594],
 )
 
@@ -3413,6 +3438,7 @@ statement_000256 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000257 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000603],
 )
 
@@ -3423,6 +3449,7 @@ statement_000258 = VariantExpressionParserInfo.Create(
 )
 
 statement_000259 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000606],
 )
 
@@ -3473,6 +3500,7 @@ statement_000263 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000264 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000616],
 )
 
@@ -3510,6 +3538,7 @@ statement_000268 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000269 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000625],
 )
 
@@ -3520,6 +3549,7 @@ statement_000270 = VariantExpressionParserInfo.Create(
 )
 
 statement_000271 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000628],
 )
 
@@ -4119,6 +4149,7 @@ statement_000322 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000323 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000783],
 )
 
@@ -4129,6 +4160,7 @@ statement_000324 = VariantExpressionParserInfo.Create(
 )
 
 statement_000325 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000786],
 )
 
@@ -4224,6 +4256,7 @@ statement_000334 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000335 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000809],
 )
 
@@ -4234,6 +4267,7 @@ statement_000336 = VariantExpressionParserInfo.Create(
 )
 
 statement_000337 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
     regions=[tu_region_000812],
 )
 

@@ -17,13 +17,13 @@
 
 # ----------------------------------------------------------------------
 public immutable concept Str {
-    Bool! allow_empty! = False,
+    Bool! allow_empty! = False!,
 }:
     # ----------------------------------------------------------------------
     # |  Public Types
     public PosInt                           = Int { min_value! = 0 }
     public NonZeroInt                       = Int { min_value! = 1 }
-    public NonEmptyStr                      = Str { allow_empty! = False }
+    public NonEmptyStr                      = Str { allow_empty! = False! }
 
     # ----------------------------------------------------------------------
     # |  Public Methods

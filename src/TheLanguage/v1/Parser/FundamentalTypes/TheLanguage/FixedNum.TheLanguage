@@ -24,8 +24,8 @@ public mutable class FixedNum <TEMPLATE
         Bool! is_checked!,
 TEMPLATE> {
     key:
-        (Num! | None!) min_value! = None,
-        (Num! | None!) max_value! = None,
+        (Num! | None!) min_value! = None!,
+        (Num! | None!) max_value! = None!,
 }
     implements MutableNum { min_value!, max_value! }
 :
@@ -82,62 +82,62 @@ TEMPLATE> {
 
 # ----------------------------------------------------------------------
 public Num16 {
-    (Num! | None!) min_value! = None,
-    (Num! | None!) max_value! = None,
-}                                           = FixedNum {2, is_checked! = False, min_value! = min_value!, max_value! = max_value!}
+    (Num! | None!) min_value! = None!,
+    (Num! | None!) max_value! = None!,
+}                                           = FixedNum {2, is_checked! = False!, min_value! = min_value!, max_value! = max_value!}
 
 public CheckedNum16 {
-    (Num! | None!) min_value! = None,
-    (Num! | None!) max_value! = None,
-}                                           = FixedNum {2, is_checked! = True, min_value! = min_value!, max_value! = max_value!}
+    (Num! | None!) min_value! = None!,
+    (Num! | None!) max_value! = None!,
+}                                           = FixedNum {2, is_checked! = True!, min_value! = min_value!, max_value! = max_value!}
 
 
 # ----------------------------------------------------------------------
 public Num32 {
-    (Num! | None!) min_value! = None,
-    (Num! | None!) max_value! = None,
-}                                           = FixedNum {4, is_checked! = False, min_value! = min_value!, max_value! = max_value!}
+    (Num! | None!) min_value! = None!,
+    (Num! | None!) max_value! = None!,
+}                                           = FixedNum {4, is_checked! = False!, min_value! = min_value!, max_value! = max_value!}
 
 public CheckedNum32 {
-    (Num! | None!) min_value! = None,
-    (Num! | None!) max_value! = None,
-}                                           = FixedNum {4, is_checked! = True, min_value! = min_value!, max_value! = max_value!}
+    (Num! | None!) min_value! = None!,
+    (Num! | None!) max_value! = None!,
+}                                           = FixedNum {4, is_checked! = True!, min_value! = min_value!, max_value! = max_value!}
 
 
 # ----------------------------------------------------------------------
 public Num64 {
-    (Num! | None!) min_value! = None,
-    (Num! | None!) max_value! = None,
-}                                           = FixedNum {8, is_checked! = False, min_value! = min_value!, max_value! = max_value!}
+    (Num! | None!) min_value! = None!,
+    (Num! | None!) max_value! = None!,
+}                                           = FixedNum {8, is_checked! = False!, min_value! = min_value!, max_value! = max_value!}
 
 public CheckedNum64 {
-    (Num! | None!) min_value! = None,
-    (Num! | None!) max_value! = None,
-}                                           = FixedNum {8, is_checked! = True, min_value! = min_value!, max_value! = max_value!}
+    (Num! | None!) min_value! = None!,
+    (Num! | None!) max_value! = None!,
+}                                           = FixedNum {8, is_checked! = True!, min_value! = min_value!, max_value! = max_value!}
 
 
 # ----------------------------------------------------------------------
 public Num128 {
-    (Num! | None!) min_value! = None,
-    (Num! | None!) max_value! = None,
-}                                           = FixedNum {16, is_checked! = False, min_value! = min_value!, max_value! = max_value!}
+    (Num! | None!) min_value! = None!,
+    (Num! | None!) max_value! = None!,
+}                                           = FixedNum {16, is_checked! = False!, min_value! = min_value!, max_value! = max_value!}
 
 public CheckedNum128 {
-    (Num! | None!) min_value! = None,
-    (Num! | None!) max_value! = None,
-}                                           = FixedNum {16, is_checked! = True, min_value! = min_value!, max_value! = max_value!}
+    (Num! | None!) min_value! = None!,
+    (Num! | None!) max_value! = None!,
+}                                           = FixedNum {16, is_checked! = True!, min_value! = min_value!, max_value! = max_value!}
 
 
 # ----------------------------------------------------------------------
 public Num256 {
-    (Num! | None!) min_value! = None,
-    (Num! | None!) max_value! = None,
-}                                           = FixedNum {32, is_checked! = False, min_value! = min_value!, max_value! = max_value!}
+    (Num! | None!) min_value! = None!,
+    (Num! | None!) max_value! = None!,
+}                                           = FixedNum {32, is_checked! = False!, min_value! = min_value!, max_value! = max_value!}
 
 public CheckedNum256 {
-    (Num! | None!) min_value! = None,
-    (Num! | None!) max_value! = None,
-}                                           = FixedNum {32, is_checked! = True, min_value! = min_value!, max_value! = max_value!}
+    (Num! | None!) min_value! = None!,
+    (Num! | None!) max_value! = None!,
+}                                           = FixedNum {32, is_checked! = True!, min_value! = min_value!, max_value! = max_value!}
 
 
 # ----------------------------------------------------------------------

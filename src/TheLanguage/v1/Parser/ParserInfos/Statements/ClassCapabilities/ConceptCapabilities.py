@@ -94,6 +94,12 @@ ConceptCapabilities                         = _ClassCapabilities(
     ],
     default_method_mutability=None,
     allow_static_methods=True,
+    valid_using_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.protected,
+        VisibilityModifier.private,
+    ],
+    default_using_visibility=VisibilityModifier.private,
     valid_attribute_visibilities=[],
     default_attribute_visibility=None,
     valid_attribute_mutabilities=[],

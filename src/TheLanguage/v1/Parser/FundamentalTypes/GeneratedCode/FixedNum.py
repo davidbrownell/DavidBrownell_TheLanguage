@@ -8,7 +8,6 @@ from v1.Parser.MiniLanguage.Expressions.EnforceExpression import EnforceExpressi
 from v1.Parser.MiniLanguage.Expressions.ErrorExpression import ErrorExpression
 from v1.Parser.MiniLanguage.Types.BooleanType import BooleanType
 from v1.Parser.MiniLanguage.Types.IntegerType import IntegerType
-from v1.Parser.MiniLanguage.Types.NoneType import NoneType
 from v1.Parser.MiniLanguage.Types.NumberType import NumberType
 from v1.Parser.ParserInfos.AggregateParserInfo import AggregateParserInfo
 from v1.Parser.ParserInfos.Common.ClassModifier import ClassModifier
@@ -67,17 +66,17 @@ tu_region_000011 = TranslationUnitRegion(begin=Location(line=22, column=25), end
 tu_region_000012 = TranslationUnitRegion(begin=Location(line=27, column=10), end=Location(line=27, column=14))
 tu_region_000013 = TranslationUnitRegion(begin=Location(line=27, column=17), end=Location(line=27, column=22))
 tu_region_000014 = TranslationUnitRegion(begin=Location(line=27, column=9), end=Location(line=27, column=23))
-tu_region_000015 = TranslationUnitRegion(begin=Location(line=27, column=37), end=Location(line=27, column=41))
-tu_region_000016 = TranslationUnitRegion(begin=Location(line=27, column=9), end=Location(line=27, column=41))
+tu_region_000015 = TranslationUnitRegion(begin=Location(line=27, column=37), end=Location(line=27, column=42))
+tu_region_000016 = TranslationUnitRegion(begin=Location(line=27, column=9), end=Location(line=27, column=42))
 tu_region_000017 = TranslationUnitRegion(begin=Location(line=27, column=24), end=Location(line=27, column=34))
 tu_region_000018 = TranslationUnitRegion(begin=Location(line=28, column=10), end=Location(line=28, column=14))
 tu_region_000019 = TranslationUnitRegion(begin=Location(line=28, column=17), end=Location(line=28, column=22))
 tu_region_000020 = TranslationUnitRegion(begin=Location(line=28, column=9), end=Location(line=28, column=23))
-tu_region_000021 = TranslationUnitRegion(begin=Location(line=28, column=37), end=Location(line=28, column=41))
-tu_region_000022 = TranslationUnitRegion(begin=Location(line=28, column=9), end=Location(line=28, column=41))
+tu_region_000021 = TranslationUnitRegion(begin=Location(line=28, column=37), end=Location(line=28, column=42))
+tu_region_000022 = TranslationUnitRegion(begin=Location(line=28, column=9), end=Location(line=28, column=42))
 tu_region_000023 = TranslationUnitRegion(begin=Location(line=28, column=24), end=Location(line=28, column=34))
 tu_region_000024 = TranslationUnitRegion(begin=Location(line=25, column=11), end=Location(line=29, column=2))
-tu_region_000025 = TranslationUnitRegion(begin=Location(line=26, column=5), end=Location(line=28, column=42))
+tu_region_000025 = TranslationUnitRegion(begin=Location(line=26, column=5), end=Location(line=28, column=43))
 tu_region_000026 = TranslationUnitRegion(begin=Location(line=30, column=29), end=Location(line=30, column=39))
 tu_region_000027 = TranslationUnitRegion(begin=Location(line=30, column=41), end=Location(line=30, column=51))
 tu_region_000028 = TranslationUnitRegion(begin=Location(line=30, column=27), end=Location(line=30, column=53))
@@ -493,302 +492,302 @@ tu_region_000437 = TranslationUnitRegion(begin=Location(line=20, column=8), end=
 tu_region_000438 = TranslationUnitRegion(begin=Location(line=20, column=22), end=Location(line=20, column=30))
 tu_region_000439 = TranslationUnitRegion(begin=Location(line=31, column=1), end=Location(line=84, column=1))
 tu_region_000440 = TranslationUnitRegion(begin=Location(line=87, column=57), end=Location(line=87, column=58))
-tu_region_000441 = TranslationUnitRegion(begin=Location(line=87, column=74), end=Location(line=87, column=79))
-tu_region_000442 = TranslationUnitRegion(begin=Location(line=87, column=60), end=Location(line=87, column=79))
+tu_region_000441 = TranslationUnitRegion(begin=Location(line=87, column=74), end=Location(line=87, column=80))
+tu_region_000442 = TranslationUnitRegion(begin=Location(line=87, column=60), end=Location(line=87, column=80))
 tu_region_000443 = TranslationUnitRegion(begin=Location(line=87, column=60), end=Location(line=87, column=71))
-tu_region_000444 = TranslationUnitRegion(begin=Location(line=87, column=94), end=Location(line=87, column=104))
-tu_region_000445 = TranslationUnitRegion(begin=Location(line=87, column=81), end=Location(line=87, column=104))
-tu_region_000446 = TranslationUnitRegion(begin=Location(line=87, column=81), end=Location(line=87, column=91))
-tu_region_000447 = TranslationUnitRegion(begin=Location(line=87, column=119), end=Location(line=87, column=129))
-tu_region_000448 = TranslationUnitRegion(begin=Location(line=87, column=106), end=Location(line=87, column=129))
-tu_region_000449 = TranslationUnitRegion(begin=Location(line=87, column=106), end=Location(line=87, column=116))
-tu_region_000450 = TranslationUnitRegion(begin=Location(line=87, column=56), end=Location(line=87, column=130))
-tu_region_000451 = TranslationUnitRegion(begin=Location(line=87, column=47), end=Location(line=87, column=130))
+tu_region_000444 = TranslationUnitRegion(begin=Location(line=87, column=95), end=Location(line=87, column=105))
+tu_region_000445 = TranslationUnitRegion(begin=Location(line=87, column=82), end=Location(line=87, column=105))
+tu_region_000446 = TranslationUnitRegion(begin=Location(line=87, column=82), end=Location(line=87, column=92))
+tu_region_000447 = TranslationUnitRegion(begin=Location(line=87, column=120), end=Location(line=87, column=130))
+tu_region_000448 = TranslationUnitRegion(begin=Location(line=87, column=107), end=Location(line=87, column=130))
+tu_region_000449 = TranslationUnitRegion(begin=Location(line=87, column=107), end=Location(line=87, column=117))
+tu_region_000450 = TranslationUnitRegion(begin=Location(line=87, column=56), end=Location(line=87, column=131))
+tu_region_000451 = TranslationUnitRegion(begin=Location(line=87, column=47), end=Location(line=87, column=131))
 tu_region_000452 = TranslationUnitRegion(begin=Location(line=87, column=47), end=Location(line=87, column=55))
 tu_region_000453 = TranslationUnitRegion(begin=Location(line=85, column=6), end=Location(line=85, column=10))
 tu_region_000454 = TranslationUnitRegion(begin=Location(line=85, column=13), end=Location(line=85, column=18))
 tu_region_000455 = TranslationUnitRegion(begin=Location(line=85, column=5), end=Location(line=85, column=19))
-tu_region_000456 = TranslationUnitRegion(begin=Location(line=85, column=33), end=Location(line=85, column=37))
-tu_region_000457 = TranslationUnitRegion(begin=Location(line=85, column=5), end=Location(line=85, column=37))
+tu_region_000456 = TranslationUnitRegion(begin=Location(line=85, column=33), end=Location(line=85, column=38))
+tu_region_000457 = TranslationUnitRegion(begin=Location(line=85, column=5), end=Location(line=85, column=38))
 tu_region_000458 = TranslationUnitRegion(begin=Location(line=85, column=20), end=Location(line=85, column=30))
 tu_region_000459 = TranslationUnitRegion(begin=Location(line=86, column=6), end=Location(line=86, column=10))
 tu_region_000460 = TranslationUnitRegion(begin=Location(line=86, column=13), end=Location(line=86, column=18))
 tu_region_000461 = TranslationUnitRegion(begin=Location(line=86, column=5), end=Location(line=86, column=19))
-tu_region_000462 = TranslationUnitRegion(begin=Location(line=86, column=33), end=Location(line=86, column=37))
-tu_region_000463 = TranslationUnitRegion(begin=Location(line=86, column=5), end=Location(line=86, column=37))
+tu_region_000462 = TranslationUnitRegion(begin=Location(line=86, column=33), end=Location(line=86, column=38))
+tu_region_000463 = TranslationUnitRegion(begin=Location(line=86, column=5), end=Location(line=86, column=38))
 tu_region_000464 = TranslationUnitRegion(begin=Location(line=86, column=20), end=Location(line=86, column=30))
 tu_region_000465 = TranslationUnitRegion(begin=Location(line=84, column=14), end=Location(line=87, column=2))
-tu_region_000466 = TranslationUnitRegion(begin=Location(line=85, column=5), end=Location(line=86, column=38))
+tu_region_000466 = TranslationUnitRegion(begin=Location(line=85, column=5), end=Location(line=86, column=39))
 tu_region_000467 = TranslationUnitRegion(begin=Location(line=84, column=1), end=Location(line=89, column=1))
 tu_region_000468 = TranslationUnitRegion(begin=Location(line=84, column=1), end=Location(line=84, column=7))
 tu_region_000469 = TranslationUnitRegion(begin=Location(line=84, column=8), end=Location(line=84, column=13))
 tu_region_000470 = TranslationUnitRegion(begin=Location(line=92, column=57), end=Location(line=92, column=58))
-tu_region_000471 = TranslationUnitRegion(begin=Location(line=92, column=74), end=Location(line=92, column=78))
-tu_region_000472 = TranslationUnitRegion(begin=Location(line=92, column=60), end=Location(line=92, column=78))
+tu_region_000471 = TranslationUnitRegion(begin=Location(line=92, column=74), end=Location(line=92, column=79))
+tu_region_000472 = TranslationUnitRegion(begin=Location(line=92, column=60), end=Location(line=92, column=79))
 tu_region_000473 = TranslationUnitRegion(begin=Location(line=92, column=60), end=Location(line=92, column=71))
-tu_region_000474 = TranslationUnitRegion(begin=Location(line=92, column=93), end=Location(line=92, column=103))
-tu_region_000475 = TranslationUnitRegion(begin=Location(line=92, column=80), end=Location(line=92, column=103))
-tu_region_000476 = TranslationUnitRegion(begin=Location(line=92, column=80), end=Location(line=92, column=90))
-tu_region_000477 = TranslationUnitRegion(begin=Location(line=92, column=118), end=Location(line=92, column=128))
-tu_region_000478 = TranslationUnitRegion(begin=Location(line=92, column=105), end=Location(line=92, column=128))
-tu_region_000479 = TranslationUnitRegion(begin=Location(line=92, column=105), end=Location(line=92, column=115))
-tu_region_000480 = TranslationUnitRegion(begin=Location(line=92, column=56), end=Location(line=92, column=129))
-tu_region_000481 = TranslationUnitRegion(begin=Location(line=92, column=47), end=Location(line=92, column=129))
+tu_region_000474 = TranslationUnitRegion(begin=Location(line=92, column=94), end=Location(line=92, column=104))
+tu_region_000475 = TranslationUnitRegion(begin=Location(line=92, column=81), end=Location(line=92, column=104))
+tu_region_000476 = TranslationUnitRegion(begin=Location(line=92, column=81), end=Location(line=92, column=91))
+tu_region_000477 = TranslationUnitRegion(begin=Location(line=92, column=119), end=Location(line=92, column=129))
+tu_region_000478 = TranslationUnitRegion(begin=Location(line=92, column=106), end=Location(line=92, column=129))
+tu_region_000479 = TranslationUnitRegion(begin=Location(line=92, column=106), end=Location(line=92, column=116))
+tu_region_000480 = TranslationUnitRegion(begin=Location(line=92, column=56), end=Location(line=92, column=130))
+tu_region_000481 = TranslationUnitRegion(begin=Location(line=92, column=47), end=Location(line=92, column=130))
 tu_region_000482 = TranslationUnitRegion(begin=Location(line=92, column=47), end=Location(line=92, column=55))
 tu_region_000483 = TranslationUnitRegion(begin=Location(line=90, column=6), end=Location(line=90, column=10))
 tu_region_000484 = TranslationUnitRegion(begin=Location(line=90, column=13), end=Location(line=90, column=18))
 tu_region_000485 = TranslationUnitRegion(begin=Location(line=90, column=5), end=Location(line=90, column=19))
-tu_region_000486 = TranslationUnitRegion(begin=Location(line=90, column=33), end=Location(line=90, column=37))
-tu_region_000487 = TranslationUnitRegion(begin=Location(line=90, column=5), end=Location(line=90, column=37))
+tu_region_000486 = TranslationUnitRegion(begin=Location(line=90, column=33), end=Location(line=90, column=38))
+tu_region_000487 = TranslationUnitRegion(begin=Location(line=90, column=5), end=Location(line=90, column=38))
 tu_region_000488 = TranslationUnitRegion(begin=Location(line=90, column=20), end=Location(line=90, column=30))
 tu_region_000489 = TranslationUnitRegion(begin=Location(line=91, column=6), end=Location(line=91, column=10))
 tu_region_000490 = TranslationUnitRegion(begin=Location(line=91, column=13), end=Location(line=91, column=18))
 tu_region_000491 = TranslationUnitRegion(begin=Location(line=91, column=5), end=Location(line=91, column=19))
-tu_region_000492 = TranslationUnitRegion(begin=Location(line=91, column=33), end=Location(line=91, column=37))
-tu_region_000493 = TranslationUnitRegion(begin=Location(line=91, column=5), end=Location(line=91, column=37))
+tu_region_000492 = TranslationUnitRegion(begin=Location(line=91, column=33), end=Location(line=91, column=38))
+tu_region_000493 = TranslationUnitRegion(begin=Location(line=91, column=5), end=Location(line=91, column=38))
 tu_region_000494 = TranslationUnitRegion(begin=Location(line=91, column=20), end=Location(line=91, column=30))
 tu_region_000495 = TranslationUnitRegion(begin=Location(line=89, column=21), end=Location(line=92, column=2))
-tu_region_000496 = TranslationUnitRegion(begin=Location(line=90, column=5), end=Location(line=91, column=38))
+tu_region_000496 = TranslationUnitRegion(begin=Location(line=90, column=5), end=Location(line=91, column=39))
 tu_region_000497 = TranslationUnitRegion(begin=Location(line=89, column=1), end=Location(line=95, column=1))
 tu_region_000498 = TranslationUnitRegion(begin=Location(line=89, column=1), end=Location(line=89, column=7))
 tu_region_000499 = TranslationUnitRegion(begin=Location(line=89, column=8), end=Location(line=89, column=20))
 tu_region_000500 = TranslationUnitRegion(begin=Location(line=99, column=57), end=Location(line=99, column=58))
-tu_region_000501 = TranslationUnitRegion(begin=Location(line=99, column=74), end=Location(line=99, column=79))
-tu_region_000502 = TranslationUnitRegion(begin=Location(line=99, column=60), end=Location(line=99, column=79))
+tu_region_000501 = TranslationUnitRegion(begin=Location(line=99, column=74), end=Location(line=99, column=80))
+tu_region_000502 = TranslationUnitRegion(begin=Location(line=99, column=60), end=Location(line=99, column=80))
 tu_region_000503 = TranslationUnitRegion(begin=Location(line=99, column=60), end=Location(line=99, column=71))
-tu_region_000504 = TranslationUnitRegion(begin=Location(line=99, column=94), end=Location(line=99, column=104))
-tu_region_000505 = TranslationUnitRegion(begin=Location(line=99, column=81), end=Location(line=99, column=104))
-tu_region_000506 = TranslationUnitRegion(begin=Location(line=99, column=81), end=Location(line=99, column=91))
-tu_region_000507 = TranslationUnitRegion(begin=Location(line=99, column=119), end=Location(line=99, column=129))
-tu_region_000508 = TranslationUnitRegion(begin=Location(line=99, column=106), end=Location(line=99, column=129))
-tu_region_000509 = TranslationUnitRegion(begin=Location(line=99, column=106), end=Location(line=99, column=116))
-tu_region_000510 = TranslationUnitRegion(begin=Location(line=99, column=56), end=Location(line=99, column=130))
-tu_region_000511 = TranslationUnitRegion(begin=Location(line=99, column=47), end=Location(line=99, column=130))
+tu_region_000504 = TranslationUnitRegion(begin=Location(line=99, column=95), end=Location(line=99, column=105))
+tu_region_000505 = TranslationUnitRegion(begin=Location(line=99, column=82), end=Location(line=99, column=105))
+tu_region_000506 = TranslationUnitRegion(begin=Location(line=99, column=82), end=Location(line=99, column=92))
+tu_region_000507 = TranslationUnitRegion(begin=Location(line=99, column=120), end=Location(line=99, column=130))
+tu_region_000508 = TranslationUnitRegion(begin=Location(line=99, column=107), end=Location(line=99, column=130))
+tu_region_000509 = TranslationUnitRegion(begin=Location(line=99, column=107), end=Location(line=99, column=117))
+tu_region_000510 = TranslationUnitRegion(begin=Location(line=99, column=56), end=Location(line=99, column=131))
+tu_region_000511 = TranslationUnitRegion(begin=Location(line=99, column=47), end=Location(line=99, column=131))
 tu_region_000512 = TranslationUnitRegion(begin=Location(line=99, column=47), end=Location(line=99, column=55))
 tu_region_000513 = TranslationUnitRegion(begin=Location(line=97, column=6), end=Location(line=97, column=10))
 tu_region_000514 = TranslationUnitRegion(begin=Location(line=97, column=13), end=Location(line=97, column=18))
 tu_region_000515 = TranslationUnitRegion(begin=Location(line=97, column=5), end=Location(line=97, column=19))
-tu_region_000516 = TranslationUnitRegion(begin=Location(line=97, column=33), end=Location(line=97, column=37))
-tu_region_000517 = TranslationUnitRegion(begin=Location(line=97, column=5), end=Location(line=97, column=37))
+tu_region_000516 = TranslationUnitRegion(begin=Location(line=97, column=33), end=Location(line=97, column=38))
+tu_region_000517 = TranslationUnitRegion(begin=Location(line=97, column=5), end=Location(line=97, column=38))
 tu_region_000518 = TranslationUnitRegion(begin=Location(line=97, column=20), end=Location(line=97, column=30))
 tu_region_000519 = TranslationUnitRegion(begin=Location(line=98, column=6), end=Location(line=98, column=10))
 tu_region_000520 = TranslationUnitRegion(begin=Location(line=98, column=13), end=Location(line=98, column=18))
 tu_region_000521 = TranslationUnitRegion(begin=Location(line=98, column=5), end=Location(line=98, column=19))
-tu_region_000522 = TranslationUnitRegion(begin=Location(line=98, column=33), end=Location(line=98, column=37))
-tu_region_000523 = TranslationUnitRegion(begin=Location(line=98, column=5), end=Location(line=98, column=37))
+tu_region_000522 = TranslationUnitRegion(begin=Location(line=98, column=33), end=Location(line=98, column=38))
+tu_region_000523 = TranslationUnitRegion(begin=Location(line=98, column=5), end=Location(line=98, column=38))
 tu_region_000524 = TranslationUnitRegion(begin=Location(line=98, column=20), end=Location(line=98, column=30))
 tu_region_000525 = TranslationUnitRegion(begin=Location(line=96, column=14), end=Location(line=99, column=2))
-tu_region_000526 = TranslationUnitRegion(begin=Location(line=97, column=5), end=Location(line=98, column=38))
+tu_region_000526 = TranslationUnitRegion(begin=Location(line=97, column=5), end=Location(line=98, column=39))
 tu_region_000527 = TranslationUnitRegion(begin=Location(line=96, column=1), end=Location(line=101, column=1))
 tu_region_000528 = TranslationUnitRegion(begin=Location(line=96, column=1), end=Location(line=96, column=7))
 tu_region_000529 = TranslationUnitRegion(begin=Location(line=96, column=8), end=Location(line=96, column=13))
 tu_region_000530 = TranslationUnitRegion(begin=Location(line=104, column=57), end=Location(line=104, column=58))
-tu_region_000531 = TranslationUnitRegion(begin=Location(line=104, column=74), end=Location(line=104, column=78))
-tu_region_000532 = TranslationUnitRegion(begin=Location(line=104, column=60), end=Location(line=104, column=78))
+tu_region_000531 = TranslationUnitRegion(begin=Location(line=104, column=74), end=Location(line=104, column=79))
+tu_region_000532 = TranslationUnitRegion(begin=Location(line=104, column=60), end=Location(line=104, column=79))
 tu_region_000533 = TranslationUnitRegion(begin=Location(line=104, column=60), end=Location(line=104, column=71))
-tu_region_000534 = TranslationUnitRegion(begin=Location(line=104, column=93), end=Location(line=104, column=103))
-tu_region_000535 = TranslationUnitRegion(begin=Location(line=104, column=80), end=Location(line=104, column=103))
-tu_region_000536 = TranslationUnitRegion(begin=Location(line=104, column=80), end=Location(line=104, column=90))
-tu_region_000537 = TranslationUnitRegion(begin=Location(line=104, column=118), end=Location(line=104, column=128))
-tu_region_000538 = TranslationUnitRegion(begin=Location(line=104, column=105), end=Location(line=104, column=128))
-tu_region_000539 = TranslationUnitRegion(begin=Location(line=104, column=105), end=Location(line=104, column=115))
-tu_region_000540 = TranslationUnitRegion(begin=Location(line=104, column=56), end=Location(line=104, column=129))
-tu_region_000541 = TranslationUnitRegion(begin=Location(line=104, column=47), end=Location(line=104, column=129))
+tu_region_000534 = TranslationUnitRegion(begin=Location(line=104, column=94), end=Location(line=104, column=104))
+tu_region_000535 = TranslationUnitRegion(begin=Location(line=104, column=81), end=Location(line=104, column=104))
+tu_region_000536 = TranslationUnitRegion(begin=Location(line=104, column=81), end=Location(line=104, column=91))
+tu_region_000537 = TranslationUnitRegion(begin=Location(line=104, column=119), end=Location(line=104, column=129))
+tu_region_000538 = TranslationUnitRegion(begin=Location(line=104, column=106), end=Location(line=104, column=129))
+tu_region_000539 = TranslationUnitRegion(begin=Location(line=104, column=106), end=Location(line=104, column=116))
+tu_region_000540 = TranslationUnitRegion(begin=Location(line=104, column=56), end=Location(line=104, column=130))
+tu_region_000541 = TranslationUnitRegion(begin=Location(line=104, column=47), end=Location(line=104, column=130))
 tu_region_000542 = TranslationUnitRegion(begin=Location(line=104, column=47), end=Location(line=104, column=55))
 tu_region_000543 = TranslationUnitRegion(begin=Location(line=102, column=6), end=Location(line=102, column=10))
 tu_region_000544 = TranslationUnitRegion(begin=Location(line=102, column=13), end=Location(line=102, column=18))
 tu_region_000545 = TranslationUnitRegion(begin=Location(line=102, column=5), end=Location(line=102, column=19))
-tu_region_000546 = TranslationUnitRegion(begin=Location(line=102, column=33), end=Location(line=102, column=37))
-tu_region_000547 = TranslationUnitRegion(begin=Location(line=102, column=5), end=Location(line=102, column=37))
+tu_region_000546 = TranslationUnitRegion(begin=Location(line=102, column=33), end=Location(line=102, column=38))
+tu_region_000547 = TranslationUnitRegion(begin=Location(line=102, column=5), end=Location(line=102, column=38))
 tu_region_000548 = TranslationUnitRegion(begin=Location(line=102, column=20), end=Location(line=102, column=30))
 tu_region_000549 = TranslationUnitRegion(begin=Location(line=103, column=6), end=Location(line=103, column=10))
 tu_region_000550 = TranslationUnitRegion(begin=Location(line=103, column=13), end=Location(line=103, column=18))
 tu_region_000551 = TranslationUnitRegion(begin=Location(line=103, column=5), end=Location(line=103, column=19))
-tu_region_000552 = TranslationUnitRegion(begin=Location(line=103, column=33), end=Location(line=103, column=37))
-tu_region_000553 = TranslationUnitRegion(begin=Location(line=103, column=5), end=Location(line=103, column=37))
+tu_region_000552 = TranslationUnitRegion(begin=Location(line=103, column=33), end=Location(line=103, column=38))
+tu_region_000553 = TranslationUnitRegion(begin=Location(line=103, column=5), end=Location(line=103, column=38))
 tu_region_000554 = TranslationUnitRegion(begin=Location(line=103, column=20), end=Location(line=103, column=30))
 tu_region_000555 = TranslationUnitRegion(begin=Location(line=101, column=21), end=Location(line=104, column=2))
-tu_region_000556 = TranslationUnitRegion(begin=Location(line=102, column=5), end=Location(line=103, column=38))
+tu_region_000556 = TranslationUnitRegion(begin=Location(line=102, column=5), end=Location(line=103, column=39))
 tu_region_000557 = TranslationUnitRegion(begin=Location(line=101, column=1), end=Location(line=107, column=1))
 tu_region_000558 = TranslationUnitRegion(begin=Location(line=101, column=1), end=Location(line=101, column=7))
 tu_region_000559 = TranslationUnitRegion(begin=Location(line=101, column=8), end=Location(line=101, column=20))
 tu_region_000560 = TranslationUnitRegion(begin=Location(line=111, column=57), end=Location(line=111, column=58))
-tu_region_000561 = TranslationUnitRegion(begin=Location(line=111, column=74), end=Location(line=111, column=79))
-tu_region_000562 = TranslationUnitRegion(begin=Location(line=111, column=60), end=Location(line=111, column=79))
+tu_region_000561 = TranslationUnitRegion(begin=Location(line=111, column=74), end=Location(line=111, column=80))
+tu_region_000562 = TranslationUnitRegion(begin=Location(line=111, column=60), end=Location(line=111, column=80))
 tu_region_000563 = TranslationUnitRegion(begin=Location(line=111, column=60), end=Location(line=111, column=71))
-tu_region_000564 = TranslationUnitRegion(begin=Location(line=111, column=94), end=Location(line=111, column=104))
-tu_region_000565 = TranslationUnitRegion(begin=Location(line=111, column=81), end=Location(line=111, column=104))
-tu_region_000566 = TranslationUnitRegion(begin=Location(line=111, column=81), end=Location(line=111, column=91))
-tu_region_000567 = TranslationUnitRegion(begin=Location(line=111, column=119), end=Location(line=111, column=129))
-tu_region_000568 = TranslationUnitRegion(begin=Location(line=111, column=106), end=Location(line=111, column=129))
-tu_region_000569 = TranslationUnitRegion(begin=Location(line=111, column=106), end=Location(line=111, column=116))
-tu_region_000570 = TranslationUnitRegion(begin=Location(line=111, column=56), end=Location(line=111, column=130))
-tu_region_000571 = TranslationUnitRegion(begin=Location(line=111, column=47), end=Location(line=111, column=130))
+tu_region_000564 = TranslationUnitRegion(begin=Location(line=111, column=95), end=Location(line=111, column=105))
+tu_region_000565 = TranslationUnitRegion(begin=Location(line=111, column=82), end=Location(line=111, column=105))
+tu_region_000566 = TranslationUnitRegion(begin=Location(line=111, column=82), end=Location(line=111, column=92))
+tu_region_000567 = TranslationUnitRegion(begin=Location(line=111, column=120), end=Location(line=111, column=130))
+tu_region_000568 = TranslationUnitRegion(begin=Location(line=111, column=107), end=Location(line=111, column=130))
+tu_region_000569 = TranslationUnitRegion(begin=Location(line=111, column=107), end=Location(line=111, column=117))
+tu_region_000570 = TranslationUnitRegion(begin=Location(line=111, column=56), end=Location(line=111, column=131))
+tu_region_000571 = TranslationUnitRegion(begin=Location(line=111, column=47), end=Location(line=111, column=131))
 tu_region_000572 = TranslationUnitRegion(begin=Location(line=111, column=47), end=Location(line=111, column=55))
 tu_region_000573 = TranslationUnitRegion(begin=Location(line=109, column=6), end=Location(line=109, column=10))
 tu_region_000574 = TranslationUnitRegion(begin=Location(line=109, column=13), end=Location(line=109, column=18))
 tu_region_000575 = TranslationUnitRegion(begin=Location(line=109, column=5), end=Location(line=109, column=19))
-tu_region_000576 = TranslationUnitRegion(begin=Location(line=109, column=33), end=Location(line=109, column=37))
-tu_region_000577 = TranslationUnitRegion(begin=Location(line=109, column=5), end=Location(line=109, column=37))
+tu_region_000576 = TranslationUnitRegion(begin=Location(line=109, column=33), end=Location(line=109, column=38))
+tu_region_000577 = TranslationUnitRegion(begin=Location(line=109, column=5), end=Location(line=109, column=38))
 tu_region_000578 = TranslationUnitRegion(begin=Location(line=109, column=20), end=Location(line=109, column=30))
 tu_region_000579 = TranslationUnitRegion(begin=Location(line=110, column=6), end=Location(line=110, column=10))
 tu_region_000580 = TranslationUnitRegion(begin=Location(line=110, column=13), end=Location(line=110, column=18))
 tu_region_000581 = TranslationUnitRegion(begin=Location(line=110, column=5), end=Location(line=110, column=19))
-tu_region_000582 = TranslationUnitRegion(begin=Location(line=110, column=33), end=Location(line=110, column=37))
-tu_region_000583 = TranslationUnitRegion(begin=Location(line=110, column=5), end=Location(line=110, column=37))
+tu_region_000582 = TranslationUnitRegion(begin=Location(line=110, column=33), end=Location(line=110, column=38))
+tu_region_000583 = TranslationUnitRegion(begin=Location(line=110, column=5), end=Location(line=110, column=38))
 tu_region_000584 = TranslationUnitRegion(begin=Location(line=110, column=20), end=Location(line=110, column=30))
 tu_region_000585 = TranslationUnitRegion(begin=Location(line=108, column=14), end=Location(line=111, column=2))
-tu_region_000586 = TranslationUnitRegion(begin=Location(line=109, column=5), end=Location(line=110, column=38))
+tu_region_000586 = TranslationUnitRegion(begin=Location(line=109, column=5), end=Location(line=110, column=39))
 tu_region_000587 = TranslationUnitRegion(begin=Location(line=108, column=1), end=Location(line=113, column=1))
 tu_region_000588 = TranslationUnitRegion(begin=Location(line=108, column=1), end=Location(line=108, column=7))
 tu_region_000589 = TranslationUnitRegion(begin=Location(line=108, column=8), end=Location(line=108, column=13))
 tu_region_000590 = TranslationUnitRegion(begin=Location(line=116, column=57), end=Location(line=116, column=58))
-tu_region_000591 = TranslationUnitRegion(begin=Location(line=116, column=74), end=Location(line=116, column=78))
-tu_region_000592 = TranslationUnitRegion(begin=Location(line=116, column=60), end=Location(line=116, column=78))
+tu_region_000591 = TranslationUnitRegion(begin=Location(line=116, column=74), end=Location(line=116, column=79))
+tu_region_000592 = TranslationUnitRegion(begin=Location(line=116, column=60), end=Location(line=116, column=79))
 tu_region_000593 = TranslationUnitRegion(begin=Location(line=116, column=60), end=Location(line=116, column=71))
-tu_region_000594 = TranslationUnitRegion(begin=Location(line=116, column=93), end=Location(line=116, column=103))
-tu_region_000595 = TranslationUnitRegion(begin=Location(line=116, column=80), end=Location(line=116, column=103))
-tu_region_000596 = TranslationUnitRegion(begin=Location(line=116, column=80), end=Location(line=116, column=90))
-tu_region_000597 = TranslationUnitRegion(begin=Location(line=116, column=118), end=Location(line=116, column=128))
-tu_region_000598 = TranslationUnitRegion(begin=Location(line=116, column=105), end=Location(line=116, column=128))
-tu_region_000599 = TranslationUnitRegion(begin=Location(line=116, column=105), end=Location(line=116, column=115))
-tu_region_000600 = TranslationUnitRegion(begin=Location(line=116, column=56), end=Location(line=116, column=129))
-tu_region_000601 = TranslationUnitRegion(begin=Location(line=116, column=47), end=Location(line=116, column=129))
+tu_region_000594 = TranslationUnitRegion(begin=Location(line=116, column=94), end=Location(line=116, column=104))
+tu_region_000595 = TranslationUnitRegion(begin=Location(line=116, column=81), end=Location(line=116, column=104))
+tu_region_000596 = TranslationUnitRegion(begin=Location(line=116, column=81), end=Location(line=116, column=91))
+tu_region_000597 = TranslationUnitRegion(begin=Location(line=116, column=119), end=Location(line=116, column=129))
+tu_region_000598 = TranslationUnitRegion(begin=Location(line=116, column=106), end=Location(line=116, column=129))
+tu_region_000599 = TranslationUnitRegion(begin=Location(line=116, column=106), end=Location(line=116, column=116))
+tu_region_000600 = TranslationUnitRegion(begin=Location(line=116, column=56), end=Location(line=116, column=130))
+tu_region_000601 = TranslationUnitRegion(begin=Location(line=116, column=47), end=Location(line=116, column=130))
 tu_region_000602 = TranslationUnitRegion(begin=Location(line=116, column=47), end=Location(line=116, column=55))
 tu_region_000603 = TranslationUnitRegion(begin=Location(line=114, column=6), end=Location(line=114, column=10))
 tu_region_000604 = TranslationUnitRegion(begin=Location(line=114, column=13), end=Location(line=114, column=18))
 tu_region_000605 = TranslationUnitRegion(begin=Location(line=114, column=5), end=Location(line=114, column=19))
-tu_region_000606 = TranslationUnitRegion(begin=Location(line=114, column=33), end=Location(line=114, column=37))
-tu_region_000607 = TranslationUnitRegion(begin=Location(line=114, column=5), end=Location(line=114, column=37))
+tu_region_000606 = TranslationUnitRegion(begin=Location(line=114, column=33), end=Location(line=114, column=38))
+tu_region_000607 = TranslationUnitRegion(begin=Location(line=114, column=5), end=Location(line=114, column=38))
 tu_region_000608 = TranslationUnitRegion(begin=Location(line=114, column=20), end=Location(line=114, column=30))
 tu_region_000609 = TranslationUnitRegion(begin=Location(line=115, column=6), end=Location(line=115, column=10))
 tu_region_000610 = TranslationUnitRegion(begin=Location(line=115, column=13), end=Location(line=115, column=18))
 tu_region_000611 = TranslationUnitRegion(begin=Location(line=115, column=5), end=Location(line=115, column=19))
-tu_region_000612 = TranslationUnitRegion(begin=Location(line=115, column=33), end=Location(line=115, column=37))
-tu_region_000613 = TranslationUnitRegion(begin=Location(line=115, column=5), end=Location(line=115, column=37))
+tu_region_000612 = TranslationUnitRegion(begin=Location(line=115, column=33), end=Location(line=115, column=38))
+tu_region_000613 = TranslationUnitRegion(begin=Location(line=115, column=5), end=Location(line=115, column=38))
 tu_region_000614 = TranslationUnitRegion(begin=Location(line=115, column=20), end=Location(line=115, column=30))
 tu_region_000615 = TranslationUnitRegion(begin=Location(line=113, column=21), end=Location(line=116, column=2))
-tu_region_000616 = TranslationUnitRegion(begin=Location(line=114, column=5), end=Location(line=115, column=38))
+tu_region_000616 = TranslationUnitRegion(begin=Location(line=114, column=5), end=Location(line=115, column=39))
 tu_region_000617 = TranslationUnitRegion(begin=Location(line=113, column=1), end=Location(line=119, column=1))
 tu_region_000618 = TranslationUnitRegion(begin=Location(line=113, column=1), end=Location(line=113, column=7))
 tu_region_000619 = TranslationUnitRegion(begin=Location(line=113, column=8), end=Location(line=113, column=20))
 tu_region_000620 = TranslationUnitRegion(begin=Location(line=123, column=57), end=Location(line=123, column=59))
-tu_region_000621 = TranslationUnitRegion(begin=Location(line=123, column=75), end=Location(line=123, column=80))
-tu_region_000622 = TranslationUnitRegion(begin=Location(line=123, column=61), end=Location(line=123, column=80))
+tu_region_000621 = TranslationUnitRegion(begin=Location(line=123, column=75), end=Location(line=123, column=81))
+tu_region_000622 = TranslationUnitRegion(begin=Location(line=123, column=61), end=Location(line=123, column=81))
 tu_region_000623 = TranslationUnitRegion(begin=Location(line=123, column=61), end=Location(line=123, column=72))
-tu_region_000624 = TranslationUnitRegion(begin=Location(line=123, column=95), end=Location(line=123, column=105))
-tu_region_000625 = TranslationUnitRegion(begin=Location(line=123, column=82), end=Location(line=123, column=105))
-tu_region_000626 = TranslationUnitRegion(begin=Location(line=123, column=82), end=Location(line=123, column=92))
-tu_region_000627 = TranslationUnitRegion(begin=Location(line=123, column=120), end=Location(line=123, column=130))
-tu_region_000628 = TranslationUnitRegion(begin=Location(line=123, column=107), end=Location(line=123, column=130))
-tu_region_000629 = TranslationUnitRegion(begin=Location(line=123, column=107), end=Location(line=123, column=117))
-tu_region_000630 = TranslationUnitRegion(begin=Location(line=123, column=56), end=Location(line=123, column=131))
-tu_region_000631 = TranslationUnitRegion(begin=Location(line=123, column=47), end=Location(line=123, column=131))
+tu_region_000624 = TranslationUnitRegion(begin=Location(line=123, column=96), end=Location(line=123, column=106))
+tu_region_000625 = TranslationUnitRegion(begin=Location(line=123, column=83), end=Location(line=123, column=106))
+tu_region_000626 = TranslationUnitRegion(begin=Location(line=123, column=83), end=Location(line=123, column=93))
+tu_region_000627 = TranslationUnitRegion(begin=Location(line=123, column=121), end=Location(line=123, column=131))
+tu_region_000628 = TranslationUnitRegion(begin=Location(line=123, column=108), end=Location(line=123, column=131))
+tu_region_000629 = TranslationUnitRegion(begin=Location(line=123, column=108), end=Location(line=123, column=118))
+tu_region_000630 = TranslationUnitRegion(begin=Location(line=123, column=56), end=Location(line=123, column=132))
+tu_region_000631 = TranslationUnitRegion(begin=Location(line=123, column=47), end=Location(line=123, column=132))
 tu_region_000632 = TranslationUnitRegion(begin=Location(line=123, column=47), end=Location(line=123, column=55))
 tu_region_000633 = TranslationUnitRegion(begin=Location(line=121, column=6), end=Location(line=121, column=10))
 tu_region_000634 = TranslationUnitRegion(begin=Location(line=121, column=13), end=Location(line=121, column=18))
 tu_region_000635 = TranslationUnitRegion(begin=Location(line=121, column=5), end=Location(line=121, column=19))
-tu_region_000636 = TranslationUnitRegion(begin=Location(line=121, column=33), end=Location(line=121, column=37))
-tu_region_000637 = TranslationUnitRegion(begin=Location(line=121, column=5), end=Location(line=121, column=37))
+tu_region_000636 = TranslationUnitRegion(begin=Location(line=121, column=33), end=Location(line=121, column=38))
+tu_region_000637 = TranslationUnitRegion(begin=Location(line=121, column=5), end=Location(line=121, column=38))
 tu_region_000638 = TranslationUnitRegion(begin=Location(line=121, column=20), end=Location(line=121, column=30))
 tu_region_000639 = TranslationUnitRegion(begin=Location(line=122, column=6), end=Location(line=122, column=10))
 tu_region_000640 = TranslationUnitRegion(begin=Location(line=122, column=13), end=Location(line=122, column=18))
 tu_region_000641 = TranslationUnitRegion(begin=Location(line=122, column=5), end=Location(line=122, column=19))
-tu_region_000642 = TranslationUnitRegion(begin=Location(line=122, column=33), end=Location(line=122, column=37))
-tu_region_000643 = TranslationUnitRegion(begin=Location(line=122, column=5), end=Location(line=122, column=37))
+tu_region_000642 = TranslationUnitRegion(begin=Location(line=122, column=33), end=Location(line=122, column=38))
+tu_region_000643 = TranslationUnitRegion(begin=Location(line=122, column=5), end=Location(line=122, column=38))
 tu_region_000644 = TranslationUnitRegion(begin=Location(line=122, column=20), end=Location(line=122, column=30))
 tu_region_000645 = TranslationUnitRegion(begin=Location(line=120, column=15), end=Location(line=123, column=2))
-tu_region_000646 = TranslationUnitRegion(begin=Location(line=121, column=5), end=Location(line=122, column=38))
+tu_region_000646 = TranslationUnitRegion(begin=Location(line=121, column=5), end=Location(line=122, column=39))
 tu_region_000647 = TranslationUnitRegion(begin=Location(line=120, column=1), end=Location(line=125, column=1))
 tu_region_000648 = TranslationUnitRegion(begin=Location(line=120, column=1), end=Location(line=120, column=7))
 tu_region_000649 = TranslationUnitRegion(begin=Location(line=120, column=8), end=Location(line=120, column=14))
 tu_region_000650 = TranslationUnitRegion(begin=Location(line=128, column=57), end=Location(line=128, column=59))
-tu_region_000651 = TranslationUnitRegion(begin=Location(line=128, column=75), end=Location(line=128, column=79))
-tu_region_000652 = TranslationUnitRegion(begin=Location(line=128, column=61), end=Location(line=128, column=79))
+tu_region_000651 = TranslationUnitRegion(begin=Location(line=128, column=75), end=Location(line=128, column=80))
+tu_region_000652 = TranslationUnitRegion(begin=Location(line=128, column=61), end=Location(line=128, column=80))
 tu_region_000653 = TranslationUnitRegion(begin=Location(line=128, column=61), end=Location(line=128, column=72))
-tu_region_000654 = TranslationUnitRegion(begin=Location(line=128, column=94), end=Location(line=128, column=104))
-tu_region_000655 = TranslationUnitRegion(begin=Location(line=128, column=81), end=Location(line=128, column=104))
-tu_region_000656 = TranslationUnitRegion(begin=Location(line=128, column=81), end=Location(line=128, column=91))
-tu_region_000657 = TranslationUnitRegion(begin=Location(line=128, column=119), end=Location(line=128, column=129))
-tu_region_000658 = TranslationUnitRegion(begin=Location(line=128, column=106), end=Location(line=128, column=129))
-tu_region_000659 = TranslationUnitRegion(begin=Location(line=128, column=106), end=Location(line=128, column=116))
-tu_region_000660 = TranslationUnitRegion(begin=Location(line=128, column=56), end=Location(line=128, column=130))
-tu_region_000661 = TranslationUnitRegion(begin=Location(line=128, column=47), end=Location(line=128, column=130))
+tu_region_000654 = TranslationUnitRegion(begin=Location(line=128, column=95), end=Location(line=128, column=105))
+tu_region_000655 = TranslationUnitRegion(begin=Location(line=128, column=82), end=Location(line=128, column=105))
+tu_region_000656 = TranslationUnitRegion(begin=Location(line=128, column=82), end=Location(line=128, column=92))
+tu_region_000657 = TranslationUnitRegion(begin=Location(line=128, column=120), end=Location(line=128, column=130))
+tu_region_000658 = TranslationUnitRegion(begin=Location(line=128, column=107), end=Location(line=128, column=130))
+tu_region_000659 = TranslationUnitRegion(begin=Location(line=128, column=107), end=Location(line=128, column=117))
+tu_region_000660 = TranslationUnitRegion(begin=Location(line=128, column=56), end=Location(line=128, column=131))
+tu_region_000661 = TranslationUnitRegion(begin=Location(line=128, column=47), end=Location(line=128, column=131))
 tu_region_000662 = TranslationUnitRegion(begin=Location(line=128, column=47), end=Location(line=128, column=55))
 tu_region_000663 = TranslationUnitRegion(begin=Location(line=126, column=6), end=Location(line=126, column=10))
 tu_region_000664 = TranslationUnitRegion(begin=Location(line=126, column=13), end=Location(line=126, column=18))
 tu_region_000665 = TranslationUnitRegion(begin=Location(line=126, column=5), end=Location(line=126, column=19))
-tu_region_000666 = TranslationUnitRegion(begin=Location(line=126, column=33), end=Location(line=126, column=37))
-tu_region_000667 = TranslationUnitRegion(begin=Location(line=126, column=5), end=Location(line=126, column=37))
+tu_region_000666 = TranslationUnitRegion(begin=Location(line=126, column=33), end=Location(line=126, column=38))
+tu_region_000667 = TranslationUnitRegion(begin=Location(line=126, column=5), end=Location(line=126, column=38))
 tu_region_000668 = TranslationUnitRegion(begin=Location(line=126, column=20), end=Location(line=126, column=30))
 tu_region_000669 = TranslationUnitRegion(begin=Location(line=127, column=6), end=Location(line=127, column=10))
 tu_region_000670 = TranslationUnitRegion(begin=Location(line=127, column=13), end=Location(line=127, column=18))
 tu_region_000671 = TranslationUnitRegion(begin=Location(line=127, column=5), end=Location(line=127, column=19))
-tu_region_000672 = TranslationUnitRegion(begin=Location(line=127, column=33), end=Location(line=127, column=37))
-tu_region_000673 = TranslationUnitRegion(begin=Location(line=127, column=5), end=Location(line=127, column=37))
+tu_region_000672 = TranslationUnitRegion(begin=Location(line=127, column=33), end=Location(line=127, column=38))
+tu_region_000673 = TranslationUnitRegion(begin=Location(line=127, column=5), end=Location(line=127, column=38))
 tu_region_000674 = TranslationUnitRegion(begin=Location(line=127, column=20), end=Location(line=127, column=30))
 tu_region_000675 = TranslationUnitRegion(begin=Location(line=125, column=22), end=Location(line=128, column=2))
-tu_region_000676 = TranslationUnitRegion(begin=Location(line=126, column=5), end=Location(line=127, column=38))
+tu_region_000676 = TranslationUnitRegion(begin=Location(line=126, column=5), end=Location(line=127, column=39))
 tu_region_000677 = TranslationUnitRegion(begin=Location(line=125, column=1), end=Location(line=131, column=1))
 tu_region_000678 = TranslationUnitRegion(begin=Location(line=125, column=1), end=Location(line=125, column=7))
 tu_region_000679 = TranslationUnitRegion(begin=Location(line=125, column=8), end=Location(line=125, column=21))
 tu_region_000680 = TranslationUnitRegion(begin=Location(line=135, column=57), end=Location(line=135, column=59))
-tu_region_000681 = TranslationUnitRegion(begin=Location(line=135, column=75), end=Location(line=135, column=80))
-tu_region_000682 = TranslationUnitRegion(begin=Location(line=135, column=61), end=Location(line=135, column=80))
+tu_region_000681 = TranslationUnitRegion(begin=Location(line=135, column=75), end=Location(line=135, column=81))
+tu_region_000682 = TranslationUnitRegion(begin=Location(line=135, column=61), end=Location(line=135, column=81))
 tu_region_000683 = TranslationUnitRegion(begin=Location(line=135, column=61), end=Location(line=135, column=72))
-tu_region_000684 = TranslationUnitRegion(begin=Location(line=135, column=95), end=Location(line=135, column=105))
-tu_region_000685 = TranslationUnitRegion(begin=Location(line=135, column=82), end=Location(line=135, column=105))
-tu_region_000686 = TranslationUnitRegion(begin=Location(line=135, column=82), end=Location(line=135, column=92))
-tu_region_000687 = TranslationUnitRegion(begin=Location(line=135, column=120), end=Location(line=135, column=130))
-tu_region_000688 = TranslationUnitRegion(begin=Location(line=135, column=107), end=Location(line=135, column=130))
-tu_region_000689 = TranslationUnitRegion(begin=Location(line=135, column=107), end=Location(line=135, column=117))
-tu_region_000690 = TranslationUnitRegion(begin=Location(line=135, column=56), end=Location(line=135, column=131))
-tu_region_000691 = TranslationUnitRegion(begin=Location(line=135, column=47), end=Location(line=135, column=131))
+tu_region_000684 = TranslationUnitRegion(begin=Location(line=135, column=96), end=Location(line=135, column=106))
+tu_region_000685 = TranslationUnitRegion(begin=Location(line=135, column=83), end=Location(line=135, column=106))
+tu_region_000686 = TranslationUnitRegion(begin=Location(line=135, column=83), end=Location(line=135, column=93))
+tu_region_000687 = TranslationUnitRegion(begin=Location(line=135, column=121), end=Location(line=135, column=131))
+tu_region_000688 = TranslationUnitRegion(begin=Location(line=135, column=108), end=Location(line=135, column=131))
+tu_region_000689 = TranslationUnitRegion(begin=Location(line=135, column=108), end=Location(line=135, column=118))
+tu_region_000690 = TranslationUnitRegion(begin=Location(line=135, column=56), end=Location(line=135, column=132))
+tu_region_000691 = TranslationUnitRegion(begin=Location(line=135, column=47), end=Location(line=135, column=132))
 tu_region_000692 = TranslationUnitRegion(begin=Location(line=135, column=47), end=Location(line=135, column=55))
 tu_region_000693 = TranslationUnitRegion(begin=Location(line=133, column=6), end=Location(line=133, column=10))
 tu_region_000694 = TranslationUnitRegion(begin=Location(line=133, column=13), end=Location(line=133, column=18))
 tu_region_000695 = TranslationUnitRegion(begin=Location(line=133, column=5), end=Location(line=133, column=19))
-tu_region_000696 = TranslationUnitRegion(begin=Location(line=133, column=33), end=Location(line=133, column=37))
-tu_region_000697 = TranslationUnitRegion(begin=Location(line=133, column=5), end=Location(line=133, column=37))
+tu_region_000696 = TranslationUnitRegion(begin=Location(line=133, column=33), end=Location(line=133, column=38))
+tu_region_000697 = TranslationUnitRegion(begin=Location(line=133, column=5), end=Location(line=133, column=38))
 tu_region_000698 = TranslationUnitRegion(begin=Location(line=133, column=20), end=Location(line=133, column=30))
 tu_region_000699 = TranslationUnitRegion(begin=Location(line=134, column=6), end=Location(line=134, column=10))
 tu_region_000700 = TranslationUnitRegion(begin=Location(line=134, column=13), end=Location(line=134, column=18))
 tu_region_000701 = TranslationUnitRegion(begin=Location(line=134, column=5), end=Location(line=134, column=19))
-tu_region_000702 = TranslationUnitRegion(begin=Location(line=134, column=33), end=Location(line=134, column=37))
-tu_region_000703 = TranslationUnitRegion(begin=Location(line=134, column=5), end=Location(line=134, column=37))
+tu_region_000702 = TranslationUnitRegion(begin=Location(line=134, column=33), end=Location(line=134, column=38))
+tu_region_000703 = TranslationUnitRegion(begin=Location(line=134, column=5), end=Location(line=134, column=38))
 tu_region_000704 = TranslationUnitRegion(begin=Location(line=134, column=20), end=Location(line=134, column=30))
 tu_region_000705 = TranslationUnitRegion(begin=Location(line=132, column=15), end=Location(line=135, column=2))
-tu_region_000706 = TranslationUnitRegion(begin=Location(line=133, column=5), end=Location(line=134, column=38))
+tu_region_000706 = TranslationUnitRegion(begin=Location(line=133, column=5), end=Location(line=134, column=39))
 tu_region_000707 = TranslationUnitRegion(begin=Location(line=132, column=1), end=Location(line=137, column=1))
 tu_region_000708 = TranslationUnitRegion(begin=Location(line=132, column=1), end=Location(line=132, column=7))
 tu_region_000709 = TranslationUnitRegion(begin=Location(line=132, column=8), end=Location(line=132, column=14))
 tu_region_000710 = TranslationUnitRegion(begin=Location(line=140, column=57), end=Location(line=140, column=59))
-tu_region_000711 = TranslationUnitRegion(begin=Location(line=140, column=75), end=Location(line=140, column=79))
-tu_region_000712 = TranslationUnitRegion(begin=Location(line=140, column=61), end=Location(line=140, column=79))
+tu_region_000711 = TranslationUnitRegion(begin=Location(line=140, column=75), end=Location(line=140, column=80))
+tu_region_000712 = TranslationUnitRegion(begin=Location(line=140, column=61), end=Location(line=140, column=80))
 tu_region_000713 = TranslationUnitRegion(begin=Location(line=140, column=61), end=Location(line=140, column=72))
-tu_region_000714 = TranslationUnitRegion(begin=Location(line=140, column=94), end=Location(line=140, column=104))
-tu_region_000715 = TranslationUnitRegion(begin=Location(line=140, column=81), end=Location(line=140, column=104))
-tu_region_000716 = TranslationUnitRegion(begin=Location(line=140, column=81), end=Location(line=140, column=91))
-tu_region_000717 = TranslationUnitRegion(begin=Location(line=140, column=119), end=Location(line=140, column=129))
-tu_region_000718 = TranslationUnitRegion(begin=Location(line=140, column=106), end=Location(line=140, column=129))
-tu_region_000719 = TranslationUnitRegion(begin=Location(line=140, column=106), end=Location(line=140, column=116))
-tu_region_000720 = TranslationUnitRegion(begin=Location(line=140, column=56), end=Location(line=140, column=130))
-tu_region_000721 = TranslationUnitRegion(begin=Location(line=140, column=47), end=Location(line=140, column=130))
+tu_region_000714 = TranslationUnitRegion(begin=Location(line=140, column=95), end=Location(line=140, column=105))
+tu_region_000715 = TranslationUnitRegion(begin=Location(line=140, column=82), end=Location(line=140, column=105))
+tu_region_000716 = TranslationUnitRegion(begin=Location(line=140, column=82), end=Location(line=140, column=92))
+tu_region_000717 = TranslationUnitRegion(begin=Location(line=140, column=120), end=Location(line=140, column=130))
+tu_region_000718 = TranslationUnitRegion(begin=Location(line=140, column=107), end=Location(line=140, column=130))
+tu_region_000719 = TranslationUnitRegion(begin=Location(line=140, column=107), end=Location(line=140, column=117))
+tu_region_000720 = TranslationUnitRegion(begin=Location(line=140, column=56), end=Location(line=140, column=131))
+tu_region_000721 = TranslationUnitRegion(begin=Location(line=140, column=47), end=Location(line=140, column=131))
 tu_region_000722 = TranslationUnitRegion(begin=Location(line=140, column=47), end=Location(line=140, column=55))
 tu_region_000723 = TranslationUnitRegion(begin=Location(line=138, column=6), end=Location(line=138, column=10))
 tu_region_000724 = TranslationUnitRegion(begin=Location(line=138, column=13), end=Location(line=138, column=18))
 tu_region_000725 = TranslationUnitRegion(begin=Location(line=138, column=5), end=Location(line=138, column=19))
-tu_region_000726 = TranslationUnitRegion(begin=Location(line=138, column=33), end=Location(line=138, column=37))
-tu_region_000727 = TranslationUnitRegion(begin=Location(line=138, column=5), end=Location(line=138, column=37))
+tu_region_000726 = TranslationUnitRegion(begin=Location(line=138, column=33), end=Location(line=138, column=38))
+tu_region_000727 = TranslationUnitRegion(begin=Location(line=138, column=5), end=Location(line=138, column=38))
 tu_region_000728 = TranslationUnitRegion(begin=Location(line=138, column=20), end=Location(line=138, column=30))
 tu_region_000729 = TranslationUnitRegion(begin=Location(line=139, column=6), end=Location(line=139, column=10))
 tu_region_000730 = TranslationUnitRegion(begin=Location(line=139, column=13), end=Location(line=139, column=18))
 tu_region_000731 = TranslationUnitRegion(begin=Location(line=139, column=5), end=Location(line=139, column=19))
-tu_region_000732 = TranslationUnitRegion(begin=Location(line=139, column=33), end=Location(line=139, column=37))
-tu_region_000733 = TranslationUnitRegion(begin=Location(line=139, column=5), end=Location(line=139, column=37))
+tu_region_000732 = TranslationUnitRegion(begin=Location(line=139, column=33), end=Location(line=139, column=38))
+tu_region_000733 = TranslationUnitRegion(begin=Location(line=139, column=5), end=Location(line=139, column=38))
 tu_region_000734 = TranslationUnitRegion(begin=Location(line=139, column=20), end=Location(line=139, column=30))
 tu_region_000735 = TranslationUnitRegion(begin=Location(line=137, column=22), end=Location(line=140, column=2))
-tu_region_000736 = TranslationUnitRegion(begin=Location(line=138, column=5), end=Location(line=139, column=38))
+tu_region_000736 = TranslationUnitRegion(begin=Location(line=138, column=5), end=Location(line=139, column=39))
 tu_region_000737 = TranslationUnitRegion(begin=Location(line=137, column=1), end=Location(line=143, column=1))
 tu_region_000738 = TranslationUnitRegion(begin=Location(line=137, column=1), end=Location(line=137, column=7))
 tu_region_000739 = TranslationUnitRegion(begin=Location(line=137, column=8), end=Location(line=137, column=21))
@@ -885,13 +884,9 @@ statement_000007 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000008 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000013, tu_region_000013, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000008 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000013],
 )
 
 statement_000009 = VariantExpressionParserInfo.Create(
@@ -901,6 +896,7 @@ statement_000009 = VariantExpressionParserInfo.Create(
 )
 
 statement_000010 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000015],
 )
 
@@ -920,13 +916,9 @@ statement_000012 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000013 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000019, tu_region_000019, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000013 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000019],
 )
 
 statement_000014 = VariantExpressionParserInfo.Create(
@@ -936,6 +928,7 @@ statement_000014 = VariantExpressionParserInfo.Create(
 )
 
 statement_000015 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000021],
 )
 
@@ -2551,7 +2544,7 @@ statement_000175 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000176 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000441],
     value=False,
 )
@@ -2609,13 +2602,9 @@ statement_000184 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000185 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000454, tu_region_000454, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000185 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000454],
 )
 
 statement_000186 = VariantExpressionParserInfo.Create(
@@ -2625,6 +2614,7 @@ statement_000186 = VariantExpressionParserInfo.Create(
 )
 
 statement_000187 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000456],
 )
 
@@ -2644,13 +2634,9 @@ statement_000189 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000190 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000460, tu_region_000460, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000190 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000460],
 )
 
 statement_000191 = VariantExpressionParserInfo.Create(
@@ -2660,6 +2646,7 @@ statement_000191 = VariantExpressionParserInfo.Create(
 )
 
 statement_000192 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000462],
 )
 
@@ -2699,7 +2686,7 @@ statement_000197 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000198 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000471],
     value=True,
 )
@@ -2757,13 +2744,9 @@ statement_000206 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000207 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000484, tu_region_000484, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000207 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000484],
 )
 
 statement_000208 = VariantExpressionParserInfo.Create(
@@ -2773,6 +2756,7 @@ statement_000208 = VariantExpressionParserInfo.Create(
 )
 
 statement_000209 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000486],
 )
 
@@ -2792,13 +2776,9 @@ statement_000211 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000212 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000490, tu_region_000490, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000212 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000490],
 )
 
 statement_000213 = VariantExpressionParserInfo.Create(
@@ -2808,6 +2788,7 @@ statement_000213 = VariantExpressionParserInfo.Create(
 )
 
 statement_000214 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000492],
 )
 
@@ -2847,7 +2828,7 @@ statement_000219 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000220 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000501],
     value=False,
 )
@@ -2905,13 +2886,9 @@ statement_000228 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000229 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000514, tu_region_000514, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000229 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000514],
 )
 
 statement_000230 = VariantExpressionParserInfo.Create(
@@ -2921,6 +2898,7 @@ statement_000230 = VariantExpressionParserInfo.Create(
 )
 
 statement_000231 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000516],
 )
 
@@ -2940,13 +2918,9 @@ statement_000233 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000234 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000520, tu_region_000520, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000234 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000520],
 )
 
 statement_000235 = VariantExpressionParserInfo.Create(
@@ -2956,6 +2930,7 @@ statement_000235 = VariantExpressionParserInfo.Create(
 )
 
 statement_000236 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000522],
 )
 
@@ -2995,7 +2970,7 @@ statement_000241 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000242 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000531],
     value=True,
 )
@@ -3053,13 +3028,9 @@ statement_000250 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000251 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000544, tu_region_000544, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000251 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000544],
 )
 
 statement_000252 = VariantExpressionParserInfo.Create(
@@ -3069,6 +3040,7 @@ statement_000252 = VariantExpressionParserInfo.Create(
 )
 
 statement_000253 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000546],
 )
 
@@ -3088,13 +3060,9 @@ statement_000255 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000256 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000550, tu_region_000550, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000256 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000550],
 )
 
 statement_000257 = VariantExpressionParserInfo.Create(
@@ -3104,6 +3072,7 @@ statement_000257 = VariantExpressionParserInfo.Create(
 )
 
 statement_000258 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000552],
 )
 
@@ -3143,7 +3112,7 @@ statement_000263 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000264 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000561],
     value=False,
 )
@@ -3201,13 +3170,9 @@ statement_000272 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000273 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000574, tu_region_000574, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000273 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000574],
 )
 
 statement_000274 = VariantExpressionParserInfo.Create(
@@ -3217,6 +3182,7 @@ statement_000274 = VariantExpressionParserInfo.Create(
 )
 
 statement_000275 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000576],
 )
 
@@ -3236,13 +3202,9 @@ statement_000277 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000278 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000580, tu_region_000580, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000278 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000580],
 )
 
 statement_000279 = VariantExpressionParserInfo.Create(
@@ -3252,6 +3214,7 @@ statement_000279 = VariantExpressionParserInfo.Create(
 )
 
 statement_000280 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000582],
 )
 
@@ -3291,7 +3254,7 @@ statement_000285 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000286 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000591],
     value=True,
 )
@@ -3349,13 +3312,9 @@ statement_000294 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000295 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000604, tu_region_000604, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000295 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000604],
 )
 
 statement_000296 = VariantExpressionParserInfo.Create(
@@ -3365,6 +3324,7 @@ statement_000296 = VariantExpressionParserInfo.Create(
 )
 
 statement_000297 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000606],
 )
 
@@ -3384,13 +3344,9 @@ statement_000299 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000300 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000610, tu_region_000610, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000300 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000610],
 )
 
 statement_000301 = VariantExpressionParserInfo.Create(
@@ -3400,6 +3356,7 @@ statement_000301 = VariantExpressionParserInfo.Create(
 )
 
 statement_000302 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000612],
 )
 
@@ -3439,7 +3396,7 @@ statement_000307 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000308 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000621],
     value=False,
 )
@@ -3497,13 +3454,9 @@ statement_000316 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000317 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000634, tu_region_000634, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000317 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000634],
 )
 
 statement_000318 = VariantExpressionParserInfo.Create(
@@ -3513,6 +3466,7 @@ statement_000318 = VariantExpressionParserInfo.Create(
 )
 
 statement_000319 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000636],
 )
 
@@ -3532,13 +3486,9 @@ statement_000321 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000322 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000640, tu_region_000640, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000322 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000640],
 )
 
 statement_000323 = VariantExpressionParserInfo.Create(
@@ -3548,6 +3498,7 @@ statement_000323 = VariantExpressionParserInfo.Create(
 )
 
 statement_000324 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000642],
 )
 
@@ -3587,7 +3538,7 @@ statement_000329 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000330 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000651],
     value=True,
 )
@@ -3645,13 +3596,9 @@ statement_000338 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000339 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000664, tu_region_000664, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000339 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000664],
 )
 
 statement_000340 = VariantExpressionParserInfo.Create(
@@ -3661,6 +3608,7 @@ statement_000340 = VariantExpressionParserInfo.Create(
 )
 
 statement_000341 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000666],
 )
 
@@ -3680,13 +3628,9 @@ statement_000343 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000344 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000670, tu_region_000670, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000344 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000670],
 )
 
 statement_000345 = VariantExpressionParserInfo.Create(
@@ -3696,6 +3640,7 @@ statement_000345 = VariantExpressionParserInfo.Create(
 )
 
 statement_000346 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000672],
 )
 
@@ -3735,7 +3680,7 @@ statement_000351 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000352 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000681],
     value=False,
 )
@@ -3793,13 +3738,9 @@ statement_000360 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000361 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000694, tu_region_000694, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000361 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000694],
 )
 
 statement_000362 = VariantExpressionParserInfo.Create(
@@ -3809,6 +3750,7 @@ statement_000362 = VariantExpressionParserInfo.Create(
 )
 
 statement_000363 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000696],
 )
 
@@ -3828,13 +3770,9 @@ statement_000365 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000366 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000700, tu_region_000700, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000366 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000700],
 )
 
 statement_000367 = VariantExpressionParserInfo.Create(
@@ -3844,6 +3782,7 @@ statement_000367 = VariantExpressionParserInfo.Create(
 )
 
 statement_000368 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000702],
 )
 
@@ -3883,7 +3822,7 @@ statement_000373 = ConstraintArgumentParserInfo.Create(
 )
 
 statement_000374 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000711],
     value=True,
 )
@@ -3941,13 +3880,9 @@ statement_000382 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000383 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000724, tu_region_000724, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000383 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000724],
 )
 
 statement_000384 = VariantExpressionParserInfo.Create(
@@ -3957,6 +3892,7 @@ statement_000384 = VariantExpressionParserInfo.Create(
 )
 
 statement_000385 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000726],
 )
 
@@ -3976,13 +3912,9 @@ statement_000387 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000388 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000730, tu_region_000730, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000388 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000730],
 )
 
 statement_000389 = VariantExpressionParserInfo.Create(
@@ -3992,6 +3924,7 @@ statement_000389 = VariantExpressionParserInfo.Create(
 )
 
 statement_000390 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000732],
 )
 

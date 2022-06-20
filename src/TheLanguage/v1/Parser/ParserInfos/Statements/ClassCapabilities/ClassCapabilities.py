@@ -249,8 +249,30 @@ InvalidNestedClassVisibilityError           = CreateError(
     valid_visibility_str=str,
 )
 
+UsingVisibilityRequiredError                = CreateError(
+    "A visibility value is required for using statements in '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+InvalidUsingError                           = CreateError(
+    "'{type}' types do not support using statements",
+    type=str,
+)
+
+InvalidUsingVisibilityError                 = CreateError(
+    "'{visibility_str}' is not a valid visibility value for '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    visibility=VisibilityModifier,
+    visibility_str=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
 
 # TODO: All of the capabilities need some TLC
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -295,6 +317,9 @@ class ClassCapabilities(ObjectReprImplBase):
     default_method_mutability: Optional[MutabilityModifier]
     allow_static_methods: bool
 
+    valid_using_visibilities: List[VisibilityModifier]
+    default_using_visibility: Optional[VisibilityModifier]
+
     valid_attribute_visibilities: List[VisibilityModifier]
     default_attribute_visibility: Optional[VisibilityModifier]
     valid_attribute_mutabilities: List[MutabilityModifier]
@@ -326,6 +351,8 @@ class ClassCapabilities(ObjectReprImplBase):
         assert self.default_method_visibility is None or self.default_method_visibility in self.valid_method_visibilities
         assert self.default_method_mutability is None or self.default_method_mutability in self.valid_method_mutabilities
         assert not self.allow_static_methods or self.valid_method_visibilities
+
+        assert self.default_using_visibility is None or self.default_using_visibility in self.valid_using_visibilities
 
         assert (self.valid_attribute_visibilities and self.valid_attribute_mutabilities) or (not self.valid_attribute_visibilities and not self.valid_attribute_mutabilities)
         assert self.default_attribute_visibility is None or self.default_attribute_visibility in self.valid_attribute_visibilities
@@ -742,6 +769,46 @@ class ClassCapabilities(ObjectReprImplBase):
                         valid_mutabilities_str=", ".join("'{}'".format(v.name) for v in self.valid_method_mutabilities),
                     ),
                 )
+
+        if errors:
+            raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    def ValidateUsingStatementCapabilities(
+        self,
+        parser_info, # ClassUsingStatementParserInfo
+    ) -> None:
+        errors: List[Error] = []
+
+        # visibility
+        if parser_info.visibility is None:
+            if self.valid_using_visibilities:
+                errors.append(
+                    UsingVisibilityRequiredError.Create(
+                        region=parser_info.regions__.self__,
+                        type=self.name,
+                        valid_visibilities=self.valid_using_visibilities,
+                        valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_using_visibilities),
+                    ),
+                )
+        elif not self.valid_using_visibilities:
+            errors.append(
+                InvalidUsingError.Create(
+                    region=parser_info.regions__.self__,
+                    type=self.name,
+                ),
+            )
+        elif parser_info.visibility not in self.valid_using_visibilities:
+            errors.append(
+                InvalidUsingVisibilityError.Create(
+                    region=parser_info.regions__.visibility,
+                    type=self.name,
+                    visibility=parser_info.visibility,
+                    visibility_str=parser_info.visibility.name,
+                    valid_visibilities=self.valid_using_visibilities,
+                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_using_visibilities),
+                ),
+            )
 
         if errors:
             raise ErrorException(*errors)

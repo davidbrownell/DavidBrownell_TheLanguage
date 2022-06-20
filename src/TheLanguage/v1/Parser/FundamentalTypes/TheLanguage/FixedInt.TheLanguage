@@ -107,43 +107,43 @@ TEMPLATE> {
 
 
 # ----------------------------------------------------------------------
-public Int8                                 = FixedInt {1, is_signed! = True, is_checked! = False}
-public CheckedInt8                          = FixedInt {1, is_signed! = True, is_checked! = True}
+public Int8                                 = FixedInt {1, is_signed! = True!, is_checked! = False!}
+public CheckedInt8                          = FixedInt {1, is_signed! = True!, is_checked! = True!}
 
-public UInt8                                = FixedInt {1, is_signed! = False, is_checked! = False}
-public CheckedUInt8                         = FixedInt {1, is_signed! = False, is_checked! = True}
-
-
-# ----------------------------------------------------------------------
-public Int16                                = FixedInt {2, is_signed! = True, is_checked! = False}
-public CheckedInt16                         = FixedInt {2, is_signed! = True, is_checked! = True}
-
-public UInt16                               = FixedInt {2, is_signed! = False, is_checked! = False}
-public CheckedUInt16                        = FixedInt {2, is_signed! = False, is_checked! = True}
+public UInt8                                = FixedInt {1, is_signed! = False!, is_checked! = False!}
+public CheckedUInt8                         = FixedInt {1, is_signed! = False!, is_checked! = True!}
 
 
 # ----------------------------------------------------------------------
-public Int32                                = FixedInt {4, is_signed! = True, is_checked! = False}
-public CheckedInt32                         = FixedInt {4, is_signed! = True, is_checked! = True}
+public Int16                                = FixedInt {2, is_signed! = True!, is_checked! = False!}
+public CheckedInt16                         = FixedInt {2, is_signed! = True!, is_checked! = True!}
 
-public UInt32                               = FixedInt {4, is_signed! = False, is_checked! = False}
-public CheckedUInt32                        = FixedInt {4, is_signed! = False, is_checked! = True}
-
-
-# ----------------------------------------------------------------------
-public Int64                                = FixedInt {8, is_signed! = True, is_checked! = False}
-public CheckedInt64                         = FixedInt {8, is_signed! = True, is_checked! = True}
-
-public UInt64                               = FixedInt {8, is_signed! = False, is_checked! = False}
-public CheckedUInt64                        = FixedInt {8, is_signed! = False, is_checked! = True}
+public UInt16                               = FixedInt {2, is_signed! = False!, is_checked! = False!}
+public CheckedUInt16                        = FixedInt {2, is_signed! = False!, is_checked! = True!}
 
 
 # ----------------------------------------------------------------------
-public Int128                               = FixedInt {16, is_signed! = True, is_checked! = False}
-public CheckedInt128                        = FixedInt {16, is_signed! = True, is_checked! = True}
+public Int32                                = FixedInt {4, is_signed! = True!, is_checked! = False!}
+public CheckedInt32                         = FixedInt {4, is_signed! = True!, is_checked! = True!}
 
-public UInt128                              = FixedInt {16, is_signed! = False, is_checked! = False}
-public CheckedUInt128                       = FixedInt {16, is_signed! = False, is_checked! = True}
+public UInt32                               = FixedInt {4, is_signed! = False!, is_checked! = False!}
+public CheckedUInt32                        = FixedInt {4, is_signed! = False!, is_checked! = True!}
+
+
+# ----------------------------------------------------------------------
+public Int64                                = FixedInt {8, is_signed! = True!, is_checked! = False!}
+public CheckedInt64                         = FixedInt {8, is_signed! = True!, is_checked! = True!}
+
+public UInt64                               = FixedInt {8, is_signed! = False!, is_checked! = False!}
+public CheckedUInt64                        = FixedInt {8, is_signed! = False!, is_checked! = True!}
+
+
+# ----------------------------------------------------------------------
+public Int128                               = FixedInt {16, is_signed! = True!, is_checked! = False!}
+public CheckedInt128                        = FixedInt {16, is_signed! = True!, is_checked! = True!}
+
+public UInt128                              = FixedInt {16, is_signed! = False!, is_checked! = False!}
+public CheckedUInt128                       = FixedInt {16, is_signed! = False!, is_checked! = True!}
 
 
 # ----------------------------------------------------------------------

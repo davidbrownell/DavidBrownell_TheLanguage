@@ -19,7 +19,7 @@ from .Concepts.MutableStr import FixedSizeMutableStr
 
 # ----------------------------------------------------------------------
 public mutable class FixedSizeStr {
-    Bool! allow_empty! = False
+    Bool! allow_empty! = False!
 }
     extends FixedSizeMutableStr { allow_empty! = allow_empty! }
 :

@@ -61,6 +61,8 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: IfStatementParserInfo,
     ):
+        # BugBug: Ensure we don't have a Standard phrase type at the root or class levels
+
         true_clause_name: Optional[str] = None
 
         if parser_info.parser_info_type__ == ParserInfoType.Configuration:

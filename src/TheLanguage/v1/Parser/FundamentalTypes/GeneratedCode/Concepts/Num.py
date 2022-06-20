@@ -5,7 +5,6 @@
 
 from v1.Lexer.Location import Location
 from v1.Parser.MiniLanguage.Expressions.EnforceExpression import EnforceExpression
-from v1.Parser.MiniLanguage.Types.NoneType import NoneType
 from v1.Parser.MiniLanguage.Types.NumberType import NumberType
 from v1.Parser.ParserInfos.Common.ClassModifier import ClassModifier
 from v1.Parser.ParserInfos.Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo
@@ -40,17 +39,17 @@ from v1.Parser.TranslationUnitRegion import TranslationUnitRegion
 tu_region_000000 = TranslationUnitRegion(begin=Location(line=20, column=6), end=Location(line=20, column=10))
 tu_region_000001 = TranslationUnitRegion(begin=Location(line=20, column=13), end=Location(line=20, column=18))
 tu_region_000002 = TranslationUnitRegion(begin=Location(line=20, column=5), end=Location(line=20, column=19))
-tu_region_000003 = TranslationUnitRegion(begin=Location(line=20, column=33), end=Location(line=20, column=37))
-tu_region_000004 = TranslationUnitRegion(begin=Location(line=20, column=5), end=Location(line=20, column=37))
+tu_region_000003 = TranslationUnitRegion(begin=Location(line=20, column=33), end=Location(line=20, column=38))
+tu_region_000004 = TranslationUnitRegion(begin=Location(line=20, column=5), end=Location(line=20, column=38))
 tu_region_000005 = TranslationUnitRegion(begin=Location(line=20, column=20), end=Location(line=20, column=30))
 tu_region_000006 = TranslationUnitRegion(begin=Location(line=21, column=6), end=Location(line=21, column=10))
 tu_region_000007 = TranslationUnitRegion(begin=Location(line=21, column=13), end=Location(line=21, column=18))
 tu_region_000008 = TranslationUnitRegion(begin=Location(line=21, column=5), end=Location(line=21, column=19))
-tu_region_000009 = TranslationUnitRegion(begin=Location(line=21, column=33), end=Location(line=21, column=37))
-tu_region_000010 = TranslationUnitRegion(begin=Location(line=21, column=5), end=Location(line=21, column=37))
+tu_region_000009 = TranslationUnitRegion(begin=Location(line=21, column=33), end=Location(line=21, column=38))
+tu_region_000010 = TranslationUnitRegion(begin=Location(line=21, column=5), end=Location(line=21, column=38))
 tu_region_000011 = TranslationUnitRegion(begin=Location(line=21, column=20), end=Location(line=21, column=30))
 tu_region_000012 = TranslationUnitRegion(begin=Location(line=19, column=30), end=Location(line=22, column=2))
-tu_region_000013 = TranslationUnitRegion(begin=Location(line=20, column=5), end=Location(line=21, column=38))
+tu_region_000013 = TranslationUnitRegion(begin=Location(line=20, column=5), end=Location(line=21, column=39))
 tu_region_000014 = TranslationUnitRegion(begin=Location(line=24, column=9), end=Location(line=24, column=17))
 tu_region_000015 = TranslationUnitRegion(begin=Location(line=24, column=18), end=Location(line=24, column=28))
 tu_region_000016 = TranslationUnitRegion(begin=Location(line=24, column=32), end=Location(line=24, column=37))
@@ -333,13 +332,9 @@ statement_000000 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000001 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000001, tu_region_000001, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000001 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000001],
 )
 
 statement_000002 = VariantExpressionParserInfo.Create(
@@ -349,6 +344,7 @@ statement_000002 = VariantExpressionParserInfo.Create(
 )
 
 statement_000003 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000003],
 )
 
@@ -368,13 +364,9 @@ statement_000005 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=None,
 )
 
-statement_000006 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000007, tu_region_000007, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000006 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000007],
 )
 
 statement_000007 = VariantExpressionParserInfo.Create(
@@ -384,6 +376,7 @@ statement_000007 = VariantExpressionParserInfo.Create(
 )
 
 statement_000008 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000009],
 )
 
@@ -416,13 +409,9 @@ statement_000012 = VariableExpressionParserInfo.Create(
     name=r"min_value!",
 )
 
-statement_000013 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000016, tu_region_000016, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000013 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000016],
 )
 
 statement_000014 = TypeCheckExpressionParserInfo.Create(
@@ -438,13 +427,9 @@ statement_000015 = VariableExpressionParserInfo.Create(
     name=r"max_value!",
 )
 
-statement_000016 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000020, tu_region_000020, None],
-    value=NoneType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
+statement_000016 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000020],
 )
 
 statement_000017 = TypeCheckExpressionParserInfo.Create(

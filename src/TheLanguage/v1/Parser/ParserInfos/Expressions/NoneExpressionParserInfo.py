@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import Optional
 
 from dataclasses import dataclass
 
@@ -32,27 +32,12 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, TranslationUnitRegion
+    from .ExpressionParserInfo import ExpressionParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class NoneExpressionParserInfo(ExpressionParserInfo):
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        regions: List[Optional[TranslationUnitRegion]],
-        *args,
-        **kwargs,
-    ):
-        return cls(
-            ParserInfoType.Unknown,         # type: ignore
-            regions,                        # type: ignore
-            *args,
-            **kwargs,
-        )
-
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override

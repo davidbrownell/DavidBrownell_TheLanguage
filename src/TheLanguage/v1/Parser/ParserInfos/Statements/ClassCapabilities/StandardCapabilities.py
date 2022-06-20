@@ -125,6 +125,13 @@ StandardCapabilities                        = _ClassCapabilities(
     ],
     default_method_mutability=None,
     allow_static_methods=True,
+    valid_using_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.internal,
+        VisibilityModifier.protected,
+        VisibilityModifier.private,
+    ],
+    default_using_visibility=VisibilityModifier.private,
     valid_attribute_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,

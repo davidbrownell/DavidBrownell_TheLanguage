@@ -36,6 +36,8 @@ with InitRelativeImports():
 
     from ...Error import CreateError, Error, ErrorException
 
+    from ...MiniLanguage.Types.ExternalType import ExternalType as MiniLanguageExternalType
+
     from ...ParserInfos.ParserInfo import ParserInfo, ParserInfoType, VisitResult
     from ...ParserInfos.AggregateParserInfo import AggregateParserInfo
 
@@ -49,7 +51,7 @@ with InitRelativeImports():
 
     from ...ParserInfos.Statements.Traits.NamedStatementTrait import NamedStatementTrait
     from ...ParserInfos.Statements.Traits.ScopedStatementTrait import ScopedStatementTrait
-
+    from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
 
 # ----------------------------------------------------------------------
@@ -148,22 +150,42 @@ class BaseMixin(object):
                         namespace_stack.append(namespace)
                         exit_stack.callback(namespace_stack.pop)
 
-                if isinstance(parser_info, ExpressionParserInfo) and not parser_info.IsType():
+                if isinstance(parser_info, TemplatedStatementTrait) and parser_info.templates:
                     yield VisitResult.SkipAll
                     return
 
+                if isinstance(parser_info, ExpressionParserInfo):
+                    if not parser_info.IsType():
+                        yield VisitResult.SkipAll
+                        return
+
+                    type_result = MiniLanguageHelpers.EvalType(
+                        parser_info,
+                        self._compile_time_stack,
+                    )
+
+                    if isinstance(type_result, MiniLanguageExternalType):
+                        resolved_type = self._GetResolvedType(type_result.name, parser_info)
+
+                        print("BugBug (1)", parser_info.parser_info_type__)
+                    else:
+                        print("BugBug (2)", parser_info.parser_info_type__)
+
+                        if not ParserInfoType.IsCompileTimeStrict(parser_info.parser_info_type__):
+                            BugBug = 10
+
                 yield
 
-                assert (
-                    ParserInfoType.IsCompileTimeStrict(parser_info.parser_info_type__)
-                    or not isinstance(parser_info, ExpressionParserInfo)
-                    or isinstance(parser_info, VariableExpressionParserInfo)
-                    or parser_info.in_template__
-                    or parser_info.has_resolved_type__
-                ), (
-                    "Internal Error",
-                    parser_info.__class__.__name__,
-                )
+                # BugBug assert (
+                # BugBug     ParserInfoType.IsCompileTimeStrict(parser_info.parser_info_type__)
+                # BugBug     or not isinstance(parser_info, ExpressionParserInfo)
+                # BugBug     or isinstance(parser_info, VariableExpressionParserInfo)
+                # BugBug     or parser_info.in_template__
+                # BugBug     or parser_info.has_resolved_type__
+                # BugBug ), (
+                # BugBug     "Internal Error",
+                # BugBug     parser_info.__class__.__name__,
+                # BugBug )
 
         except ErrorException as ex:
             if isinstance(parser_info, StatementParserInfo):

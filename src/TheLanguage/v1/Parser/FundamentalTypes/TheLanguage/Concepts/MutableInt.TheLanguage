@@ -19,8 +19,8 @@ from .Int import Int
 
 # ----------------------------------------------------------------------
 public mutable concept MutableInt {
-    (Int! | None!) min_value! = None,
-    (Int! | None!) max_value! = None,
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
 }
     extends Int { min_value!, max_value! }
 :
