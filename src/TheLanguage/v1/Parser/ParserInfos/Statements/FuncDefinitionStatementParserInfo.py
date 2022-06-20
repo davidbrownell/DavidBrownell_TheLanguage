@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -288,7 +288,6 @@ class FuncDefinitionStatementParserInfo(
             parser_info_type = parameters.parser_info_type__
 
         return cls(  # pylint: disable=too-many-function-args
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             parser_info_type,               # type: ignore
             regions,                        # type: ignore
             str(name),
@@ -485,6 +484,15 @@ class FuncDefinitionStatementParserInfo(
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.TypeCustomization: ScopeFlag.Class,
+            ParserInfoType.Standard : ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+        }
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

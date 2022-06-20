@@ -80,7 +80,7 @@ with InitRelativeImports():
 
     from ..ParserInfos.Expressions.BinaryExpressionParserInfo import (
         BinaryExpressionParserInfo,
-        OperatorType as BinaryExpressionParserInfoOperatorType,
+        OperatorType as BinaryExpressionOperatorType,
     )
 
     from ..ParserInfos.Expressions.BooleanExpressionParserInfo import BooleanExpressionParserInfo
@@ -246,7 +246,15 @@ def _ToType(
     compile_time_values: LazyContainer[Dict[str, Any]],
     compile_time_types: LazyContainer[Dict[str, MiniLanguageType]],
 ) -> MiniLanguageType:
-    if isinstance(parser_info, FuncOrTypeExpressionParserInfo):
+    if isinstance(parser_info, BinaryExpressionParserInfo):
+        if parser_info.operator == BinaryExpressionOperatorType.Access:
+            left_type = _ToType(parser_info.left_expression, compile_time_values, compile_time_types)
+            right_type = _ToType(parser_info.right_expression, compile_time_values, compile_time_types)
+
+            if isinstance(left_type, ExternalType) and isinstance(right_type, ExternalType):
+                return ExternalType(left_type.names + right_type.names)
+
+    elif isinstance(parser_info, FuncOrTypeExpressionParserInfo):
         if parser_info.IsType():
             if isinstance(parser_info.value, str):
                 return ExternalType(parser_info.value)
@@ -261,15 +269,15 @@ def _ToType(
     elif isinstance(parser_info, TernaryExpressionParserInfo):
         condition_result = _EvalExpression(
             parser_info.condition_expression,
-            compile_time_values.Clone(),
-            compile_time_types.Clone(),
+            compile_time_values,
+            compile_time_types,
         )
         condition_result = condition_result.type.ToBoolValue(condition_result.value)
 
         return _ToType(
             parser_info.true_expression if condition_result else parser_info.false_expression,
-            compile_time_values.Clone(),
-            compile_time_types.Clone(),
+            compile_time_values,
+            compile_time_types,
         )
 
     elif isinstance(parser_info, TupleExpressionParserInfo):
@@ -278,8 +286,8 @@ def _ToType(
                 [
                     _ToType(
                         type_expression,
-                        compile_time_values.Clone(),
-                        compile_time_types.Clone(),
+                        compile_time_values,
+                        compile_time_types,
                     )
                     for type_expression in parser_info.types
                 ],
@@ -290,8 +298,8 @@ def _ToType(
             [
                 _ToType(
                     type_expression,
-                    compile_time_values.Clone(),
-                    compile_time_types.Clone(),
+                    compile_time_values,
+                    compile_time_types,
                 )
                 for type_expression in parser_info.types
             ],
@@ -315,8 +323,8 @@ def _EvalExpression(
     elif isinstance(expression_or_parser_info, ExpressionParserInfo):
         expression = _ToExpression(
             expression_or_parser_info,
-            compile_time_values.Clone(),
-            compile_time_types.Clone(),
+            compile_time_values,
+            compile_time_types,
             set(),
         )
     else:
@@ -344,15 +352,15 @@ def _ToExpression(
         return BinaryExpression(
             _ToExpression(
                 parser_info.left_expression,
-                compile_time_values.Clone(),
-                compile_time_types.Clone(),
+                compile_time_values,
+                compile_time_types,
                 suppress_warnings_set,
             ),
             operator,
             _ToExpression(
                 parser_info.right_expression,
-                compile_time_values.Clone(),
-                compile_time_types.Clone(),
+                compile_time_values,
+                compile_time_types,
                 suppress_warnings_set,
             ),
             parser_info.left_expression.regions__.self__,
@@ -366,8 +374,8 @@ def _ToExpression(
             TypingType[MiniLanguageExpression],
             _EvalExpression(
                 parser_info.expression,
-                compile_time_values.Clone(),
-                compile_time_types.Clone(),
+                compile_time_values,
+                compile_time_types,
             ).value,
         )
 
@@ -421,8 +429,8 @@ def _ToExpression(
                 arg_info = CallHelpers.ArgumentInfo(
                     _ToExpression(
                         argument.expression,
-                        compile_time_values.Clone(),
-                        compile_time_types.Clone(),
+                        compile_time_values,
+                        compile_time_types,
                         suppress_warnings_set,
                     ),
                     argument.regions__.self__,
@@ -461,7 +469,14 @@ def _ToExpression(
         return IdentityExpression(CharacterType(), parser_info.value)
 
     elif isinstance(parser_info, FuncOrTypeExpressionParserInfo):
-        if not parser_info.IsType():
+        if parser_info.IsType():
+            if isinstance(parser_info.value, str):
+                return IdentityExpression(ExternalType(parser_info.value), None)
+            elif isinstance(parser_info.value, MiniLanguageType):
+                return IdentityExpression(parser_info.value, None)
+            else:
+                assert False, parser_info.value  # pragma: no cover
+        else:
             assert not isinstance(parser_info.value, (str, MiniLanguageType)), parser_info.value
             return IdentityExpression(parser_info.value.EvalType(), parser_info.value)
 
@@ -481,37 +496,39 @@ def _ToExpression(
         return TernaryExpression(
             _ToExpression(
                 parser_info.condition_expression,
-                compile_time_values.Clone(),
-                compile_time_types.Clone(),
+                compile_time_values,
+                compile_time_types,
                 suppress_warnings_set,
             ),
             _ToExpression(
                 parser_info.true_expression,
-                compile_time_values.Clone(),
-                compile_time_types.Clone(),
+                compile_time_values,
+                compile_time_types,
                 suppress_warnings_set,
             ),
             _ToExpression(
                 parser_info.false_expression,
-                compile_time_values.Clone(),
-                compile_time_types.Clone(),
+                compile_time_values,
+                compile_time_types,
                 suppress_warnings_set,
             ),
         )
 
     elif isinstance(parser_info, TypeCheckExpressionParserInfo):
+        # BugBug: This needs to take inheritance into account
+
         return TypeCheckExpression(
             parser_info.operator,
             _ToExpression(
                 parser_info.expression,
-                compile_time_values.Clone(),
-                compile_time_types.Clone(),
+                compile_time_values,
+                compile_time_types,
                 suppress_warnings_set,
             ),
             _ToType(
                 parser_info.type,
-                compile_time_values.Clone(),
-                compile_time_types.Clone(),
+                compile_time_values,
+                compile_time_types,
             ),
         )
 
@@ -520,8 +537,8 @@ def _ToExpression(
             parser_info.operator,
             _ToExpression(
                 parser_info.expression,
-                compile_time_values.Clone(),
-                compile_time_types.Clone(),
+                compile_time_values,
+                compile_time_types,
                 suppress_warnings_set,
             ),
             parser_info.expression.regions__.self__,

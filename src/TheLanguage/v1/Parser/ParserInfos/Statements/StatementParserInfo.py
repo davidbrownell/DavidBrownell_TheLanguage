@@ -20,7 +20,7 @@ import os
 from enum import auto, Flag
 from typing import Any, Callable, Dict, Generator, List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -44,6 +44,9 @@ class ScopeFlag(Flag):
     Class                                   = auto()
     Function                                = auto()
 
+    # This value should never be used directly
+    Empty                                   = auto()
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -51,8 +54,6 @@ class StatementParserInfo(ParserInfo):
     """Abstract base class for all statements"""
 
     # ----------------------------------------------------------------------
-    scope_flags: ScopeFlag
-
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
@@ -70,11 +71,17 @@ class StatementParserInfo(ParserInfo):
         super(StatementParserInfo, self).__init__(
             parser_info_type,
             regions,
-            (regionless_attributes or []) + ["scope_flags", ],
+            regionless_attributes or [],
             validate,
-            scope_flags=None,                           # type: ignore
             **custom_display_funcs,
         )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        """Returns the scopes in which the statement can be considered valid"""
+        raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod

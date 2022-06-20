@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Generator, List, Optional
+from typing import Dict, Generator, List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -69,7 +69,6 @@ class RootStatementParserInfo(
         regions.insert(0, regions[0])       # visibility
 
         return cls(  # pylint: disable=too-many-function-args
-            ScopeFlag.Root,
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             name,
@@ -106,6 +105,14 @@ class RootStatementParserInfo(
                 **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
         )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Standard: ScopeFlag.Root,
+        }
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

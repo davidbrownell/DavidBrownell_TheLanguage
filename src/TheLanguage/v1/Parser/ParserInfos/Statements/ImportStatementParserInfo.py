@@ -18,11 +18,12 @@
 import os
 
 from enum import auto, Enum
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -80,7 +81,6 @@ class ImportStatementParserInfo(
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             ParserInfoType.Configuration,   # type: ignore
             regions,                        # type: ignore
             *args,
@@ -123,3 +123,11 @@ class ImportStatementParserInfo(
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Configuration: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+        }

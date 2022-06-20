@@ -78,38 +78,38 @@ class ExpressionsMixin(BaseMixin):
     ):
         # BugBug parser_info.InitInTemplate(self._InTemplate())
 
-        if (
-            parser_info.operator == BinaryExpressionOperatorType.Access
-            or parser_info.operator == BinaryExpressionOperatorType.AccessReturnSelf
-        ):
-            # Handle the visitation manually, as we have to modify the stack ourselves
-            try:
-                left_result = MiniLanguageHelpers.EvalExpression(
-                    parser_info.left_expression,
-                    self._compile_time_stack,
-                )
-
-                assert isinstance(left_result.value, NamespaceInfo), left_result.value
-
-                if parser_info.operator == BinaryExpressionOperatorType.Access:
-                    self._namespaces_stack.append([left_result.value])
-                elif parser_info.operator == BinaryExpressionOperatorType.AccessReturnSelf:
-                    assert False, "BugBug"
-                else:
-                    assert False, parser_info.operator  # pragma: no cover
-
-                with ExitStack() as exit_stack:
-                    exit_stack.callback(self._namespaces_stack.pop)
-
-                    parser_info.right_expression.Accept(self)
-
-                    # BugBug: Preserve the result of visiting the right expression
-
-            except ErrorException as ex:
-                self._errors += ex.errors
-
-            yield VisitResult.SkipAll
-            return
+        # BugBug (TODO): if (
+        # BugBug (TODO):     parser_info.operator == BinaryExpressionOperatorType.Access
+        # BugBug (TODO):     or parser_info.operator == BinaryExpressionOperatorType.AccessReturnSelf
+        # BugBug (TODO): ):
+        # BugBug (TODO):     # Handle the visitation manually, as we have to modify the stack ourselves
+        # BugBug (TODO):     try:
+        # BugBug (TODO):         left_result = MiniLanguageHelpers.EvalExpression(
+        # BugBug (TODO):             parser_info.left_expression,
+        # BugBug (TODO):             self._compile_time_stack,
+        # BugBug (TODO):         )
+        # BugBug (TODO):
+        # BugBug (TODO):         assert isinstance(left_result.value, NamespaceInfo), left_result.value
+        # BugBug (TODO):
+        # BugBug (TODO):         if parser_info.operator == BinaryExpressionOperatorType.Access:
+        # BugBug (TODO):             self._namespaces_stack.append([left_result.value])
+        # BugBug (TODO):         elif parser_info.operator == BinaryExpressionOperatorType.AccessReturnSelf:
+        # BugBug (TODO):             assert False, "BugBug"
+        # BugBug (TODO):         else:
+        # BugBug (TODO):             assert False, parser_info.operator  # pragma: no cover
+        # BugBug (TODO):
+        # BugBug (TODO):         with ExitStack() as exit_stack:
+        # BugBug (TODO):             exit_stack.callback(self._namespaces_stack.pop)
+        # BugBug (TODO):
+        # BugBug (TODO):             parser_info.right_expression.Accept(self)
+        # BugBug (TODO):
+        # BugBug (TODO):             # BugBug: Preserve the result of visiting the right expression
+        # BugBug (TODO):
+        # BugBug (TODO):     except ErrorException as ex:
+        # BugBug (TODO):         self._errors += ex.errors
+        # BugBug (TODO):
+        # BugBug (TODO):     yield VisitResult.SkipAll
+        # BugBug (TODO):     return
 
         yield
 

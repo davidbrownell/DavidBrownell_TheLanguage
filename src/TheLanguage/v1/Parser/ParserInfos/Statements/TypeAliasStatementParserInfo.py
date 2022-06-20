@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -74,7 +74,6 @@ class TypeAliasStatementParserInfo(
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             *args,
@@ -150,6 +149,14 @@ class TypeAliasStatementParserInfo(
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Standard: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+        }
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

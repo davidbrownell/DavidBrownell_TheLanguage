@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
 
@@ -52,7 +52,6 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             expression.parser_info_type__,  # type: ignore
             regions,                        # type: ignore
             expression,
@@ -70,6 +69,16 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
 
         # Validate
         self.expression.InitializeAsExpression()
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Configuration: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+            ParserInfoType.TypeCustomization: ScopeFlag.Class | ScopeFlag.Function,
+            ParserInfoType.Standard: ScopeFlag.Function,
+        }
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

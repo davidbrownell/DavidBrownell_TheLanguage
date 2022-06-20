@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -205,7 +205,6 @@ class IfStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             ParserInfoType.GetDominantType(*clauses),   # type: ignore
             regions,                                    # type: ignore
             clauses,
@@ -223,6 +222,16 @@ class IfStatementParserInfo(StatementParserInfo):
                 "else_clause",
             ],
         )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Configuration: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+            ParserInfoType.TypeCustomization: ScopeFlag.Class | ScopeFlag.Function,
+            ParserInfoType.Standard: ScopeFlag.Function,
+        }
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

@@ -17,11 +17,12 @@
 
 import os
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -74,7 +75,6 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Class,
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             *args,
@@ -121,6 +121,14 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Standard: ScopeFlag.Class,
+        }
 
     # ----------------------------------------------------------------------
     # |

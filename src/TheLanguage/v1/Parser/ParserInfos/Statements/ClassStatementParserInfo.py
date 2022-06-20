@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Generator, List, Optional
+from typing import Dict, Generator, List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -159,7 +159,6 @@ class ClassStatementParserInfo(
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             *args,
@@ -287,6 +286,14 @@ class ClassStatementParserInfo(
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Standard: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+        }
 
     # ----------------------------------------------------------------------
     @Interface.override

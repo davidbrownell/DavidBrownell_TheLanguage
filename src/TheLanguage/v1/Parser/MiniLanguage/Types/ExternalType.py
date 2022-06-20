@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any
+from typing import Any, List, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -40,9 +40,10 @@ class ExternalType(Type):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        name: str,
+        name_or_names: Union[str, List[str]],
     ):
-        self._name                          = name
+        self.names                          = name_or_names if isinstance(name_or_names, list) else [name_or_names, ]
+        self._name                          = str(self.names)
 
     # ----------------------------------------------------------------------
     @property

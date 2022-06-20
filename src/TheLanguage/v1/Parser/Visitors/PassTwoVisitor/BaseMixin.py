@@ -164,15 +164,15 @@ class BaseMixin(object):
                         self._compile_time_stack,
                     )
 
-                    if isinstance(type_result, MiniLanguageExternalType):
-                        resolved_type = self._GetResolvedType(type_result.name, parser_info)
-
-                        print("BugBug (1)", parser_info.parser_info_type__)
-                    else:
-                        print("BugBug (2)", parser_info.parser_info_type__)
-
-                        if not ParserInfoType.IsCompileTimeStrict(parser_info.parser_info_type__):
-                            BugBug = 10
+                    # BugBug (TODO): if isinstance(type_result, MiniLanguageExternalType):
+                    # BugBug (TODO):     resolved_type = self._GetResolvedType(type_result.name, parser_info)
+                    # BugBug (TODO):
+                    # BugBug (TODO):     print("BugBug (1)", parser_info.parser_info_type__)
+                    # BugBug (TODO): else:
+                    # BugBug (TODO):     print("BugBug (2)", parser_info.parser_info_type__)
+                    # BugBug (TODO):
+                    # BugBug (TODO):     if not ParserInfoType.IsCompileTimeStrict(parser_info.parser_info_type__):
+                    # BugBug (TODO):         BugBug = 10
 
                 yield
 

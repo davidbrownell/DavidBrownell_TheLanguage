@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -130,7 +130,6 @@ class SpecialMethodStatementParserInfo(
             parser_info_type = ParserInfoType.Standard
 
         return cls(  # pylint: disable=too-many-function-args
-            ScopeFlag.Class,
             parser_info_type,               # type: ignore
             regions,                        # type: ignore
             str(name),
@@ -181,6 +180,15 @@ class SpecialMethodStatementParserInfo(
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.TypeCustomization: ScopeFlag.Class,
+            ParserInfoType.Standard: ScopeFlag.Class,
+        }
 
     # ----------------------------------------------------------------------
     # |
