@@ -864,7 +864,7 @@ tu_region_000826 = TranslationUnitRegion(begin=Location(line=1, column=1), end=L
 
 # ----------------------------------------------------------------------
 statement_000000 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000000, tu_region_000000, None],
     value=BooleanType(),
     templates=None,

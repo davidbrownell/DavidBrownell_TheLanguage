@@ -146,8 +146,8 @@ def Execute(
 
         # BugBug
         # workspaces = {
-        #     #r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["FixedInt.TheLanguage"],
-        #     r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["BugBug.TheLanguage"],
+        #     r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["FixedInt.TheLanguage"],
+        #     #r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["BugBug.TheLanguage"],
         # }
 
         dm.stream.write("\nLexing...\n\n")

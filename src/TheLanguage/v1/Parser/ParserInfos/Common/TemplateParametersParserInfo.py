@@ -161,9 +161,9 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
         errors: List[Error] = []
 
         try:
-            self.type.InitializeAsType(ParserInfoType.Configuration)
+            self.type.InitializeAsType(ParserInfoType.TypeCustomization)
 
-            if not ParserInfoType.IsConfiguration(self.type.parser_info_type__):
+            if self.type.parser_info_type__ != ParserInfoType.TypeCustomization:
                 errors.append(
                     InvalidTemplateDecoratorTypeError.Create(
                         region=self.type.regions__.self__,

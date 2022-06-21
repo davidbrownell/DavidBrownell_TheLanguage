@@ -1022,7 +1022,7 @@ statement_000001 = AggregateParserInfo(
 )
 
 statement_000002 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000003, tu_region_000003, None],
     value=IntegerType(),
     templates=None,
@@ -1038,7 +1038,7 @@ statement_000003 = TemplateDecoratorParameterParserInfo.Create(
 )
 
 statement_000004 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000006, tu_region_000006, None],
     value=BooleanType(),
     templates=None,
@@ -1054,7 +1054,7 @@ statement_000005 = TemplateDecoratorParameterParserInfo.Create(
 )
 
 statement_000006 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000009, tu_region_000009, None],
     value=BooleanType(),
     templates=None,
@@ -1077,7 +1077,7 @@ statement_000008 = TemplateParametersParserInfo.Create(
 )
 
 statement_000009 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000015, tu_region_000015, None],
     value=IntegerType(),
     templates=None,
@@ -1093,7 +1093,7 @@ statement_000010 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000011 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000018, tu_region_000018, None],
     value=IntegerType(),
     templates=None,
@@ -1160,7 +1160,7 @@ statement_000020 = ClassStatementDependencyParserInfo.Create(
 )
 
 statement_000021 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000030, tu_region_000030, None],
     value=EnforceExpression,
     templates=None,

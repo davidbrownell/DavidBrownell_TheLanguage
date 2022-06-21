@@ -256,7 +256,7 @@ statement_000001 = AggregateParserInfo(
 )
 
 statement_000002 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000003, tu_region_000003, None],
     value=BooleanType(),
     templates=None,
@@ -519,7 +519,7 @@ statement_000026 = ClassStatementParserInfo.Create(
 )
 
 statement_000027 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000059, tu_region_000059, None],
     value=BooleanType(),
     templates=None,

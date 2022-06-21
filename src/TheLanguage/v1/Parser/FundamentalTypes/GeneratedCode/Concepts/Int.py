@@ -423,7 +423,7 @@ tu_region_000382 = TranslationUnitRegion(begin=Location(line=1, column=1), end=L
 
 # ----------------------------------------------------------------------
 statement_000000 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000000, tu_region_000000, None],
     value=IntegerType(),
     templates=None,
@@ -455,7 +455,7 @@ statement_000004 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000005 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000006, tu_region_000006, None],
     value=IntegerType(),
     templates=None,
@@ -494,7 +494,7 @@ statement_000010 = ConstraintParametersParserInfo.Create(
 )
 
 statement_000011 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000014, tu_region_000014, None],
     value=EnforceExpression,
     templates=None,

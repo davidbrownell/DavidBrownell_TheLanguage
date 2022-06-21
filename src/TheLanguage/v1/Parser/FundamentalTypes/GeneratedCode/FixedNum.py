@@ -837,7 +837,7 @@ statement_000001 = AggregateParserInfo(
 )
 
 statement_000002 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000003, tu_region_000003, None],
     value=IntegerType(),
     templates=None,
@@ -853,7 +853,7 @@ statement_000003 = TemplateDecoratorParameterParserInfo.Create(
 )
 
 statement_000004 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000006, tu_region_000006, None],
     value=BooleanType(),
     templates=None,
@@ -876,7 +876,7 @@ statement_000006 = TemplateParametersParserInfo.Create(
 )
 
 statement_000007 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000012, tu_region_000012, None],
     value=NumberType(),
     templates=None,
@@ -908,7 +908,7 @@ statement_000011 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000012 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000018, tu_region_000018, None],
     value=NumberType(),
     templates=None,
@@ -991,7 +991,7 @@ statement_000024 = ClassStatementDependencyParserInfo.Create(
 )
 
 statement_000025 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000031, tu_region_000031, None],
     value=EnforceExpression,
     templates=None,
@@ -2594,7 +2594,7 @@ statement_000183 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000184 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000453, tu_region_000453, None],
     value=NumberType(),
     templates=None,
@@ -2626,7 +2626,7 @@ statement_000188 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000189 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000459, tu_region_000459, None],
     value=NumberType(),
     templates=None,
@@ -2736,7 +2736,7 @@ statement_000205 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000206 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000483, tu_region_000483, None],
     value=NumberType(),
     templates=None,
@@ -2768,7 +2768,7 @@ statement_000210 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000211 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000489, tu_region_000489, None],
     value=NumberType(),
     templates=None,
@@ -2878,7 +2878,7 @@ statement_000227 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000228 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000513, tu_region_000513, None],
     value=NumberType(),
     templates=None,
@@ -2910,7 +2910,7 @@ statement_000232 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000233 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000519, tu_region_000519, None],
     value=NumberType(),
     templates=None,
@@ -3020,7 +3020,7 @@ statement_000249 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000250 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000543, tu_region_000543, None],
     value=NumberType(),
     templates=None,
@@ -3052,7 +3052,7 @@ statement_000254 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000255 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000549, tu_region_000549, None],
     value=NumberType(),
     templates=None,
@@ -3162,7 +3162,7 @@ statement_000271 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000272 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000573, tu_region_000573, None],
     value=NumberType(),
     templates=None,
@@ -3194,7 +3194,7 @@ statement_000276 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000277 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000579, tu_region_000579, None],
     value=NumberType(),
     templates=None,
@@ -3304,7 +3304,7 @@ statement_000293 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000294 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000603, tu_region_000603, None],
     value=NumberType(),
     templates=None,
@@ -3336,7 +3336,7 @@ statement_000298 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000299 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000609, tu_region_000609, None],
     value=NumberType(),
     templates=None,
@@ -3446,7 +3446,7 @@ statement_000315 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000316 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000633, tu_region_000633, None],
     value=NumberType(),
     templates=None,
@@ -3478,7 +3478,7 @@ statement_000320 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000321 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000639, tu_region_000639, None],
     value=NumberType(),
     templates=None,
@@ -3588,7 +3588,7 @@ statement_000337 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000338 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000663, tu_region_000663, None],
     value=NumberType(),
     templates=None,
@@ -3620,7 +3620,7 @@ statement_000342 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000343 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000669, tu_region_000669, None],
     value=NumberType(),
     templates=None,
@@ -3730,7 +3730,7 @@ statement_000359 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000360 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000693, tu_region_000693, None],
     value=NumberType(),
     templates=None,
@@ -3762,7 +3762,7 @@ statement_000364 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000365 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000699, tu_region_000699, None],
     value=NumberType(),
     templates=None,
@@ -3872,7 +3872,7 @@ statement_000381 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000382 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000723, tu_region_000723, None],
     value=NumberType(),
     templates=None,
@@ -3904,7 +3904,7 @@ statement_000386 = ConstraintParameterParserInfo.Create(
 )
 
 statement_000387 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Configuration,
+    parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000729, tu_region_000729, None],
     value=NumberType(),
     templates=None,
