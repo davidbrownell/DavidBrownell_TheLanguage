@@ -36,7 +36,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class NoneType(Type):
     name                                    = Interface.DerivedProperty("None")  # type: ignore
-    supported_scope                         = Interface.DerivedProperty(Type.Scope.Configuration | Type.Scope.TypeCustomization)  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod

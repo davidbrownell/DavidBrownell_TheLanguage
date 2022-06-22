@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, List, Union
+from typing import Any
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -35,15 +35,14 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class ExternalType(Type):
-    supported_scope                         = Interface.DerivedProperty(Type.Scope.TypeCustomization)  # type: ignore
-
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        name_or_names: Union[str, List[str]],
+        name: str,
     ):
-        self.names                          = name_or_names if isinstance(name_or_names, list) else [name_or_names, ]
-        self._name                          = str(self.names)
+        super(ExternalType, self).__init__()
+
+        self._name                          = name
 
     # ----------------------------------------------------------------------
     @property
@@ -57,7 +56,7 @@ class ExternalType(Type):
         self,
         value: Any,
     ) -> bool:
-        return isinstance(value, str) and value == self._name
+        raise Exception("This should never be called")
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -65,11 +64,12 @@ class ExternalType(Type):
     def ToBoolValue(
         value: Any,
     ) -> bool:
-        return True
+        raise Exception("This should never be called")
 
     # ----------------------------------------------------------------------
     @Interface.override
     def ToStringValue(
+        self,
         value: Any,
     ) -> str:
-        return value
+        return self._name

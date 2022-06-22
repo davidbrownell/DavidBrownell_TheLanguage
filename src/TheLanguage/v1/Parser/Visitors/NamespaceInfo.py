@@ -95,10 +95,14 @@ class NamespaceInfo(ObjectReprImplBase):
         result = NamespaceInfo(None, None)
 
         for key, value in self._FlattenImpl():
-            assert key not in result.children, key
             assert isinstance(value, ParsedNamespaceInfo), value
 
-            result.children[key] = value
+            existing_value = result.children.get(key, None)
+            if existing_value is not None:
+                assert isinstance(existing_value, ParsedNamespaceInfo), existing_value
+                assert value.parser_info == existing_value.parser_info, (value.parser_info, existing_value.parser_info)
+            else:
+                result.children[key] = value
 
         return result
 

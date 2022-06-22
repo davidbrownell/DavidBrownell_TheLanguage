@@ -90,7 +90,7 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
         try:
             self.type.InitializeAsType(self.parser_info_type__)
 
-            if not ParserInfoType.IsCompileTime(self.type.parser_info_type__):
+            if not self.type.is_compile_time__:
                 errors.append(
                     InvalidTemplateTypeError.Create(
                         region=self.type.regions__.self__,
@@ -130,10 +130,8 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        expression_parser_info_type = self.expression.parser_info_type__
-
         super(TemplateDecoratorArgumentParserInfo, self).__init__(
-            expression_parser_info_type,
+            self.expression.parser_info_type__,
             *args,
             **kwargs,
             regionless_attributes=["expression", ],
@@ -145,7 +143,7 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
         try:
             self.expression.InitializeAsExpression()
 
-            if not ParserInfoType.IsCompileTime(expression_parser_info_type):
+            if not self.expression.is_compile_time__:
                 errors.append(
                     InvalidTemplateExpressionError.Create(
                         region=self.expression.regions__.self__,

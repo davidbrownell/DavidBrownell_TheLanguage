@@ -45,6 +45,7 @@ with InitRelativeImports():
 
     from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ...ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
+    from ...ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
@@ -152,9 +153,9 @@ class BaseMixin(object):
                         namespace_stack.append(namespace)
                         exit_stack.callback(namespace_stack.pop)
 
-                if isinstance(parser_info, TemplatedStatementTrait) and parser_info.templates:
-                    yield VisitResult.SkipAll
-                    return
+                # BugBug if isinstance(parser_info, TemplatedStatementTrait) and parser_info.templates:
+                # BugBug     yield VisitResult.SkipAll
+                # BugBug     return
 
                 if isinstance(parser_info, ExpressionParserInfo):
                     if not parser_info.IsType():
@@ -165,6 +166,10 @@ class BaseMixin(object):
                         parser_info,
                         self._compile_time_stack,
                     )
+
+                    # This will be a Tuple, Variant, Dotted, or Single Type
+
+                    BugBug = 10
 
                     # BugBug (TODO): if isinstance(type_result, MiniLanguageExternalType):
                     # BugBug (TODO):     resolved_type = self._GetResolvedType(type_result.name, parser_info)
@@ -217,6 +222,33 @@ class BaseMixin(object):
     # |  Protected Methods
     # |
     # ----------------------------------------------------------------------
+    def _MiniLanguageTypeToParserInfo(
+        self,
+        parser_info: ExpressionParserInfo,
+        mini_language_type: MiniLanguageHelpers.MiniLanguageType,
+    ) -> ParserInfo:
+        if isinstance(mini_language_type, MiniLanguageHelpers.VariantType):
+            # BugBug return VariantExpressionParserInfo.Create(
+            # BugBug     [parser_info.regions__.self__, parser_info.regions__.mutability_modifier,],
+
+
+            pass # BugBug
+
+        elif isinstance(mini_language_type, MiniLanguageHelpers.TupleType):
+            pass # BugBug
+
+        elif isinstance(mini_language_type, MiniLanguageExternalType):
+            pass # BugBug
+
+        else:
+            assert False, mini_language_type  # pragma: no cover
+
+
+
+
+
+
+    # BugBug
     def _GetResolvedType(
         self,
         type_name: str,

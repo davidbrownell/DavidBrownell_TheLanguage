@@ -36,7 +36,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class BooleanType(Type):
     name                                    = Interface.DerivedProperty("Bool")  # type: ignore
-    supported_scope                         = Interface.DerivedProperty(Type.Scope.Configuration | Type.Scope.TypeCustomization)  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod

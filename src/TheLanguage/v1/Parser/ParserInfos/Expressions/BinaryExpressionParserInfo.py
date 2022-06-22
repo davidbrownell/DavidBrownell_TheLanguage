@@ -33,7 +33,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .CallExpressionParserInfo import CallExpressionParserInfo
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
 
     from .FuncOrTypeExpressionParserInfo import InvalidCompileTimeTypeError
@@ -161,7 +160,7 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
     @Interface.override
     def IsType(self) -> Optional[bool]:
         return (
-            self.operator == OperatorType.Access
+            self.operator in [OperatorType.LogicalOr, OperatorType.Access]
             and self.left_expression.IsType() is not False
             and self.right_expression.IsType() is not False
         )

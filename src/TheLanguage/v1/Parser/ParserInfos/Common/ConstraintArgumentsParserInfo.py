@@ -84,7 +84,7 @@ class ConstraintArgumentParserInfo(ParserInfo):
         try:
             self.expression.InitializeAsExpression()
 
-            if not ParserInfoType.IsCompileTime(self.expression.parser_info_type__):
+            if not self.expression.is_compile_time__:
                 errors.append(
                     InvalidConstraintExpressionError.Create(
                         region=self.expression.regions__.self__,

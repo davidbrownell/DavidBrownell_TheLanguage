@@ -120,8 +120,10 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        object.__setattr__(self, "_disabled", False)
         object.__setattr__(self, "_parser_info_type", parser_info_type)
+        object.__setattr__(self, "_is_compile_time", ParserInfoType.IsCompileTime(parser_info_type))
+        object.__setattr__(self, "_is_compile_time_strict", ParserInfoType.IsCompileTimeStrict(parser_info_type))
+        object.__setattr__(self, "_disabled", False)
 
         regionless_attributes_set = set(regionless_attributes or [])
 
@@ -174,9 +176,15 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
 
         ObjectReprImplBase.__init__(
             self,
-            parser_info_type__=None,
-            is_disabled__=None,
-            **custom_display_funcs,
+            **{
+                **{
+                    "parser_info_type__": None,
+                    "is_compile_time__": None,
+                    "is_compile_time_strict__": None,
+                    "is_disabled__": None,
+                },
+                **custom_display_funcs,
+            },
         )
 
         # Validate the instance
@@ -195,6 +203,14 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     @property
     def parser_info_type__(self) -> ParserInfoType:
         return self._parser_info_type  # type: ignore  # pylint: disable=no-member
+
+    @property
+    def is_compile_time__(self) -> bool:
+        return self._is_compile_time  # type: ignore  # pylint: disable=no-member
+
+    @property
+    def is_compile_time_strict__(self) -> bool:
+        return self._is_compile_time_strict  # type: ignore  # pylint: disable=no-member
 
     @property
     def is_disabled__(self) -> bool:

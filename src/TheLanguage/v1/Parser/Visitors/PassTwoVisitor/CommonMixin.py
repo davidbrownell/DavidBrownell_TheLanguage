@@ -124,7 +124,8 @@ class CommonMixin(BaseMixin):
     def OnTemplateParametersParserInfo(*args, **kwargs):
         # Anything with a template should have prevented visitation. Ensure that all statements
         # with templates have been properly handled.
-        raise Exception("Internal compiler error")
+        # BugBug raise Exception("Internal compiler error")
+        yield
 
     # ----------------------------------------------------------------------
     @staticmethod

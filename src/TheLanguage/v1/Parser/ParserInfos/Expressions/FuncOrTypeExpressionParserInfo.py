@@ -117,10 +117,7 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
                 "templates",
                 "constraints",
             ],
-            **{
-                "value_parser_info__": None,
-                **kwargs,
-            },
+            **kwargs,
         )
 
     # ----------------------------------------------------------------------

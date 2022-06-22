@@ -44,6 +44,7 @@ with InitRelativeImports():
     from ....Parser.ParserInfos.Expressions.CharacterExpressionParserInfo import CharacterExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.IntegerExpressionParserInfo import IntegerExpressionParserInfo
+    from ....Parser.ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.NumberExpressionParserInfo import NumberExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.StringExpressionParserInfo import StringExpressionParserInfo
@@ -276,6 +277,34 @@ class ExpressionsMixin(BaseMixin):
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 value=parser_info.value,
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    # |  NestedTypeExpressionParserInfo
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnNestedTypeExpressionParserInfo(
+        self,
+        parser_info: NestedTypeExpressionParserInfo,
+    ):
+        yield
+
+        self._imports.add("from v1.Parser.ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                {statement_name} = NestedTypeExpressionParserInfo.Create(
+                    regions=[{self_region},],
+                    types={types},
+                )
+
+                """,
+            ).format(
+                statement_name=self._CreateStatementName(parser_info),
+                self_region=self._ToString(parser_info.regions__.self__),
+                types=self._ToString(cast(List[ParserInfo], parser_info.types)),
             ),
         )
 

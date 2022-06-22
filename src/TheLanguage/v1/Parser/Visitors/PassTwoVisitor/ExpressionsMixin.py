@@ -314,7 +314,7 @@ class ExpressionsMixin(BaseMixin):
 
         if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
             assert all(
-                ParserInfoType.IsCompileTime(type_parser_info.parser_info_type__)
+                type_parser_info.is_compile_time__
                 for type_parser_info in parser_info.types
             )
 

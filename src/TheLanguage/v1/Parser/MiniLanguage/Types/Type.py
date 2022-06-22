@@ -17,7 +17,6 @@
 
 import os
 
-from enum import auto, Flag
 from typing import Any, Optional
 
 from dataclasses import dataclass
@@ -51,12 +50,6 @@ class Type(Interface.Interface, ObjectReprImplBase):
         refined_type: Optional["Type"]
 
     # ----------------------------------------------------------------------
-    # BugBug: Not sure about this
-    class Scope(Flag):
-        Configuration                       = auto()
-        TypeCustomization                   = auto()
-
-    # ----------------------------------------------------------------------
     # |
     # |  Public Methods
     # |
@@ -68,12 +61,6 @@ class Type(Interface.Interface, ObjectReprImplBase):
     @Interface.abstractproperty
     def name(self) -> str:
         raise Exception("Abstract property")  # pragma: no cover
-
-    # BugBug: Not sure about this
-    @Interface.abstractproperty
-    def supported_scope(self) -> "Type.Scope":
-        """Indicates the scopes in which type type can be used"""
-        raise Exception("Abstract property")
 
     # ----------------------------------------------------------------------
     @staticmethod

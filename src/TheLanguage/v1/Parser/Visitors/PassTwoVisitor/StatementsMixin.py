@@ -85,7 +85,7 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: FuncInvocationStatementParserInfo,
     ):
-        if not ParserInfoType.IsCompileTime(parser_info.parser_info_type__):
+        if not parser_info.is_compile_time__:
             assert False, "BugBug"
 
         yield

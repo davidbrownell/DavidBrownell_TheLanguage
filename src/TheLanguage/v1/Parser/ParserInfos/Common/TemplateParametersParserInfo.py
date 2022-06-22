@@ -176,7 +176,7 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
             try:
                 self.default_value.InitializeAsExpression()
 
-                if not ParserInfoType.IsCompileTime(self.default_value.parser_info_type__):
+                if not self.default_value.is_compile_time__:
                     errors.append(
                         InvalidTemplateDecoratorExpressionError.Create(
                             region=self.default_value.regions__.self__,

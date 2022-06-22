@@ -36,7 +36,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class StringType(Type):
     name                                    = Interface.DerivedProperty("Str")  # type: ignore
-    supported_scope                         = Interface.DerivedProperty(Type.Scope.Configuration | Type.Scope.TypeCustomization)  # type: ignore
 
     # ----------------------------------------------------------------------
     @staticmethod
