@@ -259,7 +259,7 @@ def ResolveExpressionTypes(
     ]
 ]:
     mini_language_configuration_values = {
-        k: MiniLanguageHelpers.CompileTimeInfo(v[0], v[1], None)
+        k: MiniLanguageHelpers.CompileTimeInfo(v[0], v[1])
         for k, v in configuration_values.items()
     }
 

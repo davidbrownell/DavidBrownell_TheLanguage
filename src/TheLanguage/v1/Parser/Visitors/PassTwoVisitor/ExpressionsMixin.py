@@ -245,19 +245,19 @@ class ExpressionsMixin(BaseMixin):
         # level. We can make this statement with confidence, because we aren't visiting
         # templated items.
 
-        if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
-            # Determine if the condition is True or False
-            condition_result = MiniLanguageHelpers.EvalExpression(
-                parser_info.condition_expression,
-                self._compile_time_stack,
-            )
-            condition_result = condition_result.type.ToBoolValue(condition_result.value)
-
-            # BugBug: Not sure if I like how the false condition is not evaluated
-            if condition_result:
-                parser_info.false_expression.Disable()
-            else:
-                parser_info.true_expression.Disable()
+        # BugBug if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
+        # BugBug     # Determine if the condition is True or False
+        # BugBug     condition_result = MiniLanguageHelpers.EvalExpression(
+        # BugBug         parser_info.condition_expression,
+        # BugBug         self._compile_time_stack,
+        # BugBug     )
+        # BugBug     condition_result = condition_result.type.ToBoolValue(condition_result.value)
+        # BugBug
+        # BugBug     # BugBug: Not sure if I like how the false condition is not evaluated
+        # BugBug     if condition_result:
+        # BugBug         parser_info.false_expression.Disable()
+        # BugBug     else:
+        # BugBug         parser_info.true_expression.Disable()
 
         yield
 

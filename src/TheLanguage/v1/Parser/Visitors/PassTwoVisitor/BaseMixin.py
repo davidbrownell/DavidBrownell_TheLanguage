@@ -44,6 +44,7 @@ with InitRelativeImports():
     from ...ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
 
     from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ...ParserInfos.Expressions.TypeCheckExpressionParserInfo import OperatorType as TypeCheckExpressionOperatorType
     from ...ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
     from ...ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
@@ -162,9 +163,20 @@ class BaseMixin(object):
                         yield VisitResult.SkipAll
                         return
 
+                    # ----------------------------------------------------------------------
+                    def TypeCheckCallback(
+                        the_type: str,
+                        operator: TypeCheckExpressionOperatorType,
+                        dest_parser_info: ExpressionParserInfo,
+                    ) -> bool:
+                        return False # BugBug
+
+                    # ----------------------------------------------------------------------
+
                     type_result = MiniLanguageHelpers.EvalType(
                         parser_info,
                         self._compile_time_stack,
+                        TypeCheckCallback,
                     )
 
                     # This will be a Tuple, Variant, Dotted, or Single Type
