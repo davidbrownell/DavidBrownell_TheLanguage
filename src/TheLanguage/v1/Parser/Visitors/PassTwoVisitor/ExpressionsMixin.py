@@ -76,41 +76,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: BinaryExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
-
-        # BugBug (TODO): if (
-        # BugBug (TODO):     parser_info.operator == BinaryExpressionOperatorType.Access
-        # BugBug (TODO):     or parser_info.operator == BinaryExpressionOperatorType.AccessReturnSelf
-        # BugBug (TODO): ):
-        # BugBug (TODO):     # Handle the visitation manually, as we have to modify the stack ourselves
-        # BugBug (TODO):     try:
-        # BugBug (TODO):         left_result = MiniLanguageHelpers.EvalExpression(
-        # BugBug (TODO):             parser_info.left_expression,
-        # BugBug (TODO):             self._compile_time_stack,
-        # BugBug (TODO):         )
-        # BugBug (TODO):
-        # BugBug (TODO):         assert isinstance(left_result.value, NamespaceInfo), left_result.value
-        # BugBug (TODO):
-        # BugBug (TODO):         if parser_info.operator == BinaryExpressionOperatorType.Access:
-        # BugBug (TODO):             self._namespaces_stack.append([left_result.value])
-        # BugBug (TODO):         elif parser_info.operator == BinaryExpressionOperatorType.AccessReturnSelf:
-        # BugBug (TODO):             assert False, "BugBug"
-        # BugBug (TODO):         else:
-        # BugBug (TODO):             assert False, parser_info.operator  # pragma: no cover
-        # BugBug (TODO):
-        # BugBug (TODO):         with ExitStack() as exit_stack:
-        # BugBug (TODO):             exit_stack.callback(self._namespaces_stack.pop)
-        # BugBug (TODO):
-        # BugBug (TODO):             parser_info.right_expression.Accept(self)
-        # BugBug (TODO):
-        # BugBug (TODO):             # BugBug: Preserve the result of visiting the right expression
-        # BugBug (TODO):
-        # BugBug (TODO):     except ErrorException as ex:
-        # BugBug (TODO):         self._errors += ex.errors
-        # BugBug (TODO):
-        # BugBug (TODO):     yield VisitResult.SkipAll
-        # BugBug (TODO):     return
-
         yield
 
     # ----------------------------------------------------------------------
@@ -119,9 +84,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: BooleanExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
-        # BugBug parser_info.InitResolvedType(self._GetResolvedType("Bool", parser_info))
-
         yield
 
     # ----------------------------------------------------------------------
@@ -130,7 +92,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: CallExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
         yield
 
     # ----------------------------------------------------------------------
@@ -139,9 +100,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: CharacterExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
-        # BugBug parser_info.InitResolvedType(self._GetResolvedType("Char", parser_info))
-
         yield
 
     # ----------------------------------------------------------------------
@@ -150,34 +108,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: FuncOrTypeExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
-
-        # BugBug if parser_info.parser_info_type__ != ParserInfoType.Configuration:
-        # BugBug     if not isinstance(parser_info.value, str):
-        # BugBug         assert False, "BugBug"
-        # BugBug     else:
-        # BugBug         parser_info.InitResolvedType(self._GetResolvedType(parser_info.value, parser_info))
-        # BugBug
-        # BugBug     BugBug = 10
-
-        yield
-        return # BugBUg
-
-        if isinstance(parser_info.value, str):
-            try:
-                result = MiniLanguageHelpers.EvalExpression(
-                    parser_info,
-                    self._compile_time_stack,
-                )
-
-                # BugBug parser_info.InitValueParserInfo(result.value)
-
-            except ErrorException as ex:
-                self._errors += ex.errors
-
-                yield VisitResult.SkipAll
-                return
-
         yield
 
     # ----------------------------------------------------------------------
@@ -186,7 +116,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: IndexExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
         yield
 
     # ----------------------------------------------------------------------
@@ -195,9 +124,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: IntegerExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
-        # BugBug parser_info.InitResolvedType(self._GetResolvedType("ArchInt", parser_info))
-
         yield
 
     # ----------------------------------------------------------------------
@@ -206,9 +132,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: NoneExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
-        # BugBug parser_info.InitResolvedType(self._GetResolvedType("None", parser_info))
-
         yield
 
     # ----------------------------------------------------------------------
@@ -217,9 +140,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: NumberExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
-        # BugBug parser_info.InitResolvedType(self._GetResolvedType("ArchNum", parser_info))
-
         yield
 
     # ----------------------------------------------------------------------
@@ -228,9 +148,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: StringExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
-        # BugBug parser_info.InitResolvedType(self._GetResolvedType("FixedSizeStr", parser_info))
-
         yield
 
     # ----------------------------------------------------------------------
@@ -239,26 +156,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: TernaryExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
-
-        # This expression should be able to be evaluated if it isn't at the function
-        # level. We can make this statement with confidence, because we aren't visiting
-        # templated items.
-
-        # BugBug if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
-        # BugBug     # Determine if the condition is True or False
-        # BugBug     condition_result = MiniLanguageHelpers.EvalExpression(
-        # BugBug         parser_info.condition_expression,
-        # BugBug         self._compile_time_stack,
-        # BugBug     )
-        # BugBug     condition_result = condition_result.type.ToBoolValue(condition_result.value)
-        # BugBug
-        # BugBug     # BugBug: Not sure if I like how the false condition is not evaluated
-        # BugBug     if condition_result:
-        # BugBug         parser_info.false_expression.Disable()
-        # BugBug     else:
-        # BugBug         parser_info.true_expression.Disable()
-
         yield
 
     # ----------------------------------------------------------------------
@@ -267,7 +164,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: TupleExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
         yield
 
     # ----------------------------------------------------------------------
@@ -276,8 +172,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: TypeCheckExpressionParserInfo,
     ):
-
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
         yield
 
     # ----------------------------------------------------------------------
@@ -286,7 +180,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: UnaryExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
         yield
 
     # ----------------------------------------------------------------------
@@ -295,13 +188,6 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: VariableExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
-
-        if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
-            print("BugBug____", parser_info.name)
-            # BugBug: Ensure no overwrites
-            pass
-
         yield
 
     # ----------------------------------------------------------------------
@@ -310,12 +196,4 @@ class ExpressionsMixin(BaseMixin):
         self,
         parser_info: VariantExpressionParserInfo,
     ):
-        # BugBug parser_info.InitInTemplate(self._InTemplate())
-
-        if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
-            assert all(
-                type_parser_info.is_compile_time__
-                for type_parser_info in parser_info.types
-            )
-
         yield

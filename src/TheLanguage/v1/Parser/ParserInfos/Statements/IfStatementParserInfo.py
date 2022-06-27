@@ -113,6 +113,14 @@ class IfStatementClauseParserInfo(
         self.expression.InitializeAsExpression()
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(
+        scope_flag: ScopeFlag,
+    ) -> bool:
+        return True
+
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
@@ -178,6 +186,14 @@ class IfStatementElseClauseParserInfo(
         self._InitTraits(
             allow_name_to_be_duplicated=False,
         )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(
+        scope_flag: ScopeFlag,
+    ) -> bool:
+        return True
 
 
 # ----------------------------------------------------------------------

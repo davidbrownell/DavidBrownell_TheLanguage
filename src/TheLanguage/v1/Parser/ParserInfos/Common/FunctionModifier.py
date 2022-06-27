@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  MethodModifier.py
+# |  FunctionModifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-03-17 06:41:41
+# |      2022-06-27 10:41:50
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the MethodModifier object"""
+"""Contains the function modifier object"""
 
 import os
 
@@ -28,9 +28,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 
 # ----------------------------------------------------------------------
-class MethodModifier(Enum):
-    abstract                                = auto()
-    final                                   = auto()
-    override                                = auto()
+class FunctionModifier(Enum):
+    generator                               = auto()
+    reentrant                               = auto()
+    scoped                                  = auto()
     standard                                = auto()
-    virtual                                 = auto()

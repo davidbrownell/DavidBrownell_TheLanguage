@@ -58,9 +58,9 @@ class NamespaceInfo(ObjectReprImplBase):
             or (name is None and parent is None)
         ), (name, parent)
 
-        self.name                           = name
-        self.parent                         = parent
-        self.children                       = children or OrderedDict()
+        self.name                                       = name
+        self.parent                                     = parent
+        self.children: Dict[str, NamespaceInfo]         = children or OrderedDict()
 
         super(NamespaceInfo, self).__init__(
             parent=None,
@@ -135,22 +135,25 @@ class ParsedNamespaceInfo(NamespaceInfo):
         self,
         parent: Optional[NamespaceInfo],
         scope_flag: ScopeFlag,
-        parser_info: Union[StatementParserInfo, TemplateTypeParameterParserInfo],
+        parser_info: Union[
+            StatementParserInfo,
+            TemplateTypeParameterParserInfo,
+        ],
         *,
         name: Optional[str]=None,
-        children: Optional[ChildrenType]=None,
         visibility: Optional[VisibilityModifier]=None,
+        children: Optional[ChildrenType]=None,
     ):
         if name is None:
             assert isinstance(parser_info, NamedStatementTrait)
             name = parser_info.name
 
-        if children is None:
-            children = OrderedDict()
-
         if visibility is None:
             assert isinstance(parser_info, NamedStatementTrait)
             visibility = parser_info.visibility
+
+        if children is None:
+            children = OrderedDict()
 
         super(ParsedNamespaceInfo, self).__init__(
             name,
@@ -162,12 +165,12 @@ class ParsedNamespaceInfo(NamespaceInfo):
         self.parser_info                    = parser_info
         self.visibility                     = visibility
 
-        self.children                                                       = children
+        self.children: ParsedNamespaceInfo.ChildrenType                     = children
 
         # Ordered children are those items that are only valid when they are introduced within the code.
         # For example, a type alias can only be used after it is defined. Compare this with a class
         # definition, which can be used as a base class before it is officially defined.
-        self.ordered_children: Dict[str, ParsedNamespaceInfo]               = {}
+        self.ordered_children: ParsedNamespaceInfo.ChildrenType             = {}
 
     # ----------------------------------------------------------------------
     def AddChild(
@@ -175,7 +178,7 @@ class ParsedNamespaceInfo(NamespaceInfo):
         child: "ParsedNamespaceInfo",
     ) -> None:
         assert child.name is not None
-        assert isinstance(child.parser_info, NamedStatementTrait)
+        assert isinstance(child.parser_info, (NamedStatementTrait, TemplateTypeParameterParserInfo))
 
         existing_value = self.children.get(child.name, None)
 

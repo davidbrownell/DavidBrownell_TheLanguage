@@ -102,7 +102,6 @@ class RootStatementParserInfo(
         self._InitTraits(
             allow_duplicate_names=False,
             allow_name_to_be_duplicated=False,
-            name_is_ordered=False,
         )
 
         NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
@@ -116,3 +115,11 @@ class RootStatementParserInfo(
         return {
             ParserInfoType.Standard: ScopeFlag.Root,
         }
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(
+        scope_flag: ScopeFlag,
+    ) -> bool:
+        return True

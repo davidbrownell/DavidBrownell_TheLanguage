@@ -130,6 +130,9 @@ class TemplateDecoratorArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
+        if self.expression.parser_info_type__ == ParserInfoType.Unknown:
+            self.expression.OverrideParserInfoType(ParserInfoType.TypeCustomization)
+
         super(TemplateDecoratorArgumentParserInfo, self).__init__(
             self.expression.parser_info_type__,
             *args,

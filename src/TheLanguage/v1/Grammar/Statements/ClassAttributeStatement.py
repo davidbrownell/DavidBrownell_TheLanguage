@@ -229,8 +229,8 @@ class ClassAttributeStatement(GrammarPhrase):
             return ClassAttributeStatementParserInfo.Create(
                 CreateRegions(
                     node,
-                    visibility_node,
                     name_node,
+                    visibility_node,
                     None, # documentation
                     keyword_initialization_node,
                     no_initialization_node,
@@ -238,10 +238,10 @@ class ClassAttributeStatement(GrammarPhrase):
                     no_compare_node,
                     is_override_node,
                 ),
-                class_capabilities,
                 visibility_info,
-                type_info,
                 name_info,
+                class_capabilities,
+                type_info,
                 None, # documentation
                 initializer_info,
                 keyword_initialization_info,

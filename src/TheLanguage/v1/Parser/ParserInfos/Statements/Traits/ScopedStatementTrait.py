@@ -19,7 +19,7 @@ import os
 
 from typing import Any, Dict, List, Optional
 
-from dataclasses import dataclass
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface

@@ -161,8 +161,8 @@ class ImportStatementMixin(BaseMixin):
                 parent_namespace,
                 item.scope_flag,
                 item.parser_info,
-                children=item.children,
                 visibility=import_parser_info.visibility,
+                children=item.children,
             )
 
         # ----------------------------------------------------------------------
@@ -236,8 +236,8 @@ class ImportStatementMixin(BaseMixin):
                 parent_namespace,
                 parent_namespace.scope_flag,
                 import_parser_info,
-                children=child_imports,
                 visibility=import_parser_info.visibility,
+                children=child_imports,
             )
 
         else:

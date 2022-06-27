@@ -41,7 +41,8 @@ with InitRelativeImports():
     from ....Parser.ParserInfos.AggregateParserInfo import AggregateParserInfo
 
     from ....Parser.ParserInfos.Common.ClassModifier import ClassModifier
-    from ....Parser.ParserInfos.Common.MethodModifier import MethodModifier
+    from ....Parser.ParserInfos.Common.FunctionModifier import FunctionModifier
+    from ....Parser.ParserInfos.Common.MethodHierarchyModifier import MethodHierarchyModifier
     from ....Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier
     from ....Parser.ParserInfos.Common.VisibilityModifier import VisibilityModifier
 
@@ -60,7 +61,8 @@ class BaseMixin(object):
 
         for common_import in [
             "ClassModifier",
-            "MethodModifier",
+            "FunctionModifier",
+            "MethodHierarchyModifier",
             "MutabilityModifier",
             "VisibilityModifier",
         ]:
@@ -169,7 +171,8 @@ class BaseMixin(object):
             str,
             bool,
             ClassModifier,
-            MethodModifier,
+            FunctionModifier,
+            MethodHierarchyModifier,
             MutabilityModifier,
             VisibilityModifier,
             Location,
@@ -186,8 +189,10 @@ class BaseMixin(object):
             return str(value)
         elif isinstance(value, ClassModifier):
             return "ClassModifier.{}".format(value.name)
-        elif isinstance(value, MethodModifier):
-            return "MethodModifier.{}".format(value.name)
+        elif isinstance(value, FunctionModifier):
+            return "FunctionModifier.{}".format(value.name)
+        elif isinstance(value, MethodHierarchyModifier):
+            return "MethodHierarchyModifier.{}".format(value.name)
         elif isinstance(value, MutabilityModifier):
             return "MutabilityModifier.{}".format(value.name)
         elif isinstance(value, VisibilityModifier):

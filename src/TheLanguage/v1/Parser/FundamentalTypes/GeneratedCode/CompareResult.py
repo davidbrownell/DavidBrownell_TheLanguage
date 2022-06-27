@@ -5,7 +5,8 @@
 
 from v1.Lexer.Location import Location
 from v1.Parser.ParserInfos.Common.ClassModifier import ClassModifier
-from v1.Parser.ParserInfos.Common.MethodModifier import MethodModifier
+from v1.Parser.ParserInfos.Common.FunctionModifier import FunctionModifier
+from v1.Parser.ParserInfos.Common.MethodHierarchyModifier import MethodHierarchyModifier
 from v1.Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier
 from v1.Parser.ParserInfos.Common.VisibilityModifier import VisibilityModifier
 from v1.Parser.ParserInfos.ParserInfo import ParserInfoType

@@ -95,6 +95,7 @@ def Execute(
     input_directory_or_filename,
     configuration="Debug",
     max_num_threads=None,
+    no_generate=False,
     output_stream=sys.stdout,
 ):
     input_directory_or_filename_items = input_directory_or_filename
@@ -145,10 +146,11 @@ def Execute(
             return dm.result
 
         # BugBug
+        # no_generate = True
         # workspaces = {
-        #     #r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage\Concepts" : ["Int.TheLanguage"],
-        #     #r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["FixedSizeStr.TheLanguage"],
-        #     r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["BugBug.TheLanguage"],
+        #     r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage\Concepts" : ["MutableStr.TheLanguage"],
+        #     #r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["None.TheLanguage"],
+        #     #r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["BugBug.TheLanguage"],
         # }
 
         dm.stream.write("\nLexing...\n\n")
@@ -245,17 +247,18 @@ def Execute(
 
             resolve_expression_types_result = parse_result
 
-        dm.stream.write("\nGenerating output...")
-        with dm.stream.DoneManager() as target_dm:
-            target = _TARGETS[target](resolve_expression_types_result, output_directory)
+        if not no_generate:
+            dm.stream.write("\nGenerating output...")
+            with dm.stream.DoneManager() as target_dm:
+                target = _TARGETS[target](resolve_expression_types_result, output_directory)
 
-            for output in target.EnumOutputs():
-                target_dm.stream.write(
-                    "{:<130} -> {}\n".format(
-                        output.fully_qualified_name,
-                        output.output_name,
-                    ),
-                )
+                for output in target.EnumOutputs():
+                    target_dm.stream.write(
+                        "{:<130} -> {}\n".format(
+                            output.fully_qualified_name,
+                            output.output_name,
+                        ),
+                    )
 
         return dm.result
 

@@ -33,7 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
+    from .Traits.NamedStatementTrait import NamedStatementTrait
 
     from ..Common.VisibilityModifier import VisibilityModifier
 
@@ -44,18 +46,17 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassAttributeStatementParserInfo(StatementParserInfo):
+class ClassAttributeStatementParserInfo(
+    NamedStatementTrait,
+    StatementParserInfo,
+):
     """Attribute of a class"""
 
     # ----------------------------------------------------------------------
     class_capabilities: ClassCapabilities
 
-    visibility_param: InitVar[Optional[VisibilityModifier]]
-    visibility: VisibilityModifier          = field(init=False)
-
     type: ExpressionParserInfo
 
-    name: str
     documentation: Optional[str]
 
     initialized_value: Optional[ExpressionParserInfo]
@@ -83,7 +84,8 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, parser_info_type, regions, visibility_param):
-        super(ClassAttributeStatementParserInfo, self).__post_init__(
+        StatementParserInfo.__post_init__(
+            self,
             parser_info_type,
             regions,
             regionless_attributes=[

@@ -73,7 +73,7 @@ class BaseMixin(object):
     ):
         self._global_namespace              = global_namespace
         self._configuration_info            = configuration_info
-        self._names                         = names
+        self._names_stack                   = [list(names), ]
 
         self._errors: List[Error]                                           = []
 
@@ -129,6 +129,9 @@ class BaseMixin(object):
 
         try:
             with ExitStack() as exit_stack:
+                assert self._names_stack
+                parser_info.InitParentName(self._names_stack[-1])
+
                 if isinstance(parser_info, NamedStatementTrait):
                     if isinstance(parser_info, ClassStatementParserInfo):
                         scope_flag = ScopeFlag.Class
@@ -155,6 +158,9 @@ class BaseMixin(object):
                         self._namespace_stack.append(new_namespace)
                         exit_stack.callback(self._namespace_stack.pop)
 
+                        self._names_stack.append(self._names_stack[-1] + [parser_info.name, ])
+                        exit_stack.callback(self._names_stack.pop)
+
                 if isinstance(parser_info, StatementParserInfo):
                     for dynamic_type_name in parser_info.GenerateDynamicTypeNames():
                         assert isinstance(self._namespace_stack[-1], ParsedNamespaceInfo), self._namespace_stack[-1]
@@ -165,8 +171,8 @@ class BaseMixin(object):
                             ScopeFlag.Class | ScopeFlag.Function,
                             target_namespace.parser_info,
                             name=dynamic_type_name,
-                            children=target_namespace.children,
                             visibility=VisibilityModifier.private,
+                            children=target_namespace.children,
                         )
 
                         self._AddNamespaceItem(new_namespace)
@@ -267,21 +273,22 @@ class BaseMixin(object):
             parent_namespace = self._namespace_stack[-1]
             parent_namespace.AddChild(new_namespace)
 
-            if new_namespace.parser_info.name_is_ordered__:
+            if new_namespace.parser_info.IsNameOrdered(parent_namespace.scope_flag):
                 # ----------------------------------------------------------------------
                 def PopChildItem(
                     new_namespace=new_namespace,
                     parent_namespace=parent_namespace,
                 ):
                     assert isinstance(new_namespace.parser_info, NamedStatementTrait)
-                    parent_namespace.children.pop(new_namespace.parser_info.name)
+
+                    namespace_item = parent_namespace.children.pop(new_namespace.parser_info.name)
+
+                    assert new_namespace.parser_info.name not in parent_namespace.ordered_children, new_namespace.parser_info.name
+                    parent_namespace.ordered_children[new_namespace.parser_info.name] = namespace_item
 
                 # ----------------------------------------------------------------------
 
                 self._finalize_funcs.append(PopChildItem)
-
-                assert new_namespace.parser_info.name not in parent_namespace.ordered_children, new_namespace.parser_info.name
-                parent_namespace.ordered_children[new_namespace.parser_info.name] = new_namespace
 
     # ----------------------------------------------------------------------
     # |

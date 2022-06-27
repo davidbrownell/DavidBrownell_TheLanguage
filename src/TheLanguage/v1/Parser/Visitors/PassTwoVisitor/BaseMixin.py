@@ -15,11 +15,14 @@
 # ----------------------------------------------------------------------
 """Contains the BaseMixin object"""
 
+import itertools
 import os
+import threading
 import types
 
 from contextlib import contextmanager, ExitStack
-from typing import Dict, List, Optional, Tuple, Union
+from enum import auto, Enum
+from typing import Callable, cast, Dict, List, Optional, Set, Tuple, Union
 
 import CommonEnvironment
 
@@ -35,21 +38,28 @@ with InitRelativeImports():
     from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
     from ...Error import CreateError, Error, ErrorException
-
-    from ...MiniLanguage.Types.ExternalType import ExternalType as MiniLanguageExternalType
+    from ...TranslationUnitRegion import TranslationUnitRegion
 
     from ...ParserInfos.ParserInfo import ParserInfo, ParserInfoType, VisitResult
     from ...ParserInfos.AggregateParserInfo import AggregateParserInfo
 
     from ...ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
+    from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
 
+    from ...ParserInfos.Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo, OperatorType as BinaryExpressionOperatorType
     from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
+    from ...ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo
+    from ...ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
+    from ...ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
     from ...ParserInfos.Expressions.TypeCheckExpressionParserInfo import OperatorType as TypeCheckExpressionOperatorType
     from ...ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
     from ...ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
+    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
-    from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
+    from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo, ScopeFlag
+    from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
     from ...ParserInfos.Statements.Traits.NamedStatementTrait import NamedStatementTrait
     from ...ParserInfos.Statements.Traits.ScopedStatementTrait import ScopedStatementTrait
@@ -62,9 +72,36 @@ InvalidTypeError                            = CreateError(
     name=str,
 )
 
+InvalidTypeReferenceError                   = CreateError(
+    "'{name}' is not a valid type reference; types must be class-like or aliases to class-like types",
+    name=str,
+)
+
+InvalidCompileTimeTypeCheckError            = CreateError(
+    "Compile-time type checks can only be used with template types",
+)
+
 
 # ----------------------------------------------------------------------
 class BaseMixin(object):
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    class PostprocessType(Enum):
+        ResolveIso                          = 0
+        ResolveDependenciesParallel         = 1
+        ResolveDependenciesSequential       = 2
+        ResolveClasses                      = 3
+        ResolveNestedTypes                  = 4
+
+    sequential_postprocess_steps: Set[PostprocessType]  = set(
+        [
+            PostprocessType.ResolveDependenciesSequential,
+        ],
+    )
+
     # ----------------------------------------------------------------------
     # |
     # |  Public Methods
@@ -82,15 +119,14 @@ class BaseMixin(object):
             namespace_stack.append(fundamental_types_namespace)
 
         self._namespaces_stack              = [namespace_stack, ]
-        self._root_namespace                = this_namespace
-
         self._compile_time_stack            = [configuration_info, ]
 
+        self._root_namespace                = this_namespace
+
         self._errors: List[Error]           = []
+        self._processed: Set[int]           = set()
 
-        self._template_ctr                  = 0
-
-        self._namespace_to_names_map: Dict[int, Tuple[str, str]]            = {}
+        self._all_postprocess_funcs: List[List[Callable[[], None]]]         = [[] for _ in range(len(BaseMixin.PostprocessType))]
 
     # ----------------------------------------------------------------------
     def __getattr__(
@@ -115,18 +151,25 @@ class BaseMixin(object):
             with ExitStack() as exit_stack:
                 if isinstance(parser_info, NamedStatementTrait):
                     assert self._namespaces_stack
+                    namespace_stack = self._namespaces_stack[-1]
 
-                    if parser_info.name_is_ordered__:
-                        # Add the item
-                        assert self._namespaces_stack
-                        namespace_stack = self._namespaces_stack[-1]
-
+                    if not isinstance(parser_info, RootStatementParserInfo):
                         assert namespace_stack
                         namespace = namespace_stack[-1]
 
-                        assert isinstance(namespace, ParsedNamespaceInfo)
+                        assert isinstance(namespace, ParsedNamespaceInfo), namespace
 
-                        namespace.children[parser_info.name] = namespace.ordered_children[parser_info.name]
+                        if isinstance(namespace.parser_info, RootStatementParserInfo):
+                            scope_flag = ScopeFlag.Root
+                        else:
+                            assert isinstance(namespace.parent, ParsedNamespaceInfo), namespace.parent
+                            scope_flag = namespace.parent.scope_flag
+
+                        if parser_info.IsNameOrdered(scope_flag):
+                            ordered_item_or_items = namespace.ordered_children[parser_info.name]
+
+                            for ordered_item in (ordered_item_or_items if isinstance(ordered_item_or_items, list) else [ordered_item_or_items, ]):
+                                namespace.AddChild(ordered_item)
 
                     if isinstance(parser_info, ScopedStatementTrait):
                         if isinstance(parser_info, RootStatementParserInfo):
@@ -154,57 +197,126 @@ class BaseMixin(object):
                         namespace_stack.append(namespace)
                         exit_stack.callback(namespace_stack.pop)
 
-                # BugBug if isinstance(parser_info, TemplatedStatementTrait) and parser_info.templates:
-                # BugBug     yield VisitResult.SkipAll
-                # BugBug     return
+                is_type_expression = False
+                is_compile_time_expression = False
 
                 if isinstance(parser_info, ExpressionParserInfo):
-                    if not parser_info.IsType():
+                    if parser_info.IsType() is not False:
+                        is_type_expression = True
+
+                        # ----------------------------------------------------------------------
+                        def TypeCheckCallback(
+                            the_type: str,
+                            operator: TypeCheckExpressionOperatorType,
+                            dest_parser_info: ExpressionParserInfo,
+                        ) -> bool:
+                            # TODO: It is no longer valid to just throw, as we are looking at templated types
+                            raise ErrorException(
+                                InvalidCompileTimeTypeCheckError.Create(
+                                    region=dest_parser_info.regions__.self__,
+                                ),
+                            )
+
+                        # ----------------------------------------------------------------------
+
+                        try:
+                            type_result = MiniLanguageHelpers.EvalType(
+                                parser_info,
+                                self._compile_time_stack,
+                                TypeCheckCallback,
+                            )
+
+                            if isinstance(type_result, MiniLanguageHelpers.MiniLanguageType):
+                                parser_info.SetResolvedEntity(type_result)
+
+                            elif isinstance(type_result, ExpressionParserInfo):
+                                try:
+                                    self._ResolveType(
+                                        parser_info,
+                                        type_result,
+                                        self._NamespaceTypeResolver,
+                                    )
+                                except ErrorException:
+                                    # It is possible that we see this error right now because we
+                                    # are in a class and the type is defined in a base. Wait until
+                                    # the class is fully defined (so the base types are visible)
+                                    # and attempt to get the type again.
+
+                                    suppress_exception = False
+
+                                    assert self._namespaces_stack
+                                    namespace_stack = self._namespaces_stack[-1]
+
+                                    assert namespace_stack
+
+                                    for namespace in reversed(namespace_stack):
+                                        if (
+                                            isinstance(namespace, ParsedNamespaceInfo)
+                                            and isinstance(namespace.parser_info, ClassStatementParserInfo)
+                                            and any(
+                                                not dependency.is_disabled__
+                                                for dependency in itertools.chain(
+                                                    (namespace.parser_info.extends or []),
+                                                    (namespace.parser_info.uses or []),
+                                                    (namespace.parser_info.implements or []),
+                                                )
+                                            )
+                                        ):
+                                            # Process it once the classes have been fully formed
+                                            suppress_exception = True
+
+                                            # ----------------------------------------------------------------------
+                                            def ResolveNestedType(
+                                                parser_info=parser_info,
+                                                type_result=type_result,
+                                                namespace=namespace,
+                                            ):
+                                                self._ResolveType(
+                                                    parser_info,
+                                                    type_result,
+                                                    (
+                                                        lambda type_name, namespace=namespace:
+                                                            self._NestedTypeResolver(
+                                                                type_name,
+                                                                namespace.parser_info,
+                                                            )
+                                                    )
+                                                )
+
+                                            # ----------------------------------------------------------------------
+
+                                            self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveNestedTypes.value].append(ResolveNestedType)
+                                            break
+
+                                    if not suppress_exception:
+                                        raise
+
+                            else:
+                                assert False, type_result  # pragma: no cover
+
+                        except ErrorException as ex:
+                            self._errors += ex.errors
+
                         yield VisitResult.SkipAll
                         return
 
-                    # ----------------------------------------------------------------------
-                    def TypeCheckCallback(
-                        the_type: str,
-                        operator: TypeCheckExpressionOperatorType,
-                        dest_parser_info: ExpressionParserInfo,
-                    ) -> bool:
-                        return False # BugBug
-
-                    # ----------------------------------------------------------------------
-
-                    type_result = MiniLanguageHelpers.EvalType(
-                        parser_info,
-                        self._compile_time_stack,
-                        TypeCheckCallback,
-                    )
-
-                    # This will be a Tuple, Variant, Dotted, or Single Type
-
-                    BugBug = 10
-
-                    # BugBug (TODO): if isinstance(type_result, MiniLanguageExternalType):
-                    # BugBug (TODO):     resolved_type = self._GetResolvedType(type_result.name, parser_info)
-                    # BugBug (TODO):
-                    # BugBug (TODO):     print("BugBug (1)", parser_info.parser_info_type__)
-                    # BugBug (TODO): else:
-                    # BugBug (TODO):     print("BugBug (2)", parser_info.parser_info_type__)
-                    # BugBug (TODO):
-                    # BugBug (TODO):     if not ParserInfoType.IsCompileTimeStrict(parser_info.parser_info_type__):
-                    # BugBug (TODO):         BugBug = 10
+                    elif parser_info.is_compile_time__:
+                        is_compile_time_expression = True
 
                 yield
 
-                # BugBug assert (
-                # BugBug     ParserInfoType.IsCompileTimeStrict(parser_info.parser_info_type__)
-                # BugBug     or not isinstance(parser_info, ExpressionParserInfo)
-                # BugBug     or isinstance(parser_info, VariableExpressionParserInfo)
-                # BugBug     or parser_info.in_template__
-                # BugBug     or parser_info.has_resolved_type__
-                # BugBug ), (
-                # BugBug     "Internal Error",
-                # BugBug     parser_info.__class__.__name__,
-                # BugBug )
+                assert not is_type_expression or id(parser_info) in self._processed, (
+                    "Internal Error",
+                    parser_info.__class__.__name__,
+                )
+
+                # TODO: assert (
+                # TODO:     not is_compile_time_expression
+                # TODO:     or cast(ExpressionParserInfo, parser_info).HasResolvedEntity()
+                # TODO: ), (
+                # TODO:     "Internal Error",
+                # TODO:     parser_info.__class__.__name__,
+                # TODO: )
 
         except ErrorException as ex:
             if isinstance(parser_info, StatementParserInfo):
@@ -219,105 +331,105 @@ class BaseMixin(object):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnAggregateParserInfo(
-        self,
-        parser_info: AggregateParserInfo,
-    ):
-        for agg_parser_info in parser_info.parser_infos:
-            agg_parser_info.Accept(self)
-
+    def OnAggregateParserInfo(*args, **kwargs):  # pylint: disable=unused-argument
         yield
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Methods
-    # |
-    # ----------------------------------------------------------------------
-    def _MiniLanguageTypeToParserInfo(
-        self,
-        parser_info: ExpressionParserInfo,
-        mini_language_type: MiniLanguageHelpers.MiniLanguageType,
-    ) -> ParserInfo:
-        if isinstance(mini_language_type, MiniLanguageHelpers.VariantType):
-            # BugBug return VariantExpressionParserInfo.Create(
-            # BugBug     [parser_info.regions__.self__, parser_info.regions__.mutability_modifier,],
-
-
-            pass # BugBug
-
-        elif isinstance(mini_language_type, MiniLanguageHelpers.TupleType):
-            pass # BugBug
-
-        elif isinstance(mini_language_type, MiniLanguageExternalType):
-            pass # BugBug
-
-        else:
-            assert False, mini_language_type  # pragma: no cover
-
-
-
-
-
-
-    # BugBug
-    def _GetResolvedType(
-        self,
-        type_name: str,
-        parser_info: ParserInfo,
-    ) -> ExpressionParserInfo.ResolvedType:
-        assert self._namespaces_stack
-        namespace_stack = self._namespaces_stack[-1]
-
-        for namespace in reversed(namespace_stack):
-            potential_namespace = namespace.children.get(type_name, None)
-            if potential_namespace is None:
-                continue
-
-            assert isinstance(potential_namespace, ParsedNamespaceInfo), potential_namespace
-            namespace = potential_namespace.parent
-
-            # Get the names for the namespace
-            key = id(namespace)
-
-            namespace_names = self._namespace_to_names_map.get(key, None)
-            if namespace_names is None:
-                names: List[str] = []
-
-                while namespace is not None:
-                    if namespace.name is not None:
-                        names.append(namespace.name)
-
-                    namespace = namespace.parent
-
-                assert len(names) >= 2, names
-
-                workspace_name = names.pop()
-                relative_name = ".".join(reversed(names))
-
-                namespace_names = (workspace_name, relative_name)
-
-                self._namespace_to_names_map[key] = namespace_names
-
-            assert namespace_names is not None
-
-            return ExpressionParserInfo.ResolvedType.Create(
-                potential_namespace.parser_info,
-                namespace_names[0],
-                namespace_names[1],
-            )
-
-        raise ErrorException(
-            InvalidTypeError.Create(
-                region=parser_info.regions__.self__,
-                name=type_name,
-            ),
-        )
 
     # ----------------------------------------------------------------------
     # |
     # |  Private Methods
     # |
+    # ----------------------------------------------------------------------
+    def _ResolveType(
+        self,
+        parser_info: ExpressionParserInfo,
+        type_result: ExpressionParserInfo,
+        resolver_func: Callable[[str], Optional[ParserInfo]],
+    ) -> None:
+        resolved_type: Optional[ExpressionParserInfo.ResolvedType] = None
+
+        if isinstance(type_result, FuncOrTypeExpressionParserInfo):
+            assert isinstance(type_result.value, str), type_result.value
+
+            resolved_parser_info = resolver_func(type_result.value)
+            if resolved_parser_info is None:
+                raise ErrorException(
+                    InvalidTypeError.Create(
+                        region=type_result.regions__.value,
+                        name=type_result.value,
+                    ),
+                )
+
+            if not isinstance(
+                resolved_parser_info,
+                (
+                    ClassStatementParserInfo,
+                    TemplateTypeParameterParserInfo,
+                    TypeAliasStatementParserInfo,
+                ),
+            ):
+                raise ErrorException(
+                    InvalidTypeReferenceError.Create(
+                        region=type_result.regions__.value,
+                        name=type_result.value,
+                    ),
+                )
+
+            if isinstance(resolved_parser_info, TypeAliasStatementParserInfo):
+                resolved_type = TypeAliasStatementParserInfo.ResolvedType.Create(resolved_parser_info)
+            else:
+                resolved_type = ExpressionParserInfo.ResolvedType.Create(resolved_parser_info)
+
+        elif isinstance(type_result, NestedTypeExpressionParserInfo):
+            raise NotImplementedError("TODO: Not implemented yet")
+
+        elif isinstance(type_result, NoneExpressionParserInfo):
+            parser_info.SetResolvedEntity(None)
+            return
+
+        elif isinstance(type_result, TupleExpressionParserInfo):
+            for the_type in type_result.types:
+                self._ResolveType(the_type, the_type, resolver_func)
+
+            resolved_type = ExpressionParserInfo.ResolvedType.Create(type_result)
+
+        elif isinstance(type_result, VariantExpressionParserInfo):
+            for the_type in type_result.types:
+                self._ResolveType(the_type, the_type, resolver_func)
+
+            resolved_type = ExpressionParserInfo.ResolvedType.Create(type_result)
+
+        assert resolved_type is not None
+        parser_info.SetResolvedEntity(resolved_type)
+
+    # ----------------------------------------------------------------------
+    def _NamespaceTypeResolver(
+        self,
+        type_name: str,
+    ) -> Optional[ParserInfo]:
+        assert self._namespaces_stack
+        namespace_stack = self._namespaces_stack[-1]
+
+        assert namespace_stack
+
+        for namespace in reversed(namespace_stack):
+            potential_namespace = namespace.children.get(type_name, None)
+            if potential_namespace is not None:
+                assert isinstance(potential_namespace, ParsedNamespaceInfo), potential_namespace
+                return potential_namespace.parser_info
+
+        return None
+
+    # ----------------------------------------------------------------------
+    def _NestedTypeResolver(
+        self,
+        type_name: str,
+        class_parser_info: ClassStatementParserInfo,
+    ) -> Optional[ParserInfo]:
+        pass # BugBug
+        return None
+
     # ----------------------------------------------------------------------
     def _DefaultDetailMethod(
         self,

@@ -7,7 +7,8 @@ from v1.Lexer.Location import Location
 from v1.Parser.ParserInfos.Common.ClassModifier import ClassModifier
 from v1.Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParameterParserInfo
 from v1.Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParametersParserInfo
-from v1.Parser.ParserInfos.Common.MethodModifier import MethodModifier
+from v1.Parser.ParserInfos.Common.FunctionModifier import FunctionModifier
+from v1.Parser.ParserInfos.Common.MethodHierarchyModifier import MethodHierarchyModifier
 from v1.Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier
 from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateParametersParserInfo
 from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
@@ -236,23 +237,21 @@ statement_000000 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000001 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000003, tu_region_000006, tu_region_000004, None, tu_region_000007, tu_region_000005, tu_region_000003, None, None, tu_region_000008, None, None, None, None, None],
+    regions=[tu_region_000003, tu_region_000006, tu_region_000004, None, tu_region_000003, tu_region_000007, tu_region_000005, tu_region_000003, None, None, tu_region_000008, None, None],
     name=r"GetBytes",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=True,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.standard,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.standard,
     return_type=statement_000000,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -305,23 +304,21 @@ statement_000007 = FuncParametersParserInfo.Create(
 )
 
 statement_000008 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000020, tu_region_000023, tu_region_000021, None, tu_region_000019, None, tu_region_000022, None, None, tu_region_000024, None, None, None, None, tu_region_000025],
+    regions=[tu_region_000020, tu_region_000023, tu_region_000021, None, tu_region_000020, tu_region_000019, None, tu_region_000022, None, None, tu_region_000024, None, tu_region_000025],
     name=r"OperatorType.Deserialize",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=statement_000004,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000007,
     mutability_param=None,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000002,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=True,
 )
 
@@ -365,23 +362,21 @@ statement_000013 = FuncParametersParserInfo.Create(
 )
 
 statement_000014 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000034, tu_region_000038, tu_region_000035, None, tu_region_000033, tu_region_000036, tu_region_000037, None, None, tu_region_000039, None, None, None, None, None],
+    regions=[tu_region_000034, tu_region_000038, tu_region_000035, None, tu_region_000034, tu_region_000033, tu_region_000036, tu_region_000037, None, None, tu_region_000039, None, None],
     name=r"OperatorType.Serialize",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=statement_000010,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000013,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -425,23 +420,21 @@ statement_000019 = FuncParametersParserInfo.Create(
 )
 
 statement_000020 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000048, tu_region_000052, tu_region_000049, None, tu_region_000047, tu_region_000050, tu_region_000051, None, None, tu_region_000053, None, None, None, None, None],
+    regions=[tu_region_000048, tu_region_000052, tu_region_000049, None, tu_region_000048, tu_region_000047, tu_region_000050, tu_region_000051, None, None, tu_region_000053, None, None],
     name=r"OperatorType.Accept",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=statement_000016,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000019,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -455,23 +448,21 @@ statement_000021 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000022 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000057, tu_region_000061, tu_region_000058, None, tu_region_000062, tu_region_000059, tu_region_000060, None, None, tu_region_000063, None, None, None, None, None],
+    regions=[tu_region_000057, tu_region_000061, tu_region_000058, None, tu_region_000057, tu_region_000062, tu_region_000059, tu_region_000060, None, None, tu_region_000063, None, None],
     name=r"OperatorType.Clone",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=True,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000021,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -485,23 +476,21 @@ statement_000023 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000024 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000067, tu_region_000071, tu_region_000068, None, tu_region_000072, tu_region_000069, tu_region_000070, None, None, tu_region_000073, None, None, None, None, None],
+    regions=[tu_region_000067, tu_region_000071, tu_region_000068, None, tu_region_000067, tu_region_000072, tu_region_000069, tu_region_000070, None, None, tu_region_000073, None, None],
     name=r"OperatorType.ToBool",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=True,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000023,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -515,23 +504,21 @@ statement_000025 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000026 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000077, tu_region_000081, tu_region_000078, None, tu_region_000082, tu_region_000079, tu_region_000080, None, None, tu_region_000083, None, None, None, None, None],
+    regions=[tu_region_000077, tu_region_000081, tu_region_000078, None, tu_region_000077, tu_region_000082, tu_region_000079, tu_region_000080, None, None, tu_region_000083, None, None],
     name=r"OperatorType.ToString",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=True,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000025,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -588,23 +575,21 @@ statement_000032 = FuncParametersParserInfo.Create(
 )
 
 statement_000033 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000099, tu_region_000102, tu_region_000100, None, tu_region_000097, None, tu_region_000101, None, None, tu_region_000103, None, None, None, None, tu_region_000104],
+    regions=[tu_region_000099, tu_region_000102, tu_region_000100, None, tu_region_000099, tu_region_000097, None, tu_region_000101, None, None, tu_region_000103, None, tu_region_000104],
     name=r"OperatorType.Compare",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000032,
     mutability_param=None,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000027,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=True,
 )
 
@@ -643,23 +628,21 @@ statement_000037 = FuncParametersParserInfo.Create(
 )
 
 statement_000038 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000114, tu_region_000118, tu_region_000115, None, tu_region_000113, tu_region_000116, tu_region_000117, None, None, tu_region_000119, None, None, None, None, None],
+    regions=[tu_region_000114, tu_region_000118, tu_region_000115, None, tu_region_000114, tu_region_000113, tu_region_000116, tu_region_000117, None, None, tu_region_000119, None, None],
     name=r"OperatorType.Equal",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000037,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000034,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -698,23 +681,21 @@ statement_000042 = FuncParametersParserInfo.Create(
 )
 
 statement_000043 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000129, tu_region_000133, tu_region_000130, None, tu_region_000128, tu_region_000131, tu_region_000132, None, None, tu_region_000134, None, None, None, None, None],
+    regions=[tu_region_000129, tu_region_000133, tu_region_000130, None, tu_region_000129, tu_region_000128, tu_region_000131, tu_region_000132, None, None, tu_region_000134, None, None],
     name=r"OperatorType.NotEqual",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000042,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000039,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -753,23 +734,21 @@ statement_000047 = FuncParametersParserInfo.Create(
 )
 
 statement_000048 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000144, tu_region_000148, tu_region_000145, None, tu_region_000143, tu_region_000146, tu_region_000147, None, None, tu_region_000149, None, None, None, None, None],
+    regions=[tu_region_000144, tu_region_000148, tu_region_000145, None, tu_region_000144, tu_region_000143, tu_region_000146, tu_region_000147, None, None, tu_region_000149, None, None],
     name=r"OperatorType.Less",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000047,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000044,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -808,23 +787,21 @@ statement_000052 = FuncParametersParserInfo.Create(
 )
 
 statement_000053 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000159, tu_region_000163, tu_region_000160, None, tu_region_000158, tu_region_000161, tu_region_000162, None, None, tu_region_000164, None, None, None, None, None],
+    regions=[tu_region_000159, tu_region_000163, tu_region_000160, None, tu_region_000159, tu_region_000158, tu_region_000161, tu_region_000162, None, None, tu_region_000164, None, None],
     name=r"OperatorType.LessEqual",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000052,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000049,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -863,23 +840,21 @@ statement_000057 = FuncParametersParserInfo.Create(
 )
 
 statement_000058 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000174, tu_region_000178, tu_region_000175, None, tu_region_000173, tu_region_000176, tu_region_000177, None, None, tu_region_000179, None, None, None, None, None],
+    regions=[tu_region_000174, tu_region_000178, tu_region_000175, None, tu_region_000174, tu_region_000173, tu_region_000176, tu_region_000177, None, None, tu_region_000179, None, None],
     name=r"OperatorType.Greater",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000057,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000054,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -918,23 +893,21 @@ statement_000062 = FuncParametersParserInfo.Create(
 )
 
 statement_000063 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000189, tu_region_000193, tu_region_000190, None, tu_region_000188, tu_region_000191, tu_region_000192, None, None, tu_region_000194, None, None, None, None, None],
+    regions=[tu_region_000189, tu_region_000193, tu_region_000190, None, tu_region_000189, tu_region_000188, tu_region_000191, tu_region_000192, None, None, tu_region_000194, None, None],
     name=r"OperatorType.GreaterEqual",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000062,
     mutability_param=MutabilityModifier.immutable,
-    method_modifier_param=MethodModifier.override,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000059,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 

@@ -131,3 +131,11 @@ class ImportStatementParserInfo(
         return {
             ParserInfoType.Configuration: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
         }
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(
+        scope_flag: ScopeFlag,
+    ) -> bool:
+        return True

@@ -21,7 +21,7 @@ import sys
 import threading
 
 from contextlib import contextmanager, ExitStack
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -70,6 +70,9 @@ class Visitor(
         *,
         include_fundamental_types: bool,
     ):
+        # TODO: This doesn't need to be defined here; it can be defined after the first pass.
+        #       This means that all namespaces will be created without a parent during the first pass
+        #       and will need to be re-parented when the complete namespace is generated.
         global_namespace = NamespaceInfo(None, None)
 
         with ExitStack() as exit_stack:
@@ -130,7 +133,89 @@ class Visitor(
                     return global_namespace.children.get(cls._FUNDAMENTAL_TYPES_ATTRIBUTE_NAME, None)  # pylint: disable=protected-access
 
                 # ----------------------------------------------------------------------
-                def Execute(
+                def GenerateFuncs(self) -> Generator[
+                    Tuple[
+                        bool,               # is_parallel
+                        Callable[
+                            [
+                                Tuple[str, str],
+                                RootStatementParserInfo,
+                            ],
+                            Union[
+                                bool,
+                                List[Error],
+                            ],
+                        ],
+                    ],
+                    None,
+                    None,
+                ]:
+                    yield True, self._ExecuteParallel
+
+                    # Create a complete namespace
+                    for workspace_name, workspace_items in self._execute_results.items():
+                        workspace_namespace = NamespaceInfo(workspace_name, global_namespace)
+
+                        for relative_path, execute_result in workspace_items.items():
+                            name_parts = os.path.splitext(relative_path)[0]
+                            name_parts = name_parts.split(".")
+
+                            namespace = workspace_namespace
+
+                            for part in name_parts[:-1]:
+                                namespace = namespace.GetOrAddChild(part)
+
+                            namespace.AddChild(name_parts[-1], execute_result.namespace)
+
+                        global_namespace.AddChild(workspace_name, workspace_namespace)
+
+                    # Execute all of the postprocess funcs
+
+                    # ----------------------------------------------------------------------
+                    def Impl(
+                        funcs_attribute: str,
+                        names: Tuple[str, str],
+                    ) -> Union[
+                        bool,
+                        List[Error],
+                    ]:
+                        execute_results = self._execute_results[names[0]][names[1]]
+
+                        errors: List[Error] = []
+
+                        for func in getattr(execute_results, funcs_attribute):
+                            try:
+                                func()
+                            except ErrorException as ex:
+                                errors += ex.errors
+
+                        return errors or True
+
+                    # ----------------------------------------------------------------------
+
+                    for funcs_attribute in [
+                        "postprocess_funcs",
+                        "finalize_funcs",
+                    ]:
+                        yield False, lambda names, root: Impl(funcs_attribute, names)
+
+                # ----------------------------------------------------------------------
+                # |
+                # |  Private Types
+                # |
+                # ----------------------------------------------------------------------
+                @dataclass(frozen=True)
+                class _ExecuteResult(object):
+                    namespace: NamespaceInfo
+                    postprocess_funcs: List[Callable[[], None]]
+                    finalize_funcs: List[Callable[[], None]]
+
+                # ----------------------------------------------------------------------
+                # |
+                # |  Private Methods
+                # |
+                # ----------------------------------------------------------------------
+                def _ExecuteParallel(
                     self,
                     names: Tuple[str, str],
                     root: RootStatementParserInfo,
@@ -155,79 +240,6 @@ class Visitor(
                         )
 
                     return True
-
-                # ----------------------------------------------------------------------
-                def ExecutePostprocessFuncs(self) -> Dict[
-                    str,
-                    Dict[
-                        str,
-                        List[Error],
-                    ],
-                ]:
-                    # Create a complete namespace
-                    for workspace_name, workspace_items in self._execute_results.items():
-                        workspace_namespace = NamespaceInfo(workspace_name, global_namespace)
-
-                        for relative_path, execute_result in workspace_items.items():
-                            name_parts = os.path.splitext(relative_path)[0]
-                            name_parts = name_parts.split(".")
-
-                            namespace = workspace_namespace
-
-                            for part in name_parts[:-1]:
-                                namespace = namespace.GetOrAddChild(part)
-
-                            namespace.AddChild(name_parts[-1], execute_result.namespace)
-
-                        global_namespace.AddChild(workspace_name, workspace_namespace)
-
-                    # Execute all of the postprocess funcs
-                    for funcs_attribute in [
-                        "postprocess_funcs",
-                        "finalize_funcs",
-                    ]:
-                        errors: Dict[
-                            str,
-                            Dict[
-                                str,
-                                List[Error],
-                            ],
-                        ] = {}
-
-                        for workspace_name, workspace_items in self._execute_results.items():
-                            workspace_errors: Dict[str, List[Error]] = {}
-
-                            for relative_path, execute_result in workspace_items.items():
-                                these_errors: List[Error] = []
-
-                                for func in getattr(execute_result, funcs_attribute):
-                                    try:
-                                        func()
-                                    except ErrorException as ex:
-                                        these_errors += ex.errors
-
-                                if these_errors:
-                                    workspace_errors[relative_path] = these_errors
-
-                            if workspace_errors:
-                                errors[workspace_name] = workspace_errors
-
-                        if errors:
-                            return errors
-
-                    # Can't return None here, as that has special meaning for the caller (cancellation)
-                    return {}
-
-                # ----------------------------------------------------------------------
-                # |
-                # |  Private Types
-                # |
-                # ----------------------------------------------------------------------
-                @dataclass(frozen=True)
-                class _ExecuteResult(object):
-                    namespace: NamespaceInfo
-                    postprocess_funcs: List[Callable[[], None]]
-                    finalize_funcs: List[Callable[[], None]]
 
             # ----------------------------------------------------------------------
 

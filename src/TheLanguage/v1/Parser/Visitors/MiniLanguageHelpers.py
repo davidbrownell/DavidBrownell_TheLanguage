@@ -25,6 +25,7 @@ from typing import (
     List,
     Optional,
     Set,
+    Tuple,
     Type as TypingType,
     TypeVar as TypingTypeVar,
     Union,
@@ -47,7 +48,7 @@ with InitRelativeImports():
     from . import CallHelpers
 
     from ..Error import CreateError, ErrorException
-    from ..GlobalRegion import GlobalRegion
+    from ..TranslationUnitRegion import TranslationUnitRegion
 
     from ..MiniLanguage.Expressions.BinaryExpression import BinaryExpression
     from ..MiniLanguage.Expressions.EnforceExpression import EnforceExpression
@@ -123,9 +124,8 @@ InvalidFunctionError                        = CreateError(
     "Invalid compile-time function",
 )
 
-InvalidFunctionNameError                    = CreateError(
-    "'{name}' is not a defined compile-time function",
-    name=str,
+MismatchedTypesError                        = CreateError(
+    "Types must be all compile-time or all standard types",
 )
 
 
@@ -257,7 +257,7 @@ class _Helper(object):
             return IdentityExpression(BooleanType(), parser_info.value)
 
         elif isinstance(parser_info, CallExpressionParserInfo):
-            if parser_info.is_compile_time_strict__:
+            if parser_info.is_compile_time__:
                 return self._ToCallExpression(parser_info)
 
         elif isinstance(parser_info, CharacterExpressionParserInfo):
@@ -280,7 +280,8 @@ class _Helper(object):
             return IdentityExpression(IntegerType(), parser_info.value)
 
         elif isinstance(parser_info, NoneExpressionParserInfo):
-            return IdentityExpression(NoneType(), None)
+            if parser_info.is_compile_time__:
+                return IdentityExpression(NoneType(), None)
 
         elif isinstance(parser_info, NumberExpressionParserInfo):
             return IdentityExpression(NumberType(), parser_info.value)
@@ -327,7 +328,7 @@ class _Helper(object):
             )
 
         elif isinstance(parser_info, VariableExpressionParserInfo):
-            if parser_info.is_compile_time_strict__:
+            if parser_info.is_compile_time__:
                 compile_time_type = self._compile_time_types.get(parser_info.name, DoesNotExist.instance)
                 if compile_time_type is DoesNotExist.instance:
                     if parser_info.name not in self._suppress_warnings_set:
@@ -370,28 +371,19 @@ class _Helper(object):
                     return parser_info
 
             elif isinstance(parser_info, NestedTypeExpressionParserInfo):
-                is_valid = True
-                contained_types = []
+                are_mini_language_types, contained_types = self._ProcessContainedTypes(
+                    parser_info.types,
+                    parser_info.regions__.self__,
+                )
 
-                for the_type in parser_info.types:
-                    contained_type = self.ToType(the_type)
-
-                    if not isinstance(contained_type, ExpressionParserInfo):
-                        is_valid = False
-                        break
-
-                    contained_types.append(contained_type)
-
-                if is_valid:
-                    assert contained_types
-
+                if not are_mini_language_types:
                     return NestedTypeExpressionParserInfo.Create(
                         [parser_info.regions__.self__, ],
                         cast(List[ExpressionParserInfo], contained_types),
                     )
 
             elif isinstance(parser_info, NoneExpressionParserInfo):
-                if parser_info.is_compile_time_strict__:
+                if parser_info.is_compile_time__:
                     return NoneType()
 
                 return parser_info
@@ -405,21 +397,12 @@ class _Helper(object):
                 )
 
             elif isinstance(parser_info, TupleExpressionParserInfo):
-                is_valid = True
-                contained_types = []
+                are_mini_language_types, contained_types = self._ProcessContainedTypes(
+                    parser_info.types,
+                    parser_info.regions__.self__,
+                )
 
-                for the_type in parser_info.types:
-                    contained_type = self.Clone().ToType(the_type)
-
-                    if not isinstance(contained_type, ExpressionParserInfo):
-                        is_valid = False
-                        break
-
-                    contained_types.append(contained_type)
-
-                if is_valid:
-                    assert contained_types
-
+                if not are_mini_language_types:
                     return TupleExpressionParserInfo.Create(
                         [parser_info.regions__.self__, parser_info.regions__.mutability_modifier],
                         cast(List[ExpressionParserInfo], contained_types),
@@ -427,17 +410,19 @@ class _Helper(object):
                     )
 
             elif isinstance(parser_info, VariantExpressionParserInfo):
-                contained_types = [self.ToType(the_type) for the_type in parser_info.types]
+                are_mini_language_types, contained_types = self._ProcessContainedTypes(
+                    parser_info.types,
+                    parser_info.regions__.self__,
+                )
 
-                if all(isinstance(contained_type, MiniLanguageType) for contained_type in contained_types):
+                if are_mini_language_types:
                     return VariantType(cast(List[MiniLanguageType], contained_types))
 
-                if all(isinstance(contained_type, ExpressionParserInfo) for contained_type in contained_types):
-                    return VariantExpressionParserInfo.Create(
-                        [parser_info.regions__.self__, parser_info.regions__.mutability_modifier],
-                        cast(List[ExpressionParserInfo], contained_types),
-                        parser_info.mutability_modifier,
-                    )
+                return VariantExpressionParserInfo.Create(
+                    [parser_info.regions__.self__, parser_info.regions__.mutability_modifier],
+                    cast(List[ExpressionParserInfo], contained_types),
+                    parser_info.mutability_modifier,
+                )
 
         raise ErrorException(
             InvalidCompileTimeTypeError.Create(
@@ -652,6 +637,37 @@ class _Helper(object):
 
         else:
             assert False, left_type  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    def _ProcessContainedTypes(
+        self,
+        contained_types: List[ExpressionParserInfo],
+        region: TranslationUnitRegion,
+    ) -> Tuple[
+        bool,
+        Union[
+            List[MiniLanguageType],
+            List[ExpressionParserInfo],
+        ]
+    ]:
+        results = [self.Clone().ToType(contained_type) for contained_type in contained_types]
+
+        assert results
+
+        is_mini_language = isinstance(results[0], MiniLanguageType)
+
+        for result_type in results[1:]:
+            if isinstance(result_type, MiniLanguageType) != is_mini_language:
+                raise ErrorException(
+                    MismatchedTypesError.Create(
+                        region=region,
+                    ),
+                )
+
+        return (
+            is_mini_language,
+            cast(Union[List[MiniLanguageType], List[ExpressionParserInfo]], results),
+        )
 
 
 # ----------------------------------------------------------------------

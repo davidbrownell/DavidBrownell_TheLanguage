@@ -165,7 +165,6 @@ class SpecialMethodStatementParserInfo(
         self._InitTraits(
             allow_duplicate_names=False,
             allow_name_to_be_duplicated=False,
-            name_is_ordered=False,
         )
 
         NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
@@ -193,6 +192,14 @@ class SpecialMethodStatementParserInfo(
             ParserInfoType.TypeCustomization: ScopeFlag.Class,
             ParserInfoType.Standard: ScopeFlag.Class,
         }
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(
+        scope_flag: ScopeFlag,
+    ) -> bool:
+        return False
 
     # ----------------------------------------------------------------------
     # |

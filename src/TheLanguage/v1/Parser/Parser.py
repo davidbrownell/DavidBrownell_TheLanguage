@@ -270,64 +270,47 @@ def ResolveExpressionTypes(
         mini_language_configuration_values,
         include_fundamental_types=include_fundamental_types,
     ) as executor:
-        results = _Execute(
-            workspaces,
-            executor.Execute,
-            max_num_threads=max_num_threads,
-        )
+        for is_parallel, func in executor.GenerateFuncs():
+            results = _Execute(
+                workspaces,
+                func,
+                max_num_threads=max_num_threads if is_parallel else 1,
+            )
 
-        if results is None:
-            return None
+            if results is None:
+                return None
 
-        # Check for errors
-        error_data = _ExtractErrorsFromResults(results)
-        if error_data is not None:
-            return error_data  # type: ignore
-
-        results = executor.ExecutePostprocessFuncs()
-
-        if results is None:
-            return results
-
-        error_data = _ExtractErrorsFromResults(results)
-        if error_data is not None:
-            return error_data  # type: ignore
+            # Check for errors
+            error_data = _ExtractErrorsFromResults(results)
+            if error_data is not None:
+                return error_data  # type: ignore
 
         global_namespace = executor.global_namespace
         fundamental_types_namespace = executor.fundamental_types_namespace
 
     # ----------------------------------------------------------------------
     # |  Pass 2
-
-    # Now that all the imports have been resolved, flatten the fundamental types
-    # for more easier access.
-    if fundamental_types_namespace is None:
-        flattened_fundamental_types_namespace = None
-    else:
-        flattened_fundamental_types_namespace = fundamental_types_namespace.Flatten()
-
-    results = _Execute(
-        workspaces,
-        (
-            lambda *args, **kwargs:
-                PassTwoVisitor.Execute(
-                    mini_language_configuration_values,
-                    global_namespace,
-                    flattened_fundamental_types_namespace,
-                    *args,
-                    **kwargs,
-                )
-        ),
-        max_num_threads=max_num_threads,
+    executor = PassTwoVisitor.Executor(
+        mini_language_configuration_values,
+        global_namespace,
+        fundamental_types_namespace,
     )
 
-    if results is None:
-        return None
+    for is_parallel, func in executor.GenerateFuncs():
+        break # BugBug
 
-    # Check for errors
-    error_data = _ExtractErrorsFromResults(results)
-    if error_data is not None:
-        return error_data  # type: ignore
+        results = _Execute(
+            workspaces,
+            func,
+            max_num_threads=max_num_threads if is_parallel else 1,
+        )
+
+        if results is None:
+            return None
+
+        error_data = _ExtractErrorsFromResults(results)
+        if error_data is not None:
+            return error_data  # type: ignore
 
     return workspaces  # type: ignore
 

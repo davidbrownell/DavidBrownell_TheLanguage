@@ -96,15 +96,7 @@ class ParserInfoType(Enum):
         cls,
         value: "ParserInfoType",
     ) -> bool:
-        return value != cls.Standard
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def IsCompileTimeStrict(
-        cls,
-        value: "ParserInfoType",
-    ) -> bool:
-        return cls.IsCompileTime(value) and value != cls.Unknown
+        return value != cls.Standard and value != cls.Unknown
 
 
 # ----------------------------------------------------------------------
@@ -120,10 +112,9 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         validate=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
-        object.__setattr__(self, "_parser_info_type", parser_info_type)
-        object.__setattr__(self, "_is_compile_time", ParserInfoType.IsCompileTime(parser_info_type))
-        object.__setattr__(self, "_is_compile_time_strict", ParserInfoType.IsCompileTimeStrict(parser_info_type))
         object.__setattr__(self, "_disabled", False)
+        object.__setattr__(self, "_parser_info_type", parser_info_type)
+        object.__setattr__(self, "_parent_name", None)
 
         regionless_attributes_set = set(regionless_attributes or [])
 
@@ -178,10 +169,10 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
             self,
             **{
                 **{
-                    "parser_info_type__": None,
                     "is_compile_time__": None,
-                    "is_compile_time_strict__": None,
                     "is_disabled__": None,
+                    "parent_name__": None,
+                    "parser_info_type__": None,
                 },
                 **custom_display_funcs,
             },
@@ -193,6 +184,23 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     @property
+    def is_compile_time__(self) -> bool:
+        return ParserInfoType.IsCompileTime(self.parser_info_type__)
+
+    @property
+    def is_disabled__(self) -> bool:
+        return self._disabled  # type: ignore  # pylint: disable=no-member
+
+    @property
+    def parent_name__(self) -> List[str]:
+        assert self._parent_name is not None  # type: ignore  # pylint: disable=no-member
+        return self._parent_name              # type: ignore  # pylint: disable=no-member
+
+    @property
+    def parser_info_type__(self) -> ParserInfoType:
+        return self._parser_info_type  # type: ignore  # pylint: disable=no-member
+
+    @property
     def RegionsType__(self) -> Any:
         return self._RegionsType  # type: ignore  # pylint: disable=no-member
 
@@ -200,21 +208,16 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     def regions__(self) -> Any:
         return self._regions  # type: ignore  # pylint: disable=no-member
 
-    @property
-    def parser_info_type__(self) -> ParserInfoType:
-        return self._parser_info_type  # type: ignore  # pylint: disable=no-member
+    # ----------------------------------------------------------------------
+    def InitParentName(
+        self,
+        names: List[str],
+    ) -> None:
+        if names[-1] == "Int.py" or names[-1] == "Concepts.Int.py":
+            BugBug = 10
 
-    @property
-    def is_compile_time__(self) -> bool:
-        return self._is_compile_time  # type: ignore  # pylint: disable=no-member
-
-    @property
-    def is_compile_time_strict__(self) -> bool:
-        return self._is_compile_time_strict  # type: ignore  # pylint: disable=no-member
-
-    @property
-    def is_disabled__(self) -> bool:
-        return self._disabled  # type: ignore  # pylint: disable=no-member
+        assert self._parent_name is None  # type: ignore  # pylint: disable=no-member
+        object.__setattr__(self, "_parent_name", names)
 
     # ----------------------------------------------------------------------
     def ValidateRegions(self) -> None:
@@ -230,6 +233,12 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         self,
         new_parser_info_type: ParserInfoType,
     ) -> None:
+        if self.parser_info_type__ == ParserInfoType.Unknown:
+            # Literals are the only things that can be created as Unknown, so no
+            # need to recurse.
+            object.__setattr__(self, "_parser_info_type", new_parser_info_type)
+            return
+
         # ----------------------------------------------------------------------
         class Visitor(ParserInfoVisitorHelper):
             # ----------------------------------------------------------------------
@@ -326,8 +335,6 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         parsing more natural, but a reducing layer to ensure that other components don't need
         knowledge of a broad set of ParserInfo objects.
         """
-
-        assert not ParserInfoType.IsCompileTimeStrict(self.parser_info_type__), self.parser_info_type__
 
         # By default, no lowering
         return None

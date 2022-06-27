@@ -31,6 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
+    from .. import MiniLanguageHelpers
     from ..NamespaceInfo import ParsedNamespaceInfo, ScopeFlag, VisibilityModifier
 
     from ...ParserInfos.ParserInfo import ParserInfoType
@@ -42,6 +43,8 @@ with InitRelativeImports():
     from ...ParserInfos.Common.FuncParametersParserInfo import FuncParametersParserInfo, FuncParameterParserInfo
     from ...ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateTypeArgumentParserInfo
     from ...ParserInfos.Common.TemplateParametersParserInfo import TemplateParametersParserInfo, TemplateDecoratorParameterParserInfo, TemplateTypeParameterParserInfo
+
+    from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
 
 # ----------------------------------------------------------------------
@@ -71,9 +74,21 @@ class CommonMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnConstraintParameterParserInfo(*args, **kwargs):
+    def OnConstraintParameterParserInfo(
+        self,
+        parser_info: ConstraintParameterParserInfo,
+    ):
+        if parser_info.default_value is not None:
+            # This is an expression (not a type), so it won't be automatically validated by the BaseMixin
+            result = MiniLanguageHelpers.EvalExpression(
+                parser_info.default_value,
+                self._compile_time_stack,
+
+            )
+
+            parser_info.default_value.SetResolvedEntity(result)
+
         yield
 
     # ----------------------------------------------------------------------
@@ -122,19 +137,50 @@ class CommonMixin(BaseMixin):
     @staticmethod
     @contextmanager
     def OnTemplateParametersParserInfo(*args, **kwargs):
-        # Anything with a template should have prevented visitation. Ensure that all statements
-        # with templates have been properly handled.
-        # BugBug raise Exception("Internal compiler error")
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnTemplateTypeParameterParserInfo(*args, **kwargs):
+    def OnTemplateTypeParameterParserInfo(
+        self,
+        parser_info: TemplateTypeParameterParserInfo,
+    ):
+        assert self._namespaces_stack
+        namespace_stack = self._namespaces_stack[-1]
+
+        assert namespace_stack
+        parent_namespace = namespace_stack[-1]
+
+        assert isinstance(parent_namespace, ParsedNamespaceInfo), parent_namespace
+        assert isinstance(parent_namespace.parser_info, TemplatedStatementTrait), parent_namespace.parser_info
+
+        assert parser_info.name not in parent_namespace.children
+        parent_namespace.AddChild(
+            ParsedNamespaceInfo(
+                parent_namespace,
+                parent_namespace.scope_flag,
+                parser_info,
+                name=parser_info.name,
+                visibility=VisibilityModifier.private,
+            ),
+        )
+
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnTemplateDecoratorParameterParserInfo(*args, **kwargs):
+    def OnTemplateDecoratorParameterParserInfo(
+        self,
+        parser_info: TemplateDecoratorParameterParserInfo,
+    ):
+        if parser_info.default_value is not None:
+            # This is an expression (not a type), so it won't be automatically validated by the BaseMixin
+            result = MiniLanguageHelpers.EvalExpression(
+                parser_info.default_value,
+                self._compile_time_stack,
+
+            )
+
+            parser_info.default_value.SetResolvedEntity(result)
+
         yield

@@ -16,12 +16,15 @@
 """Contains the ClassStatementParserInfo object"""
 
 import os
+import threading
 
-from typing import Dict, Generator, List, Optional
+from enum import auto, Enum
+from typing import Any, Dict, Generator, List, Optional, Set, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
+from CommonEnvironment.DoesNotExist import DoesNotExist
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -40,25 +43,44 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
+    from .ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo
+    from .ClassUsingStatementParserInfo import ClassUsingStatementParserInfo
+    from .FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo, OperatorType as FuncDefinitionOperatorType
+    from .PassStatementParserInfo import PassStatementParserInfo
+    from .SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo, SpecialMethodType
+    from .TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
+
     from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
     from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
     from ..Common.ClassModifier import ClassModifier
+    from ..Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
     from ..Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo
-    from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo, TemplateTypeParameterParserInfo
+    from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
     from ...Error import CreateError, Error, ErrorException
 
 
 # ----------------------------------------------------------------------
-MultipleExtendsError                        = CreateError(
-    "'{type}' types may only extend one other type",
-    type=str,
+CycleDetectedError                          = CreateError(
+    "An inheritance cycle was detected with '{name}'",
+    name=str,
+)
+
+StatementsRequiredError                     = CreateError(
+    "Statements are required",
+)
+
+DuplicateSpecialMethodError                 = CreateError(
+    "The special method '{name}' has already been defined",
+    name=str,
+    prev_region=TranslationUnitRegion,
 )
 
 
@@ -128,6 +150,79 @@ class ClassStatementParserInfo(
     """
 
     # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
+    class InstantiationInfo(object):
+        """Information about the class when instantiated with a specific set of valid templates"""
+
+        # ----------------------------------------------------------------------
+        # |  Public Types
+        AttributesType                      = Dict[
+            VisibilityModifier,
+            Dict[
+                str,
+                ClassAttributeStatementParserInfo,
+            ],
+        ]
+
+        MethodsType                         = Dict[
+            VisibilityModifier,
+            Dict[
+                Union[str, FuncDefinitionOperatorType],
+                List[FuncDefinitionStatementParserInfo]
+            ]
+        ]
+
+        SpecialMethodsType                  = Dict[
+            SpecialMethodType,
+            SpecialMethodStatementParserInfo,
+        ]
+
+        TypesType                           = Dict[
+            VisibilityModifier,
+            Dict[
+                str,
+                Union["ClassStatementParserInfo", TypeAliasStatementParserInfo],
+            ],
+        ]
+
+        # ----------------------------------------------------------------------
+        # |  Public Data
+        base: Optional["ClassStatementParserInfo"]
+
+        interfaces: Dict[
+            VisibilityModifier,
+            List["ClassStatementParserInfo"],
+        ]
+
+        my_attributes: AttributesType
+        my_methods: MethodsType
+        my_special_methods: SpecialMethodsType
+        my_types: TypesType
+
+        all_types: Dict[
+            VisibilityModifier,
+            List[Union["ClassStatementParserInfo", TypeAliasStatementParserInfo]],
+        ]
+
+        all_methods: Dict[
+            VisibilityModifier,
+            List[Union[FuncDefinitionStatementParserInfo, SpecialMethodStatementParserInfo]],
+        ]
+
+        all_attributes: Dict[
+            VisibilityModifier,
+            List[ClassAttributeStatementParserInfo],
+        ]
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
     parent_class_capabilities: Optional[ClassCapabilities]
     class_capabilities: ClassCapabilities
 
@@ -148,6 +243,23 @@ class ClassStatementParserInfo(
     is_abstract: Optional[bool]
     is_final: Optional[bool]
 
+    # Values set after calls to `Initialize`
+    _initialize_result: Union[
+        DoesNotExist,                       # Not initialized
+        None,                               # In the process of initializing
+        bool,                               # Successful/Unsuccessful initialization
+    ]                                       = field(init=False, default=DoesNotExist.instance)
+
+    _instantiation_info_lock: threading.Lock            = field(init=False, default_factory=threading.Lock)
+    _instantiation_info: Dict[
+        Any, # TODO: Not sure how to represent this yet
+        "ClassStatementParserInfo.InstantiationInfo"
+    ]                                                   = field(init=False, default_factory=dict)
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
@@ -199,7 +311,6 @@ class ClassStatementParserInfo(
         self._InitTraits(
             allow_duplicate_names=True,
             allow_name_to_be_duplicated=False,
-            name_is_ordered=False,
         )
 
         # Set defaults
@@ -244,18 +355,6 @@ class ClassStatementParserInfo(
         # Validate
         errors: List[Error] = []
 
-        # TODO: Don't check for this yet, may have multiple dependencies that resolve to None
-        # TODO: if self.extends and len(self.extends) > 1:
-        # TODO:     errors.append(
-        # TODO:         MultipleExtendsError.Create(
-        # TODO:             region=TranslationUnitRegion.Create(
-        # TODO:                 self.extends[1].regions__.self__.begin,
-        # TODO:                 self.extends[-1].regions__.self__.end,
-        # TODO:             ),
-        # TODO:             type=self.class_capabilities.name,
-        # TODO:         ),
-        # TODO:     )
-
         try:
             self.class_capabilities.ValidateClassStatementCapabilities(
                 self,
@@ -278,6 +377,13 @@ class ClassStatementParserInfo(
                     ),
                 )
 
+        if self.statements is None:
+            errors.append(
+                StatementsRequiredError.Create(
+                    region=self.regions__.self__,
+                ),
+            )
+
         # TODO: Create default special methods as necessary
         # TODO: Create a static 'Create' method if one does not already exist
 
@@ -298,7 +404,179 @@ class ClassStatementParserInfo(
         yield "ThisType"
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(
+        scope_flag: ScopeFlag,
+    ) -> bool:
+        return bool(scope_flag & ScopeFlag.Function)
+
     # ----------------------------------------------------------------------
+    def Initialize(self) -> bool:
+        if self._initialize_result is None:
+            raise ErrorException(
+                CycleDetectedError.Create(
+                    region=self.regions__.self__,
+                    name=self.name,
+                ),
+            )
+
+        if isinstance(self._initialize_result, bool):
+            return self._initialize_result
+
+        object.__setattr__(self, "_initialize_result", None)
+        initialize_result = True
+
+        try:
+            for dependency_type, dependency, resolved_dependency in self._EnumDependencies(None):
+                if resolved_dependency.Initialize() is False:
+                    initialize_result = False
+                    break
+
+            if not self.templates or self.templates.default_initializable:  # pylint: disable=no-member
+                self.Validate(None)
+
+        except ErrorException:
+            initialize_result = False
+            raise
+
+        finally:
+            object.__setattr__(self, "_initialize_result", initialize_result)
+
+        return initialize_result
+
+    # ----------------------------------------------------------------------
+    def Validate(
+        self,
+        template_arguments_parser_info: Optional[TemplateArgumentsParserInfo],
+    ) -> None:
+        if template_arguments_parser_info is not None:
+            raise NotImplementedError("TODO: Templates")
+
+        if self.templates is not None:
+            raise NotImplementedError("TODO: Templates with defaults")
+
+        errors: List[Error] = []
+
+        # Collect information about the statements associated with this class
+        my_attributes: ClassStatementParserInfo.InstantiationInfo.AttributesType = {}
+        my_methods: ClassStatementParserInfo.InstantiationInfo.MethodsType = {}
+        my_special_methods: ClassStatementParserInfo.InstantiationInfo.SpecialMethodsType = {}
+        my_types: ClassStatementParserInfo.InstantiationInfo.TypesType = {}
+        using_statements: List[ClassUsingStatementParserInfo] = []
+        is_abstract = False
+        is_deferred = False
+
+        assert self.statements is not None
+
+        for statement in self.statements:
+            # BugBug: import statement?
+            if isinstance(statement, ClassAttributeStatementParserInfo):
+                my_attributes.setdefault(statement.visibility, {})[statement.name] = statement
+
+            elif isinstance(statement, ClassStatementParserInfo):
+                my_types.setdefault(statement.visibility, {})[statement.name] = statement
+
+            elif isinstance(statement, ClassUsingStatementParserInfo):
+                using_statements.append(statement)
+
+            elif isinstance(statement, FuncDefinitionStatementParserInfo):
+                is_abstract = is_abstract or statement.is_abstract
+                is_deferred = is_deferred or statement.is_deferred
+
+                my_methods.setdefault(
+                    statement.visibility,
+                    {},
+                ).setdefault(statement.name, []).append(statement)
+
+            elif isinstance(statement, PassStatementParserInfo):
+                # Nothing to do here
+                pass
+
+            elif isinstance(statement, SpecialMethodStatementParserInfo):
+                assert statement.visibility is VisibilityModifier.private, statement.visibility
+
+                prev_method = my_special_methods.get(statement.special_method_type, None)
+                if prev_method is not None:
+                    errors.append(
+                        DuplicateSpecialMethodError.Create(
+                            region=statement.regions__.self__,
+                            prev_region=prev_method.regions__.self__,
+                            name=statement.special_method_type.value,
+                        ),
+                    )
+
+                my_special_methods[statement.special_method_type] = statement
+
+            elif isinstance(statement, TypeAliasStatementParserInfo):
+                my_types.setdefault(statement.visibility, {})[statement.name] = statement
+
+            else:
+                assert False, statement  # pragma: no cover
+
+        # Collect information about the dependencies
+        base: Optional[Tuple[VisibilityModifier, ClassStatementParserInfo]] = None
+        mixins: List[Tuple[VisibilityModifier, ClassStatementParserInfo]] = []
+        interfaces: List[Tuple[VisibilityModifier, ClassStatementParserInfo]] = []
+        concepts: List[Tuple[VisibilityModifier, ClassStatementParserInfo]] = []
+
+        for dependency_type, dependency, resolved_dependency in self._EnumDependencies(
+            template_arguments_parser_info,
+        ):
+            assert dependency.visibility is not None
+
+            instantiation_info = resolved_dependency.GetInstantiationInfo(None)
+
+            if dependency_type == self.__class__._DependencyType.Extends:  # pylint: disable=protected-access
+                assert base is None, base
+                base = dependency.visibility, resolved_dependency
+            elif dependency_type == self.__class__._DependencyType.Uses:  # pylint: disable=protected-access
+                mixins.append((dependency.visibility, resolved_dependency))
+            elif dependency_type == self.__class__._DependencyType.Implements:  # pylint: disable=protected-access
+                if resolved_dependency.class_capabilities.name == "Concept":
+                    concepts.append((dependency.visibility, resolved_dependency))
+                elif resolved_dependency.class_capabilities.name == "Interface":
+                    interfaces.append((dependency.visibility, resolved_dependency))
+                else:
+                    assert False, resolved_dependency.class_capabilities.name  # pragma: no cover
+            else:
+                assert False, dependency_type  # pragma: no cover
+
+        # BugBug: Collect my information
+        # BugBug: Squash
+        # BugBug: Validate
+        # BugBug: Populate defaults
+
+        # BugBUg: TODO:
+        #       is_deferred
+        #       is_instantiatable
+        #       Validate method modifiers match class modifier
+
+        if errors:
+            raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    def GetInstantiationInfo(
+        self,
+        template_arguments_parser_info: Optional[TemplateArgumentsParserInfo],
+    ) -> "ClassStatementParserInfo.InstantiationInfo":
+        pass # BugBug
+        return None
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Types
+    # |
+    # ----------------------------------------------------------------------
+    class _DependencyType(Enum):
+        Extends                             = auto()
+        Uses                                = auto()
+        Implements                          = auto()
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
     # ----------------------------------------------------------------------
     @Interface.override
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
@@ -317,6 +595,32 @@ class ClassStatementParserInfo(
         if self.uses:
             yield "uses", self.uses  # type: ignore
 
+    # ----------------------------------------------------------------------
+    def _EnumDependencies(
+        self,
+        template_arguments_parser_info: Optional[TemplateArgumentsParserInfo],
+    ) -> Generator[
+        Tuple[
+            "ClassStatementParserInfo._DependencyType",
+            ClassStatementDependencyParserInfo,
+            "ClassStatementParserInfo",
+        ],
+        None,
+        None,
+    ]:
+        for dependency_type, dependencies in [
+            (self.__class__._DependencyType.Extends, self.extends or []),        # pylint: disable=protected-access
+            (self.__class__._DependencyType.Uses, self.uses or []),              # pylint: disable=protected-access
+            (self.__class__._DependencyType.Implements, self.implements or []),  # pylint: disable=protected-access
+        ]:
+            for dependency in dependencies:
+                if dependency.is_disabled__:
+                    continue
 
-# TODO: Not valid to have a protected class without a class ancestor
+                yield (
+                    dependency_type,
+                    dependency,
+                    dependency.type.resolved_type__.Resolve().parser_info,
+                )
+
 # TODO: Ensure that all contents have mutability values consistent with the class decoration

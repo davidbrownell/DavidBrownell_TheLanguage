@@ -17,11 +17,13 @@
 
 import os
 
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, List, Optional, Union
 
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
+from CommonEnvironment.DataclassDecorators import ComparisonOperators
+from CommonEnvironment.DoesNotExist import DoesNotExist
 from CommonEnvironment import Interface
 from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
@@ -35,6 +37,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
     from ...Error import CreateError, ErrorException
+
+    from ...MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
+
+    from ...MiniLanguage.Types.NoneType import NoneType as MiniLanguageNoneType
+    from ...MiniLanguage.Types.Type import Type as MiniLanguageType
 
 
 # ----------------------------------------------------------------------
@@ -61,8 +68,6 @@ class ExpressionParserInfo(ParserInfo):
     class ResolvedType(ObjectReprImplBase):
         # ----------------------------------------------------------------------
         parser_info: ParserInfo
-        workspace_name: str
-        relative_name: str
 
         # ----------------------------------------------------------------------
         @classmethod
@@ -80,6 +85,16 @@ class ExpressionParserInfo(ParserInfo):
                 parser_info=lambda value: value.__class__.__name__,
             )
 
+        # ----------------------------------------------------------------------
+        @Interface.extensionmethod
+        def ResolveOne(self) -> "ExpressionParserInfo.ResolvedType":
+            return self
+
+        # ----------------------------------------------------------------------
+        @Interface.extensionmethod
+        def Resolve(self) -> "ExpressionParserInfo.ResolvedType":
+            return self
+
     # ----------------------------------------------------------------------
     # |
     # |  Public Data
@@ -87,6 +102,19 @@ class ExpressionParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
+
+    _resolved_entity: Union[
+        DoesNotExist,
+
+        # Type Values
+        MiniLanguageType,                   # Compile-time
+        None,                               # Standard
+
+        # Expression Values
+        MiniLanguageExpression.EvalResult,  # Compile-time
+        ResolvedType,                       # Standard
+
+    ]                                       = field(init=False, default=DoesNotExist.instance)
 
     # ----------------------------------------------------------------------
     # |
@@ -115,8 +143,28 @@ class ExpressionParserInfo(ParserInfo):
             regions,
             regionless_attributes,
             validate,
-            **custom_display_funcs,
+            **{
+                **{
+                    "resolved_type__": None,
+                    "resolved_mini_language_type__": None,
+                    "resolved_mini_language_expression_result__": None,
+                },
+                **custom_display_funcs,
+            },
         )
+
+    # ----------------------------------------------------------------------
+    def Compare(
+        self,
+        other: "ExpressionParserInfo",
+    ) -> int:
+        if not isinstance(other, self.__class__):
+            return self.__class__.CompareHelper(  # type: ignore  # pylint: disable=no-member
+                self.__class__.__name__.lower(),
+                type(other).__name__.lower(),
+            )
+
+        return self._CompareImpl(other)
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
@@ -159,6 +207,58 @@ class ExpressionParserInfo(ParserInfo):
 
         if is_type_result is False:
             self._InitializeAsExpressionImpl()
+
+    # ----------------------------------------------------------------------
+    def SetResolvedEntity(
+        self,
+        resolved_entity: Union[
+            MiniLanguageType,
+            None,
+            MiniLanguageExpression.EvalResult,
+            ResolvedType,
+        ],
+    ) -> None:
+        if self._resolved_entity is not DoesNotExist.instance:
+            # None is ambiguous, as it can be used as both a type and an expression
+            # and at both compile-time and standard. Allow the caller to do this if
+            # the original value is None-like and they are moving towards something
+            # that is None-like.
+
+            assert (
+                # Moving from compile-time expression to type
+                (
+                    self.is_compile_time__
+                    and isinstance(self._resolved_entity, MiniLanguageExpression.EvalResult)
+                    and isinstance(self._resolved_entity.type, MiniLanguageNoneType)
+                    and isinstance(resolved_entity, MiniLanguageNoneType)
+                )
+            ), (self._resolved_entity, resolved_entity)
+
+        object.__setattr__(self, "_resolved_entity", resolved_entity)
+
+    # ----------------------------------------------------------------------
+    def HasResolvedEntity(self) -> bool:
+        return self._resolved_entity is not DoesNotExist.instance
+
+    # ----------------------------------------------------------------------
+    def ResolvedEntityIsNone(self) -> bool:
+        return self._resolved_entity is None
+
+    # ----------------------------------------------------------------------
+    @property
+    def resolved_type__(self) -> "ResolvedType":
+        assert isinstance(self._resolved_entity, ExpressionParserInfo.ResolvedType), self._resolved_entity
+        return self._resolved_entity
+
+    @property
+    def resolved_mini_language_type__(self) -> MiniLanguageType:
+        assert isinstance(self._resolved_entity, MiniLanguageType), self._resolved_entity
+        return self._resolved_entity
+
+    @property
+    def resolved_mini_language_expression_result__(self) -> MiniLanguageExpression.EvalResult:
+        assert isinstance(self._resolved_entity, MiniLanguageExpression.EvalResult), self._resolved_entity
+        return self._resolved_entity
 
     # ----------------------------------------------------------------------
     # |

@@ -30,7 +30,7 @@ with InitRelativeImports():
     from .ClassCapabilities import (
         ClassCapabilities as _ClassCapabilities,
         ClassModifier,
-        MethodModifier,
+        MethodHierarchyModifier,
         MutabilityModifier,
         VisibilityModifier,
     )
@@ -93,14 +93,14 @@ MixinCapabilities                           = _ClassCapabilities(
         VisibilityModifier.protected,
     ],
     default_nested_class_visibility=VisibilityModifier.public,
-    valid_method_modifiers=[
-        MethodModifier.abstract,
-        MethodModifier.final,
-        MethodModifier.override,
-        MethodModifier.standard,
-        MethodModifier.virtual,
+    valid_method_hierarchy_modifiers=[
+        MethodHierarchyModifier.abstract,
+        MethodHierarchyModifier.final,
+        MethodHierarchyModifier.override,
+        MethodHierarchyModifier.standard,
+        MethodHierarchyModifier.virtual,
     ],
-    default_method_modifier=MethodModifier.standard,
+    default_method_hierarchy_modifier=MethodHierarchyModifier.standard,
     valid_method_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,

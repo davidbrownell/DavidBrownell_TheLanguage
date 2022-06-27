@@ -13,7 +13,8 @@ from v1.Parser.ParserInfos.Common.ConstraintParametersParserInfo import Constrai
 from v1.Parser.ParserInfos.Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
 from v1.Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParameterParserInfo
 from v1.Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParametersParserInfo
-from v1.Parser.ParserInfos.Common.MethodModifier import MethodModifier
+from v1.Parser.ParserInfos.Common.FunctionModifier import FunctionModifier
+from v1.Parser.ParserInfos.Common.MethodHierarchyModifier import MethodHierarchyModifier
 from v1.Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier
 from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateParametersParserInfo
 from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
@@ -306,23 +307,21 @@ statement_000024 = FuncParametersParserInfo.Create(
 )
 
 statement_000025 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000030, tu_region_000033, tu_region_000031, None, tu_region_000029, tu_region_000032, tu_region_000030, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000030, tu_region_000033, tu_region_000031, None, tu_region_000030, tu_region_000029, tu_region_000032, tu_region_000030, None, None, None, None, None],
     name=r"OperatorType.Serialize",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=statement_000021,
     parent_class_capabilities=ConceptCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000024,
     mutability_param=MutabilityModifier.var,
-    method_modifier_param=MethodModifier.abstract,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.abstract,
     return_type=None,
     documentation=None,
     captured_variables=None,
     is_deferred=None,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -366,23 +365,21 @@ statement_000030 = FuncParametersParserInfo.Create(
 )
 
 statement_000031 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000042, tu_region_000045, tu_region_000043, None, tu_region_000041, tu_region_000044, tu_region_000042, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000042, tu_region_000045, tu_region_000043, None, tu_region_000042, tu_region_000041, tu_region_000044, tu_region_000042, None, None, None, None, None],
     name=r"OperatorType.Accept",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=statement_000027,
     parent_class_capabilities=ConceptCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000030,
     mutability_param=MutabilityModifier.var,
-    method_modifier_param=MethodModifier.abstract,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.abstract,
     return_type=None,
     documentation=None,
     captured_variables=None,
     is_deferred=None,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -412,23 +409,21 @@ statement_000034 = FuncParametersParserInfo.Create(
 )
 
 statement_000035 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000052, tu_region_000055, tu_region_000053, None, tu_region_000051, tu_region_000054, tu_region_000052, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000052, tu_region_000055, tu_region_000053, None, tu_region_000052, tu_region_000051, tu_region_000054, tu_region_000052, None, None, None, None, None],
     name=r"OperatorType.DivideInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=ConceptCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000034,
     mutability_param=MutabilityModifier.var,
-    method_modifier_param=MethodModifier.abstract,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.abstract,
     return_type=None,
     documentation=None,
     captured_variables=None,
     is_deferred=None,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -458,23 +453,21 @@ statement_000038 = FuncParametersParserInfo.Create(
 )
 
 statement_000039 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000062, tu_region_000065, tu_region_000063, None, tu_region_000061, tu_region_000064, tu_region_000062, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000062, tu_region_000065, tu_region_000063, None, tu_region_000062, tu_region_000061, tu_region_000064, tu_region_000062, None, None, None, None, None],
     name=r"OperatorType.MultiplyInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=ConceptCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000038,
     mutability_param=MutabilityModifier.var,
-    method_modifier_param=MethodModifier.abstract,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.abstract,
     return_type=None,
     documentation=None,
     captured_variables=None,
     is_deferred=None,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -504,23 +497,21 @@ statement_000042 = FuncParametersParserInfo.Create(
 )
 
 statement_000043 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000072, tu_region_000075, tu_region_000073, None, tu_region_000071, tu_region_000074, tu_region_000072, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000072, tu_region_000075, tu_region_000073, None, tu_region_000072, tu_region_000071, tu_region_000074, tu_region_000072, None, None, None, None, None],
     name=r"OperatorType.PowerInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=ConceptCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000042,
     mutability_param=MutabilityModifier.var,
-    method_modifier_param=MethodModifier.abstract,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.abstract,
     return_type=None,
     documentation=None,
     captured_variables=None,
     is_deferred=None,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -550,23 +541,21 @@ statement_000046 = FuncParametersParserInfo.Create(
 )
 
 statement_000047 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000082, tu_region_000085, tu_region_000083, None, tu_region_000081, tu_region_000084, tu_region_000082, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000082, tu_region_000085, tu_region_000083, None, tu_region_000082, tu_region_000081, tu_region_000084, tu_region_000082, None, None, None, None, None],
     name=r"OperatorType.AddInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=ConceptCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000046,
     mutability_param=MutabilityModifier.var,
-    method_modifier_param=MethodModifier.abstract,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.abstract,
     return_type=None,
     documentation=None,
     captured_variables=None,
     is_deferred=None,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 
@@ -596,23 +585,21 @@ statement_000050 = FuncParametersParserInfo.Create(
 )
 
 statement_000051 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000092, tu_region_000095, tu_region_000093, None, tu_region_000091, tu_region_000094, tu_region_000092, None, None, None, None, None, None, None, None],
+    regions=[tu_region_000092, tu_region_000095, tu_region_000093, None, tu_region_000092, tu_region_000091, tu_region_000094, tu_region_000092, None, None, None, None, None],
     name=r"OperatorType.SubtractInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=ConceptCapabilities,
+    function_modifier_param=FunctionModifier.standard,
     parameters=statement_000050,
     mutability_param=MutabilityModifier.var,
-    method_modifier_param=MethodModifier.abstract,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.abstract,
     return_type=None,
     documentation=None,
     captured_variables=None,
     is_deferred=None,
     is_exceptional=None,
-    is_generator=None,
-    is_reentrant=None,
-    is_scoped=None,
     is_static=None,
 )
 

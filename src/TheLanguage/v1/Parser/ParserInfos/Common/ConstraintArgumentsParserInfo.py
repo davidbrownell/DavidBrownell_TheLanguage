@@ -71,6 +71,9 @@ class ConstraintArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
+        if self.expression.parser_info_type__ == ParserInfoType.Unknown:
+            self.expression.OverrideParserInfoType(ParserInfoType.TypeCustomization)
+
         super(ConstraintArgumentParserInfo, self).__init__(
             ParserInfoType.TypeCustomization,
             *args,

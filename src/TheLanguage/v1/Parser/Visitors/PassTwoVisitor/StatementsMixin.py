@@ -37,6 +37,10 @@ with InitRelativeImports():
 
     from ...ParserInfos.ParserInfo import ParserInfoType, VisitResult
 
+    from ...Error import CreateError, ErrorException
+
+    from ...ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
+
     from ...ParserInfos.Statements.ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo
     from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
     from ...ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
@@ -46,6 +50,12 @@ with InitRelativeImports():
     from ...ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
     from ...ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo, SpecialMethodType
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
+
+
+# ----------------------------------------------------------------------
+InvalidClassDependencyError                 = CreateError(
+    "Invalid class dependency",
+)
 
 
 # ----------------------------------------------------------------------
@@ -64,14 +74,55 @@ class StatementsMixin(BaseMixin):
     ):
         yield
 
-        # BugBug: Validate here
+        # ----------------------------------------------------------------------
+        def ResolveDependenciesParallelCallback():
+            parser_info.class_capabilities.ValidateDependencies(parser_info)
+
+        # ----------------------------------------------------------------------
+        def ResolveDependenciesSequentialCallback():
+            parser_info.Initialize()
+
+        # ----------------------------------------------------------------------
+        def ResolveClassCallback():
+            # BugBug
+            pass
+
+        # ----------------------------------------------------------------------
+
+        self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveDependenciesParallel.value].append(ResolveDependenciesParallelCallback)
+        self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveDependenciesSequential.value].append(ResolveDependenciesSequentialCallback)
+        self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveClasses.value].append(ResolveClassCallback)
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnClassStatementDependencyParserInfo(*args, **kwargs):
-        # BugBug: Validate is single type
+    def OnClassStatementDependencyParserInfo(
+        self,
+        parser_info: ClassStatementDependencyParserInfo,
+    ):
         yield
+
+        # Defer verifying that the dependency is a valid type, as we might be
+        # accessing an alias that has not yet been defined (and therefore is
+        # not resolved).
+
+        # ----------------------------------------------------------------------
+        def Callback():
+            if parser_info.type.ResolvedEntityIsNone():
+                parser_info.Disable()
+                return
+
+            resolved_type = parser_info.type.resolved_type__.Resolve()
+
+            if not isinstance(resolved_type.parser_info, ClassStatementParserInfo):
+                raise ErrorException(
+                    InvalidClassDependencyError.Create(
+                        region=resolved_type.parser_info.regions__.self__,
+                    ),
+                )
+
+        # ----------------------------------------------------------------------
+
+        self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveIso.value].append(Callback)
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -85,9 +136,6 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: FuncInvocationStatementParserInfo,
     ):
-        if not parser_info.is_compile_time__:
-            assert False, "BugBug"
-
         yield
 
     # ----------------------------------------------------------------------
@@ -96,10 +144,6 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: IfStatementParserInfo,
     ):
-        # BugBug if parser_info.parser_info_type__ == ParserInfoType.TypeCustomization:
-        # BugBug     # We shouldn't get here, as we have skipped all templated statements in BaseMixin.
-        # BugBug     raise Exception("Internal compiler error")
-
         yield
 
     # ----------------------------------------------------------------------
@@ -132,31 +176,7 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: SpecialMethodStatementParserInfo,
     ):
-        assert self._namespaces_stack
-        namespace_stack = self._namespaces_stack[-1]
-
-        assert namespace_stack
-        namespace = namespace_stack[-1]
-
-        assert namespace.parent
-        parent_namespace = namespace.parent
-
-        assert isinstance(parent_namespace, ParsedNamespaceInfo), parent_namespace
-        assert isinstance(parent_namespace.parser_info, ClassStatementParserInfo), parent_namespace.parser_info
-
-        class_statement_parser_info = parent_namespace.parser_info
-
-        with ExitStack() as exit_stack:
-            if parser_info.special_method_type == SpecialMethodType.CompileTimeEvalConstraints:
-                # Add all of the constraints
-                BugBug = 10
-
-
-        # BugBug: Add constraints to stack
-
-            assert parser_info.parser_info_type__ == ParserInfoType.TypeCustomization, parser_info.parser_info_type__
-
-            yield
+        yield
 
     # ----------------------------------------------------------------------
     @staticmethod

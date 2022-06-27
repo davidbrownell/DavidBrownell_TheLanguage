@@ -51,7 +51,7 @@ TEMPLATE> {
     [Deferred] public override Bool val __ToBool__() immutable              # value != 0.0
     [Deferred] public override Str val __ToString?__() immutable
 
-    [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, Number immutable that)
+    [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, Num immutable that)
 
     [Deferred] public override Bool val __Equal__(Num immutable that) immutable
     [Deferred] public override Bool val __NotEqual__(Num immutable that) immutable

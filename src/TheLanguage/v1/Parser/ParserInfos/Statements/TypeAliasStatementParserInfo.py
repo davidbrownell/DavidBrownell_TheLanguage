@@ -59,12 +59,38 @@ class TypeAliasStatementParserInfo(
     NamedStatementTrait,
     StatementParserInfo,
 ):
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True, repr=False)
+    class ResolvedType(ExpressionParserInfo.ResolvedType):
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def ResolveOne(self) -> ExpressionParserInfo.ResolvedType:
+            assert isinstance(self.parser_info, TypeAliasStatementParserInfo), self.parser_info
+            return self.parser_info.type.resolved_type__
+
+        # ----------------------------------------------------------------------
+        @Interface.override
+        def Resolve(self) -> ExpressionParserInfo.ResolvedType:
+            return self.ResolveOne().Resolve()
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
     parent_class_capabilities: Optional[ClassCapabilities]
 
     constraints: Optional[ConstraintParametersParserInfo]
-
     type: ExpressionParserInfo
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
@@ -82,12 +108,6 @@ class TypeAliasStatementParserInfo(
 
     # ----------------------------------------------------------------------
     def __post_init__(self, parser_info_type, regions, visibility_param, templates_param):
-        self._InitTraits(
-            allow_name_to_be_duplicated=False,
-            # Aliases within classes are not ordered, aliases outside of classes are
-            name_is_ordered=self.parent_class_capabilities is None,
-        )
-
         StatementParserInfo.__post_init__(
             self,
             parser_info_type,
@@ -157,6 +177,14 @@ class TypeAliasStatementParserInfo(
         return {
             ParserInfoType.Standard: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
         }
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(
+        scope_flag: ScopeFlag,
+    ) -> bool:
+        return bool(scope_flag & ScopeFlag.Function)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

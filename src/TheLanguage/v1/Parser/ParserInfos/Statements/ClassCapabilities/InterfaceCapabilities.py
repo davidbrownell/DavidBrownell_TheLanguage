@@ -30,7 +30,7 @@ with InitRelativeImports():
     from .ClassCapabilities import (
         ClassCapabilities as _ClassCapabilities,
         ClassModifier,
-        MethodModifier,
+        MethodHierarchyModifier,
         MutabilityModifier,
         VisibilityModifier,
     )
@@ -75,10 +75,10 @@ InterfaceCapabilities                       = _ClassCapabilities(
         VisibilityModifier.public,
     ],
     default_nested_class_visibility=VisibilityModifier.public,
-    valid_method_modifiers=[
-        MethodModifier.abstract,
+    valid_method_hierarchy_modifiers=[
+        MethodHierarchyModifier.abstract,
     ],
-    default_method_modifier=MethodModifier.abstract,
+    default_method_hierarchy_modifier=MethodHierarchyModifier.abstract,
     valid_method_visibilities=[
         VisibilityModifier.public,
     ],
