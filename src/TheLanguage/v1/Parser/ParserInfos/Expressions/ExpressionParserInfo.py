@@ -154,19 +154,6 @@ class ExpressionParserInfo(ParserInfo):
         )
 
     # ----------------------------------------------------------------------
-    def Compare(
-        self,
-        other: "ExpressionParserInfo",
-    ) -> int:
-        if not isinstance(other, self.__class__):
-            return self.__class__.CompareHelper(  # type: ignore  # pylint: disable=no-member
-                self.__class__.__name__.lower(),
-                type(other).__name__.lower(),
-            )
-
-        return self._CompareImpl(other)
-
-    # ----------------------------------------------------------------------
     @Interface.extensionmethod
     def IsType(self) -> Optional[bool]:
         # Most expressions are not types.

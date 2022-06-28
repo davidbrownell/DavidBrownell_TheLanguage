@@ -47,7 +47,6 @@ with InitRelativeImports():
     from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from ...ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
     from ...ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
-    from ...ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
     from ...ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo, SpecialMethodType
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
@@ -161,14 +160,14 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     @staticmethod
     @contextmanager
-    def OnImportStatementParserInfo(*args, **kwargs):
+    def OnImportStatementParserInfo(
+        parser_info: ImportStatementParserInfo,
+    ):
         yield
 
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @contextmanager
-    def OnPassStatementParserInfo(*args, **kwargs):
-        yield
+        # Now that all namespace processing has been completed, we can safely
+        # disable this statement so that it doesn't import other processing.
+        parser_info.Disable()
 
     # ----------------------------------------------------------------------
     @contextmanager

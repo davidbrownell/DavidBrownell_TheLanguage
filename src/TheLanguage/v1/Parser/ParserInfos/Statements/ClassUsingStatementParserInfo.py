@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, List, Optional
+from typing import cast, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass, field, InitVar
 
@@ -109,8 +109,6 @@ class ClassUsingStatementParserInfo(StatementParserInfo):
         if (
             not isinstance(self.type, BinaryExpressionParserInfo)
             or self.type.operator != BinaryExpressionOperatorType.Access
-            or not isinstance(self.type.left_expression, FuncOrTypeExpressionParserInfo)
-            or not isinstance(self.type.right_expression, FuncOrTypeExpressionParserInfo)
         ):
             errors.append(
                 InvalidUsingExpressionError.Create(
@@ -128,3 +126,31 @@ class ClassUsingStatementParserInfo(StatementParserInfo):
         return {
             ParserInfoType.TypeCustomization : ScopeFlag.Class,
         }
+
+    # ----------------------------------------------------------------------
+    def GetNames(self) -> Tuple[str, str]:
+        left_parser_info = self.type.left_expression.resolved_type__.Resolve().parser_info
+
+        if (
+            not isinstance(left_parser_info, FuncOrTypeExpressionParserInfo)
+            or not isinstance(left_parser_info.value, str)
+        ):
+            raise ErrorException(
+                InvalidUsingExpressionError.Create(
+                    region=left_parser_info.regions__.self,
+                ),
+            )
+
+        right_parser_info = self.type.right_expression.resolved_type__.Resolve().parser_info
+
+        if (
+            not isinstance(right_parser_info, FuncOrTypeExpressionParserInfo)
+            or not isinstance(right_parser_info.value, str)
+        ):
+            raise ErrorException(
+                InvalidUsingExpressionError.Create(
+                    region=right_parser_info.regions__.self,
+                ),
+            )
+
+        return left_parser_info.value, right_parser_info.value

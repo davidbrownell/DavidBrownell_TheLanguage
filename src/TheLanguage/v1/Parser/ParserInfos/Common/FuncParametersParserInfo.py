@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass, field, InitVar
 
@@ -110,6 +110,22 @@ class FuncParameterParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    def GetOverrideId(self) -> Tuple:
+        """Returns information that can be used to determine if this parameter matches another"""
+
+        # TODO: How do we handle coveriants?
+        if self.type.HasResolvedEntity():
+            type_id = id(self.type.resolved_type__.Resolve().parser_info)
+        else:
+            type_id = 10 # BugBug
+
+        return (
+            type_id,
+            self.is_variadic,
+            self.name,
+        )
+
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
@@ -193,6 +209,16 @@ class FuncParametersParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    def GetOverrideId(self) -> Tuple:
+        """Returns information that can be used to determine if these parameters match another set of parameters associated with a different function"""
+
+        return (
+            tuple(parameter.GetOverrideId() for parameter in (self.positional or [])),
+            tuple(parameter.GetOverrideId() for parameter in (self.any or [])),
+            tuple(parameter.GetOverrideId() for parameter in (self.keyword or [])),
+        )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

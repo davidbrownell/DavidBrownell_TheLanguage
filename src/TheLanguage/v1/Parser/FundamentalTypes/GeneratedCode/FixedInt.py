@@ -4,9 +4,7 @@
 # ----------------------------------------------------------------------
 
 from v1.Lexer.Location import Location
-from v1.Parser.MiniLanguage.Expressions.EnforceExpression import EnforceExpression
 from v1.Parser.MiniLanguage.Expressions.ErrorExpression import ErrorExpression
-from v1.Parser.MiniLanguage.Types.BooleanType import BooleanType
 from v1.Parser.MiniLanguage.Types.IntegerType import IntegerType
 from v1.Parser.ParserInfos.AggregateParserInfo import AggregateParserInfo
 from v1.Parser.ParserInfos.Common.ClassModifier import ClassModifier
@@ -21,7 +19,8 @@ from v1.Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParameters
 from v1.Parser.ParserInfos.Common.FunctionModifier import FunctionModifier
 from v1.Parser.ParserInfos.Common.MethodHierarchyModifier import MethodHierarchyModifier
 from v1.Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier
-from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateDecoratorParameterParserInfo
+from v1.Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentParserInfo
+from v1.Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
 from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateParametersParserInfo
 from v1.Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
 from v1.Parser.ParserInfos.Common.VisibilityModifier import VisibilityModifier
@@ -30,8 +29,10 @@ from v1.Parser.ParserInfos.Expressions.BooleanExpressionParserInfo import Boolea
 from v1.Parser.ParserInfos.Expressions.CallExpressionParserInfo import CallExpressionParserInfo
 from v1.Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 from v1.Parser.ParserInfos.Expressions.IntegerExpressionParserInfo import IntegerExpressionParserInfo
+from v1.Parser.ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
 from v1.Parser.ParserInfos.Expressions.StringExpressionParserInfo import StringExpressionParserInfo
 from v1.Parser.ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
+from v1.Parser.ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 from v1.Parser.ParserInfos.ParserInfo import ParserInfoType
 from v1.Parser.ParserInfos.Statements.ClassCapabilities.StandardCapabilities import StandardCapabilities
 from v1.Parser.ParserInfos.Statements.ClassStatementParserInfo import ClassStatementDependencyParserInfo
@@ -42,9 +43,7 @@ from v1.Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementCl
 from v1.Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementElseClauseParserInfo
 from v1.Parser.ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
 from v1.Parser.ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportType as ImportStatementParserInfoImportType
-from v1.Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
 from v1.Parser.ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
-from v1.Parser.ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo, SpecialMethodType
 from v1.Parser.ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 from v1.Parser.TranslationUnitRegion import TranslationUnitRegion
 
@@ -53,959 +52,1300 @@ from v1.Parser.TranslationUnitRegion import TranslationUnitRegion
 tu_region_000000 = TranslationUnitRegion(begin=Location(line=16, column=1), end=Location(line=19, column=1))
 tu_region_000001 = TranslationUnitRegion(begin=Location(line=16, column=34), end=Location(line=16, column=44))
 tu_region_000002 = TranslationUnitRegion(begin=Location(line=16, column=6), end=Location(line=16, column=26))
-tu_region_000003 = TranslationUnitRegion(begin=Location(line=22, column=9), end=Location(line=22, column=13))
-tu_region_000004 = TranslationUnitRegion(begin=Location(line=22, column=9), end=Location(line=22, column=24))
-tu_region_000005 = TranslationUnitRegion(begin=Location(line=22, column=14), end=Location(line=22, column=24))
-tu_region_000006 = TranslationUnitRegion(begin=Location(line=24, column=9), end=Location(line=24, column=14))
-tu_region_000007 = TranslationUnitRegion(begin=Location(line=24, column=9), end=Location(line=24, column=26))
-tu_region_000008 = TranslationUnitRegion(begin=Location(line=24, column=15), end=Location(line=24, column=26))
-tu_region_000009 = TranslationUnitRegion(begin=Location(line=25, column=9), end=Location(line=25, column=14))
-tu_region_000010 = TranslationUnitRegion(begin=Location(line=25, column=9), end=Location(line=25, column=25))
-tu_region_000011 = TranslationUnitRegion(begin=Location(line=25, column=15), end=Location(line=25, column=25))
-tu_region_000012 = TranslationUnitRegion(begin=Location(line=20, column=31), end=Location(line=26, column=10))
-tu_region_000013 = TranslationUnitRegion(begin=Location(line=21, column=5), end=Location(line=22, column=25))
-tu_region_000014 = TranslationUnitRegion(begin=Location(line=22, column=25), end=Location(line=25, column=26))
-tu_region_000015 = TranslationUnitRegion(begin=Location(line=27, column=5), end=Location(line=27, column=9))
-tu_region_000016 = TranslationUnitRegion(begin=Location(line=27, column=5), end=Location(line=27, column=20))
-tu_region_000017 = TranslationUnitRegion(begin=Location(line=27, column=10), end=Location(line=27, column=20))
-tu_region_000018 = TranslationUnitRegion(begin=Location(line=28, column=5), end=Location(line=28, column=9))
-tu_region_000019 = TranslationUnitRegion(begin=Location(line=28, column=5), end=Location(line=28, column=20))
-tu_region_000020 = TranslationUnitRegion(begin=Location(line=28, column=10), end=Location(line=28, column=20))
-tu_region_000021 = TranslationUnitRegion(begin=Location(line=26, column=11), end=Location(line=29, column=2))
-tu_region_000022 = TranslationUnitRegion(begin=Location(line=27, column=5), end=Location(line=28, column=22))
-tu_region_000023 = TranslationUnitRegion(begin=Location(line=30, column=36), end=Location(line=30, column=46))
-tu_region_000024 = TranslationUnitRegion(begin=Location(line=30, column=48), end=Location(line=30, column=58))
-tu_region_000025 = TranslationUnitRegion(begin=Location(line=30, column=34), end=Location(line=30, column=60))
-tu_region_000026 = TranslationUnitRegion(begin=Location(line=30, column=23), end=Location(line=30, column=60))
-tu_region_000027 = TranslationUnitRegion(begin=Location(line=30, column=23), end=Location(line=30, column=33))
-tu_region_000028 = TranslationUnitRegion(begin=Location(line=30, column=16), end=Location(line=30, column=60))
-tu_region_000029 = TranslationUnitRegion(begin=Location(line=30, column=16), end=Location(line=30, column=22))
-tu_region_000030 = TranslationUnitRegion(begin=Location(line=33, column=9), end=Location(line=33, column=17))
-tu_region_000031 = TranslationUnitRegion(begin=Location(line=34, column=13), end=Location(line=34, column=23))
-tu_region_000032 = TranslationUnitRegion(begin=Location(line=34, column=27), end=Location(line=34, column=28))
-tu_region_000033 = TranslationUnitRegion(begin=Location(line=34, column=13), end=Location(line=34, column=28))
-tu_region_000034 = TranslationUnitRegion(begin=Location(line=34, column=24), end=Location(line=34, column=26))
-tu_region_000035 = TranslationUnitRegion(begin=Location(line=35, column=16), end=Location(line=35, column=26))
-tu_region_000036 = TranslationUnitRegion(begin=Location(line=35, column=30), end=Location(line=35, column=31))
-tu_region_000037 = TranslationUnitRegion(begin=Location(line=35, column=16), end=Location(line=35, column=31))
-tu_region_000038 = TranslationUnitRegion(begin=Location(line=35, column=27), end=Location(line=35, column=29))
-tu_region_000039 = TranslationUnitRegion(begin=Location(line=36, column=16), end=Location(line=36, column=26))
-tu_region_000040 = TranslationUnitRegion(begin=Location(line=36, column=30), end=Location(line=36, column=31))
-tu_region_000041 = TranslationUnitRegion(begin=Location(line=36, column=16), end=Location(line=36, column=31))
-tu_region_000042 = TranslationUnitRegion(begin=Location(line=36, column=27), end=Location(line=36, column=29))
-tu_region_000043 = TranslationUnitRegion(begin=Location(line=37, column=16), end=Location(line=37, column=26))
-tu_region_000044 = TranslationUnitRegion(begin=Location(line=37, column=30), end=Location(line=37, column=31))
-tu_region_000045 = TranslationUnitRegion(begin=Location(line=37, column=16), end=Location(line=37, column=31))
-tu_region_000046 = TranslationUnitRegion(begin=Location(line=37, column=27), end=Location(line=37, column=29))
-tu_region_000047 = TranslationUnitRegion(begin=Location(line=38, column=16), end=Location(line=38, column=26))
-tu_region_000048 = TranslationUnitRegion(begin=Location(line=38, column=30), end=Location(line=38, column=32))
-tu_region_000049 = TranslationUnitRegion(begin=Location(line=38, column=16), end=Location(line=38, column=32))
-tu_region_000050 = TranslationUnitRegion(begin=Location(line=38, column=27), end=Location(line=38, column=29))
-tu_region_000051 = TranslationUnitRegion(begin=Location(line=37, column=16), end=Location(line=38, column=32))
-tu_region_000052 = TranslationUnitRegion(begin=Location(line=38, column=13), end=Location(line=38, column=15))
-tu_region_000053 = TranslationUnitRegion(begin=Location(line=36, column=16), end=Location(line=38, column=32))
-tu_region_000054 = TranslationUnitRegion(begin=Location(line=37, column=13), end=Location(line=37, column=15))
-tu_region_000055 = TranslationUnitRegion(begin=Location(line=35, column=16), end=Location(line=38, column=32))
-tu_region_000056 = TranslationUnitRegion(begin=Location(line=36, column=13), end=Location(line=36, column=15))
-tu_region_000057 = TranslationUnitRegion(begin=Location(line=34, column=13), end=Location(line=38, column=32))
-tu_region_000058 = TranslationUnitRegion(begin=Location(line=35, column=13), end=Location(line=35, column=15))
-tu_region_000059 = TranslationUnitRegion(begin=Location(line=33, column=17), end=Location(line=39, column=10))
-tu_region_000060 = TranslationUnitRegion(begin=Location(line=33, column=9), end=Location(line=39, column=10))
-tu_region_000061 = TranslationUnitRegion(begin=Location(line=33, column=9), end=Location(line=41, column=1))
-tu_region_000062 = TranslationUnitRegion(begin=Location(line=32, column=5), end=Location(line=41, column=5))
-tu_region_000063 = TranslationUnitRegion(begin=Location(line=32, column=5), end=Location(line=32, column=23))
-tu_region_000064 = TranslationUnitRegion(begin=Location(line=32, column=25), end=Location(line=41, column=5))
-tu_region_000065 = TranslationUnitRegion(begin=Location(line=42, column=9), end=Location(line=43, column=1))
-tu_region_000066 = TranslationUnitRegion(begin=Location(line=43, column=9), end=Location(line=44, column=1))
-tu_region_000067 = TranslationUnitRegion(begin=Location(line=44, column=9), end=Location(line=45, column=1))
-tu_region_000068 = TranslationUnitRegion(begin=Location(line=45, column=9), end=Location(line=46, column=1))
-tu_region_000069 = TranslationUnitRegion(begin=Location(line=46, column=9), end=Location(line=47, column=1))
-tu_region_000070 = TranslationUnitRegion(begin=Location(line=47, column=9), end=Location(line=48, column=1))
-tu_region_000071 = TranslationUnitRegion(begin=Location(line=48, column=9), end=Location(line=50, column=1))
-tu_region_000072 = TranslationUnitRegion(begin=Location(line=41, column=5), end=Location(line=50, column=5))
-tu_region_000073 = TranslationUnitRegion(begin=Location(line=41, column=5), end=Location(line=41, column=25))
-tu_region_000074 = TranslationUnitRegion(begin=Location(line=41, column=27), end=Location(line=50, column=5))
-tu_region_000075 = TranslationUnitRegion(begin=Location(line=50, column=40), end=Location(line=50, column=52))
-tu_region_000076 = TranslationUnitRegion(begin=Location(line=50, column=40), end=Location(line=50, column=48))
-tu_region_000077 = TranslationUnitRegion(begin=Location(line=50, column=49), end=Location(line=50, column=52))
-tu_region_000078 = TranslationUnitRegion(begin=Location(line=50, column=79), end=Location(line=50, column=87))
-tu_region_000079 = TranslationUnitRegion(begin=Location(line=50, column=69), end=Location(line=50, column=97))
-tu_region_000080 = TranslationUnitRegion(begin=Location(line=50, column=98), end=Location(line=50, column=110))
-tu_region_000081 = TranslationUnitRegion(begin=Location(line=50, column=98), end=Location(line=50, column=106))
-tu_region_000082 = TranslationUnitRegion(begin=Location(line=50, column=107), end=Location(line=50, column=110))
-tu_region_000083 = TranslationUnitRegion(begin=Location(line=50, column=98), end=Location(line=50, column=118))
-tu_region_000084 = TranslationUnitRegion(begin=Location(line=50, column=111), end=Location(line=50, column=118))
-tu_region_000085 = TranslationUnitRegion(begin=Location(line=50, column=97), end=Location(line=50, column=119))
-tu_region_000086 = TranslationUnitRegion(begin=Location(line=50, column=5), end=Location(line=51, column=1))
-tu_region_000087 = TranslationUnitRegion(begin=Location(line=50, column=24), end=Location(line=50, column=30))
-tu_region_000088 = TranslationUnitRegion(begin=Location(line=50, column=31), end=Location(line=50, column=39))
-tu_region_000089 = TranslationUnitRegion(begin=Location(line=50, column=53), end=Location(line=50, column=69))
-tu_region_000090 = TranslationUnitRegion(begin=Location(line=50, column=6), end=Location(line=50, column=14))
-tu_region_000091 = TranslationUnitRegion(begin=Location(line=50, column=16), end=Location(line=50, column=22))
-tu_region_000092 = TranslationUnitRegion(begin=Location(line=51, column=61), end=Location(line=51, column=69))
-tu_region_000093 = TranslationUnitRegion(begin=Location(line=51, column=51), end=Location(line=51, column=79))
-tu_region_000094 = TranslationUnitRegion(begin=Location(line=51, column=80), end=Location(line=51, column=92))
-tu_region_000095 = TranslationUnitRegion(begin=Location(line=51, column=80), end=Location(line=51, column=88))
-tu_region_000096 = TranslationUnitRegion(begin=Location(line=51, column=89), end=Location(line=51, column=92))
-tu_region_000097 = TranslationUnitRegion(begin=Location(line=51, column=80), end=Location(line=51, column=100))
-tu_region_000098 = TranslationUnitRegion(begin=Location(line=51, column=93), end=Location(line=51, column=100))
-tu_region_000099 = TranslationUnitRegion(begin=Location(line=51, column=79), end=Location(line=51, column=101))
-tu_region_000100 = TranslationUnitRegion(begin=Location(line=51, column=5), end=Location(line=52, column=1))
-tu_region_000101 = TranslationUnitRegion(begin=Location(line=51, column=16), end=Location(line=51, column=22))
-tu_region_000102 = TranslationUnitRegion(begin=Location(line=51, column=102), end=Location(line=51, column=111))
-tu_region_000103 = TranslationUnitRegion(begin=Location(line=51, column=23), end=Location(line=51, column=31))
-tu_region_000104 = TranslationUnitRegion(begin=Location(line=51, column=37), end=Location(line=51, column=51))
-tu_region_000105 = TranslationUnitRegion(begin=Location(line=51, column=6), end=Location(line=51, column=14))
-tu_region_000106 = TranslationUnitRegion(begin=Location(line=52, column=61), end=Location(line=52, column=69))
-tu_region_000107 = TranslationUnitRegion(begin=Location(line=52, column=51), end=Location(line=52, column=79))
-tu_region_000108 = TranslationUnitRegion(begin=Location(line=52, column=80), end=Location(line=52, column=92))
-tu_region_000109 = TranslationUnitRegion(begin=Location(line=52, column=80), end=Location(line=52, column=88))
-tu_region_000110 = TranslationUnitRegion(begin=Location(line=52, column=89), end=Location(line=52, column=92))
-tu_region_000111 = TranslationUnitRegion(begin=Location(line=52, column=80), end=Location(line=52, column=100))
-tu_region_000112 = TranslationUnitRegion(begin=Location(line=52, column=93), end=Location(line=52, column=100))
-tu_region_000113 = TranslationUnitRegion(begin=Location(line=52, column=79), end=Location(line=52, column=101))
-tu_region_000114 = TranslationUnitRegion(begin=Location(line=52, column=5), end=Location(line=54, column=1))
-tu_region_000115 = TranslationUnitRegion(begin=Location(line=52, column=16), end=Location(line=52, column=22))
-tu_region_000116 = TranslationUnitRegion(begin=Location(line=52, column=102), end=Location(line=52, column=105))
-tu_region_000117 = TranslationUnitRegion(begin=Location(line=52, column=23), end=Location(line=52, column=31))
-tu_region_000118 = TranslationUnitRegion(begin=Location(line=52, column=37), end=Location(line=52, column=51))
-tu_region_000119 = TranslationUnitRegion(begin=Location(line=52, column=6), end=Location(line=52, column=14))
-tu_region_000120 = TranslationUnitRegion(begin=Location(line=54, column=58), end=Location(line=54, column=66))
-tu_region_000121 = TranslationUnitRegion(begin=Location(line=54, column=48), end=Location(line=54, column=76))
-tu_region_000122 = TranslationUnitRegion(begin=Location(line=54, column=77), end=Location(line=54, column=89))
-tu_region_000123 = TranslationUnitRegion(begin=Location(line=54, column=77), end=Location(line=54, column=85))
-tu_region_000124 = TranslationUnitRegion(begin=Location(line=54, column=86), end=Location(line=54, column=89))
-tu_region_000125 = TranslationUnitRegion(begin=Location(line=54, column=77), end=Location(line=54, column=97))
-tu_region_000126 = TranslationUnitRegion(begin=Location(line=54, column=90), end=Location(line=54, column=97))
-tu_region_000127 = TranslationUnitRegion(begin=Location(line=54, column=76), end=Location(line=54, column=98))
-tu_region_000128 = TranslationUnitRegion(begin=Location(line=54, column=5), end=Location(line=55, column=1))
-tu_region_000129 = TranslationUnitRegion(begin=Location(line=54, column=16), end=Location(line=54, column=22))
-tu_region_000130 = TranslationUnitRegion(begin=Location(line=54, column=99), end=Location(line=54, column=108))
-tu_region_000131 = TranslationUnitRegion(begin=Location(line=54, column=23), end=Location(line=54, column=31))
-tu_region_000132 = TranslationUnitRegion(begin=Location(line=54, column=37), end=Location(line=54, column=48))
-tu_region_000133 = TranslationUnitRegion(begin=Location(line=54, column=6), end=Location(line=54, column=14))
-tu_region_000134 = TranslationUnitRegion(begin=Location(line=55, column=58), end=Location(line=55, column=66))
-tu_region_000135 = TranslationUnitRegion(begin=Location(line=55, column=48), end=Location(line=55, column=76))
-tu_region_000136 = TranslationUnitRegion(begin=Location(line=55, column=77), end=Location(line=55, column=89))
-tu_region_000137 = TranslationUnitRegion(begin=Location(line=55, column=77), end=Location(line=55, column=85))
-tu_region_000138 = TranslationUnitRegion(begin=Location(line=55, column=86), end=Location(line=55, column=89))
-tu_region_000139 = TranslationUnitRegion(begin=Location(line=55, column=77), end=Location(line=55, column=97))
-tu_region_000140 = TranslationUnitRegion(begin=Location(line=55, column=90), end=Location(line=55, column=97))
-tu_region_000141 = TranslationUnitRegion(begin=Location(line=55, column=76), end=Location(line=55, column=98))
-tu_region_000142 = TranslationUnitRegion(begin=Location(line=55, column=5), end=Location(line=57, column=1))
-tu_region_000143 = TranslationUnitRegion(begin=Location(line=55, column=16), end=Location(line=55, column=22))
-tu_region_000144 = TranslationUnitRegion(begin=Location(line=55, column=99), end=Location(line=55, column=102))
-tu_region_000145 = TranslationUnitRegion(begin=Location(line=55, column=23), end=Location(line=55, column=31))
-tu_region_000146 = TranslationUnitRegion(begin=Location(line=55, column=37), end=Location(line=55, column=48))
-tu_region_000147 = TranslationUnitRegion(begin=Location(line=55, column=6), end=Location(line=55, column=14))
-tu_region_000148 = TranslationUnitRegion(begin=Location(line=57, column=32), end=Location(line=57, column=44))
-tu_region_000149 = TranslationUnitRegion(begin=Location(line=57, column=32), end=Location(line=57, column=40))
-tu_region_000150 = TranslationUnitRegion(begin=Location(line=57, column=41), end=Location(line=57, column=44))
-tu_region_000151 = TranslationUnitRegion(begin=Location(line=57, column=5), end=Location(line=59, column=1))
-tu_region_000152 = TranslationUnitRegion(begin=Location(line=57, column=16), end=Location(line=57, column=22))
-tu_region_000153 = TranslationUnitRegion(begin=Location(line=57, column=58), end=Location(line=57, column=67))
-tu_region_000154 = TranslationUnitRegion(begin=Location(line=57, column=23), end=Location(line=57, column=31))
-tu_region_000155 = TranslationUnitRegion(begin=Location(line=57, column=45), end=Location(line=57, column=55))
-tu_region_000156 = TranslationUnitRegion(begin=Location(line=57, column=55), end=Location(line=57, column=57))
-tu_region_000157 = TranslationUnitRegion(begin=Location(line=57, column=6), end=Location(line=57, column=14))
-tu_region_000158 = TranslationUnitRegion(begin=Location(line=59, column=32), end=Location(line=59, column=40))
-tu_region_000159 = TranslationUnitRegion(begin=Location(line=59, column=32), end=Location(line=59, column=36))
-tu_region_000160 = TranslationUnitRegion(begin=Location(line=59, column=37), end=Location(line=59, column=40))
-tu_region_000161 = TranslationUnitRegion(begin=Location(line=59, column=5), end=Location(line=60, column=1))
-tu_region_000162 = TranslationUnitRegion(begin=Location(line=59, column=16), end=Location(line=59, column=22))
-tu_region_000163 = TranslationUnitRegion(begin=Location(line=59, column=54), end=Location(line=59, column=63))
-tu_region_000164 = TranslationUnitRegion(begin=Location(line=59, column=23), end=Location(line=59, column=31))
-tu_region_000165 = TranslationUnitRegion(begin=Location(line=59, column=41), end=Location(line=59, column=51))
-tu_region_000166 = TranslationUnitRegion(begin=Location(line=59, column=51), end=Location(line=59, column=53))
-tu_region_000167 = TranslationUnitRegion(begin=Location(line=59, column=6), end=Location(line=59, column=14))
-tu_region_000168 = TranslationUnitRegion(begin=Location(line=60, column=32), end=Location(line=60, column=39))
-tu_region_000169 = TranslationUnitRegion(begin=Location(line=60, column=32), end=Location(line=60, column=35))
-tu_region_000170 = TranslationUnitRegion(begin=Location(line=60, column=36), end=Location(line=60, column=39))
-tu_region_000171 = TranslationUnitRegion(begin=Location(line=60, column=5), end=Location(line=62, column=1))
-tu_region_000172 = TranslationUnitRegion(begin=Location(line=60, column=16), end=Location(line=60, column=22))
-tu_region_000173 = TranslationUnitRegion(begin=Location(line=60, column=56), end=Location(line=60, column=65))
-tu_region_000174 = TranslationUnitRegion(begin=Location(line=60, column=23), end=Location(line=60, column=31))
-tu_region_000175 = TranslationUnitRegion(begin=Location(line=60, column=40), end=Location(line=60, column=53))
-tu_region_000176 = TranslationUnitRegion(begin=Location(line=60, column=53), end=Location(line=60, column=55))
-tu_region_000177 = TranslationUnitRegion(begin=Location(line=60, column=6), end=Location(line=60, column=14))
-tu_region_000178 = TranslationUnitRegion(begin=Location(line=62, column=40), end=Location(line=62, column=57))
-tu_region_000179 = TranslationUnitRegion(begin=Location(line=62, column=40), end=Location(line=62, column=53))
-tu_region_000180 = TranslationUnitRegion(begin=Location(line=62, column=54), end=Location(line=62, column=57))
-tu_region_000181 = TranslationUnitRegion(begin=Location(line=62, column=70), end=Location(line=62, column=88))
-tu_region_000182 = TranslationUnitRegion(begin=Location(line=62, column=70), end=Location(line=62, column=78))
-tu_region_000183 = TranslationUnitRegion(begin=Location(line=62, column=79), end=Location(line=62, column=88))
-tu_region_000184 = TranslationUnitRegion(begin=Location(line=62, column=70), end=Location(line=62, column=93))
-tu_region_000185 = TranslationUnitRegion(begin=Location(line=62, column=89), end=Location(line=62, column=93))
-tu_region_000186 = TranslationUnitRegion(begin=Location(line=62, column=95), end=Location(line=62, column=108))
-tu_region_000187 = TranslationUnitRegion(begin=Location(line=62, column=95), end=Location(line=62, column=98))
-tu_region_000188 = TranslationUnitRegion(begin=Location(line=62, column=99), end=Location(line=62, column=108))
-tu_region_000189 = TranslationUnitRegion(begin=Location(line=62, column=95), end=Location(line=62, column=113))
-tu_region_000190 = TranslationUnitRegion(begin=Location(line=62, column=109), end=Location(line=62, column=113))
-tu_region_000191 = TranslationUnitRegion(begin=Location(line=62, column=69), end=Location(line=62, column=114))
-tu_region_000192 = TranslationUnitRegion(begin=Location(line=62, column=70), end=Location(line=62, column=113))
-tu_region_000193 = TranslationUnitRegion(begin=Location(line=62, column=5), end=Location(line=64, column=1))
-tu_region_000194 = TranslationUnitRegion(begin=Location(line=62, column=24), end=Location(line=62, column=30))
-tu_region_000195 = TranslationUnitRegion(begin=Location(line=62, column=31), end=Location(line=62, column=39))
-tu_region_000196 = TranslationUnitRegion(begin=Location(line=62, column=58), end=Location(line=62, column=69))
-tu_region_000197 = TranslationUnitRegion(begin=Location(line=62, column=6), end=Location(line=62, column=14))
-tu_region_000198 = TranslationUnitRegion(begin=Location(line=62, column=16), end=Location(line=62, column=22))
-tu_region_000199 = TranslationUnitRegion(begin=Location(line=64, column=32), end=Location(line=64, column=40))
-tu_region_000200 = TranslationUnitRegion(begin=Location(line=64, column=32), end=Location(line=64, column=36))
-tu_region_000201 = TranslationUnitRegion(begin=Location(line=64, column=37), end=Location(line=64, column=40))
-tu_region_000202 = TranslationUnitRegion(begin=Location(line=64, column=51), end=Location(line=64, column=64))
-tu_region_000203 = TranslationUnitRegion(begin=Location(line=64, column=51), end=Location(line=64, column=54))
-tu_region_000204 = TranslationUnitRegion(begin=Location(line=64, column=55), end=Location(line=64, column=64))
-tu_region_000205 = TranslationUnitRegion(begin=Location(line=64, column=51), end=Location(line=64, column=69))
-tu_region_000206 = TranslationUnitRegion(begin=Location(line=64, column=65), end=Location(line=64, column=69))
-tu_region_000207 = TranslationUnitRegion(begin=Location(line=64, column=50), end=Location(line=64, column=70))
-tu_region_000208 = TranslationUnitRegion(begin=Location(line=64, column=5), end=Location(line=65, column=1))
-tu_region_000209 = TranslationUnitRegion(begin=Location(line=64, column=16), end=Location(line=64, column=22))
-tu_region_000210 = TranslationUnitRegion(begin=Location(line=64, column=71), end=Location(line=64, column=80))
-tu_region_000211 = TranslationUnitRegion(begin=Location(line=64, column=23), end=Location(line=64, column=31))
-tu_region_000212 = TranslationUnitRegion(begin=Location(line=64, column=41), end=Location(line=64, column=50))
-tu_region_000213 = TranslationUnitRegion(begin=Location(line=64, column=6), end=Location(line=64, column=14))
-tu_region_000214 = TranslationUnitRegion(begin=Location(line=65, column=32), end=Location(line=65, column=40))
-tu_region_000215 = TranslationUnitRegion(begin=Location(line=65, column=32), end=Location(line=65, column=36))
-tu_region_000216 = TranslationUnitRegion(begin=Location(line=65, column=37), end=Location(line=65, column=40))
-tu_region_000217 = TranslationUnitRegion(begin=Location(line=65, column=54), end=Location(line=65, column=67))
-tu_region_000218 = TranslationUnitRegion(begin=Location(line=65, column=54), end=Location(line=65, column=57))
-tu_region_000219 = TranslationUnitRegion(begin=Location(line=65, column=58), end=Location(line=65, column=67))
-tu_region_000220 = TranslationUnitRegion(begin=Location(line=65, column=54), end=Location(line=65, column=72))
-tu_region_000221 = TranslationUnitRegion(begin=Location(line=65, column=68), end=Location(line=65, column=72))
-tu_region_000222 = TranslationUnitRegion(begin=Location(line=65, column=53), end=Location(line=65, column=73))
-tu_region_000223 = TranslationUnitRegion(begin=Location(line=65, column=5), end=Location(line=66, column=1))
-tu_region_000224 = TranslationUnitRegion(begin=Location(line=65, column=16), end=Location(line=65, column=22))
-tu_region_000225 = TranslationUnitRegion(begin=Location(line=65, column=74), end=Location(line=65, column=83))
-tu_region_000226 = TranslationUnitRegion(begin=Location(line=65, column=23), end=Location(line=65, column=31))
-tu_region_000227 = TranslationUnitRegion(begin=Location(line=65, column=41), end=Location(line=65, column=53))
-tu_region_000228 = TranslationUnitRegion(begin=Location(line=65, column=6), end=Location(line=65, column=14))
-tu_region_000229 = TranslationUnitRegion(begin=Location(line=66, column=32), end=Location(line=66, column=40))
-tu_region_000230 = TranslationUnitRegion(begin=Location(line=66, column=32), end=Location(line=66, column=36))
-tu_region_000231 = TranslationUnitRegion(begin=Location(line=66, column=37), end=Location(line=66, column=40))
-tu_region_000232 = TranslationUnitRegion(begin=Location(line=66, column=50), end=Location(line=66, column=63))
-tu_region_000233 = TranslationUnitRegion(begin=Location(line=66, column=50), end=Location(line=66, column=53))
-tu_region_000234 = TranslationUnitRegion(begin=Location(line=66, column=54), end=Location(line=66, column=63))
-tu_region_000235 = TranslationUnitRegion(begin=Location(line=66, column=50), end=Location(line=66, column=68))
-tu_region_000236 = TranslationUnitRegion(begin=Location(line=66, column=64), end=Location(line=66, column=68))
-tu_region_000237 = TranslationUnitRegion(begin=Location(line=66, column=49), end=Location(line=66, column=69))
-tu_region_000238 = TranslationUnitRegion(begin=Location(line=66, column=5), end=Location(line=67, column=1))
-tu_region_000239 = TranslationUnitRegion(begin=Location(line=66, column=16), end=Location(line=66, column=22))
-tu_region_000240 = TranslationUnitRegion(begin=Location(line=66, column=70), end=Location(line=66, column=79))
-tu_region_000241 = TranslationUnitRegion(begin=Location(line=66, column=23), end=Location(line=66, column=31))
-tu_region_000242 = TranslationUnitRegion(begin=Location(line=66, column=41), end=Location(line=66, column=49))
-tu_region_000243 = TranslationUnitRegion(begin=Location(line=66, column=6), end=Location(line=66, column=14))
-tu_region_000244 = TranslationUnitRegion(begin=Location(line=67, column=32), end=Location(line=67, column=40))
-tu_region_000245 = TranslationUnitRegion(begin=Location(line=67, column=32), end=Location(line=67, column=36))
-tu_region_000246 = TranslationUnitRegion(begin=Location(line=67, column=37), end=Location(line=67, column=40))
-tu_region_000247 = TranslationUnitRegion(begin=Location(line=67, column=55), end=Location(line=67, column=68))
-tu_region_000248 = TranslationUnitRegion(begin=Location(line=67, column=55), end=Location(line=67, column=58))
-tu_region_000249 = TranslationUnitRegion(begin=Location(line=67, column=59), end=Location(line=67, column=68))
-tu_region_000250 = TranslationUnitRegion(begin=Location(line=67, column=55), end=Location(line=67, column=73))
-tu_region_000251 = TranslationUnitRegion(begin=Location(line=67, column=69), end=Location(line=67, column=73))
-tu_region_000252 = TranslationUnitRegion(begin=Location(line=67, column=54), end=Location(line=67, column=74))
-tu_region_000253 = TranslationUnitRegion(begin=Location(line=67, column=5), end=Location(line=68, column=1))
-tu_region_000254 = TranslationUnitRegion(begin=Location(line=67, column=16), end=Location(line=67, column=22))
-tu_region_000255 = TranslationUnitRegion(begin=Location(line=67, column=75), end=Location(line=67, column=84))
-tu_region_000256 = TranslationUnitRegion(begin=Location(line=67, column=23), end=Location(line=67, column=31))
-tu_region_000257 = TranslationUnitRegion(begin=Location(line=67, column=41), end=Location(line=67, column=54))
-tu_region_000258 = TranslationUnitRegion(begin=Location(line=67, column=6), end=Location(line=67, column=14))
-tu_region_000259 = TranslationUnitRegion(begin=Location(line=68, column=32), end=Location(line=68, column=40))
-tu_region_000260 = TranslationUnitRegion(begin=Location(line=68, column=32), end=Location(line=68, column=36))
-tu_region_000261 = TranslationUnitRegion(begin=Location(line=68, column=37), end=Location(line=68, column=40))
-tu_region_000262 = TranslationUnitRegion(begin=Location(line=68, column=53), end=Location(line=68, column=66))
-tu_region_000263 = TranslationUnitRegion(begin=Location(line=68, column=53), end=Location(line=68, column=56))
-tu_region_000264 = TranslationUnitRegion(begin=Location(line=68, column=57), end=Location(line=68, column=66))
-tu_region_000265 = TranslationUnitRegion(begin=Location(line=68, column=53), end=Location(line=68, column=71))
-tu_region_000266 = TranslationUnitRegion(begin=Location(line=68, column=67), end=Location(line=68, column=71))
-tu_region_000267 = TranslationUnitRegion(begin=Location(line=68, column=52), end=Location(line=68, column=72))
-tu_region_000268 = TranslationUnitRegion(begin=Location(line=68, column=5), end=Location(line=69, column=1))
-tu_region_000269 = TranslationUnitRegion(begin=Location(line=68, column=16), end=Location(line=68, column=22))
-tu_region_000270 = TranslationUnitRegion(begin=Location(line=68, column=73), end=Location(line=68, column=82))
-tu_region_000271 = TranslationUnitRegion(begin=Location(line=68, column=23), end=Location(line=68, column=31))
-tu_region_000272 = TranslationUnitRegion(begin=Location(line=68, column=41), end=Location(line=68, column=52))
-tu_region_000273 = TranslationUnitRegion(begin=Location(line=68, column=6), end=Location(line=68, column=14))
-tu_region_000274 = TranslationUnitRegion(begin=Location(line=69, column=32), end=Location(line=69, column=40))
-tu_region_000275 = TranslationUnitRegion(begin=Location(line=69, column=32), end=Location(line=69, column=36))
-tu_region_000276 = TranslationUnitRegion(begin=Location(line=69, column=37), end=Location(line=69, column=40))
-tu_region_000277 = TranslationUnitRegion(begin=Location(line=69, column=58), end=Location(line=69, column=71))
-tu_region_000278 = TranslationUnitRegion(begin=Location(line=69, column=58), end=Location(line=69, column=61))
-tu_region_000279 = TranslationUnitRegion(begin=Location(line=69, column=62), end=Location(line=69, column=71))
-tu_region_000280 = TranslationUnitRegion(begin=Location(line=69, column=58), end=Location(line=69, column=76))
-tu_region_000281 = TranslationUnitRegion(begin=Location(line=69, column=72), end=Location(line=69, column=76))
-tu_region_000282 = TranslationUnitRegion(begin=Location(line=69, column=57), end=Location(line=69, column=77))
-tu_region_000283 = TranslationUnitRegion(begin=Location(line=69, column=5), end=Location(line=71, column=1))
-tu_region_000284 = TranslationUnitRegion(begin=Location(line=69, column=16), end=Location(line=69, column=22))
-tu_region_000285 = TranslationUnitRegion(begin=Location(line=69, column=78), end=Location(line=69, column=87))
-tu_region_000286 = TranslationUnitRegion(begin=Location(line=69, column=23), end=Location(line=69, column=31))
-tu_region_000287 = TranslationUnitRegion(begin=Location(line=69, column=41), end=Location(line=69, column=57))
-tu_region_000288 = TranslationUnitRegion(begin=Location(line=69, column=6), end=Location(line=69, column=14))
-tu_region_000289 = TranslationUnitRegion(begin=Location(line=71, column=32), end=Location(line=71, column=44))
-tu_region_000290 = TranslationUnitRegion(begin=Location(line=71, column=32), end=Location(line=71, column=40))
-tu_region_000291 = TranslationUnitRegion(begin=Location(line=71, column=41), end=Location(line=71, column=44))
-tu_region_000292 = TranslationUnitRegion(begin=Location(line=71, column=5), end=Location(line=72, column=1))
-tu_region_000293 = TranslationUnitRegion(begin=Location(line=71, column=16), end=Location(line=71, column=22))
-tu_region_000294 = TranslationUnitRegion(begin=Location(line=71, column=61), end=Location(line=71, column=70))
-tu_region_000295 = TranslationUnitRegion(begin=Location(line=71, column=23), end=Location(line=71, column=31))
-tu_region_000296 = TranslationUnitRegion(begin=Location(line=71, column=45), end=Location(line=71, column=58))
-tu_region_000297 = TranslationUnitRegion(begin=Location(line=71, column=58), end=Location(line=71, column=60))
-tu_region_000298 = TranslationUnitRegion(begin=Location(line=71, column=6), end=Location(line=71, column=14))
-tu_region_000299 = TranslationUnitRegion(begin=Location(line=72, column=32), end=Location(line=72, column=44))
-tu_region_000300 = TranslationUnitRegion(begin=Location(line=72, column=32), end=Location(line=72, column=40))
-tu_region_000301 = TranslationUnitRegion(begin=Location(line=72, column=41), end=Location(line=72, column=44))
-tu_region_000302 = TranslationUnitRegion(begin=Location(line=72, column=5), end=Location(line=73, column=1))
-tu_region_000303 = TranslationUnitRegion(begin=Location(line=72, column=16), end=Location(line=72, column=22))
-tu_region_000304 = TranslationUnitRegion(begin=Location(line=72, column=61), end=Location(line=72, column=70))
-tu_region_000305 = TranslationUnitRegion(begin=Location(line=72, column=23), end=Location(line=72, column=31))
-tu_region_000306 = TranslationUnitRegion(begin=Location(line=72, column=45), end=Location(line=72, column=58))
-tu_region_000307 = TranslationUnitRegion(begin=Location(line=72, column=58), end=Location(line=72, column=60))
-tu_region_000308 = TranslationUnitRegion(begin=Location(line=72, column=6), end=Location(line=72, column=14))
-tu_region_000309 = TranslationUnitRegion(begin=Location(line=73, column=32), end=Location(line=73, column=44))
-tu_region_000310 = TranslationUnitRegion(begin=Location(line=73, column=32), end=Location(line=73, column=40))
-tu_region_000311 = TranslationUnitRegion(begin=Location(line=73, column=41), end=Location(line=73, column=44))
-tu_region_000312 = TranslationUnitRegion(begin=Location(line=73, column=5), end=Location(line=75, column=1))
-tu_region_000313 = TranslationUnitRegion(begin=Location(line=73, column=16), end=Location(line=73, column=22))
-tu_region_000314 = TranslationUnitRegion(begin=Location(line=73, column=60), end=Location(line=73, column=69))
-tu_region_000315 = TranslationUnitRegion(begin=Location(line=73, column=23), end=Location(line=73, column=31))
-tu_region_000316 = TranslationUnitRegion(begin=Location(line=73, column=45), end=Location(line=73, column=57))
-tu_region_000317 = TranslationUnitRegion(begin=Location(line=73, column=57), end=Location(line=73, column=59))
-tu_region_000318 = TranslationUnitRegion(begin=Location(line=73, column=6), end=Location(line=73, column=14))
-tu_region_000319 = TranslationUnitRegion(begin=Location(line=75, column=32), end=Location(line=75, column=39))
-tu_region_000320 = TranslationUnitRegion(begin=Location(line=75, column=32), end=Location(line=75, column=35))
-tu_region_000321 = TranslationUnitRegion(begin=Location(line=75, column=36), end=Location(line=75, column=39))
-tu_region_000322 = TranslationUnitRegion(begin=Location(line=75, column=52), end=Location(line=75, column=65))
-tu_region_000323 = TranslationUnitRegion(begin=Location(line=75, column=52), end=Location(line=75, column=55))
-tu_region_000324 = TranslationUnitRegion(begin=Location(line=75, column=56), end=Location(line=75, column=65))
-tu_region_000325 = TranslationUnitRegion(begin=Location(line=75, column=52), end=Location(line=75, column=73))
-tu_region_000326 = TranslationUnitRegion(begin=Location(line=75, column=66), end=Location(line=75, column=73))
-tu_region_000327 = TranslationUnitRegion(begin=Location(line=75, column=51), end=Location(line=75, column=74))
-tu_region_000328 = TranslationUnitRegion(begin=Location(line=75, column=5), end=Location(line=76, column=1))
-tu_region_000329 = TranslationUnitRegion(begin=Location(line=75, column=16), end=Location(line=75, column=22))
-tu_region_000330 = TranslationUnitRegion(begin=Location(line=75, column=75), end=Location(line=75, column=84))
-tu_region_000331 = TranslationUnitRegion(begin=Location(line=75, column=23), end=Location(line=75, column=31))
-tu_region_000332 = TranslationUnitRegion(begin=Location(line=75, column=40), end=Location(line=75, column=51))
-tu_region_000333 = TranslationUnitRegion(begin=Location(line=75, column=6), end=Location(line=75, column=14))
-tu_region_000334 = TranslationUnitRegion(begin=Location(line=76, column=32), end=Location(line=76, column=44))
-tu_region_000335 = TranslationUnitRegion(begin=Location(line=76, column=32), end=Location(line=76, column=40))
-tu_region_000336 = TranslationUnitRegion(begin=Location(line=76, column=41), end=Location(line=76, column=44))
-tu_region_000337 = TranslationUnitRegion(begin=Location(line=76, column=62), end=Location(line=76, column=75))
-tu_region_000338 = TranslationUnitRegion(begin=Location(line=76, column=62), end=Location(line=76, column=65))
-tu_region_000339 = TranslationUnitRegion(begin=Location(line=76, column=66), end=Location(line=76, column=75))
-tu_region_000340 = TranslationUnitRegion(begin=Location(line=76, column=62), end=Location(line=76, column=83))
-tu_region_000341 = TranslationUnitRegion(begin=Location(line=76, column=76), end=Location(line=76, column=83))
-tu_region_000342 = TranslationUnitRegion(begin=Location(line=76, column=61), end=Location(line=76, column=84))
-tu_region_000343 = TranslationUnitRegion(begin=Location(line=76, column=5), end=Location(line=77, column=1))
-tu_region_000344 = TranslationUnitRegion(begin=Location(line=76, column=16), end=Location(line=76, column=22))
-tu_region_000345 = TranslationUnitRegion(begin=Location(line=76, column=85), end=Location(line=76, column=94))
-tu_region_000346 = TranslationUnitRegion(begin=Location(line=76, column=23), end=Location(line=76, column=31))
-tu_region_000347 = TranslationUnitRegion(begin=Location(line=76, column=45), end=Location(line=76, column=61))
-tu_region_000348 = TranslationUnitRegion(begin=Location(line=76, column=6), end=Location(line=76, column=14))
-tu_region_000349 = TranslationUnitRegion(begin=Location(line=77, column=32), end=Location(line=77, column=44))
-tu_region_000350 = TranslationUnitRegion(begin=Location(line=77, column=32), end=Location(line=77, column=40))
-tu_region_000351 = TranslationUnitRegion(begin=Location(line=77, column=41), end=Location(line=77, column=44))
-tu_region_000352 = TranslationUnitRegion(begin=Location(line=77, column=57), end=Location(line=77, column=70))
-tu_region_000353 = TranslationUnitRegion(begin=Location(line=77, column=57), end=Location(line=77, column=60))
-tu_region_000354 = TranslationUnitRegion(begin=Location(line=77, column=61), end=Location(line=77, column=70))
-tu_region_000355 = TranslationUnitRegion(begin=Location(line=77, column=57), end=Location(line=77, column=78))
-tu_region_000356 = TranslationUnitRegion(begin=Location(line=77, column=71), end=Location(line=77, column=78))
-tu_region_000357 = TranslationUnitRegion(begin=Location(line=77, column=56), end=Location(line=77, column=79))
-tu_region_000358 = TranslationUnitRegion(begin=Location(line=77, column=5), end=Location(line=78, column=1))
-tu_region_000359 = TranslationUnitRegion(begin=Location(line=77, column=16), end=Location(line=77, column=22))
-tu_region_000360 = TranslationUnitRegion(begin=Location(line=77, column=80), end=Location(line=77, column=89))
-tu_region_000361 = TranslationUnitRegion(begin=Location(line=77, column=23), end=Location(line=77, column=31))
-tu_region_000362 = TranslationUnitRegion(begin=Location(line=77, column=45), end=Location(line=77, column=56))
-tu_region_000363 = TranslationUnitRegion(begin=Location(line=77, column=6), end=Location(line=77, column=14))
-tu_region_000364 = TranslationUnitRegion(begin=Location(line=78, column=32), end=Location(line=78, column=44))
-tu_region_000365 = TranslationUnitRegion(begin=Location(line=78, column=32), end=Location(line=78, column=40))
-tu_region_000366 = TranslationUnitRegion(begin=Location(line=78, column=41), end=Location(line=78, column=44))
-tu_region_000367 = TranslationUnitRegion(begin=Location(line=78, column=59), end=Location(line=78, column=72))
-tu_region_000368 = TranslationUnitRegion(begin=Location(line=78, column=59), end=Location(line=78, column=62))
-tu_region_000369 = TranslationUnitRegion(begin=Location(line=78, column=63), end=Location(line=78, column=72))
-tu_region_000370 = TranslationUnitRegion(begin=Location(line=78, column=59), end=Location(line=78, column=83))
-tu_region_000371 = TranslationUnitRegion(begin=Location(line=78, column=73), end=Location(line=78, column=83))
-tu_region_000372 = TranslationUnitRegion(begin=Location(line=78, column=58), end=Location(line=78, column=84))
-tu_region_000373 = TranslationUnitRegion(begin=Location(line=78, column=5), end=Location(line=79, column=1))
-tu_region_000374 = TranslationUnitRegion(begin=Location(line=78, column=16), end=Location(line=78, column=22))
-tu_region_000375 = TranslationUnitRegion(begin=Location(line=78, column=85), end=Location(line=78, column=94))
-tu_region_000376 = TranslationUnitRegion(begin=Location(line=78, column=23), end=Location(line=78, column=31))
-tu_region_000377 = TranslationUnitRegion(begin=Location(line=78, column=45), end=Location(line=78, column=58))
-tu_region_000378 = TranslationUnitRegion(begin=Location(line=78, column=6), end=Location(line=78, column=14))
-tu_region_000379 = TranslationUnitRegion(begin=Location(line=79, column=32), end=Location(line=79, column=44))
-tu_region_000380 = TranslationUnitRegion(begin=Location(line=79, column=32), end=Location(line=79, column=40))
-tu_region_000381 = TranslationUnitRegion(begin=Location(line=79, column=41), end=Location(line=79, column=44))
-tu_region_000382 = TranslationUnitRegion(begin=Location(line=79, column=56), end=Location(line=79, column=69))
-tu_region_000383 = TranslationUnitRegion(begin=Location(line=79, column=56), end=Location(line=79, column=59))
-tu_region_000384 = TranslationUnitRegion(begin=Location(line=79, column=60), end=Location(line=79, column=69))
-tu_region_000385 = TranslationUnitRegion(begin=Location(line=79, column=56), end=Location(line=79, column=78))
-tu_region_000386 = TranslationUnitRegion(begin=Location(line=79, column=70), end=Location(line=79, column=78))
-tu_region_000387 = TranslationUnitRegion(begin=Location(line=79, column=55), end=Location(line=79, column=79))
-tu_region_000388 = TranslationUnitRegion(begin=Location(line=79, column=5), end=Location(line=81, column=1))
-tu_region_000389 = TranslationUnitRegion(begin=Location(line=79, column=16), end=Location(line=79, column=22))
-tu_region_000390 = TranslationUnitRegion(begin=Location(line=79, column=80), end=Location(line=79, column=89))
-tu_region_000391 = TranslationUnitRegion(begin=Location(line=79, column=23), end=Location(line=79, column=31))
-tu_region_000392 = TranslationUnitRegion(begin=Location(line=79, column=45), end=Location(line=79, column=55))
-tu_region_000393 = TranslationUnitRegion(begin=Location(line=79, column=6), end=Location(line=79, column=14))
-tu_region_000394 = TranslationUnitRegion(begin=Location(line=81, column=32), end=Location(line=81, column=44))
-tu_region_000395 = TranslationUnitRegion(begin=Location(line=81, column=32), end=Location(line=81, column=40))
-tu_region_000396 = TranslationUnitRegion(begin=Location(line=81, column=41), end=Location(line=81, column=44))
-tu_region_000397 = TranslationUnitRegion(begin=Location(line=81, column=54), end=Location(line=81, column=67))
-tu_region_000398 = TranslationUnitRegion(begin=Location(line=81, column=54), end=Location(line=81, column=57))
-tu_region_000399 = TranslationUnitRegion(begin=Location(line=81, column=58), end=Location(line=81, column=67))
-tu_region_000400 = TranslationUnitRegion(begin=Location(line=81, column=54), end=Location(line=81, column=73))
-tu_region_000401 = TranslationUnitRegion(begin=Location(line=81, column=68), end=Location(line=81, column=73))
-tu_region_000402 = TranslationUnitRegion(begin=Location(line=81, column=53), end=Location(line=81, column=74))
-tu_region_000403 = TranslationUnitRegion(begin=Location(line=81, column=5), end=Location(line=82, column=1))
-tu_region_000404 = TranslationUnitRegion(begin=Location(line=81, column=16), end=Location(line=81, column=22))
-tu_region_000405 = TranslationUnitRegion(begin=Location(line=81, column=75), end=Location(line=81, column=84))
-tu_region_000406 = TranslationUnitRegion(begin=Location(line=81, column=23), end=Location(line=81, column=31))
-tu_region_000407 = TranslationUnitRegion(begin=Location(line=81, column=45), end=Location(line=81, column=53))
-tu_region_000408 = TranslationUnitRegion(begin=Location(line=81, column=6), end=Location(line=81, column=14))
-tu_region_000409 = TranslationUnitRegion(begin=Location(line=82, column=32), end=Location(line=82, column=44))
-tu_region_000410 = TranslationUnitRegion(begin=Location(line=82, column=32), end=Location(line=82, column=40))
-tu_region_000411 = TranslationUnitRegion(begin=Location(line=82, column=41), end=Location(line=82, column=44))
-tu_region_000412 = TranslationUnitRegion(begin=Location(line=82, column=59), end=Location(line=82, column=72))
-tu_region_000413 = TranslationUnitRegion(begin=Location(line=82, column=59), end=Location(line=82, column=62))
-tu_region_000414 = TranslationUnitRegion(begin=Location(line=82, column=63), end=Location(line=82, column=72))
-tu_region_000415 = TranslationUnitRegion(begin=Location(line=82, column=59), end=Location(line=82, column=78))
-tu_region_000416 = TranslationUnitRegion(begin=Location(line=82, column=73), end=Location(line=82, column=78))
-tu_region_000417 = TranslationUnitRegion(begin=Location(line=82, column=58), end=Location(line=82, column=79))
-tu_region_000418 = TranslationUnitRegion(begin=Location(line=82, column=5), end=Location(line=84, column=1))
-tu_region_000419 = TranslationUnitRegion(begin=Location(line=82, column=16), end=Location(line=82, column=22))
-tu_region_000420 = TranslationUnitRegion(begin=Location(line=82, column=80), end=Location(line=82, column=89))
-tu_region_000421 = TranslationUnitRegion(begin=Location(line=82, column=23), end=Location(line=82, column=31))
-tu_region_000422 = TranslationUnitRegion(begin=Location(line=82, column=45), end=Location(line=82, column=58))
-tu_region_000423 = TranslationUnitRegion(begin=Location(line=82, column=6), end=Location(line=82, column=14))
-tu_region_000424 = TranslationUnitRegion(begin=Location(line=84, column=32), end=Location(line=84, column=44))
-tu_region_000425 = TranslationUnitRegion(begin=Location(line=84, column=32), end=Location(line=84, column=40))
-tu_region_000426 = TranslationUnitRegion(begin=Location(line=84, column=41), end=Location(line=84, column=44))
-tu_region_000427 = TranslationUnitRegion(begin=Location(line=84, column=63), end=Location(line=84, column=76))
-tu_region_000428 = TranslationUnitRegion(begin=Location(line=84, column=63), end=Location(line=84, column=66))
-tu_region_000429 = TranslationUnitRegion(begin=Location(line=84, column=67), end=Location(line=84, column=76))
-tu_region_000430 = TranslationUnitRegion(begin=Location(line=84, column=63), end=Location(line=84, column=83))
-tu_region_000431 = TranslationUnitRegion(begin=Location(line=84, column=77), end=Location(line=84, column=83))
-tu_region_000432 = TranslationUnitRegion(begin=Location(line=84, column=62), end=Location(line=84, column=84))
-tu_region_000433 = TranslationUnitRegion(begin=Location(line=84, column=5), end=Location(line=85, column=1))
-tu_region_000434 = TranslationUnitRegion(begin=Location(line=84, column=16), end=Location(line=84, column=22))
-tu_region_000435 = TranslationUnitRegion(begin=Location(line=84, column=85), end=Location(line=84, column=94))
-tu_region_000436 = TranslationUnitRegion(begin=Location(line=84, column=23), end=Location(line=84, column=31))
-tu_region_000437 = TranslationUnitRegion(begin=Location(line=84, column=45), end=Location(line=84, column=62))
-tu_region_000438 = TranslationUnitRegion(begin=Location(line=84, column=6), end=Location(line=84, column=14))
-tu_region_000439 = TranslationUnitRegion(begin=Location(line=85, column=32), end=Location(line=85, column=44))
-tu_region_000440 = TranslationUnitRegion(begin=Location(line=85, column=32), end=Location(line=85, column=40))
-tu_region_000441 = TranslationUnitRegion(begin=Location(line=85, column=41), end=Location(line=85, column=44))
-tu_region_000442 = TranslationUnitRegion(begin=Location(line=85, column=64), end=Location(line=85, column=77))
-tu_region_000443 = TranslationUnitRegion(begin=Location(line=85, column=64), end=Location(line=85, column=67))
-tu_region_000444 = TranslationUnitRegion(begin=Location(line=85, column=68), end=Location(line=85, column=77))
-tu_region_000445 = TranslationUnitRegion(begin=Location(line=85, column=64), end=Location(line=85, column=84))
-tu_region_000446 = TranslationUnitRegion(begin=Location(line=85, column=78), end=Location(line=85, column=84))
-tu_region_000447 = TranslationUnitRegion(begin=Location(line=85, column=63), end=Location(line=85, column=85))
-tu_region_000448 = TranslationUnitRegion(begin=Location(line=85, column=5), end=Location(line=87, column=1))
-tu_region_000449 = TranslationUnitRegion(begin=Location(line=85, column=16), end=Location(line=85, column=22))
-tu_region_000450 = TranslationUnitRegion(begin=Location(line=85, column=86), end=Location(line=85, column=95))
-tu_region_000451 = TranslationUnitRegion(begin=Location(line=85, column=23), end=Location(line=85, column=31))
-tu_region_000452 = TranslationUnitRegion(begin=Location(line=85, column=45), end=Location(line=85, column=63))
-tu_region_000453 = TranslationUnitRegion(begin=Location(line=85, column=6), end=Location(line=85, column=14))
-tu_region_000454 = TranslationUnitRegion(begin=Location(line=87, column=32), end=Location(line=87, column=44))
-tu_region_000455 = TranslationUnitRegion(begin=Location(line=87, column=32), end=Location(line=87, column=40))
-tu_region_000456 = TranslationUnitRegion(begin=Location(line=87, column=41), end=Location(line=87, column=44))
-tu_region_000457 = TranslationUnitRegion(begin=Location(line=87, column=57), end=Location(line=87, column=70))
-tu_region_000458 = TranslationUnitRegion(begin=Location(line=87, column=57), end=Location(line=87, column=60))
-tu_region_000459 = TranslationUnitRegion(begin=Location(line=87, column=61), end=Location(line=87, column=70))
-tu_region_000460 = TranslationUnitRegion(begin=Location(line=87, column=57), end=Location(line=87, column=76))
-tu_region_000461 = TranslationUnitRegion(begin=Location(line=87, column=71), end=Location(line=87, column=76))
-tu_region_000462 = TranslationUnitRegion(begin=Location(line=87, column=56), end=Location(line=87, column=77))
-tu_region_000463 = TranslationUnitRegion(begin=Location(line=87, column=5), end=Location(line=88, column=1))
-tu_region_000464 = TranslationUnitRegion(begin=Location(line=87, column=16), end=Location(line=87, column=22))
-tu_region_000465 = TranslationUnitRegion(begin=Location(line=87, column=78), end=Location(line=87, column=87))
-tu_region_000466 = TranslationUnitRegion(begin=Location(line=87, column=23), end=Location(line=87, column=31))
-tu_region_000467 = TranslationUnitRegion(begin=Location(line=87, column=45), end=Location(line=87, column=56))
-tu_region_000468 = TranslationUnitRegion(begin=Location(line=87, column=6), end=Location(line=87, column=14))
-tu_region_000469 = TranslationUnitRegion(begin=Location(line=88, column=32), end=Location(line=88, column=44))
-tu_region_000470 = TranslationUnitRegion(begin=Location(line=88, column=32), end=Location(line=88, column=40))
-tu_region_000471 = TranslationUnitRegion(begin=Location(line=88, column=41), end=Location(line=88, column=44))
-tu_region_000472 = TranslationUnitRegion(begin=Location(line=88, column=57), end=Location(line=88, column=70))
-tu_region_000473 = TranslationUnitRegion(begin=Location(line=88, column=57), end=Location(line=88, column=60))
-tu_region_000474 = TranslationUnitRegion(begin=Location(line=88, column=61), end=Location(line=88, column=70))
-tu_region_000475 = TranslationUnitRegion(begin=Location(line=88, column=57), end=Location(line=88, column=76))
-tu_region_000476 = TranslationUnitRegion(begin=Location(line=88, column=71), end=Location(line=88, column=76))
-tu_region_000477 = TranslationUnitRegion(begin=Location(line=88, column=56), end=Location(line=88, column=77))
-tu_region_000478 = TranslationUnitRegion(begin=Location(line=88, column=5), end=Location(line=89, column=1))
-tu_region_000479 = TranslationUnitRegion(begin=Location(line=88, column=16), end=Location(line=88, column=22))
-tu_region_000480 = TranslationUnitRegion(begin=Location(line=88, column=78), end=Location(line=88, column=87))
-tu_region_000481 = TranslationUnitRegion(begin=Location(line=88, column=23), end=Location(line=88, column=31))
-tu_region_000482 = TranslationUnitRegion(begin=Location(line=88, column=45), end=Location(line=88, column=56))
-tu_region_000483 = TranslationUnitRegion(begin=Location(line=88, column=6), end=Location(line=88, column=14))
-tu_region_000484 = TranslationUnitRegion(begin=Location(line=89, column=32), end=Location(line=89, column=44))
-tu_region_000485 = TranslationUnitRegion(begin=Location(line=89, column=32), end=Location(line=89, column=40))
-tu_region_000486 = TranslationUnitRegion(begin=Location(line=89, column=41), end=Location(line=89, column=44))
-tu_region_000487 = TranslationUnitRegion(begin=Location(line=89, column=56), end=Location(line=89, column=69))
-tu_region_000488 = TranslationUnitRegion(begin=Location(line=89, column=56), end=Location(line=89, column=59))
-tu_region_000489 = TranslationUnitRegion(begin=Location(line=89, column=60), end=Location(line=89, column=69))
-tu_region_000490 = TranslationUnitRegion(begin=Location(line=89, column=56), end=Location(line=89, column=75))
-tu_region_000491 = TranslationUnitRegion(begin=Location(line=89, column=70), end=Location(line=89, column=75))
-tu_region_000492 = TranslationUnitRegion(begin=Location(line=89, column=55), end=Location(line=89, column=76))
-tu_region_000493 = TranslationUnitRegion(begin=Location(line=89, column=5), end=Location(line=91, column=1))
-tu_region_000494 = TranslationUnitRegion(begin=Location(line=89, column=16), end=Location(line=89, column=22))
-tu_region_000495 = TranslationUnitRegion(begin=Location(line=89, column=77), end=Location(line=89, column=86))
-tu_region_000496 = TranslationUnitRegion(begin=Location(line=89, column=23), end=Location(line=89, column=31))
-tu_region_000497 = TranslationUnitRegion(begin=Location(line=89, column=45), end=Location(line=89, column=55))
-tu_region_000498 = TranslationUnitRegion(begin=Location(line=89, column=6), end=Location(line=89, column=14))
-tu_region_000499 = TranslationUnitRegion(begin=Location(line=91, column=5), end=Location(line=93, column=1))
-tu_region_000500 = TranslationUnitRegion(begin=Location(line=91, column=16), end=Location(line=91, column=22))
-tu_region_000501 = TranslationUnitRegion(begin=Location(line=91, column=59), end=Location(line=91, column=62))
-tu_region_000502 = TranslationUnitRegion(begin=Location(line=91, column=23), end=Location(line=91, column=31))
-tu_region_000503 = TranslationUnitRegion(begin=Location(line=91, column=37), end=Location(line=91, column=56))
-tu_region_000504 = TranslationUnitRegion(begin=Location(line=91, column=56), end=Location(line=91, column=58))
-tu_region_000505 = TranslationUnitRegion(begin=Location(line=91, column=6), end=Location(line=91, column=14))
-tu_region_000506 = TranslationUnitRegion(begin=Location(line=93, column=61), end=Location(line=93, column=74))
-tu_region_000507 = TranslationUnitRegion(begin=Location(line=93, column=61), end=Location(line=93, column=64))
-tu_region_000508 = TranslationUnitRegion(begin=Location(line=93, column=65), end=Location(line=93, column=74))
-tu_region_000509 = TranslationUnitRegion(begin=Location(line=93, column=61), end=Location(line=93, column=82))
-tu_region_000510 = TranslationUnitRegion(begin=Location(line=93, column=75), end=Location(line=93, column=82))
-tu_region_000511 = TranslationUnitRegion(begin=Location(line=93, column=60), end=Location(line=93, column=83))
-tu_region_000512 = TranslationUnitRegion(begin=Location(line=93, column=5), end=Location(line=94, column=1))
-tu_region_000513 = TranslationUnitRegion(begin=Location(line=93, column=16), end=Location(line=93, column=22))
-tu_region_000514 = TranslationUnitRegion(begin=Location(line=93, column=84), end=Location(line=93, column=87))
-tu_region_000515 = TranslationUnitRegion(begin=Location(line=93, column=23), end=Location(line=93, column=31))
-tu_region_000516 = TranslationUnitRegion(begin=Location(line=93, column=37), end=Location(line=93, column=60))
-tu_region_000517 = TranslationUnitRegion(begin=Location(line=93, column=6), end=Location(line=93, column=14))
-tu_region_000518 = TranslationUnitRegion(begin=Location(line=94, column=56), end=Location(line=94, column=69))
-tu_region_000519 = TranslationUnitRegion(begin=Location(line=94, column=56), end=Location(line=94, column=59))
-tu_region_000520 = TranslationUnitRegion(begin=Location(line=94, column=60), end=Location(line=94, column=69))
-tu_region_000521 = TranslationUnitRegion(begin=Location(line=94, column=56), end=Location(line=94, column=77))
-tu_region_000522 = TranslationUnitRegion(begin=Location(line=94, column=70), end=Location(line=94, column=77))
-tu_region_000523 = TranslationUnitRegion(begin=Location(line=94, column=55), end=Location(line=94, column=78))
-tu_region_000524 = TranslationUnitRegion(begin=Location(line=94, column=5), end=Location(line=95, column=1))
-tu_region_000525 = TranslationUnitRegion(begin=Location(line=94, column=16), end=Location(line=94, column=22))
-tu_region_000526 = TranslationUnitRegion(begin=Location(line=94, column=79), end=Location(line=94, column=82))
-tu_region_000527 = TranslationUnitRegion(begin=Location(line=94, column=23), end=Location(line=94, column=31))
-tu_region_000528 = TranslationUnitRegion(begin=Location(line=94, column=37), end=Location(line=94, column=55))
-tu_region_000529 = TranslationUnitRegion(begin=Location(line=94, column=6), end=Location(line=94, column=14))
-tu_region_000530 = TranslationUnitRegion(begin=Location(line=95, column=58), end=Location(line=95, column=71))
-tu_region_000531 = TranslationUnitRegion(begin=Location(line=95, column=58), end=Location(line=95, column=61))
-tu_region_000532 = TranslationUnitRegion(begin=Location(line=95, column=62), end=Location(line=95, column=71))
-tu_region_000533 = TranslationUnitRegion(begin=Location(line=95, column=58), end=Location(line=95, column=82))
-tu_region_000534 = TranslationUnitRegion(begin=Location(line=95, column=72), end=Location(line=95, column=82))
-tu_region_000535 = TranslationUnitRegion(begin=Location(line=95, column=57), end=Location(line=95, column=83))
-tu_region_000536 = TranslationUnitRegion(begin=Location(line=95, column=5), end=Location(line=96, column=1))
-tu_region_000537 = TranslationUnitRegion(begin=Location(line=95, column=16), end=Location(line=95, column=22))
-tu_region_000538 = TranslationUnitRegion(begin=Location(line=95, column=84), end=Location(line=95, column=87))
-tu_region_000539 = TranslationUnitRegion(begin=Location(line=95, column=23), end=Location(line=95, column=31))
-tu_region_000540 = TranslationUnitRegion(begin=Location(line=95, column=37), end=Location(line=95, column=57))
-tu_region_000541 = TranslationUnitRegion(begin=Location(line=95, column=6), end=Location(line=95, column=14))
-tu_region_000542 = TranslationUnitRegion(begin=Location(line=96, column=55), end=Location(line=96, column=68))
-tu_region_000543 = TranslationUnitRegion(begin=Location(line=96, column=55), end=Location(line=96, column=58))
-tu_region_000544 = TranslationUnitRegion(begin=Location(line=96, column=59), end=Location(line=96, column=68))
-tu_region_000545 = TranslationUnitRegion(begin=Location(line=96, column=55), end=Location(line=96, column=77))
-tu_region_000546 = TranslationUnitRegion(begin=Location(line=96, column=69), end=Location(line=96, column=77))
-tu_region_000547 = TranslationUnitRegion(begin=Location(line=96, column=54), end=Location(line=96, column=78))
-tu_region_000548 = TranslationUnitRegion(begin=Location(line=96, column=5), end=Location(line=98, column=1))
-tu_region_000549 = TranslationUnitRegion(begin=Location(line=96, column=16), end=Location(line=96, column=22))
-tu_region_000550 = TranslationUnitRegion(begin=Location(line=96, column=79), end=Location(line=96, column=82))
-tu_region_000551 = TranslationUnitRegion(begin=Location(line=96, column=23), end=Location(line=96, column=31))
-tu_region_000552 = TranslationUnitRegion(begin=Location(line=96, column=37), end=Location(line=96, column=54))
-tu_region_000553 = TranslationUnitRegion(begin=Location(line=96, column=6), end=Location(line=96, column=14))
-tu_region_000554 = TranslationUnitRegion(begin=Location(line=98, column=53), end=Location(line=98, column=66))
-tu_region_000555 = TranslationUnitRegion(begin=Location(line=98, column=53), end=Location(line=98, column=56))
-tu_region_000556 = TranslationUnitRegion(begin=Location(line=98, column=57), end=Location(line=98, column=66))
-tu_region_000557 = TranslationUnitRegion(begin=Location(line=98, column=53), end=Location(line=98, column=72))
-tu_region_000558 = TranslationUnitRegion(begin=Location(line=98, column=67), end=Location(line=98, column=72))
-tu_region_000559 = TranslationUnitRegion(begin=Location(line=98, column=52), end=Location(line=98, column=73))
-tu_region_000560 = TranslationUnitRegion(begin=Location(line=98, column=5), end=Location(line=99, column=1))
-tu_region_000561 = TranslationUnitRegion(begin=Location(line=98, column=16), end=Location(line=98, column=22))
-tu_region_000562 = TranslationUnitRegion(begin=Location(line=98, column=74), end=Location(line=98, column=77))
-tu_region_000563 = TranslationUnitRegion(begin=Location(line=98, column=23), end=Location(line=98, column=31))
-tu_region_000564 = TranslationUnitRegion(begin=Location(line=98, column=37), end=Location(line=98, column=52))
-tu_region_000565 = TranslationUnitRegion(begin=Location(line=98, column=6), end=Location(line=98, column=14))
-tu_region_000566 = TranslationUnitRegion(begin=Location(line=99, column=58), end=Location(line=99, column=71))
-tu_region_000567 = TranslationUnitRegion(begin=Location(line=99, column=58), end=Location(line=99, column=61))
-tu_region_000568 = TranslationUnitRegion(begin=Location(line=99, column=62), end=Location(line=99, column=71))
-tu_region_000569 = TranslationUnitRegion(begin=Location(line=99, column=58), end=Location(line=99, column=77))
-tu_region_000570 = TranslationUnitRegion(begin=Location(line=99, column=72), end=Location(line=99, column=77))
-tu_region_000571 = TranslationUnitRegion(begin=Location(line=99, column=57), end=Location(line=99, column=78))
-tu_region_000572 = TranslationUnitRegion(begin=Location(line=99, column=5), end=Location(line=101, column=1))
-tu_region_000573 = TranslationUnitRegion(begin=Location(line=99, column=16), end=Location(line=99, column=22))
-tu_region_000574 = TranslationUnitRegion(begin=Location(line=99, column=79), end=Location(line=99, column=82))
-tu_region_000575 = TranslationUnitRegion(begin=Location(line=99, column=23), end=Location(line=99, column=31))
-tu_region_000576 = TranslationUnitRegion(begin=Location(line=99, column=37), end=Location(line=99, column=57))
-tu_region_000577 = TranslationUnitRegion(begin=Location(line=99, column=6), end=Location(line=99, column=14))
-tu_region_000578 = TranslationUnitRegion(begin=Location(line=101, column=62), end=Location(line=101, column=75))
-tu_region_000579 = TranslationUnitRegion(begin=Location(line=101, column=62), end=Location(line=101, column=65))
-tu_region_000580 = TranslationUnitRegion(begin=Location(line=101, column=66), end=Location(line=101, column=75))
-tu_region_000581 = TranslationUnitRegion(begin=Location(line=101, column=62), end=Location(line=101, column=82))
-tu_region_000582 = TranslationUnitRegion(begin=Location(line=101, column=76), end=Location(line=101, column=82))
-tu_region_000583 = TranslationUnitRegion(begin=Location(line=101, column=61), end=Location(line=101, column=83))
-tu_region_000584 = TranslationUnitRegion(begin=Location(line=101, column=5), end=Location(line=102, column=1))
-tu_region_000585 = TranslationUnitRegion(begin=Location(line=101, column=16), end=Location(line=101, column=22))
-tu_region_000586 = TranslationUnitRegion(begin=Location(line=101, column=84), end=Location(line=101, column=87))
-tu_region_000587 = TranslationUnitRegion(begin=Location(line=101, column=23), end=Location(line=101, column=31))
-tu_region_000588 = TranslationUnitRegion(begin=Location(line=101, column=37), end=Location(line=101, column=61))
-tu_region_000589 = TranslationUnitRegion(begin=Location(line=101, column=6), end=Location(line=101, column=14))
-tu_region_000590 = TranslationUnitRegion(begin=Location(line=102, column=63), end=Location(line=102, column=76))
-tu_region_000591 = TranslationUnitRegion(begin=Location(line=102, column=63), end=Location(line=102, column=66))
-tu_region_000592 = TranslationUnitRegion(begin=Location(line=102, column=67), end=Location(line=102, column=76))
-tu_region_000593 = TranslationUnitRegion(begin=Location(line=102, column=63), end=Location(line=102, column=83))
-tu_region_000594 = TranslationUnitRegion(begin=Location(line=102, column=77), end=Location(line=102, column=83))
-tu_region_000595 = TranslationUnitRegion(begin=Location(line=102, column=62), end=Location(line=102, column=84))
-tu_region_000596 = TranslationUnitRegion(begin=Location(line=102, column=5), end=Location(line=104, column=1))
-tu_region_000597 = TranslationUnitRegion(begin=Location(line=102, column=16), end=Location(line=102, column=22))
-tu_region_000598 = TranslationUnitRegion(begin=Location(line=102, column=85), end=Location(line=102, column=88))
-tu_region_000599 = TranslationUnitRegion(begin=Location(line=102, column=23), end=Location(line=102, column=31))
-tu_region_000600 = TranslationUnitRegion(begin=Location(line=102, column=37), end=Location(line=102, column=62))
-tu_region_000601 = TranslationUnitRegion(begin=Location(line=102, column=6), end=Location(line=102, column=14))
-tu_region_000602 = TranslationUnitRegion(begin=Location(line=104, column=56), end=Location(line=104, column=69))
-tu_region_000603 = TranslationUnitRegion(begin=Location(line=104, column=56), end=Location(line=104, column=59))
-tu_region_000604 = TranslationUnitRegion(begin=Location(line=104, column=60), end=Location(line=104, column=69))
-tu_region_000605 = TranslationUnitRegion(begin=Location(line=104, column=56), end=Location(line=104, column=75))
-tu_region_000606 = TranslationUnitRegion(begin=Location(line=104, column=70), end=Location(line=104, column=75))
-tu_region_000607 = TranslationUnitRegion(begin=Location(line=104, column=55), end=Location(line=104, column=76))
-tu_region_000608 = TranslationUnitRegion(begin=Location(line=104, column=5), end=Location(line=105, column=1))
-tu_region_000609 = TranslationUnitRegion(begin=Location(line=104, column=16), end=Location(line=104, column=22))
-tu_region_000610 = TranslationUnitRegion(begin=Location(line=104, column=77), end=Location(line=104, column=80))
-tu_region_000611 = TranslationUnitRegion(begin=Location(line=104, column=23), end=Location(line=104, column=31))
-tu_region_000612 = TranslationUnitRegion(begin=Location(line=104, column=37), end=Location(line=104, column=55))
-tu_region_000613 = TranslationUnitRegion(begin=Location(line=104, column=6), end=Location(line=104, column=14))
-tu_region_000614 = TranslationUnitRegion(begin=Location(line=105, column=56), end=Location(line=105, column=69))
-tu_region_000615 = TranslationUnitRegion(begin=Location(line=105, column=56), end=Location(line=105, column=59))
-tu_region_000616 = TranslationUnitRegion(begin=Location(line=105, column=60), end=Location(line=105, column=69))
-tu_region_000617 = TranslationUnitRegion(begin=Location(line=105, column=56), end=Location(line=105, column=75))
-tu_region_000618 = TranslationUnitRegion(begin=Location(line=105, column=70), end=Location(line=105, column=75))
-tu_region_000619 = TranslationUnitRegion(begin=Location(line=105, column=55), end=Location(line=105, column=76))
-tu_region_000620 = TranslationUnitRegion(begin=Location(line=105, column=5), end=Location(line=106, column=1))
-tu_region_000621 = TranslationUnitRegion(begin=Location(line=105, column=16), end=Location(line=105, column=22))
-tu_region_000622 = TranslationUnitRegion(begin=Location(line=105, column=77), end=Location(line=105, column=80))
-tu_region_000623 = TranslationUnitRegion(begin=Location(line=105, column=23), end=Location(line=105, column=31))
-tu_region_000624 = TranslationUnitRegion(begin=Location(line=105, column=37), end=Location(line=105, column=55))
-tu_region_000625 = TranslationUnitRegion(begin=Location(line=105, column=6), end=Location(line=105, column=14))
-tu_region_000626 = TranslationUnitRegion(begin=Location(line=106, column=55), end=Location(line=106, column=68))
-tu_region_000627 = TranslationUnitRegion(begin=Location(line=106, column=55), end=Location(line=106, column=58))
-tu_region_000628 = TranslationUnitRegion(begin=Location(line=106, column=59), end=Location(line=106, column=68))
-tu_region_000629 = TranslationUnitRegion(begin=Location(line=106, column=55), end=Location(line=106, column=74))
-tu_region_000630 = TranslationUnitRegion(begin=Location(line=106, column=69), end=Location(line=106, column=74))
-tu_region_000631 = TranslationUnitRegion(begin=Location(line=106, column=54), end=Location(line=106, column=75))
-tu_region_000632 = TranslationUnitRegion(begin=Location(line=106, column=5), end=Location(line=109, column=1))
-tu_region_000633 = TranslationUnitRegion(begin=Location(line=106, column=16), end=Location(line=106, column=22))
-tu_region_000634 = TranslationUnitRegion(begin=Location(line=106, column=76), end=Location(line=106, column=79))
-tu_region_000635 = TranslationUnitRegion(begin=Location(line=106, column=23), end=Location(line=106, column=31))
-tu_region_000636 = TranslationUnitRegion(begin=Location(line=106, column=37), end=Location(line=106, column=54))
-tu_region_000637 = TranslationUnitRegion(begin=Location(line=106, column=6), end=Location(line=106, column=14))
-tu_region_000638 = TranslationUnitRegion(begin=Location(line=20, column=1), end=Location(line=110, column=1))
-tu_region_000639 = TranslationUnitRegion(begin=Location(line=20, column=1), end=Location(line=20, column=7))
-tu_region_000640 = TranslationUnitRegion(begin=Location(line=20, column=8), end=Location(line=20, column=15))
-tu_region_000641 = TranslationUnitRegion(begin=Location(line=20, column=22), end=Location(line=20, column=30))
-tu_region_000642 = TranslationUnitRegion(begin=Location(line=31, column=1), end=Location(line=110, column=1))
-tu_region_000643 = TranslationUnitRegion(begin=Location(line=110, column=57), end=Location(line=110, column=58))
-tu_region_000644 = TranslationUnitRegion(begin=Location(line=110, column=73), end=Location(line=110, column=78))
-tu_region_000645 = TranslationUnitRegion(begin=Location(line=110, column=60), end=Location(line=110, column=78))
-tu_region_000646 = TranslationUnitRegion(begin=Location(line=110, column=60), end=Location(line=110, column=70))
-tu_region_000647 = TranslationUnitRegion(begin=Location(line=110, column=94), end=Location(line=110, column=100))
-tu_region_000648 = TranslationUnitRegion(begin=Location(line=110, column=80), end=Location(line=110, column=100))
-tu_region_000649 = TranslationUnitRegion(begin=Location(line=110, column=80), end=Location(line=110, column=91))
-tu_region_000650 = TranslationUnitRegion(begin=Location(line=110, column=56), end=Location(line=110, column=101))
-tu_region_000651 = TranslationUnitRegion(begin=Location(line=110, column=47), end=Location(line=110, column=101))
-tu_region_000652 = TranslationUnitRegion(begin=Location(line=110, column=47), end=Location(line=110, column=55))
-tu_region_000653 = TranslationUnitRegion(begin=Location(line=110, column=1), end=Location(line=111, column=1))
-tu_region_000654 = TranslationUnitRegion(begin=Location(line=110, column=1), end=Location(line=110, column=7))
-tu_region_000655 = TranslationUnitRegion(begin=Location(line=110, column=8), end=Location(line=110, column=12))
-tu_region_000656 = TranslationUnitRegion(begin=Location(line=111, column=57), end=Location(line=111, column=58))
-tu_region_000657 = TranslationUnitRegion(begin=Location(line=111, column=73), end=Location(line=111, column=78))
-tu_region_000658 = TranslationUnitRegion(begin=Location(line=111, column=60), end=Location(line=111, column=78))
-tu_region_000659 = TranslationUnitRegion(begin=Location(line=111, column=60), end=Location(line=111, column=70))
-tu_region_000660 = TranslationUnitRegion(begin=Location(line=111, column=94), end=Location(line=111, column=99))
-tu_region_000661 = TranslationUnitRegion(begin=Location(line=111, column=80), end=Location(line=111, column=99))
-tu_region_000662 = TranslationUnitRegion(begin=Location(line=111, column=80), end=Location(line=111, column=91))
-tu_region_000663 = TranslationUnitRegion(begin=Location(line=111, column=56), end=Location(line=111, column=100))
-tu_region_000664 = TranslationUnitRegion(begin=Location(line=111, column=47), end=Location(line=111, column=100))
-tu_region_000665 = TranslationUnitRegion(begin=Location(line=111, column=47), end=Location(line=111, column=55))
-tu_region_000666 = TranslationUnitRegion(begin=Location(line=111, column=1), end=Location(line=113, column=1))
-tu_region_000667 = TranslationUnitRegion(begin=Location(line=111, column=1), end=Location(line=111, column=7))
-tu_region_000668 = TranslationUnitRegion(begin=Location(line=111, column=8), end=Location(line=111, column=19))
-tu_region_000669 = TranslationUnitRegion(begin=Location(line=113, column=57), end=Location(line=113, column=58))
-tu_region_000670 = TranslationUnitRegion(begin=Location(line=113, column=73), end=Location(line=113, column=79))
-tu_region_000671 = TranslationUnitRegion(begin=Location(line=113, column=60), end=Location(line=113, column=79))
-tu_region_000672 = TranslationUnitRegion(begin=Location(line=113, column=60), end=Location(line=113, column=70))
-tu_region_000673 = TranslationUnitRegion(begin=Location(line=113, column=95), end=Location(line=113, column=101))
-tu_region_000674 = TranslationUnitRegion(begin=Location(line=113, column=81), end=Location(line=113, column=101))
-tu_region_000675 = TranslationUnitRegion(begin=Location(line=113, column=81), end=Location(line=113, column=92))
-tu_region_000676 = TranslationUnitRegion(begin=Location(line=113, column=56), end=Location(line=113, column=102))
-tu_region_000677 = TranslationUnitRegion(begin=Location(line=113, column=47), end=Location(line=113, column=102))
-tu_region_000678 = TranslationUnitRegion(begin=Location(line=113, column=47), end=Location(line=113, column=55))
-tu_region_000679 = TranslationUnitRegion(begin=Location(line=113, column=1), end=Location(line=114, column=1))
-tu_region_000680 = TranslationUnitRegion(begin=Location(line=113, column=1), end=Location(line=113, column=7))
-tu_region_000681 = TranslationUnitRegion(begin=Location(line=113, column=8), end=Location(line=113, column=13))
-tu_region_000682 = TranslationUnitRegion(begin=Location(line=114, column=57), end=Location(line=114, column=58))
-tu_region_000683 = TranslationUnitRegion(begin=Location(line=114, column=73), end=Location(line=114, column=79))
-tu_region_000684 = TranslationUnitRegion(begin=Location(line=114, column=60), end=Location(line=114, column=79))
-tu_region_000685 = TranslationUnitRegion(begin=Location(line=114, column=60), end=Location(line=114, column=70))
-tu_region_000686 = TranslationUnitRegion(begin=Location(line=114, column=95), end=Location(line=114, column=100))
-tu_region_000687 = TranslationUnitRegion(begin=Location(line=114, column=81), end=Location(line=114, column=100))
-tu_region_000688 = TranslationUnitRegion(begin=Location(line=114, column=81), end=Location(line=114, column=92))
-tu_region_000689 = TranslationUnitRegion(begin=Location(line=114, column=56), end=Location(line=114, column=101))
-tu_region_000690 = TranslationUnitRegion(begin=Location(line=114, column=47), end=Location(line=114, column=101))
-tu_region_000691 = TranslationUnitRegion(begin=Location(line=114, column=47), end=Location(line=114, column=55))
-tu_region_000692 = TranslationUnitRegion(begin=Location(line=114, column=1), end=Location(line=117, column=1))
-tu_region_000693 = TranslationUnitRegion(begin=Location(line=114, column=1), end=Location(line=114, column=7))
-tu_region_000694 = TranslationUnitRegion(begin=Location(line=114, column=8), end=Location(line=114, column=20))
-tu_region_000695 = TranslationUnitRegion(begin=Location(line=118, column=57), end=Location(line=118, column=58))
-tu_region_000696 = TranslationUnitRegion(begin=Location(line=118, column=73), end=Location(line=118, column=78))
-tu_region_000697 = TranslationUnitRegion(begin=Location(line=118, column=60), end=Location(line=118, column=78))
-tu_region_000698 = TranslationUnitRegion(begin=Location(line=118, column=60), end=Location(line=118, column=70))
-tu_region_000699 = TranslationUnitRegion(begin=Location(line=118, column=94), end=Location(line=118, column=100))
-tu_region_000700 = TranslationUnitRegion(begin=Location(line=118, column=80), end=Location(line=118, column=100))
-tu_region_000701 = TranslationUnitRegion(begin=Location(line=118, column=80), end=Location(line=118, column=91))
-tu_region_000702 = TranslationUnitRegion(begin=Location(line=118, column=56), end=Location(line=118, column=101))
-tu_region_000703 = TranslationUnitRegion(begin=Location(line=118, column=47), end=Location(line=118, column=101))
-tu_region_000704 = TranslationUnitRegion(begin=Location(line=118, column=47), end=Location(line=118, column=55))
-tu_region_000705 = TranslationUnitRegion(begin=Location(line=118, column=1), end=Location(line=119, column=1))
-tu_region_000706 = TranslationUnitRegion(begin=Location(line=118, column=1), end=Location(line=118, column=7))
-tu_region_000707 = TranslationUnitRegion(begin=Location(line=118, column=8), end=Location(line=118, column=13))
-tu_region_000708 = TranslationUnitRegion(begin=Location(line=119, column=57), end=Location(line=119, column=58))
-tu_region_000709 = TranslationUnitRegion(begin=Location(line=119, column=73), end=Location(line=119, column=78))
-tu_region_000710 = TranslationUnitRegion(begin=Location(line=119, column=60), end=Location(line=119, column=78))
-tu_region_000711 = TranslationUnitRegion(begin=Location(line=119, column=60), end=Location(line=119, column=70))
-tu_region_000712 = TranslationUnitRegion(begin=Location(line=119, column=94), end=Location(line=119, column=99))
-tu_region_000713 = TranslationUnitRegion(begin=Location(line=119, column=80), end=Location(line=119, column=99))
-tu_region_000714 = TranslationUnitRegion(begin=Location(line=119, column=80), end=Location(line=119, column=91))
-tu_region_000715 = TranslationUnitRegion(begin=Location(line=119, column=56), end=Location(line=119, column=100))
-tu_region_000716 = TranslationUnitRegion(begin=Location(line=119, column=47), end=Location(line=119, column=100))
-tu_region_000717 = TranslationUnitRegion(begin=Location(line=119, column=47), end=Location(line=119, column=55))
-tu_region_000718 = TranslationUnitRegion(begin=Location(line=119, column=1), end=Location(line=121, column=1))
-tu_region_000719 = TranslationUnitRegion(begin=Location(line=119, column=1), end=Location(line=119, column=7))
-tu_region_000720 = TranslationUnitRegion(begin=Location(line=119, column=8), end=Location(line=119, column=20))
-tu_region_000721 = TranslationUnitRegion(begin=Location(line=121, column=57), end=Location(line=121, column=58))
-tu_region_000722 = TranslationUnitRegion(begin=Location(line=121, column=73), end=Location(line=121, column=79))
-tu_region_000723 = TranslationUnitRegion(begin=Location(line=121, column=60), end=Location(line=121, column=79))
-tu_region_000724 = TranslationUnitRegion(begin=Location(line=121, column=60), end=Location(line=121, column=70))
-tu_region_000725 = TranslationUnitRegion(begin=Location(line=121, column=95), end=Location(line=121, column=101))
-tu_region_000726 = TranslationUnitRegion(begin=Location(line=121, column=81), end=Location(line=121, column=101))
-tu_region_000727 = TranslationUnitRegion(begin=Location(line=121, column=81), end=Location(line=121, column=92))
-tu_region_000728 = TranslationUnitRegion(begin=Location(line=121, column=56), end=Location(line=121, column=102))
-tu_region_000729 = TranslationUnitRegion(begin=Location(line=121, column=47), end=Location(line=121, column=102))
-tu_region_000730 = TranslationUnitRegion(begin=Location(line=121, column=47), end=Location(line=121, column=55))
-tu_region_000731 = TranslationUnitRegion(begin=Location(line=121, column=1), end=Location(line=122, column=1))
-tu_region_000732 = TranslationUnitRegion(begin=Location(line=121, column=1), end=Location(line=121, column=7))
-tu_region_000733 = TranslationUnitRegion(begin=Location(line=121, column=8), end=Location(line=121, column=14))
-tu_region_000734 = TranslationUnitRegion(begin=Location(line=122, column=57), end=Location(line=122, column=58))
-tu_region_000735 = TranslationUnitRegion(begin=Location(line=122, column=73), end=Location(line=122, column=79))
-tu_region_000736 = TranslationUnitRegion(begin=Location(line=122, column=60), end=Location(line=122, column=79))
-tu_region_000737 = TranslationUnitRegion(begin=Location(line=122, column=60), end=Location(line=122, column=70))
-tu_region_000738 = TranslationUnitRegion(begin=Location(line=122, column=95), end=Location(line=122, column=100))
-tu_region_000739 = TranslationUnitRegion(begin=Location(line=122, column=81), end=Location(line=122, column=100))
-tu_region_000740 = TranslationUnitRegion(begin=Location(line=122, column=81), end=Location(line=122, column=92))
-tu_region_000741 = TranslationUnitRegion(begin=Location(line=122, column=56), end=Location(line=122, column=101))
-tu_region_000742 = TranslationUnitRegion(begin=Location(line=122, column=47), end=Location(line=122, column=101))
-tu_region_000743 = TranslationUnitRegion(begin=Location(line=122, column=47), end=Location(line=122, column=55))
-tu_region_000744 = TranslationUnitRegion(begin=Location(line=122, column=1), end=Location(line=125, column=1))
-tu_region_000745 = TranslationUnitRegion(begin=Location(line=122, column=1), end=Location(line=122, column=7))
-tu_region_000746 = TranslationUnitRegion(begin=Location(line=122, column=8), end=Location(line=122, column=21))
-tu_region_000747 = TranslationUnitRegion(begin=Location(line=126, column=57), end=Location(line=126, column=58))
-tu_region_000748 = TranslationUnitRegion(begin=Location(line=126, column=73), end=Location(line=126, column=78))
-tu_region_000749 = TranslationUnitRegion(begin=Location(line=126, column=60), end=Location(line=126, column=78))
-tu_region_000750 = TranslationUnitRegion(begin=Location(line=126, column=60), end=Location(line=126, column=70))
-tu_region_000751 = TranslationUnitRegion(begin=Location(line=126, column=94), end=Location(line=126, column=100))
-tu_region_000752 = TranslationUnitRegion(begin=Location(line=126, column=80), end=Location(line=126, column=100))
-tu_region_000753 = TranslationUnitRegion(begin=Location(line=126, column=80), end=Location(line=126, column=91))
-tu_region_000754 = TranslationUnitRegion(begin=Location(line=126, column=56), end=Location(line=126, column=101))
-tu_region_000755 = TranslationUnitRegion(begin=Location(line=126, column=47), end=Location(line=126, column=101))
-tu_region_000756 = TranslationUnitRegion(begin=Location(line=126, column=47), end=Location(line=126, column=55))
-tu_region_000757 = TranslationUnitRegion(begin=Location(line=126, column=1), end=Location(line=127, column=1))
-tu_region_000758 = TranslationUnitRegion(begin=Location(line=126, column=1), end=Location(line=126, column=7))
-tu_region_000759 = TranslationUnitRegion(begin=Location(line=126, column=8), end=Location(line=126, column=13))
-tu_region_000760 = TranslationUnitRegion(begin=Location(line=127, column=57), end=Location(line=127, column=58))
-tu_region_000761 = TranslationUnitRegion(begin=Location(line=127, column=73), end=Location(line=127, column=78))
-tu_region_000762 = TranslationUnitRegion(begin=Location(line=127, column=60), end=Location(line=127, column=78))
-tu_region_000763 = TranslationUnitRegion(begin=Location(line=127, column=60), end=Location(line=127, column=70))
-tu_region_000764 = TranslationUnitRegion(begin=Location(line=127, column=94), end=Location(line=127, column=99))
-tu_region_000765 = TranslationUnitRegion(begin=Location(line=127, column=80), end=Location(line=127, column=99))
-tu_region_000766 = TranslationUnitRegion(begin=Location(line=127, column=80), end=Location(line=127, column=91))
-tu_region_000767 = TranslationUnitRegion(begin=Location(line=127, column=56), end=Location(line=127, column=100))
-tu_region_000768 = TranslationUnitRegion(begin=Location(line=127, column=47), end=Location(line=127, column=100))
-tu_region_000769 = TranslationUnitRegion(begin=Location(line=127, column=47), end=Location(line=127, column=55))
-tu_region_000770 = TranslationUnitRegion(begin=Location(line=127, column=1), end=Location(line=129, column=1))
-tu_region_000771 = TranslationUnitRegion(begin=Location(line=127, column=1), end=Location(line=127, column=7))
-tu_region_000772 = TranslationUnitRegion(begin=Location(line=127, column=8), end=Location(line=127, column=20))
-tu_region_000773 = TranslationUnitRegion(begin=Location(line=129, column=57), end=Location(line=129, column=58))
-tu_region_000774 = TranslationUnitRegion(begin=Location(line=129, column=73), end=Location(line=129, column=79))
-tu_region_000775 = TranslationUnitRegion(begin=Location(line=129, column=60), end=Location(line=129, column=79))
-tu_region_000776 = TranslationUnitRegion(begin=Location(line=129, column=60), end=Location(line=129, column=70))
-tu_region_000777 = TranslationUnitRegion(begin=Location(line=129, column=95), end=Location(line=129, column=101))
-tu_region_000778 = TranslationUnitRegion(begin=Location(line=129, column=81), end=Location(line=129, column=101))
-tu_region_000779 = TranslationUnitRegion(begin=Location(line=129, column=81), end=Location(line=129, column=92))
-tu_region_000780 = TranslationUnitRegion(begin=Location(line=129, column=56), end=Location(line=129, column=102))
-tu_region_000781 = TranslationUnitRegion(begin=Location(line=129, column=47), end=Location(line=129, column=102))
-tu_region_000782 = TranslationUnitRegion(begin=Location(line=129, column=47), end=Location(line=129, column=55))
-tu_region_000783 = TranslationUnitRegion(begin=Location(line=129, column=1), end=Location(line=130, column=1))
-tu_region_000784 = TranslationUnitRegion(begin=Location(line=129, column=1), end=Location(line=129, column=7))
-tu_region_000785 = TranslationUnitRegion(begin=Location(line=129, column=8), end=Location(line=129, column=14))
-tu_region_000786 = TranslationUnitRegion(begin=Location(line=130, column=57), end=Location(line=130, column=58))
-tu_region_000787 = TranslationUnitRegion(begin=Location(line=130, column=73), end=Location(line=130, column=79))
-tu_region_000788 = TranslationUnitRegion(begin=Location(line=130, column=60), end=Location(line=130, column=79))
-tu_region_000789 = TranslationUnitRegion(begin=Location(line=130, column=60), end=Location(line=130, column=70))
-tu_region_000790 = TranslationUnitRegion(begin=Location(line=130, column=95), end=Location(line=130, column=100))
-tu_region_000791 = TranslationUnitRegion(begin=Location(line=130, column=81), end=Location(line=130, column=100))
-tu_region_000792 = TranslationUnitRegion(begin=Location(line=130, column=81), end=Location(line=130, column=92))
-tu_region_000793 = TranslationUnitRegion(begin=Location(line=130, column=56), end=Location(line=130, column=101))
-tu_region_000794 = TranslationUnitRegion(begin=Location(line=130, column=47), end=Location(line=130, column=101))
-tu_region_000795 = TranslationUnitRegion(begin=Location(line=130, column=47), end=Location(line=130, column=55))
-tu_region_000796 = TranslationUnitRegion(begin=Location(line=130, column=1), end=Location(line=133, column=1))
-tu_region_000797 = TranslationUnitRegion(begin=Location(line=130, column=1), end=Location(line=130, column=7))
-tu_region_000798 = TranslationUnitRegion(begin=Location(line=130, column=8), end=Location(line=130, column=21))
-tu_region_000799 = TranslationUnitRegion(begin=Location(line=134, column=57), end=Location(line=134, column=58))
-tu_region_000800 = TranslationUnitRegion(begin=Location(line=134, column=73), end=Location(line=134, column=78))
-tu_region_000801 = TranslationUnitRegion(begin=Location(line=134, column=60), end=Location(line=134, column=78))
-tu_region_000802 = TranslationUnitRegion(begin=Location(line=134, column=60), end=Location(line=134, column=70))
-tu_region_000803 = TranslationUnitRegion(begin=Location(line=134, column=94), end=Location(line=134, column=100))
-tu_region_000804 = TranslationUnitRegion(begin=Location(line=134, column=80), end=Location(line=134, column=100))
-tu_region_000805 = TranslationUnitRegion(begin=Location(line=134, column=80), end=Location(line=134, column=91))
-tu_region_000806 = TranslationUnitRegion(begin=Location(line=134, column=56), end=Location(line=134, column=101))
-tu_region_000807 = TranslationUnitRegion(begin=Location(line=134, column=47), end=Location(line=134, column=101))
-tu_region_000808 = TranslationUnitRegion(begin=Location(line=134, column=47), end=Location(line=134, column=55))
-tu_region_000809 = TranslationUnitRegion(begin=Location(line=134, column=1), end=Location(line=135, column=1))
-tu_region_000810 = TranslationUnitRegion(begin=Location(line=134, column=1), end=Location(line=134, column=7))
-tu_region_000811 = TranslationUnitRegion(begin=Location(line=134, column=8), end=Location(line=134, column=13))
-tu_region_000812 = TranslationUnitRegion(begin=Location(line=135, column=57), end=Location(line=135, column=58))
-tu_region_000813 = TranslationUnitRegion(begin=Location(line=135, column=73), end=Location(line=135, column=78))
-tu_region_000814 = TranslationUnitRegion(begin=Location(line=135, column=60), end=Location(line=135, column=78))
-tu_region_000815 = TranslationUnitRegion(begin=Location(line=135, column=60), end=Location(line=135, column=70))
-tu_region_000816 = TranslationUnitRegion(begin=Location(line=135, column=94), end=Location(line=135, column=99))
-tu_region_000817 = TranslationUnitRegion(begin=Location(line=135, column=80), end=Location(line=135, column=99))
-tu_region_000818 = TranslationUnitRegion(begin=Location(line=135, column=80), end=Location(line=135, column=91))
-tu_region_000819 = TranslationUnitRegion(begin=Location(line=135, column=56), end=Location(line=135, column=100))
-tu_region_000820 = TranslationUnitRegion(begin=Location(line=135, column=47), end=Location(line=135, column=100))
-tu_region_000821 = TranslationUnitRegion(begin=Location(line=135, column=47), end=Location(line=135, column=55))
-tu_region_000822 = TranslationUnitRegion(begin=Location(line=135, column=1), end=Location(line=137, column=1))
-tu_region_000823 = TranslationUnitRegion(begin=Location(line=135, column=1), end=Location(line=135, column=7))
-tu_region_000824 = TranslationUnitRegion(begin=Location(line=135, column=8), end=Location(line=135, column=20))
-tu_region_000825 = TranslationUnitRegion(begin=Location(line=137, column=57), end=Location(line=137, column=58))
-tu_region_000826 = TranslationUnitRegion(begin=Location(line=137, column=73), end=Location(line=137, column=79))
-tu_region_000827 = TranslationUnitRegion(begin=Location(line=137, column=60), end=Location(line=137, column=79))
-tu_region_000828 = TranslationUnitRegion(begin=Location(line=137, column=60), end=Location(line=137, column=70))
-tu_region_000829 = TranslationUnitRegion(begin=Location(line=137, column=95), end=Location(line=137, column=101))
-tu_region_000830 = TranslationUnitRegion(begin=Location(line=137, column=81), end=Location(line=137, column=101))
-tu_region_000831 = TranslationUnitRegion(begin=Location(line=137, column=81), end=Location(line=137, column=92))
-tu_region_000832 = TranslationUnitRegion(begin=Location(line=137, column=56), end=Location(line=137, column=102))
-tu_region_000833 = TranslationUnitRegion(begin=Location(line=137, column=47), end=Location(line=137, column=102))
-tu_region_000834 = TranslationUnitRegion(begin=Location(line=137, column=47), end=Location(line=137, column=55))
-tu_region_000835 = TranslationUnitRegion(begin=Location(line=137, column=1), end=Location(line=138, column=1))
-tu_region_000836 = TranslationUnitRegion(begin=Location(line=137, column=1), end=Location(line=137, column=7))
-tu_region_000837 = TranslationUnitRegion(begin=Location(line=137, column=8), end=Location(line=137, column=14))
-tu_region_000838 = TranslationUnitRegion(begin=Location(line=138, column=57), end=Location(line=138, column=58))
-tu_region_000839 = TranslationUnitRegion(begin=Location(line=138, column=73), end=Location(line=138, column=79))
-tu_region_000840 = TranslationUnitRegion(begin=Location(line=138, column=60), end=Location(line=138, column=79))
-tu_region_000841 = TranslationUnitRegion(begin=Location(line=138, column=60), end=Location(line=138, column=70))
-tu_region_000842 = TranslationUnitRegion(begin=Location(line=138, column=95), end=Location(line=138, column=100))
-tu_region_000843 = TranslationUnitRegion(begin=Location(line=138, column=81), end=Location(line=138, column=100))
-tu_region_000844 = TranslationUnitRegion(begin=Location(line=138, column=81), end=Location(line=138, column=92))
-tu_region_000845 = TranslationUnitRegion(begin=Location(line=138, column=56), end=Location(line=138, column=101))
-tu_region_000846 = TranslationUnitRegion(begin=Location(line=138, column=47), end=Location(line=138, column=101))
-tu_region_000847 = TranslationUnitRegion(begin=Location(line=138, column=47), end=Location(line=138, column=55))
-tu_region_000848 = TranslationUnitRegion(begin=Location(line=138, column=1), end=Location(line=141, column=1))
-tu_region_000849 = TranslationUnitRegion(begin=Location(line=138, column=1), end=Location(line=138, column=7))
-tu_region_000850 = TranslationUnitRegion(begin=Location(line=138, column=8), end=Location(line=138, column=21))
-tu_region_000851 = TranslationUnitRegion(begin=Location(line=142, column=57), end=Location(line=142, column=59))
-tu_region_000852 = TranslationUnitRegion(begin=Location(line=142, column=74), end=Location(line=142, column=79))
-tu_region_000853 = TranslationUnitRegion(begin=Location(line=142, column=61), end=Location(line=142, column=79))
-tu_region_000854 = TranslationUnitRegion(begin=Location(line=142, column=61), end=Location(line=142, column=71))
-tu_region_000855 = TranslationUnitRegion(begin=Location(line=142, column=95), end=Location(line=142, column=101))
-tu_region_000856 = TranslationUnitRegion(begin=Location(line=142, column=81), end=Location(line=142, column=101))
-tu_region_000857 = TranslationUnitRegion(begin=Location(line=142, column=81), end=Location(line=142, column=92))
-tu_region_000858 = TranslationUnitRegion(begin=Location(line=142, column=56), end=Location(line=142, column=102))
-tu_region_000859 = TranslationUnitRegion(begin=Location(line=142, column=47), end=Location(line=142, column=102))
-tu_region_000860 = TranslationUnitRegion(begin=Location(line=142, column=47), end=Location(line=142, column=55))
-tu_region_000861 = TranslationUnitRegion(begin=Location(line=142, column=1), end=Location(line=143, column=1))
-tu_region_000862 = TranslationUnitRegion(begin=Location(line=142, column=1), end=Location(line=142, column=7))
-tu_region_000863 = TranslationUnitRegion(begin=Location(line=142, column=8), end=Location(line=142, column=14))
-tu_region_000864 = TranslationUnitRegion(begin=Location(line=143, column=57), end=Location(line=143, column=59))
-tu_region_000865 = TranslationUnitRegion(begin=Location(line=143, column=74), end=Location(line=143, column=79))
-tu_region_000866 = TranslationUnitRegion(begin=Location(line=143, column=61), end=Location(line=143, column=79))
-tu_region_000867 = TranslationUnitRegion(begin=Location(line=143, column=61), end=Location(line=143, column=71))
-tu_region_000868 = TranslationUnitRegion(begin=Location(line=143, column=95), end=Location(line=143, column=100))
-tu_region_000869 = TranslationUnitRegion(begin=Location(line=143, column=81), end=Location(line=143, column=100))
-tu_region_000870 = TranslationUnitRegion(begin=Location(line=143, column=81), end=Location(line=143, column=92))
-tu_region_000871 = TranslationUnitRegion(begin=Location(line=143, column=56), end=Location(line=143, column=101))
-tu_region_000872 = TranslationUnitRegion(begin=Location(line=143, column=47), end=Location(line=143, column=101))
-tu_region_000873 = TranslationUnitRegion(begin=Location(line=143, column=47), end=Location(line=143, column=55))
-tu_region_000874 = TranslationUnitRegion(begin=Location(line=143, column=1), end=Location(line=145, column=1))
-tu_region_000875 = TranslationUnitRegion(begin=Location(line=143, column=1), end=Location(line=143, column=7))
-tu_region_000876 = TranslationUnitRegion(begin=Location(line=143, column=8), end=Location(line=143, column=21))
-tu_region_000877 = TranslationUnitRegion(begin=Location(line=145, column=57), end=Location(line=145, column=59))
-tu_region_000878 = TranslationUnitRegion(begin=Location(line=145, column=74), end=Location(line=145, column=80))
-tu_region_000879 = TranslationUnitRegion(begin=Location(line=145, column=61), end=Location(line=145, column=80))
-tu_region_000880 = TranslationUnitRegion(begin=Location(line=145, column=61), end=Location(line=145, column=71))
-tu_region_000881 = TranslationUnitRegion(begin=Location(line=145, column=96), end=Location(line=145, column=102))
-tu_region_000882 = TranslationUnitRegion(begin=Location(line=145, column=82), end=Location(line=145, column=102))
-tu_region_000883 = TranslationUnitRegion(begin=Location(line=145, column=82), end=Location(line=145, column=93))
-tu_region_000884 = TranslationUnitRegion(begin=Location(line=145, column=56), end=Location(line=145, column=103))
-tu_region_000885 = TranslationUnitRegion(begin=Location(line=145, column=47), end=Location(line=145, column=103))
-tu_region_000886 = TranslationUnitRegion(begin=Location(line=145, column=47), end=Location(line=145, column=55))
-tu_region_000887 = TranslationUnitRegion(begin=Location(line=145, column=1), end=Location(line=146, column=1))
-tu_region_000888 = TranslationUnitRegion(begin=Location(line=145, column=1), end=Location(line=145, column=7))
-tu_region_000889 = TranslationUnitRegion(begin=Location(line=145, column=8), end=Location(line=145, column=15))
-tu_region_000890 = TranslationUnitRegion(begin=Location(line=146, column=57), end=Location(line=146, column=59))
-tu_region_000891 = TranslationUnitRegion(begin=Location(line=146, column=74), end=Location(line=146, column=80))
-tu_region_000892 = TranslationUnitRegion(begin=Location(line=146, column=61), end=Location(line=146, column=80))
-tu_region_000893 = TranslationUnitRegion(begin=Location(line=146, column=61), end=Location(line=146, column=71))
-tu_region_000894 = TranslationUnitRegion(begin=Location(line=146, column=96), end=Location(line=146, column=101))
-tu_region_000895 = TranslationUnitRegion(begin=Location(line=146, column=82), end=Location(line=146, column=101))
-tu_region_000896 = TranslationUnitRegion(begin=Location(line=146, column=82), end=Location(line=146, column=93))
-tu_region_000897 = TranslationUnitRegion(begin=Location(line=146, column=56), end=Location(line=146, column=102))
-tu_region_000898 = TranslationUnitRegion(begin=Location(line=146, column=47), end=Location(line=146, column=102))
-tu_region_000899 = TranslationUnitRegion(begin=Location(line=146, column=47), end=Location(line=146, column=55))
-tu_region_000900 = TranslationUnitRegion(begin=Location(line=146, column=1), end=Location(line=149, column=1))
-tu_region_000901 = TranslationUnitRegion(begin=Location(line=146, column=1), end=Location(line=146, column=7))
-tu_region_000902 = TranslationUnitRegion(begin=Location(line=146, column=8), end=Location(line=146, column=22))
-tu_region_000903 = TranslationUnitRegion(begin=Location(line=150, column=4), end=Location(line=150, column=25))
-tu_region_000904 = TranslationUnitRegion(begin=Location(line=150, column=29), end=Location(line=150, column=30))
-tu_region_000905 = TranslationUnitRegion(begin=Location(line=150, column=4), end=Location(line=150, column=30))
-tu_region_000906 = TranslationUnitRegion(begin=Location(line=150, column=26), end=Location(line=150, column=28))
-tu_region_000907 = TranslationUnitRegion(begin=Location(line=151, column=47), end=Location(line=151, column=52))
-tu_region_000908 = TranslationUnitRegion(begin=Location(line=151, column=5), end=Location(line=152, column=1))
-tu_region_000909 = TranslationUnitRegion(begin=Location(line=151, column=5), end=Location(line=151, column=11))
-tu_region_000910 = TranslationUnitRegion(begin=Location(line=151, column=12), end=Location(line=151, column=19))
-tu_region_000911 = TranslationUnitRegion(begin=Location(line=152, column=47), end=Location(line=152, column=59))
-tu_region_000912 = TranslationUnitRegion(begin=Location(line=152, column=5), end=Location(line=154, column=1))
-tu_region_000913 = TranslationUnitRegion(begin=Location(line=152, column=5), end=Location(line=152, column=11))
-tu_region_000914 = TranslationUnitRegion(begin=Location(line=152, column=12), end=Location(line=152, column=26))
-tu_region_000915 = TranslationUnitRegion(begin=Location(line=154, column=47), end=Location(line=154, column=53))
-tu_region_000916 = TranslationUnitRegion(begin=Location(line=154, column=5), end=Location(line=155, column=1))
-tu_region_000917 = TranslationUnitRegion(begin=Location(line=154, column=5), end=Location(line=154, column=11))
-tu_region_000918 = TranslationUnitRegion(begin=Location(line=154, column=12), end=Location(line=154, column=20))
-tu_region_000919 = TranslationUnitRegion(begin=Location(line=155, column=47), end=Location(line=155, column=60))
-tu_region_000920 = TranslationUnitRegion(begin=Location(line=155, column=5), end=Location(line=157, column=1))
-tu_region_000921 = TranslationUnitRegion(begin=Location(line=155, column=5), end=Location(line=155, column=11))
-tu_region_000922 = TranslationUnitRegion(begin=Location(line=155, column=12), end=Location(line=155, column=27))
-tu_region_000923 = TranslationUnitRegion(begin=Location(line=150, column=1), end=Location(line=166, column=1))
-tu_region_000924 = TranslationUnitRegion(begin=Location(line=150, column=30), end=Location(line=157, column=1))
-tu_region_000925 = TranslationUnitRegion(begin=Location(line=157, column=6), end=Location(line=157, column=27))
-tu_region_000926 = TranslationUnitRegion(begin=Location(line=157, column=31), end=Location(line=157, column=32))
-tu_region_000927 = TranslationUnitRegion(begin=Location(line=157, column=6), end=Location(line=157, column=32))
-tu_region_000928 = TranslationUnitRegion(begin=Location(line=157, column=28), end=Location(line=157, column=30))
-tu_region_000929 = TranslationUnitRegion(begin=Location(line=158, column=47), end=Location(line=158, column=52))
-tu_region_000930 = TranslationUnitRegion(begin=Location(line=158, column=5), end=Location(line=159, column=1))
-tu_region_000931 = TranslationUnitRegion(begin=Location(line=158, column=5), end=Location(line=158, column=11))
-tu_region_000932 = TranslationUnitRegion(begin=Location(line=158, column=12), end=Location(line=158, column=19))
-tu_region_000933 = TranslationUnitRegion(begin=Location(line=159, column=47), end=Location(line=159, column=59))
-tu_region_000934 = TranslationUnitRegion(begin=Location(line=159, column=5), end=Location(line=161, column=1))
-tu_region_000935 = TranslationUnitRegion(begin=Location(line=159, column=5), end=Location(line=159, column=11))
-tu_region_000936 = TranslationUnitRegion(begin=Location(line=159, column=12), end=Location(line=159, column=26))
-tu_region_000937 = TranslationUnitRegion(begin=Location(line=161, column=47), end=Location(line=161, column=53))
-tu_region_000938 = TranslationUnitRegion(begin=Location(line=161, column=5), end=Location(line=162, column=1))
-tu_region_000939 = TranslationUnitRegion(begin=Location(line=161, column=5), end=Location(line=161, column=11))
-tu_region_000940 = TranslationUnitRegion(begin=Location(line=161, column=12), end=Location(line=161, column=20))
-tu_region_000941 = TranslationUnitRegion(begin=Location(line=162, column=47), end=Location(line=162, column=60))
-tu_region_000942 = TranslationUnitRegion(begin=Location(line=162, column=5), end=Location(line=164, column=1))
-tu_region_000943 = TranslationUnitRegion(begin=Location(line=162, column=5), end=Location(line=162, column=11))
-tu_region_000944 = TranslationUnitRegion(begin=Location(line=162, column=12), end=Location(line=162, column=27))
-tu_region_000945 = TranslationUnitRegion(begin=Location(line=157, column=1), end=Location(line=164, column=1))
-tu_region_000946 = TranslationUnitRegion(begin=Location(line=157, column=32), end=Location(line=164, column=1))
-tu_region_000947 = TranslationUnitRegion(begin=Location(line=165, column=5), end=Location(line=165, column=11))
-tu_region_000948 = TranslationUnitRegion(begin=Location(line=165, column=12), end=Location(line=165, column=38))
-tu_region_000949 = TranslationUnitRegion(begin=Location(line=165, column=40), end=Location(line=165, column=61))
-tu_region_000950 = TranslationUnitRegion(begin=Location(line=165, column=11), end=Location(line=165, column=62))
-tu_region_000951 = TranslationUnitRegion(begin=Location(line=165, column=5), end=Location(line=165, column=62))
-tu_region_000952 = TranslationUnitRegion(begin=Location(line=165, column=5), end=Location(line=166, column=1))
-tu_region_000953 = TranslationUnitRegion(begin=Location(line=164, column=1), end=Location(line=166, column=1))
-tu_region_000954 = TranslationUnitRegion(begin=Location(line=164, column=5), end=Location(line=166, column=1))
-tu_region_000955 = TranslationUnitRegion(begin=Location(line=1, column=1), end=Location(line=166, column=1))
+tu_region_000003 = TranslationUnitRegion(begin=Location(line=30, column=36), end=Location(line=30, column=46))
+tu_region_000004 = TranslationUnitRegion(begin=Location(line=30, column=48), end=Location(line=30, column=58))
+tu_region_000005 = TranslationUnitRegion(begin=Location(line=30, column=34), end=Location(line=30, column=60))
+tu_region_000006 = TranslationUnitRegion(begin=Location(line=30, column=23), end=Location(line=30, column=60))
+tu_region_000007 = TranslationUnitRegion(begin=Location(line=30, column=23), end=Location(line=30, column=33))
+tu_region_000008 = TranslationUnitRegion(begin=Location(line=30, column=16), end=Location(line=30, column=60))
+tu_region_000009 = TranslationUnitRegion(begin=Location(line=30, column=16), end=Location(line=30, column=22))
+tu_region_000010 = TranslationUnitRegion(begin=Location(line=50, column=40), end=Location(line=50, column=52))
+tu_region_000011 = TranslationUnitRegion(begin=Location(line=50, column=40), end=Location(line=50, column=48))
+tu_region_000012 = TranslationUnitRegion(begin=Location(line=50, column=49), end=Location(line=50, column=52))
+tu_region_000013 = TranslationUnitRegion(begin=Location(line=50, column=79), end=Location(line=50, column=87))
+tu_region_000014 = TranslationUnitRegion(begin=Location(line=50, column=69), end=Location(line=50, column=97))
+tu_region_000015 = TranslationUnitRegion(begin=Location(line=50, column=98), end=Location(line=50, column=110))
+tu_region_000016 = TranslationUnitRegion(begin=Location(line=50, column=98), end=Location(line=50, column=106))
+tu_region_000017 = TranslationUnitRegion(begin=Location(line=50, column=107), end=Location(line=50, column=110))
+tu_region_000018 = TranslationUnitRegion(begin=Location(line=50, column=98), end=Location(line=50, column=118))
+tu_region_000019 = TranslationUnitRegion(begin=Location(line=50, column=111), end=Location(line=50, column=118))
+tu_region_000020 = TranslationUnitRegion(begin=Location(line=50, column=97), end=Location(line=50, column=119))
+tu_region_000021 = TranslationUnitRegion(begin=Location(line=50, column=5), end=Location(line=51, column=1))
+tu_region_000022 = TranslationUnitRegion(begin=Location(line=50, column=24), end=Location(line=50, column=30))
+tu_region_000023 = TranslationUnitRegion(begin=Location(line=50, column=31), end=Location(line=50, column=39))
+tu_region_000024 = TranslationUnitRegion(begin=Location(line=50, column=53), end=Location(line=50, column=69))
+tu_region_000025 = TranslationUnitRegion(begin=Location(line=50, column=6), end=Location(line=50, column=14))
+tu_region_000026 = TranslationUnitRegion(begin=Location(line=50, column=16), end=Location(line=50, column=22))
+tu_region_000027 = TranslationUnitRegion(begin=Location(line=51, column=61), end=Location(line=51, column=69))
+tu_region_000028 = TranslationUnitRegion(begin=Location(line=51, column=51), end=Location(line=51, column=79))
+tu_region_000029 = TranslationUnitRegion(begin=Location(line=51, column=80), end=Location(line=51, column=92))
+tu_region_000030 = TranslationUnitRegion(begin=Location(line=51, column=80), end=Location(line=51, column=88))
+tu_region_000031 = TranslationUnitRegion(begin=Location(line=51, column=89), end=Location(line=51, column=92))
+tu_region_000032 = TranslationUnitRegion(begin=Location(line=51, column=80), end=Location(line=51, column=100))
+tu_region_000033 = TranslationUnitRegion(begin=Location(line=51, column=93), end=Location(line=51, column=100))
+tu_region_000034 = TranslationUnitRegion(begin=Location(line=51, column=79), end=Location(line=51, column=101))
+tu_region_000035 = TranslationUnitRegion(begin=Location(line=51, column=5), end=Location(line=52, column=1))
+tu_region_000036 = TranslationUnitRegion(begin=Location(line=51, column=16), end=Location(line=51, column=22))
+tu_region_000037 = TranslationUnitRegion(begin=Location(line=51, column=102), end=Location(line=51, column=111))
+tu_region_000038 = TranslationUnitRegion(begin=Location(line=51, column=23), end=Location(line=51, column=31))
+tu_region_000039 = TranslationUnitRegion(begin=Location(line=51, column=37), end=Location(line=51, column=51))
+tu_region_000040 = TranslationUnitRegion(begin=Location(line=51, column=6), end=Location(line=51, column=14))
+tu_region_000041 = TranslationUnitRegion(begin=Location(line=52, column=61), end=Location(line=52, column=69))
+tu_region_000042 = TranslationUnitRegion(begin=Location(line=52, column=51), end=Location(line=52, column=79))
+tu_region_000043 = TranslationUnitRegion(begin=Location(line=52, column=80), end=Location(line=52, column=92))
+tu_region_000044 = TranslationUnitRegion(begin=Location(line=52, column=80), end=Location(line=52, column=88))
+tu_region_000045 = TranslationUnitRegion(begin=Location(line=52, column=89), end=Location(line=52, column=92))
+tu_region_000046 = TranslationUnitRegion(begin=Location(line=52, column=80), end=Location(line=52, column=100))
+tu_region_000047 = TranslationUnitRegion(begin=Location(line=52, column=93), end=Location(line=52, column=100))
+tu_region_000048 = TranslationUnitRegion(begin=Location(line=52, column=79), end=Location(line=52, column=101))
+tu_region_000049 = TranslationUnitRegion(begin=Location(line=52, column=5), end=Location(line=54, column=1))
+tu_region_000050 = TranslationUnitRegion(begin=Location(line=52, column=16), end=Location(line=52, column=22))
+tu_region_000051 = TranslationUnitRegion(begin=Location(line=52, column=102), end=Location(line=52, column=105))
+tu_region_000052 = TranslationUnitRegion(begin=Location(line=52, column=23), end=Location(line=52, column=31))
+tu_region_000053 = TranslationUnitRegion(begin=Location(line=52, column=37), end=Location(line=52, column=51))
+tu_region_000054 = TranslationUnitRegion(begin=Location(line=52, column=6), end=Location(line=52, column=14))
+tu_region_000055 = TranslationUnitRegion(begin=Location(line=54, column=58), end=Location(line=54, column=66))
+tu_region_000056 = TranslationUnitRegion(begin=Location(line=54, column=48), end=Location(line=54, column=76))
+tu_region_000057 = TranslationUnitRegion(begin=Location(line=54, column=77), end=Location(line=54, column=89))
+tu_region_000058 = TranslationUnitRegion(begin=Location(line=54, column=77), end=Location(line=54, column=85))
+tu_region_000059 = TranslationUnitRegion(begin=Location(line=54, column=86), end=Location(line=54, column=89))
+tu_region_000060 = TranslationUnitRegion(begin=Location(line=54, column=77), end=Location(line=54, column=97))
+tu_region_000061 = TranslationUnitRegion(begin=Location(line=54, column=90), end=Location(line=54, column=97))
+tu_region_000062 = TranslationUnitRegion(begin=Location(line=54, column=76), end=Location(line=54, column=98))
+tu_region_000063 = TranslationUnitRegion(begin=Location(line=54, column=5), end=Location(line=55, column=1))
+tu_region_000064 = TranslationUnitRegion(begin=Location(line=54, column=16), end=Location(line=54, column=22))
+tu_region_000065 = TranslationUnitRegion(begin=Location(line=54, column=99), end=Location(line=54, column=108))
+tu_region_000066 = TranslationUnitRegion(begin=Location(line=54, column=23), end=Location(line=54, column=31))
+tu_region_000067 = TranslationUnitRegion(begin=Location(line=54, column=37), end=Location(line=54, column=48))
+tu_region_000068 = TranslationUnitRegion(begin=Location(line=54, column=6), end=Location(line=54, column=14))
+tu_region_000069 = TranslationUnitRegion(begin=Location(line=55, column=58), end=Location(line=55, column=66))
+tu_region_000070 = TranslationUnitRegion(begin=Location(line=55, column=48), end=Location(line=55, column=76))
+tu_region_000071 = TranslationUnitRegion(begin=Location(line=55, column=77), end=Location(line=55, column=89))
+tu_region_000072 = TranslationUnitRegion(begin=Location(line=55, column=77), end=Location(line=55, column=85))
+tu_region_000073 = TranslationUnitRegion(begin=Location(line=55, column=86), end=Location(line=55, column=89))
+tu_region_000074 = TranslationUnitRegion(begin=Location(line=55, column=77), end=Location(line=55, column=97))
+tu_region_000075 = TranslationUnitRegion(begin=Location(line=55, column=90), end=Location(line=55, column=97))
+tu_region_000076 = TranslationUnitRegion(begin=Location(line=55, column=76), end=Location(line=55, column=98))
+tu_region_000077 = TranslationUnitRegion(begin=Location(line=55, column=5), end=Location(line=57, column=1))
+tu_region_000078 = TranslationUnitRegion(begin=Location(line=55, column=16), end=Location(line=55, column=22))
+tu_region_000079 = TranslationUnitRegion(begin=Location(line=55, column=99), end=Location(line=55, column=102))
+tu_region_000080 = TranslationUnitRegion(begin=Location(line=55, column=23), end=Location(line=55, column=31))
+tu_region_000081 = TranslationUnitRegion(begin=Location(line=55, column=37), end=Location(line=55, column=48))
+tu_region_000082 = TranslationUnitRegion(begin=Location(line=55, column=6), end=Location(line=55, column=14))
+tu_region_000083 = TranslationUnitRegion(begin=Location(line=57, column=32), end=Location(line=57, column=44))
+tu_region_000084 = TranslationUnitRegion(begin=Location(line=57, column=32), end=Location(line=57, column=40))
+tu_region_000085 = TranslationUnitRegion(begin=Location(line=57, column=41), end=Location(line=57, column=44))
+tu_region_000086 = TranslationUnitRegion(begin=Location(line=57, column=5), end=Location(line=59, column=1))
+tu_region_000087 = TranslationUnitRegion(begin=Location(line=57, column=16), end=Location(line=57, column=22))
+tu_region_000088 = TranslationUnitRegion(begin=Location(line=57, column=58), end=Location(line=57, column=67))
+tu_region_000089 = TranslationUnitRegion(begin=Location(line=57, column=23), end=Location(line=57, column=31))
+tu_region_000090 = TranslationUnitRegion(begin=Location(line=57, column=45), end=Location(line=57, column=55))
+tu_region_000091 = TranslationUnitRegion(begin=Location(line=57, column=55), end=Location(line=57, column=57))
+tu_region_000092 = TranslationUnitRegion(begin=Location(line=57, column=6), end=Location(line=57, column=14))
+tu_region_000093 = TranslationUnitRegion(begin=Location(line=59, column=32), end=Location(line=59, column=40))
+tu_region_000094 = TranslationUnitRegion(begin=Location(line=59, column=32), end=Location(line=59, column=36))
+tu_region_000095 = TranslationUnitRegion(begin=Location(line=59, column=37), end=Location(line=59, column=40))
+tu_region_000096 = TranslationUnitRegion(begin=Location(line=59, column=5), end=Location(line=60, column=1))
+tu_region_000097 = TranslationUnitRegion(begin=Location(line=59, column=16), end=Location(line=59, column=22))
+tu_region_000098 = TranslationUnitRegion(begin=Location(line=59, column=54), end=Location(line=59, column=63))
+tu_region_000099 = TranslationUnitRegion(begin=Location(line=59, column=23), end=Location(line=59, column=31))
+tu_region_000100 = TranslationUnitRegion(begin=Location(line=59, column=41), end=Location(line=59, column=51))
+tu_region_000101 = TranslationUnitRegion(begin=Location(line=59, column=51), end=Location(line=59, column=53))
+tu_region_000102 = TranslationUnitRegion(begin=Location(line=59, column=6), end=Location(line=59, column=14))
+tu_region_000103 = TranslationUnitRegion(begin=Location(line=60, column=32), end=Location(line=60, column=39))
+tu_region_000104 = TranslationUnitRegion(begin=Location(line=60, column=32), end=Location(line=60, column=35))
+tu_region_000105 = TranslationUnitRegion(begin=Location(line=60, column=36), end=Location(line=60, column=39))
+tu_region_000106 = TranslationUnitRegion(begin=Location(line=60, column=5), end=Location(line=62, column=1))
+tu_region_000107 = TranslationUnitRegion(begin=Location(line=60, column=16), end=Location(line=60, column=22))
+tu_region_000108 = TranslationUnitRegion(begin=Location(line=60, column=56), end=Location(line=60, column=65))
+tu_region_000109 = TranslationUnitRegion(begin=Location(line=60, column=23), end=Location(line=60, column=31))
+tu_region_000110 = TranslationUnitRegion(begin=Location(line=60, column=40), end=Location(line=60, column=53))
+tu_region_000111 = TranslationUnitRegion(begin=Location(line=60, column=53), end=Location(line=60, column=55))
+tu_region_000112 = TranslationUnitRegion(begin=Location(line=60, column=6), end=Location(line=60, column=14))
+tu_region_000113 = TranslationUnitRegion(begin=Location(line=62, column=40), end=Location(line=62, column=57))
+tu_region_000114 = TranslationUnitRegion(begin=Location(line=62, column=40), end=Location(line=62, column=53))
+tu_region_000115 = TranslationUnitRegion(begin=Location(line=62, column=54), end=Location(line=62, column=57))
+tu_region_000116 = TranslationUnitRegion(begin=Location(line=62, column=70), end=Location(line=62, column=88))
+tu_region_000117 = TranslationUnitRegion(begin=Location(line=62, column=70), end=Location(line=62, column=78))
+tu_region_000118 = TranslationUnitRegion(begin=Location(line=62, column=79), end=Location(line=62, column=88))
+tu_region_000119 = TranslationUnitRegion(begin=Location(line=62, column=70), end=Location(line=62, column=93))
+tu_region_000120 = TranslationUnitRegion(begin=Location(line=62, column=89), end=Location(line=62, column=93))
+tu_region_000121 = TranslationUnitRegion(begin=Location(line=62, column=95), end=Location(line=62, column=108))
+tu_region_000122 = TranslationUnitRegion(begin=Location(line=62, column=95), end=Location(line=62, column=98))
+tu_region_000123 = TranslationUnitRegion(begin=Location(line=62, column=99), end=Location(line=62, column=108))
+tu_region_000124 = TranslationUnitRegion(begin=Location(line=62, column=95), end=Location(line=62, column=113))
+tu_region_000125 = TranslationUnitRegion(begin=Location(line=62, column=109), end=Location(line=62, column=113))
+tu_region_000126 = TranslationUnitRegion(begin=Location(line=62, column=69), end=Location(line=62, column=114))
+tu_region_000127 = TranslationUnitRegion(begin=Location(line=62, column=70), end=Location(line=62, column=113))
+tu_region_000128 = TranslationUnitRegion(begin=Location(line=62, column=5), end=Location(line=64, column=1))
+tu_region_000129 = TranslationUnitRegion(begin=Location(line=62, column=24), end=Location(line=62, column=30))
+tu_region_000130 = TranslationUnitRegion(begin=Location(line=62, column=31), end=Location(line=62, column=39))
+tu_region_000131 = TranslationUnitRegion(begin=Location(line=62, column=58), end=Location(line=62, column=69))
+tu_region_000132 = TranslationUnitRegion(begin=Location(line=62, column=6), end=Location(line=62, column=14))
+tu_region_000133 = TranslationUnitRegion(begin=Location(line=62, column=16), end=Location(line=62, column=22))
+tu_region_000134 = TranslationUnitRegion(begin=Location(line=64, column=32), end=Location(line=64, column=40))
+tu_region_000135 = TranslationUnitRegion(begin=Location(line=64, column=32), end=Location(line=64, column=36))
+tu_region_000136 = TranslationUnitRegion(begin=Location(line=64, column=37), end=Location(line=64, column=40))
+tu_region_000137 = TranslationUnitRegion(begin=Location(line=64, column=51), end=Location(line=64, column=64))
+tu_region_000138 = TranslationUnitRegion(begin=Location(line=64, column=51), end=Location(line=64, column=54))
+tu_region_000139 = TranslationUnitRegion(begin=Location(line=64, column=55), end=Location(line=64, column=64))
+tu_region_000140 = TranslationUnitRegion(begin=Location(line=64, column=51), end=Location(line=64, column=69))
+tu_region_000141 = TranslationUnitRegion(begin=Location(line=64, column=65), end=Location(line=64, column=69))
+tu_region_000142 = TranslationUnitRegion(begin=Location(line=64, column=50), end=Location(line=64, column=70))
+tu_region_000143 = TranslationUnitRegion(begin=Location(line=64, column=5), end=Location(line=65, column=1))
+tu_region_000144 = TranslationUnitRegion(begin=Location(line=64, column=16), end=Location(line=64, column=22))
+tu_region_000145 = TranslationUnitRegion(begin=Location(line=64, column=71), end=Location(line=64, column=80))
+tu_region_000146 = TranslationUnitRegion(begin=Location(line=64, column=23), end=Location(line=64, column=31))
+tu_region_000147 = TranslationUnitRegion(begin=Location(line=64, column=41), end=Location(line=64, column=50))
+tu_region_000148 = TranslationUnitRegion(begin=Location(line=64, column=6), end=Location(line=64, column=14))
+tu_region_000149 = TranslationUnitRegion(begin=Location(line=65, column=32), end=Location(line=65, column=40))
+tu_region_000150 = TranslationUnitRegion(begin=Location(line=65, column=32), end=Location(line=65, column=36))
+tu_region_000151 = TranslationUnitRegion(begin=Location(line=65, column=37), end=Location(line=65, column=40))
+tu_region_000152 = TranslationUnitRegion(begin=Location(line=65, column=54), end=Location(line=65, column=67))
+tu_region_000153 = TranslationUnitRegion(begin=Location(line=65, column=54), end=Location(line=65, column=57))
+tu_region_000154 = TranslationUnitRegion(begin=Location(line=65, column=58), end=Location(line=65, column=67))
+tu_region_000155 = TranslationUnitRegion(begin=Location(line=65, column=54), end=Location(line=65, column=72))
+tu_region_000156 = TranslationUnitRegion(begin=Location(line=65, column=68), end=Location(line=65, column=72))
+tu_region_000157 = TranslationUnitRegion(begin=Location(line=65, column=53), end=Location(line=65, column=73))
+tu_region_000158 = TranslationUnitRegion(begin=Location(line=65, column=5), end=Location(line=66, column=1))
+tu_region_000159 = TranslationUnitRegion(begin=Location(line=65, column=16), end=Location(line=65, column=22))
+tu_region_000160 = TranslationUnitRegion(begin=Location(line=65, column=74), end=Location(line=65, column=83))
+tu_region_000161 = TranslationUnitRegion(begin=Location(line=65, column=23), end=Location(line=65, column=31))
+tu_region_000162 = TranslationUnitRegion(begin=Location(line=65, column=41), end=Location(line=65, column=53))
+tu_region_000163 = TranslationUnitRegion(begin=Location(line=65, column=6), end=Location(line=65, column=14))
+tu_region_000164 = TranslationUnitRegion(begin=Location(line=66, column=32), end=Location(line=66, column=40))
+tu_region_000165 = TranslationUnitRegion(begin=Location(line=66, column=32), end=Location(line=66, column=36))
+tu_region_000166 = TranslationUnitRegion(begin=Location(line=66, column=37), end=Location(line=66, column=40))
+tu_region_000167 = TranslationUnitRegion(begin=Location(line=66, column=50), end=Location(line=66, column=63))
+tu_region_000168 = TranslationUnitRegion(begin=Location(line=66, column=50), end=Location(line=66, column=53))
+tu_region_000169 = TranslationUnitRegion(begin=Location(line=66, column=54), end=Location(line=66, column=63))
+tu_region_000170 = TranslationUnitRegion(begin=Location(line=66, column=50), end=Location(line=66, column=68))
+tu_region_000171 = TranslationUnitRegion(begin=Location(line=66, column=64), end=Location(line=66, column=68))
+tu_region_000172 = TranslationUnitRegion(begin=Location(line=66, column=49), end=Location(line=66, column=69))
+tu_region_000173 = TranslationUnitRegion(begin=Location(line=66, column=5), end=Location(line=67, column=1))
+tu_region_000174 = TranslationUnitRegion(begin=Location(line=66, column=16), end=Location(line=66, column=22))
+tu_region_000175 = TranslationUnitRegion(begin=Location(line=66, column=70), end=Location(line=66, column=79))
+tu_region_000176 = TranslationUnitRegion(begin=Location(line=66, column=23), end=Location(line=66, column=31))
+tu_region_000177 = TranslationUnitRegion(begin=Location(line=66, column=41), end=Location(line=66, column=49))
+tu_region_000178 = TranslationUnitRegion(begin=Location(line=66, column=6), end=Location(line=66, column=14))
+tu_region_000179 = TranslationUnitRegion(begin=Location(line=67, column=32), end=Location(line=67, column=40))
+tu_region_000180 = TranslationUnitRegion(begin=Location(line=67, column=32), end=Location(line=67, column=36))
+tu_region_000181 = TranslationUnitRegion(begin=Location(line=67, column=37), end=Location(line=67, column=40))
+tu_region_000182 = TranslationUnitRegion(begin=Location(line=67, column=55), end=Location(line=67, column=68))
+tu_region_000183 = TranslationUnitRegion(begin=Location(line=67, column=55), end=Location(line=67, column=58))
+tu_region_000184 = TranslationUnitRegion(begin=Location(line=67, column=59), end=Location(line=67, column=68))
+tu_region_000185 = TranslationUnitRegion(begin=Location(line=67, column=55), end=Location(line=67, column=73))
+tu_region_000186 = TranslationUnitRegion(begin=Location(line=67, column=69), end=Location(line=67, column=73))
+tu_region_000187 = TranslationUnitRegion(begin=Location(line=67, column=54), end=Location(line=67, column=74))
+tu_region_000188 = TranslationUnitRegion(begin=Location(line=67, column=5), end=Location(line=68, column=1))
+tu_region_000189 = TranslationUnitRegion(begin=Location(line=67, column=16), end=Location(line=67, column=22))
+tu_region_000190 = TranslationUnitRegion(begin=Location(line=67, column=75), end=Location(line=67, column=84))
+tu_region_000191 = TranslationUnitRegion(begin=Location(line=67, column=23), end=Location(line=67, column=31))
+tu_region_000192 = TranslationUnitRegion(begin=Location(line=67, column=41), end=Location(line=67, column=54))
+tu_region_000193 = TranslationUnitRegion(begin=Location(line=67, column=6), end=Location(line=67, column=14))
+tu_region_000194 = TranslationUnitRegion(begin=Location(line=68, column=32), end=Location(line=68, column=40))
+tu_region_000195 = TranslationUnitRegion(begin=Location(line=68, column=32), end=Location(line=68, column=36))
+tu_region_000196 = TranslationUnitRegion(begin=Location(line=68, column=37), end=Location(line=68, column=40))
+tu_region_000197 = TranslationUnitRegion(begin=Location(line=68, column=53), end=Location(line=68, column=66))
+tu_region_000198 = TranslationUnitRegion(begin=Location(line=68, column=53), end=Location(line=68, column=56))
+tu_region_000199 = TranslationUnitRegion(begin=Location(line=68, column=57), end=Location(line=68, column=66))
+tu_region_000200 = TranslationUnitRegion(begin=Location(line=68, column=53), end=Location(line=68, column=71))
+tu_region_000201 = TranslationUnitRegion(begin=Location(line=68, column=67), end=Location(line=68, column=71))
+tu_region_000202 = TranslationUnitRegion(begin=Location(line=68, column=52), end=Location(line=68, column=72))
+tu_region_000203 = TranslationUnitRegion(begin=Location(line=68, column=5), end=Location(line=69, column=1))
+tu_region_000204 = TranslationUnitRegion(begin=Location(line=68, column=16), end=Location(line=68, column=22))
+tu_region_000205 = TranslationUnitRegion(begin=Location(line=68, column=73), end=Location(line=68, column=82))
+tu_region_000206 = TranslationUnitRegion(begin=Location(line=68, column=23), end=Location(line=68, column=31))
+tu_region_000207 = TranslationUnitRegion(begin=Location(line=68, column=41), end=Location(line=68, column=52))
+tu_region_000208 = TranslationUnitRegion(begin=Location(line=68, column=6), end=Location(line=68, column=14))
+tu_region_000209 = TranslationUnitRegion(begin=Location(line=69, column=32), end=Location(line=69, column=40))
+tu_region_000210 = TranslationUnitRegion(begin=Location(line=69, column=32), end=Location(line=69, column=36))
+tu_region_000211 = TranslationUnitRegion(begin=Location(line=69, column=37), end=Location(line=69, column=40))
+tu_region_000212 = TranslationUnitRegion(begin=Location(line=69, column=58), end=Location(line=69, column=71))
+tu_region_000213 = TranslationUnitRegion(begin=Location(line=69, column=58), end=Location(line=69, column=61))
+tu_region_000214 = TranslationUnitRegion(begin=Location(line=69, column=62), end=Location(line=69, column=71))
+tu_region_000215 = TranslationUnitRegion(begin=Location(line=69, column=58), end=Location(line=69, column=76))
+tu_region_000216 = TranslationUnitRegion(begin=Location(line=69, column=72), end=Location(line=69, column=76))
+tu_region_000217 = TranslationUnitRegion(begin=Location(line=69, column=57), end=Location(line=69, column=77))
+tu_region_000218 = TranslationUnitRegion(begin=Location(line=69, column=5), end=Location(line=71, column=1))
+tu_region_000219 = TranslationUnitRegion(begin=Location(line=69, column=16), end=Location(line=69, column=22))
+tu_region_000220 = TranslationUnitRegion(begin=Location(line=69, column=78), end=Location(line=69, column=87))
+tu_region_000221 = TranslationUnitRegion(begin=Location(line=69, column=23), end=Location(line=69, column=31))
+tu_region_000222 = TranslationUnitRegion(begin=Location(line=69, column=41), end=Location(line=69, column=57))
+tu_region_000223 = TranslationUnitRegion(begin=Location(line=69, column=6), end=Location(line=69, column=14))
+tu_region_000224 = TranslationUnitRegion(begin=Location(line=71, column=32), end=Location(line=71, column=44))
+tu_region_000225 = TranslationUnitRegion(begin=Location(line=71, column=32), end=Location(line=71, column=40))
+tu_region_000226 = TranslationUnitRegion(begin=Location(line=71, column=41), end=Location(line=71, column=44))
+tu_region_000227 = TranslationUnitRegion(begin=Location(line=71, column=5), end=Location(line=72, column=1))
+tu_region_000228 = TranslationUnitRegion(begin=Location(line=71, column=16), end=Location(line=71, column=22))
+tu_region_000229 = TranslationUnitRegion(begin=Location(line=71, column=61), end=Location(line=71, column=70))
+tu_region_000230 = TranslationUnitRegion(begin=Location(line=71, column=23), end=Location(line=71, column=31))
+tu_region_000231 = TranslationUnitRegion(begin=Location(line=71, column=45), end=Location(line=71, column=58))
+tu_region_000232 = TranslationUnitRegion(begin=Location(line=71, column=58), end=Location(line=71, column=60))
+tu_region_000233 = TranslationUnitRegion(begin=Location(line=71, column=6), end=Location(line=71, column=14))
+tu_region_000234 = TranslationUnitRegion(begin=Location(line=72, column=32), end=Location(line=72, column=44))
+tu_region_000235 = TranslationUnitRegion(begin=Location(line=72, column=32), end=Location(line=72, column=40))
+tu_region_000236 = TranslationUnitRegion(begin=Location(line=72, column=41), end=Location(line=72, column=44))
+tu_region_000237 = TranslationUnitRegion(begin=Location(line=72, column=5), end=Location(line=73, column=1))
+tu_region_000238 = TranslationUnitRegion(begin=Location(line=72, column=16), end=Location(line=72, column=22))
+tu_region_000239 = TranslationUnitRegion(begin=Location(line=72, column=61), end=Location(line=72, column=70))
+tu_region_000240 = TranslationUnitRegion(begin=Location(line=72, column=23), end=Location(line=72, column=31))
+tu_region_000241 = TranslationUnitRegion(begin=Location(line=72, column=45), end=Location(line=72, column=58))
+tu_region_000242 = TranslationUnitRegion(begin=Location(line=72, column=58), end=Location(line=72, column=60))
+tu_region_000243 = TranslationUnitRegion(begin=Location(line=72, column=6), end=Location(line=72, column=14))
+tu_region_000244 = TranslationUnitRegion(begin=Location(line=73, column=32), end=Location(line=73, column=44))
+tu_region_000245 = TranslationUnitRegion(begin=Location(line=73, column=32), end=Location(line=73, column=40))
+tu_region_000246 = TranslationUnitRegion(begin=Location(line=73, column=41), end=Location(line=73, column=44))
+tu_region_000247 = TranslationUnitRegion(begin=Location(line=73, column=5), end=Location(line=75, column=1))
+tu_region_000248 = TranslationUnitRegion(begin=Location(line=73, column=16), end=Location(line=73, column=22))
+tu_region_000249 = TranslationUnitRegion(begin=Location(line=73, column=60), end=Location(line=73, column=69))
+tu_region_000250 = TranslationUnitRegion(begin=Location(line=73, column=23), end=Location(line=73, column=31))
+tu_region_000251 = TranslationUnitRegion(begin=Location(line=73, column=45), end=Location(line=73, column=57))
+tu_region_000252 = TranslationUnitRegion(begin=Location(line=73, column=57), end=Location(line=73, column=59))
+tu_region_000253 = TranslationUnitRegion(begin=Location(line=73, column=6), end=Location(line=73, column=14))
+tu_region_000254 = TranslationUnitRegion(begin=Location(line=75, column=32), end=Location(line=75, column=39))
+tu_region_000255 = TranslationUnitRegion(begin=Location(line=75, column=32), end=Location(line=75, column=35))
+tu_region_000256 = TranslationUnitRegion(begin=Location(line=75, column=36), end=Location(line=75, column=39))
+tu_region_000257 = TranslationUnitRegion(begin=Location(line=75, column=52), end=Location(line=75, column=65))
+tu_region_000258 = TranslationUnitRegion(begin=Location(line=75, column=52), end=Location(line=75, column=55))
+tu_region_000259 = TranslationUnitRegion(begin=Location(line=75, column=56), end=Location(line=75, column=65))
+tu_region_000260 = TranslationUnitRegion(begin=Location(line=75, column=52), end=Location(line=75, column=73))
+tu_region_000261 = TranslationUnitRegion(begin=Location(line=75, column=66), end=Location(line=75, column=73))
+tu_region_000262 = TranslationUnitRegion(begin=Location(line=75, column=51), end=Location(line=75, column=74))
+tu_region_000263 = TranslationUnitRegion(begin=Location(line=75, column=5), end=Location(line=76, column=1))
+tu_region_000264 = TranslationUnitRegion(begin=Location(line=75, column=16), end=Location(line=75, column=22))
+tu_region_000265 = TranslationUnitRegion(begin=Location(line=75, column=75), end=Location(line=75, column=84))
+tu_region_000266 = TranslationUnitRegion(begin=Location(line=75, column=23), end=Location(line=75, column=31))
+tu_region_000267 = TranslationUnitRegion(begin=Location(line=75, column=40), end=Location(line=75, column=51))
+tu_region_000268 = TranslationUnitRegion(begin=Location(line=75, column=6), end=Location(line=75, column=14))
+tu_region_000269 = TranslationUnitRegion(begin=Location(line=76, column=32), end=Location(line=76, column=44))
+tu_region_000270 = TranslationUnitRegion(begin=Location(line=76, column=32), end=Location(line=76, column=40))
+tu_region_000271 = TranslationUnitRegion(begin=Location(line=76, column=41), end=Location(line=76, column=44))
+tu_region_000272 = TranslationUnitRegion(begin=Location(line=76, column=62), end=Location(line=76, column=75))
+tu_region_000273 = TranslationUnitRegion(begin=Location(line=76, column=62), end=Location(line=76, column=65))
+tu_region_000274 = TranslationUnitRegion(begin=Location(line=76, column=66), end=Location(line=76, column=75))
+tu_region_000275 = TranslationUnitRegion(begin=Location(line=76, column=62), end=Location(line=76, column=83))
+tu_region_000276 = TranslationUnitRegion(begin=Location(line=76, column=76), end=Location(line=76, column=83))
+tu_region_000277 = TranslationUnitRegion(begin=Location(line=76, column=61), end=Location(line=76, column=84))
+tu_region_000278 = TranslationUnitRegion(begin=Location(line=76, column=5), end=Location(line=77, column=1))
+tu_region_000279 = TranslationUnitRegion(begin=Location(line=76, column=16), end=Location(line=76, column=22))
+tu_region_000280 = TranslationUnitRegion(begin=Location(line=76, column=85), end=Location(line=76, column=94))
+tu_region_000281 = TranslationUnitRegion(begin=Location(line=76, column=23), end=Location(line=76, column=31))
+tu_region_000282 = TranslationUnitRegion(begin=Location(line=76, column=45), end=Location(line=76, column=61))
+tu_region_000283 = TranslationUnitRegion(begin=Location(line=76, column=6), end=Location(line=76, column=14))
+tu_region_000284 = TranslationUnitRegion(begin=Location(line=77, column=32), end=Location(line=77, column=44))
+tu_region_000285 = TranslationUnitRegion(begin=Location(line=77, column=32), end=Location(line=77, column=40))
+tu_region_000286 = TranslationUnitRegion(begin=Location(line=77, column=41), end=Location(line=77, column=44))
+tu_region_000287 = TranslationUnitRegion(begin=Location(line=77, column=57), end=Location(line=77, column=70))
+tu_region_000288 = TranslationUnitRegion(begin=Location(line=77, column=57), end=Location(line=77, column=60))
+tu_region_000289 = TranslationUnitRegion(begin=Location(line=77, column=61), end=Location(line=77, column=70))
+tu_region_000290 = TranslationUnitRegion(begin=Location(line=77, column=57), end=Location(line=77, column=78))
+tu_region_000291 = TranslationUnitRegion(begin=Location(line=77, column=71), end=Location(line=77, column=78))
+tu_region_000292 = TranslationUnitRegion(begin=Location(line=77, column=56), end=Location(line=77, column=79))
+tu_region_000293 = TranslationUnitRegion(begin=Location(line=77, column=5), end=Location(line=78, column=1))
+tu_region_000294 = TranslationUnitRegion(begin=Location(line=77, column=16), end=Location(line=77, column=22))
+tu_region_000295 = TranslationUnitRegion(begin=Location(line=77, column=80), end=Location(line=77, column=89))
+tu_region_000296 = TranslationUnitRegion(begin=Location(line=77, column=23), end=Location(line=77, column=31))
+tu_region_000297 = TranslationUnitRegion(begin=Location(line=77, column=45), end=Location(line=77, column=56))
+tu_region_000298 = TranslationUnitRegion(begin=Location(line=77, column=6), end=Location(line=77, column=14))
+tu_region_000299 = TranslationUnitRegion(begin=Location(line=78, column=32), end=Location(line=78, column=44))
+tu_region_000300 = TranslationUnitRegion(begin=Location(line=78, column=32), end=Location(line=78, column=40))
+tu_region_000301 = TranslationUnitRegion(begin=Location(line=78, column=41), end=Location(line=78, column=44))
+tu_region_000302 = TranslationUnitRegion(begin=Location(line=78, column=59), end=Location(line=78, column=72))
+tu_region_000303 = TranslationUnitRegion(begin=Location(line=78, column=59), end=Location(line=78, column=62))
+tu_region_000304 = TranslationUnitRegion(begin=Location(line=78, column=63), end=Location(line=78, column=72))
+tu_region_000305 = TranslationUnitRegion(begin=Location(line=78, column=59), end=Location(line=78, column=83))
+tu_region_000306 = TranslationUnitRegion(begin=Location(line=78, column=73), end=Location(line=78, column=83))
+tu_region_000307 = TranslationUnitRegion(begin=Location(line=78, column=58), end=Location(line=78, column=84))
+tu_region_000308 = TranslationUnitRegion(begin=Location(line=78, column=5), end=Location(line=79, column=1))
+tu_region_000309 = TranslationUnitRegion(begin=Location(line=78, column=16), end=Location(line=78, column=22))
+tu_region_000310 = TranslationUnitRegion(begin=Location(line=78, column=85), end=Location(line=78, column=94))
+tu_region_000311 = TranslationUnitRegion(begin=Location(line=78, column=23), end=Location(line=78, column=31))
+tu_region_000312 = TranslationUnitRegion(begin=Location(line=78, column=45), end=Location(line=78, column=58))
+tu_region_000313 = TranslationUnitRegion(begin=Location(line=78, column=6), end=Location(line=78, column=14))
+tu_region_000314 = TranslationUnitRegion(begin=Location(line=79, column=32), end=Location(line=79, column=44))
+tu_region_000315 = TranslationUnitRegion(begin=Location(line=79, column=32), end=Location(line=79, column=40))
+tu_region_000316 = TranslationUnitRegion(begin=Location(line=79, column=41), end=Location(line=79, column=44))
+tu_region_000317 = TranslationUnitRegion(begin=Location(line=79, column=56), end=Location(line=79, column=69))
+tu_region_000318 = TranslationUnitRegion(begin=Location(line=79, column=56), end=Location(line=79, column=59))
+tu_region_000319 = TranslationUnitRegion(begin=Location(line=79, column=60), end=Location(line=79, column=69))
+tu_region_000320 = TranslationUnitRegion(begin=Location(line=79, column=56), end=Location(line=79, column=78))
+tu_region_000321 = TranslationUnitRegion(begin=Location(line=79, column=70), end=Location(line=79, column=78))
+tu_region_000322 = TranslationUnitRegion(begin=Location(line=79, column=55), end=Location(line=79, column=79))
+tu_region_000323 = TranslationUnitRegion(begin=Location(line=79, column=5), end=Location(line=81, column=1))
+tu_region_000324 = TranslationUnitRegion(begin=Location(line=79, column=16), end=Location(line=79, column=22))
+tu_region_000325 = TranslationUnitRegion(begin=Location(line=79, column=80), end=Location(line=79, column=89))
+tu_region_000326 = TranslationUnitRegion(begin=Location(line=79, column=23), end=Location(line=79, column=31))
+tu_region_000327 = TranslationUnitRegion(begin=Location(line=79, column=45), end=Location(line=79, column=55))
+tu_region_000328 = TranslationUnitRegion(begin=Location(line=79, column=6), end=Location(line=79, column=14))
+tu_region_000329 = TranslationUnitRegion(begin=Location(line=81, column=32), end=Location(line=81, column=44))
+tu_region_000330 = TranslationUnitRegion(begin=Location(line=81, column=32), end=Location(line=81, column=40))
+tu_region_000331 = TranslationUnitRegion(begin=Location(line=81, column=41), end=Location(line=81, column=44))
+tu_region_000332 = TranslationUnitRegion(begin=Location(line=81, column=54), end=Location(line=81, column=67))
+tu_region_000333 = TranslationUnitRegion(begin=Location(line=81, column=54), end=Location(line=81, column=57))
+tu_region_000334 = TranslationUnitRegion(begin=Location(line=81, column=58), end=Location(line=81, column=67))
+tu_region_000335 = TranslationUnitRegion(begin=Location(line=81, column=54), end=Location(line=81, column=73))
+tu_region_000336 = TranslationUnitRegion(begin=Location(line=81, column=68), end=Location(line=81, column=73))
+tu_region_000337 = TranslationUnitRegion(begin=Location(line=81, column=53), end=Location(line=81, column=74))
+tu_region_000338 = TranslationUnitRegion(begin=Location(line=81, column=5), end=Location(line=82, column=1))
+tu_region_000339 = TranslationUnitRegion(begin=Location(line=81, column=16), end=Location(line=81, column=22))
+tu_region_000340 = TranslationUnitRegion(begin=Location(line=81, column=75), end=Location(line=81, column=84))
+tu_region_000341 = TranslationUnitRegion(begin=Location(line=81, column=23), end=Location(line=81, column=31))
+tu_region_000342 = TranslationUnitRegion(begin=Location(line=81, column=45), end=Location(line=81, column=53))
+tu_region_000343 = TranslationUnitRegion(begin=Location(line=81, column=6), end=Location(line=81, column=14))
+tu_region_000344 = TranslationUnitRegion(begin=Location(line=82, column=32), end=Location(line=82, column=44))
+tu_region_000345 = TranslationUnitRegion(begin=Location(line=82, column=32), end=Location(line=82, column=40))
+tu_region_000346 = TranslationUnitRegion(begin=Location(line=82, column=41), end=Location(line=82, column=44))
+tu_region_000347 = TranslationUnitRegion(begin=Location(line=82, column=59), end=Location(line=82, column=72))
+tu_region_000348 = TranslationUnitRegion(begin=Location(line=82, column=59), end=Location(line=82, column=62))
+tu_region_000349 = TranslationUnitRegion(begin=Location(line=82, column=63), end=Location(line=82, column=72))
+tu_region_000350 = TranslationUnitRegion(begin=Location(line=82, column=59), end=Location(line=82, column=78))
+tu_region_000351 = TranslationUnitRegion(begin=Location(line=82, column=73), end=Location(line=82, column=78))
+tu_region_000352 = TranslationUnitRegion(begin=Location(line=82, column=58), end=Location(line=82, column=79))
+tu_region_000353 = TranslationUnitRegion(begin=Location(line=82, column=5), end=Location(line=84, column=1))
+tu_region_000354 = TranslationUnitRegion(begin=Location(line=82, column=16), end=Location(line=82, column=22))
+tu_region_000355 = TranslationUnitRegion(begin=Location(line=82, column=80), end=Location(line=82, column=89))
+tu_region_000356 = TranslationUnitRegion(begin=Location(line=82, column=23), end=Location(line=82, column=31))
+tu_region_000357 = TranslationUnitRegion(begin=Location(line=82, column=45), end=Location(line=82, column=58))
+tu_region_000358 = TranslationUnitRegion(begin=Location(line=82, column=6), end=Location(line=82, column=14))
+tu_region_000359 = TranslationUnitRegion(begin=Location(line=84, column=32), end=Location(line=84, column=44))
+tu_region_000360 = TranslationUnitRegion(begin=Location(line=84, column=32), end=Location(line=84, column=40))
+tu_region_000361 = TranslationUnitRegion(begin=Location(line=84, column=41), end=Location(line=84, column=44))
+tu_region_000362 = TranslationUnitRegion(begin=Location(line=84, column=63), end=Location(line=84, column=76))
+tu_region_000363 = TranslationUnitRegion(begin=Location(line=84, column=63), end=Location(line=84, column=66))
+tu_region_000364 = TranslationUnitRegion(begin=Location(line=84, column=67), end=Location(line=84, column=76))
+tu_region_000365 = TranslationUnitRegion(begin=Location(line=84, column=63), end=Location(line=84, column=83))
+tu_region_000366 = TranslationUnitRegion(begin=Location(line=84, column=77), end=Location(line=84, column=83))
+tu_region_000367 = TranslationUnitRegion(begin=Location(line=84, column=62), end=Location(line=84, column=84))
+tu_region_000368 = TranslationUnitRegion(begin=Location(line=84, column=5), end=Location(line=85, column=1))
+tu_region_000369 = TranslationUnitRegion(begin=Location(line=84, column=16), end=Location(line=84, column=22))
+tu_region_000370 = TranslationUnitRegion(begin=Location(line=84, column=85), end=Location(line=84, column=94))
+tu_region_000371 = TranslationUnitRegion(begin=Location(line=84, column=23), end=Location(line=84, column=31))
+tu_region_000372 = TranslationUnitRegion(begin=Location(line=84, column=45), end=Location(line=84, column=62))
+tu_region_000373 = TranslationUnitRegion(begin=Location(line=84, column=6), end=Location(line=84, column=14))
+tu_region_000374 = TranslationUnitRegion(begin=Location(line=85, column=32), end=Location(line=85, column=44))
+tu_region_000375 = TranslationUnitRegion(begin=Location(line=85, column=32), end=Location(line=85, column=40))
+tu_region_000376 = TranslationUnitRegion(begin=Location(line=85, column=41), end=Location(line=85, column=44))
+tu_region_000377 = TranslationUnitRegion(begin=Location(line=85, column=64), end=Location(line=85, column=77))
+tu_region_000378 = TranslationUnitRegion(begin=Location(line=85, column=64), end=Location(line=85, column=67))
+tu_region_000379 = TranslationUnitRegion(begin=Location(line=85, column=68), end=Location(line=85, column=77))
+tu_region_000380 = TranslationUnitRegion(begin=Location(line=85, column=64), end=Location(line=85, column=84))
+tu_region_000381 = TranslationUnitRegion(begin=Location(line=85, column=78), end=Location(line=85, column=84))
+tu_region_000382 = TranslationUnitRegion(begin=Location(line=85, column=63), end=Location(line=85, column=85))
+tu_region_000383 = TranslationUnitRegion(begin=Location(line=85, column=5), end=Location(line=87, column=1))
+tu_region_000384 = TranslationUnitRegion(begin=Location(line=85, column=16), end=Location(line=85, column=22))
+tu_region_000385 = TranslationUnitRegion(begin=Location(line=85, column=86), end=Location(line=85, column=95))
+tu_region_000386 = TranslationUnitRegion(begin=Location(line=85, column=23), end=Location(line=85, column=31))
+tu_region_000387 = TranslationUnitRegion(begin=Location(line=85, column=45), end=Location(line=85, column=63))
+tu_region_000388 = TranslationUnitRegion(begin=Location(line=85, column=6), end=Location(line=85, column=14))
+tu_region_000389 = TranslationUnitRegion(begin=Location(line=87, column=32), end=Location(line=87, column=44))
+tu_region_000390 = TranslationUnitRegion(begin=Location(line=87, column=32), end=Location(line=87, column=40))
+tu_region_000391 = TranslationUnitRegion(begin=Location(line=87, column=41), end=Location(line=87, column=44))
+tu_region_000392 = TranslationUnitRegion(begin=Location(line=87, column=57), end=Location(line=87, column=70))
+tu_region_000393 = TranslationUnitRegion(begin=Location(line=87, column=57), end=Location(line=87, column=60))
+tu_region_000394 = TranslationUnitRegion(begin=Location(line=87, column=61), end=Location(line=87, column=70))
+tu_region_000395 = TranslationUnitRegion(begin=Location(line=87, column=57), end=Location(line=87, column=76))
+tu_region_000396 = TranslationUnitRegion(begin=Location(line=87, column=71), end=Location(line=87, column=76))
+tu_region_000397 = TranslationUnitRegion(begin=Location(line=87, column=56), end=Location(line=87, column=77))
+tu_region_000398 = TranslationUnitRegion(begin=Location(line=87, column=5), end=Location(line=88, column=1))
+tu_region_000399 = TranslationUnitRegion(begin=Location(line=87, column=16), end=Location(line=87, column=22))
+tu_region_000400 = TranslationUnitRegion(begin=Location(line=87, column=78), end=Location(line=87, column=87))
+tu_region_000401 = TranslationUnitRegion(begin=Location(line=87, column=23), end=Location(line=87, column=31))
+tu_region_000402 = TranslationUnitRegion(begin=Location(line=87, column=45), end=Location(line=87, column=56))
+tu_region_000403 = TranslationUnitRegion(begin=Location(line=87, column=6), end=Location(line=87, column=14))
+tu_region_000404 = TranslationUnitRegion(begin=Location(line=88, column=32), end=Location(line=88, column=44))
+tu_region_000405 = TranslationUnitRegion(begin=Location(line=88, column=32), end=Location(line=88, column=40))
+tu_region_000406 = TranslationUnitRegion(begin=Location(line=88, column=41), end=Location(line=88, column=44))
+tu_region_000407 = TranslationUnitRegion(begin=Location(line=88, column=57), end=Location(line=88, column=70))
+tu_region_000408 = TranslationUnitRegion(begin=Location(line=88, column=57), end=Location(line=88, column=60))
+tu_region_000409 = TranslationUnitRegion(begin=Location(line=88, column=61), end=Location(line=88, column=70))
+tu_region_000410 = TranslationUnitRegion(begin=Location(line=88, column=57), end=Location(line=88, column=76))
+tu_region_000411 = TranslationUnitRegion(begin=Location(line=88, column=71), end=Location(line=88, column=76))
+tu_region_000412 = TranslationUnitRegion(begin=Location(line=88, column=56), end=Location(line=88, column=77))
+tu_region_000413 = TranslationUnitRegion(begin=Location(line=88, column=5), end=Location(line=89, column=1))
+tu_region_000414 = TranslationUnitRegion(begin=Location(line=88, column=16), end=Location(line=88, column=22))
+tu_region_000415 = TranslationUnitRegion(begin=Location(line=88, column=78), end=Location(line=88, column=87))
+tu_region_000416 = TranslationUnitRegion(begin=Location(line=88, column=23), end=Location(line=88, column=31))
+tu_region_000417 = TranslationUnitRegion(begin=Location(line=88, column=45), end=Location(line=88, column=56))
+tu_region_000418 = TranslationUnitRegion(begin=Location(line=88, column=6), end=Location(line=88, column=14))
+tu_region_000419 = TranslationUnitRegion(begin=Location(line=89, column=32), end=Location(line=89, column=44))
+tu_region_000420 = TranslationUnitRegion(begin=Location(line=89, column=32), end=Location(line=89, column=40))
+tu_region_000421 = TranslationUnitRegion(begin=Location(line=89, column=41), end=Location(line=89, column=44))
+tu_region_000422 = TranslationUnitRegion(begin=Location(line=89, column=56), end=Location(line=89, column=69))
+tu_region_000423 = TranslationUnitRegion(begin=Location(line=89, column=56), end=Location(line=89, column=59))
+tu_region_000424 = TranslationUnitRegion(begin=Location(line=89, column=60), end=Location(line=89, column=69))
+tu_region_000425 = TranslationUnitRegion(begin=Location(line=89, column=56), end=Location(line=89, column=75))
+tu_region_000426 = TranslationUnitRegion(begin=Location(line=89, column=70), end=Location(line=89, column=75))
+tu_region_000427 = TranslationUnitRegion(begin=Location(line=89, column=55), end=Location(line=89, column=76))
+tu_region_000428 = TranslationUnitRegion(begin=Location(line=89, column=5), end=Location(line=91, column=1))
+tu_region_000429 = TranslationUnitRegion(begin=Location(line=89, column=16), end=Location(line=89, column=22))
+tu_region_000430 = TranslationUnitRegion(begin=Location(line=89, column=77), end=Location(line=89, column=86))
+tu_region_000431 = TranslationUnitRegion(begin=Location(line=89, column=23), end=Location(line=89, column=31))
+tu_region_000432 = TranslationUnitRegion(begin=Location(line=89, column=45), end=Location(line=89, column=55))
+tu_region_000433 = TranslationUnitRegion(begin=Location(line=89, column=6), end=Location(line=89, column=14))
+tu_region_000434 = TranslationUnitRegion(begin=Location(line=91, column=5), end=Location(line=93, column=1))
+tu_region_000435 = TranslationUnitRegion(begin=Location(line=91, column=16), end=Location(line=91, column=22))
+tu_region_000436 = TranslationUnitRegion(begin=Location(line=91, column=59), end=Location(line=91, column=62))
+tu_region_000437 = TranslationUnitRegion(begin=Location(line=91, column=23), end=Location(line=91, column=31))
+tu_region_000438 = TranslationUnitRegion(begin=Location(line=91, column=37), end=Location(line=91, column=56))
+tu_region_000439 = TranslationUnitRegion(begin=Location(line=91, column=56), end=Location(line=91, column=58))
+tu_region_000440 = TranslationUnitRegion(begin=Location(line=91, column=6), end=Location(line=91, column=14))
+tu_region_000441 = TranslationUnitRegion(begin=Location(line=93, column=61), end=Location(line=93, column=74))
+tu_region_000442 = TranslationUnitRegion(begin=Location(line=93, column=61), end=Location(line=93, column=64))
+tu_region_000443 = TranslationUnitRegion(begin=Location(line=93, column=65), end=Location(line=93, column=74))
+tu_region_000444 = TranslationUnitRegion(begin=Location(line=93, column=61), end=Location(line=93, column=82))
+tu_region_000445 = TranslationUnitRegion(begin=Location(line=93, column=75), end=Location(line=93, column=82))
+tu_region_000446 = TranslationUnitRegion(begin=Location(line=93, column=60), end=Location(line=93, column=83))
+tu_region_000447 = TranslationUnitRegion(begin=Location(line=93, column=5), end=Location(line=94, column=1))
+tu_region_000448 = TranslationUnitRegion(begin=Location(line=93, column=16), end=Location(line=93, column=22))
+tu_region_000449 = TranslationUnitRegion(begin=Location(line=93, column=84), end=Location(line=93, column=87))
+tu_region_000450 = TranslationUnitRegion(begin=Location(line=93, column=23), end=Location(line=93, column=31))
+tu_region_000451 = TranslationUnitRegion(begin=Location(line=93, column=37), end=Location(line=93, column=60))
+tu_region_000452 = TranslationUnitRegion(begin=Location(line=93, column=6), end=Location(line=93, column=14))
+tu_region_000453 = TranslationUnitRegion(begin=Location(line=94, column=56), end=Location(line=94, column=69))
+tu_region_000454 = TranslationUnitRegion(begin=Location(line=94, column=56), end=Location(line=94, column=59))
+tu_region_000455 = TranslationUnitRegion(begin=Location(line=94, column=60), end=Location(line=94, column=69))
+tu_region_000456 = TranslationUnitRegion(begin=Location(line=94, column=56), end=Location(line=94, column=77))
+tu_region_000457 = TranslationUnitRegion(begin=Location(line=94, column=70), end=Location(line=94, column=77))
+tu_region_000458 = TranslationUnitRegion(begin=Location(line=94, column=55), end=Location(line=94, column=78))
+tu_region_000459 = TranslationUnitRegion(begin=Location(line=94, column=5), end=Location(line=95, column=1))
+tu_region_000460 = TranslationUnitRegion(begin=Location(line=94, column=16), end=Location(line=94, column=22))
+tu_region_000461 = TranslationUnitRegion(begin=Location(line=94, column=79), end=Location(line=94, column=82))
+tu_region_000462 = TranslationUnitRegion(begin=Location(line=94, column=23), end=Location(line=94, column=31))
+tu_region_000463 = TranslationUnitRegion(begin=Location(line=94, column=37), end=Location(line=94, column=55))
+tu_region_000464 = TranslationUnitRegion(begin=Location(line=94, column=6), end=Location(line=94, column=14))
+tu_region_000465 = TranslationUnitRegion(begin=Location(line=95, column=58), end=Location(line=95, column=71))
+tu_region_000466 = TranslationUnitRegion(begin=Location(line=95, column=58), end=Location(line=95, column=61))
+tu_region_000467 = TranslationUnitRegion(begin=Location(line=95, column=62), end=Location(line=95, column=71))
+tu_region_000468 = TranslationUnitRegion(begin=Location(line=95, column=58), end=Location(line=95, column=82))
+tu_region_000469 = TranslationUnitRegion(begin=Location(line=95, column=72), end=Location(line=95, column=82))
+tu_region_000470 = TranslationUnitRegion(begin=Location(line=95, column=57), end=Location(line=95, column=83))
+tu_region_000471 = TranslationUnitRegion(begin=Location(line=95, column=5), end=Location(line=96, column=1))
+tu_region_000472 = TranslationUnitRegion(begin=Location(line=95, column=16), end=Location(line=95, column=22))
+tu_region_000473 = TranslationUnitRegion(begin=Location(line=95, column=84), end=Location(line=95, column=87))
+tu_region_000474 = TranslationUnitRegion(begin=Location(line=95, column=23), end=Location(line=95, column=31))
+tu_region_000475 = TranslationUnitRegion(begin=Location(line=95, column=37), end=Location(line=95, column=57))
+tu_region_000476 = TranslationUnitRegion(begin=Location(line=95, column=6), end=Location(line=95, column=14))
+tu_region_000477 = TranslationUnitRegion(begin=Location(line=96, column=55), end=Location(line=96, column=68))
+tu_region_000478 = TranslationUnitRegion(begin=Location(line=96, column=55), end=Location(line=96, column=58))
+tu_region_000479 = TranslationUnitRegion(begin=Location(line=96, column=59), end=Location(line=96, column=68))
+tu_region_000480 = TranslationUnitRegion(begin=Location(line=96, column=55), end=Location(line=96, column=77))
+tu_region_000481 = TranslationUnitRegion(begin=Location(line=96, column=69), end=Location(line=96, column=77))
+tu_region_000482 = TranslationUnitRegion(begin=Location(line=96, column=54), end=Location(line=96, column=78))
+tu_region_000483 = TranslationUnitRegion(begin=Location(line=96, column=5), end=Location(line=98, column=1))
+tu_region_000484 = TranslationUnitRegion(begin=Location(line=96, column=16), end=Location(line=96, column=22))
+tu_region_000485 = TranslationUnitRegion(begin=Location(line=96, column=79), end=Location(line=96, column=82))
+tu_region_000486 = TranslationUnitRegion(begin=Location(line=96, column=23), end=Location(line=96, column=31))
+tu_region_000487 = TranslationUnitRegion(begin=Location(line=96, column=37), end=Location(line=96, column=54))
+tu_region_000488 = TranslationUnitRegion(begin=Location(line=96, column=6), end=Location(line=96, column=14))
+tu_region_000489 = TranslationUnitRegion(begin=Location(line=98, column=53), end=Location(line=98, column=66))
+tu_region_000490 = TranslationUnitRegion(begin=Location(line=98, column=53), end=Location(line=98, column=56))
+tu_region_000491 = TranslationUnitRegion(begin=Location(line=98, column=57), end=Location(line=98, column=66))
+tu_region_000492 = TranslationUnitRegion(begin=Location(line=98, column=53), end=Location(line=98, column=72))
+tu_region_000493 = TranslationUnitRegion(begin=Location(line=98, column=67), end=Location(line=98, column=72))
+tu_region_000494 = TranslationUnitRegion(begin=Location(line=98, column=52), end=Location(line=98, column=73))
+tu_region_000495 = TranslationUnitRegion(begin=Location(line=98, column=5), end=Location(line=99, column=1))
+tu_region_000496 = TranslationUnitRegion(begin=Location(line=98, column=16), end=Location(line=98, column=22))
+tu_region_000497 = TranslationUnitRegion(begin=Location(line=98, column=74), end=Location(line=98, column=77))
+tu_region_000498 = TranslationUnitRegion(begin=Location(line=98, column=23), end=Location(line=98, column=31))
+tu_region_000499 = TranslationUnitRegion(begin=Location(line=98, column=37), end=Location(line=98, column=52))
+tu_region_000500 = TranslationUnitRegion(begin=Location(line=98, column=6), end=Location(line=98, column=14))
+tu_region_000501 = TranslationUnitRegion(begin=Location(line=99, column=58), end=Location(line=99, column=71))
+tu_region_000502 = TranslationUnitRegion(begin=Location(line=99, column=58), end=Location(line=99, column=61))
+tu_region_000503 = TranslationUnitRegion(begin=Location(line=99, column=62), end=Location(line=99, column=71))
+tu_region_000504 = TranslationUnitRegion(begin=Location(line=99, column=58), end=Location(line=99, column=77))
+tu_region_000505 = TranslationUnitRegion(begin=Location(line=99, column=72), end=Location(line=99, column=77))
+tu_region_000506 = TranslationUnitRegion(begin=Location(line=99, column=57), end=Location(line=99, column=78))
+tu_region_000507 = TranslationUnitRegion(begin=Location(line=99, column=5), end=Location(line=101, column=1))
+tu_region_000508 = TranslationUnitRegion(begin=Location(line=99, column=16), end=Location(line=99, column=22))
+tu_region_000509 = TranslationUnitRegion(begin=Location(line=99, column=79), end=Location(line=99, column=82))
+tu_region_000510 = TranslationUnitRegion(begin=Location(line=99, column=23), end=Location(line=99, column=31))
+tu_region_000511 = TranslationUnitRegion(begin=Location(line=99, column=37), end=Location(line=99, column=57))
+tu_region_000512 = TranslationUnitRegion(begin=Location(line=99, column=6), end=Location(line=99, column=14))
+tu_region_000513 = TranslationUnitRegion(begin=Location(line=101, column=62), end=Location(line=101, column=75))
+tu_region_000514 = TranslationUnitRegion(begin=Location(line=101, column=62), end=Location(line=101, column=65))
+tu_region_000515 = TranslationUnitRegion(begin=Location(line=101, column=66), end=Location(line=101, column=75))
+tu_region_000516 = TranslationUnitRegion(begin=Location(line=101, column=62), end=Location(line=101, column=82))
+tu_region_000517 = TranslationUnitRegion(begin=Location(line=101, column=76), end=Location(line=101, column=82))
+tu_region_000518 = TranslationUnitRegion(begin=Location(line=101, column=61), end=Location(line=101, column=83))
+tu_region_000519 = TranslationUnitRegion(begin=Location(line=101, column=5), end=Location(line=102, column=1))
+tu_region_000520 = TranslationUnitRegion(begin=Location(line=101, column=16), end=Location(line=101, column=22))
+tu_region_000521 = TranslationUnitRegion(begin=Location(line=101, column=84), end=Location(line=101, column=87))
+tu_region_000522 = TranslationUnitRegion(begin=Location(line=101, column=23), end=Location(line=101, column=31))
+tu_region_000523 = TranslationUnitRegion(begin=Location(line=101, column=37), end=Location(line=101, column=61))
+tu_region_000524 = TranslationUnitRegion(begin=Location(line=101, column=6), end=Location(line=101, column=14))
+tu_region_000525 = TranslationUnitRegion(begin=Location(line=102, column=63), end=Location(line=102, column=76))
+tu_region_000526 = TranslationUnitRegion(begin=Location(line=102, column=63), end=Location(line=102, column=66))
+tu_region_000527 = TranslationUnitRegion(begin=Location(line=102, column=67), end=Location(line=102, column=76))
+tu_region_000528 = TranslationUnitRegion(begin=Location(line=102, column=63), end=Location(line=102, column=83))
+tu_region_000529 = TranslationUnitRegion(begin=Location(line=102, column=77), end=Location(line=102, column=83))
+tu_region_000530 = TranslationUnitRegion(begin=Location(line=102, column=62), end=Location(line=102, column=84))
+tu_region_000531 = TranslationUnitRegion(begin=Location(line=102, column=5), end=Location(line=104, column=1))
+tu_region_000532 = TranslationUnitRegion(begin=Location(line=102, column=16), end=Location(line=102, column=22))
+tu_region_000533 = TranslationUnitRegion(begin=Location(line=102, column=85), end=Location(line=102, column=88))
+tu_region_000534 = TranslationUnitRegion(begin=Location(line=102, column=23), end=Location(line=102, column=31))
+tu_region_000535 = TranslationUnitRegion(begin=Location(line=102, column=37), end=Location(line=102, column=62))
+tu_region_000536 = TranslationUnitRegion(begin=Location(line=102, column=6), end=Location(line=102, column=14))
+tu_region_000537 = TranslationUnitRegion(begin=Location(line=104, column=56), end=Location(line=104, column=69))
+tu_region_000538 = TranslationUnitRegion(begin=Location(line=104, column=56), end=Location(line=104, column=59))
+tu_region_000539 = TranslationUnitRegion(begin=Location(line=104, column=60), end=Location(line=104, column=69))
+tu_region_000540 = TranslationUnitRegion(begin=Location(line=104, column=56), end=Location(line=104, column=75))
+tu_region_000541 = TranslationUnitRegion(begin=Location(line=104, column=70), end=Location(line=104, column=75))
+tu_region_000542 = TranslationUnitRegion(begin=Location(line=104, column=55), end=Location(line=104, column=76))
+tu_region_000543 = TranslationUnitRegion(begin=Location(line=104, column=5), end=Location(line=105, column=1))
+tu_region_000544 = TranslationUnitRegion(begin=Location(line=104, column=16), end=Location(line=104, column=22))
+tu_region_000545 = TranslationUnitRegion(begin=Location(line=104, column=77), end=Location(line=104, column=80))
+tu_region_000546 = TranslationUnitRegion(begin=Location(line=104, column=23), end=Location(line=104, column=31))
+tu_region_000547 = TranslationUnitRegion(begin=Location(line=104, column=37), end=Location(line=104, column=55))
+tu_region_000548 = TranslationUnitRegion(begin=Location(line=104, column=6), end=Location(line=104, column=14))
+tu_region_000549 = TranslationUnitRegion(begin=Location(line=105, column=56), end=Location(line=105, column=69))
+tu_region_000550 = TranslationUnitRegion(begin=Location(line=105, column=56), end=Location(line=105, column=59))
+tu_region_000551 = TranslationUnitRegion(begin=Location(line=105, column=60), end=Location(line=105, column=69))
+tu_region_000552 = TranslationUnitRegion(begin=Location(line=105, column=56), end=Location(line=105, column=75))
+tu_region_000553 = TranslationUnitRegion(begin=Location(line=105, column=70), end=Location(line=105, column=75))
+tu_region_000554 = TranslationUnitRegion(begin=Location(line=105, column=55), end=Location(line=105, column=76))
+tu_region_000555 = TranslationUnitRegion(begin=Location(line=105, column=5), end=Location(line=106, column=1))
+tu_region_000556 = TranslationUnitRegion(begin=Location(line=105, column=16), end=Location(line=105, column=22))
+tu_region_000557 = TranslationUnitRegion(begin=Location(line=105, column=77), end=Location(line=105, column=80))
+tu_region_000558 = TranslationUnitRegion(begin=Location(line=105, column=23), end=Location(line=105, column=31))
+tu_region_000559 = TranslationUnitRegion(begin=Location(line=105, column=37), end=Location(line=105, column=55))
+tu_region_000560 = TranslationUnitRegion(begin=Location(line=105, column=6), end=Location(line=105, column=14))
+tu_region_000561 = TranslationUnitRegion(begin=Location(line=106, column=55), end=Location(line=106, column=68))
+tu_region_000562 = TranslationUnitRegion(begin=Location(line=106, column=55), end=Location(line=106, column=58))
+tu_region_000563 = TranslationUnitRegion(begin=Location(line=106, column=59), end=Location(line=106, column=68))
+tu_region_000564 = TranslationUnitRegion(begin=Location(line=106, column=55), end=Location(line=106, column=74))
+tu_region_000565 = TranslationUnitRegion(begin=Location(line=106, column=69), end=Location(line=106, column=74))
+tu_region_000566 = TranslationUnitRegion(begin=Location(line=106, column=54), end=Location(line=106, column=75))
+tu_region_000567 = TranslationUnitRegion(begin=Location(line=106, column=5), end=Location(line=109, column=1))
+tu_region_000568 = TranslationUnitRegion(begin=Location(line=106, column=16), end=Location(line=106, column=22))
+tu_region_000569 = TranslationUnitRegion(begin=Location(line=106, column=76), end=Location(line=106, column=79))
+tu_region_000570 = TranslationUnitRegion(begin=Location(line=106, column=23), end=Location(line=106, column=31))
+tu_region_000571 = TranslationUnitRegion(begin=Location(line=106, column=37), end=Location(line=106, column=54))
+tu_region_000572 = TranslationUnitRegion(begin=Location(line=106, column=6), end=Location(line=106, column=14))
+tu_region_000573 = TranslationUnitRegion(begin=Location(line=20, column=1), end=Location(line=110, column=1))
+tu_region_000574 = TranslationUnitRegion(begin=Location(line=20, column=1), end=Location(line=20, column=7))
+tu_region_000575 = TranslationUnitRegion(begin=Location(line=20, column=8), end=Location(line=20, column=15))
+tu_region_000576 = TranslationUnitRegion(begin=Location(line=20, column=22), end=Location(line=20, column=30))
+tu_region_000577 = TranslationUnitRegion(begin=Location(line=31, column=1), end=Location(line=110, column=1))
+tu_region_000578 = TranslationUnitRegion(begin=Location(line=113, column=66), end=Location(line=113, column=67))
+tu_region_000579 = TranslationUnitRegion(begin=Location(line=113, column=82), end=Location(line=113, column=87))
+tu_region_000580 = TranslationUnitRegion(begin=Location(line=113, column=69), end=Location(line=113, column=87))
+tu_region_000581 = TranslationUnitRegion(begin=Location(line=113, column=69), end=Location(line=113, column=79))
+tu_region_000582 = TranslationUnitRegion(begin=Location(line=113, column=103), end=Location(line=113, column=109))
+tu_region_000583 = TranslationUnitRegion(begin=Location(line=113, column=89), end=Location(line=113, column=109))
+tu_region_000584 = TranslationUnitRegion(begin=Location(line=113, column=89), end=Location(line=113, column=100))
+tu_region_000585 = TranslationUnitRegion(begin=Location(line=113, column=56), end=Location(line=113, column=119))
+tu_region_000586 = TranslationUnitRegion(begin=Location(line=113, column=134), end=Location(line=113, column=144))
+tu_region_000587 = TranslationUnitRegion(begin=Location(line=113, column=121), end=Location(line=113, column=144))
+tu_region_000588 = TranslationUnitRegion(begin=Location(line=113, column=121), end=Location(line=113, column=131))
+tu_region_000589 = TranslationUnitRegion(begin=Location(line=113, column=159), end=Location(line=113, column=169))
+tu_region_000590 = TranslationUnitRegion(begin=Location(line=113, column=146), end=Location(line=113, column=169))
+tu_region_000591 = TranslationUnitRegion(begin=Location(line=113, column=146), end=Location(line=113, column=156))
+tu_region_000592 = TranslationUnitRegion(begin=Location(line=113, column=120), end=Location(line=113, column=170))
+tu_region_000593 = TranslationUnitRegion(begin=Location(line=113, column=47), end=Location(line=113, column=170))
+tu_region_000594 = TranslationUnitRegion(begin=Location(line=113, column=47), end=Location(line=113, column=55))
+tu_region_000595 = TranslationUnitRegion(begin=Location(line=111, column=6), end=Location(line=111, column=10))
+tu_region_000596 = TranslationUnitRegion(begin=Location(line=111, column=13), end=Location(line=111, column=18))
+tu_region_000597 = TranslationUnitRegion(begin=Location(line=111, column=5), end=Location(line=111, column=19))
+tu_region_000598 = TranslationUnitRegion(begin=Location(line=111, column=33), end=Location(line=111, column=38))
+tu_region_000599 = TranslationUnitRegion(begin=Location(line=111, column=5), end=Location(line=111, column=38))
+tu_region_000600 = TranslationUnitRegion(begin=Location(line=111, column=20), end=Location(line=111, column=30))
+tu_region_000601 = TranslationUnitRegion(begin=Location(line=112, column=6), end=Location(line=112, column=10))
+tu_region_000602 = TranslationUnitRegion(begin=Location(line=112, column=13), end=Location(line=112, column=18))
+tu_region_000603 = TranslationUnitRegion(begin=Location(line=112, column=5), end=Location(line=112, column=19))
+tu_region_000604 = TranslationUnitRegion(begin=Location(line=112, column=33), end=Location(line=112, column=38))
+tu_region_000605 = TranslationUnitRegion(begin=Location(line=112, column=5), end=Location(line=112, column=38))
+tu_region_000606 = TranslationUnitRegion(begin=Location(line=112, column=20), end=Location(line=112, column=30))
+tu_region_000607 = TranslationUnitRegion(begin=Location(line=110, column=13), end=Location(line=113, column=2))
+tu_region_000608 = TranslationUnitRegion(begin=Location(line=111, column=5), end=Location(line=112, column=39))
+tu_region_000609 = TranslationUnitRegion(begin=Location(line=110, column=1), end=Location(line=115, column=1))
+tu_region_000610 = TranslationUnitRegion(begin=Location(line=110, column=1), end=Location(line=110, column=7))
+tu_region_000611 = TranslationUnitRegion(begin=Location(line=110, column=8), end=Location(line=110, column=12))
+tu_region_000612 = TranslationUnitRegion(begin=Location(line=118, column=66), end=Location(line=118, column=67))
+tu_region_000613 = TranslationUnitRegion(begin=Location(line=118, column=82), end=Location(line=118, column=87))
+tu_region_000614 = TranslationUnitRegion(begin=Location(line=118, column=69), end=Location(line=118, column=87))
+tu_region_000615 = TranslationUnitRegion(begin=Location(line=118, column=69), end=Location(line=118, column=79))
+tu_region_000616 = TranslationUnitRegion(begin=Location(line=118, column=103), end=Location(line=118, column=108))
+tu_region_000617 = TranslationUnitRegion(begin=Location(line=118, column=89), end=Location(line=118, column=108))
+tu_region_000618 = TranslationUnitRegion(begin=Location(line=118, column=89), end=Location(line=118, column=100))
+tu_region_000619 = TranslationUnitRegion(begin=Location(line=118, column=56), end=Location(line=118, column=118))
+tu_region_000620 = TranslationUnitRegion(begin=Location(line=118, column=133), end=Location(line=118, column=143))
+tu_region_000621 = TranslationUnitRegion(begin=Location(line=118, column=120), end=Location(line=118, column=143))
+tu_region_000622 = TranslationUnitRegion(begin=Location(line=118, column=120), end=Location(line=118, column=130))
+tu_region_000623 = TranslationUnitRegion(begin=Location(line=118, column=158), end=Location(line=118, column=168))
+tu_region_000624 = TranslationUnitRegion(begin=Location(line=118, column=145), end=Location(line=118, column=168))
+tu_region_000625 = TranslationUnitRegion(begin=Location(line=118, column=145), end=Location(line=118, column=155))
+tu_region_000626 = TranslationUnitRegion(begin=Location(line=118, column=119), end=Location(line=118, column=169))
+tu_region_000627 = TranslationUnitRegion(begin=Location(line=118, column=47), end=Location(line=118, column=169))
+tu_region_000628 = TranslationUnitRegion(begin=Location(line=118, column=47), end=Location(line=118, column=55))
+tu_region_000629 = TranslationUnitRegion(begin=Location(line=116, column=6), end=Location(line=116, column=10))
+tu_region_000630 = TranslationUnitRegion(begin=Location(line=116, column=13), end=Location(line=116, column=18))
+tu_region_000631 = TranslationUnitRegion(begin=Location(line=116, column=5), end=Location(line=116, column=19))
+tu_region_000632 = TranslationUnitRegion(begin=Location(line=116, column=33), end=Location(line=116, column=38))
+tu_region_000633 = TranslationUnitRegion(begin=Location(line=116, column=5), end=Location(line=116, column=38))
+tu_region_000634 = TranslationUnitRegion(begin=Location(line=116, column=20), end=Location(line=116, column=30))
+tu_region_000635 = TranslationUnitRegion(begin=Location(line=117, column=6), end=Location(line=117, column=10))
+tu_region_000636 = TranslationUnitRegion(begin=Location(line=117, column=13), end=Location(line=117, column=18))
+tu_region_000637 = TranslationUnitRegion(begin=Location(line=117, column=5), end=Location(line=117, column=19))
+tu_region_000638 = TranslationUnitRegion(begin=Location(line=117, column=33), end=Location(line=117, column=38))
+tu_region_000639 = TranslationUnitRegion(begin=Location(line=117, column=5), end=Location(line=117, column=38))
+tu_region_000640 = TranslationUnitRegion(begin=Location(line=117, column=20), end=Location(line=117, column=30))
+tu_region_000641 = TranslationUnitRegion(begin=Location(line=115, column=20), end=Location(line=118, column=2))
+tu_region_000642 = TranslationUnitRegion(begin=Location(line=116, column=5), end=Location(line=117, column=39))
+tu_region_000643 = TranslationUnitRegion(begin=Location(line=115, column=1), end=Location(line=120, column=1))
+tu_region_000644 = TranslationUnitRegion(begin=Location(line=115, column=1), end=Location(line=115, column=7))
+tu_region_000645 = TranslationUnitRegion(begin=Location(line=115, column=8), end=Location(line=115, column=19))
+tu_region_000646 = TranslationUnitRegion(begin=Location(line=123, column=66), end=Location(line=123, column=67))
+tu_region_000647 = TranslationUnitRegion(begin=Location(line=123, column=82), end=Location(line=123, column=88))
+tu_region_000648 = TranslationUnitRegion(begin=Location(line=123, column=69), end=Location(line=123, column=88))
+tu_region_000649 = TranslationUnitRegion(begin=Location(line=123, column=69), end=Location(line=123, column=79))
+tu_region_000650 = TranslationUnitRegion(begin=Location(line=123, column=104), end=Location(line=123, column=110))
+tu_region_000651 = TranslationUnitRegion(begin=Location(line=123, column=90), end=Location(line=123, column=110))
+tu_region_000652 = TranslationUnitRegion(begin=Location(line=123, column=90), end=Location(line=123, column=101))
+tu_region_000653 = TranslationUnitRegion(begin=Location(line=123, column=56), end=Location(line=123, column=120))
+tu_region_000654 = TranslationUnitRegion(begin=Location(line=123, column=135), end=Location(line=123, column=145))
+tu_region_000655 = TranslationUnitRegion(begin=Location(line=123, column=122), end=Location(line=123, column=145))
+tu_region_000656 = TranslationUnitRegion(begin=Location(line=123, column=122), end=Location(line=123, column=132))
+tu_region_000657 = TranslationUnitRegion(begin=Location(line=123, column=160), end=Location(line=123, column=170))
+tu_region_000658 = TranslationUnitRegion(begin=Location(line=123, column=147), end=Location(line=123, column=170))
+tu_region_000659 = TranslationUnitRegion(begin=Location(line=123, column=147), end=Location(line=123, column=157))
+tu_region_000660 = TranslationUnitRegion(begin=Location(line=123, column=121), end=Location(line=123, column=171))
+tu_region_000661 = TranslationUnitRegion(begin=Location(line=123, column=47), end=Location(line=123, column=171))
+tu_region_000662 = TranslationUnitRegion(begin=Location(line=123, column=47), end=Location(line=123, column=55))
+tu_region_000663 = TranslationUnitRegion(begin=Location(line=121, column=6), end=Location(line=121, column=10))
+tu_region_000664 = TranslationUnitRegion(begin=Location(line=121, column=13), end=Location(line=121, column=18))
+tu_region_000665 = TranslationUnitRegion(begin=Location(line=121, column=5), end=Location(line=121, column=19))
+tu_region_000666 = TranslationUnitRegion(begin=Location(line=121, column=33), end=Location(line=121, column=38))
+tu_region_000667 = TranslationUnitRegion(begin=Location(line=121, column=5), end=Location(line=121, column=38))
+tu_region_000668 = TranslationUnitRegion(begin=Location(line=121, column=20), end=Location(line=121, column=30))
+tu_region_000669 = TranslationUnitRegion(begin=Location(line=122, column=6), end=Location(line=122, column=10))
+tu_region_000670 = TranslationUnitRegion(begin=Location(line=122, column=13), end=Location(line=122, column=18))
+tu_region_000671 = TranslationUnitRegion(begin=Location(line=122, column=5), end=Location(line=122, column=19))
+tu_region_000672 = TranslationUnitRegion(begin=Location(line=122, column=33), end=Location(line=122, column=38))
+tu_region_000673 = TranslationUnitRegion(begin=Location(line=122, column=5), end=Location(line=122, column=38))
+tu_region_000674 = TranslationUnitRegion(begin=Location(line=122, column=20), end=Location(line=122, column=30))
+tu_region_000675 = TranslationUnitRegion(begin=Location(line=120, column=14), end=Location(line=123, column=2))
+tu_region_000676 = TranslationUnitRegion(begin=Location(line=121, column=5), end=Location(line=122, column=39))
+tu_region_000677 = TranslationUnitRegion(begin=Location(line=120, column=1), end=Location(line=125, column=1))
+tu_region_000678 = TranslationUnitRegion(begin=Location(line=120, column=1), end=Location(line=120, column=7))
+tu_region_000679 = TranslationUnitRegion(begin=Location(line=120, column=8), end=Location(line=120, column=13))
+tu_region_000680 = TranslationUnitRegion(begin=Location(line=128, column=66), end=Location(line=128, column=67))
+tu_region_000681 = TranslationUnitRegion(begin=Location(line=128, column=82), end=Location(line=128, column=88))
+tu_region_000682 = TranslationUnitRegion(begin=Location(line=128, column=69), end=Location(line=128, column=88))
+tu_region_000683 = TranslationUnitRegion(begin=Location(line=128, column=69), end=Location(line=128, column=79))
+tu_region_000684 = TranslationUnitRegion(begin=Location(line=128, column=104), end=Location(line=128, column=109))
+tu_region_000685 = TranslationUnitRegion(begin=Location(line=128, column=90), end=Location(line=128, column=109))
+tu_region_000686 = TranslationUnitRegion(begin=Location(line=128, column=90), end=Location(line=128, column=101))
+tu_region_000687 = TranslationUnitRegion(begin=Location(line=128, column=56), end=Location(line=128, column=119))
+tu_region_000688 = TranslationUnitRegion(begin=Location(line=128, column=134), end=Location(line=128, column=144))
+tu_region_000689 = TranslationUnitRegion(begin=Location(line=128, column=121), end=Location(line=128, column=144))
+tu_region_000690 = TranslationUnitRegion(begin=Location(line=128, column=121), end=Location(line=128, column=131))
+tu_region_000691 = TranslationUnitRegion(begin=Location(line=128, column=159), end=Location(line=128, column=169))
+tu_region_000692 = TranslationUnitRegion(begin=Location(line=128, column=146), end=Location(line=128, column=169))
+tu_region_000693 = TranslationUnitRegion(begin=Location(line=128, column=146), end=Location(line=128, column=156))
+tu_region_000694 = TranslationUnitRegion(begin=Location(line=128, column=120), end=Location(line=128, column=170))
+tu_region_000695 = TranslationUnitRegion(begin=Location(line=128, column=47), end=Location(line=128, column=170))
+tu_region_000696 = TranslationUnitRegion(begin=Location(line=128, column=47), end=Location(line=128, column=55))
+tu_region_000697 = TranslationUnitRegion(begin=Location(line=126, column=6), end=Location(line=126, column=10))
+tu_region_000698 = TranslationUnitRegion(begin=Location(line=126, column=13), end=Location(line=126, column=18))
+tu_region_000699 = TranslationUnitRegion(begin=Location(line=126, column=5), end=Location(line=126, column=19))
+tu_region_000700 = TranslationUnitRegion(begin=Location(line=126, column=33), end=Location(line=126, column=38))
+tu_region_000701 = TranslationUnitRegion(begin=Location(line=126, column=5), end=Location(line=126, column=38))
+tu_region_000702 = TranslationUnitRegion(begin=Location(line=126, column=20), end=Location(line=126, column=30))
+tu_region_000703 = TranslationUnitRegion(begin=Location(line=127, column=6), end=Location(line=127, column=10))
+tu_region_000704 = TranslationUnitRegion(begin=Location(line=127, column=13), end=Location(line=127, column=18))
+tu_region_000705 = TranslationUnitRegion(begin=Location(line=127, column=5), end=Location(line=127, column=19))
+tu_region_000706 = TranslationUnitRegion(begin=Location(line=127, column=33), end=Location(line=127, column=38))
+tu_region_000707 = TranslationUnitRegion(begin=Location(line=127, column=5), end=Location(line=127, column=38))
+tu_region_000708 = TranslationUnitRegion(begin=Location(line=127, column=20), end=Location(line=127, column=30))
+tu_region_000709 = TranslationUnitRegion(begin=Location(line=125, column=21), end=Location(line=128, column=2))
+tu_region_000710 = TranslationUnitRegion(begin=Location(line=126, column=5), end=Location(line=127, column=39))
+tu_region_000711 = TranslationUnitRegion(begin=Location(line=125, column=1), end=Location(line=131, column=1))
+tu_region_000712 = TranslationUnitRegion(begin=Location(line=125, column=1), end=Location(line=125, column=7))
+tu_region_000713 = TranslationUnitRegion(begin=Location(line=125, column=8), end=Location(line=125, column=20))
+tu_region_000714 = TranslationUnitRegion(begin=Location(line=135, column=66), end=Location(line=135, column=67))
+tu_region_000715 = TranslationUnitRegion(begin=Location(line=135, column=82), end=Location(line=135, column=87))
+tu_region_000716 = TranslationUnitRegion(begin=Location(line=135, column=69), end=Location(line=135, column=87))
+tu_region_000717 = TranslationUnitRegion(begin=Location(line=135, column=69), end=Location(line=135, column=79))
+tu_region_000718 = TranslationUnitRegion(begin=Location(line=135, column=103), end=Location(line=135, column=109))
+tu_region_000719 = TranslationUnitRegion(begin=Location(line=135, column=89), end=Location(line=135, column=109))
+tu_region_000720 = TranslationUnitRegion(begin=Location(line=135, column=89), end=Location(line=135, column=100))
+tu_region_000721 = TranslationUnitRegion(begin=Location(line=135, column=56), end=Location(line=135, column=119))
+tu_region_000722 = TranslationUnitRegion(begin=Location(line=135, column=134), end=Location(line=135, column=144))
+tu_region_000723 = TranslationUnitRegion(begin=Location(line=135, column=121), end=Location(line=135, column=144))
+tu_region_000724 = TranslationUnitRegion(begin=Location(line=135, column=121), end=Location(line=135, column=131))
+tu_region_000725 = TranslationUnitRegion(begin=Location(line=135, column=159), end=Location(line=135, column=169))
+tu_region_000726 = TranslationUnitRegion(begin=Location(line=135, column=146), end=Location(line=135, column=169))
+tu_region_000727 = TranslationUnitRegion(begin=Location(line=135, column=146), end=Location(line=135, column=156))
+tu_region_000728 = TranslationUnitRegion(begin=Location(line=135, column=120), end=Location(line=135, column=170))
+tu_region_000729 = TranslationUnitRegion(begin=Location(line=135, column=47), end=Location(line=135, column=170))
+tu_region_000730 = TranslationUnitRegion(begin=Location(line=135, column=47), end=Location(line=135, column=55))
+tu_region_000731 = TranslationUnitRegion(begin=Location(line=133, column=6), end=Location(line=133, column=10))
+tu_region_000732 = TranslationUnitRegion(begin=Location(line=133, column=13), end=Location(line=133, column=18))
+tu_region_000733 = TranslationUnitRegion(begin=Location(line=133, column=5), end=Location(line=133, column=19))
+tu_region_000734 = TranslationUnitRegion(begin=Location(line=133, column=33), end=Location(line=133, column=38))
+tu_region_000735 = TranslationUnitRegion(begin=Location(line=133, column=5), end=Location(line=133, column=38))
+tu_region_000736 = TranslationUnitRegion(begin=Location(line=133, column=20), end=Location(line=133, column=30))
+tu_region_000737 = TranslationUnitRegion(begin=Location(line=134, column=6), end=Location(line=134, column=10))
+tu_region_000738 = TranslationUnitRegion(begin=Location(line=134, column=13), end=Location(line=134, column=18))
+tu_region_000739 = TranslationUnitRegion(begin=Location(line=134, column=5), end=Location(line=134, column=19))
+tu_region_000740 = TranslationUnitRegion(begin=Location(line=134, column=33), end=Location(line=134, column=38))
+tu_region_000741 = TranslationUnitRegion(begin=Location(line=134, column=5), end=Location(line=134, column=38))
+tu_region_000742 = TranslationUnitRegion(begin=Location(line=134, column=20), end=Location(line=134, column=30))
+tu_region_000743 = TranslationUnitRegion(begin=Location(line=132, column=14), end=Location(line=135, column=2))
+tu_region_000744 = TranslationUnitRegion(begin=Location(line=133, column=5), end=Location(line=134, column=39))
+tu_region_000745 = TranslationUnitRegion(begin=Location(line=132, column=1), end=Location(line=137, column=1))
+tu_region_000746 = TranslationUnitRegion(begin=Location(line=132, column=1), end=Location(line=132, column=7))
+tu_region_000747 = TranslationUnitRegion(begin=Location(line=132, column=8), end=Location(line=132, column=13))
+tu_region_000748 = TranslationUnitRegion(begin=Location(line=140, column=66), end=Location(line=140, column=67))
+tu_region_000749 = TranslationUnitRegion(begin=Location(line=140, column=82), end=Location(line=140, column=87))
+tu_region_000750 = TranslationUnitRegion(begin=Location(line=140, column=69), end=Location(line=140, column=87))
+tu_region_000751 = TranslationUnitRegion(begin=Location(line=140, column=69), end=Location(line=140, column=79))
+tu_region_000752 = TranslationUnitRegion(begin=Location(line=140, column=103), end=Location(line=140, column=108))
+tu_region_000753 = TranslationUnitRegion(begin=Location(line=140, column=89), end=Location(line=140, column=108))
+tu_region_000754 = TranslationUnitRegion(begin=Location(line=140, column=89), end=Location(line=140, column=100))
+tu_region_000755 = TranslationUnitRegion(begin=Location(line=140, column=56), end=Location(line=140, column=118))
+tu_region_000756 = TranslationUnitRegion(begin=Location(line=140, column=133), end=Location(line=140, column=143))
+tu_region_000757 = TranslationUnitRegion(begin=Location(line=140, column=120), end=Location(line=140, column=143))
+tu_region_000758 = TranslationUnitRegion(begin=Location(line=140, column=120), end=Location(line=140, column=130))
+tu_region_000759 = TranslationUnitRegion(begin=Location(line=140, column=158), end=Location(line=140, column=168))
+tu_region_000760 = TranslationUnitRegion(begin=Location(line=140, column=145), end=Location(line=140, column=168))
+tu_region_000761 = TranslationUnitRegion(begin=Location(line=140, column=145), end=Location(line=140, column=155))
+tu_region_000762 = TranslationUnitRegion(begin=Location(line=140, column=119), end=Location(line=140, column=169))
+tu_region_000763 = TranslationUnitRegion(begin=Location(line=140, column=47), end=Location(line=140, column=169))
+tu_region_000764 = TranslationUnitRegion(begin=Location(line=140, column=47), end=Location(line=140, column=55))
+tu_region_000765 = TranslationUnitRegion(begin=Location(line=138, column=6), end=Location(line=138, column=10))
+tu_region_000766 = TranslationUnitRegion(begin=Location(line=138, column=13), end=Location(line=138, column=18))
+tu_region_000767 = TranslationUnitRegion(begin=Location(line=138, column=5), end=Location(line=138, column=19))
+tu_region_000768 = TranslationUnitRegion(begin=Location(line=138, column=33), end=Location(line=138, column=38))
+tu_region_000769 = TranslationUnitRegion(begin=Location(line=138, column=5), end=Location(line=138, column=38))
+tu_region_000770 = TranslationUnitRegion(begin=Location(line=138, column=20), end=Location(line=138, column=30))
+tu_region_000771 = TranslationUnitRegion(begin=Location(line=139, column=6), end=Location(line=139, column=10))
+tu_region_000772 = TranslationUnitRegion(begin=Location(line=139, column=13), end=Location(line=139, column=18))
+tu_region_000773 = TranslationUnitRegion(begin=Location(line=139, column=5), end=Location(line=139, column=19))
+tu_region_000774 = TranslationUnitRegion(begin=Location(line=139, column=33), end=Location(line=139, column=38))
+tu_region_000775 = TranslationUnitRegion(begin=Location(line=139, column=5), end=Location(line=139, column=38))
+tu_region_000776 = TranslationUnitRegion(begin=Location(line=139, column=20), end=Location(line=139, column=30))
+tu_region_000777 = TranslationUnitRegion(begin=Location(line=137, column=21), end=Location(line=140, column=2))
+tu_region_000778 = TranslationUnitRegion(begin=Location(line=138, column=5), end=Location(line=139, column=39))
+tu_region_000779 = TranslationUnitRegion(begin=Location(line=137, column=1), end=Location(line=142, column=1))
+tu_region_000780 = TranslationUnitRegion(begin=Location(line=137, column=1), end=Location(line=137, column=7))
+tu_region_000781 = TranslationUnitRegion(begin=Location(line=137, column=8), end=Location(line=137, column=20))
+tu_region_000782 = TranslationUnitRegion(begin=Location(line=145, column=66), end=Location(line=145, column=67))
+tu_region_000783 = TranslationUnitRegion(begin=Location(line=145, column=82), end=Location(line=145, column=88))
+tu_region_000784 = TranslationUnitRegion(begin=Location(line=145, column=69), end=Location(line=145, column=88))
+tu_region_000785 = TranslationUnitRegion(begin=Location(line=145, column=69), end=Location(line=145, column=79))
+tu_region_000786 = TranslationUnitRegion(begin=Location(line=145, column=104), end=Location(line=145, column=110))
+tu_region_000787 = TranslationUnitRegion(begin=Location(line=145, column=90), end=Location(line=145, column=110))
+tu_region_000788 = TranslationUnitRegion(begin=Location(line=145, column=90), end=Location(line=145, column=101))
+tu_region_000789 = TranslationUnitRegion(begin=Location(line=145, column=56), end=Location(line=145, column=120))
+tu_region_000790 = TranslationUnitRegion(begin=Location(line=145, column=135), end=Location(line=145, column=145))
+tu_region_000791 = TranslationUnitRegion(begin=Location(line=145, column=122), end=Location(line=145, column=145))
+tu_region_000792 = TranslationUnitRegion(begin=Location(line=145, column=122), end=Location(line=145, column=132))
+tu_region_000793 = TranslationUnitRegion(begin=Location(line=145, column=160), end=Location(line=145, column=170))
+tu_region_000794 = TranslationUnitRegion(begin=Location(line=145, column=147), end=Location(line=145, column=170))
+tu_region_000795 = TranslationUnitRegion(begin=Location(line=145, column=147), end=Location(line=145, column=157))
+tu_region_000796 = TranslationUnitRegion(begin=Location(line=145, column=121), end=Location(line=145, column=171))
+tu_region_000797 = TranslationUnitRegion(begin=Location(line=145, column=47), end=Location(line=145, column=171))
+tu_region_000798 = TranslationUnitRegion(begin=Location(line=145, column=47), end=Location(line=145, column=55))
+tu_region_000799 = TranslationUnitRegion(begin=Location(line=143, column=6), end=Location(line=143, column=10))
+tu_region_000800 = TranslationUnitRegion(begin=Location(line=143, column=13), end=Location(line=143, column=18))
+tu_region_000801 = TranslationUnitRegion(begin=Location(line=143, column=5), end=Location(line=143, column=19))
+tu_region_000802 = TranslationUnitRegion(begin=Location(line=143, column=33), end=Location(line=143, column=38))
+tu_region_000803 = TranslationUnitRegion(begin=Location(line=143, column=5), end=Location(line=143, column=38))
+tu_region_000804 = TranslationUnitRegion(begin=Location(line=143, column=20), end=Location(line=143, column=30))
+tu_region_000805 = TranslationUnitRegion(begin=Location(line=144, column=6), end=Location(line=144, column=10))
+tu_region_000806 = TranslationUnitRegion(begin=Location(line=144, column=13), end=Location(line=144, column=18))
+tu_region_000807 = TranslationUnitRegion(begin=Location(line=144, column=5), end=Location(line=144, column=19))
+tu_region_000808 = TranslationUnitRegion(begin=Location(line=144, column=33), end=Location(line=144, column=38))
+tu_region_000809 = TranslationUnitRegion(begin=Location(line=144, column=5), end=Location(line=144, column=38))
+tu_region_000810 = TranslationUnitRegion(begin=Location(line=144, column=20), end=Location(line=144, column=30))
+tu_region_000811 = TranslationUnitRegion(begin=Location(line=142, column=15), end=Location(line=145, column=2))
+tu_region_000812 = TranslationUnitRegion(begin=Location(line=143, column=5), end=Location(line=144, column=39))
+tu_region_000813 = TranslationUnitRegion(begin=Location(line=142, column=1), end=Location(line=147, column=1))
+tu_region_000814 = TranslationUnitRegion(begin=Location(line=142, column=1), end=Location(line=142, column=7))
+tu_region_000815 = TranslationUnitRegion(begin=Location(line=142, column=8), end=Location(line=142, column=14))
+tu_region_000816 = TranslationUnitRegion(begin=Location(line=150, column=65), end=Location(line=150, column=66))
+tu_region_000817 = TranslationUnitRegion(begin=Location(line=150, column=81), end=Location(line=150, column=87))
+tu_region_000818 = TranslationUnitRegion(begin=Location(line=150, column=68), end=Location(line=150, column=87))
+tu_region_000819 = TranslationUnitRegion(begin=Location(line=150, column=68), end=Location(line=150, column=78))
+tu_region_000820 = TranslationUnitRegion(begin=Location(line=150, column=103), end=Location(line=150, column=108))
+tu_region_000821 = TranslationUnitRegion(begin=Location(line=150, column=89), end=Location(line=150, column=108))
+tu_region_000822 = TranslationUnitRegion(begin=Location(line=150, column=89), end=Location(line=150, column=100))
+tu_region_000823 = TranslationUnitRegion(begin=Location(line=150, column=55), end=Location(line=150, column=118))
+tu_region_000824 = TranslationUnitRegion(begin=Location(line=150, column=133), end=Location(line=150, column=143))
+tu_region_000825 = TranslationUnitRegion(begin=Location(line=150, column=120), end=Location(line=150, column=143))
+tu_region_000826 = TranslationUnitRegion(begin=Location(line=150, column=120), end=Location(line=150, column=130))
+tu_region_000827 = TranslationUnitRegion(begin=Location(line=150, column=158), end=Location(line=150, column=168))
+tu_region_000828 = TranslationUnitRegion(begin=Location(line=150, column=145), end=Location(line=150, column=168))
+tu_region_000829 = TranslationUnitRegion(begin=Location(line=150, column=145), end=Location(line=150, column=155))
+tu_region_000830 = TranslationUnitRegion(begin=Location(line=150, column=119), end=Location(line=150, column=169))
+tu_region_000831 = TranslationUnitRegion(begin=Location(line=150, column=46), end=Location(line=150, column=169))
+tu_region_000832 = TranslationUnitRegion(begin=Location(line=150, column=46), end=Location(line=150, column=54))
+tu_region_000833 = TranslationUnitRegion(begin=Location(line=148, column=6), end=Location(line=148, column=10))
+tu_region_000834 = TranslationUnitRegion(begin=Location(line=148, column=13), end=Location(line=148, column=18))
+tu_region_000835 = TranslationUnitRegion(begin=Location(line=148, column=5), end=Location(line=148, column=19))
+tu_region_000836 = TranslationUnitRegion(begin=Location(line=148, column=33), end=Location(line=148, column=38))
+tu_region_000837 = TranslationUnitRegion(begin=Location(line=148, column=5), end=Location(line=148, column=38))
+tu_region_000838 = TranslationUnitRegion(begin=Location(line=148, column=20), end=Location(line=148, column=30))
+tu_region_000839 = TranslationUnitRegion(begin=Location(line=149, column=6), end=Location(line=149, column=10))
+tu_region_000840 = TranslationUnitRegion(begin=Location(line=149, column=13), end=Location(line=149, column=18))
+tu_region_000841 = TranslationUnitRegion(begin=Location(line=149, column=5), end=Location(line=149, column=19))
+tu_region_000842 = TranslationUnitRegion(begin=Location(line=149, column=33), end=Location(line=149, column=38))
+tu_region_000843 = TranslationUnitRegion(begin=Location(line=149, column=5), end=Location(line=149, column=38))
+tu_region_000844 = TranslationUnitRegion(begin=Location(line=149, column=20), end=Location(line=149, column=30))
+tu_region_000845 = TranslationUnitRegion(begin=Location(line=147, column=22), end=Location(line=150, column=2))
+tu_region_000846 = TranslationUnitRegion(begin=Location(line=148, column=5), end=Location(line=149, column=39))
+tu_region_000847 = TranslationUnitRegion(begin=Location(line=147, column=1), end=Location(line=153, column=1))
+tu_region_000848 = TranslationUnitRegion(begin=Location(line=147, column=1), end=Location(line=147, column=7))
+tu_region_000849 = TranslationUnitRegion(begin=Location(line=147, column=8), end=Location(line=147, column=21))
+tu_region_000850 = TranslationUnitRegion(begin=Location(line=157, column=66), end=Location(line=157, column=67))
+tu_region_000851 = TranslationUnitRegion(begin=Location(line=157, column=82), end=Location(line=157, column=87))
+tu_region_000852 = TranslationUnitRegion(begin=Location(line=157, column=69), end=Location(line=157, column=87))
+tu_region_000853 = TranslationUnitRegion(begin=Location(line=157, column=69), end=Location(line=157, column=79))
+tu_region_000854 = TranslationUnitRegion(begin=Location(line=157, column=103), end=Location(line=157, column=109))
+tu_region_000855 = TranslationUnitRegion(begin=Location(line=157, column=89), end=Location(line=157, column=109))
+tu_region_000856 = TranslationUnitRegion(begin=Location(line=157, column=89), end=Location(line=157, column=100))
+tu_region_000857 = TranslationUnitRegion(begin=Location(line=157, column=56), end=Location(line=157, column=119))
+tu_region_000858 = TranslationUnitRegion(begin=Location(line=157, column=134), end=Location(line=157, column=144))
+tu_region_000859 = TranslationUnitRegion(begin=Location(line=157, column=121), end=Location(line=157, column=144))
+tu_region_000860 = TranslationUnitRegion(begin=Location(line=157, column=121), end=Location(line=157, column=131))
+tu_region_000861 = TranslationUnitRegion(begin=Location(line=157, column=159), end=Location(line=157, column=169))
+tu_region_000862 = TranslationUnitRegion(begin=Location(line=157, column=146), end=Location(line=157, column=169))
+tu_region_000863 = TranslationUnitRegion(begin=Location(line=157, column=146), end=Location(line=157, column=156))
+tu_region_000864 = TranslationUnitRegion(begin=Location(line=157, column=120), end=Location(line=157, column=170))
+tu_region_000865 = TranslationUnitRegion(begin=Location(line=157, column=47), end=Location(line=157, column=170))
+tu_region_000866 = TranslationUnitRegion(begin=Location(line=157, column=47), end=Location(line=157, column=55))
+tu_region_000867 = TranslationUnitRegion(begin=Location(line=155, column=6), end=Location(line=155, column=10))
+tu_region_000868 = TranslationUnitRegion(begin=Location(line=155, column=13), end=Location(line=155, column=18))
+tu_region_000869 = TranslationUnitRegion(begin=Location(line=155, column=5), end=Location(line=155, column=19))
+tu_region_000870 = TranslationUnitRegion(begin=Location(line=155, column=33), end=Location(line=155, column=38))
+tu_region_000871 = TranslationUnitRegion(begin=Location(line=155, column=5), end=Location(line=155, column=38))
+tu_region_000872 = TranslationUnitRegion(begin=Location(line=155, column=20), end=Location(line=155, column=30))
+tu_region_000873 = TranslationUnitRegion(begin=Location(line=156, column=6), end=Location(line=156, column=10))
+tu_region_000874 = TranslationUnitRegion(begin=Location(line=156, column=13), end=Location(line=156, column=18))
+tu_region_000875 = TranslationUnitRegion(begin=Location(line=156, column=5), end=Location(line=156, column=19))
+tu_region_000876 = TranslationUnitRegion(begin=Location(line=156, column=33), end=Location(line=156, column=38))
+tu_region_000877 = TranslationUnitRegion(begin=Location(line=156, column=5), end=Location(line=156, column=38))
+tu_region_000878 = TranslationUnitRegion(begin=Location(line=156, column=20), end=Location(line=156, column=30))
+tu_region_000879 = TranslationUnitRegion(begin=Location(line=154, column=14), end=Location(line=157, column=2))
+tu_region_000880 = TranslationUnitRegion(begin=Location(line=155, column=5), end=Location(line=156, column=39))
+tu_region_000881 = TranslationUnitRegion(begin=Location(line=154, column=1), end=Location(line=159, column=1))
+tu_region_000882 = TranslationUnitRegion(begin=Location(line=154, column=1), end=Location(line=154, column=7))
+tu_region_000883 = TranslationUnitRegion(begin=Location(line=154, column=8), end=Location(line=154, column=13))
+tu_region_000884 = TranslationUnitRegion(begin=Location(line=162, column=66), end=Location(line=162, column=67))
+tu_region_000885 = TranslationUnitRegion(begin=Location(line=162, column=82), end=Location(line=162, column=87))
+tu_region_000886 = TranslationUnitRegion(begin=Location(line=162, column=69), end=Location(line=162, column=87))
+tu_region_000887 = TranslationUnitRegion(begin=Location(line=162, column=69), end=Location(line=162, column=79))
+tu_region_000888 = TranslationUnitRegion(begin=Location(line=162, column=103), end=Location(line=162, column=108))
+tu_region_000889 = TranslationUnitRegion(begin=Location(line=162, column=89), end=Location(line=162, column=108))
+tu_region_000890 = TranslationUnitRegion(begin=Location(line=162, column=89), end=Location(line=162, column=100))
+tu_region_000891 = TranslationUnitRegion(begin=Location(line=162, column=56), end=Location(line=162, column=118))
+tu_region_000892 = TranslationUnitRegion(begin=Location(line=162, column=133), end=Location(line=162, column=143))
+tu_region_000893 = TranslationUnitRegion(begin=Location(line=162, column=120), end=Location(line=162, column=143))
+tu_region_000894 = TranslationUnitRegion(begin=Location(line=162, column=120), end=Location(line=162, column=130))
+tu_region_000895 = TranslationUnitRegion(begin=Location(line=162, column=158), end=Location(line=162, column=168))
+tu_region_000896 = TranslationUnitRegion(begin=Location(line=162, column=145), end=Location(line=162, column=168))
+tu_region_000897 = TranslationUnitRegion(begin=Location(line=162, column=145), end=Location(line=162, column=155))
+tu_region_000898 = TranslationUnitRegion(begin=Location(line=162, column=119), end=Location(line=162, column=169))
+tu_region_000899 = TranslationUnitRegion(begin=Location(line=162, column=47), end=Location(line=162, column=169))
+tu_region_000900 = TranslationUnitRegion(begin=Location(line=162, column=47), end=Location(line=162, column=55))
+tu_region_000901 = TranslationUnitRegion(begin=Location(line=160, column=6), end=Location(line=160, column=10))
+tu_region_000902 = TranslationUnitRegion(begin=Location(line=160, column=13), end=Location(line=160, column=18))
+tu_region_000903 = TranslationUnitRegion(begin=Location(line=160, column=5), end=Location(line=160, column=19))
+tu_region_000904 = TranslationUnitRegion(begin=Location(line=160, column=33), end=Location(line=160, column=38))
+tu_region_000905 = TranslationUnitRegion(begin=Location(line=160, column=5), end=Location(line=160, column=38))
+tu_region_000906 = TranslationUnitRegion(begin=Location(line=160, column=20), end=Location(line=160, column=30))
+tu_region_000907 = TranslationUnitRegion(begin=Location(line=161, column=6), end=Location(line=161, column=10))
+tu_region_000908 = TranslationUnitRegion(begin=Location(line=161, column=13), end=Location(line=161, column=18))
+tu_region_000909 = TranslationUnitRegion(begin=Location(line=161, column=5), end=Location(line=161, column=19))
+tu_region_000910 = TranslationUnitRegion(begin=Location(line=161, column=33), end=Location(line=161, column=38))
+tu_region_000911 = TranslationUnitRegion(begin=Location(line=161, column=5), end=Location(line=161, column=38))
+tu_region_000912 = TranslationUnitRegion(begin=Location(line=161, column=20), end=Location(line=161, column=30))
+tu_region_000913 = TranslationUnitRegion(begin=Location(line=159, column=21), end=Location(line=162, column=2))
+tu_region_000914 = TranslationUnitRegion(begin=Location(line=160, column=5), end=Location(line=161, column=39))
+tu_region_000915 = TranslationUnitRegion(begin=Location(line=159, column=1), end=Location(line=164, column=1))
+tu_region_000916 = TranslationUnitRegion(begin=Location(line=159, column=1), end=Location(line=159, column=7))
+tu_region_000917 = TranslationUnitRegion(begin=Location(line=159, column=8), end=Location(line=159, column=20))
+tu_region_000918 = TranslationUnitRegion(begin=Location(line=167, column=66), end=Location(line=167, column=67))
+tu_region_000919 = TranslationUnitRegion(begin=Location(line=167, column=82), end=Location(line=167, column=88))
+tu_region_000920 = TranslationUnitRegion(begin=Location(line=167, column=69), end=Location(line=167, column=88))
+tu_region_000921 = TranslationUnitRegion(begin=Location(line=167, column=69), end=Location(line=167, column=79))
+tu_region_000922 = TranslationUnitRegion(begin=Location(line=167, column=104), end=Location(line=167, column=110))
+tu_region_000923 = TranslationUnitRegion(begin=Location(line=167, column=90), end=Location(line=167, column=110))
+tu_region_000924 = TranslationUnitRegion(begin=Location(line=167, column=90), end=Location(line=167, column=101))
+tu_region_000925 = TranslationUnitRegion(begin=Location(line=167, column=56), end=Location(line=167, column=120))
+tu_region_000926 = TranslationUnitRegion(begin=Location(line=167, column=135), end=Location(line=167, column=145))
+tu_region_000927 = TranslationUnitRegion(begin=Location(line=167, column=122), end=Location(line=167, column=145))
+tu_region_000928 = TranslationUnitRegion(begin=Location(line=167, column=122), end=Location(line=167, column=132))
+tu_region_000929 = TranslationUnitRegion(begin=Location(line=167, column=160), end=Location(line=167, column=170))
+tu_region_000930 = TranslationUnitRegion(begin=Location(line=167, column=147), end=Location(line=167, column=170))
+tu_region_000931 = TranslationUnitRegion(begin=Location(line=167, column=147), end=Location(line=167, column=157))
+tu_region_000932 = TranslationUnitRegion(begin=Location(line=167, column=121), end=Location(line=167, column=171))
+tu_region_000933 = TranslationUnitRegion(begin=Location(line=167, column=47), end=Location(line=167, column=171))
+tu_region_000934 = TranslationUnitRegion(begin=Location(line=167, column=47), end=Location(line=167, column=55))
+tu_region_000935 = TranslationUnitRegion(begin=Location(line=165, column=6), end=Location(line=165, column=10))
+tu_region_000936 = TranslationUnitRegion(begin=Location(line=165, column=13), end=Location(line=165, column=18))
+tu_region_000937 = TranslationUnitRegion(begin=Location(line=165, column=5), end=Location(line=165, column=19))
+tu_region_000938 = TranslationUnitRegion(begin=Location(line=165, column=33), end=Location(line=165, column=38))
+tu_region_000939 = TranslationUnitRegion(begin=Location(line=165, column=5), end=Location(line=165, column=38))
+tu_region_000940 = TranslationUnitRegion(begin=Location(line=165, column=20), end=Location(line=165, column=30))
+tu_region_000941 = TranslationUnitRegion(begin=Location(line=166, column=6), end=Location(line=166, column=10))
+tu_region_000942 = TranslationUnitRegion(begin=Location(line=166, column=13), end=Location(line=166, column=18))
+tu_region_000943 = TranslationUnitRegion(begin=Location(line=166, column=5), end=Location(line=166, column=19))
+tu_region_000944 = TranslationUnitRegion(begin=Location(line=166, column=33), end=Location(line=166, column=38))
+tu_region_000945 = TranslationUnitRegion(begin=Location(line=166, column=5), end=Location(line=166, column=38))
+tu_region_000946 = TranslationUnitRegion(begin=Location(line=166, column=20), end=Location(line=166, column=30))
+tu_region_000947 = TranslationUnitRegion(begin=Location(line=164, column=15), end=Location(line=167, column=2))
+tu_region_000948 = TranslationUnitRegion(begin=Location(line=165, column=5), end=Location(line=166, column=39))
+tu_region_000949 = TranslationUnitRegion(begin=Location(line=164, column=1), end=Location(line=169, column=1))
+tu_region_000950 = TranslationUnitRegion(begin=Location(line=164, column=1), end=Location(line=164, column=7))
+tu_region_000951 = TranslationUnitRegion(begin=Location(line=164, column=8), end=Location(line=164, column=14))
+tu_region_000952 = TranslationUnitRegion(begin=Location(line=172, column=66), end=Location(line=172, column=67))
+tu_region_000953 = TranslationUnitRegion(begin=Location(line=172, column=82), end=Location(line=172, column=88))
+tu_region_000954 = TranslationUnitRegion(begin=Location(line=172, column=69), end=Location(line=172, column=88))
+tu_region_000955 = TranslationUnitRegion(begin=Location(line=172, column=69), end=Location(line=172, column=79))
+tu_region_000956 = TranslationUnitRegion(begin=Location(line=172, column=104), end=Location(line=172, column=109))
+tu_region_000957 = TranslationUnitRegion(begin=Location(line=172, column=90), end=Location(line=172, column=109))
+tu_region_000958 = TranslationUnitRegion(begin=Location(line=172, column=90), end=Location(line=172, column=101))
+tu_region_000959 = TranslationUnitRegion(begin=Location(line=172, column=56), end=Location(line=172, column=119))
+tu_region_000960 = TranslationUnitRegion(begin=Location(line=172, column=134), end=Location(line=172, column=144))
+tu_region_000961 = TranslationUnitRegion(begin=Location(line=172, column=121), end=Location(line=172, column=144))
+tu_region_000962 = TranslationUnitRegion(begin=Location(line=172, column=121), end=Location(line=172, column=131))
+tu_region_000963 = TranslationUnitRegion(begin=Location(line=172, column=159), end=Location(line=172, column=169))
+tu_region_000964 = TranslationUnitRegion(begin=Location(line=172, column=146), end=Location(line=172, column=169))
+tu_region_000965 = TranslationUnitRegion(begin=Location(line=172, column=146), end=Location(line=172, column=156))
+tu_region_000966 = TranslationUnitRegion(begin=Location(line=172, column=120), end=Location(line=172, column=170))
+tu_region_000967 = TranslationUnitRegion(begin=Location(line=172, column=47), end=Location(line=172, column=170))
+tu_region_000968 = TranslationUnitRegion(begin=Location(line=172, column=47), end=Location(line=172, column=55))
+tu_region_000969 = TranslationUnitRegion(begin=Location(line=170, column=6), end=Location(line=170, column=10))
+tu_region_000970 = TranslationUnitRegion(begin=Location(line=170, column=13), end=Location(line=170, column=18))
+tu_region_000971 = TranslationUnitRegion(begin=Location(line=170, column=5), end=Location(line=170, column=19))
+tu_region_000972 = TranslationUnitRegion(begin=Location(line=170, column=33), end=Location(line=170, column=38))
+tu_region_000973 = TranslationUnitRegion(begin=Location(line=170, column=5), end=Location(line=170, column=38))
+tu_region_000974 = TranslationUnitRegion(begin=Location(line=170, column=20), end=Location(line=170, column=30))
+tu_region_000975 = TranslationUnitRegion(begin=Location(line=171, column=6), end=Location(line=171, column=10))
+tu_region_000976 = TranslationUnitRegion(begin=Location(line=171, column=13), end=Location(line=171, column=18))
+tu_region_000977 = TranslationUnitRegion(begin=Location(line=171, column=5), end=Location(line=171, column=19))
+tu_region_000978 = TranslationUnitRegion(begin=Location(line=171, column=33), end=Location(line=171, column=38))
+tu_region_000979 = TranslationUnitRegion(begin=Location(line=171, column=5), end=Location(line=171, column=38))
+tu_region_000980 = TranslationUnitRegion(begin=Location(line=171, column=20), end=Location(line=171, column=30))
+tu_region_000981 = TranslationUnitRegion(begin=Location(line=169, column=22), end=Location(line=172, column=2))
+tu_region_000982 = TranslationUnitRegion(begin=Location(line=170, column=5), end=Location(line=171, column=39))
+tu_region_000983 = TranslationUnitRegion(begin=Location(line=169, column=1), end=Location(line=175, column=1))
+tu_region_000984 = TranslationUnitRegion(begin=Location(line=169, column=1), end=Location(line=169, column=7))
+tu_region_000985 = TranslationUnitRegion(begin=Location(line=169, column=8), end=Location(line=169, column=21))
+tu_region_000986 = TranslationUnitRegion(begin=Location(line=179, column=66), end=Location(line=179, column=67))
+tu_region_000987 = TranslationUnitRegion(begin=Location(line=179, column=82), end=Location(line=179, column=87))
+tu_region_000988 = TranslationUnitRegion(begin=Location(line=179, column=69), end=Location(line=179, column=87))
+tu_region_000989 = TranslationUnitRegion(begin=Location(line=179, column=69), end=Location(line=179, column=79))
+tu_region_000990 = TranslationUnitRegion(begin=Location(line=179, column=103), end=Location(line=179, column=109))
+tu_region_000991 = TranslationUnitRegion(begin=Location(line=179, column=89), end=Location(line=179, column=109))
+tu_region_000992 = TranslationUnitRegion(begin=Location(line=179, column=89), end=Location(line=179, column=100))
+tu_region_000993 = TranslationUnitRegion(begin=Location(line=179, column=56), end=Location(line=179, column=119))
+tu_region_000994 = TranslationUnitRegion(begin=Location(line=179, column=134), end=Location(line=179, column=144))
+tu_region_000995 = TranslationUnitRegion(begin=Location(line=179, column=121), end=Location(line=179, column=144))
+tu_region_000996 = TranslationUnitRegion(begin=Location(line=179, column=121), end=Location(line=179, column=131))
+tu_region_000997 = TranslationUnitRegion(begin=Location(line=179, column=159), end=Location(line=179, column=169))
+tu_region_000998 = TranslationUnitRegion(begin=Location(line=179, column=146), end=Location(line=179, column=169))
+tu_region_000999 = TranslationUnitRegion(begin=Location(line=179, column=146), end=Location(line=179, column=156))
+tu_region_001000 = TranslationUnitRegion(begin=Location(line=179, column=120), end=Location(line=179, column=170))
+tu_region_001001 = TranslationUnitRegion(begin=Location(line=179, column=47), end=Location(line=179, column=170))
+tu_region_001002 = TranslationUnitRegion(begin=Location(line=179, column=47), end=Location(line=179, column=55))
+tu_region_001003 = TranslationUnitRegion(begin=Location(line=177, column=6), end=Location(line=177, column=10))
+tu_region_001004 = TranslationUnitRegion(begin=Location(line=177, column=13), end=Location(line=177, column=18))
+tu_region_001005 = TranslationUnitRegion(begin=Location(line=177, column=5), end=Location(line=177, column=19))
+tu_region_001006 = TranslationUnitRegion(begin=Location(line=177, column=33), end=Location(line=177, column=38))
+tu_region_001007 = TranslationUnitRegion(begin=Location(line=177, column=5), end=Location(line=177, column=38))
+tu_region_001008 = TranslationUnitRegion(begin=Location(line=177, column=20), end=Location(line=177, column=30))
+tu_region_001009 = TranslationUnitRegion(begin=Location(line=178, column=6), end=Location(line=178, column=10))
+tu_region_001010 = TranslationUnitRegion(begin=Location(line=178, column=13), end=Location(line=178, column=18))
+tu_region_001011 = TranslationUnitRegion(begin=Location(line=178, column=5), end=Location(line=178, column=19))
+tu_region_001012 = TranslationUnitRegion(begin=Location(line=178, column=33), end=Location(line=178, column=38))
+tu_region_001013 = TranslationUnitRegion(begin=Location(line=178, column=5), end=Location(line=178, column=38))
+tu_region_001014 = TranslationUnitRegion(begin=Location(line=178, column=20), end=Location(line=178, column=30))
+tu_region_001015 = TranslationUnitRegion(begin=Location(line=176, column=14), end=Location(line=179, column=2))
+tu_region_001016 = TranslationUnitRegion(begin=Location(line=177, column=5), end=Location(line=178, column=39))
+tu_region_001017 = TranslationUnitRegion(begin=Location(line=176, column=1), end=Location(line=181, column=1))
+tu_region_001018 = TranslationUnitRegion(begin=Location(line=176, column=1), end=Location(line=176, column=7))
+tu_region_001019 = TranslationUnitRegion(begin=Location(line=176, column=8), end=Location(line=176, column=13))
+tu_region_001020 = TranslationUnitRegion(begin=Location(line=184, column=66), end=Location(line=184, column=67))
+tu_region_001021 = TranslationUnitRegion(begin=Location(line=184, column=82), end=Location(line=184, column=87))
+tu_region_001022 = TranslationUnitRegion(begin=Location(line=184, column=69), end=Location(line=184, column=87))
+tu_region_001023 = TranslationUnitRegion(begin=Location(line=184, column=69), end=Location(line=184, column=79))
+tu_region_001024 = TranslationUnitRegion(begin=Location(line=184, column=103), end=Location(line=184, column=108))
+tu_region_001025 = TranslationUnitRegion(begin=Location(line=184, column=89), end=Location(line=184, column=108))
+tu_region_001026 = TranslationUnitRegion(begin=Location(line=184, column=89), end=Location(line=184, column=100))
+tu_region_001027 = TranslationUnitRegion(begin=Location(line=184, column=56), end=Location(line=184, column=118))
+tu_region_001028 = TranslationUnitRegion(begin=Location(line=184, column=133), end=Location(line=184, column=143))
+tu_region_001029 = TranslationUnitRegion(begin=Location(line=184, column=120), end=Location(line=184, column=143))
+tu_region_001030 = TranslationUnitRegion(begin=Location(line=184, column=120), end=Location(line=184, column=130))
+tu_region_001031 = TranslationUnitRegion(begin=Location(line=184, column=158), end=Location(line=184, column=168))
+tu_region_001032 = TranslationUnitRegion(begin=Location(line=184, column=145), end=Location(line=184, column=168))
+tu_region_001033 = TranslationUnitRegion(begin=Location(line=184, column=145), end=Location(line=184, column=155))
+tu_region_001034 = TranslationUnitRegion(begin=Location(line=184, column=119), end=Location(line=184, column=169))
+tu_region_001035 = TranslationUnitRegion(begin=Location(line=184, column=47), end=Location(line=184, column=169))
+tu_region_001036 = TranslationUnitRegion(begin=Location(line=184, column=47), end=Location(line=184, column=55))
+tu_region_001037 = TranslationUnitRegion(begin=Location(line=182, column=6), end=Location(line=182, column=10))
+tu_region_001038 = TranslationUnitRegion(begin=Location(line=182, column=13), end=Location(line=182, column=18))
+tu_region_001039 = TranslationUnitRegion(begin=Location(line=182, column=5), end=Location(line=182, column=19))
+tu_region_001040 = TranslationUnitRegion(begin=Location(line=182, column=33), end=Location(line=182, column=38))
+tu_region_001041 = TranslationUnitRegion(begin=Location(line=182, column=5), end=Location(line=182, column=38))
+tu_region_001042 = TranslationUnitRegion(begin=Location(line=182, column=20), end=Location(line=182, column=30))
+tu_region_001043 = TranslationUnitRegion(begin=Location(line=183, column=6), end=Location(line=183, column=10))
+tu_region_001044 = TranslationUnitRegion(begin=Location(line=183, column=13), end=Location(line=183, column=18))
+tu_region_001045 = TranslationUnitRegion(begin=Location(line=183, column=5), end=Location(line=183, column=19))
+tu_region_001046 = TranslationUnitRegion(begin=Location(line=183, column=33), end=Location(line=183, column=38))
+tu_region_001047 = TranslationUnitRegion(begin=Location(line=183, column=5), end=Location(line=183, column=38))
+tu_region_001048 = TranslationUnitRegion(begin=Location(line=183, column=20), end=Location(line=183, column=30))
+tu_region_001049 = TranslationUnitRegion(begin=Location(line=181, column=21), end=Location(line=184, column=2))
+tu_region_001050 = TranslationUnitRegion(begin=Location(line=182, column=5), end=Location(line=183, column=39))
+tu_region_001051 = TranslationUnitRegion(begin=Location(line=181, column=1), end=Location(line=186, column=1))
+tu_region_001052 = TranslationUnitRegion(begin=Location(line=181, column=1), end=Location(line=181, column=7))
+tu_region_001053 = TranslationUnitRegion(begin=Location(line=181, column=8), end=Location(line=181, column=20))
+tu_region_001054 = TranslationUnitRegion(begin=Location(line=189, column=66), end=Location(line=189, column=67))
+tu_region_001055 = TranslationUnitRegion(begin=Location(line=189, column=82), end=Location(line=189, column=88))
+tu_region_001056 = TranslationUnitRegion(begin=Location(line=189, column=69), end=Location(line=189, column=88))
+tu_region_001057 = TranslationUnitRegion(begin=Location(line=189, column=69), end=Location(line=189, column=79))
+tu_region_001058 = TranslationUnitRegion(begin=Location(line=189, column=104), end=Location(line=189, column=110))
+tu_region_001059 = TranslationUnitRegion(begin=Location(line=189, column=90), end=Location(line=189, column=110))
+tu_region_001060 = TranslationUnitRegion(begin=Location(line=189, column=90), end=Location(line=189, column=101))
+tu_region_001061 = TranslationUnitRegion(begin=Location(line=189, column=56), end=Location(line=189, column=120))
+tu_region_001062 = TranslationUnitRegion(begin=Location(line=189, column=135), end=Location(line=189, column=145))
+tu_region_001063 = TranslationUnitRegion(begin=Location(line=189, column=122), end=Location(line=189, column=145))
+tu_region_001064 = TranslationUnitRegion(begin=Location(line=189, column=122), end=Location(line=189, column=132))
+tu_region_001065 = TranslationUnitRegion(begin=Location(line=189, column=160), end=Location(line=189, column=170))
+tu_region_001066 = TranslationUnitRegion(begin=Location(line=189, column=147), end=Location(line=189, column=170))
+tu_region_001067 = TranslationUnitRegion(begin=Location(line=189, column=147), end=Location(line=189, column=157))
+tu_region_001068 = TranslationUnitRegion(begin=Location(line=189, column=121), end=Location(line=189, column=171))
+tu_region_001069 = TranslationUnitRegion(begin=Location(line=189, column=47), end=Location(line=189, column=171))
+tu_region_001070 = TranslationUnitRegion(begin=Location(line=189, column=47), end=Location(line=189, column=55))
+tu_region_001071 = TranslationUnitRegion(begin=Location(line=187, column=6), end=Location(line=187, column=10))
+tu_region_001072 = TranslationUnitRegion(begin=Location(line=187, column=13), end=Location(line=187, column=18))
+tu_region_001073 = TranslationUnitRegion(begin=Location(line=187, column=5), end=Location(line=187, column=19))
+tu_region_001074 = TranslationUnitRegion(begin=Location(line=187, column=33), end=Location(line=187, column=38))
+tu_region_001075 = TranslationUnitRegion(begin=Location(line=187, column=5), end=Location(line=187, column=38))
+tu_region_001076 = TranslationUnitRegion(begin=Location(line=187, column=20), end=Location(line=187, column=30))
+tu_region_001077 = TranslationUnitRegion(begin=Location(line=188, column=6), end=Location(line=188, column=10))
+tu_region_001078 = TranslationUnitRegion(begin=Location(line=188, column=13), end=Location(line=188, column=18))
+tu_region_001079 = TranslationUnitRegion(begin=Location(line=188, column=5), end=Location(line=188, column=19))
+tu_region_001080 = TranslationUnitRegion(begin=Location(line=188, column=33), end=Location(line=188, column=38))
+tu_region_001081 = TranslationUnitRegion(begin=Location(line=188, column=5), end=Location(line=188, column=38))
+tu_region_001082 = TranslationUnitRegion(begin=Location(line=188, column=20), end=Location(line=188, column=30))
+tu_region_001083 = TranslationUnitRegion(begin=Location(line=186, column=15), end=Location(line=189, column=2))
+tu_region_001084 = TranslationUnitRegion(begin=Location(line=187, column=5), end=Location(line=188, column=39))
+tu_region_001085 = TranslationUnitRegion(begin=Location(line=186, column=1), end=Location(line=191, column=1))
+tu_region_001086 = TranslationUnitRegion(begin=Location(line=186, column=1), end=Location(line=186, column=7))
+tu_region_001087 = TranslationUnitRegion(begin=Location(line=186, column=8), end=Location(line=186, column=14))
+tu_region_001088 = TranslationUnitRegion(begin=Location(line=194, column=66), end=Location(line=194, column=67))
+tu_region_001089 = TranslationUnitRegion(begin=Location(line=194, column=82), end=Location(line=194, column=88))
+tu_region_001090 = TranslationUnitRegion(begin=Location(line=194, column=69), end=Location(line=194, column=88))
+tu_region_001091 = TranslationUnitRegion(begin=Location(line=194, column=69), end=Location(line=194, column=79))
+tu_region_001092 = TranslationUnitRegion(begin=Location(line=194, column=104), end=Location(line=194, column=109))
+tu_region_001093 = TranslationUnitRegion(begin=Location(line=194, column=90), end=Location(line=194, column=109))
+tu_region_001094 = TranslationUnitRegion(begin=Location(line=194, column=90), end=Location(line=194, column=101))
+tu_region_001095 = TranslationUnitRegion(begin=Location(line=194, column=56), end=Location(line=194, column=119))
+tu_region_001096 = TranslationUnitRegion(begin=Location(line=194, column=134), end=Location(line=194, column=144))
+tu_region_001097 = TranslationUnitRegion(begin=Location(line=194, column=121), end=Location(line=194, column=144))
+tu_region_001098 = TranslationUnitRegion(begin=Location(line=194, column=121), end=Location(line=194, column=131))
+tu_region_001099 = TranslationUnitRegion(begin=Location(line=194, column=159), end=Location(line=194, column=169))
+tu_region_001100 = TranslationUnitRegion(begin=Location(line=194, column=146), end=Location(line=194, column=169))
+tu_region_001101 = TranslationUnitRegion(begin=Location(line=194, column=146), end=Location(line=194, column=156))
+tu_region_001102 = TranslationUnitRegion(begin=Location(line=194, column=120), end=Location(line=194, column=170))
+tu_region_001103 = TranslationUnitRegion(begin=Location(line=194, column=47), end=Location(line=194, column=170))
+tu_region_001104 = TranslationUnitRegion(begin=Location(line=194, column=47), end=Location(line=194, column=55))
+tu_region_001105 = TranslationUnitRegion(begin=Location(line=192, column=6), end=Location(line=192, column=10))
+tu_region_001106 = TranslationUnitRegion(begin=Location(line=192, column=13), end=Location(line=192, column=18))
+tu_region_001107 = TranslationUnitRegion(begin=Location(line=192, column=5), end=Location(line=192, column=19))
+tu_region_001108 = TranslationUnitRegion(begin=Location(line=192, column=33), end=Location(line=192, column=38))
+tu_region_001109 = TranslationUnitRegion(begin=Location(line=192, column=5), end=Location(line=192, column=38))
+tu_region_001110 = TranslationUnitRegion(begin=Location(line=192, column=20), end=Location(line=192, column=30))
+tu_region_001111 = TranslationUnitRegion(begin=Location(line=193, column=6), end=Location(line=193, column=10))
+tu_region_001112 = TranslationUnitRegion(begin=Location(line=193, column=13), end=Location(line=193, column=18))
+tu_region_001113 = TranslationUnitRegion(begin=Location(line=193, column=5), end=Location(line=193, column=19))
+tu_region_001114 = TranslationUnitRegion(begin=Location(line=193, column=33), end=Location(line=193, column=38))
+tu_region_001115 = TranslationUnitRegion(begin=Location(line=193, column=5), end=Location(line=193, column=38))
+tu_region_001116 = TranslationUnitRegion(begin=Location(line=193, column=20), end=Location(line=193, column=30))
+tu_region_001117 = TranslationUnitRegion(begin=Location(line=191, column=22), end=Location(line=194, column=2))
+tu_region_001118 = TranslationUnitRegion(begin=Location(line=192, column=5), end=Location(line=193, column=39))
+tu_region_001119 = TranslationUnitRegion(begin=Location(line=191, column=1), end=Location(line=197, column=1))
+tu_region_001120 = TranslationUnitRegion(begin=Location(line=191, column=1), end=Location(line=191, column=7))
+tu_region_001121 = TranslationUnitRegion(begin=Location(line=191, column=8), end=Location(line=191, column=21))
+tu_region_001122 = TranslationUnitRegion(begin=Location(line=201, column=66), end=Location(line=201, column=68))
+tu_region_001123 = TranslationUnitRegion(begin=Location(line=201, column=83), end=Location(line=201, column=88))
+tu_region_001124 = TranslationUnitRegion(begin=Location(line=201, column=70), end=Location(line=201, column=88))
+tu_region_001125 = TranslationUnitRegion(begin=Location(line=201, column=70), end=Location(line=201, column=80))
+tu_region_001126 = TranslationUnitRegion(begin=Location(line=201, column=104), end=Location(line=201, column=110))
+tu_region_001127 = TranslationUnitRegion(begin=Location(line=201, column=90), end=Location(line=201, column=110))
+tu_region_001128 = TranslationUnitRegion(begin=Location(line=201, column=90), end=Location(line=201, column=101))
+tu_region_001129 = TranslationUnitRegion(begin=Location(line=201, column=56), end=Location(line=201, column=120))
+tu_region_001130 = TranslationUnitRegion(begin=Location(line=201, column=135), end=Location(line=201, column=145))
+tu_region_001131 = TranslationUnitRegion(begin=Location(line=201, column=122), end=Location(line=201, column=145))
+tu_region_001132 = TranslationUnitRegion(begin=Location(line=201, column=122), end=Location(line=201, column=132))
+tu_region_001133 = TranslationUnitRegion(begin=Location(line=201, column=160), end=Location(line=201, column=170))
+tu_region_001134 = TranslationUnitRegion(begin=Location(line=201, column=147), end=Location(line=201, column=170))
+tu_region_001135 = TranslationUnitRegion(begin=Location(line=201, column=147), end=Location(line=201, column=157))
+tu_region_001136 = TranslationUnitRegion(begin=Location(line=201, column=121), end=Location(line=201, column=171))
+tu_region_001137 = TranslationUnitRegion(begin=Location(line=201, column=47), end=Location(line=201, column=171))
+tu_region_001138 = TranslationUnitRegion(begin=Location(line=201, column=47), end=Location(line=201, column=55))
+tu_region_001139 = TranslationUnitRegion(begin=Location(line=199, column=6), end=Location(line=199, column=10))
+tu_region_001140 = TranslationUnitRegion(begin=Location(line=199, column=13), end=Location(line=199, column=18))
+tu_region_001141 = TranslationUnitRegion(begin=Location(line=199, column=5), end=Location(line=199, column=19))
+tu_region_001142 = TranslationUnitRegion(begin=Location(line=199, column=33), end=Location(line=199, column=38))
+tu_region_001143 = TranslationUnitRegion(begin=Location(line=199, column=5), end=Location(line=199, column=38))
+tu_region_001144 = TranslationUnitRegion(begin=Location(line=199, column=20), end=Location(line=199, column=30))
+tu_region_001145 = TranslationUnitRegion(begin=Location(line=200, column=6), end=Location(line=200, column=10))
+tu_region_001146 = TranslationUnitRegion(begin=Location(line=200, column=13), end=Location(line=200, column=18))
+tu_region_001147 = TranslationUnitRegion(begin=Location(line=200, column=5), end=Location(line=200, column=19))
+tu_region_001148 = TranslationUnitRegion(begin=Location(line=200, column=33), end=Location(line=200, column=38))
+tu_region_001149 = TranslationUnitRegion(begin=Location(line=200, column=5), end=Location(line=200, column=38))
+tu_region_001150 = TranslationUnitRegion(begin=Location(line=200, column=20), end=Location(line=200, column=30))
+tu_region_001151 = TranslationUnitRegion(begin=Location(line=198, column=15), end=Location(line=201, column=2))
+tu_region_001152 = TranslationUnitRegion(begin=Location(line=199, column=5), end=Location(line=200, column=39))
+tu_region_001153 = TranslationUnitRegion(begin=Location(line=198, column=1), end=Location(line=203, column=1))
+tu_region_001154 = TranslationUnitRegion(begin=Location(line=198, column=1), end=Location(line=198, column=7))
+tu_region_001155 = TranslationUnitRegion(begin=Location(line=198, column=8), end=Location(line=198, column=14))
+tu_region_001156 = TranslationUnitRegion(begin=Location(line=206, column=66), end=Location(line=206, column=68))
+tu_region_001157 = TranslationUnitRegion(begin=Location(line=206, column=83), end=Location(line=206, column=88))
+tu_region_001158 = TranslationUnitRegion(begin=Location(line=206, column=70), end=Location(line=206, column=88))
+tu_region_001159 = TranslationUnitRegion(begin=Location(line=206, column=70), end=Location(line=206, column=80))
+tu_region_001160 = TranslationUnitRegion(begin=Location(line=206, column=104), end=Location(line=206, column=109))
+tu_region_001161 = TranslationUnitRegion(begin=Location(line=206, column=90), end=Location(line=206, column=109))
+tu_region_001162 = TranslationUnitRegion(begin=Location(line=206, column=90), end=Location(line=206, column=101))
+tu_region_001163 = TranslationUnitRegion(begin=Location(line=206, column=56), end=Location(line=206, column=119))
+tu_region_001164 = TranslationUnitRegion(begin=Location(line=206, column=134), end=Location(line=206, column=144))
+tu_region_001165 = TranslationUnitRegion(begin=Location(line=206, column=121), end=Location(line=206, column=144))
+tu_region_001166 = TranslationUnitRegion(begin=Location(line=206, column=121), end=Location(line=206, column=131))
+tu_region_001167 = TranslationUnitRegion(begin=Location(line=206, column=159), end=Location(line=206, column=169))
+tu_region_001168 = TranslationUnitRegion(begin=Location(line=206, column=146), end=Location(line=206, column=169))
+tu_region_001169 = TranslationUnitRegion(begin=Location(line=206, column=146), end=Location(line=206, column=156))
+tu_region_001170 = TranslationUnitRegion(begin=Location(line=206, column=120), end=Location(line=206, column=170))
+tu_region_001171 = TranslationUnitRegion(begin=Location(line=206, column=47), end=Location(line=206, column=170))
+tu_region_001172 = TranslationUnitRegion(begin=Location(line=206, column=47), end=Location(line=206, column=55))
+tu_region_001173 = TranslationUnitRegion(begin=Location(line=204, column=6), end=Location(line=204, column=10))
+tu_region_001174 = TranslationUnitRegion(begin=Location(line=204, column=13), end=Location(line=204, column=18))
+tu_region_001175 = TranslationUnitRegion(begin=Location(line=204, column=5), end=Location(line=204, column=19))
+tu_region_001176 = TranslationUnitRegion(begin=Location(line=204, column=33), end=Location(line=204, column=38))
+tu_region_001177 = TranslationUnitRegion(begin=Location(line=204, column=5), end=Location(line=204, column=38))
+tu_region_001178 = TranslationUnitRegion(begin=Location(line=204, column=20), end=Location(line=204, column=30))
+tu_region_001179 = TranslationUnitRegion(begin=Location(line=205, column=6), end=Location(line=205, column=10))
+tu_region_001180 = TranslationUnitRegion(begin=Location(line=205, column=13), end=Location(line=205, column=18))
+tu_region_001181 = TranslationUnitRegion(begin=Location(line=205, column=5), end=Location(line=205, column=19))
+tu_region_001182 = TranslationUnitRegion(begin=Location(line=205, column=33), end=Location(line=205, column=38))
+tu_region_001183 = TranslationUnitRegion(begin=Location(line=205, column=5), end=Location(line=205, column=38))
+tu_region_001184 = TranslationUnitRegion(begin=Location(line=205, column=20), end=Location(line=205, column=30))
+tu_region_001185 = TranslationUnitRegion(begin=Location(line=203, column=22), end=Location(line=206, column=2))
+tu_region_001186 = TranslationUnitRegion(begin=Location(line=204, column=5), end=Location(line=205, column=39))
+tu_region_001187 = TranslationUnitRegion(begin=Location(line=203, column=1), end=Location(line=208, column=1))
+tu_region_001188 = TranslationUnitRegion(begin=Location(line=203, column=1), end=Location(line=203, column=7))
+tu_region_001189 = TranslationUnitRegion(begin=Location(line=203, column=8), end=Location(line=203, column=21))
+tu_region_001190 = TranslationUnitRegion(begin=Location(line=211, column=66), end=Location(line=211, column=68))
+tu_region_001191 = TranslationUnitRegion(begin=Location(line=211, column=83), end=Location(line=211, column=89))
+tu_region_001192 = TranslationUnitRegion(begin=Location(line=211, column=70), end=Location(line=211, column=89))
+tu_region_001193 = TranslationUnitRegion(begin=Location(line=211, column=70), end=Location(line=211, column=80))
+tu_region_001194 = TranslationUnitRegion(begin=Location(line=211, column=105), end=Location(line=211, column=111))
+tu_region_001195 = TranslationUnitRegion(begin=Location(line=211, column=91), end=Location(line=211, column=111))
+tu_region_001196 = TranslationUnitRegion(begin=Location(line=211, column=91), end=Location(line=211, column=102))
+tu_region_001197 = TranslationUnitRegion(begin=Location(line=211, column=56), end=Location(line=211, column=121))
+tu_region_001198 = TranslationUnitRegion(begin=Location(line=211, column=47), end=Location(line=211, column=121))
+tu_region_001199 = TranslationUnitRegion(begin=Location(line=211, column=47), end=Location(line=211, column=55))
+tu_region_001200 = TranslationUnitRegion(begin=Location(line=209, column=6), end=Location(line=209, column=10))
+tu_region_001201 = TranslationUnitRegion(begin=Location(line=209, column=13), end=Location(line=209, column=18))
+tu_region_001202 = TranslationUnitRegion(begin=Location(line=209, column=5), end=Location(line=209, column=19))
+tu_region_001203 = TranslationUnitRegion(begin=Location(line=209, column=33), end=Location(line=209, column=38))
+tu_region_001204 = TranslationUnitRegion(begin=Location(line=209, column=5), end=Location(line=209, column=38))
+tu_region_001205 = TranslationUnitRegion(begin=Location(line=209, column=20), end=Location(line=209, column=30))
+tu_region_001206 = TranslationUnitRegion(begin=Location(line=210, column=6), end=Location(line=210, column=10))
+tu_region_001207 = TranslationUnitRegion(begin=Location(line=210, column=13), end=Location(line=210, column=18))
+tu_region_001208 = TranslationUnitRegion(begin=Location(line=210, column=5), end=Location(line=210, column=19))
+tu_region_001209 = TranslationUnitRegion(begin=Location(line=210, column=33), end=Location(line=210, column=38))
+tu_region_001210 = TranslationUnitRegion(begin=Location(line=210, column=5), end=Location(line=210, column=38))
+tu_region_001211 = TranslationUnitRegion(begin=Location(line=210, column=20), end=Location(line=210, column=30))
+tu_region_001212 = TranslationUnitRegion(begin=Location(line=208, column=16), end=Location(line=211, column=2))
+tu_region_001213 = TranslationUnitRegion(begin=Location(line=209, column=5), end=Location(line=210, column=39))
+tu_region_001214 = TranslationUnitRegion(begin=Location(line=208, column=1), end=Location(line=213, column=1))
+tu_region_001215 = TranslationUnitRegion(begin=Location(line=208, column=1), end=Location(line=208, column=7))
+tu_region_001216 = TranslationUnitRegion(begin=Location(line=208, column=8), end=Location(line=208, column=15))
+tu_region_001217 = TranslationUnitRegion(begin=Location(line=216, column=66), end=Location(line=216, column=68))
+tu_region_001218 = TranslationUnitRegion(begin=Location(line=216, column=83), end=Location(line=216, column=89))
+tu_region_001219 = TranslationUnitRegion(begin=Location(line=216, column=70), end=Location(line=216, column=89))
+tu_region_001220 = TranslationUnitRegion(begin=Location(line=216, column=70), end=Location(line=216, column=80))
+tu_region_001221 = TranslationUnitRegion(begin=Location(line=216, column=105), end=Location(line=216, column=110))
+tu_region_001222 = TranslationUnitRegion(begin=Location(line=216, column=91), end=Location(line=216, column=110))
+tu_region_001223 = TranslationUnitRegion(begin=Location(line=216, column=91), end=Location(line=216, column=102))
+tu_region_001224 = TranslationUnitRegion(begin=Location(line=216, column=56), end=Location(line=216, column=120))
+tu_region_001225 = TranslationUnitRegion(begin=Location(line=216, column=47), end=Location(line=216, column=120))
+tu_region_001226 = TranslationUnitRegion(begin=Location(line=216, column=47), end=Location(line=216, column=55))
+tu_region_001227 = TranslationUnitRegion(begin=Location(line=214, column=6), end=Location(line=214, column=10))
+tu_region_001228 = TranslationUnitRegion(begin=Location(line=214, column=13), end=Location(line=214, column=18))
+tu_region_001229 = TranslationUnitRegion(begin=Location(line=214, column=5), end=Location(line=214, column=19))
+tu_region_001230 = TranslationUnitRegion(begin=Location(line=214, column=33), end=Location(line=214, column=38))
+tu_region_001231 = TranslationUnitRegion(begin=Location(line=214, column=5), end=Location(line=214, column=38))
+tu_region_001232 = TranslationUnitRegion(begin=Location(line=214, column=20), end=Location(line=214, column=30))
+tu_region_001233 = TranslationUnitRegion(begin=Location(line=215, column=6), end=Location(line=215, column=10))
+tu_region_001234 = TranslationUnitRegion(begin=Location(line=215, column=13), end=Location(line=215, column=18))
+tu_region_001235 = TranslationUnitRegion(begin=Location(line=215, column=5), end=Location(line=215, column=19))
+tu_region_001236 = TranslationUnitRegion(begin=Location(line=215, column=33), end=Location(line=215, column=38))
+tu_region_001237 = TranslationUnitRegion(begin=Location(line=215, column=5), end=Location(line=215, column=38))
+tu_region_001238 = TranslationUnitRegion(begin=Location(line=215, column=20), end=Location(line=215, column=30))
+tu_region_001239 = TranslationUnitRegion(begin=Location(line=213, column=23), end=Location(line=216, column=2))
+tu_region_001240 = TranslationUnitRegion(begin=Location(line=214, column=5), end=Location(line=215, column=39))
+tu_region_001241 = TranslationUnitRegion(begin=Location(line=213, column=1), end=Location(line=219, column=1))
+tu_region_001242 = TranslationUnitRegion(begin=Location(line=213, column=1), end=Location(line=213, column=7))
+tu_region_001243 = TranslationUnitRegion(begin=Location(line=213, column=8), end=Location(line=213, column=22))
+tu_region_001244 = TranslationUnitRegion(begin=Location(line=220, column=4), end=Location(line=220, column=25))
+tu_region_001245 = TranslationUnitRegion(begin=Location(line=220, column=29), end=Location(line=220, column=30))
+tu_region_001246 = TranslationUnitRegion(begin=Location(line=220, column=4), end=Location(line=220, column=30))
+tu_region_001247 = TranslationUnitRegion(begin=Location(line=220, column=26), end=Location(line=220, column=28))
+tu_region_001248 = TranslationUnitRegion(begin=Location(line=221, column=47), end=Location(line=221, column=52))
+tu_region_001249 = TranslationUnitRegion(begin=Location(line=221, column=5), end=Location(line=222, column=1))
+tu_region_001250 = TranslationUnitRegion(begin=Location(line=221, column=5), end=Location(line=221, column=11))
+tu_region_001251 = TranslationUnitRegion(begin=Location(line=221, column=12), end=Location(line=221, column=19))
+tu_region_001252 = TranslationUnitRegion(begin=Location(line=222, column=47), end=Location(line=222, column=59))
+tu_region_001253 = TranslationUnitRegion(begin=Location(line=222, column=5), end=Location(line=224, column=1))
+tu_region_001254 = TranslationUnitRegion(begin=Location(line=222, column=5), end=Location(line=222, column=11))
+tu_region_001255 = TranslationUnitRegion(begin=Location(line=222, column=12), end=Location(line=222, column=26))
+tu_region_001256 = TranslationUnitRegion(begin=Location(line=224, column=47), end=Location(line=224, column=53))
+tu_region_001257 = TranslationUnitRegion(begin=Location(line=224, column=5), end=Location(line=225, column=1))
+tu_region_001258 = TranslationUnitRegion(begin=Location(line=224, column=5), end=Location(line=224, column=11))
+tu_region_001259 = TranslationUnitRegion(begin=Location(line=224, column=12), end=Location(line=224, column=20))
+tu_region_001260 = TranslationUnitRegion(begin=Location(line=225, column=47), end=Location(line=225, column=60))
+tu_region_001261 = TranslationUnitRegion(begin=Location(line=225, column=5), end=Location(line=227, column=1))
+tu_region_001262 = TranslationUnitRegion(begin=Location(line=225, column=5), end=Location(line=225, column=11))
+tu_region_001263 = TranslationUnitRegion(begin=Location(line=225, column=12), end=Location(line=225, column=27))
+tu_region_001264 = TranslationUnitRegion(begin=Location(line=220, column=1), end=Location(line=236, column=1))
+tu_region_001265 = TranslationUnitRegion(begin=Location(line=220, column=30), end=Location(line=227, column=1))
+tu_region_001266 = TranslationUnitRegion(begin=Location(line=227, column=6), end=Location(line=227, column=27))
+tu_region_001267 = TranslationUnitRegion(begin=Location(line=227, column=31), end=Location(line=227, column=32))
+tu_region_001268 = TranslationUnitRegion(begin=Location(line=227, column=6), end=Location(line=227, column=32))
+tu_region_001269 = TranslationUnitRegion(begin=Location(line=227, column=28), end=Location(line=227, column=30))
+tu_region_001270 = TranslationUnitRegion(begin=Location(line=228, column=47), end=Location(line=228, column=52))
+tu_region_001271 = TranslationUnitRegion(begin=Location(line=228, column=5), end=Location(line=229, column=1))
+tu_region_001272 = TranslationUnitRegion(begin=Location(line=228, column=5), end=Location(line=228, column=11))
+tu_region_001273 = TranslationUnitRegion(begin=Location(line=228, column=12), end=Location(line=228, column=19))
+tu_region_001274 = TranslationUnitRegion(begin=Location(line=229, column=47), end=Location(line=229, column=59))
+tu_region_001275 = TranslationUnitRegion(begin=Location(line=229, column=5), end=Location(line=231, column=1))
+tu_region_001276 = TranslationUnitRegion(begin=Location(line=229, column=5), end=Location(line=229, column=11))
+tu_region_001277 = TranslationUnitRegion(begin=Location(line=229, column=12), end=Location(line=229, column=26))
+tu_region_001278 = TranslationUnitRegion(begin=Location(line=231, column=47), end=Location(line=231, column=53))
+tu_region_001279 = TranslationUnitRegion(begin=Location(line=231, column=5), end=Location(line=232, column=1))
+tu_region_001280 = TranslationUnitRegion(begin=Location(line=231, column=5), end=Location(line=231, column=11))
+tu_region_001281 = TranslationUnitRegion(begin=Location(line=231, column=12), end=Location(line=231, column=20))
+tu_region_001282 = TranslationUnitRegion(begin=Location(line=232, column=47), end=Location(line=232, column=60))
+tu_region_001283 = TranslationUnitRegion(begin=Location(line=232, column=5), end=Location(line=234, column=1))
+tu_region_001284 = TranslationUnitRegion(begin=Location(line=232, column=5), end=Location(line=232, column=11))
+tu_region_001285 = TranslationUnitRegion(begin=Location(line=232, column=12), end=Location(line=232, column=27))
+tu_region_001286 = TranslationUnitRegion(begin=Location(line=227, column=1), end=Location(line=234, column=1))
+tu_region_001287 = TranslationUnitRegion(begin=Location(line=227, column=32), end=Location(line=234, column=1))
+tu_region_001288 = TranslationUnitRegion(begin=Location(line=235, column=5), end=Location(line=235, column=11))
+tu_region_001289 = TranslationUnitRegion(begin=Location(line=235, column=12), end=Location(line=235, column=38))
+tu_region_001290 = TranslationUnitRegion(begin=Location(line=235, column=40), end=Location(line=235, column=61))
+tu_region_001291 = TranslationUnitRegion(begin=Location(line=235, column=11), end=Location(line=235, column=62))
+tu_region_001292 = TranslationUnitRegion(begin=Location(line=235, column=5), end=Location(line=235, column=62))
+tu_region_001293 = TranslationUnitRegion(begin=Location(line=235, column=5), end=Location(line=236, column=1))
+tu_region_001294 = TranslationUnitRegion(begin=Location(line=234, column=1), end=Location(line=236, column=1))
+tu_region_001295 = TranslationUnitRegion(begin=Location(line=234, column=5), end=Location(line=236, column=1))
+tu_region_001296 = TranslationUnitRegion(begin=Location(line=1, column=1), end=Location(line=236, column=1))
 
 
 # ----------------------------------------------------------------------
@@ -1022,374 +1362,110 @@ statement_000001 = AggregateParserInfo(
     parser_infos=[statement_000000, ],
 )
 
-statement_000002 = FuncOrTypeExpressionParserInfo.Create(
+statement_000002 = VariableExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000003, tu_region_000003, None],
-    value=IntegerType(),
+    regions=[tu_region_000003, tu_region_000003],
+    name=r"min_value!",
+)
+
+statement_000003 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000003, None],
+    expression=statement_000002,
+    keyword=None,
+)
+
+statement_000004 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000004, tu_region_000004],
+    name=r"max_value!",
+)
+
+statement_000005 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000004, None],
+    expression=statement_000004,
+    keyword=None,
+)
+
+statement_000006 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000005, tu_region_000005],
+    arguments=[statement_000003, statement_000005, ],
+)
+
+statement_000007 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000006, tu_region_000007, None],
+    value="MutableInt",
     templates=None,
-    constraints=None,
+    constraints=statement_000006,
     mutability_modifier=None,
 )
 
-statement_000003 = TemplateDecoratorParameterParserInfo.Create(
-    regions=[tu_region_000004, tu_region_000005],
-    type=statement_000002,
-    name=r"num_bytes!",
-    default_value=None,
-)
-
-statement_000004 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000006, tu_region_000006, None],
-    value=BooleanType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
-)
-
-statement_000005 = TemplateDecoratorParameterParserInfo.Create(
-    regions=[tu_region_000007, tu_region_000008],
-    type=statement_000004,
-    name=r"is_checked!",
-    default_value=None,
-)
-
-statement_000006 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000009, tu_region_000009, None],
-    value=BooleanType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
-)
-
-statement_000007 = TemplateDecoratorParameterParserInfo.Create(
-    regions=[tu_region_000010, tu_region_000011],
-    type=statement_000006,
-    name=r"is_signed!",
-    default_value=None,
-)
-
-statement_000008 = TemplateParametersParserInfo.Create(
-    regions=[tu_region_000012, tu_region_000013, None, tu_region_000014],
-    positional=[statement_000003, ],
-    any=None,
-    keyword=[statement_000005, statement_000007, ],
+statement_000008 = ClassStatementDependencyParserInfo.Create(
+    regions=[tu_region_000008, tu_region_000009],
+    visibility=VisibilityModifier.public,
+    type=statement_000007,
 )
 
 statement_000009 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000015, tu_region_000015, None],
-    value=IntegerType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
-)
-
-statement_000010 = ConstraintParameterParserInfo.Create(
-    regions=[tu_region_000016, tu_region_000017],
-    type=statement_000009,
-    name=r"min_value!",
-    default_value=None,
-)
-
-statement_000011 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000018, tu_region_000018, None],
-    value=IntegerType(),
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
-)
-
-statement_000012 = ConstraintParameterParserInfo.Create(
-    regions=[tu_region_000019, tu_region_000020],
-    type=statement_000011,
-    name=r"max_value!",
-    default_value=None,
-)
-
-statement_000013 = ConstraintParametersParserInfo.Create(
-    regions=[tu_region_000021, None, tu_region_000022, None],
-    positional=None,
-    any=[statement_000010, statement_000012, ],
-    keyword=None,
-)
-
-statement_000014 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000023, tu_region_000023],
-    name=r"min_value!",
-)
-
-statement_000015 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000023, None],
-    expression=statement_000014,
-    keyword=None,
-)
-
-statement_000016 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000024, tu_region_000024],
-    name=r"max_value!",
-)
-
-statement_000017 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000024, None],
-    expression=statement_000016,
-    keyword=None,
-)
-
-statement_000018 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000025, tu_region_000025],
-    arguments=[statement_000015, statement_000017, ],
-)
-
-statement_000019 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000026, tu_region_000027, None],
-    value="MutableInt",
-    templates=None,
-    constraints=statement_000018,
-    mutability_modifier=None,
-)
-
-statement_000020 = ClassStatementDependencyParserInfo.Create(
-    regions=[tu_region_000028, tu_region_000029],
-    visibility=VisibilityModifier.public,
-    type=statement_000019,
-)
-
-statement_000021 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000030, tu_region_000030, None],
-    value=EnforceExpression,
-    templates=None,
-    constraints=None,
-    mutability_modifier=None,
-)
-
-statement_000022 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000031, tu_region_000031],
-    name=r"num_bytes!",
-)
-
-statement_000023 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000032],
-    value=1,
-)
-
-statement_000024 = BinaryExpressionParserInfo.Create(
-    regions=[tu_region_000033, tu_region_000034],
-    left_expression=statement_000022,
-    operator=BinaryExpressionOperatorType.Equal,
-    right_expression=statement_000023,
-)
-
-statement_000025 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000035, tu_region_000035],
-    name=r"num_bytes!",
-)
-
-statement_000026 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000036],
-    value=2,
-)
-
-statement_000027 = BinaryExpressionParserInfo.Create(
-    regions=[tu_region_000037, tu_region_000038],
-    left_expression=statement_000025,
-    operator=BinaryExpressionOperatorType.Equal,
-    right_expression=statement_000026,
-)
-
-statement_000028 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000039, tu_region_000039],
-    name=r"num_bytes!",
-)
-
-statement_000029 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000040],
-    value=4,
-)
-
-statement_000030 = BinaryExpressionParserInfo.Create(
-    regions=[tu_region_000041, tu_region_000042],
-    left_expression=statement_000028,
-    operator=BinaryExpressionOperatorType.Equal,
-    right_expression=statement_000029,
-)
-
-statement_000031 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000043, tu_region_000043],
-    name=r"num_bytes!",
-)
-
-statement_000032 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000044],
-    value=8,
-)
-
-statement_000033 = BinaryExpressionParserInfo.Create(
-    regions=[tu_region_000045, tu_region_000046],
-    left_expression=statement_000031,
-    operator=BinaryExpressionOperatorType.Equal,
-    right_expression=statement_000032,
-)
-
-statement_000034 = VariableExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000047, tu_region_000047],
-    name=r"num_bytes!",
-)
-
-statement_000035 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000048],
-    value=16,
-)
-
-statement_000036 = BinaryExpressionParserInfo.Create(
-    regions=[tu_region_000049, tu_region_000050],
-    left_expression=statement_000034,
-    operator=BinaryExpressionOperatorType.Equal,
-    right_expression=statement_000035,
-)
-
-statement_000037 = BinaryExpressionParserInfo.Create(
-    regions=[tu_region_000051, tu_region_000052],
-    left_expression=statement_000033,
-    operator=BinaryExpressionOperatorType.LogicalOr,
-    right_expression=statement_000036,
-)
-
-statement_000038 = BinaryExpressionParserInfo.Create(
-    regions=[tu_region_000053, tu_region_000054],
-    left_expression=statement_000030,
-    operator=BinaryExpressionOperatorType.LogicalOr,
-    right_expression=statement_000037,
-)
-
-statement_000039 = BinaryExpressionParserInfo.Create(
-    regions=[tu_region_000055, tu_region_000056],
-    left_expression=statement_000027,
-    operator=BinaryExpressionOperatorType.LogicalOr,
-    right_expression=statement_000038,
-)
-
-statement_000040 = BinaryExpressionParserInfo.Create(
-    regions=[tu_region_000057, tu_region_000058],
-    left_expression=statement_000024,
-    operator=BinaryExpressionOperatorType.LogicalOr,
-    right_expression=statement_000039,
-)
-
-statement_000041 = FuncArgumentParserInfo.Create(
-    regions=[tu_region_000057, None],
-    expression=statement_000040,
-    keyword=None,
-)
-
-statement_000042 = FuncArgumentsParserInfo.Create(
-    regions=[tu_region_000059, tu_region_000059],
-    arguments=[statement_000041, ],
-)
-
-statement_000043 = CallExpressionParserInfo.Create(
-    regions=[tu_region_000060, tu_region_000059],
-    expression=statement_000021,
-    arguments=statement_000042,
-)
-
-statement_000044 = FuncInvocationStatementParserInfo.Create(
-    regions=[tu_region_000061],
-    expression=statement_000043,
-)
-
-statement_000045 = SpecialMethodStatementParserInfo.Create(
-    regions=[tu_region_000062, tu_region_000063, tu_region_000064],
-    parent_class_capabilities=StandardCapabilities,
-    name=SpecialMethodType.CompileTimeEvalTemplates,
-    statements=[statement_000044, ],
-)
-
-statement_000046 = PassStatementParserInfo.Create([tu_region_000065])
-statement_000047 = PassStatementParserInfo.Create([tu_region_000066])
-statement_000048 = PassStatementParserInfo.Create([tu_region_000067])
-statement_000049 = PassStatementParserInfo.Create([tu_region_000068])
-statement_000050 = PassStatementParserInfo.Create([tu_region_000069])
-statement_000051 = PassStatementParserInfo.Create([tu_region_000070])
-statement_000052 = PassStatementParserInfo.Create([tu_region_000071])
-statement_000053 = SpecialMethodStatementParserInfo.Create(
-    regions=[tu_region_000072, tu_region_000073, tu_region_000074],
-    parent_class_capabilities=StandardCapabilities,
-    name=SpecialMethodType.CompileTimeEvalConstraints,
-    statements=[statement_000046, statement_000047, statement_000048, statement_000049, statement_000050, statement_000051, statement_000052, ],
-)
-
-statement_000054 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000075, tu_region_000076, tu_region_000077],
+    regions=[tu_region_000010, tu_region_000011, tu_region_000012],
     value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.var,
 )
 
-statement_000055 = TemplateTypeParameterParserInfo.Create(
-    regions=[tu_region_000078, tu_region_000078, None],
+statement_000010 = TemplateTypeParameterParserInfo.Create(
+    regions=[tu_region_000013, tu_region_000013, None],
     name=r"ArchiveT",
     is_variadic=None,
     default_type=None,
 )
 
-statement_000056 = TemplateParametersParserInfo.Create(
-    regions=[tu_region_000079, None, tu_region_000078, None],
+statement_000011 = TemplateParametersParserInfo.Create(
+    regions=[tu_region_000014, None, tu_region_000013, None],
     positional=None,
-    any=[statement_000055, ],
+    any=[statement_000010, ],
     keyword=None,
 )
 
-statement_000057 = FuncOrTypeExpressionParserInfo.Create(
+statement_000012 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000080, tu_region_000081, tu_region_000082],
+    regions=[tu_region_000015, tu_region_000016, tu_region_000017],
     value="ArchiveT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
 )
 
-statement_000058 = FuncParameterParserInfo.Create(
+statement_000013 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000083, None, tu_region_000084],  # type: ignore
-    type=statement_000057,
+    regions=[tu_region_000018, None, tu_region_000019],  # type: ignore
+    type=statement_000012,
     is_variadic=None,
     name=r"archive",
     default_value=None,
 )
 
-statement_000059 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000085, None, tu_region_000083, None],
+statement_000014 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000020, None, tu_region_000018, None],
     positional=None,
-    any=[statement_000058, ],
+    any=[statement_000013, ],
     keyword=None,
 )
 
-statement_000060 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000086, tu_region_000089, tu_region_000087, None, tu_region_000086, tu_region_000085, None, tu_region_000088, None, None, tu_region_000090, None, tu_region_000091],
+statement_000015 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000021, tu_region_000024, tu_region_000022, None, tu_region_000021, tu_region_000020, None, tu_region_000023, None, None, tu_region_000025, None, tu_region_000026],
     name=r"OperatorType.Deserialize",
     visibility_param=VisibilityModifier.public,
     statements=None,
-    templates_param=statement_000056,
+    templates_param=statement_000011,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000059,
+    parameters=statement_000014,
     mutability_param=None,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000054,
+    return_type=statement_000009,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
@@ -1397,54 +1473,54 @@ statement_000060 = FuncDefinitionStatementParserInfo.Create(
     is_static=True,
 )
 
-statement_000061 = TemplateTypeParameterParserInfo.Create(
-    regions=[tu_region_000092, tu_region_000092, None],
+statement_000016 = TemplateTypeParameterParserInfo.Create(
+    regions=[tu_region_000027, tu_region_000027, None],
     name=r"ArchiveT",
     is_variadic=None,
     default_type=None,
 )
 
-statement_000062 = TemplateParametersParserInfo.Create(
-    regions=[tu_region_000093, None, tu_region_000092, None],
+statement_000017 = TemplateParametersParserInfo.Create(
+    regions=[tu_region_000028, None, tu_region_000027, None],
     positional=None,
-    any=[statement_000061, ],
+    any=[statement_000016, ],
     keyword=None,
 )
 
-statement_000063 = FuncOrTypeExpressionParserInfo.Create(
+statement_000018 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000094, tu_region_000095, tu_region_000096],
+    regions=[tu_region_000029, tu_region_000030, tu_region_000031],
     value="ArchiveT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
 )
 
-statement_000064 = FuncParameterParserInfo.Create(
+statement_000019 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000097, None, tu_region_000098],  # type: ignore
-    type=statement_000063,
+    regions=[tu_region_000032, None, tu_region_000033],  # type: ignore
+    type=statement_000018,
     is_variadic=None,
     name=r"archive",
     default_value=None,
 )
 
-statement_000065 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000099, None, tu_region_000097, None],
+statement_000020 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000034, None, tu_region_000032, None],
     positional=None,
-    any=[statement_000064, ],
+    any=[statement_000019, ],
     keyword=None,
 )
 
-statement_000066 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000100, tu_region_000104, tu_region_000101, None, tu_region_000100, tu_region_000099, tu_region_000102, tu_region_000103, None, None, tu_region_000105, None, None],
+statement_000021 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000035, tu_region_000039, tu_region_000036, None, tu_region_000035, tu_region_000034, tu_region_000037, tu_region_000038, None, None, tu_region_000040, None, None],
     name=r"OperatorType.Serialize",
     visibility_param=VisibilityModifier.public,
     statements=None,
-    templates_param=statement_000062,
+    templates_param=statement_000017,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000065,
+    parameters=statement_000020,
     mutability_param=MutabilityModifier.immutable,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -1455,54 +1531,54 @@ statement_000066 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000067 = TemplateTypeParameterParserInfo.Create(
-    regions=[tu_region_000106, tu_region_000106, None],
+statement_000022 = TemplateTypeParameterParserInfo.Create(
+    regions=[tu_region_000041, tu_region_000041, None],
     name=r"ArchiveT",
     is_variadic=None,
     default_type=None,
 )
 
-statement_000068 = TemplateParametersParserInfo.Create(
-    regions=[tu_region_000107, None, tu_region_000106, None],
+statement_000023 = TemplateParametersParserInfo.Create(
+    regions=[tu_region_000042, None, tu_region_000041, None],
     positional=None,
-    any=[statement_000067, ],
+    any=[statement_000022, ],
     keyword=None,
 )
 
-statement_000069 = FuncOrTypeExpressionParserInfo.Create(
+statement_000024 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000108, tu_region_000109, tu_region_000110],
+    regions=[tu_region_000043, tu_region_000044, tu_region_000045],
     value="ArchiveT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
 )
 
-statement_000070 = FuncParameterParserInfo.Create(
+statement_000025 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000111, None, tu_region_000112],  # type: ignore
-    type=statement_000069,
+    regions=[tu_region_000046, None, tu_region_000047],  # type: ignore
+    type=statement_000024,
     is_variadic=None,
     name=r"archive",
     default_value=None,
 )
 
-statement_000071 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000113, None, tu_region_000111, None],
+statement_000026 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000048, None, tu_region_000046, None],
     positional=None,
-    any=[statement_000070, ],
+    any=[statement_000025, ],
     keyword=None,
 )
 
-statement_000072 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000114, tu_region_000118, tu_region_000115, None, tu_region_000114, tu_region_000113, tu_region_000116, tu_region_000117, None, None, tu_region_000119, None, None],
+statement_000027 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000049, tu_region_000053, tu_region_000050, None, tu_region_000049, tu_region_000048, tu_region_000051, tu_region_000052, None, None, tu_region_000054, None, None],
     name=r"OperatorType.Serialize",
     visibility_param=VisibilityModifier.public,
     statements=None,
-    templates_param=statement_000068,
+    templates_param=statement_000023,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000071,
+    parameters=statement_000026,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -1513,54 +1589,54 @@ statement_000072 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000073 = TemplateTypeParameterParserInfo.Create(
-    regions=[tu_region_000120, tu_region_000120, None],
+statement_000028 = TemplateTypeParameterParserInfo.Create(
+    regions=[tu_region_000055, tu_region_000055, None],
     name=r"VisitorT",
     is_variadic=None,
     default_type=None,
 )
 
-statement_000074 = TemplateParametersParserInfo.Create(
-    regions=[tu_region_000121, None, tu_region_000120, None],
+statement_000029 = TemplateParametersParserInfo.Create(
+    regions=[tu_region_000056, None, tu_region_000055, None],
     positional=None,
-    any=[statement_000073, ],
+    any=[statement_000028, ],
     keyword=None,
 )
 
-statement_000075 = FuncOrTypeExpressionParserInfo.Create(
+statement_000030 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000122, tu_region_000123, tu_region_000124],
+    regions=[tu_region_000057, tu_region_000058, tu_region_000059],
     value="VisitorT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
 )
 
-statement_000076 = FuncParameterParserInfo.Create(
+statement_000031 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000125, None, tu_region_000126],  # type: ignore
-    type=statement_000075,
+    regions=[tu_region_000060, None, tu_region_000061],  # type: ignore
+    type=statement_000030,
     is_variadic=None,
     name=r"visitor",
     default_value=None,
 )
 
-statement_000077 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000127, None, tu_region_000125, None],
+statement_000032 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000062, None, tu_region_000060, None],
     positional=None,
-    any=[statement_000076, ],
+    any=[statement_000031, ],
     keyword=None,
 )
 
-statement_000078 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000128, tu_region_000132, tu_region_000129, None, tu_region_000128, tu_region_000127, tu_region_000130, tu_region_000131, None, None, tu_region_000133, None, None],
+statement_000033 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000063, tu_region_000067, tu_region_000064, None, tu_region_000063, tu_region_000062, tu_region_000065, tu_region_000066, None, None, tu_region_000068, None, None],
     name=r"OperatorType.Accept",
     visibility_param=VisibilityModifier.public,
     statements=None,
-    templates_param=statement_000074,
+    templates_param=statement_000029,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000077,
+    parameters=statement_000032,
     mutability_param=MutabilityModifier.immutable,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -1571,54 +1647,54 @@ statement_000078 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000079 = TemplateTypeParameterParserInfo.Create(
-    regions=[tu_region_000134, tu_region_000134, None],
+statement_000034 = TemplateTypeParameterParserInfo.Create(
+    regions=[tu_region_000069, tu_region_000069, None],
     name=r"VisitorT",
     is_variadic=None,
     default_type=None,
 )
 
-statement_000080 = TemplateParametersParserInfo.Create(
-    regions=[tu_region_000135, None, tu_region_000134, None],
+statement_000035 = TemplateParametersParserInfo.Create(
+    regions=[tu_region_000070, None, tu_region_000069, None],
     positional=None,
-    any=[statement_000079, ],
+    any=[statement_000034, ],
     keyword=None,
 )
 
-statement_000081 = FuncOrTypeExpressionParserInfo.Create(
+statement_000036 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000136, tu_region_000137, tu_region_000138],
+    regions=[tu_region_000071, tu_region_000072, tu_region_000073],
     value="VisitorT",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.ref,
 )
 
-statement_000082 = FuncParameterParserInfo.Create(
+statement_000037 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000139, None, tu_region_000140],  # type: ignore
-    type=statement_000081,
+    regions=[tu_region_000074, None, tu_region_000075],  # type: ignore
+    type=statement_000036,
     is_variadic=None,
     name=r"visitor",
     default_value=None,
 )
 
-statement_000083 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000141, None, tu_region_000139, None],
+statement_000038 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000076, None, tu_region_000074, None],
     positional=None,
-    any=[statement_000082, ],
+    any=[statement_000037, ],
     keyword=None,
 )
 
-statement_000084 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000142, tu_region_000146, tu_region_000143, None, tu_region_000142, tu_region_000141, tu_region_000144, tu_region_000145, None, None, tu_region_000147, None, None],
+statement_000039 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000077, tu_region_000081, tu_region_000078, None, tu_region_000077, tu_region_000076, tu_region_000079, tu_region_000080, None, None, tu_region_000082, None, None],
     name=r"OperatorType.Accept",
     visibility_param=VisibilityModifier.public,
     statements=None,
-    templates_param=statement_000080,
+    templates_param=statement_000035,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000083,
+    parameters=statement_000038,
     mutability_param=MutabilityModifier.val,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -1629,9 +1705,510 @@ statement_000084 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
+statement_000040 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000083, tu_region_000084, tu_region_000085],
+    value="ThisType",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.var,
+)
+
+statement_000041 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000086, tu_region_000090, tu_region_000087, None, tu_region_000086, tu_region_000091, tu_region_000088, tu_region_000089, None, None, tu_region_000092, None, None],
+    name=r"OperatorType.Clone",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=True,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000040,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000042 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000093, tu_region_000094, tu_region_000095],
+    value="Bool",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
+)
+
+statement_000043 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000096, tu_region_000100, tu_region_000097, None, tu_region_000096, tu_region_000101, tu_region_000098, tu_region_000099, None, None, tu_region_000102, None, None],
+    name=r"OperatorType.ToBool",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=True,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000042,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000044 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000103, tu_region_000104, tu_region_000105],
+    value="Str",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
+)
+
+statement_000045 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000106, tu_region_000110, tu_region_000107, None, tu_region_000106, tu_region_000111, tu_region_000108, tu_region_000109, None, None, tu_region_000112, None, None],
+    name=r"OperatorType.ToString",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=True,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000044,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000046 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000113, tu_region_000114, tu_region_000115],
+    value="CompareResult",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
+)
+
+statement_000047 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000116, tu_region_000117, tu_region_000118],
+    value="ThisType",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000048 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000119, None, tu_region_000120],  # type: ignore
+    type=statement_000047,
+    is_variadic=None,
+    name=r"this",
+    default_value=None,
+)
+
+statement_000049 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000121, tu_region_000122, tu_region_000123],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000050 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000124, None, tu_region_000125],  # type: ignore
+    type=statement_000049,
+    is_variadic=None,
+    name=r"that",
+    default_value=None,
+)
+
+statement_000051 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000126, None, tu_region_000127, None],
+    positional=None,
+    any=[statement_000048, statement_000050, ],
+    keyword=None,
+)
+
+statement_000052 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000128, tu_region_000131, tu_region_000129, None, tu_region_000128, tu_region_000126, None, tu_region_000130, None, None, tu_region_000132, None, tu_region_000133],
+    name=r"OperatorType.Compare",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000051,
+    mutability_param=None,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000046,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=True,
+)
+
+statement_000053 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000134, tu_region_000135, tu_region_000136],
+    value="Bool",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
+)
+
+statement_000054 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000137, tu_region_000138, tu_region_000139],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000055 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000140, None, tu_region_000141],  # type: ignore
+    type=statement_000054,
+    is_variadic=None,
+    name=r"that",
+    default_value=None,
+)
+
+statement_000056 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000142, None, tu_region_000140, None],
+    positional=None,
+    any=[statement_000055, ],
+    keyword=None,
+)
+
+statement_000057 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000143, tu_region_000147, tu_region_000144, None, tu_region_000143, tu_region_000142, tu_region_000145, tu_region_000146, None, None, tu_region_000148, None, None],
+    name=r"OperatorType.Equal",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000056,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000053,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000058 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000149, tu_region_000150, tu_region_000151],
+    value="Bool",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
+)
+
+statement_000059 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000152, tu_region_000153, tu_region_000154],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000060 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000155, None, tu_region_000156],  # type: ignore
+    type=statement_000059,
+    is_variadic=None,
+    name=r"that",
+    default_value=None,
+)
+
+statement_000061 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000157, None, tu_region_000155, None],
+    positional=None,
+    any=[statement_000060, ],
+    keyword=None,
+)
+
+statement_000062 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000158, tu_region_000162, tu_region_000159, None, tu_region_000158, tu_region_000157, tu_region_000160, tu_region_000161, None, None, tu_region_000163, None, None],
+    name=r"OperatorType.NotEqual",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000061,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000058,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000063 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000164, tu_region_000165, tu_region_000166],
+    value="Bool",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
+)
+
+statement_000064 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000167, tu_region_000168, tu_region_000169],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000065 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000170, None, tu_region_000171],  # type: ignore
+    type=statement_000064,
+    is_variadic=None,
+    name=r"that",
+    default_value=None,
+)
+
+statement_000066 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000172, None, tu_region_000170, None],
+    positional=None,
+    any=[statement_000065, ],
+    keyword=None,
+)
+
+statement_000067 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000173, tu_region_000177, tu_region_000174, None, tu_region_000173, tu_region_000172, tu_region_000175, tu_region_000176, None, None, tu_region_000178, None, None],
+    name=r"OperatorType.Less",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000066,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000063,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000068 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000179, tu_region_000180, tu_region_000181],
+    value="Bool",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
+)
+
+statement_000069 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000182, tu_region_000183, tu_region_000184],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000070 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000185, None, tu_region_000186],  # type: ignore
+    type=statement_000069,
+    is_variadic=None,
+    name=r"that",
+    default_value=None,
+)
+
+statement_000071 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000187, None, tu_region_000185, None],
+    positional=None,
+    any=[statement_000070, ],
+    keyword=None,
+)
+
+statement_000072 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000188, tu_region_000192, tu_region_000189, None, tu_region_000188, tu_region_000187, tu_region_000190, tu_region_000191, None, None, tu_region_000193, None, None],
+    name=r"OperatorType.LessEqual",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000071,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000068,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000073 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000194, tu_region_000195, tu_region_000196],
+    value="Bool",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
+)
+
+statement_000074 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000197, tu_region_000198, tu_region_000199],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000075 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000200, None, tu_region_000201],  # type: ignore
+    type=statement_000074,
+    is_variadic=None,
+    name=r"that",
+    default_value=None,
+)
+
+statement_000076 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000202, None, tu_region_000200, None],
+    positional=None,
+    any=[statement_000075, ],
+    keyword=None,
+)
+
+statement_000077 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000203, tu_region_000207, tu_region_000204, None, tu_region_000203, tu_region_000202, tu_region_000205, tu_region_000206, None, None, tu_region_000208, None, None],
+    name=r"OperatorType.Greater",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000076,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000073,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000078 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000209, tu_region_000210, tu_region_000211],
+    value="Bool",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.val,
+)
+
+statement_000079 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000212, tu_region_000213, tu_region_000214],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000080 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000215, None, tu_region_000216],  # type: ignore
+    type=statement_000079,
+    is_variadic=None,
+    name=r"that",
+    default_value=None,
+)
+
+statement_000081 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000217, None, tu_region_000215, None],
+    positional=None,
+    any=[statement_000080, ],
+    keyword=None,
+)
+
+statement_000082 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000218, tu_region_000222, tu_region_000219, None, tu_region_000218, tu_region_000217, tu_region_000220, tu_region_000221, None, None, tu_region_000223, None, None],
+    name=r"OperatorType.GreaterEqual",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000081,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000078,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000083 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000224, tu_region_000225, tu_region_000226],
+    value="ThisType",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.var,
+)
+
+statement_000084 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000227, tu_region_000231, tu_region_000228, None, tu_region_000227, tu_region_000232, tu_region_000229, tu_region_000230, None, None, tu_region_000233, None, None],
+    name=r"OperatorType.Negative",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=True,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000083,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
 statement_000085 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000148, tu_region_000149, tu_region_000150],
+    regions=[tu_region_000234, tu_region_000235, tu_region_000236],
     value="ThisType",
     templates=None,
     constraints=None,
@@ -1639,8 +2216,8 @@ statement_000085 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000086 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000151, tu_region_000155, tu_region_000152, None, tu_region_000151, tu_region_000156, tu_region_000153, tu_region_000154, None, None, tu_region_000157, None, None],
-    name=r"OperatorType.Clone",
+    regions=[tu_region_000237, tu_region_000241, tu_region_000238, None, tu_region_000237, tu_region_000242, tu_region_000239, tu_region_000240, None, None, tu_region_000243, None, None],
+    name=r"OperatorType.Positive",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
@@ -1659,16 +2236,16 @@ statement_000086 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000087 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000158, tu_region_000159, tu_region_000160],
-    value="Bool",
+    regions=[tu_region_000244, tu_region_000245, tu_region_000246],
+    value="ThisType",
     templates=None,
     constraints=None,
-    mutability_modifier=MutabilityModifier.val,
+    mutability_modifier=MutabilityModifier.var,
 )
 
 statement_000088 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000161, tu_region_000165, tu_region_000162, None, tu_region_000161, tu_region_000166, tu_region_000163, tu_region_000164, None, None, tu_region_000167, None, None],
-    name=r"OperatorType.ToBool",
+    regions=[tu_region_000247, tu_region_000251, tu_region_000248, None, tu_region_000247, tu_region_000252, tu_region_000249, tu_region_000250, None, None, tu_region_000253, None, None],
+    name=r"OperatorType.BitFlip",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
@@ -1687,22 +2264,47 @@ statement_000088 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000089 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000168, tu_region_000169, tu_region_000170],
-    value="Str",
+    regions=[tu_region_000254, tu_region_000255, tu_region_000256],
+    value="Num",
     templates=None,
     constraints=None,
-    mutability_modifier=MutabilityModifier.val,
+    mutability_modifier=MutabilityModifier.var,
 )
 
-statement_000090 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000171, tu_region_000175, tu_region_000172, None, tu_region_000171, tu_region_000176, tu_region_000173, tu_region_000174, None, None, tu_region_000177, None, None],
-    name=r"OperatorType.ToString",
+statement_000090 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000257, tu_region_000258, tu_region_000259],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000091 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000260, None, tu_region_000261],  # type: ignore
+    type=statement_000090,
+    is_variadic=None,
+    name=r"divisor",
+    default_value=None,
+)
+
+statement_000092 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000262, None, tu_region_000260, None],
+    positional=None,
+    any=[statement_000091, ],
+    keyword=None,
+)
+
+statement_000093 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000263, tu_region_000267, tu_region_000264, None, tu_region_000263, tu_region_000262, tu_region_000265, tu_region_000266, None, None, tu_region_000268, None, None],
+    name=r"OperatorType.Divide",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=True,
+    parameters=statement_000092,
     mutability_param=MutabilityModifier.immutable,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=statement_000089,
@@ -1713,416 +2315,52 @@ statement_000090 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000091 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000178, tu_region_000179, tu_region_000180],
-    value="CompareResult",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.val,
-)
-
-statement_000092 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000181, tu_region_000182, tu_region_000183],
-    value="ThisType",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000093 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000184, None, tu_region_000185],  # type: ignore
-    type=statement_000092,
-    is_variadic=None,
-    name=r"this",
-    default_value=None,
-)
-
 statement_000094 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000186, tu_region_000187, tu_region_000188],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000095 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000189, None, tu_region_000190],  # type: ignore
-    type=statement_000094,
-    is_variadic=None,
-    name=r"that",
-    default_value=None,
-)
-
-statement_000096 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000191, None, tu_region_000192, None],
-    positional=None,
-    any=[statement_000093, statement_000095, ],
-    keyword=None,
-)
-
-statement_000097 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000193, tu_region_000196, tu_region_000194, None, tu_region_000193, tu_region_000191, None, tu_region_000195, None, None, tu_region_000197, None, tu_region_000198],
-    name=r"OperatorType.Compare",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000096,
-    mutability_param=None,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000091,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=True,
-)
-
-statement_000098 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000199, tu_region_000200, tu_region_000201],
-    value="Bool",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.val,
-)
-
-statement_000099 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000202, tu_region_000203, tu_region_000204],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000100 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000205, None, tu_region_000206],  # type: ignore
-    type=statement_000099,
-    is_variadic=None,
-    name=r"that",
-    default_value=None,
-)
-
-statement_000101 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000207, None, tu_region_000205, None],
-    positional=None,
-    any=[statement_000100, ],
-    keyword=None,
-)
-
-statement_000102 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000208, tu_region_000212, tu_region_000209, None, tu_region_000208, tu_region_000207, tu_region_000210, tu_region_000211, None, None, tu_region_000213, None, None],
-    name=r"OperatorType.Equal",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000101,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000098,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000103 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000214, tu_region_000215, tu_region_000216],
-    value="Bool",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.val,
-)
-
-statement_000104 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000217, tu_region_000218, tu_region_000219],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000105 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000220, None, tu_region_000221],  # type: ignore
-    type=statement_000104,
-    is_variadic=None,
-    name=r"that",
-    default_value=None,
-)
-
-statement_000106 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000222, None, tu_region_000220, None],
-    positional=None,
-    any=[statement_000105, ],
-    keyword=None,
-)
-
-statement_000107 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000223, tu_region_000227, tu_region_000224, None, tu_region_000223, tu_region_000222, tu_region_000225, tu_region_000226, None, None, tu_region_000228, None, None],
-    name=r"OperatorType.NotEqual",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000106,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000103,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000108 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000229, tu_region_000230, tu_region_000231],
-    value="Bool",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.val,
-)
-
-statement_000109 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000232, tu_region_000233, tu_region_000234],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000110 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000235, None, tu_region_000236],  # type: ignore
-    type=statement_000109,
-    is_variadic=None,
-    name=r"that",
-    default_value=None,
-)
-
-statement_000111 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000237, None, tu_region_000235, None],
-    positional=None,
-    any=[statement_000110, ],
-    keyword=None,
-)
-
-statement_000112 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000238, tu_region_000242, tu_region_000239, None, tu_region_000238, tu_region_000237, tu_region_000240, tu_region_000241, None, None, tu_region_000243, None, None],
-    name=r"OperatorType.Less",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000111,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000108,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000113 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000244, tu_region_000245, tu_region_000246],
-    value="Bool",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.val,
-)
-
-statement_000114 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000247, tu_region_000248, tu_region_000249],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000115 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000250, None, tu_region_000251],  # type: ignore
-    type=statement_000114,
-    is_variadic=None,
-    name=r"that",
-    default_value=None,
-)
-
-statement_000116 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000252, None, tu_region_000250, None],
-    positional=None,
-    any=[statement_000115, ],
-    keyword=None,
-)
-
-statement_000117 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000253, tu_region_000257, tu_region_000254, None, tu_region_000253, tu_region_000252, tu_region_000255, tu_region_000256, None, None, tu_region_000258, None, None],
-    name=r"OperatorType.LessEqual",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000116,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000113,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000118 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000259, tu_region_000260, tu_region_000261],
-    value="Bool",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.val,
-)
-
-statement_000119 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000262, tu_region_000263, tu_region_000264],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000120 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000265, None, tu_region_000266],  # type: ignore
-    type=statement_000119,
-    is_variadic=None,
-    name=r"that",
-    default_value=None,
-)
-
-statement_000121 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000267, None, tu_region_000265, None],
-    positional=None,
-    any=[statement_000120, ],
-    keyword=None,
-)
-
-statement_000122 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000268, tu_region_000272, tu_region_000269, None, tu_region_000268, tu_region_000267, tu_region_000270, tu_region_000271, None, None, tu_region_000273, None, None],
-    name=r"OperatorType.Greater",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000121,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000118,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000123 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000274, tu_region_000275, tu_region_000276],
-    value="Bool",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.val,
-)
-
-statement_000124 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000277, tu_region_000278, tu_region_000279],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000125 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000280, None, tu_region_000281],  # type: ignore
-    type=statement_000124,
-    is_variadic=None,
-    name=r"that",
-    default_value=None,
-)
-
-statement_000126 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000282, None, tu_region_000280, None],
-    positional=None,
-    any=[statement_000125, ],
-    keyword=None,
-)
-
-statement_000127 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000283, tu_region_000287, tu_region_000284, None, tu_region_000283, tu_region_000282, tu_region_000285, tu_region_000286, None, None, tu_region_000288, None, None],
-    name=r"OperatorType.GreaterEqual",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000126,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000123,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000128 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000289, tu_region_000290, tu_region_000291],
+    regions=[tu_region_000269, tu_region_000270, tu_region_000271],
     value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.var,
 )
 
-statement_000129 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000292, tu_region_000296, tu_region_000293, None, tu_region_000292, tu_region_000297, tu_region_000294, tu_region_000295, None, None, tu_region_000298, None, None],
-    name=r"OperatorType.Negative",
+statement_000095 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000272, tu_region_000273, tu_region_000274],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000096 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000275, None, tu_region_000276],  # type: ignore
+    type=statement_000095,
+    is_variadic=None,
+    name=r"divisor",
+    default_value=None,
+)
+
+statement_000097 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000277, None, tu_region_000275, None],
+    positional=None,
+    any=[statement_000096, ],
+    keyword=None,
+)
+
+statement_000098 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000278, tu_region_000282, tu_region_000279, None, tu_region_000278, tu_region_000277, tu_region_000280, tu_region_000281, None, None, tu_region_000283, None, None],
+    name=r"OperatorType.DivideFloor",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=True,
+    parameters=statement_000097,
     mutability_param=MutabilityModifier.immutable,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000128,
+    return_type=statement_000094,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
@@ -2130,7 +2368,60 @@ statement_000129 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000130 = FuncOrTypeExpressionParserInfo.Create(
+statement_000099 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000284, tu_region_000285, tu_region_000286],
+    value="ThisType",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.var,
+)
+
+statement_000100 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000287, tu_region_000288, tu_region_000289],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000101 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000290, None, tu_region_000291],  # type: ignore
+    type=statement_000100,
+    is_variadic=None,
+    name=r"divisor",
+    default_value=None,
+)
+
+statement_000102 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000292, None, tu_region_000290, None],
+    positional=None,
+    any=[statement_000101, ],
+    keyword=None,
+)
+
+statement_000103 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000293, tu_region_000297, tu_region_000294, None, tu_region_000293, tu_region_000292, tu_region_000295, tu_region_000296, None, None, tu_region_000298, None, None],
+    name=r"OperatorType.Modulo",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000102,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000099,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000104 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
     regions=[tu_region_000299, tu_region_000300, tu_region_000301],
     value="ThisType",
@@ -2139,18 +2430,43 @@ statement_000130 = FuncOrTypeExpressionParserInfo.Create(
     mutability_modifier=MutabilityModifier.var,
 )
 
-statement_000131 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000302, tu_region_000306, tu_region_000303, None, tu_region_000302, tu_region_000307, tu_region_000304, tu_region_000305, None, None, tu_region_000308, None, None],
-    name=r"OperatorType.Positive",
+statement_000105 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000302, tu_region_000303, tu_region_000304],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000106 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000305, None, tu_region_000306],  # type: ignore
+    type=statement_000105,
+    is_variadic=None,
+    name=r"multiplier",
+    default_value=None,
+)
+
+statement_000107 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000307, None, tu_region_000305, None],
+    positional=None,
+    any=[statement_000106, ],
+    keyword=None,
+)
+
+statement_000108 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000308, tu_region_000312, tu_region_000309, None, tu_region_000308, tu_region_000307, tu_region_000310, tu_region_000311, None, None, tu_region_000313, None, None],
+    name=r"OperatorType.Multiply",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=True,
+    parameters=statement_000107,
     mutability_param=MutabilityModifier.immutable,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000130,
+    return_type=statement_000104,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
@@ -2158,27 +2474,264 @@ statement_000131 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000132 = FuncOrTypeExpressionParserInfo.Create(
+statement_000109 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000309, tu_region_000310, tu_region_000311],
+    regions=[tu_region_000314, tu_region_000315, tu_region_000316],
     value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.var,
 )
 
-statement_000133 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000312, tu_region_000316, tu_region_000313, None, tu_region_000312, tu_region_000317, tu_region_000314, tu_region_000315, None, None, tu_region_000318, None, None],
-    name=r"OperatorType.BitFlip",
+statement_000110 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000317, tu_region_000318, tu_region_000319],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000111 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000320, None, tu_region_000321],  # type: ignore
+    type=statement_000110,
+    is_variadic=None,
+    name=r"exponent",
+    default_value=None,
+)
+
+statement_000112 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000322, None, tu_region_000320, None],
+    positional=None,
+    any=[statement_000111, ],
+    keyword=None,
+)
+
+statement_000113 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000323, tu_region_000327, tu_region_000324, None, tu_region_000323, tu_region_000322, tu_region_000325, tu_region_000326, None, None, tu_region_000328, None, None],
+    name=r"OperatorType.Power",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=True,
+    parameters=statement_000112,
     mutability_param=MutabilityModifier.immutable,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000132,
+    return_type=statement_000109,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000114 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000329, tu_region_000330, tu_region_000331],
+    value="ThisType",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.var,
+)
+
+statement_000115 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000332, tu_region_000333, tu_region_000334],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000116 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000335, None, tu_region_000336],  # type: ignore
+    type=statement_000115,
+    is_variadic=None,
+    name=r"value",
+    default_value=None,
+)
+
+statement_000117 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000337, None, tu_region_000335, None],
+    positional=None,
+    any=[statement_000116, ],
+    keyword=None,
+)
+
+statement_000118 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000338, tu_region_000342, tu_region_000339, None, tu_region_000338, tu_region_000337, tu_region_000340, tu_region_000341, None, None, tu_region_000343, None, None],
+    name=r"OperatorType.Add",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000117,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000114,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000119 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000344, tu_region_000345, tu_region_000346],
+    value="ThisType",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.var,
+)
+
+statement_000120 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000347, tu_region_000348, tu_region_000349],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000121 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000350, None, tu_region_000351],  # type: ignore
+    type=statement_000120,
+    is_variadic=None,
+    name=r"value",
+    default_value=None,
+)
+
+statement_000122 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000352, None, tu_region_000350, None],
+    positional=None,
+    any=[statement_000121, ],
+    keyword=None,
+)
+
+statement_000123 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000353, tu_region_000357, tu_region_000354, None, tu_region_000353, tu_region_000352, tu_region_000355, tu_region_000356, None, None, tu_region_000358, None, None],
+    name=r"OperatorType.Subtract",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000122,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000119,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000124 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000359, tu_region_000360, tu_region_000361],
+    value="ThisType",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.var,
+)
+
+statement_000125 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000362, tu_region_000363, tu_region_000364],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000126 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000365, None, tu_region_000366],  # type: ignore
+    type=statement_000125,
+    is_variadic=None,
+    name=r"places",
+    default_value=None,
+)
+
+statement_000127 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000367, None, tu_region_000365, None],
+    positional=None,
+    any=[statement_000126, ],
+    keyword=None,
+)
+
+statement_000128 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000368, tu_region_000372, tu_region_000369, None, tu_region_000368, tu_region_000367, tu_region_000370, tu_region_000371, None, None, tu_region_000373, None, None],
+    name=r"OperatorType.BitShiftLeft",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000127,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000124,
+    documentation=None,
+    captured_variables=None,
+    is_deferred=True,
+    is_exceptional=None,
+    is_static=None,
+)
+
+statement_000129 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000374, tu_region_000375, tu_region_000376],
+    value="ThisType",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.var,
+)
+
+statement_000130 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000377, tu_region_000378, tu_region_000379],
+    value="Int",
+    templates=None,
+    constraints=None,
+    mutability_modifier=MutabilityModifier.immutable,
+)
+
+statement_000131 = FuncParameterParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000380, None, tu_region_000381],  # type: ignore
+    type=statement_000130,
+    is_variadic=None,
+    name=r"places",
+    default_value=None,
+)
+
+statement_000132 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000382, None, tu_region_000380, None],
+    positional=None,
+    any=[statement_000131, ],
+    keyword=None,
+)
+
+statement_000133 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000383, tu_region_000387, tu_region_000384, None, tu_region_000383, tu_region_000382, tu_region_000385, tu_region_000386, None, None, tu_region_000388, None, None],
+    name=r"OperatorType.BitShiftRight",
+    visibility_param=VisibilityModifier.public,
+    statements=None,
+    templates_param=None,
+    parent_class_capabilities=StandardCapabilities,
+    function_modifier_param=FunctionModifier.standard,
+    parameters=statement_000132,
+    mutability_param=MutabilityModifier.immutable,
+    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
+    return_type=statement_000129,
     documentation=None,
     captured_variables=None,
     is_deferred=True,
@@ -2188,8 +2741,8 @@ statement_000133 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000134 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000319, tu_region_000320, tu_region_000321],
-    value="Num",
+    regions=[tu_region_000389, tu_region_000390, tu_region_000391],
+    value="ThisType",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.var,
@@ -2197,7 +2750,7 @@ statement_000134 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000135 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000322, tu_region_000323, tu_region_000324],
+    regions=[tu_region_000392, tu_region_000393, tu_region_000394],
     value="Int",
     templates=None,
     constraints=None,
@@ -2206,23 +2759,23 @@ statement_000135 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000136 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000325, None, tu_region_000326],  # type: ignore
+    regions=[tu_region_000395, None, tu_region_000396],  # type: ignore
     type=statement_000135,
     is_variadic=None,
-    name=r"divisor",
+    name=r"value",
     default_value=None,
 )
 
 statement_000137 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000327, None, tu_region_000325, None],
+    regions=[tu_region_000397, None, tu_region_000395, None],
     positional=None,
     any=[statement_000136, ],
     keyword=None,
 )
 
 statement_000138 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000328, tu_region_000332, tu_region_000329, None, tu_region_000328, tu_region_000327, tu_region_000330, tu_region_000331, None, None, tu_region_000333, None, None],
-    name=r"OperatorType.Divide",
+    regions=[tu_region_000398, tu_region_000402, tu_region_000399, None, tu_region_000398, tu_region_000397, tu_region_000400, tu_region_000401, None, None, tu_region_000403, None, None],
+    name=r"OperatorType.BitwiseAnd",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
@@ -2241,7 +2794,7 @@ statement_000138 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000139 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000334, tu_region_000335, tu_region_000336],
+    regions=[tu_region_000404, tu_region_000405, tu_region_000406],
     value="ThisType",
     templates=None,
     constraints=None,
@@ -2250,7 +2803,7 @@ statement_000139 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000140 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000337, tu_region_000338, tu_region_000339],
+    regions=[tu_region_000407, tu_region_000408, tu_region_000409],
     value="Int",
     templates=None,
     constraints=None,
@@ -2259,23 +2812,23 @@ statement_000140 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000141 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000340, None, tu_region_000341],  # type: ignore
+    regions=[tu_region_000410, None, tu_region_000411],  # type: ignore
     type=statement_000140,
     is_variadic=None,
-    name=r"divisor",
+    name=r"value",
     default_value=None,
 )
 
 statement_000142 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000342, None, tu_region_000340, None],
+    regions=[tu_region_000412, None, tu_region_000410, None],
     positional=None,
     any=[statement_000141, ],
     keyword=None,
 )
 
 statement_000143 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000343, tu_region_000347, tu_region_000344, None, tu_region_000343, tu_region_000342, tu_region_000345, tu_region_000346, None, None, tu_region_000348, None, None],
-    name=r"OperatorType.DivideFloor",
+    regions=[tu_region_000413, tu_region_000417, tu_region_000414, None, tu_region_000413, tu_region_000412, tu_region_000415, tu_region_000416, None, None, tu_region_000418, None, None],
+    name=r"OperatorType.BitwiseXor",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
@@ -2294,7 +2847,7 @@ statement_000143 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000144 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000349, tu_region_000350, tu_region_000351],
+    regions=[tu_region_000419, tu_region_000420, tu_region_000421],
     value="ThisType",
     templates=None,
     constraints=None,
@@ -2303,7 +2856,7 @@ statement_000144 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000145 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000352, tu_region_000353, tu_region_000354],
+    regions=[tu_region_000422, tu_region_000423, tu_region_000424],
     value="Int",
     templates=None,
     constraints=None,
@@ -2312,23 +2865,23 @@ statement_000145 = FuncOrTypeExpressionParserInfo.Create(
 
 statement_000146 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000355, None, tu_region_000356],  # type: ignore
+    regions=[tu_region_000425, None, tu_region_000426],  # type: ignore
     type=statement_000145,
     is_variadic=None,
-    name=r"divisor",
+    name=r"value",
     default_value=None,
 )
 
 statement_000147 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000357, None, tu_region_000355, None],
+    regions=[tu_region_000427, None, tu_region_000425, None],
     positional=None,
     any=[statement_000146, ],
     keyword=None,
 )
 
 statement_000148 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000358, tu_region_000362, tu_region_000359, None, tu_region_000358, tu_region_000357, tu_region_000360, tu_region_000361, None, None, tu_region_000363, None, None],
-    name=r"OperatorType.Modulo",
+    regions=[tu_region_000428, tu_region_000432, tu_region_000429, None, tu_region_000428, tu_region_000427, tu_region_000430, tu_region_000431, None, None, tu_region_000433, None, None],
+    name=r"OperatorType.BitwiseOr",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
@@ -2345,485 +2898,8 @@ statement_000148 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000149 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000364, tu_region_000365, tu_region_000366],
-    value="ThisType",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.var,
-)
-
-statement_000150 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000367, tu_region_000368, tu_region_000369],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000151 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000370, None, tu_region_000371],  # type: ignore
-    type=statement_000150,
-    is_variadic=None,
-    name=r"multiplier",
-    default_value=None,
-)
-
-statement_000152 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000372, None, tu_region_000370, None],
-    positional=None,
-    any=[statement_000151, ],
-    keyword=None,
-)
-
-statement_000153 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000373, tu_region_000377, tu_region_000374, None, tu_region_000373, tu_region_000372, tu_region_000375, tu_region_000376, None, None, tu_region_000378, None, None],
-    name=r"OperatorType.Multiply",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000152,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000149,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000154 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000379, tu_region_000380, tu_region_000381],
-    value="ThisType",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.var,
-)
-
-statement_000155 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000382, tu_region_000383, tu_region_000384],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000156 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000385, None, tu_region_000386],  # type: ignore
-    type=statement_000155,
-    is_variadic=None,
-    name=r"exponent",
-    default_value=None,
-)
-
-statement_000157 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000387, None, tu_region_000385, None],
-    positional=None,
-    any=[statement_000156, ],
-    keyword=None,
-)
-
-statement_000158 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000388, tu_region_000392, tu_region_000389, None, tu_region_000388, tu_region_000387, tu_region_000390, tu_region_000391, None, None, tu_region_000393, None, None],
-    name=r"OperatorType.Power",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000157,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000154,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000159 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000394, tu_region_000395, tu_region_000396],
-    value="ThisType",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.var,
-)
-
-statement_000160 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000397, tu_region_000398, tu_region_000399],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000161 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000400, None, tu_region_000401],  # type: ignore
-    type=statement_000160,
-    is_variadic=None,
-    name=r"value",
-    default_value=None,
-)
-
-statement_000162 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000402, None, tu_region_000400, None],
-    positional=None,
-    any=[statement_000161, ],
-    keyword=None,
-)
-
-statement_000163 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000403, tu_region_000407, tu_region_000404, None, tu_region_000403, tu_region_000402, tu_region_000405, tu_region_000406, None, None, tu_region_000408, None, None],
-    name=r"OperatorType.Add",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000162,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000159,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000164 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000409, tu_region_000410, tu_region_000411],
-    value="ThisType",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.var,
-)
-
-statement_000165 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000412, tu_region_000413, tu_region_000414],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000166 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000415, None, tu_region_000416],  # type: ignore
-    type=statement_000165,
-    is_variadic=None,
-    name=r"value",
-    default_value=None,
-)
-
-statement_000167 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000417, None, tu_region_000415, None],
-    positional=None,
-    any=[statement_000166, ],
-    keyword=None,
-)
-
-statement_000168 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000418, tu_region_000422, tu_region_000419, None, tu_region_000418, tu_region_000417, tu_region_000420, tu_region_000421, None, None, tu_region_000423, None, None],
-    name=r"OperatorType.Subtract",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000167,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000164,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000169 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000424, tu_region_000425, tu_region_000426],
-    value="ThisType",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.var,
-)
-
-statement_000170 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000427, tu_region_000428, tu_region_000429],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000171 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000430, None, tu_region_000431],  # type: ignore
-    type=statement_000170,
-    is_variadic=None,
-    name=r"places",
-    default_value=None,
-)
-
-statement_000172 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000432, None, tu_region_000430, None],
-    positional=None,
-    any=[statement_000171, ],
-    keyword=None,
-)
-
-statement_000173 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000433, tu_region_000437, tu_region_000434, None, tu_region_000433, tu_region_000432, tu_region_000435, tu_region_000436, None, None, tu_region_000438, None, None],
-    name=r"OperatorType.BitShiftLeft",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000172,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000169,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000174 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000439, tu_region_000440, tu_region_000441],
-    value="ThisType",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.var,
-)
-
-statement_000175 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000442, tu_region_000443, tu_region_000444],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000176 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000445, None, tu_region_000446],  # type: ignore
-    type=statement_000175,
-    is_variadic=None,
-    name=r"places",
-    default_value=None,
-)
-
-statement_000177 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000447, None, tu_region_000445, None],
-    positional=None,
-    any=[statement_000176, ],
-    keyword=None,
-)
-
-statement_000178 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000448, tu_region_000452, tu_region_000449, None, tu_region_000448, tu_region_000447, tu_region_000450, tu_region_000451, None, None, tu_region_000453, None, None],
-    name=r"OperatorType.BitShiftRight",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000177,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000174,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000179 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000454, tu_region_000455, tu_region_000456],
-    value="ThisType",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.var,
-)
-
-statement_000180 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000457, tu_region_000458, tu_region_000459],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000181 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000460, None, tu_region_000461],  # type: ignore
-    type=statement_000180,
-    is_variadic=None,
-    name=r"value",
-    default_value=None,
-)
-
-statement_000182 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000462, None, tu_region_000460, None],
-    positional=None,
-    any=[statement_000181, ],
-    keyword=None,
-)
-
-statement_000183 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000463, tu_region_000467, tu_region_000464, None, tu_region_000463, tu_region_000462, tu_region_000465, tu_region_000466, None, None, tu_region_000468, None, None],
-    name=r"OperatorType.BitwiseAnd",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000182,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000179,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000184 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000469, tu_region_000470, tu_region_000471],
-    value="ThisType",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.var,
-)
-
-statement_000185 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000472, tu_region_000473, tu_region_000474],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000186 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000475, None, tu_region_000476],  # type: ignore
-    type=statement_000185,
-    is_variadic=None,
-    name=r"value",
-    default_value=None,
-)
-
-statement_000187 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000477, None, tu_region_000475, None],
-    positional=None,
-    any=[statement_000186, ],
-    keyword=None,
-)
-
-statement_000188 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000478, tu_region_000482, tu_region_000479, None, tu_region_000478, tu_region_000477, tu_region_000480, tu_region_000481, None, None, tu_region_000483, None, None],
-    name=r"OperatorType.BitwiseXor",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000187,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000184,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000189 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000484, tu_region_000485, tu_region_000486],
-    value="ThisType",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.var,
-)
-
-statement_000190 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000487, tu_region_000488, tu_region_000489],
-    value="Int",
-    templates=None,
-    constraints=None,
-    mutability_modifier=MutabilityModifier.immutable,
-)
-
-statement_000191 = FuncParameterParserInfo.Create(
-    parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000490, None, tu_region_000491],  # type: ignore
-    type=statement_000190,
-    is_variadic=None,
-    name=r"value",
-    default_value=None,
-)
-
-statement_000192 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000492, None, tu_region_000490, None],
-    positional=None,
-    any=[statement_000191, ],
-    keyword=None,
-)
-
-statement_000193 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000493, tu_region_000497, tu_region_000494, None, tu_region_000493, tu_region_000492, tu_region_000495, tu_region_000496, None, None, tu_region_000498, None, None],
-    name=r"OperatorType.BitwiseOr",
-    visibility_param=VisibilityModifier.public,
-    statements=None,
-    templates_param=None,
-    parent_class_capabilities=StandardCapabilities,
-    function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000192,
-    mutability_param=MutabilityModifier.immutable,
-    method_hierarchy_modifier_param=MethodHierarchyModifier.override,
-    return_type=statement_000189,
-    documentation=None,
-    captured_variables=None,
-    is_deferred=True,
-    is_exceptional=None,
-    is_static=None,
-)
-
-statement_000194 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000499, tu_region_000503, tu_region_000500, None, tu_region_000499, tu_region_000504, tu_region_000501, tu_region_000502, None, None, tu_region_000505, None, None],
+statement_000149 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000434, tu_region_000438, tu_region_000435, None, tu_region_000434, tu_region_000439, tu_region_000436, tu_region_000437, None, None, tu_region_000440, None, None],
     name=r"OperatorType.BitFlipInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2841,40 +2917,40 @@ statement_000194 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000195 = FuncOrTypeExpressionParserInfo.Create(
+statement_000150 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000506, tu_region_000507, tu_region_000508],
+    regions=[tu_region_000441, tu_region_000442, tu_region_000443],
     value="Int",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000196 = FuncParameterParserInfo.Create(
+statement_000151 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000509, None, tu_region_000510],  # type: ignore
-    type=statement_000195,
+    regions=[tu_region_000444, None, tu_region_000445],  # type: ignore
+    type=statement_000150,
     is_variadic=None,
     name=r"divisor",
     default_value=None,
 )
 
-statement_000197 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000511, None, tu_region_000509, None],
+statement_000152 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000446, None, tu_region_000444, None],
     positional=None,
-    any=[statement_000196, ],
+    any=[statement_000151, ],
     keyword=None,
 )
 
-statement_000198 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000512, tu_region_000516, tu_region_000513, None, tu_region_000512, tu_region_000511, tu_region_000514, tu_region_000515, None, None, tu_region_000517, None, None],
+statement_000153 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000447, tu_region_000451, tu_region_000448, None, tu_region_000447, tu_region_000446, tu_region_000449, tu_region_000450, None, None, tu_region_000452, None, None],
     name=r"OperatorType.DivideFloorInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000197,
+    parameters=statement_000152,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -2885,40 +2961,40 @@ statement_000198 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000199 = FuncOrTypeExpressionParserInfo.Create(
+statement_000154 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000518, tu_region_000519, tu_region_000520],
+    regions=[tu_region_000453, tu_region_000454, tu_region_000455],
     value="Int",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000200 = FuncParameterParserInfo.Create(
+statement_000155 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000521, None, tu_region_000522],  # type: ignore
-    type=statement_000199,
+    regions=[tu_region_000456, None, tu_region_000457],  # type: ignore
+    type=statement_000154,
     is_variadic=None,
     name=r"divisor",
     default_value=None,
 )
 
-statement_000201 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000523, None, tu_region_000521, None],
+statement_000156 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000458, None, tu_region_000456, None],
     positional=None,
-    any=[statement_000200, ],
+    any=[statement_000155, ],
     keyword=None,
 )
 
-statement_000202 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000524, tu_region_000528, tu_region_000525, None, tu_region_000524, tu_region_000523, tu_region_000526, tu_region_000527, None, None, tu_region_000529, None, None],
+statement_000157 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000459, tu_region_000463, tu_region_000460, None, tu_region_000459, tu_region_000458, tu_region_000461, tu_region_000462, None, None, tu_region_000464, None, None],
     name=r"OperatorType.ModuloInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000201,
+    parameters=statement_000156,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -2929,40 +3005,40 @@ statement_000202 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000203 = FuncOrTypeExpressionParserInfo.Create(
+statement_000158 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000530, tu_region_000531, tu_region_000532],
+    regions=[tu_region_000465, tu_region_000466, tu_region_000467],
     value="Int",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000204 = FuncParameterParserInfo.Create(
+statement_000159 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000533, None, tu_region_000534],  # type: ignore
-    type=statement_000203,
+    regions=[tu_region_000468, None, tu_region_000469],  # type: ignore
+    type=statement_000158,
     is_variadic=None,
     name=r"multiplier",
     default_value=None,
 )
 
-statement_000205 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000535, None, tu_region_000533, None],
+statement_000160 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000470, None, tu_region_000468, None],
     positional=None,
-    any=[statement_000204, ],
+    any=[statement_000159, ],
     keyword=None,
 )
 
-statement_000206 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000536, tu_region_000540, tu_region_000537, None, tu_region_000536, tu_region_000535, tu_region_000538, tu_region_000539, None, None, tu_region_000541, None, None],
+statement_000161 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000471, tu_region_000475, tu_region_000472, None, tu_region_000471, tu_region_000470, tu_region_000473, tu_region_000474, None, None, tu_region_000476, None, None],
     name=r"OperatorType.MultiplyInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000205,
+    parameters=statement_000160,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -2973,40 +3049,40 @@ statement_000206 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000207 = FuncOrTypeExpressionParserInfo.Create(
+statement_000162 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000542, tu_region_000543, tu_region_000544],
+    regions=[tu_region_000477, tu_region_000478, tu_region_000479],
     value="Int",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000208 = FuncParameterParserInfo.Create(
+statement_000163 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000545, None, tu_region_000546],  # type: ignore
-    type=statement_000207,
+    regions=[tu_region_000480, None, tu_region_000481],  # type: ignore
+    type=statement_000162,
     is_variadic=None,
     name=r"exponent",
     default_value=None,
 )
 
-statement_000209 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000547, None, tu_region_000545, None],
+statement_000164 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000482, None, tu_region_000480, None],
     positional=None,
-    any=[statement_000208, ],
+    any=[statement_000163, ],
     keyword=None,
 )
 
-statement_000210 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000548, tu_region_000552, tu_region_000549, None, tu_region_000548, tu_region_000547, tu_region_000550, tu_region_000551, None, None, tu_region_000553, None, None],
+statement_000165 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000483, tu_region_000487, tu_region_000484, None, tu_region_000483, tu_region_000482, tu_region_000485, tu_region_000486, None, None, tu_region_000488, None, None],
     name=r"OperatorType.PowerInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000209,
+    parameters=statement_000164,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -3017,40 +3093,40 @@ statement_000210 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000211 = FuncOrTypeExpressionParserInfo.Create(
+statement_000166 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000554, tu_region_000555, tu_region_000556],
+    regions=[tu_region_000489, tu_region_000490, tu_region_000491],
     value="Int",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000212 = FuncParameterParserInfo.Create(
+statement_000167 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000557, None, tu_region_000558],  # type: ignore
-    type=statement_000211,
+    regions=[tu_region_000492, None, tu_region_000493],  # type: ignore
+    type=statement_000166,
     is_variadic=None,
     name=r"value",
     default_value=None,
 )
 
-statement_000213 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000559, None, tu_region_000557, None],
+statement_000168 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000494, None, tu_region_000492, None],
     positional=None,
-    any=[statement_000212, ],
+    any=[statement_000167, ],
     keyword=None,
 )
 
-statement_000214 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000560, tu_region_000564, tu_region_000561, None, tu_region_000560, tu_region_000559, tu_region_000562, tu_region_000563, None, None, tu_region_000565, None, None],
+statement_000169 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000495, tu_region_000499, tu_region_000496, None, tu_region_000495, tu_region_000494, tu_region_000497, tu_region_000498, None, None, tu_region_000500, None, None],
     name=r"OperatorType.AddInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000213,
+    parameters=statement_000168,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -3061,40 +3137,40 @@ statement_000214 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000215 = FuncOrTypeExpressionParserInfo.Create(
+statement_000170 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000566, tu_region_000567, tu_region_000568],
+    regions=[tu_region_000501, tu_region_000502, tu_region_000503],
     value="Int",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000216 = FuncParameterParserInfo.Create(
+statement_000171 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000569, None, tu_region_000570],  # type: ignore
-    type=statement_000215,
+    regions=[tu_region_000504, None, tu_region_000505],  # type: ignore
+    type=statement_000170,
     is_variadic=None,
     name=r"value",
     default_value=None,
 )
 
-statement_000217 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000571, None, tu_region_000569, None],
+statement_000172 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000506, None, tu_region_000504, None],
     positional=None,
-    any=[statement_000216, ],
+    any=[statement_000171, ],
     keyword=None,
 )
 
-statement_000218 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000572, tu_region_000576, tu_region_000573, None, tu_region_000572, tu_region_000571, tu_region_000574, tu_region_000575, None, None, tu_region_000577, None, None],
+statement_000173 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000507, tu_region_000511, tu_region_000508, None, tu_region_000507, tu_region_000506, tu_region_000509, tu_region_000510, None, None, tu_region_000512, None, None],
     name=r"OperatorType.SubtractInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000217,
+    parameters=statement_000172,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -3105,40 +3181,40 @@ statement_000218 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000219 = FuncOrTypeExpressionParserInfo.Create(
+statement_000174 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000578, tu_region_000579, tu_region_000580],
+    regions=[tu_region_000513, tu_region_000514, tu_region_000515],
     value="Int",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000220 = FuncParameterParserInfo.Create(
+statement_000175 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000581, None, tu_region_000582],  # type: ignore
-    type=statement_000219,
+    regions=[tu_region_000516, None, tu_region_000517],  # type: ignore
+    type=statement_000174,
     is_variadic=None,
     name=r"places",
     default_value=None,
 )
 
-statement_000221 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000583, None, tu_region_000581, None],
+statement_000176 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000518, None, tu_region_000516, None],
     positional=None,
-    any=[statement_000220, ],
+    any=[statement_000175, ],
     keyword=None,
 )
 
-statement_000222 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000584, tu_region_000588, tu_region_000585, None, tu_region_000584, tu_region_000583, tu_region_000586, tu_region_000587, None, None, tu_region_000589, None, None],
+statement_000177 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000519, tu_region_000523, tu_region_000520, None, tu_region_000519, tu_region_000518, tu_region_000521, tu_region_000522, None, None, tu_region_000524, None, None],
     name=r"OperatorType.BitShiftLeftInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000221,
+    parameters=statement_000176,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -3149,40 +3225,40 @@ statement_000222 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000223 = FuncOrTypeExpressionParserInfo.Create(
+statement_000178 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000590, tu_region_000591, tu_region_000592],
+    regions=[tu_region_000525, tu_region_000526, tu_region_000527],
     value="Int",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000224 = FuncParameterParserInfo.Create(
+statement_000179 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000593, None, tu_region_000594],  # type: ignore
-    type=statement_000223,
+    regions=[tu_region_000528, None, tu_region_000529],  # type: ignore
+    type=statement_000178,
     is_variadic=None,
     name=r"places",
     default_value=None,
 )
 
-statement_000225 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000595, None, tu_region_000593, None],
+statement_000180 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000530, None, tu_region_000528, None],
     positional=None,
-    any=[statement_000224, ],
+    any=[statement_000179, ],
     keyword=None,
 )
 
-statement_000226 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000596, tu_region_000600, tu_region_000597, None, tu_region_000596, tu_region_000595, tu_region_000598, tu_region_000599, None, None, tu_region_000601, None, None],
+statement_000181 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000531, tu_region_000535, tu_region_000532, None, tu_region_000531, tu_region_000530, tu_region_000533, tu_region_000534, None, None, tu_region_000536, None, None],
     name=r"OperatorType.BitShiftRightInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000225,
+    parameters=statement_000180,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -3193,40 +3269,40 @@ statement_000226 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000227 = FuncOrTypeExpressionParserInfo.Create(
+statement_000182 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000602, tu_region_000603, tu_region_000604],
+    regions=[tu_region_000537, tu_region_000538, tu_region_000539],
     value="Int",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000228 = FuncParameterParserInfo.Create(
+statement_000183 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000605, None, tu_region_000606],  # type: ignore
-    type=statement_000227,
+    regions=[tu_region_000540, None, tu_region_000541],  # type: ignore
+    type=statement_000182,
     is_variadic=None,
     name=r"value",
     default_value=None,
 )
 
-statement_000229 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000607, None, tu_region_000605, None],
+statement_000184 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000542, None, tu_region_000540, None],
     positional=None,
-    any=[statement_000228, ],
+    any=[statement_000183, ],
     keyword=None,
 )
 
-statement_000230 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000608, tu_region_000612, tu_region_000609, None, tu_region_000608, tu_region_000607, tu_region_000610, tu_region_000611, None, None, tu_region_000613, None, None],
+statement_000185 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000543, tu_region_000547, tu_region_000544, None, tu_region_000543, tu_region_000542, tu_region_000545, tu_region_000546, None, None, tu_region_000548, None, None],
     name=r"OperatorType.BitwiseAndInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000229,
+    parameters=statement_000184,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -3237,40 +3313,40 @@ statement_000230 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000231 = FuncOrTypeExpressionParserInfo.Create(
+statement_000186 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000614, tu_region_000615, tu_region_000616],
+    regions=[tu_region_000549, tu_region_000550, tu_region_000551],
     value="Int",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000232 = FuncParameterParserInfo.Create(
+statement_000187 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000617, None, tu_region_000618],  # type: ignore
-    type=statement_000231,
+    regions=[tu_region_000552, None, tu_region_000553],  # type: ignore
+    type=statement_000186,
     is_variadic=None,
     name=r"value",
     default_value=None,
 )
 
-statement_000233 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000619, None, tu_region_000617, None],
+statement_000188 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000554, None, tu_region_000552, None],
     positional=None,
-    any=[statement_000232, ],
+    any=[statement_000187, ],
     keyword=None,
 )
 
-statement_000234 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000620, tu_region_000624, tu_region_000621, None, tu_region_000620, tu_region_000619, tu_region_000622, tu_region_000623, None, None, tu_region_000625, None, None],
+statement_000189 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000555, tu_region_000559, tu_region_000556, None, tu_region_000555, tu_region_000554, tu_region_000557, tu_region_000558, None, None, tu_region_000560, None, None],
     name=r"OperatorType.BitwiseXorInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000233,
+    parameters=statement_000188,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -3281,40 +3357,40 @@ statement_000234 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000235 = FuncOrTypeExpressionParserInfo.Create(
+statement_000190 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000626, tu_region_000627, tu_region_000628],
+    regions=[tu_region_000561, tu_region_000562, tu_region_000563],
     value="Int",
     templates=None,
     constraints=None,
     mutability_modifier=MutabilityModifier.immutable,
 )
 
-statement_000236 = FuncParameterParserInfo.Create(
+statement_000191 = FuncParameterParserInfo.Create(
     parser_info_type=ParserInfoType.Standard,
-    regions=[tu_region_000629, None, tu_region_000630],  # type: ignore
-    type=statement_000235,
+    regions=[tu_region_000564, None, tu_region_000565],  # type: ignore
+    type=statement_000190,
     is_variadic=None,
     name=r"value",
     default_value=None,
 )
 
-statement_000237 = FuncParametersParserInfo.Create(
-    regions=[tu_region_000631, None, tu_region_000629, None],
+statement_000192 = FuncParametersParserInfo.Create(
+    regions=[tu_region_000566, None, tu_region_000564, None],
     positional=None,
-    any=[statement_000236, ],
+    any=[statement_000191, ],
     keyword=None,
 )
 
-statement_000238 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000632, tu_region_000636, tu_region_000633, None, tu_region_000632, tu_region_000631, tu_region_000634, tu_region_000635, None, None, tu_region_000637, None, None],
+statement_000193 = FuncDefinitionStatementParserInfo.Create(
+    regions=[tu_region_000567, tu_region_000571, tu_region_000568, None, tu_region_000567, tu_region_000566, tu_region_000569, tu_region_000570, None, None, tu_region_000572, None, None],
     name=r"OperatorType.BitwiseOrInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
     templates_param=None,
     parent_class_capabilities=StandardCapabilities,
     function_modifier_param=FunctionModifier.standard,
-    parameters=statement_000237,
+    parameters=statement_000192,
     mutability_param=MutabilityModifier.var,
     method_hierarchy_modifier_param=MethodHierarchyModifier.override,
     return_type=None,
@@ -3325,1470 +3401,3412 @@ statement_000238 = FuncDefinitionStatementParserInfo.Create(
     is_static=None,
 )
 
-statement_000239 = ClassStatementParserInfo.Create(
-    regions=[tu_region_000638, tu_region_000639, tu_region_000642, tu_region_000640, tu_region_000641, None, None, tu_region_000028, None, tu_region_000638, None, None],
+statement_000194 = ClassStatementParserInfo.Create(
+    regions=[tu_region_000573, tu_region_000574, tu_region_000577, tu_region_000575, tu_region_000576, None, None, tu_region_000008, None, tu_region_000573, None, None],
     name=r"FixedInt",
     visibility_param=VisibilityModifier.public,
-    statements=[statement_000045, statement_000053, statement_000060, statement_000066, statement_000072, statement_000078, statement_000084, statement_000086, statement_000088, statement_000090, statement_000097, statement_000102, statement_000107, statement_000112, statement_000117, statement_000122, statement_000127, statement_000129, statement_000131, statement_000133, statement_000138, statement_000143, statement_000148, statement_000153, statement_000158, statement_000163, statement_000168, statement_000173, statement_000178, statement_000183, statement_000188, statement_000193, statement_000194, statement_000198, statement_000202, statement_000206, statement_000210, statement_000214, statement_000218, statement_000222, statement_000226, statement_000230, statement_000234, statement_000238, ],
-    templates_param=statement_000008,
+    statements=[statement_000015, statement_000021, statement_000027, statement_000033, statement_000039, statement_000041, statement_000043, statement_000045, statement_000052, statement_000057, statement_000062, statement_000067, statement_000072, statement_000077, statement_000082, statement_000084, statement_000086, statement_000088, statement_000093, statement_000098, statement_000103, statement_000108, statement_000113, statement_000118, statement_000123, statement_000128, statement_000133, statement_000138, statement_000143, statement_000148, statement_000149, statement_000153, statement_000157, statement_000161, statement_000165, statement_000169, statement_000173, statement_000177, statement_000181, statement_000185, statement_000189, statement_000193, ],
+    templates_param=None,
     parent_class_capabilities=None,
     class_capabilities=StandardCapabilities,
     class_modifier_param=ClassModifier.mutable,
     documentation=None,
-    constraints=statement_000013,
+    constraints=None,
     extends=None,
-    implements=[statement_000020, ],
+    implements=[statement_000008, ],
     uses=None,
     constructor_visibility_param=VisibilityModifier.public,
     is_abstract=None,
     is_final=None,
 )
 
-statement_000240 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000643],
+statement_000195 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000578],
     value=1,
 )
 
-statement_000241 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000643, None],
-    expression=statement_000240,
+statement_000196 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000578, None],
+    type_or_expression=statement_000195,
     keyword=None,
 )
 
-statement_000242 = BooleanExpressionParserInfo.Create(
+statement_000197 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000644],
+    regions=[tu_region_000579],
     value=True,
 )
 
-statement_000243 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000645, tu_region_000646],
-    expression=statement_000242,
+statement_000198 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000580, tu_region_000581],
+    type_or_expression=statement_000197,
     keyword=r"is_signed!",
 )
 
-statement_000244 = BooleanExpressionParserInfo.Create(
+statement_000199 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000582],
+    value=False,
+)
+
+statement_000200 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000583, tu_region_000584],
+    type_or_expression=statement_000199,
+    keyword=r"is_checked!",
+)
+
+statement_000201 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000585, tu_region_000585],
+    arguments=[statement_000196, statement_000198, statement_000200, ],
+)
+
+statement_000202 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000586, tu_region_000586],
+    name=r"min_value!",
+)
+
+statement_000203 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000587, tu_region_000588],
+    expression=statement_000202,
+    keyword=r"min_value!",
+)
+
+statement_000204 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000589, tu_region_000589],
+    name=r"max_value!",
+)
+
+statement_000205 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000590, tu_region_000591],
+    expression=statement_000204,
+    keyword=r"max_value!",
+)
+
+statement_000206 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000592, tu_region_000592],
+    arguments=[statement_000203, statement_000205, ],
+)
+
+statement_000207 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000593, tu_region_000594, None],
+    value="FixedInt",
+    templates=statement_000201,
+    constraints=statement_000206,
+    mutability_modifier=None,
+)
+
+statement_000208 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000595, tu_region_000595, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000209 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000596],
+)
+
+statement_000210 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000597, None],
+    types=[statement_000208, statement_000209, ],
+    mutability_modifier=None,
+)
+
+statement_000211 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000598],
+)
+
+statement_000212 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000599, tu_region_000600],
+    type=statement_000210,
+    name=r"min_value!",
+    default_value=statement_000211,
+)
+
+statement_000213 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000601, tu_region_000601, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000214 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000602],
+)
+
+statement_000215 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000603, None],
+    types=[statement_000213, statement_000214, ],
+    mutability_modifier=None,
+)
+
+statement_000216 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000604],
+)
+
+statement_000217 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000605, tu_region_000606],
+    type=statement_000215,
+    name=r"max_value!",
+    default_value=statement_000216,
+)
+
+statement_000218 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000607, None, tu_region_000608, None],
+    positional=None,
+    any=[statement_000212, statement_000217, ],
+    keyword=None,
+)
+
+statement_000219 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000609, tu_region_000611, tu_region_000610],
+    name=r"Int8",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000218,
+    type=statement_000207,
+)
+
+statement_000220 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000612],
+    value=1,
+)
+
+statement_000221 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000612, None],
+    type_or_expression=statement_000220,
+    keyword=None,
+)
+
+statement_000222 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000613],
+    value=True,
+)
+
+statement_000223 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000614, tu_region_000615],
+    type_or_expression=statement_000222,
+    keyword=r"is_signed!",
+)
+
+statement_000224 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000616],
+    value=True,
+)
+
+statement_000225 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000617, tu_region_000618],
+    type_or_expression=statement_000224,
+    keyword=r"is_checked!",
+)
+
+statement_000226 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000619, tu_region_000619],
+    arguments=[statement_000221, statement_000223, statement_000225, ],
+)
+
+statement_000227 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000620, tu_region_000620],
+    name=r"min_value!",
+)
+
+statement_000228 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000621, tu_region_000622],
+    expression=statement_000227,
+    keyword=r"min_value!",
+)
+
+statement_000229 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000623, tu_region_000623],
+    name=r"max_value!",
+)
+
+statement_000230 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000624, tu_region_000625],
+    expression=statement_000229,
+    keyword=r"max_value!",
+)
+
+statement_000231 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000626, tu_region_000626],
+    arguments=[statement_000228, statement_000230, ],
+)
+
+statement_000232 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000627, tu_region_000628, None],
+    value="FixedInt",
+    templates=statement_000226,
+    constraints=statement_000231,
+    mutability_modifier=None,
+)
+
+statement_000233 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000629, tu_region_000629, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000234 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000630],
+)
+
+statement_000235 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000631, None],
+    types=[statement_000233, statement_000234, ],
+    mutability_modifier=None,
+)
+
+statement_000236 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000632],
+)
+
+statement_000237 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000633, tu_region_000634],
+    type=statement_000235,
+    name=r"min_value!",
+    default_value=statement_000236,
+)
+
+statement_000238 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000635, tu_region_000635, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000239 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000636],
+)
+
+statement_000240 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000637, None],
+    types=[statement_000238, statement_000239, ],
+    mutability_modifier=None,
+)
+
+statement_000241 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000638],
+)
+
+statement_000242 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000639, tu_region_000640],
+    type=statement_000240,
+    name=r"max_value!",
+    default_value=statement_000241,
+)
+
+statement_000243 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000641, None, tu_region_000642, None],
+    positional=None,
+    any=[statement_000237, statement_000242, ],
+    keyword=None,
+)
+
+statement_000244 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000643, tu_region_000645, tu_region_000644],
+    name=r"CheckedInt8",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000243,
+    type=statement_000232,
+)
+
+statement_000245 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000646],
+    value=1,
+)
+
+statement_000246 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000646, None],
+    type_or_expression=statement_000245,
+    keyword=None,
+)
+
+statement_000247 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000647],
     value=False,
 )
 
-statement_000245 = ConstraintArgumentParserInfo.Create(
+statement_000248 = TemplateArgumentParserInfo.Create(
     regions=[tu_region_000648, tu_region_000649],
-    expression=statement_000244,
-    keyword=r"is_checked!",
-)
-
-statement_000246 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000650, tu_region_000650],
-    arguments=[statement_000241, statement_000243, statement_000245, ],
-)
-
-statement_000247 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000651, tu_region_000652, None],
-    value="FixedInt",
-    templates=None,
-    constraints=statement_000246,
-    mutability_modifier=None,
-)
-
-statement_000248 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000653, tu_region_000655, tu_region_000654],
-    name=r"Int8",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000247,
-)
-
-statement_000249 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000656],
-    value=1,
-)
-
-statement_000250 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000656, None],
-    expression=statement_000249,
-    keyword=None,
-)
-
-statement_000251 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000657],
-    value=True,
-)
-
-statement_000252 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000658, tu_region_000659],
-    expression=statement_000251,
+    type_or_expression=statement_000247,
     keyword=r"is_signed!",
 )
 
-statement_000253 = BooleanExpressionParserInfo.Create(
+statement_000249 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000660],
-    value=True,
+    regions=[tu_region_000650],
+    value=False,
 )
 
-statement_000254 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000661, tu_region_000662],
-    expression=statement_000253,
+statement_000250 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000651, tu_region_000652],
+    type_or_expression=statement_000249,
     keyword=r"is_checked!",
 )
 
-statement_000255 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000663, tu_region_000663],
-    arguments=[statement_000250, statement_000252, statement_000254, ],
+statement_000251 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000653, tu_region_000653],
+    arguments=[statement_000246, statement_000248, statement_000250, ],
 )
 
-statement_000256 = FuncOrTypeExpressionParserInfo.Create(
+statement_000252 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000654, tu_region_000654],
+    name=r"min_value!",
+)
+
+statement_000253 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000655, tu_region_000656],
+    expression=statement_000252,
+    keyword=r"min_value!",
+)
+
+statement_000254 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000657, tu_region_000657],
+    name=r"max_value!",
+)
+
+statement_000255 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000658, tu_region_000659],
+    expression=statement_000254,
+    keyword=r"max_value!",
+)
+
+statement_000256 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000660, tu_region_000660],
+    arguments=[statement_000253, statement_000255, ],
+)
+
+statement_000257 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000664, tu_region_000665, None],
+    regions=[tu_region_000661, tu_region_000662, None],
     value="FixedInt",
-    templates=None,
-    constraints=statement_000255,
+    templates=statement_000251,
+    constraints=statement_000256,
     mutability_modifier=None,
 )
 
-statement_000257 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000666, tu_region_000668, tu_region_000667],
-    name=r"CheckedInt8",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
+statement_000258 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000663, tu_region_000663, None],
+    value=IntegerType(),
+    templates=None,
     constraints=None,
-    type=statement_000256,
+    mutability_modifier=None,
 )
 
-statement_000258 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000669],
-    value=1,
+statement_000259 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000664],
 )
 
-statement_000259 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000669, None],
-    expression=statement_000258,
-    keyword=None,
+statement_000260 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000665, None],
+    types=[statement_000258, statement_000259, ],
+    mutability_modifier=None,
 )
 
-statement_000260 = BooleanExpressionParserInfo.Create(
+statement_000261 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000666],
+)
+
+statement_000262 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000667, tu_region_000668],
+    type=statement_000260,
+    name=r"min_value!",
+    default_value=statement_000261,
+)
+
+statement_000263 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000669, tu_region_000669, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000264 = NoneExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
     regions=[tu_region_000670],
-    value=False,
 )
 
-statement_000261 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000671, tu_region_000672],
-    expression=statement_000260,
-    keyword=r"is_signed!",
-)
-
-statement_000262 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000673],
-    value=False,
-)
-
-statement_000263 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000674, tu_region_000675],
-    expression=statement_000262,
-    keyword=r"is_checked!",
-)
-
-statement_000264 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000676, tu_region_000676],
-    arguments=[statement_000259, statement_000261, statement_000263, ],
-)
-
-statement_000265 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000677, tu_region_000678, None],
-    value="FixedInt",
-    templates=None,
-    constraints=statement_000264,
+statement_000265 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000671, None],
+    types=[statement_000263, statement_000264, ],
     mutability_modifier=None,
 )
 
-statement_000266 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000679, tu_region_000681, tu_region_000680],
+statement_000266 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000672],
+)
+
+statement_000267 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000673, tu_region_000674],
+    type=statement_000265,
+    name=r"max_value!",
+    default_value=statement_000266,
+)
+
+statement_000268 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000675, None, tu_region_000676, None],
+    positional=None,
+    any=[statement_000262, statement_000267, ],
+    keyword=None,
+)
+
+statement_000269 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000677, tu_region_000679, tu_region_000678],
     name=r"UInt8",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000265,
+    constraints=statement_000268,
+    type=statement_000257,
 )
 
-statement_000267 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000682],
+statement_000270 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000680],
     value=1,
 )
 
-statement_000268 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000682, None],
-    expression=statement_000267,
+statement_000271 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000680, None],
+    type_or_expression=statement_000270,
     keyword=None,
 )
 
-statement_000269 = BooleanExpressionParserInfo.Create(
+statement_000272 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000683],
+    regions=[tu_region_000681],
     value=False,
 )
 
-statement_000270 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000684, tu_region_000685],
-    expression=statement_000269,
+statement_000273 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000682, tu_region_000683],
+    type_or_expression=statement_000272,
     keyword=r"is_signed!",
 )
 
-statement_000271 = BooleanExpressionParserInfo.Create(
+statement_000274 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000686],
+    regions=[tu_region_000684],
     value=True,
 )
 
-statement_000272 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000687, tu_region_000688],
-    expression=statement_000271,
+statement_000275 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000685, tu_region_000686],
+    type_or_expression=statement_000274,
     keyword=r"is_checked!",
 )
 
-statement_000273 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000689, tu_region_000689],
-    arguments=[statement_000268, statement_000270, statement_000272, ],
+statement_000276 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000687, tu_region_000687],
+    arguments=[statement_000271, statement_000273, statement_000275, ],
 )
 
-statement_000274 = FuncOrTypeExpressionParserInfo.Create(
+statement_000277 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000688, tu_region_000688],
+    name=r"min_value!",
+)
+
+statement_000278 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000689, tu_region_000690],
+    expression=statement_000277,
+    keyword=r"min_value!",
+)
+
+statement_000279 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000691, tu_region_000691],
+    name=r"max_value!",
+)
+
+statement_000280 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000692, tu_region_000693],
+    expression=statement_000279,
+    keyword=r"max_value!",
+)
+
+statement_000281 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000694, tu_region_000694],
+    arguments=[statement_000278, statement_000280, ],
+)
+
+statement_000282 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000690, tu_region_000691, None],
+    regions=[tu_region_000695, tu_region_000696, None],
     value="FixedInt",
-    templates=None,
-    constraints=statement_000273,
+    templates=statement_000276,
+    constraints=statement_000281,
     mutability_modifier=None,
 )
 
-statement_000275 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000692, tu_region_000694, tu_region_000693],
+statement_000283 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000697, tu_region_000697, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000284 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000698],
+)
+
+statement_000285 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000699, None],
+    types=[statement_000283, statement_000284, ],
+    mutability_modifier=None,
+)
+
+statement_000286 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000700],
+)
+
+statement_000287 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000701, tu_region_000702],
+    type=statement_000285,
+    name=r"min_value!",
+    default_value=statement_000286,
+)
+
+statement_000288 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000703, tu_region_000703, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000289 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000704],
+)
+
+statement_000290 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000705, None],
+    types=[statement_000288, statement_000289, ],
+    mutability_modifier=None,
+)
+
+statement_000291 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000706],
+)
+
+statement_000292 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000707, tu_region_000708],
+    type=statement_000290,
+    name=r"max_value!",
+    default_value=statement_000291,
+)
+
+statement_000293 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000709, None, tu_region_000710, None],
+    positional=None,
+    any=[statement_000287, statement_000292, ],
+    keyword=None,
+)
+
+statement_000294 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000711, tu_region_000713, tu_region_000712],
     name=r"CheckedUInt8",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000274,
+    constraints=statement_000293,
+    type=statement_000282,
 )
 
-statement_000276 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000695],
+statement_000295 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000714],
     value=2,
 )
 
-statement_000277 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000695, None],
-    expression=statement_000276,
+statement_000296 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000714, None],
+    type_or_expression=statement_000295,
     keyword=None,
 )
 
-statement_000278 = BooleanExpressionParserInfo.Create(
+statement_000297 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000696],
+    regions=[tu_region_000715],
     value=True,
 )
 
-statement_000279 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000697, tu_region_000698],
-    expression=statement_000278,
+statement_000298 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000716, tu_region_000717],
+    type_or_expression=statement_000297,
     keyword=r"is_signed!",
 )
 
-statement_000280 = BooleanExpressionParserInfo.Create(
+statement_000299 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000699],
+    regions=[tu_region_000718],
     value=False,
 )
 
-statement_000281 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000700, tu_region_000701],
-    expression=statement_000280,
+statement_000300 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000719, tu_region_000720],
+    type_or_expression=statement_000299,
     keyword=r"is_checked!",
 )
 
-statement_000282 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000702, tu_region_000702],
-    arguments=[statement_000277, statement_000279, statement_000281, ],
+statement_000301 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000721, tu_region_000721],
+    arguments=[statement_000296, statement_000298, statement_000300, ],
 )
 
-statement_000283 = FuncOrTypeExpressionParserInfo.Create(
+statement_000302 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000722, tu_region_000722],
+    name=r"min_value!",
+)
+
+statement_000303 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000723, tu_region_000724],
+    expression=statement_000302,
+    keyword=r"min_value!",
+)
+
+statement_000304 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000725, tu_region_000725],
+    name=r"max_value!",
+)
+
+statement_000305 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000726, tu_region_000727],
+    expression=statement_000304,
+    keyword=r"max_value!",
+)
+
+statement_000306 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000728, tu_region_000728],
+    arguments=[statement_000303, statement_000305, ],
+)
+
+statement_000307 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000703, tu_region_000704, None],
+    regions=[tu_region_000729, tu_region_000730, None],
     value="FixedInt",
-    templates=None,
-    constraints=statement_000282,
+    templates=statement_000301,
+    constraints=statement_000306,
     mutability_modifier=None,
 )
 
-statement_000284 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000705, tu_region_000707, tu_region_000706],
+statement_000308 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000731, tu_region_000731, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000309 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000732],
+)
+
+statement_000310 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000733, None],
+    types=[statement_000308, statement_000309, ],
+    mutability_modifier=None,
+)
+
+statement_000311 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000734],
+)
+
+statement_000312 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000735, tu_region_000736],
+    type=statement_000310,
+    name=r"min_value!",
+    default_value=statement_000311,
+)
+
+statement_000313 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000737, tu_region_000737, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000314 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000738],
+)
+
+statement_000315 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000739, None],
+    types=[statement_000313, statement_000314, ],
+    mutability_modifier=None,
+)
+
+statement_000316 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000740],
+)
+
+statement_000317 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000741, tu_region_000742],
+    type=statement_000315,
+    name=r"max_value!",
+    default_value=statement_000316,
+)
+
+statement_000318 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000743, None, tu_region_000744, None],
+    positional=None,
+    any=[statement_000312, statement_000317, ],
+    keyword=None,
+)
+
+statement_000319 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000745, tu_region_000747, tu_region_000746],
     name=r"Int16",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000283,
+    constraints=statement_000318,
+    type=statement_000307,
 )
 
-statement_000285 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000708],
+statement_000320 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000748],
     value=2,
 )
 
-statement_000286 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000708, None],
-    expression=statement_000285,
+statement_000321 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000748, None],
+    type_or_expression=statement_000320,
     keyword=None,
 )
 
-statement_000287 = BooleanExpressionParserInfo.Create(
+statement_000322 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000709],
+    regions=[tu_region_000749],
     value=True,
 )
 
-statement_000288 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000710, tu_region_000711],
-    expression=statement_000287,
+statement_000323 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000750, tu_region_000751],
+    type_or_expression=statement_000322,
     keyword=r"is_signed!",
 )
 
-statement_000289 = BooleanExpressionParserInfo.Create(
+statement_000324 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000712],
+    regions=[tu_region_000752],
     value=True,
 )
 
-statement_000290 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000713, tu_region_000714],
-    expression=statement_000289,
+statement_000325 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000753, tu_region_000754],
+    type_or_expression=statement_000324,
     keyword=r"is_checked!",
 )
 
-statement_000291 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000715, tu_region_000715],
-    arguments=[statement_000286, statement_000288, statement_000290, ],
+statement_000326 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000755, tu_region_000755],
+    arguments=[statement_000321, statement_000323, statement_000325, ],
 )
 
-statement_000292 = FuncOrTypeExpressionParserInfo.Create(
+statement_000327 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000756, tu_region_000756],
+    name=r"min_value!",
+)
+
+statement_000328 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000757, tu_region_000758],
+    expression=statement_000327,
+    keyword=r"min_value!",
+)
+
+statement_000329 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000759, tu_region_000759],
+    name=r"max_value!",
+)
+
+statement_000330 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000760, tu_region_000761],
+    expression=statement_000329,
+    keyword=r"max_value!",
+)
+
+statement_000331 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000762, tu_region_000762],
+    arguments=[statement_000328, statement_000330, ],
+)
+
+statement_000332 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000716, tu_region_000717, None],
+    regions=[tu_region_000763, tu_region_000764, None],
     value="FixedInt",
-    templates=None,
-    constraints=statement_000291,
+    templates=statement_000326,
+    constraints=statement_000331,
     mutability_modifier=None,
 )
 
-statement_000293 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000718, tu_region_000720, tu_region_000719],
+statement_000333 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000765, tu_region_000765, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000334 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000766],
+)
+
+statement_000335 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000767, None],
+    types=[statement_000333, statement_000334, ],
+    mutability_modifier=None,
+)
+
+statement_000336 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000768],
+)
+
+statement_000337 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000769, tu_region_000770],
+    type=statement_000335,
+    name=r"min_value!",
+    default_value=statement_000336,
+)
+
+statement_000338 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000771, tu_region_000771, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000339 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000772],
+)
+
+statement_000340 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000773, None],
+    types=[statement_000338, statement_000339, ],
+    mutability_modifier=None,
+)
+
+statement_000341 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000774],
+)
+
+statement_000342 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000775, tu_region_000776],
+    type=statement_000340,
+    name=r"max_value!",
+    default_value=statement_000341,
+)
+
+statement_000343 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000777, None, tu_region_000778, None],
+    positional=None,
+    any=[statement_000337, statement_000342, ],
+    keyword=None,
+)
+
+statement_000344 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000779, tu_region_000781, tu_region_000780],
     name=r"CheckedInt16",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000292,
+    constraints=statement_000343,
+    type=statement_000332,
 )
 
-statement_000294 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000721],
+statement_000345 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000782],
     value=2,
 )
 
-statement_000295 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000721, None],
-    expression=statement_000294,
+statement_000346 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000782, None],
+    type_or_expression=statement_000345,
     keyword=None,
 )
 
-statement_000296 = BooleanExpressionParserInfo.Create(
+statement_000347 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000722],
+    regions=[tu_region_000783],
     value=False,
 )
 
-statement_000297 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000723, tu_region_000724],
-    expression=statement_000296,
+statement_000348 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000784, tu_region_000785],
+    type_or_expression=statement_000347,
     keyword=r"is_signed!",
 )
 
-statement_000298 = BooleanExpressionParserInfo.Create(
+statement_000349 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000725],
+    regions=[tu_region_000786],
     value=False,
 )
 
-statement_000299 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000726, tu_region_000727],
-    expression=statement_000298,
+statement_000350 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000787, tu_region_000788],
+    type_or_expression=statement_000349,
     keyword=r"is_checked!",
 )
 
-statement_000300 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000728, tu_region_000728],
-    arguments=[statement_000295, statement_000297, statement_000299, ],
+statement_000351 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000789, tu_region_000789],
+    arguments=[statement_000346, statement_000348, statement_000350, ],
 )
 
-statement_000301 = FuncOrTypeExpressionParserInfo.Create(
+statement_000352 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000790, tu_region_000790],
+    name=r"min_value!",
+)
+
+statement_000353 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000791, tu_region_000792],
+    expression=statement_000352,
+    keyword=r"min_value!",
+)
+
+statement_000354 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000793, tu_region_000793],
+    name=r"max_value!",
+)
+
+statement_000355 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000794, tu_region_000795],
+    expression=statement_000354,
+    keyword=r"max_value!",
+)
+
+statement_000356 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000796, tu_region_000796],
+    arguments=[statement_000353, statement_000355, ],
+)
+
+statement_000357 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000729, tu_region_000730, None],
+    regions=[tu_region_000797, tu_region_000798, None],
     value="FixedInt",
-    templates=None,
-    constraints=statement_000300,
+    templates=statement_000351,
+    constraints=statement_000356,
     mutability_modifier=None,
 )
 
-statement_000302 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000731, tu_region_000733, tu_region_000732],
+statement_000358 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000799, tu_region_000799, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000359 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000800],
+)
+
+statement_000360 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000801, None],
+    types=[statement_000358, statement_000359, ],
+    mutability_modifier=None,
+)
+
+statement_000361 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000802],
+)
+
+statement_000362 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000803, tu_region_000804],
+    type=statement_000360,
+    name=r"min_value!",
+    default_value=statement_000361,
+)
+
+statement_000363 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000805, tu_region_000805, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000364 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000806],
+)
+
+statement_000365 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000807, None],
+    types=[statement_000363, statement_000364, ],
+    mutability_modifier=None,
+)
+
+statement_000366 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000808],
+)
+
+statement_000367 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000809, tu_region_000810],
+    type=statement_000365,
+    name=r"max_value!",
+    default_value=statement_000366,
+)
+
+statement_000368 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000811, None, tu_region_000812, None],
+    positional=None,
+    any=[statement_000362, statement_000367, ],
+    keyword=None,
+)
+
+statement_000369 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000813, tu_region_000815, tu_region_000814],
     name=r"UInt16",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000301,
+    constraints=statement_000368,
+    type=statement_000357,
 )
 
-statement_000303 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000734],
+statement_000370 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000816],
     value=2,
 )
 
-statement_000304 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000734, None],
-    expression=statement_000303,
+statement_000371 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000816, None],
+    type_or_expression=statement_000370,
     keyword=None,
 )
 
-statement_000305 = BooleanExpressionParserInfo.Create(
+statement_000372 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000735],
+    regions=[tu_region_000817],
     value=False,
 )
 
-statement_000306 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000736, tu_region_000737],
-    expression=statement_000305,
+statement_000373 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000818, tu_region_000819],
+    type_or_expression=statement_000372,
     keyword=r"is_signed!",
 )
 
-statement_000307 = BooleanExpressionParserInfo.Create(
+statement_000374 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000738],
+    regions=[tu_region_000820],
     value=True,
 )
 
-statement_000308 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000739, tu_region_000740],
-    expression=statement_000307,
+statement_000375 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000821, tu_region_000822],
+    type_or_expression=statement_000374,
     keyword=r"is_checked!",
 )
 
-statement_000309 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000741, tu_region_000741],
-    arguments=[statement_000304, statement_000306, statement_000308, ],
+statement_000376 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000823, tu_region_000823],
+    arguments=[statement_000371, statement_000373, statement_000375, ],
 )
 
-statement_000310 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000742, tu_region_000743, None],
-    value="FixedInt",
-    templates=None,
-    constraints=statement_000309,
-    mutability_modifier=None,
-)
-
-statement_000311 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000744, tu_region_000746, tu_region_000745],
-    name=r"CheckedUInt16",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000310,
-)
-
-statement_000312 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000747],
-    value=4,
-)
-
-statement_000313 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000747, None],
-    expression=statement_000312,
-    keyword=None,
-)
-
-statement_000314 = BooleanExpressionParserInfo.Create(
+statement_000377 = VariableExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000748],
-    value=True,
-)
-
-statement_000315 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000749, tu_region_000750],
-    expression=statement_000314,
-    keyword=r"is_signed!",
-)
-
-statement_000316 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000751],
-    value=False,
-)
-
-statement_000317 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000752, tu_region_000753],
-    expression=statement_000316,
-    keyword=r"is_checked!",
-)
-
-statement_000318 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000754, tu_region_000754],
-    arguments=[statement_000313, statement_000315, statement_000317, ],
-)
-
-statement_000319 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000755, tu_region_000756, None],
-    value="FixedInt",
-    templates=None,
-    constraints=statement_000318,
-    mutability_modifier=None,
-)
-
-statement_000320 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000757, tu_region_000759, tu_region_000758],
-    name=r"Int32",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000319,
-)
-
-statement_000321 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000760],
-    value=4,
-)
-
-statement_000322 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000760, None],
-    expression=statement_000321,
-    keyword=None,
-)
-
-statement_000323 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000761],
-    value=True,
-)
-
-statement_000324 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000762, tu_region_000763],
-    expression=statement_000323,
-    keyword=r"is_signed!",
-)
-
-statement_000325 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000764],
-    value=True,
-)
-
-statement_000326 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000765, tu_region_000766],
-    expression=statement_000325,
-    keyword=r"is_checked!",
-)
-
-statement_000327 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000767, tu_region_000767],
-    arguments=[statement_000322, statement_000324, statement_000326, ],
-)
-
-statement_000328 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000768, tu_region_000769, None],
-    value="FixedInt",
-    templates=None,
-    constraints=statement_000327,
-    mutability_modifier=None,
-)
-
-statement_000329 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000770, tu_region_000772, tu_region_000771],
-    name=r"CheckedInt32",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000328,
-)
-
-statement_000330 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000773],
-    value=4,
-)
-
-statement_000331 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000773, None],
-    expression=statement_000330,
-    keyword=None,
-)
-
-statement_000332 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000774],
-    value=False,
-)
-
-statement_000333 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000775, tu_region_000776],
-    expression=statement_000332,
-    keyword=r"is_signed!",
-)
-
-statement_000334 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000777],
-    value=False,
-)
-
-statement_000335 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000778, tu_region_000779],
-    expression=statement_000334,
-    keyword=r"is_checked!",
-)
-
-statement_000336 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000780, tu_region_000780],
-    arguments=[statement_000331, statement_000333, statement_000335, ],
-)
-
-statement_000337 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000781, tu_region_000782, None],
-    value="FixedInt",
-    templates=None,
-    constraints=statement_000336,
-    mutability_modifier=None,
-)
-
-statement_000338 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000783, tu_region_000785, tu_region_000784],
-    name=r"UInt32",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000337,
-)
-
-statement_000339 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000786],
-    value=4,
-)
-
-statement_000340 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000786, None],
-    expression=statement_000339,
-    keyword=None,
-)
-
-statement_000341 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000787],
-    value=False,
-)
-
-statement_000342 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000788, tu_region_000789],
-    expression=statement_000341,
-    keyword=r"is_signed!",
-)
-
-statement_000343 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000790],
-    value=True,
-)
-
-statement_000344 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000791, tu_region_000792],
-    expression=statement_000343,
-    keyword=r"is_checked!",
-)
-
-statement_000345 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000793, tu_region_000793],
-    arguments=[statement_000340, statement_000342, statement_000344, ],
-)
-
-statement_000346 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000794, tu_region_000795, None],
-    value="FixedInt",
-    templates=None,
-    constraints=statement_000345,
-    mutability_modifier=None,
-)
-
-statement_000347 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000796, tu_region_000798, tu_region_000797],
-    name=r"CheckedUInt32",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000346,
-)
-
-statement_000348 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000799],
-    value=8,
-)
-
-statement_000349 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000799, None],
-    expression=statement_000348,
-    keyword=None,
-)
-
-statement_000350 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000800],
-    value=True,
-)
-
-statement_000351 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000801, tu_region_000802],
-    expression=statement_000350,
-    keyword=r"is_signed!",
-)
-
-statement_000352 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000803],
-    value=False,
-)
-
-statement_000353 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000804, tu_region_000805],
-    expression=statement_000352,
-    keyword=r"is_checked!",
-)
-
-statement_000354 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000806, tu_region_000806],
-    arguments=[statement_000349, statement_000351, statement_000353, ],
-)
-
-statement_000355 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000807, tu_region_000808, None],
-    value="FixedInt",
-    templates=None,
-    constraints=statement_000354,
-    mutability_modifier=None,
-)
-
-statement_000356 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000809, tu_region_000811, tu_region_000810],
-    name=r"Int64",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000355,
-)
-
-statement_000357 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000812],
-    value=8,
-)
-
-statement_000358 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000812, None],
-    expression=statement_000357,
-    keyword=None,
-)
-
-statement_000359 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000813],
-    value=True,
-)
-
-statement_000360 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000814, tu_region_000815],
-    expression=statement_000359,
-    keyword=r"is_signed!",
-)
-
-statement_000361 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000816],
-    value=True,
-)
-
-statement_000362 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000817, tu_region_000818],
-    expression=statement_000361,
-    keyword=r"is_checked!",
-)
-
-statement_000363 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000819, tu_region_000819],
-    arguments=[statement_000358, statement_000360, statement_000362, ],
-)
-
-statement_000364 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000820, tu_region_000821, None],
-    value="FixedInt",
-    templates=None,
-    constraints=statement_000363,
-    mutability_modifier=None,
-)
-
-statement_000365 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000822, tu_region_000824, tu_region_000823],
-    name=r"CheckedInt64",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000364,
-)
-
-statement_000366 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000825],
-    value=8,
-)
-
-statement_000367 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000825, None],
-    expression=statement_000366,
-    keyword=None,
-)
-
-statement_000368 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000826],
-    value=False,
-)
-
-statement_000369 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000827, tu_region_000828],
-    expression=statement_000368,
-    keyword=r"is_signed!",
-)
-
-statement_000370 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000829],
-    value=False,
-)
-
-statement_000371 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000830, tu_region_000831],
-    expression=statement_000370,
-    keyword=r"is_checked!",
-)
-
-statement_000372 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000832, tu_region_000832],
-    arguments=[statement_000367, statement_000369, statement_000371, ],
-)
-
-statement_000373 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000833, tu_region_000834, None],
-    value="FixedInt",
-    templates=None,
-    constraints=statement_000372,
-    mutability_modifier=None,
-)
-
-statement_000374 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000835, tu_region_000837, tu_region_000836],
-    name=r"UInt64",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000373,
-)
-
-statement_000375 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000838],
-    value=8,
-)
-
-statement_000376 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000838, None],
-    expression=statement_000375,
-    keyword=None,
-)
-
-statement_000377 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000839],
-    value=False,
+    regions=[tu_region_000824, tu_region_000824],
+    name=r"min_value!",
 )
 
 statement_000378 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000840, tu_region_000841],
+    regions=[tu_region_000825, tu_region_000826],
     expression=statement_000377,
-    keyword=r"is_signed!",
+    keyword=r"min_value!",
 )
 
-statement_000379 = BooleanExpressionParserInfo.Create(
+statement_000379 = VariableExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000842],
-    value=True,
+    regions=[tu_region_000827, tu_region_000827],
+    name=r"max_value!",
 )
 
 statement_000380 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000843, tu_region_000844],
+    regions=[tu_region_000828, tu_region_000829],
     expression=statement_000379,
-    keyword=r"is_checked!",
+    keyword=r"max_value!",
 )
 
 statement_000381 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000845, tu_region_000845],
-    arguments=[statement_000376, statement_000378, statement_000380, ],
+    regions=[tu_region_000830, tu_region_000830],
+    arguments=[statement_000378, statement_000380, ],
 )
 
 statement_000382 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000846, tu_region_000847, None],
+    regions=[tu_region_000831, tu_region_000832, None],
     value="FixedInt",
-    templates=None,
+    templates=statement_000376,
     constraints=statement_000381,
     mutability_modifier=None,
 )
 
-statement_000383 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000848, tu_region_000850, tu_region_000849],
-    name=r"CheckedUInt64",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000382,
-)
-
-statement_000384 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000851],
-    value=16,
-)
-
-statement_000385 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000851, None],
-    expression=statement_000384,
-    keyword=None,
-)
-
-statement_000386 = BooleanExpressionParserInfo.Create(
+statement_000383 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000852],
-    value=True,
-)
-
-statement_000387 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000853, tu_region_000854],
-    expression=statement_000386,
-    keyword=r"is_signed!",
-)
-
-statement_000388 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000855],
-    value=False,
-)
-
-statement_000389 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000856, tu_region_000857],
-    expression=statement_000388,
-    keyword=r"is_checked!",
-)
-
-statement_000390 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000858, tu_region_000858],
-    arguments=[statement_000385, statement_000387, statement_000389, ],
-)
-
-statement_000391 = FuncOrTypeExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000859, tu_region_000860, None],
-    value="FixedInt",
+    regions=[tu_region_000833, tu_region_000833, None],
+    value=IntegerType(),
     templates=None,
-    constraints=statement_000390,
+    constraints=None,
     mutability_modifier=None,
 )
 
-statement_000392 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000861, tu_region_000863, tu_region_000862],
-    name=r"Int128",
-    visibility_param=VisibilityModifier.public,
-    templates_param=None,
-    parent_class_capabilities=None,
+statement_000384 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000834],
+)
+
+statement_000385 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000835, None],
+    types=[statement_000383, statement_000384, ],
+    mutability_modifier=None,
+)
+
+statement_000386 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000836],
+)
+
+statement_000387 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000837, tu_region_000838],
+    type=statement_000385,
+    name=r"min_value!",
+    default_value=statement_000386,
+)
+
+statement_000388 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000839, tu_region_000839, None],
+    value=IntegerType(),
+    templates=None,
     constraints=None,
-    type=statement_000391,
+    mutability_modifier=None,
 )
 
-statement_000393 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000864],
-    value=16,
+statement_000389 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000840],
 )
 
-statement_000394 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000864, None],
-    expression=statement_000393,
+statement_000390 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000841, None],
+    types=[statement_000388, statement_000389, ],
+    mutability_modifier=None,
+)
+
+statement_000391 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000842],
+)
+
+statement_000392 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000843, tu_region_000844],
+    type=statement_000390,
+    name=r"max_value!",
+    default_value=statement_000391,
+)
+
+statement_000393 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000845, None, tu_region_000846, None],
+    positional=None,
+    any=[statement_000387, statement_000392, ],
     keyword=None,
 )
 
-statement_000395 = BooleanExpressionParserInfo.Create(
-    parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000865],
-    value=True,
+statement_000394 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000847, tu_region_000849, tu_region_000848],
+    name=r"CheckedUInt16",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000393,
+    type=statement_000382,
 )
 
-statement_000396 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000866, tu_region_000867],
-    expression=statement_000395,
-    keyword=r"is_signed!",
+statement_000395 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000850],
+    value=4,
+)
+
+statement_000396 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000850, None],
+    type_or_expression=statement_000395,
+    keyword=None,
 )
 
 statement_000397 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000868],
+    regions=[tu_region_000851],
     value=True,
 )
 
-statement_000398 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000869, tu_region_000870],
-    expression=statement_000397,
+statement_000398 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000852, tu_region_000853],
+    type_or_expression=statement_000397,
+    keyword=r"is_signed!",
+)
+
+statement_000399 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000854],
+    value=False,
+)
+
+statement_000400 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000855, tu_region_000856],
+    type_or_expression=statement_000399,
     keyword=r"is_checked!",
 )
 
-statement_000399 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000871, tu_region_000871],
-    arguments=[statement_000394, statement_000396, statement_000398, ],
+statement_000401 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000857, tu_region_000857],
+    arguments=[statement_000396, statement_000398, statement_000400, ],
 )
 
-statement_000400 = FuncOrTypeExpressionParserInfo.Create(
+statement_000402 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000858, tu_region_000858],
+    name=r"min_value!",
+)
+
+statement_000403 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000859, tu_region_000860],
+    expression=statement_000402,
+    keyword=r"min_value!",
+)
+
+statement_000404 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000861, tu_region_000861],
+    name=r"max_value!",
+)
+
+statement_000405 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000862, tu_region_000863],
+    expression=statement_000404,
+    keyword=r"max_value!",
+)
+
+statement_000406 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000864, tu_region_000864],
+    arguments=[statement_000403, statement_000405, ],
+)
+
+statement_000407 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000872, tu_region_000873, None],
+    regions=[tu_region_000865, tu_region_000866, None],
     value="FixedInt",
-    templates=None,
-    constraints=statement_000399,
+    templates=statement_000401,
+    constraints=statement_000406,
     mutability_modifier=None,
 )
 
-statement_000401 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000874, tu_region_000876, tu_region_000875],
+statement_000408 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000867, tu_region_000867, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000409 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000868],
+)
+
+statement_000410 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000869, None],
+    types=[statement_000408, statement_000409, ],
+    mutability_modifier=None,
+)
+
+statement_000411 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000870],
+)
+
+statement_000412 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000871, tu_region_000872],
+    type=statement_000410,
+    name=r"min_value!",
+    default_value=statement_000411,
+)
+
+statement_000413 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000873, tu_region_000873, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000414 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000874],
+)
+
+statement_000415 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000875, None],
+    types=[statement_000413, statement_000414, ],
+    mutability_modifier=None,
+)
+
+statement_000416 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000876],
+)
+
+statement_000417 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000877, tu_region_000878],
+    type=statement_000415,
+    name=r"max_value!",
+    default_value=statement_000416,
+)
+
+statement_000418 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000879, None, tu_region_000880, None],
+    positional=None,
+    any=[statement_000412, statement_000417, ],
+    keyword=None,
+)
+
+statement_000419 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000881, tu_region_000883, tu_region_000882],
+    name=r"Int32",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000418,
+    type=statement_000407,
+)
+
+statement_000420 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000884],
+    value=4,
+)
+
+statement_000421 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000884, None],
+    type_or_expression=statement_000420,
+    keyword=None,
+)
+
+statement_000422 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000885],
+    value=True,
+)
+
+statement_000423 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000886, tu_region_000887],
+    type_or_expression=statement_000422,
+    keyword=r"is_signed!",
+)
+
+statement_000424 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000888],
+    value=True,
+)
+
+statement_000425 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000889, tu_region_000890],
+    type_or_expression=statement_000424,
+    keyword=r"is_checked!",
+)
+
+statement_000426 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000891, tu_region_000891],
+    arguments=[statement_000421, statement_000423, statement_000425, ],
+)
+
+statement_000427 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000892, tu_region_000892],
+    name=r"min_value!",
+)
+
+statement_000428 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000893, tu_region_000894],
+    expression=statement_000427,
+    keyword=r"min_value!",
+)
+
+statement_000429 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000895, tu_region_000895],
+    name=r"max_value!",
+)
+
+statement_000430 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000896, tu_region_000897],
+    expression=statement_000429,
+    keyword=r"max_value!",
+)
+
+statement_000431 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000898, tu_region_000898],
+    arguments=[statement_000428, statement_000430, ],
+)
+
+statement_000432 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000899, tu_region_000900, None],
+    value="FixedInt",
+    templates=statement_000426,
+    constraints=statement_000431,
+    mutability_modifier=None,
+)
+
+statement_000433 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000901, tu_region_000901, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000434 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000902],
+)
+
+statement_000435 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000903, None],
+    types=[statement_000433, statement_000434, ],
+    mutability_modifier=None,
+)
+
+statement_000436 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000904],
+)
+
+statement_000437 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000905, tu_region_000906],
+    type=statement_000435,
+    name=r"min_value!",
+    default_value=statement_000436,
+)
+
+statement_000438 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000907, tu_region_000907, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000439 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000908],
+)
+
+statement_000440 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000909, None],
+    types=[statement_000438, statement_000439, ],
+    mutability_modifier=None,
+)
+
+statement_000441 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000910],
+)
+
+statement_000442 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000911, tu_region_000912],
+    type=statement_000440,
+    name=r"max_value!",
+    default_value=statement_000441,
+)
+
+statement_000443 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000913, None, tu_region_000914, None],
+    positional=None,
+    any=[statement_000437, statement_000442, ],
+    keyword=None,
+)
+
+statement_000444 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000915, tu_region_000917, tu_region_000916],
+    name=r"CheckedInt32",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000443,
+    type=statement_000432,
+)
+
+statement_000445 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000918],
+    value=4,
+)
+
+statement_000446 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000918, None],
+    type_or_expression=statement_000445,
+    keyword=None,
+)
+
+statement_000447 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000919],
+    value=False,
+)
+
+statement_000448 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000920, tu_region_000921],
+    type_or_expression=statement_000447,
+    keyword=r"is_signed!",
+)
+
+statement_000449 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000922],
+    value=False,
+)
+
+statement_000450 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000923, tu_region_000924],
+    type_or_expression=statement_000449,
+    keyword=r"is_checked!",
+)
+
+statement_000451 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000925, tu_region_000925],
+    arguments=[statement_000446, statement_000448, statement_000450, ],
+)
+
+statement_000452 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000926, tu_region_000926],
+    name=r"min_value!",
+)
+
+statement_000453 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000927, tu_region_000928],
+    expression=statement_000452,
+    keyword=r"min_value!",
+)
+
+statement_000454 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000929, tu_region_000929],
+    name=r"max_value!",
+)
+
+statement_000455 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000930, tu_region_000931],
+    expression=statement_000454,
+    keyword=r"max_value!",
+)
+
+statement_000456 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000932, tu_region_000932],
+    arguments=[statement_000453, statement_000455, ],
+)
+
+statement_000457 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000933, tu_region_000934, None],
+    value="FixedInt",
+    templates=statement_000451,
+    constraints=statement_000456,
+    mutability_modifier=None,
+)
+
+statement_000458 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000935, tu_region_000935, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000459 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000936],
+)
+
+statement_000460 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000937, None],
+    types=[statement_000458, statement_000459, ],
+    mutability_modifier=None,
+)
+
+statement_000461 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000938],
+)
+
+statement_000462 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000939, tu_region_000940],
+    type=statement_000460,
+    name=r"min_value!",
+    default_value=statement_000461,
+)
+
+statement_000463 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000941, tu_region_000941, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000464 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000942],
+)
+
+statement_000465 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000943, None],
+    types=[statement_000463, statement_000464, ],
+    mutability_modifier=None,
+)
+
+statement_000466 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000944],
+)
+
+statement_000467 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000945, tu_region_000946],
+    type=statement_000465,
+    name=r"max_value!",
+    default_value=statement_000466,
+)
+
+statement_000468 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000947, None, tu_region_000948, None],
+    positional=None,
+    any=[statement_000462, statement_000467, ],
+    keyword=None,
+)
+
+statement_000469 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000949, tu_region_000951, tu_region_000950],
+    name=r"UInt32",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000468,
+    type=statement_000457,
+)
+
+statement_000470 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000952],
+    value=4,
+)
+
+statement_000471 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000952, None],
+    type_or_expression=statement_000470,
+    keyword=None,
+)
+
+statement_000472 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000953],
+    value=False,
+)
+
+statement_000473 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000954, tu_region_000955],
+    type_or_expression=statement_000472,
+    keyword=r"is_signed!",
+)
+
+statement_000474 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000956],
+    value=True,
+)
+
+statement_000475 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000957, tu_region_000958],
+    type_or_expression=statement_000474,
+    keyword=r"is_checked!",
+)
+
+statement_000476 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000959, tu_region_000959],
+    arguments=[statement_000471, statement_000473, statement_000475, ],
+)
+
+statement_000477 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000960, tu_region_000960],
+    name=r"min_value!",
+)
+
+statement_000478 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000961, tu_region_000962],
+    expression=statement_000477,
+    keyword=r"min_value!",
+)
+
+statement_000479 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000963, tu_region_000963],
+    name=r"max_value!",
+)
+
+statement_000480 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000964, tu_region_000965],
+    expression=statement_000479,
+    keyword=r"max_value!",
+)
+
+statement_000481 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_000966, tu_region_000966],
+    arguments=[statement_000478, statement_000480, ],
+)
+
+statement_000482 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_000967, tu_region_000968, None],
+    value="FixedInt",
+    templates=statement_000476,
+    constraints=statement_000481,
+    mutability_modifier=None,
+)
+
+statement_000483 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000969, tu_region_000969, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000484 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000970],
+)
+
+statement_000485 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000971, None],
+    types=[statement_000483, statement_000484, ],
+    mutability_modifier=None,
+)
+
+statement_000486 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000972],
+)
+
+statement_000487 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000973, tu_region_000974],
+    type=statement_000485,
+    name=r"min_value!",
+    default_value=statement_000486,
+)
+
+statement_000488 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000975, tu_region_000975, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000489 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000976],
+)
+
+statement_000490 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_000977, None],
+    types=[statement_000488, statement_000489, ],
+    mutability_modifier=None,
+)
+
+statement_000491 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000978],
+)
+
+statement_000492 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_000979, tu_region_000980],
+    type=statement_000490,
+    name=r"max_value!",
+    default_value=statement_000491,
+)
+
+statement_000493 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_000981, None, tu_region_000982, None],
+    positional=None,
+    any=[statement_000487, statement_000492, ],
+    keyword=None,
+)
+
+statement_000494 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_000983, tu_region_000985, tu_region_000984],
+    name=r"CheckedUInt32",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000493,
+    type=statement_000482,
+)
+
+statement_000495 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_000986],
+    value=8,
+)
+
+statement_000496 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000986, None],
+    type_or_expression=statement_000495,
+    keyword=None,
+)
+
+statement_000497 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000987],
+    value=True,
+)
+
+statement_000498 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000988, tu_region_000989],
+    type_or_expression=statement_000497,
+    keyword=r"is_signed!",
+)
+
+statement_000499 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000990],
+    value=False,
+)
+
+statement_000500 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_000991, tu_region_000992],
+    type_or_expression=statement_000499,
+    keyword=r"is_checked!",
+)
+
+statement_000501 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_000993, tu_region_000993],
+    arguments=[statement_000496, statement_000498, statement_000500, ],
+)
+
+statement_000502 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000994, tu_region_000994],
+    name=r"min_value!",
+)
+
+statement_000503 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000995, tu_region_000996],
+    expression=statement_000502,
+    keyword=r"min_value!",
+)
+
+statement_000504 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_000997, tu_region_000997],
+    name=r"max_value!",
+)
+
+statement_000505 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_000998, tu_region_000999],
+    expression=statement_000504,
+    keyword=r"max_value!",
+)
+
+statement_000506 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_001000, tu_region_001000],
+    arguments=[statement_000503, statement_000505, ],
+)
+
+statement_000507 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_001001, tu_region_001002, None],
+    value="FixedInt",
+    templates=statement_000501,
+    constraints=statement_000506,
+    mutability_modifier=None,
+)
+
+statement_000508 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001003, tu_region_001003, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000509 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001004],
+)
+
+statement_000510 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001005, None],
+    types=[statement_000508, statement_000509, ],
+    mutability_modifier=None,
+)
+
+statement_000511 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001006],
+)
+
+statement_000512 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001007, tu_region_001008],
+    type=statement_000510,
+    name=r"min_value!",
+    default_value=statement_000511,
+)
+
+statement_000513 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001009, tu_region_001009, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000514 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001010],
+)
+
+statement_000515 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001011, None],
+    types=[statement_000513, statement_000514, ],
+    mutability_modifier=None,
+)
+
+statement_000516 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001012],
+)
+
+statement_000517 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001013, tu_region_001014],
+    type=statement_000515,
+    name=r"max_value!",
+    default_value=statement_000516,
+)
+
+statement_000518 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_001015, None, tu_region_001016, None],
+    positional=None,
+    any=[statement_000512, statement_000517, ],
+    keyword=None,
+)
+
+statement_000519 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001017, tu_region_001019, tu_region_001018],
+    name=r"Int64",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000518,
+    type=statement_000507,
+)
+
+statement_000520 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_001020],
+    value=8,
+)
+
+statement_000521 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001020, None],
+    type_or_expression=statement_000520,
+    keyword=None,
+)
+
+statement_000522 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001021],
+    value=True,
+)
+
+statement_000523 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001022, tu_region_001023],
+    type_or_expression=statement_000522,
+    keyword=r"is_signed!",
+)
+
+statement_000524 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001024],
+    value=True,
+)
+
+statement_000525 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001025, tu_region_001026],
+    type_or_expression=statement_000524,
+    keyword=r"is_checked!",
+)
+
+statement_000526 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_001027, tu_region_001027],
+    arguments=[statement_000521, statement_000523, statement_000525, ],
+)
+
+statement_000527 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001028, tu_region_001028],
+    name=r"min_value!",
+)
+
+statement_000528 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_001029, tu_region_001030],
+    expression=statement_000527,
+    keyword=r"min_value!",
+)
+
+statement_000529 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001031, tu_region_001031],
+    name=r"max_value!",
+)
+
+statement_000530 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_001032, tu_region_001033],
+    expression=statement_000529,
+    keyword=r"max_value!",
+)
+
+statement_000531 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_001034, tu_region_001034],
+    arguments=[statement_000528, statement_000530, ],
+)
+
+statement_000532 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_001035, tu_region_001036, None],
+    value="FixedInt",
+    templates=statement_000526,
+    constraints=statement_000531,
+    mutability_modifier=None,
+)
+
+statement_000533 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001037, tu_region_001037, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000534 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001038],
+)
+
+statement_000535 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001039, None],
+    types=[statement_000533, statement_000534, ],
+    mutability_modifier=None,
+)
+
+statement_000536 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001040],
+)
+
+statement_000537 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001041, tu_region_001042],
+    type=statement_000535,
+    name=r"min_value!",
+    default_value=statement_000536,
+)
+
+statement_000538 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001043, tu_region_001043, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000539 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001044],
+)
+
+statement_000540 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001045, None],
+    types=[statement_000538, statement_000539, ],
+    mutability_modifier=None,
+)
+
+statement_000541 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001046],
+)
+
+statement_000542 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001047, tu_region_001048],
+    type=statement_000540,
+    name=r"max_value!",
+    default_value=statement_000541,
+)
+
+statement_000543 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_001049, None, tu_region_001050, None],
+    positional=None,
+    any=[statement_000537, statement_000542, ],
+    keyword=None,
+)
+
+statement_000544 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001051, tu_region_001053, tu_region_001052],
+    name=r"CheckedInt64",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000543,
+    type=statement_000532,
+)
+
+statement_000545 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_001054],
+    value=8,
+)
+
+statement_000546 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001054, None],
+    type_or_expression=statement_000545,
+    keyword=None,
+)
+
+statement_000547 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001055],
+    value=False,
+)
+
+statement_000548 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001056, tu_region_001057],
+    type_or_expression=statement_000547,
+    keyword=r"is_signed!",
+)
+
+statement_000549 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001058],
+    value=False,
+)
+
+statement_000550 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001059, tu_region_001060],
+    type_or_expression=statement_000549,
+    keyword=r"is_checked!",
+)
+
+statement_000551 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_001061, tu_region_001061],
+    arguments=[statement_000546, statement_000548, statement_000550, ],
+)
+
+statement_000552 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001062, tu_region_001062],
+    name=r"min_value!",
+)
+
+statement_000553 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_001063, tu_region_001064],
+    expression=statement_000552,
+    keyword=r"min_value!",
+)
+
+statement_000554 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001065, tu_region_001065],
+    name=r"max_value!",
+)
+
+statement_000555 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_001066, tu_region_001067],
+    expression=statement_000554,
+    keyword=r"max_value!",
+)
+
+statement_000556 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_001068, tu_region_001068],
+    arguments=[statement_000553, statement_000555, ],
+)
+
+statement_000557 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_001069, tu_region_001070, None],
+    value="FixedInt",
+    templates=statement_000551,
+    constraints=statement_000556,
+    mutability_modifier=None,
+)
+
+statement_000558 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001071, tu_region_001071, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000559 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001072],
+)
+
+statement_000560 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001073, None],
+    types=[statement_000558, statement_000559, ],
+    mutability_modifier=None,
+)
+
+statement_000561 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001074],
+)
+
+statement_000562 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001075, tu_region_001076],
+    type=statement_000560,
+    name=r"min_value!",
+    default_value=statement_000561,
+)
+
+statement_000563 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001077, tu_region_001077, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000564 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001078],
+)
+
+statement_000565 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001079, None],
+    types=[statement_000563, statement_000564, ],
+    mutability_modifier=None,
+)
+
+statement_000566 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001080],
+)
+
+statement_000567 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001081, tu_region_001082],
+    type=statement_000565,
+    name=r"max_value!",
+    default_value=statement_000566,
+)
+
+statement_000568 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_001083, None, tu_region_001084, None],
+    positional=None,
+    any=[statement_000562, statement_000567, ],
+    keyword=None,
+)
+
+statement_000569 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001085, tu_region_001087, tu_region_001086],
+    name=r"UInt64",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000568,
+    type=statement_000557,
+)
+
+statement_000570 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_001088],
+    value=8,
+)
+
+statement_000571 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001088, None],
+    type_or_expression=statement_000570,
+    keyword=None,
+)
+
+statement_000572 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001089],
+    value=False,
+)
+
+statement_000573 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001090, tu_region_001091],
+    type_or_expression=statement_000572,
+    keyword=r"is_signed!",
+)
+
+statement_000574 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001092],
+    value=True,
+)
+
+statement_000575 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001093, tu_region_001094],
+    type_or_expression=statement_000574,
+    keyword=r"is_checked!",
+)
+
+statement_000576 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_001095, tu_region_001095],
+    arguments=[statement_000571, statement_000573, statement_000575, ],
+)
+
+statement_000577 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001096, tu_region_001096],
+    name=r"min_value!",
+)
+
+statement_000578 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_001097, tu_region_001098],
+    expression=statement_000577,
+    keyword=r"min_value!",
+)
+
+statement_000579 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001099, tu_region_001099],
+    name=r"max_value!",
+)
+
+statement_000580 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_001100, tu_region_001101],
+    expression=statement_000579,
+    keyword=r"max_value!",
+)
+
+statement_000581 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_001102, tu_region_001102],
+    arguments=[statement_000578, statement_000580, ],
+)
+
+statement_000582 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_001103, tu_region_001104, None],
+    value="FixedInt",
+    templates=statement_000576,
+    constraints=statement_000581,
+    mutability_modifier=None,
+)
+
+statement_000583 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001105, tu_region_001105, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000584 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001106],
+)
+
+statement_000585 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001107, None],
+    types=[statement_000583, statement_000584, ],
+    mutability_modifier=None,
+)
+
+statement_000586 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001108],
+)
+
+statement_000587 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001109, tu_region_001110],
+    type=statement_000585,
+    name=r"min_value!",
+    default_value=statement_000586,
+)
+
+statement_000588 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001111, tu_region_001111, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000589 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001112],
+)
+
+statement_000590 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001113, None],
+    types=[statement_000588, statement_000589, ],
+    mutability_modifier=None,
+)
+
+statement_000591 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001114],
+)
+
+statement_000592 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001115, tu_region_001116],
+    type=statement_000590,
+    name=r"max_value!",
+    default_value=statement_000591,
+)
+
+statement_000593 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_001117, None, tu_region_001118, None],
+    positional=None,
+    any=[statement_000587, statement_000592, ],
+    keyword=None,
+)
+
+statement_000594 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001119, tu_region_001121, tu_region_001120],
+    name=r"CheckedUInt64",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000593,
+    type=statement_000582,
+)
+
+statement_000595 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_001122],
+    value=16,
+)
+
+statement_000596 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001122, None],
+    type_or_expression=statement_000595,
+    keyword=None,
+)
+
+statement_000597 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001123],
+    value=True,
+)
+
+statement_000598 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001124, tu_region_001125],
+    type_or_expression=statement_000597,
+    keyword=r"is_signed!",
+)
+
+statement_000599 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001126],
+    value=False,
+)
+
+statement_000600 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001127, tu_region_001128],
+    type_or_expression=statement_000599,
+    keyword=r"is_checked!",
+)
+
+statement_000601 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_001129, tu_region_001129],
+    arguments=[statement_000596, statement_000598, statement_000600, ],
+)
+
+statement_000602 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001130, tu_region_001130],
+    name=r"min_value!",
+)
+
+statement_000603 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_001131, tu_region_001132],
+    expression=statement_000602,
+    keyword=r"min_value!",
+)
+
+statement_000604 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001133, tu_region_001133],
+    name=r"max_value!",
+)
+
+statement_000605 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_001134, tu_region_001135],
+    expression=statement_000604,
+    keyword=r"max_value!",
+)
+
+statement_000606 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_001136, tu_region_001136],
+    arguments=[statement_000603, statement_000605, ],
+)
+
+statement_000607 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_001137, tu_region_001138, None],
+    value="FixedInt",
+    templates=statement_000601,
+    constraints=statement_000606,
+    mutability_modifier=None,
+)
+
+statement_000608 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001139, tu_region_001139, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000609 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001140],
+)
+
+statement_000610 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001141, None],
+    types=[statement_000608, statement_000609, ],
+    mutability_modifier=None,
+)
+
+statement_000611 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001142],
+)
+
+statement_000612 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001143, tu_region_001144],
+    type=statement_000610,
+    name=r"min_value!",
+    default_value=statement_000611,
+)
+
+statement_000613 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001145, tu_region_001145, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000614 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001146],
+)
+
+statement_000615 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001147, None],
+    types=[statement_000613, statement_000614, ],
+    mutability_modifier=None,
+)
+
+statement_000616 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001148],
+)
+
+statement_000617 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001149, tu_region_001150],
+    type=statement_000615,
+    name=r"max_value!",
+    default_value=statement_000616,
+)
+
+statement_000618 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_001151, None, tu_region_001152, None],
+    positional=None,
+    any=[statement_000612, statement_000617, ],
+    keyword=None,
+)
+
+statement_000619 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001153, tu_region_001155, tu_region_001154],
+    name=r"Int128",
+    visibility_param=VisibilityModifier.public,
+    templates_param=None,
+    parent_class_capabilities=None,
+    constraints=statement_000618,
+    type=statement_000607,
+)
+
+statement_000620 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_001156],
+    value=16,
+)
+
+statement_000621 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001156, None],
+    type_or_expression=statement_000620,
+    keyword=None,
+)
+
+statement_000622 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001157],
+    value=True,
+)
+
+statement_000623 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001158, tu_region_001159],
+    type_or_expression=statement_000622,
+    keyword=r"is_signed!",
+)
+
+statement_000624 = BooleanExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001160],
+    value=True,
+)
+
+statement_000625 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001161, tu_region_001162],
+    type_or_expression=statement_000624,
+    keyword=r"is_checked!",
+)
+
+statement_000626 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_001163, tu_region_001163],
+    arguments=[statement_000621, statement_000623, statement_000625, ],
+)
+
+statement_000627 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001164, tu_region_001164],
+    name=r"min_value!",
+)
+
+statement_000628 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_001165, tu_region_001166],
+    expression=statement_000627,
+    keyword=r"min_value!",
+)
+
+statement_000629 = VariableExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001167, tu_region_001167],
+    name=r"max_value!",
+)
+
+statement_000630 = ConstraintArgumentParserInfo.Create(
+    regions=[tu_region_001168, tu_region_001169],
+    expression=statement_000629,
+    keyword=r"max_value!",
+)
+
+statement_000631 = ConstraintArgumentsParserInfo.Create(
+    regions=[tu_region_001170, tu_region_001170],
+    arguments=[statement_000628, statement_000630, ],
+)
+
+statement_000632 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.Unknown,
+    regions=[tu_region_001171, tu_region_001172, None],
+    value="FixedInt",
+    templates=statement_000626,
+    constraints=statement_000631,
+    mutability_modifier=None,
+)
+
+statement_000633 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001173, tu_region_001173, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000634 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001174],
+)
+
+statement_000635 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001175, None],
+    types=[statement_000633, statement_000634, ],
+    mutability_modifier=None,
+)
+
+statement_000636 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001176],
+)
+
+statement_000637 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001177, tu_region_001178],
+    type=statement_000635,
+    name=r"min_value!",
+    default_value=statement_000636,
+)
+
+statement_000638 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001179, tu_region_001179, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000639 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001180],
+)
+
+statement_000640 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001181, None],
+    types=[statement_000638, statement_000639, ],
+    mutability_modifier=None,
+)
+
+statement_000641 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001182],
+)
+
+statement_000642 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001183, tu_region_001184],
+    type=statement_000640,
+    name=r"max_value!",
+    default_value=statement_000641,
+)
+
+statement_000643 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_001185, None, tu_region_001186, None],
+    positional=None,
+    any=[statement_000637, statement_000642, ],
+    keyword=None,
+)
+
+statement_000644 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001187, tu_region_001189, tu_region_001188],
     name=r"CheckedInt128",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000400,
+    constraints=statement_000643,
+    type=statement_000632,
 )
 
-statement_000402 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000877],
+statement_000645 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_001190],
     value=16,
 )
 
-statement_000403 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000877, None],
-    expression=statement_000402,
+statement_000646 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001190, None],
+    type_or_expression=statement_000645,
     keyword=None,
 )
 
-statement_000404 = BooleanExpressionParserInfo.Create(
+statement_000647 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000878],
+    regions=[tu_region_001191],
     value=False,
 )
 
-statement_000405 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000879, tu_region_000880],
-    expression=statement_000404,
+statement_000648 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001192, tu_region_001193],
+    type_or_expression=statement_000647,
     keyword=r"is_signed!",
 )
 
-statement_000406 = BooleanExpressionParserInfo.Create(
+statement_000649 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000881],
+    regions=[tu_region_001194],
     value=False,
 )
 
-statement_000407 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000882, tu_region_000883],
-    expression=statement_000406,
+statement_000650 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001195, tu_region_001196],
+    type_or_expression=statement_000649,
     keyword=r"is_checked!",
 )
 
-statement_000408 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000884, tu_region_000884],
-    arguments=[statement_000403, statement_000405, statement_000407, ],
+statement_000651 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_001197, tu_region_001197],
+    arguments=[statement_000646, statement_000648, statement_000650, ],
 )
 
-statement_000409 = FuncOrTypeExpressionParserInfo.Create(
+statement_000652 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000885, tu_region_000886, None],
+    regions=[tu_region_001198, tu_region_001199, None],
     value="FixedInt",
-    templates=None,
-    constraints=statement_000408,
+    templates=statement_000651,
+    constraints=None,
     mutability_modifier=None,
 )
 
-statement_000410 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000887, tu_region_000889, tu_region_000888],
+statement_000653 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001200, tu_region_001200, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000654 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001201],
+)
+
+statement_000655 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001202, None],
+    types=[statement_000653, statement_000654, ],
+    mutability_modifier=None,
+)
+
+statement_000656 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001203],
+)
+
+statement_000657 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001204, tu_region_001205],
+    type=statement_000655,
+    name=r"min_value!",
+    default_value=statement_000656,
+)
+
+statement_000658 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001206, tu_region_001206, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000659 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001207],
+)
+
+statement_000660 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001208, None],
+    types=[statement_000658, statement_000659, ],
+    mutability_modifier=None,
+)
+
+statement_000661 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001209],
+)
+
+statement_000662 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001210, tu_region_001211],
+    type=statement_000660,
+    name=r"max_value!",
+    default_value=statement_000661,
+)
+
+statement_000663 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_001212, None, tu_region_001213, None],
+    positional=None,
+    any=[statement_000657, statement_000662, ],
+    keyword=None,
+)
+
+statement_000664 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001214, tu_region_001216, tu_region_001215],
     name=r"UInt128",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000409,
+    constraints=statement_000663,
+    type=statement_000652,
 )
 
-statement_000411 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000890],
+statement_000665 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_001217],
     value=16,
 )
 
-statement_000412 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000890, None],
-    expression=statement_000411,
+statement_000666 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001217, None],
+    type_or_expression=statement_000665,
     keyword=None,
 )
 
-statement_000413 = BooleanExpressionParserInfo.Create(
+statement_000667 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000891],
+    regions=[tu_region_001218],
     value=False,
 )
 
-statement_000414 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000892, tu_region_000893],
-    expression=statement_000413,
+statement_000668 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001219, tu_region_001220],
+    type_or_expression=statement_000667,
     keyword=r"is_signed!",
 )
 
-statement_000415 = BooleanExpressionParserInfo.Create(
+statement_000669 = BooleanExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.TypeCustomization,
-    regions=[tu_region_000894],
+    regions=[tu_region_001221],
     value=True,
 )
 
-statement_000416 = ConstraintArgumentParserInfo.Create(
-    regions=[tu_region_000895, tu_region_000896],
-    expression=statement_000415,
+statement_000670 = TemplateArgumentParserInfo.Create(
+    regions=[tu_region_001222, tu_region_001223],
+    type_or_expression=statement_000669,
     keyword=r"is_checked!",
 )
 
-statement_000417 = ConstraintArgumentsParserInfo.Create(
-    regions=[tu_region_000897, tu_region_000897],
-    arguments=[statement_000412, statement_000414, statement_000416, ],
+statement_000671 = TemplateArgumentsParserInfo.Create(
+    regions=[tu_region_001224, tu_region_001224],
+    arguments=[statement_000666, statement_000668, statement_000670, ],
 )
 
-statement_000418 = FuncOrTypeExpressionParserInfo.Create(
+statement_000672 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000898, tu_region_000899, None],
+    regions=[tu_region_001225, tu_region_001226, None],
     value="FixedInt",
-    templates=None,
-    constraints=statement_000417,
+    templates=statement_000671,
+    constraints=None,
     mutability_modifier=None,
 )
 
-statement_000419 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000900, tu_region_000902, tu_region_000901],
+statement_000673 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001227, tu_region_001227, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000674 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001228],
+)
+
+statement_000675 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001229, None],
+    types=[statement_000673, statement_000674, ],
+    mutability_modifier=None,
+)
+
+statement_000676 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001230],
+)
+
+statement_000677 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001231, tu_region_001232],
+    type=statement_000675,
+    name=r"min_value!",
+    default_value=statement_000676,
+)
+
+statement_000678 = FuncOrTypeExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001233, tu_region_001233, None],
+    value=IntegerType(),
+    templates=None,
+    constraints=None,
+    mutability_modifier=None,
+)
+
+statement_000679 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001234],
+)
+
+statement_000680 = VariantExpressionParserInfo.Create(
+    regions=[tu_region_001235, None],
+    types=[statement_000678, statement_000679, ],
+    mutability_modifier=None,
+)
+
+statement_000681 = NoneExpressionParserInfo.Create(
+    parser_info_type=ParserInfoType.TypeCustomization,
+    regions=[tu_region_001236],
+)
+
+statement_000682 = ConstraintParameterParserInfo.Create(
+    regions=[tu_region_001237, tu_region_001238],
+    type=statement_000680,
+    name=r"max_value!",
+    default_value=statement_000681,
+)
+
+statement_000683 = ConstraintParametersParserInfo.Create(
+    regions=[tu_region_001239, None, tu_region_001240, None],
+    positional=None,
+    any=[statement_000677, statement_000682, ],
+    keyword=None,
+)
+
+statement_000684 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001241, tu_region_001243, tu_region_001242],
     name=r"CheckedUInt128",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
-    constraints=None,
-    type=statement_000418,
+    constraints=statement_000683,
+    type=statement_000672,
 )
 
-statement_000420 = VariableExpressionParserInfo.Create(
+statement_000685 = VariableExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000903, tu_region_000903],
+    regions=[tu_region_001244, tu_region_001244],
     name=r"__architecture_bytes!",
 )
 
-statement_000421 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000904],
+statement_000686 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_001245],
     value=4,
 )
 
-statement_000422 = BinaryExpressionParserInfo.Create(
-    regions=[tu_region_000905, tu_region_000906],
-    left_expression=statement_000420,
+statement_000687 = BinaryExpressionParserInfo.Create(
+    regions=[tu_region_001246, tu_region_001247],
+    left_expression=statement_000685,
     operator=BinaryExpressionOperatorType.Equal,
-    right_expression=statement_000421,
+    right_expression=statement_000686,
 )
 
-statement_000423 = FuncOrTypeExpressionParserInfo.Create(
+statement_000688 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000907, tu_region_000907, None],
+    regions=[tu_region_001248, tu_region_001248, None],
     value="Int32",
     templates=None,
     constraints=None,
     mutability_modifier=None,
 )
 
-statement_000424 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000908, tu_region_000910, tu_region_000909],
+statement_000689 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001249, tu_region_001251, tu_region_001250],
     name=r"ArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
     constraints=None,
-    type=statement_000423,
+    type=statement_000688,
 )
 
-statement_000425 = FuncOrTypeExpressionParserInfo.Create(
+statement_000690 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000911, tu_region_000911, None],
+    regions=[tu_region_001252, tu_region_001252, None],
     value="CheckedInt32",
     templates=None,
     constraints=None,
     mutability_modifier=None,
 )
 
-statement_000426 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000912, tu_region_000914, tu_region_000913],
+statement_000691 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001253, tu_region_001255, tu_region_001254],
     name=r"CheckedArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
     constraints=None,
-    type=statement_000425,
+    type=statement_000690,
 )
 
-statement_000427 = FuncOrTypeExpressionParserInfo.Create(
+statement_000692 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000915, tu_region_000915, None],
+    regions=[tu_region_001256, tu_region_001256, None],
     value="UInt32",
     templates=None,
     constraints=None,
     mutability_modifier=None,
 )
 
-statement_000428 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000916, tu_region_000918, tu_region_000917],
+statement_000693 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001257, tu_region_001259, tu_region_001258],
     name=r"UArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
     constraints=None,
-    type=statement_000427,
+    type=statement_000692,
 )
 
-statement_000429 = FuncOrTypeExpressionParserInfo.Create(
+statement_000694 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000919, tu_region_000919, None],
+    regions=[tu_region_001260, tu_region_001260, None],
     value="CheckedUInt32",
     templates=None,
     constraints=None,
     mutability_modifier=None,
 )
 
-statement_000430 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000920, tu_region_000922, tu_region_000921],
+statement_000695 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001261, tu_region_001263, tu_region_001262],
     name=r"CheckedUArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
     constraints=None,
-    type=statement_000429,
+    type=statement_000694,
 )
 
-statement_000431 = IfStatementClauseParserInfo.Create(
-    statements=[statement_000424, statement_000426, statement_000428, statement_000430, ],
-    regions=[tu_region_000923, tu_region_000924, None],
-    expression=statement_000422,
+statement_000696 = IfStatementClauseParserInfo.Create(
+    statements=[statement_000689, statement_000691, statement_000693, statement_000695, ],
+    regions=[tu_region_001264, tu_region_001265, None],
+    expression=statement_000687,
     documentation=None,
 )
 
-statement_000432 = VariableExpressionParserInfo.Create(
+statement_000697 = VariableExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000925, tu_region_000925],
+    regions=[tu_region_001266, tu_region_001266],
     name=r"__architecture_bytes!",
 )
 
-statement_000433 = IntegerExpressionParserInfo.Create(
-    regions=[tu_region_000926],
+statement_000698 = IntegerExpressionParserInfo.Create(
+    regions=[tu_region_001267],
     value=8,
 )
 
-statement_000434 = BinaryExpressionParserInfo.Create(
-    regions=[tu_region_000927, tu_region_000928],
-    left_expression=statement_000432,
+statement_000699 = BinaryExpressionParserInfo.Create(
+    regions=[tu_region_001268, tu_region_001269],
+    left_expression=statement_000697,
     operator=BinaryExpressionOperatorType.Equal,
-    right_expression=statement_000433,
+    right_expression=statement_000698,
 )
 
-statement_000435 = FuncOrTypeExpressionParserInfo.Create(
+statement_000700 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000929, tu_region_000929, None],
+    regions=[tu_region_001270, tu_region_001270, None],
     value="Int64",
     templates=None,
     constraints=None,
     mutability_modifier=None,
 )
 
-statement_000436 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000930, tu_region_000932, tu_region_000931],
+statement_000701 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001271, tu_region_001273, tu_region_001272],
     name=r"ArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
     constraints=None,
-    type=statement_000435,
+    type=statement_000700,
 )
 
-statement_000437 = FuncOrTypeExpressionParserInfo.Create(
+statement_000702 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000933, tu_region_000933, None],
+    regions=[tu_region_001274, tu_region_001274, None],
     value="CheckedInt64",
     templates=None,
     constraints=None,
     mutability_modifier=None,
 )
 
-statement_000438 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000934, tu_region_000936, tu_region_000935],
+statement_000703 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001275, tu_region_001277, tu_region_001276],
     name=r"CheckedArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
     constraints=None,
-    type=statement_000437,
+    type=statement_000702,
 )
 
-statement_000439 = FuncOrTypeExpressionParserInfo.Create(
+statement_000704 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000937, tu_region_000937, None],
+    regions=[tu_region_001278, tu_region_001278, None],
     value="UInt64",
     templates=None,
     constraints=None,
     mutability_modifier=None,
 )
 
-statement_000440 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000938, tu_region_000940, tu_region_000939],
+statement_000705 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001279, tu_region_001281, tu_region_001280],
     name=r"UArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
     constraints=None,
-    type=statement_000439,
+    type=statement_000704,
 )
 
-statement_000441 = FuncOrTypeExpressionParserInfo.Create(
+statement_000706 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Unknown,
-    regions=[tu_region_000941, tu_region_000941, None],
+    regions=[tu_region_001282, tu_region_001282, None],
     value="CheckedUInt64",
     templates=None,
     constraints=None,
     mutability_modifier=None,
 )
 
-statement_000442 = TypeAliasStatementParserInfo.Create(
-    regions=[tu_region_000942, tu_region_000944, tu_region_000943],
+statement_000707 = TypeAliasStatementParserInfo.Create(
+    regions=[tu_region_001283, tu_region_001285, tu_region_001284],
     name=r"CheckedUArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
     parent_class_capabilities=None,
     constraints=None,
-    type=statement_000441,
+    type=statement_000706,
 )
 
-statement_000443 = IfStatementClauseParserInfo.Create(
-    statements=[statement_000436, statement_000438, statement_000440, statement_000442, ],
-    regions=[tu_region_000945, tu_region_000946, None],
-    expression=statement_000434,
+statement_000708 = IfStatementClauseParserInfo.Create(
+    statements=[statement_000701, statement_000703, statement_000705, statement_000707, ],
+    regions=[tu_region_001286, tu_region_001287, None],
+    expression=statement_000699,
     documentation=None,
 )
 
-statement_000444 = FuncOrTypeExpressionParserInfo.Create(
+statement_000709 = FuncOrTypeExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000947, tu_region_000947, None],
+    regions=[tu_region_001288, tu_region_001288, None],
     value=ErrorExpression,
     templates=None,
     constraints=None,
     mutability_modifier=None,
 )
 
-statement_000445 = StringExpressionParserInfo.Create(
-    regions=[tu_region_000948],
+statement_000710 = StringExpressionParserInfo.Create(
+    regions=[tu_region_001289],
     value="Unsupported architecture",
 )
 
-statement_000446 = FuncArgumentParserInfo.Create(
-    regions=[tu_region_000948, None],
-    expression=statement_000445,
+statement_000711 = FuncArgumentParserInfo.Create(
+    regions=[tu_region_001289, None],
+    expression=statement_000710,
     keyword=None,
 )
 
-statement_000447 = VariableExpressionParserInfo.Create(
+statement_000712 = VariableExpressionParserInfo.Create(
     parser_info_type=ParserInfoType.Configuration,
-    regions=[tu_region_000949, tu_region_000949],
+    regions=[tu_region_001290, tu_region_001290],
     name=r"__architecture_bytes!",
 )
 
-statement_000448 = FuncArgumentParserInfo.Create(
-    regions=[tu_region_000949, None],
-    expression=statement_000447,
+statement_000713 = FuncArgumentParserInfo.Create(
+    regions=[tu_region_001290, None],
+    expression=statement_000712,
     keyword=None,
 )
 
-statement_000449 = FuncArgumentsParserInfo.Create(
-    regions=[tu_region_000950, tu_region_000950],
-    arguments=[statement_000446, statement_000448, ],
+statement_000714 = FuncArgumentsParserInfo.Create(
+    regions=[tu_region_001291, tu_region_001291],
+    arguments=[statement_000711, statement_000713, ],
 )
 
-statement_000450 = CallExpressionParserInfo.Create(
-    regions=[tu_region_000951, tu_region_000950],
-    expression=statement_000444,
-    arguments=statement_000449,
+statement_000715 = CallExpressionParserInfo.Create(
+    regions=[tu_region_001292, tu_region_001291],
+    expression=statement_000709,
+    arguments=statement_000714,
 )
 
-statement_000451 = FuncInvocationStatementParserInfo.Create(
-    regions=[tu_region_000952],
-    expression=statement_000450,
+statement_000716 = FuncInvocationStatementParserInfo.Create(
+    regions=[tu_region_001293],
+    expression=statement_000715,
 )
 
-statement_000452 = IfStatementElseClauseParserInfo.Create(
-    statements=[statement_000451, ],
-    regions=[tu_region_000953, tu_region_000954, None],
+statement_000717 = IfStatementElseClauseParserInfo.Create(
+    statements=[statement_000716, ],
+    regions=[tu_region_001294, tu_region_001295, None],
     documentation=None,
 )
 
-statement_000453 = IfStatementParserInfo.Create(
-    regions=[tu_region_000923],
-    clauses=[statement_000431, statement_000443, ],
-    else_clause=statement_000452,
+statement_000718 = IfStatementParserInfo.Create(
+    regions=[tu_region_001264],
+    clauses=[statement_000696, statement_000708, ],
+    else_clause=statement_000717,
 )
 
 root_parser_info = RootStatementParserInfo.Create(
-    regions=[tu_region_000955, tu_region_000955, None],
+    regions=[tu_region_001296, tu_region_001296, None],
     name=r"FixedInt.TheLanguage",
-    statements=[statement_000001, statement_000239, statement_000248, statement_000257, statement_000266, statement_000275, statement_000284, statement_000293, statement_000302, statement_000311, statement_000320, statement_000329, statement_000338, statement_000347, statement_000356, statement_000365, statement_000374, statement_000383, statement_000392, statement_000401, statement_000410, statement_000419, statement_000453, ],
+    statements=[statement_000001, statement_000194, statement_000219, statement_000244, statement_000269, statement_000294, statement_000319, statement_000344, statement_000369, statement_000394, statement_000419, statement_000444, statement_000469, statement_000494, statement_000519, statement_000544, statement_000569, statement_000594, statement_000619, statement_000644, statement_000664, statement_000684, statement_000718, ],
     documentation=None,
 )

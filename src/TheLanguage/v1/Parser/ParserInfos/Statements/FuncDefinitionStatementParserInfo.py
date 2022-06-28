@@ -19,11 +19,12 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
+from CommonEnvironment.Compare import Compare as CompareImpl
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -510,6 +511,32 @@ class FuncDefinitionStatementParserInfo(
         scope_flag: ScopeFlag,
     ) -> bool:
         return bool(scope_flag & ScopeFlag.Function)
+
+    # ----------------------------------------------------------------------
+    def GetOverrideId(self) -> Tuple:
+        """Returns information that can be used to determine if a function is an override of another"""
+
+        # TODO: How do we handle covariants?
+        if self.return_type is None:
+            return_type_id = None
+        elif self.return_type.HasResolvedEntity():
+            return_type_id = id(self.return_type.resolved_type__.Resolve().parser_info)
+        else:
+            # We should only get here if the return type is a type defined in a derived class
+            assert False, "BugBug!!!"
+
+        assert self.parameters is not False
+
+        return (
+            self.name,
+            # TODO: Templates?
+            self.function_modifier,
+            None if self.parameters is True else self.parameters.GetOverrideId(),
+            self.mutability,
+            return_type_id,
+            self.is_exceptional,
+            self.is_static,
+        )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

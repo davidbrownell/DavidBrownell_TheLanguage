@@ -176,6 +176,7 @@ class BaseMixin(object):
                         )
 
                         self._AddNamespaceItem(new_namespace)
+
                 yield
 
                 assert parser_info.parser_info_type__ != ParserInfoType.Configuration or id(parser_info) in self._processed, (

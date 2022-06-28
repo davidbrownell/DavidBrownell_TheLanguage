@@ -35,10 +35,11 @@ with InitRelativeImports():
     from .. import MiniLanguageHelpers
     from ..NamespaceInfo import ParsedNamespaceInfo
 
-    from ...ParserInfos.ParserInfo import ParserInfoType
+    from ...ParserInfos.ParserInfo import ParserInfoType, VisitResult
 
     from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from ...ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
+    from ...ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -100,3 +101,12 @@ class StatementsMixin(BaseMixin):
 
             for namespace in clause_namespace.children.values():
                 self._AddNamespaceItem(namespace)
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnPassStatementParserInfo(
+        self,
+        parser_info: PassStatementParserInfo,
+    ):
+        parser_info.Disable()
+        yield VisitResult.SkipAll

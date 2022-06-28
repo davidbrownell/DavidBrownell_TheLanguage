@@ -36,7 +36,7 @@ with InitRelativeImports():
 
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
-    from ..Expressions.BinaryExpression import BinaryExpression
+    from ..Expressions.BinaryExpression import BinaryExpression, OperatorType as BinaryExpressionOperatorType
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
@@ -82,7 +82,10 @@ class ClassUsingStatement(GrammarPhrase):
         ) -> bool:
             data = DynamicPhrase.GetDynamicData(data)
 
-            return data.phrase.name == BinaryExpression.PHRASE_NAME
+            return (
+                data.phrase.name == BinaryExpression.PHRASE_NAME
+                and BinaryExpression.GetOperatorType(data) == BinaryExpressionOperatorType.Access
+            )
 
         # ----------------------------------------------------------------------
 
@@ -117,7 +120,7 @@ class ClassUsingStatement(GrammarPhrase):
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
-            assert len(nodes) == 3
+            assert len(nodes) == 4
 
             errors: List[Error] = []
 

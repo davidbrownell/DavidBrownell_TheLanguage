@@ -40,7 +40,7 @@ with InitRelativeImports():
     from ....Parser.ParserInfos.Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo, ConstraintParameterParserInfo
     from ....Parser.ParserInfos.Common.FuncArgumentsParserInfo import FuncArgumentsParserInfo, FuncArgumentParserInfo
     from ....Parser.ParserInfos.Common.FuncParametersParserInfo import FuncParametersParserInfo, FuncParameterParserInfo
-    from ....Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateDecoratorArgumentParserInfo, TemplateTypeArgumentParserInfo
+    from ....Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateArgumentParserInfo
     from ....Parser.ParserInfos.Common.TemplateParametersParserInfo import TemplateParametersParserInfo, TemplateTypeParameterParserInfo, TemplateDecoratorParameterParserInfo
 
 
@@ -366,20 +366,20 @@ class CommonMixin(BaseMixin):
 
     # ----------------------------------------------------------------------
     @contextmanager
-    def OnTemplateDecoratorArgumentParserInfo(
+    def OnTemplateArgumentParserInfo(
         self,
-        parser_info: TemplateDecoratorArgumentParserInfo,
+        parser_info: TemplateArgumentParserInfo,
     ):
         yield
 
-        self._imports.add("from v1.Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateDecoratorArgumentParserInfo")
+        self._imports.add("from v1.Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentParserInfo")
 
         self._stream.write(
             textwrap.dedent(
                 """\
-                {statement_name} = TemplateDecoratorArgumentParserInfo.Create(
+                {statement_name} = TemplateArgumentParserInfo.Create(
                     regions=[{self_region}, {keyword_region}],
-                    expression={expression},
+                    type_or_expression={type_or_expression},
                     keyword={keyword},
                 )
 
@@ -388,36 +388,7 @@ class CommonMixin(BaseMixin):
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 keyword_region=self._ToString(parser_info.regions__.keyword),
-                expression=self._ToString(parser_info.expression),
-                keyword=self._ToString(parser_info.keyword),
-            ),
-        )
-
-    # ----------------------------------------------------------------------
-    @contextmanager
-    def OnTemplateTypeArgumentParserInfo(
-        self,
-        parser_info: TemplateTypeArgumentParserInfo,
-    ):
-        yield
-
-        self._imports.add("from v1.Parser.ParserInfos.Common.TemplateArgumentsParserInfo import TemplateTypeArgumentParserInfo")
-
-        self._stream.write(
-            textwrap.dedent(
-                """\
-                {statement_name} = TemplateTypeArgumentParserInfo.Create(
-                    regions=[{self_region}, {keyword_region}],
-                    type={type},
-                    keyword={keyword},
-                )
-
-                """,
-            ).format(
-                statement_name=self._CreateStatementName(parser_info),
-                self_region=self._ToString(parser_info.regions__.self__),
-                keyword_region=self._ToString(parser_info.regions__.keyword),
-                type=self._ToString(parser_info.type),
+                type_or_expression=self._ToString(parser_info.type_or_expression),
                 keyword=self._ToString(parser_info.keyword),
             ),
         )

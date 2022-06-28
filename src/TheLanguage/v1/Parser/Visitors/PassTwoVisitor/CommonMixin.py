@@ -41,7 +41,7 @@ with InitRelativeImports():
     from ...ParserInfos.Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo, ConstraintParameterParserInfo
     from ...ParserInfos.Common.FuncArgumentsParserInfo import FuncArgumentsParserInfo
     from ...ParserInfos.Common.FuncParametersParserInfo import FuncParametersParserInfo, FuncParameterParserInfo
-    from ...ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateTypeArgumentParserInfo
+    from ...ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateArgumentParserInfo
     from ...ParserInfos.Common.TemplateParametersParserInfo import TemplateParametersParserInfo, TemplateDecoratorParameterParserInfo, TemplateTypeParameterParserInfo
 
     from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
@@ -124,13 +124,7 @@ class CommonMixin(BaseMixin):
     # ----------------------------------------------------------------------
     @staticmethod
     @contextmanager
-    def OnTemplateTypeArgumentParserInfo(*args, **kwargs):
-        yield
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @contextmanager
-    def OnTemplateDecoratorArgumentParserInfo(*args, **kwargs):
+    def OnTemplateArgumentParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------

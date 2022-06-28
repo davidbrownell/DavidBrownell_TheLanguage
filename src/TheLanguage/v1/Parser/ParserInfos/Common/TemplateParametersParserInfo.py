@@ -23,6 +23,7 @@ from typing import Dict, List, Optional, Union
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
+from CommonEnvironment.Compare import Compare as CompareImpl
 from CommonEnvironment import Interface
 from CommonEnvironment.DataclassDecorators import ComparisonOperators
 
@@ -101,7 +102,7 @@ class TemplateTypeParameterParserInfo(ParserInfo):
             "is_variadic",
             "default_type",
         ]:
-            result = cls.CompareHelper(  # type: ignore  # pylint: disable=no-member
+            result = CompareImpl(  # type: ignore  # pylint: disable=no-member
                 getattr(value_a, attribute_name),
                 getattr(value_b, attribute_name),
             )
@@ -180,7 +181,7 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
             "name",
             "default_value",
         ]:
-            result = cls.CompareHelper(  # type: ignore  # pylint: disable=no-member
+            result = CompareImpl(  # type: ignore  # pylint: disable=no-member
                 getattr(value_a, attribute_name),
                 getattr(value_b, attribute_name),
             )
@@ -287,7 +288,7 @@ class TemplateParametersParserInfo(ParserInfo):
             "any",
             "keyword",
         ]:
-            result = cls.CompareHelper(  # type: ignore  # pylint: disable=no-member
+            result = CompareImpl(  # type: ignore  # pylint: disable=no-member
                 getattr(value_a, attribute_name),
                 getattr(value_b, attribute_name),
             )

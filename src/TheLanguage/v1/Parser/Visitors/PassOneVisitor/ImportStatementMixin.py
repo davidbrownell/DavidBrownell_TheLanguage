@@ -38,6 +38,7 @@ with InitRelativeImports():
     from ...ParserInfos.ParserInfo import ParserInfoType
 
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
+
     from ...ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportType
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
 

@@ -59,11 +59,11 @@ InvalidTemplateExpressionError              = CreateError(
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TemplateTypeArgumentParserInfo(ParserInfo):
+class TemplateArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
-    type: ExpressionParserInfo
+    type_or_expression: ExpressionParserInfo
     keyword: Optional[str]
 
     # ----------------------------------------------------------------------
@@ -77,23 +77,31 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(TemplateTypeArgumentParserInfo, self).__init__(
+        super(TemplateArgumentParserInfo, self).__init__(
             ParserInfoType.TypeCustomization,
             *args,
             **kwargs,
-            regionless_attributes=["type", ],
+            regionless_attributes=[
+                "type_or_expression",
+            ],
         )
 
         # Validate
         errors: List[Error] = []
 
         try:
-            self.type.InitializeAsType(self.parser_info_type__)
+            if self.type_or_expression.IsType():
+                self.type_or_expression.InitializeAsType(self.parser_info_type__)
+            else:
+                self.type_or_expression.InitializeAsExpression()
 
-            if not self.type.is_compile_time__:
+            if (
+                not self.type_or_expression.is_compile_time__
+                and self.type_or_expression.parser_info_type__ != ParserInfoType.Unknown
+            ):
                 errors.append(
                     InvalidTemplateTypeError.Create(
-                        region=self.type.regions__.self__,
+                        region=self.type_or_expression.regions__.self__,
                     ),
                 )
         except ErrorException as ex:
@@ -107,80 +115,16 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        yield "type", self.type  # type: ignore
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TemplateDecoratorArgumentParserInfo(ParserInfo):
-    # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[TranslationUnitRegion]]]
-
-    expression: ExpressionParserInfo
-    keyword: Optional[str]
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
-        if self.expression.parser_info_type__ == ParserInfoType.Unknown:
-            self.expression.OverrideParserInfoType(ParserInfoType.TypeCustomization)
-
-        super(TemplateDecoratorArgumentParserInfo, self).__init__(
-            self.expression.parser_info_type__,
-            *args,
-            **kwargs,
-            regionless_attributes=["expression", ],
-        )
-
-        # Validate
-        errors: List[Error] = []
-
-        try:
-            self.expression.InitializeAsExpression()
-
-            if not self.expression.is_compile_time__:
-                errors.append(
-                    InvalidTemplateExpressionError.Create(
-                        region=self.expression.regions__.self__,
-                    ),
-                )
-        except ErrorException as ex:
-            errors += ex.errors
-
-        if errors:
-            raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        yield "expression", self.expression  # type: ignore
+        yield "type_or_expression", self.type_or_expression  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TemplateArgumentsParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    # |  Public Types
-    ArgumentType                            = Union[
-        TemplateTypeArgumentParserInfo,
-        TemplateDecoratorArgumentParserInfo,
-    ]
-
-    # ----------------------------------------------------------------------
-    # |  Public Data
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
-    arguments: List["TemplateArgumentsParserInfo.ArgumentType"]
+    arguments: List[TemplateArgumentParserInfo]
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -204,7 +148,7 @@ class TemplateArgumentsParserInfo(ParserInfo):
         # Validate
         errors: List[Error] = []
 
-        keyword_lookup: Dict[str, TemplateArgumentsParserInfo.ArgumentType] = {}
+        keyword_lookup: Dict[str, TemplateArgumentParserInfo] = {}
 
         for argument in self.arguments:
             if argument.keyword is not None:

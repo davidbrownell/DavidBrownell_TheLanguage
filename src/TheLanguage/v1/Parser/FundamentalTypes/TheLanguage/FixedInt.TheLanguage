@@ -17,35 +17,35 @@ from .Concepts.MutableInt import MutableInt
 
 
 # ----------------------------------------------------------------------
-public mutable class FixedInt <TEMPLATE
-    pos:
-        Int! num_bytes!,                    # 1, 2, 4, 8, 16
-    key:
-        Bool! is_checked!,
-        Bool! is_signed!,
-TEMPLATE> {
-    Int! min_value! , # BugBug: = -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0,
-    Int! max_value! , # BugBug: = (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1),
-}
+public mutable class FixedInt # BugBug <TEMPLATE
+# BugBug     pos:
+# BugBug         Int! num_bytes!,                    # 1, 2, 4, 8, 16
+# BugBug     key:
+# BugBug         Bool! is_checked!,
+# BugBug         Bool! is_signed!,
+# BugBug TEMPLATE> {
+# BugBug     Int! min_value! , # BugBug: = -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0,
+# BugBug     Int! max_value! , # BugBug: = (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1),
+# BugBug }
     implements public MutableInt { min_value!, max_value! }
 :
-    __EvalTemplates!__():
-        Enforce!(
-            num_bytes! == 1
-            or num_bytes! == 2
-            or num_bytes! == 4
-            or num_bytes! == 8
-            or num_bytes! == 16
-        )
+    # BugBug: __EvalTemplates!__():
+    # BugBug:     Enforce!(
+    # BugBug:         num_bytes! == 1
+    # BugBug:         or num_bytes! == 2
+    # BugBug:         or num_bytes! == 4
+    # BugBug:         or num_bytes! == 8
+    # BugBug:         or num_bytes! == 16
+    # BugBug:     )
 
-    __EvalConstraints!__():
-        pass # BugBug: # Enforce that the min and max values are valid given the number of bytes
-        pass # BugBug: Enforce!(min_value! >= -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0)
-        pass # BugBug: Enforce!(max_value! <= (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1))
-        pass # BugBug:
-        pass # BugBug: # Ensure that the range between the min and the max can be contained within the bytes
-        pass # BugBug: Enforce!(max_value! - min_value! <= ((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1)))
-        pass # BugBug: Enforce!(min_value! - max_value! >= (-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0))
+    # BugBug: __EvalConstraints!__():
+    # BugBug:     pass # BugBug: # Enforce that the min and max values are valid given the number of bytes
+    # BugBug:     pass # BugBug: Enforce!(min_value! >= -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0)
+    # BugBug:     pass # BugBug: Enforce!(max_value! <= (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1))
+    # BugBug:     pass # BugBug:
+    # BugBug:     pass # BugBug: # Ensure that the range between the min and the max can be contained within the bytes
+    # BugBug:     pass # BugBug: Enforce!(max_value! - min_value! <= ((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1)))
+    # BugBug:     pass # BugBug: Enforce!(min_value! - max_value! >= (-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0))
 
     [Deferred, Static] public override ThisType var __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
     [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) immutable
@@ -107,43 +107,113 @@ TEMPLATE> {
 
 
 # ----------------------------------------------------------------------
-public Int8                                 = FixedInt {1, is_signed! = True!, is_checked! = False!}
-public CheckedInt8                          = FixedInt {1, is_signed! = True!, is_checked! = True!}
+public Int8 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 1, is_signed! = True!, is_checked! = False! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
 
-public UInt8                                = FixedInt {1, is_signed! = False!, is_checked! = False!}
-public CheckedUInt8                         = FixedInt {1, is_signed! = False!, is_checked! = True!}
+public CheckedInt8 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 1, is_signed! = True!, is_checked! = True! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
 
+public UInt8 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 1, is_signed! = False!, is_checked! = False! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
 
-# ----------------------------------------------------------------------
-public Int16                                = FixedInt {2, is_signed! = True!, is_checked! = False!}
-public CheckedInt16                         = FixedInt {2, is_signed! = True!, is_checked! = True!}
-
-public UInt16                               = FixedInt {2, is_signed! = False!, is_checked! = False!}
-public CheckedUInt16                        = FixedInt {2, is_signed! = False!, is_checked! = True!}
-
-
-# ----------------------------------------------------------------------
-public Int32                                = FixedInt {4, is_signed! = True!, is_checked! = False!}
-public CheckedInt32                         = FixedInt {4, is_signed! = True!, is_checked! = True!}
-
-public UInt32                               = FixedInt {4, is_signed! = False!, is_checked! = False!}
-public CheckedUInt32                        = FixedInt {4, is_signed! = False!, is_checked! = True!}
+public CheckedUInt8 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 1, is_signed! = False!, is_checked! = True! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
 
 
 # ----------------------------------------------------------------------
-public Int64                                = FixedInt {8, is_signed! = True!, is_checked! = False!}
-public CheckedInt64                         = FixedInt {8, is_signed! = True!, is_checked! = True!}
+public Int16 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 2, is_signed! = True!, is_checked! = False! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
 
-public UInt64                               = FixedInt {8, is_signed! = False!, is_checked! = False!}
-public CheckedUInt64                        = FixedInt {8, is_signed! = False!, is_checked! = True!}
+public CheckedInt16 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 2, is_signed! = True!, is_checked! = True! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
+
+public UInt16 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 2, is_signed! = False!, is_checked! = False! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
+
+public CheckedUInt16 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                          = FixedInt <TEMPLATE 2, is_signed! = False!, is_checked! = True! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
 
 
 # ----------------------------------------------------------------------
-public Int128                               = FixedInt {16, is_signed! = True!, is_checked! = False!}
-public CheckedInt128                        = FixedInt {16, is_signed! = True!, is_checked! = True!}
+public Int32 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 4, is_signed! = True!, is_checked! = False! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
 
-public UInt128                              = FixedInt {16, is_signed! = False!, is_checked! = False!}
-public CheckedUInt128                       = FixedInt {16, is_signed! = False!, is_checked! = True!}
+public CheckedInt32 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 4, is_signed! = True!, is_checked! = True! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
+
+public UInt32 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 4, is_signed! = False!, is_checked! = False! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
+
+public CheckedUInt32 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 4, is_signed! = False!, is_checked! = True! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
+
+
+# ----------------------------------------------------------------------
+public Int64 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 8, is_signed! = True!, is_checked! = False! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
+
+public CheckedInt64 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 8, is_signed! = True!, is_checked! = True! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
+
+public UInt64 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 8, is_signed! = False!, is_checked! = False! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
+
+public CheckedUInt64 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 8, is_signed! = False!, is_checked! = True! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
+
+
+# ----------------------------------------------------------------------
+public Int128 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 16, is_signed! = True!, is_checked! = False! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
+
+public CheckedInt128 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 16, is_signed! = True!, is_checked! = True! TEMPLATE> {min_value! = min_value!, max_value! = max_value!}
+
+public UInt128 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 16, is_signed! = False!, is_checked! = False! TEMPLATE>
+
+public CheckedUInt128 {
+    (Int! | None!) min_value! = None!,
+    (Int! | None!) max_value! = None!,
+}                                           = FixedInt <TEMPLATE 16, is_signed! = False!, is_checked! = True! TEMPLATE>
 
 
 # ----------------------------------------------------------------------

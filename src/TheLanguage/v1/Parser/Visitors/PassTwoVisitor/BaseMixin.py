@@ -185,7 +185,7 @@ class BaseMixin(object):
 
                             if isinstance(namespace, list):
                                 for potential_namespace in namespace:
-                                    if potential_namespace.parser_info == parser_info:
+                                    if potential_namespace.parser_info is parser_info:
                                         namespace = potential_namespace
                                         break
 
@@ -427,6 +427,7 @@ class BaseMixin(object):
         type_name: str,
         class_parser_info: ClassStatementParserInfo,
     ) -> Optional[ParserInfo]:
+        assert False, "BugBug"
         pass # BugBug
         return None
 

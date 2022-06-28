@@ -357,6 +357,7 @@ class ClassCapabilities(ObjectReprImplBase):
         assert self.default_implements_visibility is None or self.default_implements_visibility in self.valid_implements_visibilities
 
         assert (self.valid_uses_types and self.valid_uses_visibilities) or (not self.valid_uses_types and not self.valid_uses_visibilities)
+        assert all(uses_type in ["Mixin"] for uses_type in (self.valid_uses_types or []))
         assert self.default_uses_visibility is None or self.default_uses_visibility in self.valid_uses_visibilities
 
         assert self.default_type_alias_visibility is None or self.default_type_alias_visibility in self.valid_type_alias_visibilities

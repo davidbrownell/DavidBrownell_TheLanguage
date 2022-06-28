@@ -213,9 +213,6 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         self,
         names: List[str],
     ) -> None:
-        if names[-1] == "Int.py" or names[-1] == "Concepts.Int.py":
-            BugBug = 10
-
         assert self._parent_name is None  # type: ignore  # pylint: disable=no-member
         object.__setattr__(self, "_parent_name", names)
 
