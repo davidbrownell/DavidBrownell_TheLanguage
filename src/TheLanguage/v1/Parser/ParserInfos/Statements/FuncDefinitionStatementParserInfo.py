@@ -520,10 +520,11 @@ class FuncDefinitionStatementParserInfo(
         if self.return_type is None:
             return_type_id = None
         elif self.return_type.HasResolvedEntity():
-            return_type_id = id(self.return_type.resolved_type__.Resolve().parser_info)
+            return_type_id = id(self.return_type.resolved_type__.Resolve())
         else:
-            # We should only get here if the return type is a type defined in a derived class
-            assert False, "BugBug!!!"
+            # We should only get here if the parameter is defined in a dependency and
+            # we are in the process of resolving the derived class.
+            return_type_id = self.return_type.ToTypeString()
 
         assert self.parameters is not False
 

@@ -56,7 +56,7 @@ with InitRelativeImports():
     from ...ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
     from ...ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
-    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ConcreteTypeInfo, TypeDependency
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo, ScopeFlag
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
@@ -70,6 +70,12 @@ with InitRelativeImports():
 InvalidTypeError                            = CreateError(
     "'{name}' is not a recognized type",
     name=str,
+)
+
+InvalidTypeVisibilityError                  = CreateError(
+    "'{name}' is a recognized type, but not visible in this context",
+    name=str,
+    resolutions=List[TypeDependency.TypeDependencyResolutionType],
 )
 
 InvalidTypeReferenceError                   = CreateError(
@@ -90,11 +96,10 @@ class BaseMixin(object):
     # |
     # ----------------------------------------------------------------------
     class PostprocessType(Enum):
-        ResolveIso                          = 0
-        ResolveDependenciesParallel         = 1
-        ResolveDependenciesSequential       = 2
-        ResolveClasses                      = 3
-        ResolveNestedTypes                  = 4
+        ResolveDependenciesParallel         = 0
+        ResolveDependenciesSequential       = 1
+        ResolveClasses                      = 2
+        ResolveNestedTypes                  = 3
 
     sequential_postprocess_steps: Set[PostprocessType]  = set(
         [
@@ -262,30 +267,40 @@ class BaseMixin(object):
                                                 )
                                             )
                                         ):
-                                            # Process it once the classes have been fully formed
                                             suppress_exception = True
 
-                                            # ----------------------------------------------------------------------
-                                            def ResolveNestedType(
-                                                parser_info=parser_info,
-                                                type_result=type_result,
-                                                namespace=namespace,
-                                            ):
-                                                self._ResolveType(
-                                                    parser_info,
-                                                    type_result,
-                                                    (
-                                                        lambda type_name, namespace=namespace:
-                                                            self._NestedTypeResolver(
+                                            # Process it once the classes have been fully formed
+                                            if namespace.parser_info.default_initializable:
+                                                current_namespace_stack = list(namespace_stack)
+
+                                                # ----------------------------------------------------------------------
+                                                def ResolveNestedType(
+                                                    parser_info=parser_info,
+                                                    type_result=type_result,
+                                                    namespace=namespace,
+                                                ):
+                                                    self._ResolveType(
+                                                        parser_info,
+                                                        type_result,
+                                                        (
+                                                            lambda
                                                                 type_name,
-                                                                namespace.parser_info,
-                                                            )
+                                                                region,
+                                                                namespace=namespace,
+                                                            :
+                                                                self.__class__._NestedTypeResolver(  # pylint: disable=protected-access
+                                                                    type_name,
+                                                                    region,
+                                                                    namespace.parser_info.GetOrCreateConcreteTypeInfo(None),
+                                                                    current_namespace_stack,
+                                                                )
+                                                        )
                                                     )
-                                                )
 
-                                            # ----------------------------------------------------------------------
+                                                # ----------------------------------------------------------------------
 
-                                            self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveNestedTypes.value].append(ResolveNestedType)
+                                                self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveNestedTypes.value].append(ResolveNestedType)
+
                                             break
 
                                     if not suppress_exception:
@@ -345,14 +360,17 @@ class BaseMixin(object):
         self,
         parser_info: ExpressionParserInfo,
         type_result: ExpressionParserInfo,
-        resolver_func: Callable[[str], Optional[ParserInfo]],
+        resolver_func: Callable[[str, TranslationUnitRegion], Optional[ParserInfo]],
     ) -> None:
+        if parser_info.HasResolvedEntity():
+            return
+
         resolved_type: Optional[ExpressionParserInfo.ResolvedType] = None
 
         if isinstance(type_result, FuncOrTypeExpressionParserInfo):
             assert isinstance(type_result.value, str), type_result.value
 
-            resolved_parser_info = resolver_func(type_result.value)
+            resolved_parser_info = resolver_func(type_result.value, type_result.regions__.self__)
             if resolved_parser_info is None:
                 raise ErrorException(
                     InvalidTypeError.Create(
@@ -377,9 +395,13 @@ class BaseMixin(object):
                 )
 
             if isinstance(resolved_parser_info, TypeAliasStatementParserInfo):
-                resolved_type = TypeAliasStatementParserInfo.ResolvedType.Create(resolved_parser_info)
+                resolved_type = TypeAliasStatementParserInfo.ResolvedType.Create(
+                    resolved_parser_info,
+                )
             else:
-                resolved_type = ExpressionParserInfo.ResolvedType.Create(resolved_parser_info)
+                resolved_type = ExpressionParserInfo.ResolvedType.Create(
+                    resolved_parser_info,
+                )
 
         elif isinstance(type_result, NestedTypeExpressionParserInfo):
             raise NotImplementedError("TODO: Not implemented yet")
@@ -389,16 +411,36 @@ class BaseMixin(object):
             return
 
         elif isinstance(type_result, TupleExpressionParserInfo):
-            for the_type in type_result.types:
-                self._ResolveType(the_type, the_type, resolver_func)
+            errors: List[Error] = []
 
-            resolved_type = ExpressionParserInfo.ResolvedType.Create(type_result)
+            for the_type in type_result.types:
+                try:
+                    self._ResolveType(the_type, the_type, resolver_func)
+                except ErrorException as ex:
+                    errors += ex.errors
+
+            if errors:
+                raise ErrorException(*errors)
+
+            resolved_type = ExpressionParserInfo.ResolvedType.Create(
+                type_result,
+            )
 
         elif isinstance(type_result, VariantExpressionParserInfo):
-            for the_type in type_result.types:
-                self._ResolveType(the_type, the_type, resolver_func)
+            errors: List[Error] = []
 
-            resolved_type = ExpressionParserInfo.ResolvedType.Create(type_result)
+            for the_type in type_result.types:
+                try:
+                    self._ResolveType(the_type, the_type, resolver_func)
+                except ErrorException as ex:
+                    errors += ex.errors
+
+            if errors:
+                raise ErrorException(*errors)
+
+            resolved_type = ExpressionParserInfo.ResolvedType.Create(
+                type_result,
+            )
 
         assert resolved_type is not None
         parser_info.SetResolvedEntity(resolved_type)
@@ -407,6 +449,7 @@ class BaseMixin(object):
     def _NamespaceTypeResolver(
         self,
         type_name: str,
+        region: TranslationUnitRegion,
     ) -> Optional[ParserInfo]:
         assert self._namespaces_stack
         namespace_stack = self._namespaces_stack[-1]
@@ -422,13 +465,33 @@ class BaseMixin(object):
         return None
 
     # ----------------------------------------------------------------------
+    @staticmethod
     def _NestedTypeResolver(
-        self,
         type_name: str,
-        class_parser_info: ClassStatementParserInfo,
+        region: TranslationUnitRegion,
+        concrete_type_info: ConcreteTypeInfo,
+        namespace_stack: List[NamespaceInfo],
     ) -> Optional[ParserInfo]:
-        assert False, "BugBug"
-        pass # BugBug
+        for dependency in concrete_type_info.types.Enum():
+            visibility, resolved_parser_info = dependency.Resolve()
+
+            assert isinstance(
+                resolved_parser_info,
+                (ClassStatementParserInfo, TypeAliasStatementParserInfo),
+            ), resolved_parser_info
+
+            if resolved_parser_info.name == type_name:
+                if visibility == VisibilityModifier.private:
+                    raise ErrorException(
+                        InvalidTypeVisibilityError.Create(
+                            region=region,
+                            name=type_name,
+                            resolutions=list(dependency.Enum(VisibilityModifier.public)),
+                        ),
+                    )
+
+                return resolved_parser_info
+
         return None
 
     # ----------------------------------------------------------------------

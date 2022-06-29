@@ -126,7 +126,18 @@ class Visitor(
                 )
 
         # ----------------------------------------------------------------------
+        # |
+        # |  Private Types
+        # |
         # ----------------------------------------------------------------------
+        @dataclass(frozen=True)
+        class _ExecuteResult(object):
+            all_postprocess_funcs: List[List[Callable[[], None]]]
+
+        # ----------------------------------------------------------------------
+        # |
+        # |  Private Methods
+        # |
         # ----------------------------------------------------------------------
         def _ExecuteParallel(
             self,
@@ -164,12 +175,3 @@ class Visitor(
                 )
 
             return True
-
-        # ----------------------------------------------------------------------
-        # |
-        # |  Private Types
-        # |
-        # ----------------------------------------------------------------------
-        @dataclass(frozen=True)
-        class _ExecuteResult(object):
-            all_postprocess_funcs: List[List[Callable[[], None]]]

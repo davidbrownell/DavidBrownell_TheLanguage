@@ -277,6 +277,11 @@ MultipleExtendsError                        = CreateError(
 )
 
 # TODO: Should be ResolvedType-based error
+InvalidDependencyError                      = CreateError(
+    "Invalid dependency",
+)
+
+# TODO: Should be ResolvedType-based error
 InvalidDependencyTypeError                  = CreateError(
     "'{dependency_type}' is not a valid dependency type for '{desc}' dependencies of '{type}' types; valid values are {valid_types_str}",
     type=str,
@@ -839,25 +844,6 @@ class ClassCapabilities(ObjectReprImplBase):
     ) -> None:
         errors: List[Error] = []
 
-        # Check for multiple extends
-        has_extends = False
-
-        for dependency in (parser_info.extends or []):
-            if dependency.is_disabled__:
-                continue
-
-            if has_extends:
-                errors.append(
-                    MultipleExtendsError.Create(
-                        region=dependency.regions__.self__,
-                        type=self.name,
-                    ),
-                )
-
-                continue
-
-            has_extends = True
-
         for desc, dependencies, valid_type_names in [
             (
                 "extend",
@@ -888,7 +874,22 @@ class ClassCapabilities(ObjectReprImplBase):
                 if dependency.is_disabled__:
                     continue
 
-                dependency_parser_info = dependency.type.resolved_type__.Resolve().parser_info
+                if dependency.type.ResolvedEntityIsNone():
+                    dependency.Disable()
+                    continue
+
+                dependency_parser_info = dependency.type.resolved_type__.Resolve()
+
+                # Can't use the ClassStatementParserInfo class directly, as it would
+                # create an import cycle. Check by name as a workaround.
+                if dependency_parser_info.__class__.__name__ != "ClassStatementParserInfo":
+                    errors.append(
+                        InvalidDependencyError.Create(
+                            region=dependency.regions__.self__,
+                        ),
+                    )
+
+                    continue
 
                 if dependency_parser_info.class_capabilities.name not in valid_type_names:
                     errors.append(
@@ -901,6 +902,27 @@ class ClassCapabilities(ObjectReprImplBase):
                             valid_types_str=", ".join("'{}'".format(type_name) for type_name in valid_type_names),
                         ),
                     )
+
+                    continue
+
+        # Check for multiple extends
+        has_extends = False
+
+        for dependency in (parser_info.extends or []):
+            if dependency.is_disabled__:
+                continue
+
+            if has_extends:
+                errors.append(
+                    MultipleExtendsError.Create(
+                        region=dependency.regions__.self__,
+                        type=self.name,
+                    ),
+                )
+
+                continue
+
+            has_extends = True
 
         if errors:
             raise ErrorException(*errors)

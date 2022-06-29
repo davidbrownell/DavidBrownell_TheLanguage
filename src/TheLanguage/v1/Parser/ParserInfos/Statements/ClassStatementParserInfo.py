@@ -93,10 +93,6 @@ DuplicateUsingStatementError                = CreateError(
     prev_region=TranslationUnitRegion,
 )
 
-InvalidDependencyError                      = CreateError(
-    "Invalid dependency",
-)
-
 InvalidEvalTemplatesMethodError             = CreateError(
     "The method to evaluate templates may only be used with classes that have templates",
 )
@@ -129,11 +125,51 @@ InvalidFinalError                           = CreateError(
 # |  Public Types
 # |
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class TypeDependency(object):
+class TypeDependency(Interface.Interface):
     # ----------------------------------------------------------------------
-    # |  Public Types
-    NonDependencyParserInfoType              = Union[
+    ResolvedStatementType                   = Union[
+        ClassAttributeStatementParserInfo,
+        "ClassStatementParserInfo",
+        FuncDefinitionStatementParserInfo,
+        TypeAliasStatementParserInfo,
+    ]
+
+    TypeDependencyResolutionType            = Tuple[
+        Union["ClassStatementParserInfo", "ClassStatementDependencyParserInfo"],
+        VisibilityModifier,
+        ResolvedStatementType,
+    ]
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def Enum(
+        effective_visibility: VisibilityModifier,
+    ) -> Generator[TypeDependencyResolutionType, None, None]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    def Resolve(self) -> Tuple[
+        VisibilityModifier,
+        "TypeDependency.ResolvedStatementType",
+    ]:
+        *_, leaf = self.Enum(VisibilityModifier.public)
+
+        return leaf[-2:]
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _GetEffectiveVisibility(*visibilities):
+        return VisibilityModifier(min(visibility.value for visibility in visibilities))
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class TypeDependencyLeaf(TypeDependency):
+    # ----------------------------------------------------------------------
+    ResolvedStatementType                   = Union[
         ClassAttributeStatementParserInfo,
         "ClassStatementParserInfo",
         FuncDefinitionStatementParserInfo,
@@ -141,29 +177,45 @@ class TypeDependency(object):
     ]
 
     # ----------------------------------------------------------------------
-    # |  Public Data
-    visibility: VisibilityModifier
-    dependency_parser_info: Union["ClassStatementDependencyParserInfo", "ClassStatementParserInfo"]
-
-    next_or_parser_info: Union[
-        "TypeDependency",
-        NonDependencyParserInfoType,
-    ]
+    class_statement: "ClassStatementParserInfo"
+    statement: ResolvedStatementType
 
     # ----------------------------------------------------------------------
-    # |  Public Methods
-    def EnumDependencies(self) -> Generator["TypeDependency", None, None]:
-        yield self
+    @Interface.override
+    def Enum(
+        self,
+        effective_visibility: VisibilityModifier,
+    ) -> Generator[TypeDependency.TypeDependencyResolutionType, None, None]:
+        yield (
+            self.class_statement,
+            self.__class__._GetEffectiveVisibility(effective_visibility, self.statement.visibility),  # pylint: disable=protected-access
+            self.statement,
+        )
 
-        if isinstance(self.next_or_parser_info, TypeDependency):
-            yield from self.next_or_parser_info.EnumDependencies()
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class TypeDependencyNode(TypeDependency):
+    # ----------------------------------------------------------------------
+    dependency: "ClassStatementDependencyParserInfo"
+    next: TypeDependency
 
     # ----------------------------------------------------------------------
-    def Resolve(self) -> "TypeDependency.NonDependencyParserInfoType":
-        *_, recent_type_dependency = self.EnumDependencies()
+    @Interface.override
+    def Enum(
+        self,
+        effective_visibility: VisibilityModifier,
+    ) -> Generator[TypeDependency.TypeDependencyResolutionType, None, None]:
+        effective_visibility = self.__class__._GetEffectiveVisibility(  # pylint: disable=protected-access
+            effective_visibility,
+            self.dependency.visibility,
+        )
 
-        assert not isinstance(recent_type_dependency.next_or_parser_info, TypeDependency), recent_type_dependency.next_or_parser_info.next_or_parser_info
-        return recent_type_dependency.next_or_parser_info
+        resolved_parser_info = self.dependency.type.resolved_type__.Resolve()
+        assert isinstance(resolved_parser_info, ClassStatementParserInfo), resolved_parser_info
+
+        yield self.dependency, effective_visibility, resolved_parser_info
+        yield from self.next.Enum(effective_visibility)
 
 
 # ----------------------------------------------------------------------
@@ -209,28 +261,8 @@ class TypeDependencies(object):
         return cls(local, augmented, inherited)
 
     # ----------------------------------------------------------------------
-    def Enum(
-        self,
-        inherited_visibility: VisibilityModifier,
-        *,
-        process_private_items: bool,
-    ) -> Generator[
-        Tuple[
-            VisibilityModifier,
-            TypeDependency
-        ],
-        None,
-        None,
-    ]:
-        for dependency in itertools.chain(self.local, self.augmented, self.inherited):
-            effective_visibility = VisibilityModifier(
-                min(inherited_visibility.value, dependency.visibility.value),
-            )
-
-            if effective_visibility == VisibilityModifier.private and not process_private_items:
-                continue
-
-            yield effective_visibility, dependency
+    def Enum(self) -> Generator[TypeDependency, None, None]:
+        yield from itertools.chain(self.local, self.augmented, self.inherited)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -271,18 +303,6 @@ class ConcreteTypeInfo(object):
     ]
 
     # ----------------------------------------------------------------------
-    # BugBug: This Enum feels strange here; not sure how to think about this with
-    #       `TypeDependencies`
-    class EnumType(Flag):
-        local                               = auto()
-        augmented                           = auto()
-        inherited                           = auto()
-
-        Local                               = local
-        Augmented                           = local | augmented
-        All                                 = local | augmented | inherited
-
-    # ----------------------------------------------------------------------
     # |  Public Data
     base: Optional[TypeDependency]
     special_methods: Dict[SpecialMethodType, SpecialMethodStatementParserInfo]
@@ -293,21 +313,6 @@ class ConcreteTypeInfo(object):
     attributes: TypeDependencies
     abstract_methods: TypeDependencies
     methods: TypeDependencies
-
-
-
-    # BugBug: Following are dependent upon method type
-    # BugBug: name, visibility
-    # BugBug local_attributes: Dict[str, TypeDependency]
-    # BugBug local_methods: Dict[str, TypeDependency]
-    # BugBug
-    # BugBug all_attributes: Dict[str, List[TypeDependency]]
-    # BugBug all_methods: Dict[str, List[TypeDependency]]
-
-
-    # BugBug: Method to extrapolate by method type
-
-
 
 
 # ----------------------------------------------------------------------
@@ -396,6 +401,8 @@ class ClassStatementParserInfo(
     is_abstract: Optional[bool]
     is_final: Optional[bool]
 
+    default_initializable: bool             = field(init=False, default=False)
+
     # Values set after calls to `Initialize`
     _initialize_result: Union[
         DoesNotExist,                       # Not initialized
@@ -445,6 +452,7 @@ class ClassStatementParserInfo(
                 "parent_class_capabilities",
                 "class_capabilities",
                 "constraints",
+                "default_initializable",
             ]
                 + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
                 + TemplatedStatementTrait.RegionlessAttributesArgs()
@@ -500,6 +508,12 @@ class ClassStatementParserInfo(
                 if dependency.visibility is None:
                     object.__setattr__(dependency, "visibility", default_visibility)
                     object.__setattr__(dependency.regions__, "visibility", dependency.regions__.self__)
+
+        object.__setattr__(
+            self,
+            "default_initializable",
+            not self.templates or self.templates.default_initializable,  # pylint: disable=no-member
+        )
 
         self.ValidateRegions()
 
@@ -563,6 +577,10 @@ class ClassStatementParserInfo(
         return bool(scope_flag & ScopeFlag.Function)
 
     # ----------------------------------------------------------------------
+    def ValidateDependencies(self) -> None:
+        self.class_capabilities.ValidateDependencies(self)
+
+    # ----------------------------------------------------------------------
     def Initialize(self) -> bool:
         if self._initialize_result is None:
             raise ErrorException(
@@ -584,7 +602,7 @@ class ClassStatementParserInfo(
                     initialize_result = False
                     break
 
-            if not self.templates or self.templates.default_initializable:  # pylint: disable=no-member
+            if self.default_initializable:
                 self.GetOrCreateConcreteTypeInfo(None)
 
         except ErrorException:
@@ -677,10 +695,9 @@ class ClassStatementParserInfo(
 
                 if resolved_dependency.class_capabilities.name == "Concept":
                     local_concepts.append(
-                        TypeDependency(
-                            dependency.visibility,
+                        TypeDependencyNode(
                             dependency,
-                            resolved_dependency,
+                            TypeDependencyLeaf(resolved_dependency, resolved_dependency),
                         ),
                     )
 
@@ -694,12 +711,12 @@ class ClassStatementParserInfo(
 
                 if resolved_dependency.class_capabilities.name == "Interface":
                     local_interfaces.append(
-                        TypeDependency(
-                            dependency.visibility,
+                        TypeDependencyNode(
                             dependency,
-                            resolved_dependency,
+                            TypeDependencyLeaf(resolved_dependency, resolved_dependency),
                         ),
                     )
+
                 else:
                     assert base is None, base
 
@@ -721,25 +738,16 @@ class ClassStatementParserInfo(
                 None, # TODO
             )
 
-            for attribute_name, target, process_private_items in [
-                ("interfaces", interfaces_target, False),
-                ("concepts", concepts_target, False),
-                ("types", types_target, False),
-                ("attributes", attributes_target, False),
-                ("abstract_methods", abstract_methods_target, True),
-                ("methods", methods_target, False),
+            for attribute_name, target in [
+                ("interfaces", interfaces_target),
+                ("concepts", concepts_target),
+                ("types", types_target),
+                ("attributes", attributes_target),
+                ("abstract_methods", abstract_methods_target),
+                ("methods", methods_target),
             ]:
-                for type_dependency_visibility, type_dependency in getattr(concrete_type_info, attribute_name).Enum(
-                    dependency.visibility,
-                    process_private_items=process_private_items,
-                ):
-                    target.append(
-                        TypeDependency(
-                            type_dependency_visibility,
-                            dependency,
-                            type_dependency,
-                        ),
-                    )
+                for type_dependency in getattr(concrete_type_info, attribute_name).Enum():
+                    target.append(TypeDependencyNode(dependency, type_dependency))
 
         # Process the local statements
         special_methods: Dict[SpecialMethodType, SpecialMethodStatementParserInfo] = {}
@@ -754,44 +762,19 @@ class ClassStatementParserInfo(
                 continue
 
             if isinstance(statement, ClassAttributeStatementParserInfo):
-                local_attributes.append(
-                    TypeDependency(
-                        statement.visibility,
-                        self,
-                        statement,
-                    ),
-                )
+                local_attributes.append(TypeDependencyLeaf(self, statement))
 
             elif isinstance(statement, ClassStatementParserInfo):
-                local_types.append(
-                    TypeDependency(
-                        statement.visibility,
-                        self,
-                        statement,
-                    ),
-                )
+                local_types.append(TypeDependencyLeaf(self, statement))
 
             elif isinstance(statement, ClassUsingStatementParserInfo):
                 pass # BugBug
 
             elif isinstance(statement, FuncDefinitionStatementParserInfo):
                 if statement.method_hierarchy_modifier == MethodHierarchyModifier.abstract:
-                    local_abstract_methods.append(
-                        TypeDependency(
-                            statement.visibility,
-                            self,
-                            statement,
-                        ),
-                    )
-
+                    local_abstract_methods.append(TypeDependencyLeaf(self, statement))
                 else:
-                    local_methods.append(
-                        TypeDependency(
-                            statement.visibility,
-                            self,
-                            statement,
-                        ),
-                    )
+                    local_methods.append(TypeDependencyLeaf(self, statement))
 
             elif isinstance(statement, SpecialMethodStatementParserInfo):
                 if (
@@ -844,13 +827,7 @@ class ClassStatementParserInfo(
                 special_methods[statement.special_method_type] = statement
 
             elif isinstance(statement, TypeAliasStatementParserInfo):
-                local_types.append(
-                    TypeDependency(
-                        statement.visibility,
-                        self,
-                        statement,
-                    ),
-                )
+                local_types.append(TypeDependencyLeaf(self, statement))
 
             else:
                 assert False, statement  # pragma: no cover
@@ -879,7 +856,6 @@ class ClassStatementParserInfo(
         # BugBug: Check for method hierarchy errors
         # BugBug: Check for mutabilty errors
 
-
         if errors:
             raise ErrorException(*errors)
 
@@ -887,16 +863,16 @@ class ClassStatementParserInfo(
         def StandardKeyExtractor(
             dependency: TypeDependency,
         ) -> str:
-            return dependency.Resolve().name
+            return dependency.Resolve()[1].name
 
         # ----------------------------------------------------------------------
         def MethodKeyExtractor(
             dependency: TypeDependency,
         ):
-            resolved_dependency = dependency.Resolve()
-            assert isinstance(resolved_dependency, FuncDefinitionStatementParserInfo), resolved_dependency
+            parser_info = dependency.Resolve()[1]
 
-            return resolved_dependency.GetOverrideId()
+            assert isinstance(parser_info, FuncDefinitionStatementParserInfo), parser_info
+            return parser_info.GetOverrideId()
 
         # ----------------------------------------------------------------------
         def PostprocessMethodDependencies(
@@ -1007,13 +983,7 @@ class ClassStatementParserInfo(
             if dependency.is_disabled__:
                 continue
 
-            resolved_parser_info = dependency.type.resolved_type__.Resolve().parser_info
-
-            if not isinstance(resolved_parser_info, ClassStatementParserInfo):
-                raise ErrorException(
-                    InvalidDependencyError.Create(
-                        region=dependency.regions__.self__,
-                    ),
-                )
+            resolved_parser_info = dependency.type.resolved_type__.Resolve()
+            assert isinstance(resolved_parser_info, ClassStatementParserInfo), resolved_parser_info
 
             yield dependency, resolved_parser_info

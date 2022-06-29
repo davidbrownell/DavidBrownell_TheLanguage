@@ -52,12 +52,6 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-InvalidClassDependencyError                 = CreateError(
-    "Invalid class dependency",
-)
-
-
-# ----------------------------------------------------------------------
 class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     @staticmethod
@@ -75,53 +69,22 @@ class StatementsMixin(BaseMixin):
 
         # ----------------------------------------------------------------------
         def ResolveDependenciesParallelCallback():
-            parser_info.class_capabilities.ValidateDependencies(parser_info)
+            parser_info.ValidateDependencies()
 
         # ----------------------------------------------------------------------
         def ResolveDependenciesSequentialCallback():
             parser_info.Initialize()
 
         # ----------------------------------------------------------------------
-        def ResolveClassCallback():
-            # BugBug
-            pass
-
-        # ----------------------------------------------------------------------
 
         self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveDependenciesParallel.value].append(ResolveDependenciesParallelCallback)
         self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveDependenciesSequential.value].append(ResolveDependenciesSequentialCallback)
-        self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveClasses.value].append(ResolveClassCallback)
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnClassStatementDependencyParserInfo(
-        self,
-        parser_info: ClassStatementDependencyParserInfo,
-    ):
+    def OnClassStatementDependencyParserInfo(*args, **kwargs):
         yield
-
-        # Defer verifying that the dependency is a valid type, as we might be
-        # accessing an alias that has not yet been defined (and therefore is
-        # not resolved).
-
-        # ----------------------------------------------------------------------
-        def Callback():
-            if parser_info.type.ResolvedEntityIsNone():
-                parser_info.Disable()
-                return
-
-            resolved_type = parser_info.type.resolved_type__.Resolve()
-
-            if not isinstance(resolved_type.parser_info, ClassStatementParserInfo):
-                raise ErrorException(
-                    InvalidClassDependencyError.Create(
-                        region=resolved_type.parser_info.regions__.self__,
-                    ),
-                )
-
-        # ----------------------------------------------------------------------
-
-        self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveIso.value].append(Callback)
 
     # ----------------------------------------------------------------------
     @staticmethod

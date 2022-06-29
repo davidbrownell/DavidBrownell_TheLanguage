@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -36,6 +36,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
+    from ..Common.VisibilityModifier import VisibilityModifier
+
     from ...Error import CreateError, ErrorException
 
     from ...MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
@@ -87,13 +89,16 @@ class ExpressionParserInfo(ParserInfo):
 
         # ----------------------------------------------------------------------
         @Interface.extensionmethod
-        def ResolveOne(self) -> "ExpressionParserInfo.ResolvedType":
-            return self
+        def Enum(self) -> Generator[Tuple[bool, ParserInfo], None, None]:
+            yield True, self.parser_info
 
         # ----------------------------------------------------------------------
         @Interface.extensionmethod
-        def Resolve(self) -> "ExpressionParserInfo.ResolvedType":
-            return self
+        def Resolve(self) -> ParserInfo:
+            *_, last = self.Enum()
+
+            assert last[0] is True
+            return last[1]
 
     # ----------------------------------------------------------------------
     # |
@@ -158,6 +163,13 @@ class ExpressionParserInfo(ParserInfo):
     def IsType(self) -> Optional[bool]:
         # Most expressions are not types.
         return False
+
+    # ----------------------------------------------------------------------
+    def ToTypeString(self) -> str:
+        if self.IsType() is False:
+            raise Exception("Invalid invocation")
+
+        return self._ToTypeStringImpl()
 
     # ----------------------------------------------------------------------
     def InitializeAsType(
@@ -267,3 +279,13 @@ class ExpressionParserInfo(ParserInfo):
     def _InitializeAsExpressionImpl(self) -> None:
         # Nothing to do here by default
         pass
+
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def _ToTypeStringImpl(self) -> str:
+        # This method needs to be overridden by those Expressions that resolve to Types.
+        # However, most Expressions do not resolve to Types, so therefore don't require
+        # that they implement a noop. Rather, make the default implementation raise an
+        # exception, thereby requiring an implementation only for those Expressions that
+        # need it.
+        raise Exception("Not implemented")

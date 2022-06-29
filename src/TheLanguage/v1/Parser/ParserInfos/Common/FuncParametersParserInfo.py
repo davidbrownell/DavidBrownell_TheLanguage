@@ -113,11 +113,13 @@ class FuncParameterParserInfo(ParserInfo):
     def GetOverrideId(self) -> Tuple:
         """Returns information that can be used to determine if this parameter matches another"""
 
-        # TODO: How do we handle coveriants?
+        # TODO: How do we handle covariants?
         if self.type.HasResolvedEntity():
-            type_id = id(self.type.resolved_type__.Resolve().parser_info)
+            type_id = id(self.type.resolved_type__.Resolve())
         else:
-            type_id = 10 # BugBug
+            # We should only get here if the parameter is defined in a dependency and
+            # we are in the process of resolving the derived class.
+            type_id = self.type.ToTypeString()
 
         return (
             type_id,

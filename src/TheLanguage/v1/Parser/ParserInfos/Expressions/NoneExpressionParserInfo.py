@@ -43,3 +43,8 @@ class NoneExpressionParserInfo(ExpressionParserInfo):
     @Interface.override
     def IsType() -> Optional[bool]:
         return None
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _ToTypeStringImpl(self) -> str:
+        return "None"

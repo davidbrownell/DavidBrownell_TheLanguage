@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, List, Optional
+from typing import Dict, Generator, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -68,14 +68,11 @@ class TypeAliasStatementParserInfo(
     class ResolvedType(ExpressionParserInfo.ResolvedType):
         # ----------------------------------------------------------------------
         @Interface.override
-        def ResolveOne(self) -> ExpressionParserInfo.ResolvedType:
+        def Enum(self) -> Generator[Tuple[bool, ParserInfo], None, None]:
             assert isinstance(self.parser_info, TypeAliasStatementParserInfo), self.parser_info
-            return self.parser_info.type.resolved_type__
 
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def Resolve(self) -> ExpressionParserInfo.ResolvedType:
-            return self.ResolveOne().Resolve()
+            yield False, self.parser_info.type
+            yield from self.parser_info.type.resolved_type__.Enum()
 
     # ----------------------------------------------------------------------
     # |

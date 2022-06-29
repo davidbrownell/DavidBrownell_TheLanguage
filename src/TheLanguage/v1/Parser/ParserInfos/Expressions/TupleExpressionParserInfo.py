@@ -167,3 +167,8 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _ToTypeStringImpl(self) -> str:
+        return "({}, )".format(", ".join(the_type.ToTypeString() for the_type in self.types))

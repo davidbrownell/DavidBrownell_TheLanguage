@@ -15,13 +15,17 @@
 # ----------------------------------------------------------------------
 """Creates and extracts parser information from nodes"""
 
+import importlib
 import os
 import traceback
+import sys
 
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import ExitStack
 from typing import Any, Callable, cast, Dict, List, Optional, Tuple, TypeVar, Union
 
 import CommonEnvironment
+from CommonEnvironment import FileSystem
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -263,13 +267,47 @@ def ResolveExpressionTypes(
         for k, v in configuration_values.items()
     }
 
-    # ----------------------------------------------------------------------
-    # |  Pass 1
-    with PassOneVisitor.ScopedExecutor(
-        workspaces,
-        mini_language_configuration_values,
-        include_fundamental_types=include_fundamental_types,
-    ) as executor:
+    with ExitStack() as exit_stack:
+        # Add all of the fundamental types to the workspaces. This content will be used to validate
+        # types, then removed so that the caller isn't impacted.
+        if include_fundamental_types:
+            generated_code_directory = os.path.realpath(os.path.join(_script_dir, "FundamentalTypes", "GeneratedCode"))
+            assert os.path.isdir(generated_code_directory), generated_code_directory
+
+            fundamental_types: Dict[str, RootStatementParserInfo] = {}
+
+            for generated_filename in FileSystem.WalkFiles(
+                generated_code_directory,
+                include_file_extensions=[".py", ],
+                exclude_file_names=["__init__.py", ],
+            ):
+                dirname, basename = os.path.split(generated_filename)
+                basename = os.path.splitext(basename)[0]
+
+                with ExitStack() as mod_exit_stack:
+                    sys.path.insert(0, dirname)
+                    mod_exit_stack.callback(lambda: sys.path.pop(0))
+
+                    mod = importlib.import_module(basename)
+
+                    assert generated_filename.startswith(generated_code_directory), (generated_filename, generated_code_directory)
+
+                    relative_path = FileSystem.TrimPath(generated_filename, generated_code_directory)
+                    relative_path = relative_path.replace(os.path.sep, ".")
+
+                    fundamental_types[relative_path] = getattr(mod, "root_parser_info")
+
+            # Add the fundamental types to the workspaces collection
+            assert _FUNDAMENTAL_TYPES_ATTRIBUTE_NAME not in workspaces
+            workspaces[_FUNDAMENTAL_TYPES_ATTRIBUTE_NAME] = fundamental_types
+
+            exit_stack.callback(lambda: workspaces.pop(_FUNDAMENTAL_TYPES_ATTRIBUTE_NAME))
+
+        # Pass 1
+        executor = PassOneVisitor.Executor(
+            mini_language_configuration_values,
+        )
+
         for is_parallel, func in executor.GenerateFuncs():
             results = _Execute(
                 workspaces,
@@ -286,29 +324,28 @@ def ResolveExpressionTypes(
                 return error_data  # type: ignore
 
         global_namespace = executor.global_namespace
-        fundamental_types_namespace = executor.fundamental_types_namespace
+        fundamental_types_namespace = global_namespace.children.get(_FUNDAMENTAL_TYPES_ATTRIBUTE_NAME)
 
-    # ----------------------------------------------------------------------
-    # |  Pass 2
-    executor = PassTwoVisitor.Executor(
-        mini_language_configuration_values,
-        global_namespace,
-        fundamental_types_namespace,
-    )
-
-    for is_parallel, func in executor.GenerateFuncs():
-        results = _Execute(
-            workspaces,
-            func,
-            max_num_threads=max_num_threads if is_parallel else 1,
+        # Pass 2
+        executor = PassTwoVisitor.Executor(
+            mini_language_configuration_values,
+            global_namespace,
+            fundamental_types_namespace,
         )
 
-        if results is None:
-            return None
+        for is_parallel, func in executor.GenerateFuncs():
+            results = _Execute(
+                workspaces,
+                func,
+                max_num_threads=max_num_threads if is_parallel else 1,
+            )
 
-        error_data = _ExtractErrorsFromResults(results)
-        if error_data is not None:
-            return error_data  # type: ignore
+            if results is None:
+                return None
+
+            error_data = _ExtractErrorsFromResults(results)
+            if error_data is not None:
+                return error_data  # type: ignore
 
     return workspaces  # type: ignore
 
@@ -391,6 +428,8 @@ def CreateRegions(
 # ----------------------------------------------------------------------
 _PARSER_INFO_ATTRIBUTE_NAME                 = "parser_info"
 _PARSER_INFO_ERROR_ATTRIBUTE_NAME           = "_has_parser_info_errors"
+
+_FUNDAMENTAL_TYPES_ATTRIBUTE_NAME           = "__fundamental_types__"
 
 
 # ----------------------------------------------------------------------

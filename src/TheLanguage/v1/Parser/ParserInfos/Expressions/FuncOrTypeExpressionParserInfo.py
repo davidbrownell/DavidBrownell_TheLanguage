@@ -209,3 +209,9 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _ToTypeStringImpl(self) -> str:
+        assert isinstance(self.value, str), self.value
+        return self.value
