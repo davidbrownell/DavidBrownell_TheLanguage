@@ -44,6 +44,8 @@ with InitRelativeImports():
 
     from ...Error import CreateError, Error, ErrorException
 
+    from ...Common import CallHelpers
+
 
 # ----------------------------------------------------------------------
 DuplicateNameError                          = CreateError(
@@ -89,28 +91,6 @@ class TemplateTypeParameterParserInfo(ParserInfo):
         generated constructors with too many methods.
         """
         return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Compare(
-        cls,
-        value_a: "TemplateTypeParameterParserInfo",
-        value_b: "TemplateTypeParameterParserInfo",
-    ) -> int:
-        for attribute_name in [
-            "name",
-            "is_variadic",
-            "default_type",
-        ]:
-            result = CompareImpl(  # type: ignore  # pylint: disable=no-member
-                getattr(value_a, attribute_name),
-                getattr(value_b, attribute_name),
-            )
-
-            if result != 0:
-                return result
-
-        return 0
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
@@ -170,28 +150,6 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Compare(
-        cls,
-        value_a: "TemplateDecoratorParameterParserInfo",
-        value_b: "TemplateDecoratorParameterParserInfo",
-    ) -> int:
-        for attribute_name in [
-            "type",
-            "name",
-            "default_value",
-        ]:
-            result = CompareImpl(  # type: ignore  # pylint: disable=no-member
-                getattr(value_a, attribute_name),
-                getattr(value_b, attribute_name),
-            )
-
-            if result != 0:
-                return result
-
-        return 0
-
-    # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(TemplateDecoratorParameterParserInfo, self).__init__(
             ParserInfoType.TypeCustomization,
@@ -228,6 +186,11 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
                             region=self.default_value.regions__.self__,
                         ),
                     )
+
+                BugBug = 10
+                # BugBug: Ensure that the default expression is of the correct type
+                # assert False, "BugBug"
+
             except ErrorException as ex:
                 errors += ex.errors
 
@@ -266,6 +229,10 @@ class TemplateParametersParserInfo(ParserInfo):
 
     default_initializable: bool             = field(init=False, default=False)
 
+    call_helpers_positional: List[CallHelpers.ParameterInfo]                = field(init=False, default_factory=list)
+    call_helpers_any: List[CallHelpers.ParameterInfo]                       = field(init=False, default_factory=list)
+    call_helpers_keyword: List[CallHelpers.ParameterInfo]                   = field(init=False, default_factory=list)
+
     # ----------------------------------------------------------------------
     # |  Public Methods
     @classmethod
@@ -275,28 +242,6 @@ class TemplateParametersParserInfo(ParserInfo):
         generated constructors with too many methods.
         """
         return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Compare(
-        cls,
-        value_a: "TemplateParametersParserInfo",
-        value_b: "TemplateParametersParserInfo",
-    ) -> int:
-        for attribute_name in [
-            "positional",
-            "any",
-            "keyword",
-        ]:
-            result = CompareImpl(  # type: ignore  # pylint: disable=no-member
-                getattr(value_a, attribute_name),
-                getattr(value_b, attribute_name),
-            )
-
-            if result != 0:
-                return result
-
-        return 0
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
@@ -311,10 +256,16 @@ class TemplateParametersParserInfo(ParserInfo):
             *args,
             regionless_attributes=[
                 "default_initializable",
+                "call_helpers_positional",
+                "call_helpers_any",
+                "call_helpers_keyword",
             ],
             **{
                 **{
                     "default_initializable": None,
+                    "call_helpers_positional": None,
+                    "call_helpers_any": None,
+                    "call_helpers_keyword": None,
                 },
                 **kwargs,
             },
@@ -378,6 +329,38 @@ class TemplateParametersParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+        # Initialize the call helpers info
+        for source_parameters, destination_attribute_name in [
+            (self.positional, "call_helpers_positional"),
+            (self.any, "call_helpers_any"),
+            (self.keyword, "call_helpers_keyword"),
+        ]:
+            call_helpers_parameters: List[CallHelpers.ParameterInfo] = []
+
+            for source_parameter in (source_parameters or []):
+                if isinstance(source_parameter, TemplateTypeParameterParserInfo):
+                    has_default = bool(source_parameter.default_type)
+                    is_variadic = source_parameter.is_variadic is True
+
+                elif isinstance(source_parameter, TemplateDecoratorParameterParserInfo):
+                    has_default = bool(source_parameter.default_value)
+                    is_variadic = False
+
+                else:
+                    assert False, source_parameter  # pragma: no cover
+
+                call_helpers_parameters.append(
+                    CallHelpers.ParameterInfo(
+                        name=source_parameter.name,
+                        region=source_parameter.regions__.self__,
+                        is_optional=has_default,
+                        is_variadic=is_variadic,
+                        context=source_parameter,
+                    ),
+                )
+
+            object.__setattr__(self, destination_attribute_name, call_helpers_parameters)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

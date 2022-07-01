@@ -21,7 +21,7 @@ from contextlib import contextmanager
 from enum import auto, Enum, Flag
 from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 
-from dataclasses import fields, make_dataclass
+from dataclasses import dataclass, fields, make_dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -36,7 +36,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ParserInfoVisitorHelper import ParserInfoVisitorHelper
+
     from ..TranslationUnitRegion import TranslationUnitRegion
+    from ..MiniLanguage.Types.Type import Type as MiniLanguageType
 
 
 # ----------------------------------------------------------------------
@@ -97,6 +99,13 @@ class ParserInfoType(Enum):
         value: "ParserInfoType",
     ) -> bool:
         return value != cls.Standard and value != cls.Unknown
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class CompileTimeInfo(object):
+    type: MiniLanguageType
+    value: Any
 
 
 # ----------------------------------------------------------------------
@@ -209,14 +218,6 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         return self._regions  # type: ignore  # pylint: disable=no-member
 
     # ----------------------------------------------------------------------
-    def InitParentName(
-        self,
-        names: List[str],
-    ) -> None:
-        assert self._parent_name is None  # type: ignore  # pylint: disable=no-member
-        object.__setattr__(self, "_parent_name", names)
-
-    # ----------------------------------------------------------------------
     def ValidateRegions(self) -> None:
         self._validate_regions_func()  # type: ignore  # pylint: disable=no-member
 
@@ -271,6 +272,9 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
             method_name = "On{}".format(self.__class__.__name__)
 
             method = getattr(visitor, method_name, None)
+            if method is None:
+                BugBug = 10
+
             assert method is not None, method_name
 
             with method(self) as visit_result:
@@ -321,6 +325,38 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
                                         visitor,
                                         include_disabled=include_disabled,
                                     )
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def InitConfiguration(
+        self,
+        names: List[str],
+        configuration_info: Dict[str, CompileTimeInfo],
+    ):
+        """\
+        Opportunity for a ParserInfo object to initialize itself during the configuration process.
+
+        The initialization process may return a function that should be invoked after all other ParserInfo objects
+        have been initialized, but before moving on to the next step in the initialization process.
+        """
+
+        assert self._parent_name is None  # type: ignore  # pylint: disable=no-member
+        object.__setattr__(self, "_parent_name", names)
+
+        if self.parser_info_type__ == ParserInfoType.Configuration:
+            with self._InitConfigurationImpl(configuration_info):
+                yield
+        else:
+            yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.extensionmethod
+    def ValidateConfiguration() -> None:
+        """Opportunity for a ParserInfo object to validate itself after configuration activities are complete."""
+
+        # No validation by default
+        pass
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
@@ -430,3 +466,13 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     @contextmanager
     def _GenericAcceptGenerator(*args, **kwargs):
         yield VisitResult.Continue
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @contextmanager
+    @Interface.extensionmethod
+    def _InitConfigurationImpl(
+        cls,
+        configuration_data: Dict[str, CompileTimeInfo], # pylint: disable=unused-argument
+    ):
+        raise Exception("This functionality should be implemented by derived classes when applicable ({})".format(cls))

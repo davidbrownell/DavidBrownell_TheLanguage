@@ -17,7 +17,8 @@
 
 import os
 
-from typing import Dict, List, Optional
+from contextlib import contextmanager
+from typing import Callable, Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -32,8 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+    from .StatementParserInfo import CompileTimeInfo, ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ...Common import MiniLanguageHelpers
 
 
 # ----------------------------------------------------------------------
@@ -86,3 +88,13 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
     @Interface.override
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         yield "expression", self.expression  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(
+        self,
+        configuration_data: Dict[str, CompileTimeInfo],
+    ):
+        MiniLanguageHelpers.EvalExpression(self.expression, [configuration_data])
+        yield

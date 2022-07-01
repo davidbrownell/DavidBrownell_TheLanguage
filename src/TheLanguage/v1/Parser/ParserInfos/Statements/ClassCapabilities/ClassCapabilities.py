@@ -295,6 +295,7 @@ InvalidDependencyTypeError                  = CreateError(
 # ----------------------------------------------------------------------
 # TODO: All of the capabilities need some TLC
 
+# TODO: Add fundamental type: final, methods are deferred
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -878,7 +879,7 @@ class ClassCapabilities(ObjectReprImplBase):
                     dependency.Disable()
                     continue
 
-                dependency_parser_info = dependency.type.resolved_type__.Resolve()
+                dependency_parser_info = dependency.type.GetResolvedType().parser_info
 
                 # Can't use the ClassStatementParserInfo class directly, as it would
                 # create an import cycle. Check by name as a workaround.

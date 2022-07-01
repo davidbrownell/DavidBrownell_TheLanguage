@@ -47,11 +47,10 @@ with InitRelativeImports():
     from .MiniLanguage.Types.Type import Type as MiniLanguageType
     from .MiniLanguage.Types.VariantType import VariantType                 # pylint: disable=unused-import
 
-    from .ParserInfos.ParserInfo import ParserInfo
+    from .ParserInfos.ParserInfo import CompileTimeInfo, ParserInfo
     from .ParserInfos.Statements.RootStatementParserInfo import StatementParserInfo, RootStatementParserInfo
 
-    from .Visitors import MiniLanguageHelpers
-    from .Visitors.PassOneVisitor.Visitor import Visitor as PassOneVisitor
+    from .Visitors.PassOneVisitor import PassOneVisitor
     from .Visitors.PassTwoVisitor.Visitor import Visitor as PassTwoVisitor
 
     from ..Lexer.Lexer import AST, Phrase as LexPhrase
@@ -263,7 +262,7 @@ def ResolveExpressionTypes(
     ]
 ]:
     mini_language_configuration_values = {
-        k: MiniLanguageHelpers.CompileTimeInfo(v[0], v[1])
+        k: CompileTimeInfo(v[0], v[1])
         for k, v in configuration_values.items()
     }
 
@@ -334,6 +333,7 @@ def ResolveExpressionTypes(
         )
 
         for is_parallel, func in executor.GenerateFuncs():
+            break # BugBug
             results = _Execute(
                 workspaces,
                 func,
@@ -346,6 +346,9 @@ def ResolveExpressionTypes(
             error_data = _ExtractErrorsFromResults(results)
             if error_data is not None:
                 return error_data  # type: ignore
+
+        # TODO: Pass 3
+        #       - Check for scenarios where the visibility of a type used by a class/function/etc. is lower than the visibility of the class/function/etc.
 
     return workspaces  # type: ignore
 

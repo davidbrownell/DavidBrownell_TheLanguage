@@ -34,11 +34,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .. import MiniLanguageHelpers
     from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
     from ...Error import CreateError, Error, ErrorException
     from ...TranslationUnitRegion import TranslationUnitRegion
+    from ...Common import MiniLanguageHelpers
 
     from ...ParserInfos.ParserInfo import ParserInfo, ParserInfoType, VisitResult
     from ...ParserInfos.AggregateParserInfo import AggregateParserInfo
@@ -56,10 +56,11 @@ with InitRelativeImports():
     from ...ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
     from ...ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
-    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ConcreteTypeInfo, TypeDependency
+    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ConcreteTypeInfo
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo, ScopeFlag
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
+    from ...ParserInfos.Statements import HierarchyInfo
 
     from ...ParserInfos.Statements.Traits.NamedStatementTrait import NamedStatementTrait
     from ...ParserInfos.Statements.Traits.ScopedStatementTrait import ScopedStatementTrait
@@ -75,7 +76,7 @@ InvalidTypeError                            = CreateError(
 InvalidTypeVisibilityError                  = CreateError(
     "'{name}' is a recognized type, but not visible in this context",
     name=str,
-    resolutions=List[TypeDependency.TypeDependencyResolutionType],
+    dependency_enumerations=List[HierarchyInfo.Dependency.EnumResult],
 )
 
 InvalidTypeReferenceError                   = CreateError(
@@ -98,8 +99,8 @@ class BaseMixin(object):
     class PostprocessType(Enum):
         ResolveDependenciesParallel         = 0
         ResolveDependenciesSequential       = 1
-        ResolveClasses                      = 2
-        ResolveNestedTypes                  = 3
+        ResolveNestedClassTypes             = 2
+        # BugBug?: ResolveFunctionTypes                = 3
 
     sequential_postprocess_steps: Set[PostprocessType]  = set(
         [
@@ -254,7 +255,15 @@ class BaseMixin(object):
 
                                     assert namespace_stack
 
-                                    for namespace in reversed(namespace_stack):
+                                    for namespace_index, namespace in enumerate(reversed(namespace_stack)):
+                                        # Don't look at the initial (or last since the list is being reversed)
+                                        # namespace, as that will either be the class or a type nested in the class.
+                                        # If it is the class, we are in the process of resolving its dependencies and
+                                        # want to see unrecognized types as errors. If it is something within the class,
+                                        # it won't resolve the type and is safe to skip.
+                                        if namespace_index == 0:
+                                            continue
+
                                         if (
                                             isinstance(namespace, ParsedNamespaceInfo)
                                             and isinstance(namespace.parser_info, ClassStatementParserInfo)
@@ -271,14 +280,14 @@ class BaseMixin(object):
 
                                             # Process it once the classes have been fully formed
                                             if namespace.parser_info.default_initializable:
-                                                current_namespace_stack = list(namespace_stack)
-
                                                 # ----------------------------------------------------------------------
                                                 def ResolveNestedType(
                                                     parser_info=parser_info,
                                                     type_result=type_result,
                                                     namespace=namespace,
                                                 ):
+                                                    return # BugBug: Not yet
+
                                                     self._ResolveType(
                                                         parser_info,
                                                         type_result,
@@ -292,14 +301,13 @@ class BaseMixin(object):
                                                                     type_name,
                                                                     region,
                                                                     namespace.parser_info.GetOrCreateConcreteTypeInfo(None),
-                                                                    current_namespace_stack,
                                                                 )
                                                         )
                                                     )
 
                                                 # ----------------------------------------------------------------------
 
-                                                self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveNestedTypes.value].append(ResolveNestedType)
+                                                self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveNestedClassTypes.value].append(ResolveNestedType)
 
                                             break
 
@@ -360,7 +368,23 @@ class BaseMixin(object):
         self,
         parser_info: ExpressionParserInfo,
         type_result: ExpressionParserInfo,
-        resolver_func: Callable[[str, TranslationUnitRegion], Optional[ParserInfo]],
+        resolver_func: Callable[
+            [
+                str,
+                TranslationUnitRegion,
+            ],
+            Optional[
+                Tuple[
+                    VisibilityModifier,
+                    Union[
+                        ClassStatementParserInfo,
+                        TemplateTypeParameterParserInfo,
+                        TypeAliasStatementParserInfo,
+                    ],
+                    bool,                   # is_class
+                ]
+            ],
+        ],
     ) -> None:
         if parser_info.HasResolvedEntity():
             return
@@ -379,6 +403,8 @@ class BaseMixin(object):
                     ),
                 )
 
+            resolved_visibility, resolved_parser_info, is_class_member = resolved_parser_info
+
             if not isinstance(
                 resolved_parser_info,
                 (
@@ -396,11 +422,15 @@ class BaseMixin(object):
 
             if isinstance(resolved_parser_info, TypeAliasStatementParserInfo):
                 resolved_type = TypeAliasStatementParserInfo.ResolvedType.Create(
+                    resolved_visibility,
                     resolved_parser_info,
+                    is_class_member,
                 )
             else:
                 resolved_type = ExpressionParserInfo.ResolvedType.Create(
+                    resolved_visibility,
                     resolved_parser_info,
+                    is_class_member,
                 )
 
         elif isinstance(type_result, NestedTypeExpressionParserInfo):
@@ -410,7 +440,7 @@ class BaseMixin(object):
             parser_info.SetResolvedEntity(None)
             return
 
-        elif isinstance(type_result, TupleExpressionParserInfo):
+        elif isinstance(type_result, (TupleExpressionParserInfo, VariantExpressionParserInfo)):
             errors: List[Error] = []
 
             for the_type in type_result.types:
@@ -422,23 +452,11 @@ class BaseMixin(object):
             if errors:
                 raise ErrorException(*errors)
 
-            resolved_type = ExpressionParserInfo.ResolvedType.Create(
-                type_result,
-            )
-
-        elif isinstance(type_result, VariantExpressionParserInfo):
-            errors: List[Error] = []
-
-            for the_type in type_result.types:
-                try:
-                    self._ResolveType(the_type, the_type, resolver_func)
-                except ErrorException as ex:
-                    errors += ex.errors
-
-            if errors:
-                raise ErrorException(*errors)
+            # BugBug: Type visibility needs to be based on child types
 
             resolved_type = ExpressionParserInfo.ResolvedType.Create(
+                VisibilityModifier.public,
+                VisibilityModifier.public,
                 type_result,
             )
 
@@ -450,7 +468,17 @@ class BaseMixin(object):
         self,
         type_name: str,
         region: TranslationUnitRegion,
-    ) -> Optional[ParserInfo]:
+    ) -> Optional[
+        Tuple[
+            VisibilityModifier,
+            Union[
+                ClassStatementParserInfo,
+                TemplateTypeParameterParserInfo,
+                TypeAliasStatementParserInfo,
+            ],
+            bool,
+        ]
+    ]:
         assert self._namespaces_stack
         namespace_stack = self._namespaces_stack[-1]
 
@@ -460,7 +488,21 @@ class BaseMixin(object):
             potential_namespace = namespace.children.get(type_name, None)
             if potential_namespace is not None:
                 assert isinstance(potential_namespace, ParsedNamespaceInfo), potential_namespace
-                return potential_namespace.parser_info
+
+                assert isinstance(
+                    potential_namespace.parser_info,
+                    (
+                        ClassStatementParserInfo,
+                        TemplateTypeParameterParserInfo,
+                        TypeAliasStatementParserInfo,
+                    ),
+                ), potential_namespace.parser_info
+
+                return (
+                    VisibilityModifier.public,
+                    potential_namespace.parser_info,
+                    False,
+                )
 
         return None
 
@@ -470,27 +512,44 @@ class BaseMixin(object):
         type_name: str,
         region: TranslationUnitRegion,
         concrete_type_info: ConcreteTypeInfo,
-        namespace_stack: List[NamespaceInfo],
-    ) -> Optional[ParserInfo]:
+    ) -> Optional[
+        Tuple[
+            VisibilityModifier,
+            Union[
+                ClassStatementParserInfo,
+                TemplateTypeParameterParserInfo,
+                TypeAliasStatementParserInfo,
+            ],
+            bool,
+        ]
+    ]:
         for dependency in concrete_type_info.types.Enum():
-            visibility, resolved_parser_info = dependency.Resolve()
+            hierarchy_info = dependency.ResolveHierarchy()
 
-            assert isinstance(
-                resolved_parser_info,
-                (ClassStatementParserInfo, TypeAliasStatementParserInfo),
-            ), resolved_parser_info
-
-            if resolved_parser_info.name == type_name:
-                if visibility == VisibilityModifier.private:
+            if hierarchy_info.statement.name == type_name:
+                if hierarchy_info.visibility is None:
                     raise ErrorException(
                         InvalidTypeVisibilityError.Create(
                             region=region,
                             name=type_name,
-                            resolutions=list(dependency.Enum(VisibilityModifier.public)),
+                            dependency_enumerations=list(dependency.EnumHierarchy()),
                         ),
                     )
 
-                return resolved_parser_info
+                assert isinstance(
+                    hierarchy_info.statement,
+                    (
+                        ClassStatementParserInfo,
+                        TemplateTypeParameterParserInfo,
+                        TypeAliasStatementParserInfo,
+                    ),
+                ), hierarchy_info.statement
+
+                return (
+                    hierarchy_info.visibility,
+                    hierarchy_info.statement,
+                    True,
+                )
 
         return None
 

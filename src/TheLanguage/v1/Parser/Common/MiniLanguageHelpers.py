@@ -98,12 +98,7 @@ with InitRelativeImports():
     from ..ParserInfos.Expressions.VariableExpressionParserInfo import VariableExpressionParserInfo
     from ..ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class CompileTimeInfo(object):
-    type: MiniLanguageType
-    value: Any
+    from ..ParserInfos.ParserInfo import CompileTimeInfo
 
 
 # ----------------------------------------------------------------------
@@ -534,9 +529,10 @@ class _Helper(object):
             param_infos.append(
                 CallHelpers.ParameterInfo(
                     field.name,
-                    None,
+                    region=None,
                     is_optional="NoneType" in type_desc,
                     is_variadic="typing.List" in type_desc,
+                    context=None,
                 ),
             )
 
@@ -549,8 +545,8 @@ class _Helper(object):
                 arg_expression_result = self.ToExpression(argument.expression)
 
                 arg_info = CallHelpers.ArgumentInfo(
-                    arg_expression_result,
                     argument.regions__.self__,
+                    context=arg_expression_result,
                 )
 
                 if argument.keyword is None:
@@ -579,8 +575,13 @@ class _Helper(object):
 
         # We don't need to check types, as all the args are MiniLanguageExpressions
 
-        # Create the expression
-        return function_expression_type(**argument_map)
+        # Create the expression with the arguments (we do not need the parameters)
+        return function_expression_type(
+            **{
+                k: argument
+                for k, (parameter, argument) in argument_map.items()
+            }
+        )
 
     # ----------------------------------------------------------------------
     def _ToBinaryExpressionType(

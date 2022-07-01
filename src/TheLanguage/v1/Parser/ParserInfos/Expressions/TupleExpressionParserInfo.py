@@ -15,9 +15,10 @@
 # ----------------------------------------------------------------------
 """Contains the TupleExpressionParserInfo object"""
 
+import itertools
 import os
 
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from dataclasses import dataclass
 
@@ -33,10 +34,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
+
     from .FuncOrTypeExpressionParserInfo import (
         MutabilityModifierRequiredError,
         InvalidStandardMutabilityModifierError,
     )
+
+    from .TypeIdentifier import TypeIdentifier, StandardTypeIdentifier
 
     from ..Common.MutabilityModifier import MutabilityModifier
 
@@ -90,6 +94,21 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
                 return False
 
         return True
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def GetTypeId(self) -> TypeIdentifier:
+        assert self.IsType()
+        assert self.HasResolvedEntity()
+
+        return StandardTypeIdentifier(
+            tuple(
+                itertools.chain(
+                    ["Tuple", ],
+                    (the_type.GetTypeId() for the_type in self.types),
+                ),
+            ),
+        )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -167,8 +186,3 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
 
         if errors:
             raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _ToTypeStringImpl(self) -> str:
-        return "({}, )".format(", ".join(the_type.ToTypeString() for the_type in self.types))

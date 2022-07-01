@@ -115,7 +115,7 @@ class FuncParameterParserInfo(ParserInfo):
 
         # TODO: How do we handle covariants?
         if self.type.HasResolvedEntity():
-            type_id = id(self.type.resolved_type__.Resolve())
+            type_id = id(self.type.GetResolvedType())
         else:
             # We should only get here if the parameter is defined in a dependency and
             # we are in the process of resolving the derived class.

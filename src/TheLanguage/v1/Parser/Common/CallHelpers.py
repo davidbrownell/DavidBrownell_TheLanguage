@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import Any, cast, Dict, List, Optional, Union
+from typing import Any, cast, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -80,13 +80,14 @@ class ParameterInfo(object):
     region: Optional[TranslationUnitRegion]
     is_optional: bool
     is_variadic: bool
+    context: Any
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class ArgumentInfo(object):
-    value: Any
     region: Optional[TranslationUnitRegion]
+    context: Any
 
 
 # ----------------------------------------------------------------------
@@ -98,13 +99,32 @@ def CreateArgumentMap(
     keyword_parameters: List[ParameterInfo],
     args: List[ArgumentInfo],
     kwargs: Dict[str, ArgumentInfo],
-) -> Dict[str, Any]:
+) -> Dict[
+    str,
+    Tuple[
+        Any,                                # Parameter's context
+        Union[
+            Any,                            # Argument's context
+            List[Any],                      # Argument's context for arguments associated with variadic parameters
+        ],
+    ],
+]:
     """\
     Returns a dictionary that can be used to dynamically invoke the destination function with
     the specified parameters.
     """
 
-    result: Dict[str, Union[ArgumentInfo, List[ArgumentInfo]]] = {}
+    all_results: Dict[
+        str,
+        Tuple[
+            ParameterInfo,
+            Union[
+                ArgumentInfo,
+                List[ArgumentInfo],
+            ],
+        ],
+    ] = {}
+
     errors: List[Error] = []
 
     # Process the arguments specified by keyword
@@ -146,20 +166,22 @@ def CreateArgumentMap(
 
                 continue
 
-            potential_argument_value = result.get(potential_parameter.name, _does_not_exist)
+            existing_result_or_results = all_results.get(potential_parameter.name, _does_not_exist)
 
-            if isinstance(potential_argument_value, _DoesNotExist):
+            if isinstance(existing_result_or_results, _DoesNotExist):
                 if potential_parameter.is_variadic:
                     value = [value, ]
 
-                result[key] = value
+                all_results[key] = (potential_parameter, value)
 
             elif potential_parameter.is_variadic:
-                assert isinstance(potential_argument_value, list), potential_argument_value
-                potential_argument_value.append(value)
+                assert isinstance(existing_result_or_results, tuple), existing_result_or_results
+                assert isinstance(existing_result_or_results[1], list), existing_result_or_results[1]
+                existing_result_or_results[1].append(value)
 
             else:
-                assert isinstance(potential_argument_value, ArgumentInfo), potential_argument_value
+                assert isinstance(existing_result_or_results, tuple), existing_result_or_results
+                assert isinstance(existing_result_or_results[1], ArgumentInfo), existing_result_or_results[1]
 
                 errors.append(
                     DuplicateKeywordArgumentError.Create(
@@ -167,7 +189,7 @@ def CreateArgumentMap(
                         destination=destination,
                         destination_region=destination_region,
                         name=potential_parameter.name,
-                        prev_region=potential_argument_value.region,
+                        prev_region=existing_result_or_results[1].region,
                     ),
                 )
 
@@ -185,7 +207,7 @@ def CreateArgumentMap(
                 if potential_parameter.is_variadic:
                     break
 
-                if potential_parameter.name not in result:
+                if potential_parameter.name not in all_results:
                     break
 
                 all_positional_parameters_index += 1
@@ -203,25 +225,34 @@ def CreateArgumentMap(
             assert potential_parameter is not None
 
             if potential_parameter.is_variadic:
-                cast(List[ArgumentInfo], result.setdefault(potential_parameter.name, [])).append(arg)
+                existing_result = all_results.get(potential_parameter.name, None)
+                if existing_result is not None:
+                    assert isinstance(existing_result, tuple), existing_result
+                    assert isinstance(existing_result[1], list), existing_result[1]
+
+                    existing_result[1].append(arg)
+                else:
+                    all_results[potential_parameter.name] = (potential_parameter, [arg, ])
+
             else:
-                assert potential_parameter.name not in result, potential_parameter.name
-                result[potential_parameter.name] = arg
+                assert potential_parameter.name not in all_results, potential_parameter.name
+                all_results[potential_parameter.name] = (potential_parameter, arg)
 
-    result = result
-    raw_arguments = {}
+    raw_results = {}
 
-    for k, v in result.items():
-        if isinstance(v, list):
-            v = [item.value for item in v]
+    for k, results in all_results.items():
+        assert isinstance(results, tuple), results
+
+        if isinstance(results[1], list):
+            raw_result = (results[0].context, [arg.context for arg in results[1]])
         else:
-            v = v.value
+            raw_result = results[0].context, results[1].context
 
-        raw_arguments[k] = v
+        raw_results[k] = raw_result
 
     # Have all arguments been provided?
     for parameter in itertools.chain(positional_parameters, any_parameters, keyword_parameters):
-        if parameter.name not in result:
+        if parameter.name not in all_results:
             if not parameter.is_optional:
                 errors.append(
                     RequiredArgumentMissingError.Create(
@@ -231,13 +262,15 @@ def CreateArgumentMap(
                         name=parameter.name,
                     ),
                 )
+            elif parameter.is_variadic:
+                raw_results[parameter.name] = [(parameter.context, None)]
             else:
-                raw_arguments[parameter.name] = None
+                raw_results[parameter.name] = (parameter.context, None)
 
     if errors:
         raise ErrorException(*errors)
 
-    return raw_arguments
+    return raw_results
 
 
 # ----------------------------------------------------------------------

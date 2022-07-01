@@ -60,3 +60,19 @@ class MutabilityModifier(Enum):
                                                         # in concepts, interfaces, and mixins when the actual type is not known.
 
     # TODO: Validate that new is used appropriately
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def IsMutable(
+        cls,
+        value: "MutabilityModifier",
+    ) -> bool:
+        return value == cls.var or value == cls.ref
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def IsImmutable(
+        cls,
+        value: "MutabilityModifier",
+    ) -> bool:
+        return not cls.IsMutable(value)

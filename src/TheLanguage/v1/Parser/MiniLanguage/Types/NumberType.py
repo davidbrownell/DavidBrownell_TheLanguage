@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any
+from typing import Any, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,6 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Type import Type
+    from .IntegerType import IntegerType
 
 
 # ----------------------------------------------------------------------
@@ -52,3 +53,29 @@ class NumberType(Type):
         value: Any,
     ) -> bool:
         return value > 0.0
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def IsSameOrConvertible(
+        cls,
+        other: Type,
+    ) -> Optional[Type.SameOrConvertibleResult]:
+        result = super(NumberType, cls).IsSameOrConvertible(other)
+        if result is not None:
+            return result
+
+        if other.__class__ == IntegerType:
+            return Type.SameOrConvertibleResult.Convertible
+
+        return None
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def ConvertValueOfType(
+        value: Any,
+        other_type: Type,
+    ) -> Any:
+        assert other_type.__class__ == IntegerType, other_type
+        return float(value)

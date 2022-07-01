@@ -15,8 +15,10 @@
 # ----------------------------------------------------------------------
 """Contains the VariantExpressionParserInfo object"""
 
+import itertools
 import os
 
+from contextlib import contextmanager
 from typing import List, Optional
 
 from dataclasses import dataclass
@@ -44,6 +46,8 @@ with InitRelativeImports():
         InvalidStandardMutabilityModifierError,
         MutabilityModifierRequiredError,
     )
+
+    from .TypeIdentifier import TypeIdentifier, StandardTypeIdentifier
 
     from ..Common.MutabilityModifier import MutabilityModifier
 
@@ -95,6 +99,21 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
     @Interface.override
     def IsType() -> Optional[bool]:
         return True
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def GetTypeId(self) -> TypeIdentifier:
+        assert self.IsType()
+        assert self.HasResolvedEntity()
+
+        return StandardTypeIdentifier(
+            tuple(
+                itertools.chain(
+                    ["Variant", ],
+                    (the_type.GetTypeId() for the_type in self.types),
+                ),
+            ),
+        )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -154,6 +173,9 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
     @Interface.override
-    def _ToTypeStringImpl(self) -> str:
-        return "({})".format(" | ".join(the_type.ToTypeString() for the_type in self.types))
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield

@@ -17,9 +17,12 @@
 
 import os
 
+from contextlib import contextmanager
+
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
 
 
 # ----------------------------------------------------------------------
@@ -45,3 +48,13 @@ class BooleanExpressionParserInfo(ExpressionParserInfo):
             **kwargs,
             regionless_attributes=["value", ],
         )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield

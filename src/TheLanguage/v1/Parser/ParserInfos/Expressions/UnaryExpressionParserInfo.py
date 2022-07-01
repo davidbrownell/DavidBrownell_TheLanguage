@@ -17,6 +17,7 @@
 
 import os
 
+from contextlib import contextmanager
 from typing import List, Optional
 
 from dataclasses import dataclass
@@ -76,3 +77,11 @@ class UnaryExpressionParserInfo(ExpressionParserInfo):
     @Interface.override
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         yield "expression", self.expression  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield

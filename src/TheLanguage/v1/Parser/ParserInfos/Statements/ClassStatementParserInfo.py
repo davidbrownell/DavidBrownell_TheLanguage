@@ -51,6 +51,8 @@ with InitRelativeImports():
     from .SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo, SpecialMethodType
     from .TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
+    from . import HierarchyInfo
+
     from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
     from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
@@ -60,6 +62,7 @@ with InitRelativeImports():
     from ..Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
     from ..Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo
     from ..Common.MethodHierarchyModifier import MethodHierarchyModifier
+    from ..Common.MutabilityModifier import MutabilityModifier
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
@@ -119,132 +122,49 @@ InvalidFinalError                           = CreateError(
     "The class is marked as final, but abstract methods were encountered",
 )
 
+InvalidMutableMethodOnImmutableClassError   = CreateError(
+    "The class is marked as immutable, but methods marked as '{mutability_str}' were encountered",
+    mutability=MutabilityModifier,
+    mutability_str=str,
+    class_region=TranslationUnitRegion,
+)
+
+InvalidMutableClassDecorationError          = CreateError(
+    "The class is marked as mutable, but no mutable methods were found",
+)
+
 
 # ----------------------------------------------------------------------
 # |
 # |  Public Types
 # |
 # ----------------------------------------------------------------------
-class TypeDependency(Interface.Interface):
-    # ----------------------------------------------------------------------
-    ResolvedStatementType                   = Union[
-        ClassAttributeStatementParserInfo,
-        "ClassStatementParserInfo",
-        FuncDefinitionStatementParserInfo,
-        TypeAliasStatementParserInfo,
-    ]
-
-    TypeDependencyResolutionType            = Tuple[
-        Union["ClassStatementParserInfo", "ClassStatementDependencyParserInfo"],
-        VisibilityModifier,
-        ResolvedStatementType,
-    ]
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def Enum(
-        effective_visibility: VisibilityModifier,
-    ) -> Generator[TypeDependencyResolutionType, None, None]:
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    def Resolve(self) -> Tuple[
-        VisibilityModifier,
-        "TypeDependency.ResolvedStatementType",
-    ]:
-        *_, leaf = self.Enum(VisibilityModifier.public)
-
-        return leaf[-2:]
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _GetEffectiveVisibility(*visibilities):
-        return VisibilityModifier(min(visibility.value for visibility in visibilities))
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class TypeDependencyLeaf(TypeDependency):
-    # ----------------------------------------------------------------------
-    ResolvedStatementType                   = Union[
-        ClassAttributeStatementParserInfo,
-        "ClassStatementParserInfo",
-        FuncDefinitionStatementParserInfo,
-        TypeAliasStatementParserInfo,
-    ]
-
-    # ----------------------------------------------------------------------
-    class_statement: "ClassStatementParserInfo"
-    statement: ResolvedStatementType
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Enum(
-        self,
-        effective_visibility: VisibilityModifier,
-    ) -> Generator[TypeDependency.TypeDependencyResolutionType, None, None]:
-        yield (
-            self.class_statement,
-            self.__class__._GetEffectiveVisibility(effective_visibility, self.statement.visibility),  # pylint: disable=protected-access
-            self.statement,
-        )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class TypeDependencyNode(TypeDependency):
-    # ----------------------------------------------------------------------
-    dependency: "ClassStatementDependencyParserInfo"
-    next: TypeDependency
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def Enum(
-        self,
-        effective_visibility: VisibilityModifier,
-    ) -> Generator[TypeDependency.TypeDependencyResolutionType, None, None]:
-        effective_visibility = self.__class__._GetEffectiveVisibility(  # pylint: disable=protected-access
-            effective_visibility,
-            self.dependency.visibility,
-        )
-
-        resolved_parser_info = self.dependency.type.resolved_type__.Resolve()
-        assert isinstance(resolved_parser_info, ClassStatementParserInfo), resolved_parser_info
-
-        yield self.dependency, effective_visibility, resolved_parser_info
-        yield from self.next.Enum(effective_visibility)
-
-
-# ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class TypeDependencies(object):
     # ----------------------------------------------------------------------
-    local: List[TypeDependency]
-    augmented: List[TypeDependency]
-    inherited: List[TypeDependency]
+    local: List[HierarchyInfo.Dependency]
+    augmented: List[HierarchyInfo.Dependency]
+    inherited: List[HierarchyInfo.Dependency]
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
-        local: List[TypeDependency],
-        augmented: List[TypeDependency],
-        inherited: List[TypeDependency],
-        get_key_func: Callable[[TypeDependency], Any],
+        local: List[HierarchyInfo.Dependency],
+        augmented: List[HierarchyInfo.Dependency],
+        inherited: List[HierarchyInfo.Dependency],
+        get_key_func: Callable[[HierarchyInfo.Dependency], Any],
         postprocess_func: Optional[
             Callable[
                 [
-                    List[TypeDependency],
-                    List[TypeDependency],
-                    List[TypeDependency],
+                    List[HierarchyInfo.Dependency],
+                    List[HierarchyInfo.Dependency],
+                    List[HierarchyInfo.Dependency],
                 ],
                 Tuple[
-                    List[TypeDependency],
-                    List[TypeDependency],
-                    List[TypeDependency],
+                    List[HierarchyInfo.Dependency],
+                    List[HierarchyInfo.Dependency],
+                    List[HierarchyInfo.Dependency],
                 ],
             ]
         ]=None,
@@ -261,7 +181,7 @@ class TypeDependencies(object):
         return cls(local, augmented, inherited)
 
     # ----------------------------------------------------------------------
-    def Enum(self) -> Generator[TypeDependency, None, None]:
+    def Enum(self) -> Generator[HierarchyInfo.Dependency, None, None]:
         yield from itertools.chain(self.local, self.augmented, self.inherited)
 
     # ----------------------------------------------------------------------
@@ -269,11 +189,11 @@ class TypeDependencies(object):
     # ----------------------------------------------------------------------
     @staticmethod
     def _FilterCreateList(
-        items: List[TypeDependency],
-        get_key_func: Callable[[TypeDependency], Any],
+        items: List[HierarchyInfo.Dependency],
+        get_key_func: Callable[[HierarchyInfo.Dependency], Any],
         lookup: Set[Any],
-    ) -> List[TypeDependency]:
-        results: List[TypeDependency] = []
+    ) -> List[HierarchyInfo.Dependency]:
+        results: List[HierarchyInfo.Dependency] = []
 
         for item in items:
             key = get_key_func(item)
@@ -298,13 +218,13 @@ class ConcreteTypeInfo(object):
         str,                                # name
         Dict[
             VisibilityModifier,
-            TypeDependency
+            HierarchyInfo.HierarchyInfo
         ],
     ]
 
     # ----------------------------------------------------------------------
     # |  Public Data
-    base: Optional[TypeDependency]
+    base: Optional[HierarchyInfo.DependencyNode]
     special_methods: Dict[SpecialMethodType, SpecialMethodStatementParserInfo]
 
     interfaces: TypeDependencies
@@ -597,13 +517,15 @@ class ClassStatementParserInfo(
         initialize_result = True
 
         try:
-            for dependency, resolved_dependency in self._EnumDependencies(None):
+            for _, resolved_dependency in self._EnumDependencies(None):
                 if resolved_dependency.Initialize() is False:
                     initialize_result = False
                     break
 
-            if self.default_initializable:
-                self.GetOrCreateConcreteTypeInfo(None)
+            # Validate as early as possible by creating and caching the default concrete
+            # type information for the class.
+            # BugBug: Not yet --- if self.default_initializable:
+            # BugBug: Not yet ---     self.GetOrCreateConcreteTypeInfo(None)
 
         except ErrorException:
             initialize_result = False
@@ -637,24 +559,24 @@ class ClassStatementParserInfo(
 
         errors: List[Error] = []
 
-        base: Optional[TypeDependency] = None
+        base: Optional[HierarchyInfo.DependencyNode] = None
 
-        local_interfaces: List[TypeDependency] = []
-        local_concepts: List[TypeDependency] = []
+        local_interfaces: List[HierarchyInfo.Dependency] = []
+        local_concepts: List[HierarchyInfo.Dependency] = []
 
-        augmented_interfaces: List[TypeDependency] = []
-        augmented_concepts: List[TypeDependency] = []
-        augmented_types: List[TypeDependency] = []
-        augmented_attributes: List[TypeDependency] = []
-        augmented_abstract_methods: List[TypeDependency] = []
-        augmented_methods: List[TypeDependency] = []
+        augmented_interfaces: List[HierarchyInfo.Dependency] = []
+        augmented_concepts: List[HierarchyInfo.Dependency] = []
+        augmented_types: List[HierarchyInfo.Dependency] = []
+        augmented_attributes: List[HierarchyInfo.Dependency] = []
+        augmented_abstract_methods: List[HierarchyInfo.Dependency] = []
+        augmented_methods: List[HierarchyInfo.Dependency] = []
 
-        dependency_interfaces: List[TypeDependency] = []
-        dependency_concepts: List[TypeDependency] = []
-        dependency_types: List[TypeDependency] = []
-        dependency_attributes: List[TypeDependency] = []
-        dependency_abstract_methods: List[TypeDependency] = []
-        dependency_methods: List[TypeDependency] = []
+        dependency_interfaces: List[HierarchyInfo.Dependency] = []
+        dependency_concepts: List[HierarchyInfo.Dependency] = []
+        dependency_types: List[HierarchyInfo.Dependency] = []
+        dependency_attributes: List[HierarchyInfo.Dependency] = []
+        dependency_abstract_methods: List[HierarchyInfo.Dependency] = []
+        dependency_methods: List[HierarchyInfo.Dependency] = []
 
         for dependency, resolved_dependency in self._EnumDependencies(
             None, # TODO
@@ -673,12 +595,12 @@ class ClassStatementParserInfo(
 
             hierarchy_methods_are_polymorphic = True
 
-            interfaces_target: Optional[List[TypeDependency]] = None
-            concepts_target: Optional[List[TypeDependency]] = None
-            types_target: Optional[List[TypeDependency]] = None
-            attributes_target: Optional[List[TypeDependency]] = None
-            abstract_methods_target: Optional[List[TypeDependency]] = None
-            methods_target: Optional[List[TypeDependency]] = None
+            interfaces_target: Optional[List[HierarchyInfo.Dependency]] = None
+            concepts_target: Optional[List[HierarchyInfo.Dependency]] = None
+            types_target: Optional[List[HierarchyInfo.Dependency]] = None
+            attributes_target: Optional[List[HierarchyInfo.Dependency]] = None
+            abstract_methods_target: Optional[List[HierarchyInfo.Dependency]] = None
+            methods_target: Optional[List[HierarchyInfo.Dependency]] = None
 
             if (
                 resolved_dependency.class_capabilities.name == "Mixin"
@@ -695,9 +617,9 @@ class ClassStatementParserInfo(
 
                 if resolved_dependency.class_capabilities.name == "Concept":
                     local_concepts.append(
-                        TypeDependencyNode(
+                        HierarchyInfo.DependencyNode(
                             dependency,
-                            TypeDependencyLeaf(resolved_dependency, resolved_dependency),
+                            HierarchyInfo.DependencyLeaf(resolved_dependency, resolved_dependency),
                         ),
                     )
 
@@ -711,19 +633,18 @@ class ClassStatementParserInfo(
 
                 if resolved_dependency.class_capabilities.name == "Interface":
                     local_interfaces.append(
-                        TypeDependencyNode(
+                        HierarchyInfo.DependencyNode(
                             dependency,
-                            TypeDependencyLeaf(resolved_dependency, resolved_dependency),
+                            HierarchyInfo.DependencyLeaf(resolved_dependency, resolved_dependency),
                         ),
                     )
 
                 else:
                     assert base is None, base
 
-                    base = TypeDependency(
-                        dependency.visibility,
+                    base = HierarchyInfo.DependencyNode(
                         dependency,
-                        resolved_dependency,
+                        HierarchyInfo.DependencyLeaf(resolved_dependency, resolved_dependency),
                     )
 
             assert interfaces_target is not None
@@ -747,14 +668,16 @@ class ClassStatementParserInfo(
                 ("methods", methods_target),
             ]:
                 for type_dependency in getattr(concrete_type_info, attribute_name).Enum():
-                    target.append(TypeDependencyNode(dependency, type_dependency))
+                    target.append(HierarchyInfo.DependencyNode(dependency, type_dependency))
 
         # Process the local statements
         special_methods: Dict[SpecialMethodType, SpecialMethodStatementParserInfo] = {}
-        local_types: List[TypeDependency] = []
-        local_attributes: List[TypeDependency] = []
-        local_abstract_methods: List[TypeDependency] = []
-        local_methods: List[TypeDependency] = []
+        local_types: List[HierarchyInfo.Dependency] = []
+        local_attributes: List[HierarchyInfo.Dependency] = []
+        local_abstract_methods: List[HierarchyInfo.Dependency] = []
+        local_methods: List[HierarchyInfo.Dependency] = []
+
+        added_immutable_error = False
 
         assert self.statements is not None
         for statement in self.statements:
@@ -762,19 +685,71 @@ class ClassStatementParserInfo(
                 continue
 
             if isinstance(statement, ClassAttributeStatementParserInfo):
-                local_attributes.append(TypeDependencyLeaf(self, statement))
+                local_attributes.append(HierarchyInfo.DependencyLeaf(self, statement))
 
             elif isinstance(statement, ClassStatementParserInfo):
-                local_types.append(TypeDependencyLeaf(self, statement))
+                local_types.append(HierarchyInfo.DependencyLeaf(self, statement))
 
             elif isinstance(statement, ClassUsingStatementParserInfo):
                 pass # BugBug
 
             elif isinstance(statement, FuncDefinitionStatementParserInfo):
+                # Ensure that the method's mutability agree's with the class's mutability
+                if (
+                    added_immutable_error is False
+                    and statement.mutability is not None
+                    and self.class_modifier == ClassModifier.immutable
+                    and MutabilityModifier.IsMutable(statement.mutability)
+                ):
+                    added_immutable_error = True
+
+                    errors.append(
+                        InvalidMutableMethodOnImmutableClassError.Create(
+                            region=statement.regions__.mutability,
+                            mutability=statement.mutability,
+                            mutability_str=statement.mutability.name,
+                            class_region=self.regions__.class_modifier,
+                        ),
+                    )
+
+                    continue
+
+                # Ensure that the hierarchy modifiers agree with methods defined in base classes
+                if (
+                    statement.method_hierarchy_modifier is not None
+                    and statement.method_hierarchy_modifier != MethodHierarchyModifier.standard
+                ):
+                    hierarchy_method = self.__class__._GetHierarchyMethod(
+                        statement,
+                        augmented_abstract_methods,
+                        augmented_methods,
+                        dependency_abstract_methods,
+                        dependency_methods,
+                    )
+
+                    if hierarchy_method is None:
+                        if statement.method_hierarchy_modifier != MethodHierarchyModifier.abstract:
+                            raise Exception("BugBug: No base found")
+
+                            continue
+
+                    else:
+                        if (
+                            hierarchy_method.method_hierarchy_modifier is None
+                            or hierarchy_method.method_hierarchy_modifier == MethodHierarchyModifier.standard
+                        ):
+                            raise Exception("BugBug: Not virtual")
+                            continue
+
+                        if hierarchy_method.method_hierarchy_modifier == MethodHierarchyModifier.final:
+                            raise Exception("BugBug: Final")
+                            continue
+
+                # Add the method
                 if statement.method_hierarchy_modifier == MethodHierarchyModifier.abstract:
-                    local_abstract_methods.append(TypeDependencyLeaf(self, statement))
+                    local_abstract_methods.append(HierarchyInfo.DependencyLeaf(self, statement))
                 else:
-                    local_methods.append(TypeDependencyLeaf(self, statement))
+                    local_methods.append(HierarchyInfo.DependencyLeaf(self, statement))
 
             elif isinstance(statement, SpecialMethodStatementParserInfo):
                 if (
@@ -827,11 +802,12 @@ class ClassStatementParserInfo(
                 special_methods[statement.special_method_type] = statement
 
             elif isinstance(statement, TypeAliasStatementParserInfo):
-                local_types.append(TypeDependencyLeaf(self, statement))
+                local_types.append(HierarchyInfo.DependencyLeaf(self, statement))
 
             else:
                 assert False, statement  # pragma: no cover
 
+        # Issue an error if the class was declared as abstract but no abstract methods were found
         if self.is_abstract and not local_abstract_methods:
             errors.append(
                 MissingAbstractMethodsError.Create(
@@ -839,6 +815,7 @@ class ClassStatementParserInfo(
                 ),
             )
 
+        # Issue an error if the class was declared as final but there are still abstract methods
         if (
             self.is_final
             and (
@@ -853,36 +830,62 @@ class ClassStatementParserInfo(
                 ),
             )
 
-        # BugBug: Check for method hierarchy errors
-        # BugBug: Check for mutabilty errors
+        # Issue an error if the class was declared as mutable but no mutable methods were found
+        if self.class_modifier == ClassModifier.mutable:
+            has_mutable_method = False
+
+            for dependency in itertools.chain(
+                local_methods,
+                local_abstract_methods,
+                augmented_methods,
+                augmented_abstract_methods,
+                dependency_methods,
+                dependency_abstract_methods,
+            ):
+                resolved_statement = dependency.ResolveHierarchy().statement
+                assert isinstance(resolved_statement, FuncDefinitionStatementParserInfo), resolved_statement
+
+                if (
+                    resolved_statement.mutability is not None
+                    and MutabilityModifier.IsMutable(resolved_statement.mutability)
+                ):
+                    has_mutable_method = True
+                    break
+
+            if not has_mutable_method:
+                errors.append(
+                    InvalidMutableClassDecorationError.Create(
+                        region=self.regions__.class_modifier,
+                    ),
+                )
 
         if errors:
             raise ErrorException(*errors)
 
         # ----------------------------------------------------------------------
         def StandardKeyExtractor(
-            dependency: TypeDependency,
+            dependency: HierarchyInfo.Dependency,
         ) -> str:
-            return dependency.Resolve()[1].name
+            return dependency.ResolveHierarchy().statement.name
 
         # ----------------------------------------------------------------------
         def MethodKeyExtractor(
-            dependency: TypeDependency,
+            dependency: HierarchyInfo.Dependency,
         ):
-            parser_info = dependency.Resolve()[1]
+            parser_info = dependency.ResolveHierarchy().statement
 
             assert isinstance(parser_info, FuncDefinitionStatementParserInfo), parser_info
             return parser_info.GetOverrideId()
 
         # ----------------------------------------------------------------------
         def PostprocessMethodDependencies(
-            local: List[TypeDependency],
-            augmented: List[TypeDependency],
-            inherited: List[TypeDependency],
+            local: List[HierarchyInfo.Dependency],
+            augmented: List[HierarchyInfo.Dependency],
+            inherited: List[HierarchyInfo.Dependency],
         ) -> Tuple[
-            List[TypeDependency],
-            List[TypeDependency],
-            List[TypeDependency],
+            List[HierarchyInfo.Dependency],
+            List[HierarchyInfo.Dependency],
+            List[HierarchyInfo.Dependency],
         ]:
             # BugBug
             return local, augmented, inherited
@@ -983,7 +986,7 @@ class ClassStatementParserInfo(
             if dependency.is_disabled__:
                 continue
 
-            resolved_parser_info = dependency.type.resolved_type__.Resolve()
+            resolved_parser_info = dependency.type.GetResolvedType().parser_info
             assert isinstance(resolved_parser_info, ClassStatementParserInfo), resolved_parser_info
 
             yield dependency, resolved_parser_info

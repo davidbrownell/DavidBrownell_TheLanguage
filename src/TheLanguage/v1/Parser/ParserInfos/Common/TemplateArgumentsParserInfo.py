@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -32,14 +32,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TemplateParametersParserInfo import TemplateTypeParameterParserInfo
+    from .TemplateParametersParserInfo import TemplateParametersParserInfo, TemplateTypeParameterParserInfo, TemplateDecoratorParameterParserInfo
 
     from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ..Statements.StatementParserInfo import StatementParserInfo
 
     from ...Error import CreateError, Error, ErrorException
+
+    from ...Common import CallHelpers
+
 
 # ----------------------------------------------------------------------
 DuplicateNameError                          = CreateError(
@@ -126,6 +128,9 @@ class TemplateArgumentsParserInfo(ParserInfo):
 
     arguments: List[TemplateArgumentParserInfo]
 
+    call_helpers_args: List[CallHelpers.ArgumentInfo]                       = field(init=False, default_factory=list)
+    call_helpers_kwargs: Dict[str, CallHelpers.ArgumentInfo]                = field(init=False, default_factory=dict)
+
     # ----------------------------------------------------------------------
     # |  Public Methods
     @classmethod
@@ -142,7 +147,17 @@ class TemplateArgumentsParserInfo(ParserInfo):
             ParserInfoType.GetDominantType(*self.arguments),
             regions,
             *args,
-            **kwargs,
+            regionless_attributes=[
+                "call_helpers_args",
+                "call_helpers_kwargs",
+            ],
+            **{
+                **{
+                    "call_helpers_args": None,
+                    "call_helpers_kwargs": None,
+                },
+                **kwargs,
+            },
         )
 
         # Validate
@@ -166,6 +181,51 @@ class TemplateArgumentsParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+        # Initialize the call helpers info
+        call_helpers_args: List[CallHelpers.ArgumentInfo] = []
+        call_helpers_kwargs: Dict[str, CallHelpers.ArgumentInfo] = {}
+
+        for argument in self.arguments:
+            if argument.keyword is None:
+                call_helpers_args.append(
+                    CallHelpers.ArgumentInfo(
+                        argument.regions__.self__,
+                        context=argument,
+                    ),
+                )
+            else:
+                call_helpers_kwargs[argument.keyword] = CallHelpers.ArgumentInfo(
+                    argument.regions__.self__,
+                    context=argument,
+                )
+
+        object.__setattr__(self, "call_helpers_args", call_helpers_args)
+        object.__setattr__(self, "call_helpers_kwargs", call_helpers_kwargs)
+
+    # ----------------------------------------------------------------------
+    def MatchCall(
+        self,
+        destination: str,
+        destination_region: TranslationUnitRegion,
+        template_parameters: TemplateParametersParserInfo,
+    ) -> Dict[str, Any]:
+        argument_map = CallHelpers.CreateArgumentMap(
+            destination,
+            destination_region,
+            template_parameters.call_helpers_positional,
+            template_parameters.call_helpers_any,
+            template_parameters.call_helpers_keyword,
+            self.call_helpers_args,
+            self.call_helpers_kwargs,
+        )
+
+        # If here, we know that the arguments match up in terms of number of arguments,
+        # defaults, names, etc. We do not yet know if the types match.
+
+        # BugBug: Validate types
+
+        return argument_map
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

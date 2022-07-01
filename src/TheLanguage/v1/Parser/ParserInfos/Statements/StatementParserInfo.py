@@ -35,6 +35,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
 
+    # Convenience imports
+    from ..ParserInfo import CompileTimeInfo            # pylint: disable=unused-import
+
 
 # ----------------------------------------------------------------------
 class ScopeFlag(Flag):

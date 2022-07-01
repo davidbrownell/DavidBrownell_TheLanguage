@@ -17,7 +17,8 @@
 
 import os
 
-from typing import Dict, List, Optional
+from contextlib import contextmanager
+from typing import Callable, Dict, List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -33,6 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
+        CompileTimeInfo,
         ParserInfo,
         ParserInfoType,
         ScopeFlag,
@@ -44,6 +46,8 @@ with InitRelativeImports():
 
     from ..Common.VisibilityModifier import VisibilityModifier
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+
+    from ...Common import MiniLanguageHelpers
 
 
 # ----------------------------------------------------------------------
@@ -127,6 +131,14 @@ class IfStatementClauseParserInfo(
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         yield "expression", self.expression  # type: ignore
 
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -195,6 +207,16 @@ class IfStatementElseClauseParserInfo(
     ) -> bool:
         return True
 
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -250,3 +272,36 @@ class IfStatementParserInfo(StatementParserInfo):
 
         if self.else_clause:
             yield self.else_clause  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(
+        self,
+        configuration_data: Dict[str, CompileTimeInfo],
+    ):
+        executed_clause = False
+
+        for clause in self.clauses:
+            execute_flag = False
+
+            if not executed_clause:
+                clause_result = MiniLanguageHelpers.EvalExpression(
+                    clause.expression,
+                    [configuration_data],
+                )
+
+                clause_result = clause_result.type.ToBoolValue(clause_result.value)
+                if clause_result:
+                    execute_flag = True
+
+            if execute_flag:
+                assert executed_clause is False
+                executed_clause = True
+            else:
+                clause.Disable()
+
+        if self.else_clause and executed_clause:
+            self.else_clause.Disable()
+
+        yield

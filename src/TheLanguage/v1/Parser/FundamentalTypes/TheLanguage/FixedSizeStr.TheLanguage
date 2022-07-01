@@ -21,7 +21,8 @@ from .Concepts.MutableStr import FixedSizeMutableStr
 public mutable class FixedSizeStr {
     Bool! allow_empty! = False!
 }
-    implements public FixedSizeMutableStr { allow_empty! = allow_empty! }
+    # BugBug implements public FixedSizeMutableStr { allow_empty! = allow_empty! }
+    implements private FixedSizeMutableStr { allow_empty! = allow_empty! } # BugBug
 :
     [Deferred, Static] public override ThisType var __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
     [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) immutable

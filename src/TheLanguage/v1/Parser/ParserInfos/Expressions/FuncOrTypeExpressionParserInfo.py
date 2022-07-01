@@ -17,9 +17,10 @@
 
 import os
 
-from typing import List, Optional, Type, Union
+from contextlib import contextmanager
+from typing import Callable, List, Optional, Type, Union
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -211,7 +212,9 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
     @Interface.override
-    def _ToTypeStringImpl(self) -> str:
-        assert isinstance(self.value, str), self.value
-        return self.value
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield

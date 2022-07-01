@@ -36,9 +36,9 @@ with InitRelativeImports():
     from .ExpressionsMixin import ExpressionsMixin
     from .StatementsMixin import StatementsMixin
 
-    from .. import MiniLanguageHelpers
     from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
 
+    from ...Common import MiniLanguageHelpers
     from ...Error import Error, ErrorException
 
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo

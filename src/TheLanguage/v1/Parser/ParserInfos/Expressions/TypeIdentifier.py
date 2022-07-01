@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  VariableExpressionParserInfo.py
+# |  TypeIdentifier.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-20 15:06:33
+# |      2022-07-01 09:57:12
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the VariableExpressionParserInfo object"""
+"""Contains functionality used to identify if types are the same or compatible"""
 
 import os
 
-from contextlib import contextmanager
+from typing import Tuple
 
 from dataclasses import dataclass
 
@@ -32,22 +32,43 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import (  # pylint: disable=unused-import
-        ExpressionParserInfo,
-        ParserInfoType,                     # convenience import
-    )
+    pass # BugBug
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class VariableExpressionParserInfo(ExpressionParserInfo):
-    # ----------------------------------------------------------------------
-    name: str
-
+@dataclass(frozen=True)
+class TypeIdentifier(object):
     # ----------------------------------------------------------------------
     @staticmethod
-    @contextmanager
+    @Interface.abstractmethod
+    def Matches(
+        other: "TypeIdentifier",
+        *,
+        strict: bool=False,
+    ) -> bool:
+        """Returns True if the other type matches this type"""
+        raise Exception("Abstract method")  # pragma: no cover
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class StandardTypeIdentifier(TypeIdentifier):
+    # ----------------------------------------------------------------------
+    id: Tuple
+
+    # ----------------------------------------------------------------------
     @Interface.override
-    def _InitConfigurationImpl(*args, **kwargs):
-        # Nothing to do here
-        yield
+    def Matches(
+        self,
+        other: TypeIdentifier,
+        *,
+        strict: bool=False,
+    ) -> bool:
+        return (
+            isinstance(other, StandardTypeIdentifier)
+            and len(self.id) == len(other.id)
+            and all(
+                this_item.Matches(other_item, strict=strict)
+                for this_item, other_item in zip(self.id, other.id)
+            )
+        )

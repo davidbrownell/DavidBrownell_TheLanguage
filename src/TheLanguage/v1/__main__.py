@@ -151,8 +151,8 @@ def Execute(
         # no_generate = True
         # workspaces = {
         #     #r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage\Concepts" : ["MutableInt.TheLanguage"],
-        #     #r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["Bool.TheLanguage"],
-        #     r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["BugBug.TheLanguage"],
+        #     r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["FixedInt.TheLanguage"],
+        #     #r"C:\Code\v3\DavidBrownell\TheLanguage\src\TheLanguage\v1\Parser\FundamentalTypes\TheLanguage" : ["BugBug2.TheLanguage"],
         # }
 
         dm.stream.write("\nLexing...\n\n")

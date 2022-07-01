@@ -68,11 +68,14 @@ class TypeAliasStatementParserInfo(
     class ResolvedType(ExpressionParserInfo.ResolvedType):
         # ----------------------------------------------------------------------
         @Interface.override
-        def Enum(self) -> Generator[Tuple[bool, ParserInfo], None, None]:
+        def EnumAliases(self) -> Generator[ExpressionParserInfo.ResolvedType, None, None]:
+            yield self
+
             assert isinstance(self.parser_info, TypeAliasStatementParserInfo), self.parser_info
 
-            yield False, self.parser_info.type
-            yield from self.parser_info.type.resolved_type__.Enum()
+            yield from self.parser_info.type.GetResolvedType(
+                do_not_resolve_aliases=True,
+            ).EnumAliases()
 
     # ----------------------------------------------------------------------
     # |

@@ -17,7 +17,8 @@
 
 import os
 
-from typing import List, Optional
+from contextlib import contextmanager
+from typing import Callable, Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -32,7 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
+    from .ExpressionParserInfo import CompileTimeInfo, ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
+    from ...Common import MiniLanguageHelpers
 
 
 # ----------------------------------------------------------------------
@@ -124,3 +126,24 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
         self.condition_expression.InitializeAsExpression()
         self.true_expression.InitializeAsExpression()
         self.false_expression.InitializeAsExpression()
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(
+        self,
+        configuration_data: Dict[str, CompileTimeInfo],
+    ):
+        condition_result = MiniLanguageHelpers.EvalExpression(
+            self.condition_expression,
+            [configuration_data],
+        )
+
+        condition_result = condition_result.type.ToBoolValue(condition_result.value)
+
+        if condition_result:
+            self.false_expression.Disable()
+        else:
+            self.true_expression.Disable()
+
+        yield

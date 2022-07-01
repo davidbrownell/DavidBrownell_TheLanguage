@@ -35,6 +35,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .TypeIdentifier import TypeIdentifier, StandardTypeIdentifier
+
     from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
     from ..Common.VisibilityModifier import VisibilityModifier
 
@@ -44,6 +46,9 @@ with InitRelativeImports():
 
     from ...MiniLanguage.Types.NoneType import NoneType as MiniLanguageNoneType
     from ...MiniLanguage.Types.Type import Type as MiniLanguageType
+
+    # Convenience imports
+    from ..ParserInfo import CompileTimeInfo            # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -69,7 +74,9 @@ class ExpressionParserInfo(ParserInfo):
     @dataclass(frozen=True, repr=False)
     class ResolvedType(ObjectReprImplBase):
         # ----------------------------------------------------------------------
+        visibility: VisibilityModifier
         parser_info: ParserInfo
+        is_class_member: bool
 
         # ----------------------------------------------------------------------
         @classmethod
@@ -89,16 +96,27 @@ class ExpressionParserInfo(ParserInfo):
 
         # ----------------------------------------------------------------------
         @Interface.extensionmethod
-        def Enum(self) -> Generator[Tuple[bool, ParserInfo], None, None]:
-            yield True, self.parser_info
+        def EnumAliases(self) -> Generator["ExpressionParserInfo.ResolvedType", None, None]:
+            yield self
 
         # ----------------------------------------------------------------------
         @Interface.extensionmethod
-        def Resolve(self) -> ParserInfo:
-            *_, last = self.Enum()
+        def ResolveAliases(self) -> "ExpressionParserInfo.ResolvedType":
+            *_, last = self.EnumAliases()
 
-            assert last[0] is True
-            return last[1]
+            return last
+
+    # ----------------------------------------------------------------------
+    ResolvedEntityType                      = Union[
+        # Type Values
+        MiniLanguageType,                   # Compile-time
+        ResolvedType,                       # Runtime
+        None,                               # Runtime (None)
+
+        # Expression Values
+        MiniLanguageExpression.EvalResult,  # Compile-time
+        # TODO: What does the Runtime expression look like?
+    ]
 
     # ----------------------------------------------------------------------
     # |
@@ -108,18 +126,7 @@ class ExpressionParserInfo(ParserInfo):
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
-    _resolved_entity: Union[
-        DoesNotExist,
-
-        # Type Values
-        MiniLanguageType,                   # Compile-time
-        None,                               # Standard
-
-        # Expression Values
-        MiniLanguageExpression.EvalResult,  # Compile-time
-        ResolvedType,                       # Standard
-
-    ]                                       = field(init=False, default=DoesNotExist.instance)
+    _resolved_entity: Union[DoesNotExist, ResolvedEntityType]               = field(init=False, default=DoesNotExist.instance)
 
     # ----------------------------------------------------------------------
     # |
@@ -150,7 +157,7 @@ class ExpressionParserInfo(ParserInfo):
             validate,
             **{
                 **{
-                    "resolved_type__": None,
+                    "resolved_entity__": None,
                     "resolved_mini_language_type__": None,
                     "resolved_mini_language_expression_result__": None,
                 },
@@ -163,13 +170,6 @@ class ExpressionParserInfo(ParserInfo):
     def IsType(self) -> Optional[bool]:
         # Most expressions are not types.
         return False
-
-    # ----------------------------------------------------------------------
-    def ToTypeString(self) -> str:
-        if self.IsType() is False:
-            raise Exception("Invalid invocation")
-
-        return self._ToTypeStringImpl()
 
     # ----------------------------------------------------------------------
     def InitializeAsType(
@@ -244,9 +244,22 @@ class ExpressionParserInfo(ParserInfo):
         return self._resolved_entity is None
 
     # ----------------------------------------------------------------------
-    @property
-    def resolved_type__(self) -> "ResolvedType":
+    def GetResolvedType(
+        self,
+        *,
+        do_not_resolve_aliases=False,
+    ) -> "ResolvedType":
         assert isinstance(self._resolved_entity, ExpressionParserInfo.ResolvedType), self._resolved_entity
+
+        if do_not_resolve_aliases:
+            return self._resolved_entity
+
+        return self._resolved_entity.ResolveAliases()  # pylint: disable=no-member
+
+    # ----------------------------------------------------------------------
+    @property
+    def resolved_entity__(self) -> "ExpressionParserInfo.ResolvedEntityType":
+        assert not isinstance(self._resolved_entity, DoesNotExist)
         return self._resolved_entity
 
     @property
@@ -258,6 +271,22 @@ class ExpressionParserInfo(ParserInfo):
     def resolved_mini_language_expression_result__(self) -> MiniLanguageExpression.EvalResult:
         assert isinstance(self._resolved_entity, MiniLanguageExpression.EvalResult), self._resolved_entity
         return self._resolved_entity
+
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def GetTypeId(self) -> TypeIdentifier:
+        assert self.IsType()
+        assert self.HasResolvedEntity()
+
+        if isinstance(self._resolved_entity, MiniLanguageType):
+            return StandardTypeIdentifier((self._resolved_entity.name, ))
+        elif isinstance(self._resolved_entity, ExpressionParserInfo.ResolvedType):
+            # TODO: Handle optional derived classes for covariant support
+            return StandardTypeIdentifier((id(self.GetResolvedType().parser_info), ))
+        elif self._resolved_entity is None:
+            return StandardTypeIdentifier((None, ))
+
+        assert False, self._resolved_entity
 
     # ----------------------------------------------------------------------
     # |
@@ -279,13 +308,3 @@ class ExpressionParserInfo(ParserInfo):
     def _InitializeAsExpressionImpl(self) -> None:
         # Nothing to do here by default
         pass
-
-    # ----------------------------------------------------------------------
-    @Interface.extensionmethod
-    def _ToTypeStringImpl(self) -> str:
-        # This method needs to be overridden by those Expressions that resolve to Types.
-        # However, most Expressions do not resolve to Types, so therefore don't require
-        # that they implement a noop. Rather, make the default implementation raise an
-        # exception, thereby requiring an implementation only for those Expressions that
-        # need it.
-        raise Exception("Not implemented")

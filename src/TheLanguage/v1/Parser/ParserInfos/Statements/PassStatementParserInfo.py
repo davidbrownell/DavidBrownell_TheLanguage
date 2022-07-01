@@ -17,6 +17,7 @@
 
 import os
 
+from contextlib import contextmanager
 from typing import Dict, List, Optional
 
 from dataclasses import dataclass
@@ -62,3 +63,13 @@ class PassStatementParserInfo(StatementParserInfo):
         return {
             ParserInfoType.Standard: ScopeFlag.Class | ScopeFlag.Function,
         }
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield

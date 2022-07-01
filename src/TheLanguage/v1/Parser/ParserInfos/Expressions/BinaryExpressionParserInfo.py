@@ -17,8 +17,9 @@
 
 import os
 
+from contextlib import contextmanager
 from enum import auto, Enum
-from typing import List, Optional
+from typing import Callable, Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -33,11 +34,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
+    from .ExpressionParserInfo import CompileTimeInfo, ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
 
     from .FuncOrTypeExpressionParserInfo import InvalidCompileTimeTypeError
 
-    from ...Error import Error, ErrorException
+    from ...Error import CreateError, Error, ErrorException
     from ...MiniLanguage.Expressions.BinaryExpression import OperatorType as MiniLanguageOperatorType
 
 
@@ -114,6 +115,13 @@ class OperatorType(Enum):
 
 assert _initial_num_mini_language_operator_types == len(MiniLanguageOperatorType)
 del _initial_num_mini_language_operator_types
+
+
+# ----------------------------------------------------------------------
+InvalidBinaryOperatorError                  = CreateError(
+    "'{operator}' is not a valid binary operator for compile-time expressions",
+    operator=str,
+)
 
 
 # ----------------------------------------------------------------------
@@ -226,3 +234,20 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
     def _InitializeAsExpressionImpl(self) -> None:
         self.left_expression.InitializeAsExpression()
         self.right_expression.InitializeAsExpression()
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(self, *args, **kwargs):
+        assert self.parser_info_type__ == ParserInfoType.Configuration, self.parser_info_type__
+
+        operator = self.operator.ToMiniLanguageOperatorType()
+        if operator is None:
+            raise ErrorException(
+                InvalidBinaryOperatorError.Create(
+                    region=self.regions__.operator,
+                    operator=self.operator.name,
+                ),
+            )
+
+        yield

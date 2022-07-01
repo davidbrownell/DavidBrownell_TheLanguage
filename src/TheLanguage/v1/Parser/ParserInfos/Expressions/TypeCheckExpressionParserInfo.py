@@ -17,7 +17,9 @@
 
 import os
 
-from typing import List, Optional, Union
+from contextlib import contextmanager
+from typing import List, Optional
+
 from dataclasses import dataclass, field
 
 import CommonEnvironment
@@ -78,3 +80,11 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         yield "expression", self.expression  # type: ignore
         yield "type", self.type  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield

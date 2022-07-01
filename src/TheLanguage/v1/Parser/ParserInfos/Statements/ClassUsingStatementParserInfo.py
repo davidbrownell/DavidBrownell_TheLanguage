@@ -129,7 +129,7 @@ class ClassUsingStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     def GetNames(self) -> Tuple[str, str]:
-        left_parser_info = self.type.left_expression.resolved_type__.Resolve()
+        left_parser_info = self.type.left_expression.GetResolvedType()
 
         if (
             not isinstance(left_parser_info, FuncOrTypeExpressionParserInfo)
@@ -141,7 +141,7 @@ class ClassUsingStatementParserInfo(StatementParserInfo):
                 ),
             )
 
-        right_parser_info = self.type.right_expression.resolved_type__.Resolve()
+        right_parser_info = self.type.right_expression.GetResolvedType()
 
         if (
             not isinstance(right_parser_info, FuncOrTypeExpressionParserInfo)

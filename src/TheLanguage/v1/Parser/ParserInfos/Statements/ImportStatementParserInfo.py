@@ -17,8 +17,9 @@
 
 import os
 
+from contextlib import contextmanager
 from enum import auto, Enum
-from typing import Dict, List, Optional
+from typing import Callable, Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -34,6 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
+        CompileTimeInfo,
         ParserInfoType,
         ScopeFlag,
         StatementParserInfo,
@@ -139,3 +141,13 @@ class ImportStatementParserInfo(
         scope_flag: ScopeFlag,
     ) -> bool:
         return True
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield

@@ -17,6 +17,7 @@
 
 import os
 
+from contextlib import contextmanager
 from typing import Optional
 
 from dataclasses import dataclass
@@ -32,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
 
 
 # ----------------------------------------------------------------------
@@ -45,6 +46,11 @@ class NoneExpressionParserInfo(ExpressionParserInfo):
         return None
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
     @Interface.override
-    def _ToTypeStringImpl(self) -> str:
-        return "None"
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield
