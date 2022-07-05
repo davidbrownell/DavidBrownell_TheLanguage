@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TemplateParametersParserInfo import TemplateParametersParserInfo, TemplateTypeParameterParserInfo, TemplateDecoratorParameterParserInfo
+    # BugBug from .TemplateParametersParserInfo import TemplateParametersParserInfo
 
     from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
 
@@ -208,7 +208,7 @@ class TemplateArgumentsParserInfo(ParserInfo):
         self,
         destination: str,
         destination_region: TranslationUnitRegion,
-        template_parameters: TemplateParametersParserInfo,
+        template_parameters # BugBug : TemplateParametersParserInfo,
     ) -> Dict[str, Any]:
         argument_map = CallHelpers.CreateArgumentMap(
             destination,

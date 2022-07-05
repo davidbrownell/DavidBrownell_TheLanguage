@@ -40,7 +40,6 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
-    from .Traits.NamedStatementTrait import NamedStatementTrait
     from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
@@ -48,6 +47,7 @@ with InitRelativeImports():
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
+    from ..Traits.NamedTrait import NamedTrait
 
     from ...Error import Error, ErrorException
 
@@ -56,7 +56,7 @@ with InitRelativeImports():
 @dataclass(frozen=True, repr=False)
 class TypeAliasStatementParserInfo(
     TemplatedStatementTrait,
-    NamedStatementTrait,
+    NamedTrait,
     StatementParserInfo,
 ):
     # ----------------------------------------------------------------------
@@ -118,7 +118,7 @@ class TypeAliasStatementParserInfo(
                 "constraints",
                 "type",
             ]
-                + NamedStatementTrait.RegionlessAttributesArgs()
+                + NamedTrait.RegionlessAttributesArgs()
                 + TemplatedStatementTrait.RegionlessAttributesArgs()
             ,
             validate=False,
@@ -126,7 +126,7 @@ class TypeAliasStatementParserInfo(
                 **{
                     "parent_class_capabilities": lambda value: None if value is None else value.name,
                 },
-                **NamedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **NamedTrait.ObjectReprImplBaseInitKwargs(),
                 **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
         )
@@ -141,7 +141,7 @@ class TypeAliasStatementParserInfo(
                 visibility_param = VisibilityModifier.private
                 object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
-        NamedStatementTrait.__post_init__(self, visibility_param)
+        NamedTrait.__post_init__(self, visibility_param)
         TemplatedStatementTrait.__post_init__(self, templates_param)
 
         self.ValidateRegions()

@@ -42,7 +42,6 @@ with InitRelativeImports():
     from ..Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
     from ..Common.MutabilityModifier import MutabilityModifier
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
-    from ..Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
 
     from ..Statements.StatementParserInfo import StatementParserInfo
 

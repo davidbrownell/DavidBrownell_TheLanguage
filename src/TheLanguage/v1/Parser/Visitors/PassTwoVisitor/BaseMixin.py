@@ -40,8 +40,9 @@ with InitRelativeImports():
     from ...TranslationUnitRegion import TranslationUnitRegion
     from ...Common import MiniLanguageHelpers
 
-    from ...ParserInfos.ParserInfo import ParserInfo, ParserInfoType, VisitResult
     from ...ParserInfos.AggregateParserInfo import AggregateParserInfo
+    from ...ParserInfos.ParserInfo import ParserInfo, ParserInfoType, VisitResult
+    from ...ParserInfos.ParserInfoVisitorHelper import ParserInfoVisitorHelper
 
     from ...ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
@@ -62,9 +63,10 @@ with InitRelativeImports():
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
     from ...ParserInfos.Statements import HierarchyInfo
 
-    from ...ParserInfos.Statements.Traits.NamedStatementTrait import NamedStatementTrait
     from ...ParserInfos.Statements.Traits.ScopedStatementTrait import ScopedStatementTrait
     from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
+
+    from ...ParserInfos.Traits.NamedTrait import NamedTrait
 
 
 # ----------------------------------------------------------------------
@@ -90,18 +92,24 @@ InvalidCompileTimeTypeCheckError            = CreateError(
 
 
 # ----------------------------------------------------------------------
-class BaseMixin(object):
+class BaseMixin(ParserInfoVisitorHelper):
     # ----------------------------------------------------------------------
     # |
     # |  Public Types
     # |
     # ----------------------------------------------------------------------
+    class ProcessType(Enum):
+        ClassesSequential                   = 0
+        FuncsAndTypesParallel               = auto()
+
+    # BugBug: Remove this
     class PostprocessType(Enum):
         ResolveDependenciesParallel         = 0
         ResolveDependenciesSequential       = 1
         ResolveNestedClassTypes             = 2
         # BugBug?: ResolveFunctionTypes                = 3
 
+    # BugBug: Remove this
     sequential_postprocess_steps: Set[PostprocessType]  = set(
         [
             PostprocessType.ResolveDependenciesSequential,
@@ -124,28 +132,14 @@ class BaseMixin(object):
         if fundamental_types_namespace is not None:
             namespace_stack.append(fundamental_types_namespace)
 
+        self._errors: List[Error]           = []
+
+        self._all_postprocess_funcs: List[List[Callable[[], None]]]         = [[] for _ in range(len(BaseMixin.PostprocessType))]
+
         self._namespaces_stack              = [namespace_stack, ]
         self._compile_time_stack            = [configuration_info, ]
 
         self._root_namespace                = this_namespace
-
-        self._errors: List[Error]           = []
-        self._processed: Set[int]           = set()
-
-        self._all_postprocess_funcs: List[List[Callable[[], None]]]         = [[] for _ in range(len(BaseMixin.PostprocessType))]
-
-    # ----------------------------------------------------------------------
-    def __getattr__(
-        self,
-        name: str,
-    ):
-        # TODO: Use ParserInfoVisitorHelper
-
-        index = name.find("ParserInfo__")
-        if index != -1 and index + len("ParserInfo__") + 1 < len(name):
-            return types.MethodType(self.__class__._DefaultDetailMethod, self)  # pylint: disable=protected-access
-
-        raise AttributeError(name)
 
     # ----------------------------------------------------------------------
     @contextmanager
@@ -155,7 +149,7 @@ class BaseMixin(object):
     ):
         try:
             with ExitStack() as exit_stack:
-                if isinstance(parser_info, NamedStatementTrait):
+                if isinstance(parser_info, NamedTrait):
                     assert self._namespaces_stack
                     namespace_stack = self._namespaces_stack[-1]
 
@@ -203,161 +197,160 @@ class BaseMixin(object):
                         namespace_stack.append(namespace)
                         exit_stack.callback(namespace_stack.pop)
 
-                is_type_expression = False
-                is_compile_time_expression = False
-
-                if isinstance(parser_info, ExpressionParserInfo):
-                    if parser_info.IsType() is not False:
-                        is_type_expression = True
-
-                        # ----------------------------------------------------------------------
-                        def TypeCheckCallback(
-                            the_type: str,
-                            operator: TypeCheckExpressionOperatorType,
-                            dest_parser_info: ExpressionParserInfo,
-                        ) -> bool:
-                            # TODO: It is no longer valid to just throw, as we are looking at templated types
-                            raise ErrorException(
-                                InvalidCompileTimeTypeCheckError.Create(
-                                    region=dest_parser_info.regions__.self__,
-                                ),
-                            )
-
-                        # ----------------------------------------------------------------------
-
-                        try:
-                            type_result = MiniLanguageHelpers.EvalType(
-                                parser_info,
-                                self._compile_time_stack,
-                                TypeCheckCallback,
-                            )
-
-                            if isinstance(type_result, MiniLanguageHelpers.MiniLanguageType):
-                                parser_info.SetResolvedEntity(type_result)
-
-                            elif isinstance(type_result, ExpressionParserInfo):
-                                try:
-                                    self._ResolveType(
-                                        parser_info,
-                                        type_result,
-                                        self._NamespaceTypeResolver,
-                                    )
-                                except ErrorException:
-                                    # It is possible that we see this error right now because we
-                                    # are in a class and the type is defined in a base. Wait until
-                                    # the class is fully defined (so the base types are visible)
-                                    # and attempt to get the type again.
-
-                                    suppress_exception = False
-
-                                    assert self._namespaces_stack
-                                    namespace_stack = self._namespaces_stack[-1]
-
-                                    assert namespace_stack
-
-                                    for namespace_index, namespace in enumerate(reversed(namespace_stack)):
-                                        # Don't look at the initial (or last since the list is being reversed)
-                                        # namespace, as that will either be the class or a type nested in the class.
-                                        # If it is the class, we are in the process of resolving its dependencies and
-                                        # want to see unrecognized types as errors. If it is something within the class,
-                                        # it won't resolve the type and is safe to skip.
-                                        if namespace_index == 0:
-                                            continue
-
-                                        if (
-                                            isinstance(namespace, ParsedNamespaceInfo)
-                                            and isinstance(namespace.parser_info, ClassStatementParserInfo)
-                                            and any(
-                                                not dependency.is_disabled__
-                                                for dependency in itertools.chain(
-                                                    (namespace.parser_info.extends or []),
-                                                    (namespace.parser_info.uses or []),
-                                                    (namespace.parser_info.implements or []),
-                                                )
-                                            )
-                                        ):
-                                            suppress_exception = True
-
-                                            # Process it once the classes have been fully formed
-                                            if namespace.parser_info.default_initializable:
-                                                # ----------------------------------------------------------------------
-                                                def ResolveNestedType(
-                                                    parser_info=parser_info,
-                                                    type_result=type_result,
-                                                    namespace=namespace,
-                                                ):
-                                                    return # BugBug: Not yet
-
-                                                    self._ResolveType(
-                                                        parser_info,
-                                                        type_result,
-                                                        (
-                                                            lambda
-                                                                type_name,
-                                                                region,
-                                                                namespace=namespace,
-                                                            :
-                                                                self.__class__._NestedTypeResolver(  # pylint: disable=protected-access
-                                                                    type_name,
-                                                                    region,
-                                                                    namespace.parser_info.GetOrCreateConcreteTypeInfo(None),
-                                                                )
-                                                        )
-                                                    )
-
-                                                # ----------------------------------------------------------------------
-
-                                                self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveNestedClassTypes.value].append(ResolveNestedType)
-
-                                            break
-
-                                    if not suppress_exception:
-                                        raise
-
-                            else:
-                                assert False, type_result  # pragma: no cover
-
-                        except ErrorException as ex:
-                            self._errors += ex.errors
-
-                        yield VisitResult.SkipAll
-                        return
-
-                    elif parser_info.is_compile_time__:
-                        is_compile_time_expression = True
-
-                yield
-
-                assert not is_type_expression or id(parser_info) in self._processed, (
-                    "Internal Error",
-                    parser_info.__class__.__name__,
-                )
-
-                # TODO: assert (
-                # TODO:     not is_compile_time_expression
-                # TODO:     or cast(ExpressionParserInfo, parser_info).HasResolvedEntity()
-                # TODO: ), (
-                # TODO:     "Internal Error",
-                # TODO:     parser_info.__class__.__name__,
-                # TODO: )
+                # BugBug assert self._compile_time_stack
+                # BugBug with parser_info.InitTypeCustomization(
+                # BugBug     self._compile_time_stack[-1],
+                # BugBug ) as visit_result:
+                # BugBug     yield visit_result
+                # BugBug
+                # BugBug return # BugBug
+                # BugBug
+                # BugBug # BugBug:
+                # BugBug
+                # BugBug is_type_expression = False
+                # BugBug is_compile_time_expression = False
+                # BugBug
+                # BugBug if isinstance(parser_info, ExpressionParserInfo):
+                # BugBug     if parser_info.IsType() is not False:
+                # BugBug         is_type_expression = True
+                # BugBug
+                # BugBug         # ----------------------------------------------------------------------
+                # BugBug         def TypeCheckCallback(
+                # BugBug             the_type: str,
+                # BugBug             operator: TypeCheckExpressionOperatorType,
+                # BugBug             dest_parser_info: ExpressionParserInfo,
+                # BugBug         ) -> bool:
+                # BugBug             # TODO: It is no longer valid to just throw, as we are looking at templated types
+                # BugBug             raise ErrorException(
+                # BugBug                 InvalidCompileTimeTypeCheckError.Create(
+                # BugBug                     region=dest_parser_info.regions__.self__,
+                # BugBug                 ),
+                # BugBug             )
+                # BugBug
+                # BugBug         # ----------------------------------------------------------------------
+                # BugBug
+                # BugBug         try:
+                # BugBug             type_result = MiniLanguageHelpers.EvalType(
+                # BugBug                 parser_info,
+                # BugBug                 self._compile_time_stack,
+                # BugBug                 TypeCheckCallback,
+                # BugBug             )
+                # BugBug
+                # BugBug             if isinstance(type_result, MiniLanguageHelpers.MiniLanguageType):
+                # BugBug                 parser_info.SetResolvedEntity(type_result)
+                # BugBug
+                # BugBug             elif isinstance(type_result, ExpressionParserInfo):
+                # BugBug                 try:
+                # BugBug                     self._ResolveType(
+                # BugBug                         parser_info,
+                # BugBug                         type_result,
+                # BugBug                         self._NamespaceTypeResolver,
+                # BugBug                     )
+                # BugBug                 except ErrorException:
+                # BugBug                     # It is possible that we see this error right now because we
+                # BugBug                     # are in a class and the type is defined in a base. Wait until
+                # BugBug                     # the class is fully defined (so the base types are visible)
+                # BugBug                     # and attempt to get the type again.
+                # BugBug
+                # BugBug                     suppress_exception = False
+                # BugBug
+                # BugBug                     assert self._namespaces_stack
+                # BugBug                     namespace_stack = self._namespaces_stack[-1]
+                # BugBug
+                # BugBug                     assert namespace_stack
+                # BugBug
+                # BugBug                     for namespace_index, namespace in enumerate(reversed(namespace_stack)):
+                # BugBug                         # Don't look at the initial (or last since the list is being reversed)
+                # BugBug                         # namespace, as that will either be the class or a type nested in the class.
+                # BugBug                         # If it is the class, we are in the process of resolving its dependencies and
+                # BugBug                         # want to see unrecognized types as errors. If it is something within the class,
+                # BugBug                         # it won't resolve the type and is safe to skip.
+                # BugBug                         if namespace_index == 0:
+                # BugBug                             continue
+                # BugBug
+                # BugBug                         if (
+                # BugBug                             isinstance(namespace, ParsedNamespaceInfo)
+                # BugBug                             and isinstance(namespace.parser_info, ClassStatementParserInfo)
+                # BugBug                             and any(
+                # BugBug                                 not dependency.is_disabled__
+                # BugBug                                 for dependency in itertools.chain(
+                # BugBug                                     (namespace.parser_info.extends or []),
+                # BugBug                                     (namespace.parser_info.uses or []),
+                # BugBug                                     (namespace.parser_info.implements or []),
+                # BugBug                                 )
+                # BugBug                             )
+                # BugBug                         ):
+                # BugBug                             suppress_exception = True
+                # BugBug
+                # BugBug                             # Process it once the classes have been fully formed
+                # BugBug                             if namespace.parser_info.default_initializable:
+                # BugBug                                 # ----------------------------------------------------------------------
+                # BugBug                                 def ResolveNestedType(
+                # BugBug                                     parser_info=parser_info,
+                # BugBug                                     type_result=type_result,
+                # BugBug                                     namespace=namespace,
+                # BugBug                                 ):
+                # BugBug                                     return # BugBug: Not yet
+                # BugBug
+                # BugBug                                     self._ResolveType(
+                # BugBug                                         parser_info,
+                # BugBug                                         type_result,
+                # BugBug                                         (
+                # BugBug                                             lambda
+                # BugBug                                                 type_name,
+                # BugBug                                                 region,
+                # BugBug                                                 namespace=namespace,
+                # BugBug                                             :
+                # BugBug                                                 self.__class__._NestedTypeResolver(  # pylint: disable=protected-access
+                # BugBug                                                     type_name,
+                # BugBug                                                     region,
+                # BugBug                                                     namespace.parser_info.GetOrCreateConcreteTypeInfo(None),
+                # BugBug                                                 )
+                # BugBug                                         )
+                # BugBug                                     )
+                # BugBug
+                # BugBug                                 # ----------------------------------------------------------------------
+                # BugBug
+                # BugBug                                 self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveNestedClassTypes.value].append(ResolveNestedType)
+                # BugBug
+                # BugBug                             break
+                # BugBug
+                # BugBug                     if not suppress_exception:
+                # BugBug                         raise
+                # BugBug
+                # BugBug             else:
+                # BugBug                 assert False, type_result  # pragma: no cover
+                # BugBug
+                # BugBug         except ErrorException as ex:
+                # BugBug             self._errors += ex.errors
+                # BugBug
+                # BugBug         yield VisitResult.SkipAll
+                # BugBug         return
+                # BugBug
+                # BugBug     elif parser_info.is_compile_time__:
+                # BugBug         is_compile_time_expression = True
+                # BugBug
+                # BugBug with parser_info.InitTypeCustomization():
+                # BugBug     yield
+                # BugBug
+                # BugBug assert not is_type_expression or id(parser_info) in self._processed, (
+                # BugBug     "Internal Error",
+                # BugBug     parser_info.__class__.__name__,
+                # BugBug )
+                # BugBug
+                # BugBug # TODO: assert (
+                # BugBug # TODO:     not is_compile_time_expression
+                # BugBug # TODO:     or cast(ExpressionParserInfo, parser_info).HasResolvedEntity()
+                # BugBug # TODO: ), (
+                # BugBug # TODO:     "Internal Error",
+                # BugBug # TODO:     parser_info.__class__.__name__,
+                # BugBug # TODO: )
 
         except ErrorException as ex:
             if isinstance(parser_info, StatementParserInfo):
                 self._errors += ex.errors
             else:
                 raise
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @contextmanager
-    def OnRootStatementParserInfo(*args, **kwargs):  # pylint: disable=unused-argument
-        yield
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @contextmanager
-    def OnAggregateParserInfo(*args, **kwargs):  # pylint: disable=unused-argument
-        yield
 
     # ----------------------------------------------------------------------
     # |
@@ -552,22 +545,3 @@ class BaseMixin(object):
                 )
 
         return None
-
-    # ----------------------------------------------------------------------
-    def _DefaultDetailMethod(
-        self,
-        parser_info_or_infos: Union[ParserInfo, List[ParserInfo]],
-        *,
-        include_disabled: bool,
-    ):
-        if isinstance(parser_info_or_infos, list):
-            for parser_info in parser_info_or_infos:
-                parser_info.Accept(
-                    self,
-                    include_disabled=include_disabled,
-                )
-        else:
-            parser_info_or_infos.Accept(
-                self,
-                include_disabled=include_disabled,
-            )

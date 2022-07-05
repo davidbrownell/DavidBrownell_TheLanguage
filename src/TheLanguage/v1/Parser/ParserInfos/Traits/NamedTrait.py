@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  NamedStatementTrait.py
+# |  NamedTrait.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-06-17 12:47:45
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the NamedStatementTrait object"""
+"""Contains the NamedTrait object"""
 
 import os
 
@@ -32,15 +32,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Common.VisibilityModifier import VisibilityModifier
+    from ..Common.VisibilityModifier import VisibilityModifier
 
     if TYPE_CHECKING:
-        from ..StatementParserInfo import ScopeFlag
+        from ..Statements.StatementParserInfo import ScopeFlag
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class NamedStatementTrait(object):
+class NamedTrait(object):
     """Adds a name to the namespace"""
 
     # ----------------------------------------------------------------------

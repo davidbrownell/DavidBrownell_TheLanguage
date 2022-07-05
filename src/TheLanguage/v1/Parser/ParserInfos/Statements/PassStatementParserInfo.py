@@ -67,9 +67,9 @@ class PassStatementParserInfo(StatementParserInfo):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
     @Interface.override
-    def _InitConfigurationImpl(*args, **kwargs):
-        # Nothing to do here
+    def _InitConfigurationImpl(self, *args, **kwargs):
+        # This statement is not interesting
+        self.Disable()
         yield

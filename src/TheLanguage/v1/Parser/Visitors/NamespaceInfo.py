@@ -34,13 +34,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..ParserInfos.Common.VisibilityModifier import VisibilityModifier
 
-    from ..ParserInfos.Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
+    from ..ParserInfos.ParserInfo import ParserInfo
 
-    from ..ParserInfos.Statements.StatementParserInfo import ScopeFlag, StatementParserInfo
-    from ..ParserInfos.Statements.Traits.NamedStatementTrait import NamedStatementTrait
+    from ..ParserInfos.Statements.StatementParserInfo import ScopeFlag
 
     from ..ParserInfos.Statements.FuncDefinitionStatementParserInfo import OperatorType as FuncOperatorType
     from ..ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodType as SpecialMethodType
+
+    from ..ParserInfos.Traits.NamedTrait import NamedTrait
 
 
 # ----------------------------------------------------------------------
@@ -135,21 +136,20 @@ class ParsedNamespaceInfo(NamespaceInfo):
         self,
         parent: Optional[NamespaceInfo],
         scope_flag: ScopeFlag,
-        parser_info: Union[
-            StatementParserInfo,
-            TemplateTypeParameterParserInfo,
-        ],
+        parser_info: ParserInfo,
         *,
         name: Optional[str]=None,
         visibility: Optional[VisibilityModifier]=None,
         children: Optional[ChildrenType]=None,
     ):
+        assert isinstance(parser_info, NamedTrait), parser_info # BugBug
+
         if name is None:
-            assert isinstance(parser_info, NamedStatementTrait)
+            assert isinstance(parser_info, NamedTrait), parser_info
             name = parser_info.name
 
         if visibility is None:
-            assert isinstance(parser_info, NamedStatementTrait)
+            assert isinstance(parser_info, NamedTrait), parser_info
             visibility = parser_info.visibility
 
         if children is None:
@@ -178,7 +178,7 @@ class ParsedNamespaceInfo(NamespaceInfo):
         child: "ParsedNamespaceInfo",
     ) -> None:
         assert child.name is not None
-        assert isinstance(child.parser_info, (NamedStatementTrait, TemplateTypeParameterParserInfo))
+        assert isinstance(child.parser_info, NamedTrait), child.parser_info
 
         existing_value = self.children.get(child.name, None)
 
@@ -199,7 +199,7 @@ class ParsedNamespaceInfo(NamespaceInfo):
         assert (
             not isinstance(value, list)
             or all(
-                isinstance(v.parser_info, NamedStatementTrait) and v.parser_info.allow_name_to_be_duplicated__
+                isinstance(v.parser_info, NamedTrait) and v.parser_info.allow_name_to_be_duplicated__
                 for v in value
             )
         )
@@ -209,7 +209,7 @@ class ParsedNamespaceInfo(NamespaceInfo):
     # ----------------------------------------------------------------------
     @staticmethod
     def _ShouldFlatten(
-        key: str,
+        key: Union[str, FuncOperatorType, SpecialMethodType],
         value: "ParsedNamespaceInfo",
     ) -> bool:
         if not isinstance(key, str):
@@ -217,7 +217,7 @@ class ParsedNamespaceInfo(NamespaceInfo):
 
         # Don't return things without a first-class name, as they should never be a part of
         # a flattened namespace.
-        if not isinstance(value.parser_info, NamedStatementTrait):
+        if not isinstance(value.parser_info, NamedTrait):
             return False
 
         if value.parser_info.visibility != VisibilityModifier.public:
@@ -227,7 +227,14 @@ class ParsedNamespaceInfo(NamespaceInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _FlattenImpl(self) -> Generator[Tuple[str, "ParsedNamespaceInfo"], None, None]:
+    def _FlattenImpl(self) -> Generator[
+        Tuple[
+            Union[str, FuncOperatorType, SpecialMethodType],
+            "ParsedNamespaceInfo"
+        ],
+        None,
+        None,
+    ]:
         for container in [self.children, self.ordered_children]:
             for key, value in container.items():
                 # Don't process lists of values, as they should never be a part of a flattened namespace

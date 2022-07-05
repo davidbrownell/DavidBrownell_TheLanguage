@@ -35,11 +35,10 @@ with InitRelativeImports():
     from .StatementParserInfo import ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
-    from .Traits.NamedStatementTrait import NamedStatementTrait
 
     from ..Common.VisibilityModifier import VisibilityModifier
-
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..Traits.NamedTrait import NamedTrait
 
     from ...Error import Error, ErrorException
 
@@ -47,7 +46,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ClassAttributeStatementParserInfo(
-    NamedStatementTrait,
+    NamedTrait,
     StatementParserInfo,
 ):
     """Attribute of a class"""

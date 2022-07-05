@@ -19,7 +19,7 @@ import os
 import threading
 
 from contextlib import contextmanager, ExitStack
-from typing import Callable, cast, Dict, Generator, List, Optional, Tuple, Union
+from typing import Callable, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -44,13 +44,15 @@ with InitRelativeImports():
     from ..ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
     from ..ParserInfos.Statements.IfStatementParserInfo import IfStatementParserInfo
     from ..ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo, ImportType
+    from ..ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
     from ..ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ..ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo
     from ..ParserInfos.Statements.StatementParserInfo import ScopeFlag, StatementParserInfo
 
-    from ..ParserInfos.Statements.Traits.NamedStatementTrait import NamedStatementTrait
     from ..ParserInfos.Statements.Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
     from ..ParserInfos.Statements.Traits.ScopedStatementTrait import ScopedStatementTrait
+
+    from ..ParserInfos.Traits.NamedTrait import NamedTrait
 
 
 # ----------------------------------------------------------------------
@@ -275,7 +277,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
 
         try:
             with ExitStack() as exit_stack:
-                if isinstance(parser_info, NamedStatementTrait):
+                if isinstance(parser_info, NamedTrait):
                     if isinstance(parser_info, ClassStatementParserInfo):
                         scope_flag = ScopeFlag.Class
                     elif isinstance(parser_info, (FuncDefinitionStatementParserInfo, SpecialMethodStatementParserInfo)):
@@ -286,7 +288,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
                     new_namespace = ParsedNamespaceInfo(
                         self._namespace_stack[-1] if self._namespace_stack else self._global_namespace,
                         scope_flag,
-                        cast(StatementParserInfo, parser_info),
+                        parser_info,
                     )
 
                     try:
@@ -344,6 +346,10 @@ class PassOneVisitor(ParserInfoVisitorHelper):
 
                         self._postprocess_funcs.append(NoReturnValueWrapper)
 
+                if isinstance(parser_info, PassStatementParserInfo):
+                    # Pass statements don't need to be processed from here on our
+                    parser_info.Disable()
+
         except ErrorException as ex:
             if isinstance(parser_info, StatementParserInfo):
                 self._errors += ex.errors
@@ -365,8 +371,6 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             new_namespaces = [new_namespace_or_namespaces]
 
         for new_namespace in new_namespaces:
-            assert isinstance(new_namespace.parser_info, NamedStatementTrait)
-
             if isinstance(new_namespace.parser_info, RootStatementParserInfo):
                 assert self._root_namespace is None
                 self._root_namespace = new_namespace
@@ -410,7 +414,6 @@ class PassOneVisitor(ParserInfoVisitorHelper):
                     )
 
                 for matching_namespace in matching_namespaces:
-                    assert isinstance(matching_namespace.parser_info, NamedStatementTrait), matching_namespace.parser_info
                     if not matching_namespace.parser_info.allow_name_to_be_duplicated__:
                         raise ErrorException(
                             DuplicateNameError.Create(
@@ -430,7 +433,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
                     new_namespace=new_namespace,
                     parent_namespace=parent_namespace,
                 ):
-                    assert isinstance(new_namespace.parser_info, NamedStatementTrait)
+                    assert isinstance(new_namespace.parser_info, NamedTrait)
 
                     namespace_item = parent_namespace.children.pop(new_namespace.parser_info.name)
 
@@ -482,7 +485,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
         assert self._namespace_stack
         namespace = self._namespace_stack[-1]
 
-        assert isinstance(clause_parser_info, NamedStatementTrait), clause_parser_info
+        assert isinstance(clause_parser_info, NamedTrait), clause_parser_info
         assert clause_parser_info.name in namespace.children
 
         clause_namespace = namespace.children[clause_parser_info.name]
@@ -490,7 +493,6 @@ class PassOneVisitor(ParserInfoVisitorHelper):
 
         for clause_namespace_item in clause_namespace.children.values():
             assert isinstance(clause_namespace_item, ParsedNamespaceInfo), clause_namespace_item
-            assert isinstance(clause_namespace_item.parser_info, NamedStatementTrait), clause_namespace_item.parser_info
             assert clause_namespace_item.parser_info.name not in namespace.children, clause_namespace_item.parser_info.name
 
             namespace.children[clause_namespace_item.parser_info.name] = clause_namespace_item
@@ -648,5 +650,8 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             assert False, import_parser_info.import_type  # pragma: no cover
 
         parent_namespace.children[import_parser_info.name] = new_namespace
+
+        # We won't need to process this statement again
+        import_parser_info.Disable()
 
         return new_namespace

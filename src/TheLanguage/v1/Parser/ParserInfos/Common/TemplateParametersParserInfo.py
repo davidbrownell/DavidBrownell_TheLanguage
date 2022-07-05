@@ -18,6 +18,7 @@
 import itertools
 import os
 
+from contextlib import contextmanager
 from typing import Dict, List, Optional, Union
 
 from dataclasses import dataclass, field, InitVar
@@ -35,16 +36,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common.VisibilityModifier import VisibilityModifier
+
     from ..Expressions.ExpressionParserInfo import (
+        CompileTimeInfo,
         ExpressionParserInfo,
         ParserInfo,
         ParserInfoType,
         TranslationUnitRegion,
     )
 
+    from ..ParserInfo import VisitResult
+    from ..Traits.NamedTrait import NamedTrait
+
     from ...Error import CreateError, Error, ErrorException
 
     from ...Common import CallHelpers
+    from ...Common import MiniLanguageHelpers
 
 
 # ----------------------------------------------------------------------
@@ -73,33 +81,59 @@ InvalidTemplateDecoratorExpressionError     = CreateError(
 
 
 # ----------------------------------------------------------------------
-@ComparisonOperators
 @dataclass(frozen=True, repr=False)
-class TemplateTypeParameterParserInfo(ParserInfo):
+class TemplateTypeParameterParserInfo(
+    NamedTrait,
+    ParserInfo,
+):
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
-    name: str
     is_variadic: Optional[bool]
     default_type: Optional[ExpressionParserInfo]
 
     # ----------------------------------------------------------------------
     @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
+    def Create(
+        cls,
+        regions: List[Optional[TranslationUnitRegion]],
+        name: str,
+        *args,
+        **kwargs,
+    ):
+        # We are automatically setting the visibility, so add a region as well
+        regions.insert(0, regions[0])
 
-    # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
-        super(TemplateTypeParameterParserInfo, self).__init__(
-            ParserInfoType.TypeCustomization,
+        return cls(
+            name,
+            VisibilityModifier.private,     # type: ignore
+            regions,                        # type: ignore
             *args,
             **kwargs,
-            regionless_attributes=["default_type", ],
         )
+
+    # ----------------------------------------------------------------------
+    def __post_init__(
+        self,
+        visibility_param,
+        regions,
+    ):
+        ParserInfo.__init__(
+            self,
+            ParserInfoType.TypeCustomization,
+            regions,
+            regionless_attributes=[
+                "default_type",
+            ]
+                + NamedTrait.RegionlessAttributesArgs()
+            ,
+            validate=False,
+            **NamedTrait.ObjectReprImplBaseInitKwargs(),
+        )
+
+        NamedTrait.__post_init__(self, visibility_param)
+
+        self.ValidateRegions()
 
         # Validate
         errors: List[Error] = []
@@ -121,6 +155,12 @@ class TemplateTypeParameterParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(*args, **kwargs) -> bool:
+        return True
+
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
@@ -130,7 +170,6 @@ class TemplateTypeParameterParserInfo(ParserInfo):
 
 
 # ----------------------------------------------------------------------
-@ComparisonOperators
 @dataclass(frozen=True, repr=False)
 class TemplateDecoratorParameterParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
@@ -187,10 +226,6 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
                         ),
                     )
 
-                BugBug = 10
-                # BugBug: Ensure that the default expression is of the correct type
-                # assert False, "BugBug"
-
             except ErrorException as ex:
                 errors += ex.errors
 
@@ -209,7 +244,6 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
 
 
 # ----------------------------------------------------------------------
-@ComparisonOperators
 @dataclass(frozen=True, repr=False)
 class TemplateParametersParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
@@ -375,3 +409,13 @@ class TemplateParametersParserInfo(ParserInfo):
 
         if self.keyword is not None:
             yield "keyword", self.keyword  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    @Interface.override
+    def _InitTypeCustomizationImpl(*args, **kwargS):  # pylint: disable=unused-argument
+        # We can't extract the template information here, as the expressions may be
+        # dependent upon the template arguments. Skip for now and evaluate when
+        # the templates are instantiated.
+        yield VisitResult.SkipAll

@@ -19,7 +19,7 @@ import os
 
 from contextlib import contextmanager
 from enum import auto, Enum
-from typing import Callable, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -35,16 +35,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
-        CompileTimeInfo,
         ParserInfoType,
         ScopeFlag,
         StatementParserInfo,
         TranslationUnitRegion,
     )
 
-    from .Traits.NamedStatementTrait import NamedStatementTrait
-
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
+    from ..Traits.NamedTrait import NamedTrait
 
     from ...Error import Error, ErrorException
 
@@ -58,7 +56,7 @@ class ImportType(Enum):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ImportStatementParserInfo(
-    NamedStatementTrait,
+    NamedTrait,
     StatementParserInfo,
 ):
     # ----------------------------------------------------------------------
@@ -98,10 +96,10 @@ class ImportStatementParserInfo(
             regionless_attributes=[
                 "import_type",
             ]
-                + NamedStatementTrait.RegionlessAttributesArgs()
+                + NamedTrait.RegionlessAttributesArgs()
             ,
             validate=False,
-            **NamedStatementTrait.ObjectReprImplBaseInitKwargs(),
+            **NamedTrait.ObjectReprImplBaseInitKwargs(),
         )
 
         # Set defaults
@@ -109,7 +107,7 @@ class ImportStatementParserInfo(
             visibility_param = VisibilityModifier.private
             object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
-        NamedStatementTrait.__post_init__(self, visibility_param)
+        NamedTrait.__post_init__(self, visibility_param)
 
         # Validate
         self.ValidateRegions()
@@ -148,6 +146,6 @@ class ImportStatementParserInfo(
     @staticmethod
     @contextmanager
     @Interface.override
-    def _InitConfigurationImpl(*args, **kwargs):
+    def _InitConfigurationImpl(*args, **kwargs):  # pylint: disable=unused-argument
         # Nothing to do here
         yield

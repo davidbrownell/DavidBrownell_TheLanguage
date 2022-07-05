@@ -32,21 +32,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .NamedStatementTrait import NamedStatementTrait
-
     from ..StatementParserInfo import ParserInfo, ParserInfoType, StatementParserInfo
+
+    from ...Traits.NamedTrait import NamedTrait
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ScopedStatementTrait(NamedStatementTrait):
+class ScopedStatementTrait(NamedTrait):
     """Add to a statement when it introduces a new scope"""
 
     statements: Optional[List[StatementParserInfo]]
 
     # ----------------------------------------------------------------------
     def __post_init__(self, visibility_param):
-        NamedStatementTrait.__post_init__(self, visibility_param)
+        NamedTrait.__post_init__(self, visibility_param)
 
         if self.statements:
             parser_info_type = self.parser_info_type__  # type: ignore  # pylint: disable=no-member
@@ -59,13 +59,13 @@ class ScopedStatementTrait(NamedStatementTrait):
     # ----------------------------------------------------------------------
     @staticmethod
     def RegionlessAttributesArgs() -> List[str]:
-        return [] + NamedStatementTrait.RegionlessAttributesArgs()
+        return [] + NamedTrait.RegionlessAttributesArgs()
 
     # ----------------------------------------------------------------------
     @staticmethod
     def ObjectReprImplBaseInitKwargs() -> Dict[str, Any]:
         return {
-            **NamedStatementTrait.ObjectReprImplBaseInitKwargs(),
+            **NamedTrait.ObjectReprImplBaseInitKwargs(),
         }
 
     # ----------------------------------------------------------------------

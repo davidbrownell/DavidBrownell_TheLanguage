@@ -272,6 +272,7 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
             method_name = "On{}".format(self.__class__.__name__)
 
             method = getattr(visitor, method_name, None)
+
             if method is None:
                 BugBug = 10
 
@@ -333,30 +334,30 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         names: List[str],
         configuration_info: Dict[str, CompileTimeInfo],
     ):
-        """\
-        Opportunity for a ParserInfo object to initialize itself during the configuration process.
-
-        The initialization process may return a function that should be invoked after all other ParserInfo objects
-        have been initialized, but before moving on to the next step in the initialization process.
-        """
+        """Opportunity for a ParserInfo object to initialize itself during the configuration process."""
 
         assert self._parent_name is None  # type: ignore  # pylint: disable=no-member
         object.__setattr__(self, "_parent_name", names)
 
         if self.parser_info_type__ == ParserInfoType.Configuration:
-            with self._InitConfigurationImpl(configuration_info):
-                yield
+            with self._InitConfigurationImpl(configuration_info) as visit_result:
+                yield visit_result
         else:
             yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.extensionmethod
-    def ValidateConfiguration() -> None:
-        """Opportunity for a ParserInfo object to validate itself after configuration activities are complete."""
+    @contextmanager
+    def InitTypeCustomization(
+        self,
+        configuration_info: Dict[str, CompileTimeInfo],
+    ):
+        """Opportunity for a ParserInfo object to initialize itself during the type customization process."""
 
-        # No validation by default
-        pass
+        if self.parser_info_type__ == ParserInfoType.TypeCustomization:
+            with self._InitTypeCustomizationImpl(configuration_info) as visit_result:
+                yield visit_result
+        else:
+            yield
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
@@ -464,7 +465,7 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @staticmethod
     @contextmanager
-    def _GenericAcceptGenerator(*args, **kwargs):
+    def _GenericAcceptGenerator(*args, **kwargs):  # pylint: disable=unused-argument
         yield VisitResult.Continue
 
     # ----------------------------------------------------------------------
@@ -472,6 +473,16 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     @contextmanager
     @Interface.extensionmethod
     def _InitConfigurationImpl(
+        cls,
+        configuration_data: Dict[str, CompileTimeInfo], # pylint: disable=unused-argument
+    ):
+        raise Exception("This functionality should be implemented by derived classes when applicable ({})".format(cls))
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @contextmanager
+    @Interface.extensionmethod
+    def _InitTypeCustomizationImpl(
         cls,
         configuration_data: Dict[str, CompileTimeInfo], # pylint: disable=unused-argument
     ):

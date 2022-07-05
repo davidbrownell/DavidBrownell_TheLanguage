@@ -143,5 +143,11 @@ class StatementsMixin(BaseMixin):
     # ----------------------------------------------------------------------
     @staticmethod
     @contextmanager
+    def OnPassStatementParserInfo(*args, **kwargs):
+        yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
     def OnTypeAliasStatementParserInfo(*args, **kwargs):
         yield
