@@ -34,7 +34,9 @@ with InitRelativeImports():
     from ..NamespaceInfo import ParsedNamespaceInfo, ScopeFlag, VisibilityModifier
 
     from ...Common import MiniLanguageHelpers
-    from ...ParserInfos.ParserInfo import ParserInfoType
+    from ...Error import CreateError, Error, ErrorException
+
+    from ...ParserInfos.ParserInfo import ParserInfoType, VisitResult
 
     from ...ParserInfos.Common.CapturedVariablesParserInfo import CapturedVariablesParserInfo
     from ...ParserInfos.Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
@@ -44,7 +46,21 @@ with InitRelativeImports():
     from ...ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateArgumentParserInfo
     from ...ParserInfos.Common.TemplateParametersParserInfo import TemplateParametersParserInfo, TemplateDecoratorParameterParserInfo, TemplateTypeParameterParserInfo
 
+    from ...ParserInfos.Expressions.Traits.SimpleExpressionTrait import SimpleExpressionTrait
+
     from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
+
+
+# ----------------------------------------------------------------------
+InvalidCompileTimeTypeError                 = CreateError(
+    "'{type}' is not a valid compile-time type",
+)
+
+InvalidDefaultTypeError                     = CreateError(
+    "Invalid default expression; '{this_type}' was found but '{type}' was expected",
+    type=str,
+    this_type=str,
+)
 
 
 # ----------------------------------------------------------------------
@@ -74,21 +90,9 @@ class CommonMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnConstraintParameterParserInfo(
-        self,
-        parser_info: ConstraintParameterParserInfo,
-    ):
-        if parser_info.default_value is not None:
-            # This is an expression (not a type), so it won't be automatically validated by the BaseMixin
-            result = MiniLanguageHelpers.EvalExpression(
-                parser_info.default_value,
-                self._compile_time_stack,
-
-            )
-
-            parser_info.default_value.SetResolvedEntity(result)
-
+    def OnConstraintParameterParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
@@ -134,47 +138,13 @@ class CommonMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTemplateTypeParameterParserInfo(
-        self,
-        parser_info: TemplateTypeParameterParserInfo,
-    ):
-        assert self._namespaces_stack
-        namespace_stack = self._namespaces_stack[-1]
-
-        assert namespace_stack
-        parent_namespace = namespace_stack[-1]
-
-        assert isinstance(parent_namespace, ParsedNamespaceInfo), parent_namespace
-        assert isinstance(parent_namespace.parser_info, TemplatedStatementTrait), parent_namespace.parser_info
-
-        assert parser_info.name not in parent_namespace.children
-        parent_namespace.AddChild(
-            ParsedNamespaceInfo(
-                parent_namespace,
-                parent_namespace.scope_flag,
-                parser_info,
-                name=parser_info.name,
-                visibility=VisibilityModifier.private,
-            ),
-        )
-
+    def OnTemplateTypeParameterParserInfo(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @contextmanager
-    def OnTemplateDecoratorParameterParserInfo(
-        self,
-        parser_info: TemplateDecoratorParameterParserInfo,
-    ):
-        if parser_info.default_value is not None:
-            # This is an expression (not a type), so it won't be automatically validated by the BaseMixin
-            result = MiniLanguageHelpers.EvalExpression(
-                parser_info.default_value,
-                self._compile_time_stack,
-
-            )
-
-            parser_info.default_value.SetResolvedEntity(result)
-
+    def OnTemplateDecoratorParameterParserInfo(*args, **kwargs):
         yield

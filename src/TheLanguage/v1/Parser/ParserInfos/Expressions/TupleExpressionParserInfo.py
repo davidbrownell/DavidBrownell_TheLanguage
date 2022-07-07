@@ -96,21 +96,6 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
         return True
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def GetTypeId(self) -> TypeIdentifier:
-        assert self.IsType()
-        assert self.HasResolvedEntity()
-
-        return StandardTypeIdentifier(
-            tuple(
-                itertools.chain(
-                    ["Tuple", ],
-                    (the_type.GetTypeId() for the_type in self.types),
-                ),
-            ),
-        )
-
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override

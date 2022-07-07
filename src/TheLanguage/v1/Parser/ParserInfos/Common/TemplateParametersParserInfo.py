@@ -18,15 +18,12 @@
 import itertools
 import os
 
-from contextlib import contextmanager
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
-from CommonEnvironment.Compare import Compare as CompareImpl
 from CommonEnvironment import Interface
-from CommonEnvironment.DataclassDecorators import ComparisonOperators
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -36,18 +33,24 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
+
     from ..Common.VisibilityModifier import VisibilityModifier
 
+    from ..EntityResolver import EntityResolver
+
     from ..Expressions.ExpressionParserInfo import (
-        CompileTimeInfo,
         ExpressionParserInfo,
         ParserInfo,
         ParserInfoType,
         TranslationUnitRegion,
     )
 
-    from ..ParserInfo import VisitResult
+    from ..Expressions.Traits.SimpleExpressionTrait import SimpleExpressionTrait
+
     from ..Traits.NamedTrait import NamedTrait
+
+    from ..Types import Type
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -67,16 +70,19 @@ DuplicateVariadicError                      = CreateError(
     prev_region=TranslationUnitRegion,
 )
 
-InvalidTemplateTypeError                    = CreateError(
-    "Template type parameters must be compile-time types",
-)
-
 InvalidTemplateDecoratorTypeError           = CreateError(
     "Template decorator parameters must be compile-time types",
 )
 
 InvalidTemplateDecoratorExpressionError     = CreateError(
     "Template decorator parameters must be compile-time expressions",
+)
+
+InvalidTypeError                            = CreateError(
+    "Invalid template decorator value; '{expected_type}' expected but '{actual_type}' was found",
+    expected_type=str,
+    expected_region=TranslationUnitRegion,
+    actual_type=str,
 )
 
 
@@ -142,12 +148,9 @@ class TemplateTypeParameterParserInfo(
             try:
                 self.default_type.InitializeAsType(self.parser_info_type__)
 
-                if self.default_type.parser_info_type__ != self.parser_info_type__:
-                    errors.append(
-                        InvalidTemplateTypeError.Create(
-                            region=self.default_type.regions__.self__,
-                        ),
-                    )
+                # The expression itself might be a type or an expression that yields a type, so
+                # we can't make assumptions about the actual type until it is resolved.
+
             except ErrorException as ex:
                 errors += ex.errors
 
@@ -159,6 +162,14 @@ class TemplateTypeParameterParserInfo(
     @Interface.override
     def IsNameOrdered(*args, **kwargs) -> bool:
         return True
+
+    # ----------------------------------------------------------------------
+    def Resolve(
+        self,
+        template_arguments: Any,
+    ) -> None:
+        # Nothing to do here
+        pass
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -179,6 +190,8 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
     name: str
     default_value: Optional[ExpressionParserInfo]
 
+    is_simple_expression__: bool            = field(init=False, default=False)
+
     # ----------------------------------------------------------------------
     @classmethod
     def Create(cls, *args, **kwargs):
@@ -193,25 +206,41 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
         super(TemplateDecoratorParameterParserInfo, self).__init__(
             ParserInfoType.TypeCustomization,
             *args,
-            **kwargs,
             regionless_attributes=[
                 "type",
                 "default_value",
+                "is_simple_expression__",
             ],
+            **{
+                **{
+                    "is_simple_expression__": None,
+                },
+                **kwargs,
+            },
+        )
+
+        is_simple_type = isinstance(self.type, SimpleExpressionTrait)
+        is_simple_default = isinstance(self.default_value, SimpleExpressionTrait)
+
+        object.__setattr__(
+            self,
+            "is_simple_expression__",
+            is_simple_type and (self.default_value is None or is_simple_default),
         )
 
         # Validate
         errors: List[Error] = []
 
         try:
-            self.type.InitializeAsType(ParserInfoType.TypeCustomization)
-
             if self.type.parser_info_type__ != ParserInfoType.TypeCustomization:
                 errors.append(
                     InvalidTemplateDecoratorTypeError.Create(
                         region=self.type.regions__.self__,
                     ),
                 )
+
+            self.type.InitializeAsType(ParserInfoType.TypeCustomization)
+
         except ErrorException as ex:
             errors += ex.errors
 
@@ -219,7 +248,10 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
             try:
                 self.default_value.InitializeAsExpression()
 
-                if not self.default_value.is_compile_time__:
+                if (
+                    not self.default_value.is_compile_time__
+                    and self.default_value.parser_info_type__ != ParserInfoType.Unknown
+                ):
                     errors.append(
                         InvalidTemplateDecoratorExpressionError.Create(
                             region=self.default_value.regions__.self__,
@@ -228,6 +260,33 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
 
             except ErrorException as ex:
                 errors += ex.errors
+
+        if (
+            not errors
+            and is_simple_type
+            and is_simple_default
+        ):
+            assert self.default_value is not None
+
+            resolved_type = MiniLanguageHelpers.EvalType(self.type, [])
+            if not isinstance(resolved_type, MiniLanguageHelpers.MiniLanguageType):
+                errors.append(
+                    InvalidTemplateDecoratorTypeError.Create(
+                        region=self.type.regions__.self__,
+                    ),
+                )
+            else:
+                resolved_expression = MiniLanguageHelpers.EvalExpression(self.default_value, [])
+
+                if not resolved_type.IsSupportedValue(resolved_expression.value):
+                    errors.append(
+                        InvalidTypeError.Create(
+                            region=self.default_value.regions__.self__,
+                            expected_type=resolved_type.name,
+                            expected_region=self.type.regions__.self__,
+                            actual_type=resolved_expression.type.name,
+                        ),
+                    )
 
         if errors:
             raise ErrorException(*errors)
@@ -241,6 +300,25 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
 
         if self.default_value is not None:
             yield "default_value", self.default_value  # type: ignore
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, repr=False)
+class ResolvedTemplateArguments(object):
+    # ----------------------------------------------------------------------
+    types: List[
+        Tuple[
+            TemplateTypeParameterParserInfo,
+            Union["Type", List["Type"]],
+        ],
+    ]
+
+    decorators: List[
+        Tuple[
+            TemplateDecoratorParameterParserInfo,
+            MiniLanguageHelpers.MiniLanguageExpression.EvalResult,
+        ],
+    ]
 
 
 # ----------------------------------------------------------------------
@@ -261,7 +339,7 @@ class TemplateParametersParserInfo(ParserInfo):
     any: Optional[List["TemplateParametersParserInfo.ParameterType"]]
     keyword: Optional[List["TemplateParametersParserInfo.ParameterType"]]
 
-    default_initializable: bool             = field(init=False, default=False)
+    is_default_initializable: bool          = field(init=False, default=False)
 
     call_helpers_positional: List[CallHelpers.ParameterInfo]                = field(init=False, default_factory=list)
     call_helpers_any: List[CallHelpers.ParameterInfo]                       = field(init=False, default_factory=list)
@@ -289,14 +367,14 @@ class TemplateParametersParserInfo(ParserInfo):
             ),
             *args,
             regionless_attributes=[
-                "default_initializable",
+                "is_default_initializable",
                 "call_helpers_positional",
                 "call_helpers_any",
                 "call_helpers_keyword",
             ],
             **{
                 **{
-                    "default_initializable": None,
+                    "is_default_initializable": None,
                     "call_helpers_positional": None,
                     "call_helpers_any": None,
                     "call_helpers_keyword": None,
@@ -307,7 +385,7 @@ class TemplateParametersParserInfo(ParserInfo):
 
         assert self.positional or self.any or self.keyword
 
-        default_initializable = True
+        is_default_initializable = True
 
         for template in itertools.chain(
             (self.positional or []),
@@ -316,14 +394,14 @@ class TemplateParametersParserInfo(ParserInfo):
         ):
             if isinstance(template, TemplateTypeParameterParserInfo):
                 if template.default_type is None:
-                    default_initializable = False
+                    is_default_initializable = False
                     break
             elif isinstance(template, TemplateDecoratorParameterParserInfo):
                 if template.default_value is None:
-                    default_initializable = False
+                    is_default_initializable = False
                     break
 
-        object.__setattr__(self, "default_initializable", default_initializable)
+        object.__setattr__(self, "is_default_initializable", is_default_initializable)
 
         # Validate
         errors: List[Error] = []
@@ -397,6 +475,98 @@ class TemplateParametersParserInfo(ParserInfo):
             object.__setattr__(self, destination_attribute_name, call_helpers_parameters)
 
     # ----------------------------------------------------------------------
+    def MatchCall(
+        self,
+        destination: str,
+        destination_region: TranslationUnitRegion,
+        template_arguments: Optional["TemplateArgumentsParserInfo"],
+        entity_resolver: "EntityResolver",
+    ) -> ResolvedTemplateArguments:
+        if template_arguments is None:
+            args = []
+            kwargs = {}
+        else:
+            args = template_arguments.call_helpers_args
+            kwargs = template_arguments.call_helpers_kwargs
+
+        argument_map = CallHelpers.CreateArgumentMap(
+            destination,
+            destination_region,
+            self.call_helpers_positional,
+            self.call_helpers_any,
+            self.call_helpers_keyword,
+            args,
+            kwargs,
+        )
+
+        # If here, we know that the arguments match up in terms of number, defaults, names, etc.
+        # Match types as necessary and generate the results.
+        types: List[
+            Tuple[
+                TemplateTypeParameterParserInfo,
+                Union[Type, List[Type]]
+            ]
+        ] = []
+        decorators: List[Tuple[TemplateDecoratorParameterParserInfo, MiniLanguageHelpers.MiniLanguageExpression.EvalResult]] = []
+        errors: List[Error] = []
+
+        for parameter_parser_info, argument_parser_info_value in argument_map.values():
+            argument_parser_info: Optional[ExpressionParserInfo] = None
+
+            if argument_parser_info_value is not None:
+                assert argument_parser_info_value.__class__.__name__ == "TemplateArgumentParserInfo", argument_parser_info_value.__class__
+                argument_parser_info = argument_parser_info_value.type_or_expression  # type: ignore
+
+            if isinstance(parameter_parser_info, TemplateTypeParameterParserInfo):
+                if argument_parser_info is None:
+                    argument_parser_info = parameter_parser_info.default_type
+
+                assert argument_parser_info is not None
+
+                if isinstance(argument_parser_info, list):
+                    argument_result_or_results = [
+                        entity_resolver.ResolveType(argument)
+                        for argument in argument_parser_info
+                    ]
+                else:
+                    argument_result_or_results = entity_resolver.ResolveType(argument_parser_info)
+
+                types.append((parameter_parser_info, argument_result_or_results))
+
+            elif isinstance(parameter_parser_info, TemplateDecoratorParameterParserInfo):
+                if argument_parser_info is None:
+                    assert parameter_parser_info.default_value is not None
+                    argument_parser_info = parameter_parser_info.default_value
+
+                assert argument_parser_info is not None
+                assert not isinstance(argument_parser_info, list), argument_parser_info
+
+                resolved_type = entity_resolver.ResolveMiniLanguageType(parameter_parser_info.type)
+                resolved_value = entity_resolver.ResolveMiniLanguageExpression(argument_parser_info)
+
+                if not resolved_type.IsSupportedValue(resolved_value.value):
+                    errors.append(
+                        InvalidTypeError.Create(
+                            region=argument_parser_info.regions__.self__,
+                            expected_type=resolved_type.name,
+                            expected_region=parameter_parser_info.type.regions__.self__,
+                            actual_type=resolved_value.type.name,
+                        ),
+                    )
+
+                    continue
+
+                decorators.append((parameter_parser_info, resolved_value))
+
+            else:
+                assert False, parameter_parser_info  # pragma: no cover
+
+        if errors:
+            raise ErrorException(*errors)
+
+        return ResolvedTemplateArguments(types, decorators)
+
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
@@ -409,13 +579,3 @@ class TemplateParametersParserInfo(ParserInfo):
 
         if self.keyword is not None:
             yield "keyword", self.keyword  # type: ignore
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @contextmanager
-    @Interface.override
-    def _InitTypeCustomizationImpl(*args, **kwargS):  # pylint: disable=unused-argument
-        # We can't extract the template information here, as the expressions may be
-        # dependent upon the template arguments. Skip for now and evaluate when
-        # the templates are instantiated.
-        yield VisitResult.SkipAll

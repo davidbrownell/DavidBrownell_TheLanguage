@@ -32,13 +32,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.VisibilityModifier import VisibilityModifier
+    from ...Common.VisibilityModifier import VisibilityModifier
 
     if TYPE_CHECKING:
-        from .ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo
-        from .ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
-        from .FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
-        from .TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
+        from ..ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo
+        from ..ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
+        from ..FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+        from ..TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
 
 # ----------------------------------------------------------------------

@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -44,7 +44,7 @@ with InitRelativeImports():
     )
 
     from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
-    from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
+    from .Traits.TemplatedStatementTrait import ConcreteEntity, TemplatedStatementTrait
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
@@ -57,8 +57,10 @@ with InitRelativeImports():
     from ..Common.MethodHierarchyModifier import MethodHierarchyModifier
 
     from ..Common.MutabilityModifier import MutabilityModifier
+    from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
 
     from ..Common.TemplateParametersParserInfo import (  # pylint: disable=unused-import
+        ResolvedTemplateArguments,
         TemplateDecoratorParameterParserInfo,           # Convenience import
         TemplateParametersParserInfo,
         TemplateTypeParameterParserInfo,                # Convenience import
@@ -66,10 +68,14 @@ with InitRelativeImports():
 
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
+    from ..EntityResolver import EntityResolver
+
     from ..Expressions.VariableExpressionParserInfo import (
         ExpressionParserInfo,
         VariableExpressionParserInfo,
     )
+
+    from ..Types import Type
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -513,31 +519,16 @@ class FuncDefinitionStatementParserInfo(
         return bool(scope_flag & ScopeFlag.Function)
 
     # ----------------------------------------------------------------------
-    def GetOverrideId(self) -> Tuple:
-        """Returns information that can be used to determine if a function is an override of another"""
-
-        # TODO: How do we handle covariants?
-        if self.return_type is None:
-            return_type_id = None
-        elif self.return_type.HasResolvedEntity():
-            return_type_id = id(self.return_type.GetResolvedType())
-        else:
-            # We should only get here if the parameter is defined in a dependency and
-            # we are in the process of resolving the derived class.
-            return_type_id = self.return_type.ToTypeString()
-
-        assert self.parameters is not False
-
-        return (
-            self.name,
-            # TODO: Templates?
-            self.function_modifier,
-            None if self.parameters is True else self.parameters.GetOverrideId(),
-            self.mutability,
-            return_type_id,
-            self.is_exceptional,
-            self.is_static,
-        )
+    @Interface.override
+    def CreateConcreteEntityFactory(
+        self,
+        template_arguments: Optional[TemplateArgumentsParserInfo],
+        entity_resolver: EntityResolver,
+    ) -> Tuple[
+        Optional[ResolvedTemplateArguments],
+        Callable[[], Union[Type, ConcreteEntity]],
+    ]:
+        assert False, "BugBug: Not implemented"
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

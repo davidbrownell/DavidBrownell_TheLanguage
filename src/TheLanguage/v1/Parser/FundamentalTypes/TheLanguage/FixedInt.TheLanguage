@@ -17,16 +17,16 @@ from .Concepts.MutableInt import MutableInt
 
 
 # ----------------------------------------------------------------------
-public mutable class FixedInt # BugBug <TEMPLATE
-# BugBug     pos:
-# BugBug         Int! num_bytes!,                    # 1, 2, 4, 8, 16
-# BugBug     key:
-# BugBug         Bool! is_checked!,
-# BugBug         Bool! is_signed!,
-# BugBug TEMPLATE> {
-# BugBug     Int! min_value! , # BugBug: = -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0,
-# BugBug     Int! max_value! , # BugBug: = (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1),
-# BugBug }
+public mutable class FixedInt <TEMPLATE
+    pos:
+        Int! num_bytes!,                    # 1, 2, 4, 8, 16
+    key:
+        Bool! is_checked!,
+        Bool! is_signed!,
+TEMPLATE> {
+    Int! min_value! , # BugBug: = -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0,
+    Int! max_value! , # BugBug: = (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1),
+}
     implements public MutableInt { min_value!, max_value! }
 :
     # BugBug: __EvalTemplates!__():

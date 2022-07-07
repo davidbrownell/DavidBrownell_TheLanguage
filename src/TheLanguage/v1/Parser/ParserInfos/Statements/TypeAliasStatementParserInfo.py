@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, Generator, List, Optional, Tuple
+from typing import Callable, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -40,16 +40,21 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
-    from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
+    from .Traits.TemplatedStatementTrait import ConcreteEntity, TemplatedStatementTrait
 
     from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
+    from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
+    from ..Common.TemplateParametersParserInfo import ResolvedTemplateArguments
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
+    from ..EntityResolver import EntityResolver
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
     from ..Traits.NamedTrait import NamedTrait
+    from ..Types import ConcreteClassType, ConcreteTypeAliasType, Type
 
     from ...Error import Error, ErrorException
+
 
 
 # ----------------------------------------------------------------------
@@ -59,24 +64,6 @@ class TypeAliasStatementParserInfo(
     NamedTrait,
     StatementParserInfo,
 ):
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True, repr=False)
-    class ResolvedType(ExpressionParserInfo.ResolvedType):
-        # ----------------------------------------------------------------------
-        @Interface.override
-        def EnumAliases(self) -> Generator[ExpressionParserInfo.ResolvedType, None, None]:
-            yield self
-
-            assert isinstance(self.parser_info, TypeAliasStatementParserInfo), self.parser_info
-
-            yield from self.parser_info.type.GetResolvedType(
-                do_not_resolve_aliases=True,
-            ).EnumAliases()
-
     # ----------------------------------------------------------------------
     # |
     # |  Public Data
@@ -185,6 +172,26 @@ class TypeAliasStatementParserInfo(
         scope_flag: ScopeFlag,
     ) -> bool:
         return bool(scope_flag & ScopeFlag.Function)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def CreateConcreteEntityFactory(
+        self,
+        template_arguments: Optional[TemplateArgumentsParserInfo],
+        entity_resolver: EntityResolver,
+    ) -> Tuple[
+        Optional[ResolvedTemplateArguments],
+        Callable[[], Union[Type, ConcreteEntity]],
+    ]:
+        resolved_type = entity_resolver.ResolveType(self.type)
+        assert isinstance(resolved_type, (ConcreteClassType, ConcreteTypeAliasType)), resolved_type
+
+        return self._CreateConcreteEntityFactoryImpl(
+            template_arguments,
+            entity_resolver,
+            lambda: ConcreteTypeAliasType(self, resolved_type),
+            parser_info=resolved_type.parser_info, # BugBug: This isn't right at all
+        )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

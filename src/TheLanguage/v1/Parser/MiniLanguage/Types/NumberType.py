@@ -44,7 +44,7 @@ class NumberType(Type):
     def IsSupportedValue(
         value: Any,
     ) -> bool:
-        return isinstance(value, float)
+        return isinstance(value, float) or IntegerType.IsSupportedValue(value)
 
     # ----------------------------------------------------------------------
     @staticmethod

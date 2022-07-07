@@ -116,12 +116,9 @@ def CreateArgumentMap(
 
     all_results: Dict[
         str,
-        Tuple[
-            ParameterInfo,
-            Union[
-                ArgumentInfo,
-                List[ArgumentInfo],
-            ],
+        Union[
+            ArgumentInfo,
+            List[ArgumentInfo],
         ],
     ] = {}
 
@@ -130,7 +127,7 @@ def CreateArgumentMap(
     # Process the arguments specified by keyword
     if kwargs:
         valid_keywords: Dict[str, ParameterInfo] = {
-            parameter.name : parameter
+            parameter.name: parameter
             for parameter in itertools.chain(any_parameters, keyword_parameters)
         }
 
@@ -168,20 +165,18 @@ def CreateArgumentMap(
 
             existing_result_or_results = all_results.get(potential_parameter.name, _does_not_exist)
 
-            if isinstance(existing_result_or_results, _DoesNotExist):
+            if existing_result_or_results is _does_not_exist:
                 if potential_parameter.is_variadic:
                     value = [value, ]
 
-                all_results[key] = (potential_parameter, value)
+                all_results[potential_parameter.name] = value
 
             elif potential_parameter.is_variadic:
-                assert isinstance(existing_result_or_results, tuple), existing_result_or_results
-                assert isinstance(existing_result_or_results[1], list), existing_result_or_results[1]
-                existing_result_or_results[1].append(value)
+                assert isinstance(existing_result_or_results, list), existing_result_or_results
+                existing_result_or_results.append(value)
 
             else:
-                assert isinstance(existing_result_or_results, tuple), existing_result_or_results
-                assert isinstance(existing_result_or_results[1], ArgumentInfo), existing_result_or_results[1]
+                assert isinstance(existing_result_or_results, ArgumentInfo), existing_result_or_results
 
                 errors.append(
                     DuplicateKeywordArgumentError.Create(
@@ -189,7 +184,7 @@ def CreateArgumentMap(
                         destination=destination,
                         destination_region=destination_region,
                         name=potential_parameter.name,
-                        prev_region=existing_result_or_results[1].region,
+                        prev_region=existing_result_or_results.region,
                     ),
                 )
 
@@ -225,34 +220,25 @@ def CreateArgumentMap(
             assert potential_parameter is not None
 
             if potential_parameter.is_variadic:
-                existing_result = all_results.get(potential_parameter.name, None)
-                if existing_result is not None:
-                    assert isinstance(existing_result, tuple), existing_result
-                    assert isinstance(existing_result[1], list), existing_result[1]
-
-                    existing_result[1].append(arg)
+                existing_result_or_results = all_results.get(potential_parameter.name, None)
+                if existing_result_or_results is not None:
+                    assert isinstance(existing_result_or_results, list), existing_result_or_results
+                    existing_result_or_results.append(arg)
                 else:
-                    all_results[potential_parameter.name] = (potential_parameter, [arg, ])
+                    all_results[potential_parameter.name] = [arg, ]
 
             else:
                 assert potential_parameter.name not in all_results, potential_parameter.name
-                all_results[potential_parameter.name] = (potential_parameter, arg)
+                all_results[potential_parameter.name] = arg
 
-    raw_results = {}
+    # Create a new dictionary with the final results. We create a new dictionary to ensure
+    # that the arguments appear in the parameter order.
+    final_results = {}
 
-    for k, results in all_results.items():
-        assert isinstance(results, tuple), results
-
-        if isinstance(results[1], list):
-            raw_result = (results[0].context, [arg.context for arg in results[1]])
-        else:
-            raw_result = results[0].context, results[1].context
-
-        raw_results[k] = raw_result
-
-    # Have all arguments been provided?
     for parameter in itertools.chain(positional_parameters, any_parameters, keyword_parameters):
-        if parameter.name not in all_results:
+        result = all_results.get(parameter.name, _does_not_exist)
+
+        if result is _does_not_exist:
             if not parameter.is_optional:
                 errors.append(
                     RequiredArgumentMissingError.Create(
@@ -262,15 +248,25 @@ def CreateArgumentMap(
                         name=parameter.name,
                     ),
                 )
-            elif parameter.is_variadic:
-                raw_results[parameter.name] = [(parameter.context, None)]
+
+                continue
+
+            if parameter.is_variadic:
+                result = []
             else:
-                raw_results[parameter.name] = (parameter.context, None)
+                result = None
+        else:
+            if isinstance(result, list):
+                result = [arg.context for arg in result]
+            else:
+                result = result.context  # type: ignore
+
+        final_results[parameter.name] = (parameter.context, result)
 
     if errors:
         raise ErrorException(*errors)
 
-    return raw_results
+    return final_results
 
 
 # ----------------------------------------------------------------------

@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass, field, InitVar
 
@@ -32,8 +32,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    # BugBug from .TemplateParametersParserInfo import TemplateParametersParserInfo
-
     from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
@@ -202,30 +200,6 @@ class TemplateArgumentsParserInfo(ParserInfo):
 
         object.__setattr__(self, "call_helpers_args", call_helpers_args)
         object.__setattr__(self, "call_helpers_kwargs", call_helpers_kwargs)
-
-    # ----------------------------------------------------------------------
-    def MatchCall(
-        self,
-        destination: str,
-        destination_region: TranslationUnitRegion,
-        template_parameters # BugBug : TemplateParametersParserInfo,
-    ) -> Dict[str, Any]:
-        argument_map = CallHelpers.CreateArgumentMap(
-            destination,
-            destination_region,
-            template_parameters.call_helpers_positional,
-            template_parameters.call_helpers_any,
-            template_parameters.call_helpers_keyword,
-            self.call_helpers_args,
-            self.call_helpers_kwargs,
-        )
-
-        # If here, we know that the arguments match up in terms of number of arguments,
-        # defaults, names, etc. We do not yet know if the types match.
-
-        # BugBug: Validate types
-
-        return argument_map
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

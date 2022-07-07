@@ -333,8 +333,6 @@ def ResolveExpressionTypes(
         )
 
         for is_parallel, func in executor.GenerateFuncs():
-            break # BugBug
-
             results = _Execute(
                 workspaces,
                 func,

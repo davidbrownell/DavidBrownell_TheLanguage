@@ -110,24 +110,6 @@ class FuncParameterParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
-    def GetOverrideId(self) -> Tuple:
-        """Returns information that can be used to determine if this parameter matches another"""
-
-        # TODO: How do we handle covariants?
-        if self.type.HasResolvedEntity():
-            type_id = id(self.type.GetResolvedType())
-        else:
-            # We should only get here if the parameter is defined in a dependency and
-            # we are in the process of resolving the derived class.
-            type_id = self.type.ToTypeString()
-
-        return (
-            type_id,
-            self.is_variadic,
-            self.name,
-        )
-
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override

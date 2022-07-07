@@ -17,8 +17,9 @@
 
 import os
 
+from typing import cast, List, Optional, TYPE_CHECKING
+
 from dataclasses import dataclass
-from typing import List, Optional
 
 import CommonEnvironment
 from CommonEnvironment.YamlRepr import ObjectReprImplBase
@@ -43,6 +44,10 @@ with InitRelativeImports():
     from ...Common.VisibilityModifier import VisibilityModifier
 
     from ....Parser import CreateError, Error, ErrorException
+
+    if TYPE_CHECKING:
+        from ..ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo     # pylint: disable=unused-import
+        from ...Types import Type                                                                               # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -270,18 +275,12 @@ InvalidUsingVisibilityError                 = CreateError(
     valid_visibilities_str=str,
 )
 
-# TODO: Should be ResolvedType-based error
-MultipleExtendsError                        = CreateError(
-    "'{type}' types may only extend one other type",
-    type=str,
-)
-
-# TODO: Should be ResolvedType-based error
-InvalidDependencyError                      = CreateError(
+# TODO: Should be Type-based error
+InvalidResolvedDependencyError              = CreateError(
     "Invalid dependency",
 )
 
-# TODO: Should be ResolvedType-based error
+# TODO: Should be Type-based error
 InvalidDependencyTypeError                  = CreateError(
     "'{dependency_type}' is not a valid dependency type for '{desc}' dependencies of '{type}' types; valid values are {valid_types_str}",
     type=str,
@@ -294,8 +293,7 @@ InvalidDependencyTypeError                  = CreateError(
 
 # ----------------------------------------------------------------------
 # TODO: All of the capabilities need some TLC
-
-# TODO: Add fundamental type: final, methods are deferred
+# TODO: Add fundamental type: is_final, methods are deferred, no constructor
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -839,91 +837,75 @@ class ClassCapabilities(ObjectReprImplBase):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
-    def ValidateDependencies(
+    def ValidateImplementsDependency(
         self,
-        parser_info, # ClassStatementParserInfo
+        dependency: "ClassStatementDependencyParserInfo",
+        resolved_type: "Type",
     ) -> None:
+        self._ValidateDependencyImpl(
+            dependency,
+            resolved_type,
+            self.valid_implements_types,
+            "implement",
+        )
+
+    # ----------------------------------------------------------------------
+    def ValidateUsesDependency(
+        self,
+        dependency: "ClassStatementDependencyParserInfo",
+        resolved_type: "Type",
+    ) -> None:
+        self._ValidateDependencyImpl(
+            dependency,
+            resolved_type,
+            self.valid_uses_types,
+            "use",
+        )
+
+    # ----------------------------------------------------------------------
+    def ValidateExtendsDependency(
+        self,
+        dependency: "ClassStatementDependencyParserInfo",
+        resolved_type: "Type",
+    ) -> None:
+        self._ValidateDependencyImpl(
+            dependency,
+            resolved_type,
+            [self.name, ],
+            "extend",
+        )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    def _ValidateDependencyImpl(
+        self,
+        dependency: "ClassStatementDependencyParserInfo",
+        resolved_type: "Type",
+        valid_type_names: List[str],
+        desc: str,
+    ) -> None:
+        if resolved_type.__class__.__name__ != "ConcreteClassType":
+            raise ErrorException(
+                InvalidResolvedDependencyError.Create(
+                    region=dependency.type.regions__.self__,
+                ),
+            )
+
         errors: List[Error] = []
+        resolved_parser_info = cast("ClassStatementParserInfo", resolved_type.parser_info)
 
-        for desc, dependencies, valid_type_names in [
-            (
-                "extend",
-                parser_info.extends,
-                [self.name, ],
-            ),
-            (
-                "implement",
-                parser_info.implements,
-                self.valid_implements_types,
-            ),
-            (
-                "uses",
-                parser_info.uses,
-                self.valid_uses_types,
-            ),
-        ]:
-            # Do not check for errors if there isn't anything to check
-            if dependencies is None:
-                continue
-
-            # We checked for the error where dependencies were provided but dependencies aren't
-            # supported when validating supported dependency visibility, so we don't need to check
-            # for that condition again.
-            assert valid_type_names
-
-            for dependency in dependencies:
-                if dependency.is_disabled__:
-                    continue
-
-                if dependency.type.ResolvedEntityIsNone():
-                    dependency.Disable()
-                    continue
-
-                dependency_parser_info = dependency.type.GetResolvedType().parser_info
-
-                # Can't use the ClassStatementParserInfo class directly, as it would
-                # create an import cycle. Check by name as a workaround.
-                if dependency_parser_info.__class__.__name__ != "ClassStatementParserInfo":
-                    errors.append(
-                        InvalidDependencyError.Create(
-                            region=dependency.regions__.self__,
-                        ),
-                    )
-
-                    continue
-
-                if dependency_parser_info.class_capabilities.name not in valid_type_names:
-                    errors.append(
-                        InvalidDependencyTypeError.Create(
-                            region=dependency.type.regions__.self__,
-                            type=self.name,
-                            desc=desc,
-                            dependency_type=dependency_parser_info.class_capabilities.name,
-                            valid_types=valid_type_names,
-                            valid_types_str=", ".join("'{}'".format(type_name) for type_name in valid_type_names),
-                        ),
-                    )
-
-                    continue
-
-        # Check for multiple extends
-        has_extends = False
-
-        for dependency in (parser_info.extends or []):
-            if dependency.is_disabled__:
-                continue
-
-            if has_extends:
-                errors.append(
-                    MultipleExtendsError.Create(
-                        region=dependency.regions__.self__,
-                        type=self.name,
-                    ),
-                )
-
-                continue
-
-            has_extends = True
+        if resolved_parser_info.class_capabilities.name not in valid_type_names:
+            errors.append(
+                InvalidDependencyTypeError.Create(
+                    region=dependency.type.regions__.self__,
+                    type=self.name,
+                    desc=desc,
+                    dependency_type=resolved_parser_info.class_capabilities.name,
+                    valid_types=valid_type_names,
+                    valid_types_str=", ".join("'{}'".format(type_name) for type_name in valid_type_names),
+                ),
+            )
 
         if errors:
             raise ErrorException(*errors)

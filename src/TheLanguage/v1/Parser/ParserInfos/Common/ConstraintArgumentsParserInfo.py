@@ -19,7 +19,7 @@ import os
 
 from typing import Dict, List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -38,6 +38,8 @@ with InitRelativeImports():
 
     from ...Error import CreateError, Error, ErrorException
 
+    from ...Common import CallHelpers
+
 
 # ----------------------------------------------------------------------
 DuplicateNameError                          = CreateError(
@@ -45,6 +47,7 @@ DuplicateNameError                          = CreateError(
     name=str,
     prev_region=TranslationUnitRegion,
 )
+
 
 InvalidConstraintExpressionError            = CreateError(
     "Constraint arguments must be compile-time expressions",
@@ -78,7 +81,9 @@ class ConstraintArgumentParserInfo(ParserInfo):
             ParserInfoType.TypeCustomization,
             *args,
             **kwargs,
-            regionless_attributes=["expression", ],
+            regionless_attributes=[
+                "expression",
+            ],
         )
 
         # Validate
@@ -116,6 +121,9 @@ class ConstraintArgumentsParserInfo(ParserInfo):
 
     arguments: List[ConstraintArgumentParserInfo]
 
+    call_helpers_args: List[CallHelpers.ArgumentInfo]                       = field(init=False, default_factory=list)
+    call_helpers_kwargs: List[CallHelpers.ArgumentInfo]                     = field(init=False, default_factory=dict)
+
     # ----------------------------------------------------------------------
     @classmethod
     def Create(cls, *args, **kwargs):
@@ -126,11 +134,22 @@ class ConstraintArgumentsParserInfo(ParserInfo):
         return cls(*args, **kwargs)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
+    def __post_init__(self, regions, *args, **kwargs):
         super(ConstraintArgumentsParserInfo, self).__init__(
             ParserInfoType.GetDominantType(*self.arguments),
+            regions,
             *args,
-            **kwargs,
+            regionless_attributes=[
+                "call_helpers_args",
+                "call_helpers_kwargs",
+            ],
+            **{
+                **{
+                    "call_helpers_args": None,
+                    "call_helpers_kwargs": None,
+                },
+                **kwargs,
+            },
         )
 
         # Validate
@@ -155,6 +174,27 @@ class ConstraintArgumentsParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+        # Initialize the call helpers info
+        call_helpers_args: List[CallHelpers.ArgumentInfo] = []
+        call_helpers_kwargs: Dict[str, CallHelpers.ArgumentInfo] = {}
+
+        for argument in self.arguments:
+            if argument.keyword is None:
+                call_helpers_args.append(
+                    CallHelpers.ArgumentInfo(
+                        argument.regions__.self__,
+                        context=argument,
+                    ),
+                )
+            else:
+                call_helpers_kwargs[argument.keyword] = CallHelpers.ArgumentInfo(
+                    argument.regions__.self__,
+                    context=argument,
+                )
+
+        object.__setattr__(self, "call_helpers_args", call_helpers_args)
+        object.__setattr__(self, "call_helpers_kwargs", call_helpers_kwargs)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

@@ -33,12 +33,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
-
+    from .ExpressionParserInfo import ExpressionParserInfo
+    from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class NoneExpressionParserInfo(ExpressionParserInfo):
+class NoneExpressionParserInfo(
+    SimpleExpressionTrait,
+    ExpressionParserInfo,
+):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override

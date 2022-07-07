@@ -180,6 +180,7 @@ def EvalExpression(
 
 
 # ----------------------------------------------------------------------
+# TODO: MiniLanguageType should include a region for better error support
 def EvalType(
     parser_info: ExpressionParserInfo,
     compile_time_info_items: List[Dict[str, CompileTimeInfo]],
@@ -195,7 +196,7 @@ def EvalType(
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 class _Helper(object):
-    """Object that makes it easier to pass around all of the variables required to implement this functionality"""
+    """Object that makes it easier to pass around all of the state required to implement this functionality"""
 
     # ----------------------------------------------------------------------
     @classmethod

@@ -39,6 +39,8 @@ with InitRelativeImports():
         ParserInfoType,
     )
 
+    from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
+
     from ..Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
     from ..Common.MutabilityModifier import MutabilityModifier
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
@@ -97,7 +99,10 @@ InvalidStandardTypeError                    = CreateError(
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
+class FuncOrTypeExpressionParserInfo(
+    SimpleExpressionTrait,
+    ExpressionParserInfo,
+):
     # ----------------------------------------------------------------------
     value: Union[
         MiniLanguageType,
@@ -111,7 +116,8 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(FuncOrTypeExpressionParserInfo, self).__post_init__(
+        ExpressionParserInfo.__post_init__(
+            self,
             *args,
             regionless_attributes=[
                 "templates",

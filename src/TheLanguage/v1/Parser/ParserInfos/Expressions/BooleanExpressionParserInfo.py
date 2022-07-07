@@ -33,20 +33,27 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class BooleanExpressionParserInfo(ExpressionParserInfo):
+class BooleanExpressionParserInfo(
+    SimpleExpressionTrait,
+    ExpressionParserInfo,
+):
     # ----------------------------------------------------------------------
     value: bool
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(BooleanExpressionParserInfo, self).__post_init__(
+        ExpressionParserInfo.__post_init__(
+            self,
             *args,
             **kwargs,
-            regionless_attributes=["value", ],
+            regionless_attributes=[
+                "value",
+            ],
         )
 
     # ----------------------------------------------------------------------

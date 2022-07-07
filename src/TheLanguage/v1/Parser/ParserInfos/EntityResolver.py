@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  IntegerExpressionParserInfo.py
+# |  EntityResolver.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 12:00:17
+# |      2022-07-06 16:19:54
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,12 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the IntegerExpressionParserInfo object"""
+"""Contains the EntityResolver object"""
 
 import os
 
-from typing import List, Optional
-
-from dataclasses import dataclass
-
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,39 +28,37 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, TranslationUnitRegion
-    from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
+    from .Types import Type
+
+    from .Expressions.ExpressionParserInfo import ExpressionParserInfo
+
+    from ..Common import MiniLanguageHelpers
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class IntegerExpressionParserInfo(
-    SimpleExpressionTrait,
-    ExpressionParserInfo,
-):
-    # ----------------------------------------------------------------------
-    value: int
+class EntityResolver(Interface.Interface):
+    """Abstract interface for object that is able to resolve entities"""
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        regions: List[Optional[TranslationUnitRegion]],
-        *args,
-        **kwargs,
-    ):
-        return cls(
-            ParserInfoType.Unknown,         # type: ignore
-            regions,                        # type: ignore
-            *args,
-            **kwargs,
-        )
+    @staticmethod
+    @Interface.abstractmethod
+    def ResolveMiniLanguageType(
+        parser_info: ExpressionParserInfo,
+    ) -> MiniLanguageHelpers.MiniLanguageType:
+        raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
-        ExpressionParserInfo.__post_init__(
-            self,
-            *args,
-            **kwargs,
-            regionless_attributes=["value", ],
-        )
+    @staticmethod
+    @Interface.abstractmethod
+    def ResolveMiniLanguageExpression(
+        parser_info: ExpressionParserInfo,
+    ) -> MiniLanguageHelpers.MiniLanguageExpression.EvalResult:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def ResolveType(
+        parser_info: ExpressionParserInfo,
+    ) -> Type:
+        raise Exception("Abstract method")  # pragma: no cover

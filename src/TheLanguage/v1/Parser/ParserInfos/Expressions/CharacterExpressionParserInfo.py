@@ -32,11 +32,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, TranslationUnitRegion
+    from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class CharacterExpressionParserInfo(ExpressionParserInfo):
+class CharacterExpressionParserInfo(
+    SimpleExpressionTrait,
+    ExpressionParserInfo,
+):
     # ----------------------------------------------------------------------
     value: int
 
@@ -57,8 +61,11 @@ class CharacterExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(CharacterExpressionParserInfo, self).__post_init__(
+        ExpressionParserInfo.__post_init__(
+            self,
             *args,
             **kwargs,
-            regionless_attributes=["value", ],
+            regionless_attributes=[
+                "value",
+            ],
         )

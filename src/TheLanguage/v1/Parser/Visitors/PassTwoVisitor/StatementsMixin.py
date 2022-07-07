@@ -61,29 +61,29 @@ class StatementsMixin(BaseMixin):
 
     # ----------------------------------------------------------------------
     @contextmanager
-    def OnClassStatementParserInfo(
+    def OnClassStatementParserInfo_(
         self,
         parser_info: ClassStatementParserInfo,
     ):
         yield
 
-        # ----------------------------------------------------------------------
-        def ResolveDependenciesParallelCallback():
-            parser_info.ValidateDependencies()
-
-        # ----------------------------------------------------------------------
-        def ResolveDependenciesSequentialCallback():
-            parser_info.Initialize()
-
-        # ----------------------------------------------------------------------
-
-        self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveDependenciesParallel.value].append(ResolveDependenciesParallelCallback)
-        self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveDependenciesSequential.value].append(ResolveDependenciesSequentialCallback)
+        # BugBug # ----------------------------------------------------------------------
+        # BugBug def ResolveDependenciesParallelCallback():
+        # BugBug     parser_info.ValidateDependencies()
+        # BugBug
+        # BugBug # ----------------------------------------------------------------------
+        # BugBug def ResolveDependenciesSequentialCallback():
+        # BugBug     parser_info.Initialize()
+        # BugBug
+        # BugBug # ----------------------------------------------------------------------
+        # BugBug
+        # BugBug self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveDependenciesParallel.value].append(ResolveDependenciesParallelCallback)
+        # BugBug self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveDependenciesSequential.value].append(ResolveDependenciesSequentialCallback)
 
     # ----------------------------------------------------------------------
     @staticmethod
     @contextmanager
-    def OnClassStatementDependencyParserInfo(*args, **kwargs):
+    def OnClassStatementDependencyParserInfo_(*args, **kwargs):
         yield
 
     # ----------------------------------------------------------------------
@@ -121,18 +121,6 @@ class StatementsMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @contextmanager
-    def OnImportStatementParserInfo(
-        parser_info: ImportStatementParserInfo,
-    ):
-        yield
-
-        # Now that all namespace processing has been completed, we can safely
-        # disable this statement so that it doesn't import other processing.
-        parser_info.Disable()
-
-    # ----------------------------------------------------------------------
     @contextmanager
     def OnSpecialMethodStatementParserInfo(
         self,
@@ -141,13 +129,12 @@ class StatementsMixin(BaseMixin):
         yield
 
     # ----------------------------------------------------------------------
-    @staticmethod
     @contextmanager
-    def OnPassStatementParserInfo(*args, **kwargs):
-        yield
+    def OnTypeAliasStatementParserInfo(
+        self,
+        parser_info: TypeAliasStatementParserInfo,
+    ):
+        if parser_info.templates is None or parser_info.templates.is_default_initializable:
+            self.CreateConcreteType(parser_info, None)
 
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @contextmanager
-    def OnTypeAliasStatementParserInfo(*args, **kwargs):
         yield

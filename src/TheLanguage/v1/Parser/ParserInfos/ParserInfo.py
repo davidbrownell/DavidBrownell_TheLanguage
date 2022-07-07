@@ -272,10 +272,6 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
             method_name = "On{}".format(self.__class__.__name__)
 
             method = getattr(visitor, method_name, None)
-
-            if method is None:
-                BugBug = 10
-
             assert method is not None, method_name
 
             with method(self) as visit_result:
@@ -341,20 +337,6 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
 
         if self.parser_info_type__ == ParserInfoType.Configuration:
             with self._InitConfigurationImpl(configuration_info) as visit_result:
-                yield visit_result
-        else:
-            yield
-
-    # ----------------------------------------------------------------------
-    @contextmanager
-    def InitTypeCustomization(
-        self,
-        configuration_info: Dict[str, CompileTimeInfo],
-    ):
-        """Opportunity for a ParserInfo object to initialize itself during the type customization process."""
-
-        if self.parser_info_type__ == ParserInfoType.TypeCustomization:
-            with self._InitTypeCustomizationImpl(configuration_info) as visit_result:
                 yield visit_result
         else:
             yield
@@ -473,16 +455,6 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     @contextmanager
     @Interface.extensionmethod
     def _InitConfigurationImpl(
-        cls,
-        configuration_data: Dict[str, CompileTimeInfo], # pylint: disable=unused-argument
-    ):
-        raise Exception("This functionality should be implemented by derived classes when applicable ({})".format(cls))
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    @contextmanager
-    @Interface.extensionmethod
-    def _InitTypeCustomizationImpl(
         cls,
         configuration_data: Dict[str, CompileTimeInfo], # pylint: disable=unused-argument
     ):
