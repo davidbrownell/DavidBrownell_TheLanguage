@@ -56,6 +56,7 @@ with InitRelativeImports():
     from ...MiniLanguage.Expressions.EnforceExpression import EnforceExpression         # pylint: disable=unused-import
     from ...MiniLanguage.Expressions.ErrorExpression import ErrorExpression             # pylint: disable=unused-import
     from ...MiniLanguage.Expressions.IsDefinedExpression import IsDefinedExpression     # pylint: disable=unused-import
+    from ...MiniLanguage.Expressions.OutputExpression import OutputExpression           # pylint: disable=unused-import
 
     from ...MiniLanguage.Types.BooleanType import BooleanType               # pylint: disable=unused-import
     from ...MiniLanguage.Types.CharacterType import CharacterType           # pylint: disable=unused-import

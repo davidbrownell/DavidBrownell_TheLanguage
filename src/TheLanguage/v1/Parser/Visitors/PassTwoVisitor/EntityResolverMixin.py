@@ -53,11 +53,13 @@ with InitRelativeImports():
     from ...ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
     from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
+    from ...ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodType
 
     from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
-    from ...ParserInfos.Types import NoneType, Type, TupleType, VariantType
+    from ...ParserInfos.Types import ConcreteClassType, NoneType, Type, TupleType, VariantType
 
     from ...Common import MiniLanguageHelpers
     from ...Error import CreateError, ErrorException
@@ -222,10 +224,19 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
         parser_info: TemplatedStatementTrait,
         template_arguments: Optional[TemplateArgumentsParserInfo],
     ) -> Type:
-        resolved_template_arguments, init_concrete_entity = parser_info.CreateConcreteEntityFactory(
+        is_cached_result, get_or_create_result = parser_info.GetOrCreateConcreteEntityFactory(
             template_arguments,
             self,
         )
+
+        if is_cached_result:
+            assert isinstance(get_or_create_result, Type), get_or_create_result
+            return get_or_create_result
+
+        assert isinstance(get_or_create_result, tuple), get_or_create_result
+        assert len(get_or_create_result) == 2, get_or_create_result
+
+        resolved_template_arguments, init_concrete_entity = get_or_create_result
 
         result: Optional[Type] = None
 
@@ -233,8 +244,18 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
             if resolved_template_arguments is not None:
                 new_compile_time_info: Dict[str, CompileTimeInfo] = {}
 
+                # Add the types
                 # BugBug
 
+                # Add the decorators
+                for decorator_parameter, decorator_result in resolved_template_arguments.decorators:
+                    assert decorator_parameter.name not in new_compile_time_info, decorator_parameter.name
+                    
+                    new_compile_time_info[decorator_parameter.name] = CompileTimeInfo(
+                        decorator_result.type,
+                        decorator_result.value,
+                    )
+                
                 self._compile_time_stack.append(new_compile_time_info)
                 exit_stack.callback(self._compile_time_stack.pop)
 
@@ -243,7 +264,28 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
             assert isinstance(entity, Type), entity
             result = entity
 
-        assert isinstance(result, Type), result
+            if (
+                isinstance(result, ConcreteClassType)
+                and SpecialMethodType.EvalTemplates in result.concrete_class.special_methods
+            ):
+                statements = result.concrete_class.special_methods[SpecialMethodType.EvalTemplates].statements
+                assert statements is not None
+
+                for statement in statements:
+                    if statement.is_disabled__:
+                        continue
+
+                    assert isinstance(statement, FuncInvocationStatementParserInfo), statement
+
+                    eval_result = MiniLanguageHelpers.EvalExpression(
+                        statement.expression,
+                        self._compile_time_stack,
+                        self._TypeCheckHelper,
+                    )
+
+                    assert isinstance(eval_result.type, MiniLanguageHelpers.NoneType), eval_result.type
+
+        assert result is not None
         return result
 
     # ----------------------------------------------------------------------

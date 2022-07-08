@@ -56,6 +56,7 @@ with InitRelativeImports():
     from ..MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
     from ..MiniLanguage.Expressions.IdentityExpression import IdentityExpression
     from ..MiniLanguage.Expressions.IsDefinedExpression import IsDefinedExpression
+    from ..MiniLanguage.Expressions.OutputExpression import OutputExpression
     from ..MiniLanguage.Expressions.TernaryExpression import TernaryExpression
     from ..MiniLanguage.Expressions.TypeCheckExpression import TypeCheckExpression
     from ..MiniLanguage.Expressions.UnaryExpression import UnaryExpression
@@ -146,6 +147,7 @@ COMPILE_TIME_KWARGS_AUGMENTATION_MAP: Dict[
     EnforceExpression: _AugmentEnforceExpressionArguments,
     ErrorExpression: _AugmentErrorExpressionArguments,
     IsDefinedExpression: None,
+    OutputExpression: None,
 }
 
 del _AugmentEnforceExpressionArguments
@@ -492,6 +494,8 @@ class _Helper(object):
         self,
         parser_info: CallExpressionParserInfo,
     ) -> MiniLanguageExpression:
+        # TODO: Give the grammar a way to specify what the name of the function is, so error messages appear as expected.
+
         eval_result = self.Eval(self.ToExpression(parser_info.expression))
         function_expression_type = cast(TypingType[MiniLanguageExpression], eval_result.value)
 
@@ -567,6 +571,7 @@ class _Helper(object):
         argument_map = CallHelpers.CreateArgumentMap(
             function_expression_type.__name__,
             None,
+            parser_info.regions__.arguments,
             [],
             param_infos,
             [],

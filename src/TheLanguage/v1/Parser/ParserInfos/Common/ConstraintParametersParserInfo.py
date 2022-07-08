@@ -316,10 +316,13 @@ class ConstraintParametersParserInfo(ParserInfo):
         self,
         destination: str,
         destination_region: TranslationUnitRegion,
+        invocation_region: TranslationUnitRegion,
         constraint_arguments: Optional["ConstraintArgumentsParserInfo"],
         resolve_type_func: Callable[[ExpressionParserInfo], MiniLanguageHelpers.MiniLanguageType],
         resolve_value_func: Callable[[ExpressionParserInfo], MiniLanguageHelpers.MiniLanguageExpression.EvalResult],
     ) -> Dict[str, Any]:
+        # BugBug: This needs work, as TemplateParametersParserInfo.MatchCall has undergone changes.
+
         if constraint_arguments is None:
             args = []
             kwargs = {}
@@ -330,6 +333,7 @@ class ConstraintParametersParserInfo(ParserInfo):
         argument_map = CallHelpers.CreateArgumentMap(
             destination,
             destination_region,
+            invocation_region,
             self.call_helpers_positional,
             self.call_helpers_any,
             self.call_helpers_keyword,

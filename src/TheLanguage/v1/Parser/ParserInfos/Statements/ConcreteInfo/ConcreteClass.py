@@ -310,7 +310,7 @@ class ConcreteClass(ConcreteEntity):
             elif isinstance(statement, SpecialMethodStatementParserInfo):
                 # Determine if the special method is valid for the class
                 if (
-                    statement.special_method_type == SpecialMethodType.CompileTimeEvalTemplates
+                    statement.special_method_type == SpecialMethodType.EvalTemplates
                     and not class_statement_parser_info.templates
                 ):
                     errors.append(

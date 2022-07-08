@@ -59,13 +59,12 @@ NoClassError                                = CreateError(
     "Special methods may only be defined within a class-like object",
 )
 
-# TODO: Need to enforce this at some point
-EvalTemplatesNoTemplatesError               = CreateError(
-    "A method to evaluate templates is not allowed without templates",
+StatementsRequiredError                     = CreateError(
+    "Statements are required",
 )
 
-EvalConstraintsNoConstraintsError           = CreateError(
-    "A method to evaluate constraints is not allowed without constraints",
+InvalidCompileTimeStatementError            = CreateError(
+    "Invalid compile-time statement",
 )
 
 
@@ -73,7 +72,7 @@ EvalConstraintsNoConstraintsError           = CreateError(
 class SpecialMethodType(Enum):
     #                                                       Description                                         Default Behavior                Is Exceptional  Signature
     #                                                       --------------------------------------------        --------------------------      --------------  ---------------------------------
-    CompileTimeEvalTemplates    = auto()                    # Custom functionality invoked at compile time      Noop                            N/A             __EvalTemplates!__()  # Uses `Enforce!`
+    EvalTemplates    = auto()                               # Custom functionality invoked at compile time      Noop                            N/A             __EvalTemplates!__()  # Uses `Enforce!`
                                                             # to ensure that the template arguments are
                                                             # valid.
 
@@ -86,10 +85,10 @@ class SpecialMethodType(Enum):
                                                             # constraints can be converted seamlessly to
                                                             # a different set of constraints.
 
-    Construct                   = auto()                    # Validates an instance of an object                Noop                            Yes             __Construct?__()
+    Validate                    = auto()                    # Validates an instance of an object                Noop                            Yes             __Validate?__()
                                                             # (invoked before bases are validated).
 
-    ConstructFinal              = auto()                    # Validates an instance of an object                Noop                            Yes             __ConstructFinal?__()
+    ValidateFinal               = auto()                    # Validates an instance of an object                Noop                            Yes             __ValidateFinal?__()
                                                             # (invoked after bases are validated).
 
     Destroy                     = auto()                    # Called when an instance is being destroyed        Noop                            No              __Destroy__()
@@ -100,6 +99,15 @@ class SpecialMethodType(Enum):
 
     PrepareFinalize             = auto()                    # Called when an instance is being finalized        Impl based on attr flags        Yes             __PrepareFinalize?__()
     Finalize                    = auto()                    # Called when an instance is being finalized        Impl based on attr flags        No              __Finalize__()
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    def IsCompileTimeMethod(cls, special_method_type):
+        return special_method_type in [
+            cls.EvalTemplates,
+            cls.CompileTimeEvalConstraints,
+            cls.CompileTimeConvert,
+        ]
 
 
 # ----------------------------------------------------------------------
@@ -124,7 +132,7 @@ class SpecialMethodStatementParserInfo(
         *args,
         **kwargs,
     ):
-        if name in cls._CompileTimeMethods:
+        if SpecialMethodType.IsCompileTimeMethod(name):
             parser_info_type = ParserInfoType.TypeCustomization
         else:
             parser_info_type = ParserInfoType.Standard
@@ -181,6 +189,21 @@ class SpecialMethodStatementParserInfo(
                 ),
             )
 
+        if not self.statements:
+            errors.append(
+                StatementsRequiredError.Create(
+                    region=self.regions__.self__,
+                ),
+            )
+        elif ParserInfoType.IsCompileTime(self.parser_info_type__):
+            for statement in self.statements:
+                if not ParserInfoType.IsCompileTime(statement.parser_info_type__):
+                    errors.append(
+                        InvalidCompileTimeStatementError.Create(
+                            region=statement.regions__.self__,
+                        ),
+                    )
+
         if errors:
             raise ErrorException(*errors)
 
@@ -200,16 +223,3 @@ class SpecialMethodStatementParserInfo(
         scope_flag: ScopeFlag,
     ) -> bool:
         return False
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _CompileTimeMethods                     = set(
-        [
-            SpecialMethodType.CompileTimeEvalTemplates,
-            SpecialMethodType.CompileTimeEvalConstraints,
-            SpecialMethodType.CompileTimeConvert,
-        ],
-    )

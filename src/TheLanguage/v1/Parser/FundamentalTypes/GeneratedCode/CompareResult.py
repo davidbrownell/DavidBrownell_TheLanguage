@@ -27,7 +27,10 @@ tu_region_000005 = TranslationUnitRegion(begin=Location(line=1, column=1), end=L
 
 
 # ----------------------------------------------------------------------
-statement_000000 = PassStatementParserInfo.Create([tu_region_000000])
+statement_000000 = PassStatementParserInfo.Create(
+    parser_info_type=ParserInfoType.Standard,
+    regions=[tu_region_000000],
+)
 statement_000001 = ClassStatementParserInfo.Create(
     regions=[tu_region_000001, tu_region_000002, tu_region_000004, tu_region_000001, tu_region_000003, None, None, None, None, tu_region_000001, None, None],
     name=r"CompareResult",

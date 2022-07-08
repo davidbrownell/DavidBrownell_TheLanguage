@@ -70,11 +70,11 @@ class SpecialMethodStatement(GrammarPhrase):
     PHRASE_NAME                             = "Class Func Definition Statement"
 
     FUNCTION_MAP                            = {
-        "__EvalTemplates!__": SpecialMethodType.CompileTimeEvalTemplates,
+        "__EvalTemplates!__": SpecialMethodType.EvalTemplates,
         "__EvalConstraints!__": SpecialMethodType.CompileTimeEvalConstraints,
         "__EvalConvertible!__": SpecialMethodType.CompileTimeConvert,
-        "__Construct?__": SpecialMethodType.Construct,
-        "__ConstructFinal?__": SpecialMethodType.ConstructFinal,
+        "__Validate?__": SpecialMethodType.Validate,
+        "__ValidateFinal?__": SpecialMethodType.ValidateFinal,
         "__Destroy__": SpecialMethodType.Destroy,
         "__DestroyFinal__": SpecialMethodType.DestroyFinal,
         "__PrepareFinalize?__": SpecialMethodType.PrepareFinalize,

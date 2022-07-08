@@ -346,15 +346,12 @@ class ClassStatementParserInfo(
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def CreateConcreteEntityFactory(
+    def GetOrCreateConcreteEntityFactory(
         self,
         template_arguments: Optional[TemplateArgumentsParserInfo],
         entity_resolver: EntityResolver,
-    ) -> Tuple[
-        Optional[ResolvedTemplateArguments],
-        Callable[[], Union[Type, ConcreteEntity]],
-    ]:
-        return self._CreateConcreteEntityFactoryImpl(
+    ) -> TemplatedStatementTrait.GetOrCreateConcreteEntityFactoryResultType:
+        return self._GetOrCreateConcreteEntityFactoryImpl(
             template_arguments,
             entity_resolver,
             lambda: ConcreteClassType(

@@ -20,7 +20,7 @@ import re
 import textwrap
 import types
 
-from typing import Callable, Optional
+from typing import Callable, List, Optional, Tuple, Union
 
 import CommonEnvironment
 
@@ -59,6 +59,32 @@ PushIgnoreWhitespaceControl                 = PushIgnoreWhitespaceControlToken()
 
 PopPreserveWhitespaceControl                = PopPreserveWhitespaceControlToken()
 PushPreserveWhitespaceControl               = PushPreserveWhitespaceControlToken()
+
+
+# ----------------------------------------------------------------------
+def CreateRegexToken(
+    name: str,
+    tokens: Union[
+        str,                                # single value
+        List[str],                          # sequence
+        Tuple[str, ...],                    # one of
+    ],
+    group_name: Optional[str]=None,
+) -> RegexToken:
+    if isinstance(tokens, str):
+        expression = tokens
+    elif isinstance(tokens, list):
+        expression = "".join(tokens)
+    elif isinstance(tokens, tuple):
+        expression = "(?:{})".format("|".join(tokens))
+
+    # Match whole word
+    expression = r"{}(?![A-Za-z0-9_!\?])".format(expression)
+
+    if group_name is not None:
+        expression = r"(?P<{}>{})".format(group_name, expression)
+
+    return RegexToken(name, re.compile(expression))
 
 
 # ----------------------------------------------------------------------
@@ -108,40 +134,31 @@ def _GetRegionFuncFactory(
 
 
 # ----------------------------------------------------------------------
-AttributeName                               = RegexToken(
-    "<attribute name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Upper                            )[A-Z](?#
-            Alphanumeric                     )[A-Za-z0-9_]+(?#
-            ))""",
-        ),
-    ),
+AttributeName                               = CreateRegexToken(
+    "<attribute_name>",
+    [
+        r"[A-Z]",
+        r"[A-Za-z0-9_]+",
+    ],
+    group_name="value",
 )
 
 AttributeName.Extract                       = _ExtractFuncFactory(False)  # type: ignore
 
 
 # ----------------------------------------------------------------------
-FuncOrTypeName                              = RegexToken(
+FuncOrTypeName                              = CreateRegexToken(
     "<func or type name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Initial Underscores [optional]  )_*(?#
-            Upper                           )[A-Z](?#
-            Alphanumeric                    )[A-Za-z0-9_]+(?#
-            Is compile time [optional]      )(?P<is_compile_time>!)?(?#
-            Is exceptional [optional]       )(?P<is_exceptional>\?)?(?#
-            Trailing Underscores [optional] )_*(?#
-            Whole match only                )(?![A-Za-z0-9_!\?])(?#
-            ))""",
-        ),
-    ),
+    [
+        r"_*",
+        r"[A-Z]",
+        r"[A-Za-z0-9_]+",
+        r"(?P<is_compile_time>!)?",
+        r"(?P<is_exceptional>\?)?",
+        "_*",
+    ],
+    group_name="value",
 )
-
-# TODO: Do not allow compile_time when not expected / require compile time when expected
 
 FuncOrTypeName.Extract                      = _ExtractFuncFactory(True)                             # type: ignore
 FuncOrTypeName.IsCompileTime                = _IsFuncFactory(FuncOrTypeName, "is_compile_time")           # type: ignore
@@ -152,20 +169,15 @@ FuncOrTypeName.GetIsCompileTimeRegion       = _GetRegionFuncFactory(FuncOrTypeNa
 func_or_type_name_configuration_compile_time_regex      = re.compile(r"__[A-Z][A-Za-z0-9_]+!")
 
 # ----------------------------------------------------------------------
-ParameterName                               = RegexToken(
+ParameterName                               = CreateRegexToken(
     "<parameter name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Lower                           )[a-z](?#
-            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
-            Bang [optional]                 )(?P<is_compile_time>!)?(?#
-            ))""",
-        ),
-    ),
+    [
+        r"[a-z]",
+        r"[A-Za-z0-9_]+",
+        r"(?P<is_compile_time>!)?",
+    ],
+    group_name="value",
 )
-
-# TODO: Do not allow compile_time when not expected / require compile time when expected
 
 ParameterName.Extract                       = _ExtractFuncFactory(True)                                 # type: ignore
 ParameterName.IsCompileTime                 = _IsFuncFactory(ParameterName, "is_compile_time")          # type: ignore
@@ -174,21 +186,17 @@ ParameterName.GetIsCompileTimeRegion        = _GetRegionFuncFactory(ParameterNam
 
 # ----------------------------------------------------------------------
 # TODO: I don't like the name "SpecialMethod"
-SpecialMethodName                           = RegexToken(
+SpecialMethodName                           = CreateRegexToken(
     "<class method name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Initial Underscores             )__(?#
-            Upper                           )[A-Z](?#
-            Alphanumeric                    )[A-Za-z0-9_]+(?#
-            Bang [optional]                 )(?P<is_compile_time>!)?(?#
-            Question mark [optional]        )(?P<is_exceptional>\?)?(?#
-            Trailing Underscores            )__(?#
-            Whole match only                )(?![A-Za-z0-9_!\?])(?#
-            ))""",
-        ),
-    ),
+    [
+        r"__",
+        r"[A-Z]",
+        r"[A-Za-z0-9_]+",
+        r"(?P<is_compile_time>!)?",
+        r"(?P<is_exceptional>\?)?",
+        r"__",
+    ],
+    group_name="value",
 )
 
 SpecialMethodName.Extract                   = _ExtractFuncFactory(True)                                     # type: ignore
@@ -200,40 +208,32 @@ SpecialMethodName.GetIsExceptionalRegion    = _GetRegionFuncFactory(SpecialMetho
 
 # ----------------------------------------------------------------------
 # TODO: Auto-detect template types by looking for a 'T' suffix?
-TemplateTypeName                            = RegexToken(
+
+TemplateTypeName                            = CreateRegexToken(
     "<template type name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Upper                           )[A-Z](?#
-            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
-            Ends with a 'T'                 )(?<=T)(?#
-            ))""",
-        ),
-    ),
+    [
+        r"[A-Z]",
+        r"[A-Za-z0-9_]+",
+        r"(?<=T)",
+    ],
+    group_name="value",
 )
 
 TemplateTypeName.Extract                    = _ExtractFuncFactory(False)  # type: ignore
 
 
 # ----------------------------------------------------------------------
-VariableName                                = RegexToken(
+VariableName                                = CreateRegexToken(
     "<variable name>",
-    re.compile(
-        textwrap.dedent(
-            r"""(?P<value>(?#
-            Initial Underscores [optional]  )_*(?#
-            Lower                           )[a-z](?#
-            Alphanumeric [optional]         )[A-Za-z0-9_]*(?#
-            Bang [optional]                 )(?P<is_compile_time>!)?(?#
-            Trailing Underscores [optional] )_*(?#
-            Whole match only                )(?![A-Za-z0-9_!])(?#
-            ))""",
-        ),
-    ),
+    [
+        r"_*",
+        r"[a-z]",
+        r"[A-Za-z0-9_]*",
+        r"(?P<is_compile_time>!)?",
+        r"_*",
+    ],
+    group_name="value",
 )
-
-# TODO: Do not allow compile_time when not expected / require compile time when expected
 
 VariableName.Extract                        = _ExtractFuncFactory(True)  # type: ignore
 VariableName.IsCompileTime                  = _IsFuncFactory(VariableName, "is_compile_time")  # type: ignore

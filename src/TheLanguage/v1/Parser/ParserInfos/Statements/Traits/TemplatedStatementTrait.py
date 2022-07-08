@@ -54,12 +54,34 @@ class TemplatedStatementTrait(Interface.Interface):
     """Apply to statements that may have templates"""
 
     # ----------------------------------------------------------------------
+    # |  Public Types
+    GetOrCreateConcreteEntityFactoryResultType          = Tuple[
+        bool,                                           # is_cached_result
+        Union[
+            Type,                                       # is_cached_result == True
+            ConcreteEntity,                             # is_cached_result == True
+            Tuple[                                      # is_cached_result == False
+                Optional[ResolvedTemplateArguments],
+                Callable[
+                    [],
+                    Union[
+                        Type,
+                        ConcreteEntity,
+                    ],
+                ],
+            ],
+        ],
+    ]
+
+    # ----------------------------------------------------------------------
+    # |  Public Data
     templates_param: InitVar[Optional[TemplateParametersParserInfo]]
     templates: Optional[TemplateParametersParserInfo]   = field(init=False, default=None)
 
     is_default_initializable: bool          = field(init=False, default=False)
 
     # ----------------------------------------------------------------------
+    # |  Public Methods
     def __post_init__(self, templates_param):
         object.__setattr__(self, "templates", templates_param)
 
@@ -87,31 +109,22 @@ class TemplatedStatementTrait(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def CreateConcreteEntityFactory(
+    def GetOrCreateConcreteEntityFactory(
         template_arguments: Optional[TemplateArgumentsParserInfo],
         entity_resolver: EntityResolver,
-    ) -> Tuple[
-        Optional[ResolvedTemplateArguments],
-        Callable[[], Union[Type, ConcreteEntity]],
-    ]:
+    ) -> "TemplatedStatementTrait.GetOrCreateConcreteEntityFactoryResultType":
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
-    # |
     # |  Protected Methods
-    # |
-    # ----------------------------------------------------------------------
-    def _CreateConcreteEntityFactoryImpl(
+    def _GetOrCreateConcreteEntityFactoryImpl(
         self,
         template_arguments: Optional[TemplateArgumentsParserInfo],
         entity_resolver: EntityResolver,
         create_entity_func: Callable[[], Union[Type, ConcreteEntity]],
         *,
         parser_info: Optional[StatementParserInfo]=None,
-    ) -> Tuple[
-        Optional[ResolvedTemplateArguments],
-        Callable[[], Union[Type, ConcreteEntity]]
-    ]:
+    ) -> "TemplatedStatementTrait.GetOrCreateConcreteEntityFactoryResultType":
         # BugBug: Create Cache key
         cache_key = None
 
@@ -132,6 +145,7 @@ class TemplatedStatementTrait(Interface.Interface):
             resolved_template_arguments = self.templates.MatchCall(  # pylint: disable=no-member
                 parser_info.name,
                 parser_info.regions__.name,
+                parser_info.regions__.self__,
                 template_arguments,
                 entity_resolver,
             )
@@ -145,4 +159,4 @@ class TemplatedStatementTrait(Interface.Interface):
 
         # ----------------------------------------------------------------------
 
-        return (resolved_template_arguments, CreateEntityWrapper)
+        return False, (resolved_template_arguments, CreateEntityWrapper)

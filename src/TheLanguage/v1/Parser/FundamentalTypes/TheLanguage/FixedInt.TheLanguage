@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-from .Concepts.MutableInt import MutableInt
+# BugBug from .Concepts.MutableInt import MutableInt
 
 
 # ----------------------------------------------------------------------
@@ -29,23 +29,23 @@ TEMPLATE> {
 }
     implements public MutableInt { min_value!, max_value! }
 :
-    # BugBug: __EvalTemplates!__():
-    # BugBug:     Enforce!(
-    # BugBug:         num_bytes! == 1
-    # BugBug:         or num_bytes! == 2
-    # BugBug:         or num_bytes! == 4
-    # BugBug:         or num_bytes! == 8
-    # BugBug:         or num_bytes! == 16
-    # BugBug:     )
+    __EvalTemplates!__():
+        Enforce!(
+            num_bytes! == 1
+            or num_bytes! == 2
+            or num_bytes! == 4
+            or num_bytes! == 8
+            or num_bytes! == 16
+        )
 
-    # BugBug: __EvalConstraints!__():
-    # BugBug:     pass # BugBug: # Enforce that the min and max values are valid given the number of bytes
-    # BugBug:     pass # BugBug: Enforce!(min_value! >= -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0)
-    # BugBug:     pass # BugBug: Enforce!(max_value! <= (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1))
-    # BugBug:     pass # BugBug:
-    # BugBug:     pass # BugBug: # Ensure that the range between the min and the max can be contained within the bytes
-    # BugBug:     pass # BugBug: Enforce!(max_value! - min_value! <= ((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1)))
-    # BugBug:     pass # BugBug: Enforce!(min_value! - max_value! >= (-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0))
+    __EvalConstraints!__():
+        pass! # BugBug: # Enforce that the min and max values are valid given the number of bytes
+        pass! # BugBug: Enforce!(min_value! >= -(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0)
+        pass! # BugBug: Enforce!(max_value! <= (((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1))
+        pass! # BugBug:
+        pass! # BugBug: # Ensure that the range between the min and the max can be contained within the bytes
+        pass! # BugBug: Enforce!(max_value! - min_value! <= ((((1 << (num_bytes! * 8) - 1) // 2) - 1) if is_signed! else ((1 << (num_bytes! * 8)) - 1)))
+        pass! # BugBug: Enforce!(min_value! - max_value! >= (-(((1 << (num_bytes! * 8)) - 1) // 2) if is_signed! else 0))
 
     [Deferred, Static] public override ThisType var __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
     [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) immutable

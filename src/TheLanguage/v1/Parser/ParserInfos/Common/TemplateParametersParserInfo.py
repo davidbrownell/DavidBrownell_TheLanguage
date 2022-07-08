@@ -479,6 +479,7 @@ class TemplateParametersParserInfo(ParserInfo):
         self,
         destination: str,
         destination_region: TranslationUnitRegion,
+        invocation_region: TranslationUnitRegion,
         template_arguments: Optional["TemplateArgumentsParserInfo"],
         entity_resolver: "EntityResolver",
     ) -> ResolvedTemplateArguments:
@@ -492,6 +493,7 @@ class TemplateParametersParserInfo(ParserInfo):
         argument_map = CallHelpers.CreateArgumentMap(
             destination,
             destination_region,
+            invocation_region,
             self.call_helpers_positional,
             self.call_helpers_any,
             self.call_helpers_keyword,

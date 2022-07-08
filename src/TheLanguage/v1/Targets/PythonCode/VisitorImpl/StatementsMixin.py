@@ -520,10 +520,14 @@ class StatementsMixin(BaseMixin):
         self._stream.write(
             textwrap.dedent(
                 """\
-                {statement_name} = PassStatementParserInfo.Create([{self_region}])
+                {statement_name} = PassStatementParserInfo.Create(
+                    parser_info_type={parser_info_type},
+                    regions=[{self_region}],
+                )
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
+                parser_info_type=parser_info.parser_info_type__,
                 self_region=self._ToString(parser_info.regions__.self__),
             ),
         )

@@ -34,6 +34,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
+    from ..Common import Tokens as CommonTokens
+
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
         ExtractOr,
@@ -66,28 +68,26 @@ class LiteralExpression(GrammarPhrase):
             (
                 # <Boolean>
                 PhraseItem(
-                    RegexToken(
+                    CommonTokens.CreateRegexToken(
                         "Boolean",
-                        re.compile(
-                            textwrap.dedent(
-                                r"""(?#
-                                One of                      )(?:(?#
-                                    True [Configuration]    )__True!(?#
-                                    False [Configuration]   )|__False!(?#
-                                    True [Type Cust]        )|True!(?#
-                                    False [Type Cust]       )|False!(?#
-                                    True                    )|True(?#
-                                    False                   )|False(?#
-                                End                         ))(?#
-                                Whole match only            )(?![A-Za-z0-9_!])(?#
-                                )""",
-                            ),
+                        (
+                            # Configuration Values
+                            "__True!",
+                            "__False!",
+
+                            # Type Customization Values
+                            "True!",
+                            "False!",
+
+                            # Standard values
+                            "True",
+                            "False",
                         ),
                     ),
                 ),
 
                 # <Character>
-                # TODO: Unicode support doesn't seem to be working: 😀
+                # TODO: Unicode support doesn't seem to be working: 😀  <-- test char
                 PhraseItem(
                     RegexToken(
                         "Character",
@@ -124,19 +124,17 @@ class LiteralExpression(GrammarPhrase):
 
                 # None
                 PhraseItem(
-                    RegexToken(
+                    CommonTokens.CreateRegexToken(
                         "None",
-                        re.compile(
-                            textwrap.dedent(
-                                r"""(?#
-                                One of                      )(?:(?#
-                                    None [Configuration]    )__None!(?#
-                                    None [Type Cust]        )|None!(?#
-                                    None                    )|None(?#
-                                End                         ))(?#
-                                While match only            )(?![A-Za-z0-9_!])(?#
-                                )""",
-                            ),
+                        (
+                            # Configuration
+                            "__None!",
+
+                            # Type Customization
+                            "None!",
+
+                            # Standard
+                            "None",
                         ),
                     ),
                 ),

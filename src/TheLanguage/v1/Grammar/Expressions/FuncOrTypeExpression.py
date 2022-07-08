@@ -54,6 +54,7 @@ with InitRelativeImports():
         FuncOrTypeExpressionParserInfo,
         IntegerType,
         IsDefinedExpression,
+        OutputExpression,
         MiniLanguageType,
         NoneType,
         NumberType,
@@ -78,6 +79,7 @@ class FuncOrTypeExpression(GrammarPhrase):
         "Enforce!": EnforceExpression,
         "Error!": ErrorExpression,
         "IsDefined!": IsDefinedExpression,
+        "Output!": OutputExpression,
 
         # Types
         "Bool!" : BooleanType(),

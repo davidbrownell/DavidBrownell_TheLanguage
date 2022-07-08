@@ -94,6 +94,7 @@ class ArgumentInfo(object):
 def CreateArgumentMap(
     destination: str,
     destination_region: Optional[TranslationUnitRegion],
+    invocation_region: TranslationUnitRegion,
     positional_parameters: List[ParameterInfo],
     any_parameters: List[ParameterInfo],
     keyword_parameters: List[ParameterInfo],
@@ -144,7 +145,7 @@ def CreateArgumentMap(
                 if potential_positional_parameter is not None:
                     errors.append(
                         InvalidKeywordError.Create(
-                            region=value.region,
+                            region=value.region or invocation_region,
                             destination=destination,
                             destination_region=destination_region,
                             name=key,
@@ -154,7 +155,7 @@ def CreateArgumentMap(
                 else:
                     errors.append(
                         InvalidKeywordArgumentError.Create(
-                            region=value.region,
+                            region=value.region or invocation_region,
                             destination=destination,
                             destination_region=destination_region,
                             name=key,
@@ -180,7 +181,7 @@ def CreateArgumentMap(
 
                 errors.append(
                     DuplicateKeywordArgumentError.Create(
-                        region=value.region,
+                        region=value.region or invocation_region,
                         destination=destination,
                         destination_region=destination_region,
                         name=potential_parameter.name,
@@ -210,7 +211,7 @@ def CreateArgumentMap(
             if all_positional_parameters_index == len(all_positional_parameters):
                 errors.append(
                     TooManyArgumentsError.Create(
-                        region=arg.region,
+                        region=arg.region or invocation_region,
                         destination=destination,
                         destination_region=destination_region,
                     ),
@@ -242,7 +243,7 @@ def CreateArgumentMap(
             if not parameter.is_optional:
                 errors.append(
                     RequiredArgumentMissingError.Create(
-                        region=parameter.region,
+                        region=parameter.region or invocation_region,
                         destination=destination,
                         destination_region=destination_region,
                         name=parameter.name,
@@ -251,10 +252,7 @@ def CreateArgumentMap(
 
                 continue
 
-            if parameter.is_variadic:
-                result = []
-            else:
-                result = None
+            result = None
         else:
             if isinstance(result, list):
                 result = [arg.context for arg in result]

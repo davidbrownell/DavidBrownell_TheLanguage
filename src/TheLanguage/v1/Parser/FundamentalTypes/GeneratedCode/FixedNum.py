@@ -1155,7 +1155,7 @@ statement_000048 = FuncInvocationStatementParserInfo.Create(
 statement_000049 = SpecialMethodStatementParserInfo.Create(
     regions=[tu_region_000063, tu_region_000064, tu_region_000065],
     parent_class_capabilities=StandardCapabilities,
-    name=SpecialMethodType.CompileTimeEvalTemplates,
+    name=SpecialMethodType.EvalTemplates,
     statements=[statement_000048, ],
 )
 

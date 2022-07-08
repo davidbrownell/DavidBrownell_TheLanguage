@@ -520,14 +520,11 @@ class FuncDefinitionStatementParserInfo(
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def CreateConcreteEntityFactory(
+    def GetOrCreateConcreteEntityFactory(
         self,
         template_arguments: Optional[TemplateArgumentsParserInfo],
         entity_resolver: EntityResolver,
-    ) -> Tuple[
-        Optional[ResolvedTemplateArguments],
-        Callable[[], Union[Type, ConcreteEntity]],
-    ]:
+    ) -> TemplatedStatementTrait.GetOrCreateConcreteEntityFactoryResultType:
         assert False, "BugBug: Not implemented"
 
     # ----------------------------------------------------------------------

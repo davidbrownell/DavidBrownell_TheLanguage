@@ -61,24 +61,14 @@ class StatementsMixin(BaseMixin):
 
     # ----------------------------------------------------------------------
     @contextmanager
-    def OnClassStatementParserInfo_(
+    def OnClassStatementParserInfo(
         self,
         parser_info: ClassStatementParserInfo,
     ):
-        yield
+        if parser_info.templates is None or parser_info.templates.is_default_initializable:
+            self.CreateConcreteType(parser_info, None)
 
-        # BugBug # ----------------------------------------------------------------------
-        # BugBug def ResolveDependenciesParallelCallback():
-        # BugBug     parser_info.ValidateDependencies()
-        # BugBug
-        # BugBug # ----------------------------------------------------------------------
-        # BugBug def ResolveDependenciesSequentialCallback():
-        # BugBug     parser_info.Initialize()
-        # BugBug
-        # BugBug # ----------------------------------------------------------------------
-        # BugBug
-        # BugBug self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveDependenciesParallel.value].append(ResolveDependenciesParallelCallback)
-        # BugBug self._all_postprocess_funcs[BaseMixin.PostprocessType.ResolveDependenciesSequential.value].append(ResolveDependenciesSequentialCallback)
+        yield
 
     # ----------------------------------------------------------------------
     @staticmethod

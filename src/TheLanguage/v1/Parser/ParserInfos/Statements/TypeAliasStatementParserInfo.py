@@ -56,7 +56,6 @@ with InitRelativeImports():
     from ...Error import Error, ErrorException
 
 
-
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TypeAliasStatementParserInfo(
@@ -175,22 +174,20 @@ class TypeAliasStatementParserInfo(
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def CreateConcreteEntityFactory(
+    def GetOrCreateConcreteEntityFactory(
         self,
         template_arguments: Optional[TemplateArgumentsParserInfo],
         entity_resolver: EntityResolver,
-    ) -> Tuple[
-        Optional[ResolvedTemplateArguments],
-        Callable[[], Union[Type, ConcreteEntity]],
-    ]:
+    ) -> TemplatedStatementTrait.GetOrCreateConcreteEntityFactoryResultType:
+        # BugBug: I don't think that this works, as the template types aren't available yet.
+        # Need a scenario to exercise this functionality.
         resolved_type = entity_resolver.ResolveType(self.type)
-        assert isinstance(resolved_type, (ConcreteClassType, ConcreteTypeAliasType)), resolved_type
 
-        return self._CreateConcreteEntityFactoryImpl(
+        return self._GetOrCreateConcreteEntityFactoryImpl(
             template_arguments,
             entity_resolver,
             lambda: ConcreteTypeAliasType(self, resolved_type),
-            parser_info=resolved_type.parser_info, # BugBug: This isn't right at all
+            parser_info=resolved_type.parser_info,
         )
 
     # ----------------------------------------------------------------------
