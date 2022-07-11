@@ -91,10 +91,15 @@ class ClassAttributeStatementParserInfo(
                 "class_capabilities",
                 "type",
                 "initialized_value",
-            ],
+            ]
+                + NamedTrait.RegionlessAttributesArgs()
+            ,
             validate=False,
             **{
-                "class_capabilities": lambda value: value.name,
+                **{
+                    "class_capabilities": lambda value: value.name,
+                },
+                **NamedTrait.ObjectReprImplBaseInitKwargs(),
             },
         )
 
@@ -130,6 +135,12 @@ class ClassAttributeStatementParserInfo(
         return {
             ParserInfoType.Standard: ScopeFlag.Class,
         }
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(*args, **kwargs) -> bool:
+        return False
 
     # ----------------------------------------------------------------------
     # |

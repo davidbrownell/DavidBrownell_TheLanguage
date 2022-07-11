@@ -37,7 +37,7 @@ with InitRelativeImports():
     from .ExpressionsMixin import ExpressionsMixin
     from .StatementsMixin import StatementsMixin
 
-    from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
+    from ..Namespaces import Namespace, ParsedNamespace
 
     from ...Common import MiniLanguageHelpers
     from ...Error import Error, ErrorException
@@ -62,8 +62,8 @@ class Visitor(
         def __init__(
             self,
             mini_language_configuration_values: Dict[str, MiniLanguageHelpers.CompileTimeInfo],
-            global_namespace: NamespaceInfo,
-            fundamental_types_namespace: Optional[NamespaceInfo],
+            global_namespace: Namespace,
+            fundamental_types_namespace: Optional[Namespace],
         ):
             self._mini_language_configuration_values    = mini_language_configuration_values
             self._global_namespace                      = global_namespace
@@ -150,15 +150,17 @@ class Visitor(
             List[Error],
         ]:
             # Get this namespace
-            this_namespace = self._global_namespace.children[names[0]]
+            this_namespace = self._global_namespace.GetChild(names[0])
+            assert isinstance(this_namespace, Namespace), this_namespace
 
             name_parts = os.path.splitext(names[1])[0]
             name_parts = name_parts.split(".")
 
             for name_part in name_parts:
-                this_namespace = this_namespace.children[name_part]
+                this_namespace = this_namespace.GetChild(name_part)
+                assert isinstance(this_namespace, Namespace), this_namespace
 
-            assert isinstance(this_namespace, ParsedNamespaceInfo)
+            assert isinstance(this_namespace, ParsedNamespace)
 
             visitor = Visitor(
                 self._mini_language_configuration_values,

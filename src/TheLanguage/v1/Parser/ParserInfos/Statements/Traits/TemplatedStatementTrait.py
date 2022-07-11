@@ -133,7 +133,6 @@ class TemplatedStatementTrait(Interface.Interface):
         # BugBug: Return the cached value directly, meaning this is an odd return value
 
         parser_info = parser_info or self  # type: ignore
-        assert isinstance(parser_info, NamedTrait)
 
         if self.templates is None:
             if template_arguments:
@@ -142,6 +141,8 @@ class TemplatedStatementTrait(Interface.Interface):
             resolved_template_arguments = None
 
         else:
+            assert isinstance(parser_info, NamedTrait)
+
             resolved_template_arguments = self.templates.MatchCall(  # pylint: disable=no-member
                 parser_info.name,
                 parser_info.regions__.name,

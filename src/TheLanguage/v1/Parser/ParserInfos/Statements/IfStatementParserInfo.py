@@ -119,9 +119,7 @@ class IfStatementClauseParserInfo(
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def IsNameOrdered(
-        scope_flag: ScopeFlag,
-    ) -> bool:
+    def IsNameOrdered(*args, **kwargs) -> bool:
         return True
 
     # ----------------------------------------------------------------------
@@ -202,9 +200,7 @@ class IfStatementElseClauseParserInfo(
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def IsNameOrdered(
-        scope_flag: ScopeFlag,
-    ) -> bool:
+    def IsNameOrdered(*args, **kwargs) -> bool:
         return True
 
     # ----------------------------------------------------------------------

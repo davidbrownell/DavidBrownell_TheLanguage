@@ -13,6 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
+public from .Concepts.MutableInt import MutableInt # BugBug
 # BugBug from .Concepts.MutableInt import MutableInt
 
 

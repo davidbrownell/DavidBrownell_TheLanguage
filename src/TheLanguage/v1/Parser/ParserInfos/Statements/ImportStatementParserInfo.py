@@ -135,9 +135,7 @@ class ImportStatementParserInfo(
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def IsNameOrdered(
-        scope_flag: ScopeFlag,
-    ) -> bool:
+    def IsNameOrdered(*args, **kwargs) -> bool:
         return True
 
     # ----------------------------------------------------------------------

@@ -17,11 +17,12 @@
 
 import os
 
-from typing import Any, List, TYPE_CHECKING, Union
+from typing import Any, List, Generator, TYPE_CHECKING, Union
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -54,6 +55,16 @@ class Type(object):
     @property
     def parser_info(self) -> ParserInfo:
         return self._parser_info
+
+    # ----------------------------------------------------------------------
+    @Interface.extensionmethod
+    def EnumAliases(self) -> Generator["Type", None, None]:
+        yield self
+
+    # ----------------------------------------------------------------------
+    def ResolveAliases(self) -> "Type":
+        *_, last = self.EnumAliases()
+        return last
 
 
 # ----------------------------------------------------------------------
@@ -91,6 +102,12 @@ class ConcreteTypeAliasType(Type):
     @property
     def parser_info(self) -> "TypeAliasStatementParserInfo":
         return self._parser_info  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def EnumAliases(self) -> Generator["Type", None, None]:
+        yield self
+        yield from self.resolved_type.EnumAliases()
 
 
 # ----------------------------------------------------------------------

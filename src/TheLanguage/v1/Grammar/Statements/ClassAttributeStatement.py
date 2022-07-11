@@ -238,8 +238,8 @@ class ClassAttributeStatement(GrammarPhrase):
                     no_compare_node,
                     is_override_node,
                 ),
-                visibility_info,
                 name_info,
+                visibility_info,
                 class_capabilities,
                 type_info,
                 None, # documentation

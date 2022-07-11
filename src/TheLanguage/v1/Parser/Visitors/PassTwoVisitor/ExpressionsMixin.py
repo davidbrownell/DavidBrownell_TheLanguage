@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
-    from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
+    from ..Namespaces import Namespace, ParsedNamespace
 
     from ...Error import CreateError, ErrorException
     from ...Common import MiniLanguageHelpers

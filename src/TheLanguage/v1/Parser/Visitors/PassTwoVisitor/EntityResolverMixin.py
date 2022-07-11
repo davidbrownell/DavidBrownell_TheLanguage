@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
-    from ..NamespaceInfo import ParsedNamespaceInfo
+    from ..Namespaces import ParsedNamespace
 
     from ...ParserInfos.ParserInfo import CompileTimeInfo
 
@@ -97,20 +97,20 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
         self,
         parser_info: ExpressionParserInfo,
     ) -> MiniLanguageHelpers.MiniLanguageType:
-        result = MiniLanguageHelpers.EvalType(
+        mini_language_type = MiniLanguageHelpers.EvalTypeExpression(
             parser_info,
             self._compile_time_stack,
             self._TypeCheckHelper,
         )
 
-        if isinstance(result, ExpressionParserInfo):
+        if isinstance(mini_language_type, ExpressionParserInfo):
             raise ErrorException(
                 UnexpectedStandardTypeError.Create(
-                    region=result.regions__.self__,
+                    region=mini_language_type.regions__.self__,
                 ),
             )
 
-        return result
+        return mini_language_type
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -131,25 +131,26 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
         parser_info: ExpressionParserInfo,
         *,
         resolve_flag: StandardResolveFlag=StandardResolveFlag.All,
+        resolve_aliases: bool=False,
     ) -> Type:
-        resolved_type = MiniLanguageHelpers.EvalType(
+        type_expression = MiniLanguageHelpers.EvalTypeExpression(
             parser_info,
             self._compile_time_stack,
             self._TypeCheckHelper,
         )
 
-        if isinstance(resolved_type, MiniLanguageHelpers.MiniLanguageType):
+        if isinstance(type_expression, MiniLanguageHelpers.MiniLanguageType):
             raise ErrorException(
                 UnexpectedMiniLanguageTypeError.Create(
                     region=parser_info.regions__.self__,
                 ),
             )
 
-        if isinstance(resolved_type, FuncOrTypeExpressionParserInfo):
+        if isinstance(type_expression, FuncOrTypeExpressionParserInfo):
             # BugBug: Is it a template? If so, get the value from the compile time stack
             # and return early.
 
-            assert isinstance(resolved_type.value, str), resolved_type.value
+            assert isinstance(type_expression.value, str), type_expression.value
 
             resolved_parser_info: Union[
                 None,
@@ -160,23 +161,23 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
             resolved_visibility: Optional[VisibilityModifier] = None
             resolved_is_class_member: Optional[bool] = None
 
-            if resolved_parser_info is None and resolve_flag & StandardResolveFlag.Namespace:
-                resolved_parser_info = self._ResolveNameByNamespace(resolved_type.value)
-
-                resolved_visibility = VisibilityModifier.public
-                resolved_is_class_member = False
-
             if resolved_parser_info is None and resolve_flag & StandardResolveFlag.CompileTimeInfo:
                 pass # BugBug
 
             if resolved_parser_info is None and resolve_flag & StandardResolveFlag.Nested:
                 pass # BugBug
 
+            if resolved_parser_info is None and resolve_flag & StandardResolveFlag.Namespace:
+                resolved_parser_info = self._ResolveNameByNamespace(type_expression.value)
+
+                resolved_visibility = VisibilityModifier.public
+                resolved_is_class_member = False
+
             if resolved_parser_info is None:
                 raise ErrorException(
                     InvalidNamedTypeError.Create(
-                        region=resolved_type.regions__.value,
-                        name=resolved_type.value,
+                        region=type_expression.regions__.value,
+                        name=type_expression.value,
                     ),
                 )
 
@@ -185,38 +186,41 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
 
             result = self.CreateConcreteType(
                 resolved_parser_info,
-                resolved_type.templates,
+                type_expression.templates,
             )
 
             # BugBug: Process the constraints
 
+            if resolve_aliases:
+                result = result.ResolveAliases()
+
             return result
 
-        elif isinstance(resolved_type, NestedTypeExpressionParserInfo):
+        elif isinstance(type_expression, NestedTypeExpressionParserInfo):
             raise NotImplementedError("TODO: NestedTypeExpressionParserInfo")
 
-        elif isinstance(resolved_type, NoneExpressionParserInfo):
-            return NoneType(resolved_type)
+        elif isinstance(type_expression, NoneExpressionParserInfo):
+            return NoneType(type_expression)
 
-        elif isinstance(resolved_type, TupleExpressionParserInfo):
+        elif isinstance(type_expression, TupleExpressionParserInfo):
             return TupleType(
-                resolved_type,
+                type_expression,
                 [
                     self.ResolveType(child_type)
-                    for child_type in resolved_type.types
+                    for child_type in type_expression.types
                 ],
             )
 
-        elif isinstance(resolved_type, VariantExpressionParserInfo):
+        elif isinstance(type_expression, VariantExpressionParserInfo):
             return VariantType(
-                resolved_type,
+                type_expression,
                 [
                     self.ResolveType(child_type)
-                    for child_type in resolved_type.types
+                    for child_type in type_expression.types
                 ],
             )
 
-        assert False, resolved_type  # pragma: no cover
+        assert False, type_expression  # pragma: no cover
 
     # ----------------------------------------------------------------------
     def CreateConcreteType(
@@ -250,12 +254,12 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
                 # Add the decorators
                 for decorator_parameter, decorator_result in resolved_template_arguments.decorators:
                     assert decorator_parameter.name not in new_compile_time_info, decorator_parameter.name
-                    
+
                     new_compile_time_info[decorator_parameter.name] = CompileTimeInfo(
                         decorator_result.type,
                         decorator_result.value,
                     )
-                
+
                 self._compile_time_stack.append(new_compile_time_info)
                 exit_stack.callback(self._compile_time_stack.pop)
 
@@ -315,19 +319,21 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
         assert namespace_stack
 
         for namespace in reversed(namespace_stack):
-            potential_namespace = namespace.children.get(type_name, None)
+            potential_namespace = namespace.GetChild(type_name)
             if potential_namespace is None:
                 continue
 
-            assert isinstance(potential_namespace, ParsedNamespaceInfo), potential_namespace
+            assert isinstance(potential_namespace, ParsedNamespace), potential_namespace
+            resolved_namespace = potential_namespace.ResolveNamespace()
+
             assert isinstance(
-                potential_namespace.parser_info,
+                resolved_namespace.parser_info,
                 (
                     ClassStatementParserInfo,
                     TypeAliasStatementParserInfo,
                 ),
-            ), potential_namespace.parser_info
+            ), resolved_namespace.parser_info
 
-            return potential_namespace.parser_info
+            return resolved_namespace.parser_info
 
         return None

@@ -268,23 +268,23 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
         ):
             assert self.default_value is not None
 
-            resolved_type = MiniLanguageHelpers.EvalType(self.type, [])
-            if not isinstance(resolved_type, MiniLanguageHelpers.MiniLanguageType):
+            mini_language_type = MiniLanguageHelpers.EvalTypeExpression(self.type, [])
+            if not isinstance(mini_language_type, MiniLanguageHelpers.MiniLanguageType):
                 errors.append(
                     InvalidTemplateDecoratorTypeError.Create(
                         region=self.type.regions__.self__,
                     ),
                 )
             else:
-                resolved_expression = MiniLanguageHelpers.EvalExpression(self.default_value, [])
+                mini_language_expression = MiniLanguageHelpers.EvalExpression(self.default_value, [])
 
-                if not resolved_type.IsSupportedValue(resolved_expression.value):
+                if not mini_language_type.IsSupportedValue(mini_language_expression.value):
                     errors.append(
                         InvalidTypeError.Create(
                             region=self.default_value.regions__.self__,
-                            expected_type=resolved_type.name,
+                            expected_type=mini_language_type.name,
                             expected_region=self.type.regions__.self__,
-                            actual_type=resolved_expression.type.name,
+                            actual_type=mini_language_expression.type.name,
                         ),
                     )
 

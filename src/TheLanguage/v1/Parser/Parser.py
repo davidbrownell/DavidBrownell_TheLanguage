@@ -297,10 +297,10 @@ def ResolveExpressionTypes(
                     fundamental_types[relative_path] = getattr(mod, "root_parser_info")
 
             # Add the fundamental types to the workspaces collection
-            assert _FUNDAMENTAL_TYPES_ATTRIBUTE_NAME not in workspaces
-            workspaces[_FUNDAMENTAL_TYPES_ATTRIBUTE_NAME] = fundamental_types
+            assert _FUNDAMENTAL_TYPES_NAMESPACE_NAME not in workspaces
+            workspaces[_FUNDAMENTAL_TYPES_NAMESPACE_NAME] = fundamental_types
 
-            exit_stack.callback(lambda: workspaces.pop(_FUNDAMENTAL_TYPES_ATTRIBUTE_NAME))
+            exit_stack.callback(lambda: workspaces.pop(_FUNDAMENTAL_TYPES_NAMESPACE_NAME))
 
         # Pass 1
         executor = PassOneVisitor.Executor(
@@ -323,7 +323,9 @@ def ResolveExpressionTypes(
                 return error_data  # type: ignore
 
         global_namespace = executor.global_namespace
-        fundamental_types_namespace = global_namespace.children.get(_FUNDAMENTAL_TYPES_ATTRIBUTE_NAME)
+
+        fundamental_types_namespace = global_namespace.GetChild(_FUNDAMENTAL_TYPES_NAMESPACE_NAME)
+        assert not isinstance(fundamental_types_namespace, list)
 
         # Pass 2
         executor = PassTwoVisitor.Executor(
@@ -431,7 +433,7 @@ def CreateRegions(
 _PARSER_INFO_ATTRIBUTE_NAME                 = "parser_info"
 _PARSER_INFO_ERROR_ATTRIBUTE_NAME           = "_has_parser_info_errors"
 
-_FUNDAMENTAL_TYPES_ATTRIBUTE_NAME           = "__fundamental_types__"
+_FUNDAMENTAL_TYPES_NAMESPACE_NAME           = "__fundamental_types__"
 
 
 # ----------------------------------------------------------------------

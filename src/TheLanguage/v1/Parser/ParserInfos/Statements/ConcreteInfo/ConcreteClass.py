@@ -269,6 +269,7 @@ class ConcreteClass(ConcreteEntity):
                 continue
 
             if isinstance(statement, ClassAttributeStatementParserInfo):
+                # BugBug: Validate is_override
                 local_attributes.append(DependencyLeaf(class_statement_parser_info, statement))
 
             elif statement.__class__.__name__ == "ClassStatementParserInfo":
@@ -541,8 +542,11 @@ class ConcreteClass(ConcreteEntity):
                 if dependency.is_disabled__:
                     continue
 
-                # BugBug: Handle type aliases?
-                resolved_entity = entity_resolver.ResolveType(dependency.type)
+                resolved_entity = entity_resolver.ResolveType(
+                    dependency.type,
+                    resolve_aliases=True,
+                )
+
                 if isinstance(resolved_entity, NoneType):
                     continue
 

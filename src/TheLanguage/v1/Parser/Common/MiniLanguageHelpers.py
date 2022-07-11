@@ -183,7 +183,7 @@ def EvalExpression(
 
 # ----------------------------------------------------------------------
 # TODO: MiniLanguageType should include a region for better error support
-def EvalType(
+def EvalTypeExpression(
     parser_info: ExpressionParserInfo,
     compile_time_info_items: List[Dict[str, CompileTimeInfo]],
     type_check_callback: Optional[TypeCheckCallbackType]=None,

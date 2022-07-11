@@ -60,5 +60,7 @@ class EntityResolver(Interface.Interface):
     @Interface.abstractmethod
     def ResolveType(
         parser_info: ExpressionParserInfo,
+        *,
+        resolve_aliases: bool=False,
     ) -> Type:
         raise Exception("Abstract method")  # pragma: no cover

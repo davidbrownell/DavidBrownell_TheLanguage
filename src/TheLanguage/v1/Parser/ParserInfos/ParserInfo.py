@@ -123,7 +123,7 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     ):
         object.__setattr__(self, "_disabled", False)
         object.__setattr__(self, "_parser_info_type", parser_info_type)
-        object.__setattr__(self, "_parent_name", None)
+        object.__setattr__(self, "_translation_unit", None)
 
         regionless_attributes_set = set(regionless_attributes or [])
 
@@ -180,7 +180,7 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
                 **{
                     "is_compile_time__": None,
                     "is_disabled__": None,
-                    "parent_name__": None,
+                    "translation_unit__": None,
                     "parser_info_type__": None,
                 },
                 **custom_display_funcs,
@@ -201,9 +201,9 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         return self._disabled  # type: ignore  # pylint: disable=no-member
 
     @property
-    def parent_name__(self) -> List[str]:
-        assert self._parent_name is not None  # type: ignore  # pylint: disable=no-member
-        return self._parent_name              # type: ignore  # pylint: disable=no-member
+    def translation_unit__(self) -> Tuple[str, str]:
+        assert self._translation_unit is not None  # type: ignore  # pylint: disable=no-member
+        return self._translation_unit              # type: ignore  # pylint: disable=no-member
 
     @property
     def parser_info_type__(self) -> ParserInfoType:
@@ -327,13 +327,13 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     @contextmanager
     def InitConfiguration(
         self,
-        names: List[str],
+        translation_unit: Tuple[str, str],
         configuration_info: Dict[str, CompileTimeInfo],
     ):
         """Opportunity for a ParserInfo object to initialize itself during the configuration process."""
 
-        assert self._parent_name is None  # type: ignore  # pylint: disable=no-member
-        object.__setattr__(self, "_parent_name", names)
+        assert self._translation_unit is None  # type: ignore  # pylint: disable=no-member
+        object.__setattr__(self, "_translation_unit", translation_unit)
 
         if self.parser_info_type__ == ParserInfoType.Configuration:
             with self._InitConfigurationImpl(configuration_info) as visit_result:

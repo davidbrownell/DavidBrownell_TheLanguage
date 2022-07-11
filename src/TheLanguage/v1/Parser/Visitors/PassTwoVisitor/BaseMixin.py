@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..NamespaceInfo import NamespaceInfo, ParsedNamespaceInfo
+    from ..Namespaces import Namespace, ParsedNamespace
 
     from ...Error import CreateError, Error, ErrorException
     from ...TranslationUnitRegion import TranslationUnitRegion
@@ -135,10 +135,10 @@ class BaseMixin(ParserInfoVisitorHelper):
     def __init__(
         self,
         configuration_info: Dict[str, CompileTimeInfo],
-        fundamental_types_namespace: Optional[NamespaceInfo],
-        this_namespace: ParsedNamespaceInfo,
+        fundamental_types_namespace: Optional[Namespace],
+        this_namespace: ParsedNamespace,
     ):
-        namespace_stack: List[NamespaceInfo] = []
+        namespace_stack: List[Namespace] = []
 
         if fundamental_types_namespace is not None:
             namespace_stack.append(fundamental_types_namespace)
@@ -164,23 +164,17 @@ class BaseMixin(ParserInfoVisitorHelper):
                     assert self._namespaces_stack
                     namespace_stack = self._namespaces_stack[-1]
 
-                    if not isinstance(parser_info, RootStatementParserInfo):
-                        assert namespace_stack
-                        namespace = namespace_stack[-1]
-
-                        assert isinstance(namespace, ParsedNamespaceInfo), namespace
-
-                        if isinstance(namespace.parser_info, RootStatementParserInfo):
-                            scope_flag = ScopeFlag.Root
-                        else:
-                            assert isinstance(namespace.parent, ParsedNamespaceInfo), namespace.parent
-                            scope_flag = namespace.parent.scope_flag
-
-                        if parser_info.IsNameOrdered(scope_flag):
-                            ordered_item_or_items = namespace.ordered_children[parser_info.name]
-
-                            for ordered_item in (ordered_item_or_items if isinstance(ordered_item_or_items, list) else [ordered_item_or_items, ]):
-                                namespace.AddChild(ordered_item)
+                    # BugBug if not isinstance(parser_info, RootStatementParserInfo):
+                    # BugBug     assert namespace_stack
+                    # BugBug     namespace = namespace_stack[-1]
+                    # BugBug
+                    # BugBug     assert isinstance(namespace, ParsedNamespace), namespace
+                    # BugBug
+                    # BugBug     if isinstance(namespace.parser_info, RootStatementParserInfo):
+                    # BugBug         scope_flag = ScopeFlag.Root
+                    # BugBug     else:
+                    # BugBug         assert isinstance(namespace.parent, ParsedNamespace), namespace.parent
+                    # BugBug         scope_flag = namespace.parent.scope_flag
 
                     if isinstance(parser_info, ScopedStatementTrait):
                         if isinstance(parser_info, RootStatementParserInfo):
@@ -192,15 +186,18 @@ class BaseMixin(ParserInfoVisitorHelper):
                             assert namespace_stack
                             namespace = namespace_stack[-1]
 
-                            namespace = namespace.children[parser_info.name]
+                            namespace = namespace.GetChild(parser_info.name)
+                            assert namespace is not None
 
                             if isinstance(namespace, list):
                                 for potential_namespace in namespace:
+                                    assert isinstance(potential_namespace, ParsedNamespace), potential_namespace
+
                                     if potential_namespace.parser_info is parser_info:
                                         namespace = potential_namespace
                                         break
 
-                        assert isinstance(namespace, NamespaceInfo)
+                        assert isinstance(namespace, Namespace)
 
                         assert self._namespaces_stack
                         namespace_stack = self._namespaces_stack[-1]
