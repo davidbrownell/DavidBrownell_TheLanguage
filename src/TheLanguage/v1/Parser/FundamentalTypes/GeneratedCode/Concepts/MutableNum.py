@@ -624,7 +624,7 @@ statement_000052 = ClassStatementParserInfo.Create(
 
 root_parser_info = RootStatementParserInfo.Create(
     regions=[tu_region_000101, tu_region_000101, None],
-    name=r"Concepts.MutableNum.TheLanguage",
+    name=r"Concepts.MutableNum",
     statements=[statement_000001, statement_000052, ],
     documentation=None,
 )

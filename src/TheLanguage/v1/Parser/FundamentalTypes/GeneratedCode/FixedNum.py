@@ -4111,7 +4111,7 @@ statement_000425 = IfStatementParserInfo.Create(
 
 root_parser_info = RootStatementParserInfo.Create(
     regions=[tu_region_000778, tu_region_000778, None],
-    name=r"FixedNum.TheLanguage",
+    name=r"FixedNum",
     statements=[statement_000001, statement_000173, statement_000196, statement_000219, statement_000242, statement_000265, statement_000288, statement_000311, statement_000334, statement_000357, statement_000380, statement_000403, statement_000425, ],
     documentation=None,
 )

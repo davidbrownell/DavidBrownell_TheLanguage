@@ -1998,7 +1998,7 @@ statement_000156 = ClassStatementParserInfo.Create(
 
 root_parser_info = RootStatementParserInfo.Create(
     regions=[tu_region_000382, tu_region_000382, None],
-    name=r"Concepts.Int.TheLanguage",
+    name=r"Concepts.Int",
     statements=[statement_000156, ],
     documentation=None,
 )

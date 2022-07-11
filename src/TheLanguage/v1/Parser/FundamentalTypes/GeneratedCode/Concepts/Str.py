@@ -4212,7 +4212,7 @@ statement_000341 = ClassStatementParserInfo.Create(
 
 root_parser_info = RootStatementParserInfo.Create(
     regions=[tu_region_000826, tu_region_000826, None],
-    name=r"Concepts.Str.TheLanguage",
+    name=r"Concepts.Str",
     statements=[statement_000341, ],
     documentation=None,
 )

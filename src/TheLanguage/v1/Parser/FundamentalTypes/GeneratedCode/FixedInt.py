@@ -7162,7 +7162,7 @@ statement_000763 = IfStatementParserInfo.Create(
 
 root_parser_info = RootStatementParserInfo.Create(
     regions=[tu_region_001362, tu_region_001362, None],
-    name=r"FixedInt.TheLanguage",
+    name=r"FixedInt",
     statements=[statement_000001, statement_000239, statement_000264, statement_000289, statement_000314, statement_000339, statement_000364, statement_000389, statement_000414, statement_000439, statement_000464, statement_000489, statement_000514, statement_000539, statement_000564, statement_000589, statement_000614, statement_000639, statement_000664, statement_000689, statement_000709, statement_000729, statement_000763, ],
     documentation=None,
 )

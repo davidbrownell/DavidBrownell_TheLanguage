@@ -4632,7 +4632,7 @@ statement_000354 = ClassStatementParserInfo.Create(
 
 root_parser_info = RootStatementParserInfo.Create(
     regions=[tu_region_001018, tu_region_001018, None],
-    name=r"FixedSizeStr.TheLanguage",
+    name=r"FixedSizeStr",
     statements=[statement_000001, statement_000354, ],
     documentation=None,
 )

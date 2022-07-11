@@ -220,7 +220,7 @@ def Parse(
 
             return RootStatementParserInfo.Create(
                 CreateRegions(root, statements_node, docstring_node),
-                names[1],
+                os.path.splitext(names[1])[0],
                 cast(List[StatementParserInfo], statements),
                 docstring_info,
             )
@@ -335,6 +335,8 @@ def ResolveExpressionTypes(
         )
 
         for is_parallel, func in executor.GenerateFuncs():
+            break # BugBug
+
             results = _Execute(
                 workspaces,
                 func,

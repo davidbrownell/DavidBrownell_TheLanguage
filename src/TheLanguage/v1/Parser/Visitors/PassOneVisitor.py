@@ -117,11 +117,8 @@ class PassOneVisitor(ParserInfoVisitorHelper):
 
             self._execute_results_lock      = threading.Lock()
             self._execute_results: Dict[
-                str,                        # Workspace name
-                Dict[
-                    str,                    # Relative path
-                    PassOneVisitor.Executor._ExecuteResult,  # pylint: disable=protected-access
-                ],
+                Tuple[str, str],            # Translation unit
+                PassOneVisitor.Executor._ExecuteResult,  # pylint: disable=protected-access
             ]                               = {}
 
         # ----------------------------------------------------------------------
@@ -150,25 +147,43 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             yield True, self._ExecuteParallel
 
             # Create a complete namespace
-            for workspace_name, workspace_items in self._execute_results.items():
-                workspace_namespace = Namespace(workspace_name, self._global_namespace)
+            for translation_unit, execute_result in self._execute_results.items():
+                workspace_name, relative_path = translation_unit
 
-                for relative_path, execute_result in workspace_items.items():
-                    name_parts = os.path.splitext(relative_path)[0]
-                    name_parts = name_parts.split(".")
+                namespace = self._global_namespace.GetOrAddChild(workspace_name)
+                assert isinstance(namespace, Namespace), namespace
 
-                    namespace = workspace_namespace
+                relative_path_parts = os.path.splitext(relative_path)[0]
+                relative_path_parts = relative_path_parts.split(".")
 
-                    for part in name_parts[:-1]:
-                        namespace = namespace.GetOrAddChild(part)
-                        assert isinstance(namespace, Namespace), namespace
+                for relative_path_part in relative_path_parts[:-1]:
+                    namespace = namespace.GetOrAddChild(relative_path_part)
+                    assert isinstance(namespace, Namespace), namespace
 
-                    namespace.AddChild(
-                        execute_result.namespace,
-                        name_override=name_parts[-1],
-                    )
+                if execute_result.namespace.name != relative_path_parts[-1]:
+                    # This can happen when the name is a dotted name when appearing within a subdir
+                    # of the workspace root. We didn't have the opportunity to create nested namespaces
+                    # at the time that the parser info (on which the namespace name is based) was created,
+                    # so do it now.
 
-                self._global_namespace.AddChild(workspace_namespace)
+                    assert (
+                        isinstance(execute_result.namespace, ParsedNamespace)
+                        and isinstance(execute_result.namespace.parser_info, RootStatementParserInfo)
+                    ), execute_result.namespace
+                    assert execute_result.namespace.name is not None
+
+                    assert (
+                        execute_result.namespace.name.split(".")[-1] == relative_path_parts[-1]
+                        # Take into account some Python limitations that we had to work around
+                        or (
+                            execute_result.namespace.name == "None"
+                            and relative_path_parts[-1] == "NoneType"
+                        )
+                    ), (execute_result.namespace.name, relative_path_parts)
+
+                    execute_result.namespace.OverrideName(relative_path_parts[-1])
+
+                namespace.AddChild(execute_result.namespace)
 
             # Execute all of the postprocess funcs
             for funcs_attribute in [
@@ -188,7 +203,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
         # |  Private Methods
         def _ExecuteParallel(
             self,
-            names: Tuple[str, str],
+            translation_unit: Tuple[str, str],
             root: RootStatementParserInfo,
         ) -> Union[
             bool,                           # Doesn't matter what the return value is as long as it looks different than List[Error]
@@ -197,7 +212,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             visitor = PassOneVisitor(
                 self._mini_language_configuration_values,
                 self._global_namespace,
-                names,
+                translation_unit,
             )
 
             root.Accept(visitor)
@@ -208,9 +223,9 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             with self._execute_results_lock:
                 assert visitor._root_namespace is not None  # pylint: disable=protected-access
 
-                self._execute_results.setdefault(names[0], {})[names[1]] = PassOneVisitor.Executor._ExecuteResult(  # pylint: disable=protected-access
-                    visitor._root_namespace,                                                                        # pylint: disable=protected-access
-                    visitor._postprocess_funcs,                                                                     # pylint: disable=protected-access
+                self._execute_results[translation_unit] = PassOneVisitor.Executor._ExecuteResult(   # pylint: disable=protected-access
+                    visitor._root_namespace,                                                        # pylint: disable=protected-access
+                    visitor._postprocess_funcs,                                                     # pylint: disable=protected-access
                 )
 
             return True
@@ -219,7 +234,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
         def _ExecuteSequential(
             self,
             funcs_attribute_name: str,
-            names: Tuple[str, str],
+            translation_unit: Tuple[str, str],
             root: RootStatementParserInfo,  # pylint: disable=unused-argument
         ) -> Union[
             bool,
@@ -227,7 +242,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
         ]:
             # Don't need to acquire the lock, as we will always be reading the data once
             # we start invoking this functionality.
-            execute_results = self._execute_results[names[0]][names[1]]
+            execute_results = self._execute_results[translation_unit]
 
             errors: List[Error] = []
 
@@ -259,6 +274,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
 
         self._postprocess_funcs: List[Callable[[], None]]                   = []
 
+        self._scope_flag_stack: List[ScopeFlag]                             = []
         self._namespace_stack: List[ParsedNamespace]                        = []
         self._root_namespace: Optional[ParsedNamespace]                     = None
 
@@ -272,9 +288,9 @@ class PassOneVisitor(ParserInfoVisitorHelper):
     ):
         assert parser_info.parser_info_type__ != ParserInfoType.CompileTimeTemporary
 
-        parent_scope_flag = self._namespace_stack[-1].scope_flag if self._namespace_stack else ScopeFlag.Root
-
         if isinstance(parser_info, StatementParserInfo):
+            parent_scope_flag = self._scope_flag_stack[-1] if self._scope_flag_stack else ScopeFlag.Root
+
             valid_scope_info = parser_info.GetValidScopes().get(parser_info.parser_info_type__, None)
 
             if valid_scope_info is None or not valid_scope_info & parent_scope_flag:
@@ -291,15 +307,15 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             with ExitStack() as exit_stack:
                 if isinstance(parser_info, NamedTrait):
                     if isinstance(parser_info, ClassStatementParserInfo):
-                        scope_flag = ScopeFlag.Class
+                        self._scope_flag_stack.append(ScopeFlag.Class)
+                        exit_stack.callback(self._scope_flag_stack.pop)
+
                     elif isinstance(parser_info, (FuncDefinitionStatementParserInfo, SpecialMethodStatementParserInfo)):
-                        scope_flag = ScopeFlag.Function
-                    else:
-                        scope_flag = parent_scope_flag
+                        self._scope_flag_stack.append(ScopeFlag.Function)
+                        exit_stack.callback(self._scope_flag_stack.pop)
 
                     new_namespace = ParsedNamespace(
                         parser_info,
-                        scope_flag,
                         self._GetOrderedId(),
                         parent=self._namespace_stack[-1] if self._namespace_stack else self._global_namespace,
                     )
@@ -323,11 +339,9 @@ class PassOneVisitor(ParserInfoVisitorHelper):
 
                         new_namespace = ParsedNamespace(
                             target_namespace.parser_info,
-                            ScopeFlag.Class | ScopeFlag.Function,
                             self._GetOrderedId(),
                             parent=target_namespace,
                             name=dynamic_type_name,
-                            visibility=VisibilityModifier.private,
                         )
 
                         self._AddNamespaceItem(new_namespace)
@@ -394,7 +408,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             clause_namespace = namespace.GetChild(clause_parser_info.name)
             assert isinstance(clause_namespace, ParsedNamespace), clause_namespace
 
-            for _, clause_namespace_item in clause_namespace.EnumChildren():
+            for clause_namespace_item in clause_namespace.EnumChildren():
                 assert isinstance(clause_namespace_item, ParsedNamespace), clause_namespace_item
                 assert isinstance(clause_namespace_item.parser_info, NamedTrait), clause_namespace_item.parser_info
                 assert namespace.GetChild(clause_namespace_item.parser_info.name) is None
@@ -617,13 +631,9 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             # If here, we are importing all types from a module
             module_namespace = imported_item_namespace
 
-            child_namespace = ParsedNamespace(
-                module_namespace.parser_info,
-                ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
-                0,
-            )
+            child_namespace = ParsedNamespace(module_namespace.parser_info, 0)
 
-            for module_item_name, module_item_namespace in module_namespace.EnumChildren():
+            for module_item_namespace in module_namespace.EnumChildren():
                 if (
                     isinstance(module_item_namespace, ParsedNamespace)
                     and (
@@ -653,7 +663,6 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             import_parser_info,
             parent_namespace,
             imported_namespace_item,
-            placeholder_namespace.scope_flag,
             placeholder_namespace.ordered_id,
         )
 

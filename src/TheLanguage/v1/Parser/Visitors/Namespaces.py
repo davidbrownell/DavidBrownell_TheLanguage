@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, Generator, List, Optional, Tuple, TYPE_CHECKING, Union
+from typing import Dict, Generator, List, Optional, TYPE_CHECKING, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -34,8 +34,6 @@ with InitRelativeImports():
     from ..ParserInfos.Common.VisibilityModifier import VisibilityModifier
 
     from ..ParserInfos.ParserInfo import ParserInfo
-
-    from ..ParserInfos.Statements.StatementParserInfo import ScopeFlag
 
     from ..ParserInfos.Traits.NamedTrait import NamedTrait
 
@@ -72,17 +70,21 @@ class Namespace(ObjectReprImplBase):
         return self._name
 
     # ----------------------------------------------------------------------
+    def OverrideName(
+        self,
+        new_name_value: str,
+    ) -> None:
+        self._name = new_name_value
+
+    # ----------------------------------------------------------------------
     @Interface.extensionmethod
     def AddChild(
         self,
         namespace: "Namespace",
-        *,
-        name_override: Optional[str]=None,
     ) -> None:
-        name = name_override or namespace.name
-        assert name is not None
+        assert namespace.name is not None
 
-        existing_value = self._children.get(name, None)
+        existing_value = self._children.get(namespace.name, None)
 
         if isinstance(existing_value, list):
             existing_value.append(namespace)
@@ -94,7 +96,7 @@ class Namespace(ObjectReprImplBase):
             else:
                 value = [existing_value, namespace]
 
-            self._children[name] = value
+            self._children[namespace.name] = value
 
         object.__setattr__(namespace, "parent", self)
 
@@ -150,18 +152,20 @@ class Namespace(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
     def EnumChildren(self) -> Generator[
-        Tuple[str, Union["Namespace", List["Namespace"]]], # BugBug: Remove str
+        Union["Namespace", List["Namespace"]],
         None,
         None,
     ]:
-        yield from self._children.items()
+        yield from self._children.values()
 
     # ----------------------------------------------------------------------
     def Flatten(self) -> "Namespace":
         result = Namespace(None, None)
 
-        for key, value in self._FlattenImpl():
-            existing_value = result.GetChild(key)
+        for value in self._FlattenImpl():
+            assert value.name is not None
+
+            existing_value = result.GetChild(value.name)
             if existing_value is not None:
                 assert isinstance(existing_value, ParsedNamespace), existing_value
                 assert isinstance(value, ParsedNamespace), value
@@ -187,7 +191,7 @@ class Namespace(ObjectReprImplBase):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def _FlattenImpl(self) -> Generator[Tuple[str, "ParsedNamespace"], None, None]:
+    def _FlattenImpl(self) -> Generator["ParsedNamespace", None, None]:
         for value in self._children.values():
             if isinstance(value, Namespace):
                 yield from value._FlattenImpl()  # pylint: disable=protected-access
@@ -199,27 +203,19 @@ class ParsedNamespace(Namespace):
     def __init__(
         self,
         parser_info: ParserInfo,
-        scope_flag: ScopeFlag,
         ordered_id: int,
         *args,
         name: Optional[str]=None,
-        visibility: Optional[VisibilityModifier]=None,
         **kwargs,
     ):
         if name is None:
             assert isinstance(parser_info, NamedTrait), parser_info
             name = parser_info.name
 
-        if visibility is None:
-            assert isinstance(parser_info, NamedTrait), parser_info
-            visibility = parser_info.visibility
-
         super(ParsedNamespace, self).__init__(name, *args, **kwargs)
 
         self.parser_info                    = parser_info
-        self.scope_flag                     = scope_flag # BugBug: I think that this is safe to remove and store in PassOneVisitor
         self.ordered_id                     = ordered_id
-        self.visibility                     = visibility # BugBug: I think that this is safe to remove
 
     # ----------------------------------------------------------------------
     @property
@@ -228,6 +224,13 @@ class ParsedNamespace(Namespace):
 
         assert name is not None
         return name
+
+    # ----------------------------------------------------------------------
+    @property
+    @Interface.extensionmethod
+    def visibility(self) -> VisibilityModifier:
+        assert isinstance(self.parser_info, NamedTrait), self.parser_info
+        return self.parser_info.visibility
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
@@ -263,15 +266,15 @@ class ParsedNamespace(Namespace):
     # |
     # ----------------------------------------------------------------------
     @Interface.override
-    def _FlattenImpl(self) -> Generator[Tuple[str, "ParsedNamespace"], None, None]:
-        for key, value in self.EnumChildren():
+    def _FlattenImpl(self) -> Generator["ParsedNamespace", None, None]:
+        for value in self.EnumChildren():
             # Don't process lists of values, as they should never be part of a flattened namespace
             if not isinstance(value, Namespace):
                 continue
 
             if isinstance(value, ParsedNamespace):
                 if self.__class__._ShouldFlatten(value):  # pylint: disable=protected-access
-                    yield key, value
+                    yield value
             else:
                 yield from value._FlattenImpl()  # pylint: disable=protected-access
 
@@ -284,12 +287,10 @@ class ImportNamespace(ParsedNamespace):
         parser_info: "ImportStatementParserInfo",
         parent: Namespace,
         imported_namespace: ParsedNamespace,
-        scope_flag: ScopeFlag,
         ordered_id: int,
     ):
         super(ImportNamespace, self).__init__(
             parser_info,
-            scope_flag,
             ordered_id,
             parent=parent,
         )

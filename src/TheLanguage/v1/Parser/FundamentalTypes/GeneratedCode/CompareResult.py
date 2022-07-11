@@ -52,7 +52,7 @@ statement_000001 = ClassStatementParserInfo.Create(
 
 root_parser_info = RootStatementParserInfo.Create(
     regions=[tu_region_000005, tu_region_000005, None],
-    name=r"CompareResult.TheLanguage",
+    name=r"CompareResult",
     statements=[statement_000001, ],
     documentation=None,
 )
