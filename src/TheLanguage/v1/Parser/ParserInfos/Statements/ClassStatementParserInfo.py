@@ -44,7 +44,7 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
-    from .ConcreteInfo.ConcreteClass import ConcreteClass
+    from .ConcreteClass import ConcreteClass
 
     from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
     from .Traits.TemplatedStatementTrait import ConcreteEntity, TemplatedStatementTrait

@@ -62,11 +62,12 @@ with InitRelativeImports():
     from ...ParserInfos.Expressions.Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
     from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
+    from ...ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo, ScopeFlag
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
-    from ...ParserInfos.Statements.ConcreteInfo.ConcreteClass import ConcreteClass
+    from ...ParserInfos.Statements.ConcreteClass import ConcreteClass
 
     from ...ParserInfos.Statements.Traits.ScopedStatementTrait import ScopedStatementTrait
     from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
@@ -143,7 +144,7 @@ class BaseMixin(ParserInfoVisitorHelper):
         self._configuration_info                        = configuration_info
         self._fundamental_types_namespace               = fundamental_types_namespace
 
-        self._context_stack: List[BaseMixin._Context]   = []
+        self._root_statement_parser_info: Optional[RootStatementParserInfo] = None
 
         self._errors: List[Error]           = []
 
@@ -157,15 +158,21 @@ class BaseMixin(ParserInfoVisitorHelper):
     ):
         try:
             if isinstance(parser_info, RootStatementParserInfo):
-                assert not self._context_stack
-                self._context_stack.append(
-                    self.__class__._Context(
-                        parser_info,
-                        [self._configuration_info],
-                    ),
-                )
+                assert self._root_statement_parser_info is None
+                self._root_statement_parser_info = parser_info
 
-            assert self._context_stack
+            if isinstance(parser_info, TemplatedStatementTrait):
+                try:
+                    # BugBug: This isn't implemented yet
+                    if not isinstance(parser_info, FuncDefinitionStatementParserInfo):
+                        concrete_factory = self.CreateConcreteFactory(parser_info)
+                        # BugBug: What do we do with the factory?
+
+                except ErrorException as ex:
+                    self._errors += ex.errors
+
+                yield VisitResult.SkipAll
+                return
 
             yield
 
@@ -174,21 +181,6 @@ class BaseMixin(ParserInfoVisitorHelper):
                 self._errors += ex.errors
             else:
                 raise
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class _Context(object):
-        # ----------------------------------------------------------------------
-        parser_info: ParserInfo
-        compile_time_info: List[Dict[str, CompileTimeInfo]]
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            assert isinstance(self.parser_info, NamedTrait), self.parser_info
 
     # ----------------------------------------------------------------------
     # |

@@ -17,6 +17,8 @@
 
 import os
 
+from typing import Callable, Optional, TYPE_CHECKING, Union
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -33,6 +35,12 @@ with InitRelativeImports():
     from .Expressions.ExpressionParserInfo import ExpressionParserInfo
 
     from ..Common import MiniLanguageHelpers
+
+    if TYPE_CHECKING:
+        from .Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo  # pylint: disable=unused-import
+
+        from .Statements.ClassStatementParserInfo import ClassStatementParserInfo  # pylint: disable=unused-import
+        from .Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -63,4 +71,17 @@ class EntityResolver(Interface.Interface):
         *,
         resolve_aliases: bool=False,
     ) -> Type:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def CreateConcreteTypeFactory(
+        parser_info: Union["ClassStatementParserInfo", "TypeAliasStatementParserInfo"],
+    ) -> Callable[
+        [
+            Optional["TemplateArgumentsParserInfo"]
+        ],
+        Type
+    ]:
         raise Exception("Abstract method")  # pragma: no cover

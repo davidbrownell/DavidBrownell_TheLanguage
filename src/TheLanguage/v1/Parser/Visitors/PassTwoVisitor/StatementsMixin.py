@@ -65,12 +65,6 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: ClassStatementParserInfo,
     ):
-        if parser_info.templates is None or parser_info.templates.is_default_initializable:
-            self.CreateConcreteType(parser_info, None)
-
-            yield VisitResult.SkipAll
-            return
-
         yield
 
     # ----------------------------------------------------------------------
@@ -127,10 +121,4 @@ class StatementsMixin(BaseMixin):
         self,
         parser_info: TypeAliasStatementParserInfo,
     ):
-        if parser_info.templates is None or parser_info.templates.is_default_initializable:
-            self.CreateConcreteType(parser_info, None)
-
-            yield VisitResult.SkipAll
-            return
-
         yield

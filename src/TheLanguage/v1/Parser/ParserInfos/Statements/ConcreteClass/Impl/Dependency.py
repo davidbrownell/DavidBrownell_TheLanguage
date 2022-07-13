@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  HierarchyInfo.py
+# |  Dependency.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-06-30 08:06:26
+# |      2022-07-13 08:08:33
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality used when generating information about class hierarchies"""
+"""Contains functionality that tracks dependencies within a class hierarchy"""
 
 import os
 
-from typing import Generator, Optional, Union, TYPE_CHECKING
+from typing import Generator, Optional, Tuple, TYPE_CHECKING, Union
 
 from dataclasses import dataclass
 
@@ -32,18 +32,23 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...Common.VisibilityModifier import VisibilityModifier
+    from ....Common.VisibilityModifier import VisibilityModifier
 
     if TYPE_CHECKING:
-        from ..ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo
-        from ..ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
-        from ..FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
-        from ..TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
+        from ...ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo  # pylint: disable=unused-import
+        from ...ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo  # pylint: disable=unused-import
+        from ...FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo  # pylint: disable=unused-import
+        from ...TypeAliasStatementParserInfo import TypeAliasStatementParserInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class HierarchyInfo(object):
+class Dependency(Interface.Interface):
+    """Abstract base class for DependencyNode and DependencyLeaf objects"""
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Types
+    # |
     # ----------------------------------------------------------------------
     StatementParserInfoType                 = Union[
         "ClassAttributeStatementParserInfo",
@@ -53,47 +58,30 @@ class HierarchyInfo(object):
     ]
 
     # ----------------------------------------------------------------------
-    visibility: Optional[VisibilityModifier] # None indicates that it isn't visible
-    statement: "HierarchyInfo.StatementParserInfoType"
-
-
-# ----------------------------------------------------------------------
-class Dependency(Interface.Interface):
-    # ----------------------------------------------------------------------
-    # |  Public Types
     @dataclass(frozen=True)
-    class EnumResult(HierarchyInfo):
-        # ----------------------------------------------------------------------
+    class EnumResult(object):
+        visibility: Optional[VisibilityModifier] # None indicates that it isn't visible
+        statement: "Dependency.StatementParserInfoType"
         dependency_info: Union["ClassStatementParserInfo", "ClassStatementDependencyParserInfo"]
 
     # ----------------------------------------------------------------------
+    # |
     # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def EnumHierarchy() -> Generator["EnumResult", None, None]:
+    def EnumDependencies() -> Generator["Dependency.EnumResult", None, None]:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
-    def ResolveHierarchy(self) -> HierarchyInfo:
-        *_, leaf = self.EnumHierarchy()
-        return leaf
+    def ResolveDependencies(self) -> Tuple[
+        Optional[VisibilityModifier],
+        "Dependency.StatementParserInfoType",
+    ]:
+        *_, last = self.EnumDependencies()
 
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class DependencyLeaf(Dependency):
-    # ----------------------------------------------------------------------
-    class_statement: "ClassStatementParserInfo"
-    statement: HierarchyInfo.StatementParserInfoType
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def EnumHierarchy(self) -> Generator[Dependency.EnumResult, None, None]:
-        yield Dependency.EnumResult(
-            self.statement.visibility,
-            self.statement,
-            self.class_statement,
-        )
+        return last.visibility, last.statement
 
 
 # ----------------------------------------------------------------------
@@ -105,10 +93,10 @@ class DependencyNode(Dependency):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def EnumHierarchy(self) -> Generator[Dependency.EnumResult, None, None]:
+    def EnumDependencies(self) -> Generator[Dependency.EnumResult, None, None]:
         last_result: Optional[Dependency.EnumResult] = None
 
-        for last_result in self.next.EnumHierarchy():
+        for last_result in self.next.EnumDependencies():
             yield last_result
 
         assert last_result is not None
@@ -125,4 +113,21 @@ class DependencyNode(Dependency):
             visibility,
             last_result.statement,
             self.dependency,
+        )
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class DependencyLeaf(Dependency):
+    # ----------------------------------------------------------------------
+    class_statement: "ClassStatementParserInfo"
+    statement: Dependency.StatementParserInfoType
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def EnumDependencies(self) -> Generator[Dependency.EnumResult, None, None]:
+        yield Dependency.EnumResult(
+            self.statement.visibility,
+            self.statement,
+            self.class_statement,
         )

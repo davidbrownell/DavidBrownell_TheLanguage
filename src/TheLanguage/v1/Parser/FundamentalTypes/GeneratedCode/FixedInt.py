@@ -1758,7 +1758,7 @@ statement_000052 = PassStatementParserInfo.Create(
 statement_000053 = SpecialMethodStatementParserInfo.Create(
     regions=[tu_region_000073, tu_region_000074, tu_region_000075],
     parent_class_capabilities=StandardCapabilities,
-    name=SpecialMethodType.CompileTimeEvalConstraints,
+    name=SpecialMethodType.EvalConstraints,
     statements=[statement_000046, statement_000047, statement_000048, statement_000049, statement_000050, statement_000051, statement_000052, ],
 )
 

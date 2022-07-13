@@ -597,7 +597,7 @@ statement_000026 = FuncInvocationStatementParserInfo.Create(
 statement_000027 = SpecialMethodStatementParserInfo.Create(
     regions=[tu_region_000034, tu_region_000035, tu_region_000036],
     parent_class_capabilities=ConceptCapabilities,
-    name=SpecialMethodType.CompileTimeEvalConstraints,
+    name=SpecialMethodType.EvalConstraints,
     statements=[statement_000026, ],
 )
 

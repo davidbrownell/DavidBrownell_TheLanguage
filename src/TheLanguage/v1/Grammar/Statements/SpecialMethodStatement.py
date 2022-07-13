@@ -65,14 +65,14 @@ InvalidMethodNameError                      = CreateError(
 
 # ----------------------------------------------------------------------
 class SpecialMethodStatement(GrammarPhrase):
-    """Statements unique to a class - no return value, no parameters, no modifer, etc."""
+    """Statements unique to a class - no return value, no parameters, no modifier, etc."""
 
     PHRASE_NAME                             = "Class Func Definition Statement"
 
     FUNCTION_MAP                            = {
         "__EvalTemplates!__": SpecialMethodType.EvalTemplates,
-        "__EvalConstraints!__": SpecialMethodType.CompileTimeEvalConstraints,
-        "__EvalConvertible!__": SpecialMethodType.CompileTimeConvert,
+        "__EvalConstraints!__": SpecialMethodType.EvalConstraints,
+        "__EvalConvertible!__": SpecialMethodType.Convert,
         "__Validate?__": SpecialMethodType.Validate,
         "__ValidateFinal?__": SpecialMethodType.ValidateFinal,
         "__Destroy__": SpecialMethodType.Destroy,

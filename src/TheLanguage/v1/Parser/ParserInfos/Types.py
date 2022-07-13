@@ -42,7 +42,7 @@ with InitRelativeImports():
         from .Statements.ClassStatementParserInfo import ClassStatementParserInfo           # pylint: disable=unused-import
         from .Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo   # pylint: disable=unused-import
 
-        from .Statements.ConcreteInfo.ConcreteClass import ConcreteClass                    # pylint: disable=unused-import
+        from .Statements.ConcreteClass import ConcreteClass                 # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------

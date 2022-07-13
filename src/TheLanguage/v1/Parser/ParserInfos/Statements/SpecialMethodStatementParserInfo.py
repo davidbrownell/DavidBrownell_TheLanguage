@@ -72,15 +72,15 @@ InvalidCompileTimeStatementError            = CreateError(
 class SpecialMethodType(Enum):
     #                                                       Description                                         Default Behavior                Is Exceptional  Signature
     #                                                       --------------------------------------------        --------------------------      --------------  ---------------------------------
-    EvalTemplates    = auto()                               # Custom functionality invoked at compile time      Noop                            N/A             __EvalTemplates!__()  # Uses `Enforce!`
+    EvalTemplates               = auto()                    # Custom functionality invoked at compile time      Noop                            N/A             __EvalTemplates!__()  # Uses `Enforce!`
                                                             # to ensure that the template arguments are
                                                             # valid.
 
-    CompileTimeEvalConstraints  = auto()                    # Custom functionality invoked at compile time      Noop                            N/A             __EvalConstraints!__()  # Uses `Enforce!`
+    EvalConstraints             = auto()                    # Custom functionality invoked at compile time      Noop                            N/A             __EvalConstraints!__()  # Uses `Enforce!`
                                                             # to ensure that the constraint arguments are
                                                             # valid.
 
-    CompileTimeConvert          = auto()                    # Custom functionality invoked at compile time      No seamless conversions         N/A             __EvalConvertible!__()  # Uses `Enforce!`; `other` is name of other type
+    Convert                     = auto()                    # Custom functionality invoked at compile time      No seamless conversions         N/A             __EvalConvertible!__()  # Uses `Enforce!`; `other` is name of other type
                                                             # to determine if a type with one set of            are allowed.
                                                             # constraints can be converted seamlessly to
                                                             # a different set of constraints.
@@ -105,8 +105,8 @@ class SpecialMethodType(Enum):
     def IsCompileTimeMethod(cls, special_method_type):
         return special_method_type in [
             cls.EvalTemplates,
-            cls.CompileTimeEvalConstraints,
-            cls.CompileTimeConvert,
+            cls.EvalConstraints,
+            cls.Convert,
         ]
 
 
