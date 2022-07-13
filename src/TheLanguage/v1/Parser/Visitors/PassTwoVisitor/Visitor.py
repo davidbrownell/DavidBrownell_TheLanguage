@@ -71,11 +71,8 @@ class Visitor(
 
             self._execute_results_lock      = threading.Lock()
             self._execute_results: Dict[
-                str,                        # Workspace name
-                Dict[
-                    str,                    # Relative path
-                    Visitor.Executor._ExecuteResult  # pylint: disable=protected-access
-                ],
+                Tuple[str, str],            # Translation unit
+                Visitor.Executor._ExecuteResult  # pylint: disable=protected-access
             ]                               = {}
 
         # ----------------------------------------------------------------------
@@ -101,13 +98,13 @@ class Visitor(
             # ----------------------------------------------------------------------
             def PostprocessFunc(
                 index: int,
-                names: Tuple[str, str],
+                translation_unit: Tuple[str, str],
             ) -> Union[
                 bool,
                 List[Error],
             ]:
                 # No need to lock, as we are reading the immutable set of results
-                execute_results = self._execute_results[names[0]][names[1]]
+                execute_results = self._execute_results[translation_unit]
 
                 errors: List[Error] = []
 
@@ -143,29 +140,15 @@ class Visitor(
         # ----------------------------------------------------------------------
         def _ExecuteParallel(
             self,
-            names: Tuple[str, str],
+            translation_unit: Tuple[str, str],
             root: RootStatementParserInfo,
         ) -> Union[
             bool,
             List[Error],
         ]:
-            # Get this namespace
-            this_namespace = self._global_namespace.GetChild(names[0])
-            assert isinstance(this_namespace, Namespace), this_namespace
-
-            name_parts = os.path.splitext(names[1])[0]
-            name_parts = name_parts.split(".")
-
-            for name_part in name_parts:
-                this_namespace = this_namespace.GetChild(name_part)
-                assert isinstance(this_namespace, Namespace), this_namespace
-
-            assert isinstance(this_namespace, ParsedNamespace)
-
             visitor = Visitor(
                 self._mini_language_configuration_values,
                 self._fundamental_types_namespace,
-                this_namespace,
             )
 
             root.Accept(visitor)
@@ -173,9 +156,11 @@ class Visitor(
             if visitor._errors:             # pylint: disable=protected-access
                 return visitor._errors      # pylint: disable=protected-access
 
+            execute_result = Visitor.Executor._ExecuteResult(  # pylint: disable=protected-access
+                visitor._all_postprocess_funcs,  # pylint: disable=protected-access
+            )
+
             with self._execute_results_lock:
-                self._execute_results.setdefault(names[0], {})[names[1]] = Visitor.Executor._ExecuteResult(  # pylint: disable=protected-access
-                    visitor._all_postprocess_funcs,                                                          # pylint: disable=protected-access
-                )
+                self._execute_results[translation_unit] = execute_result
 
             return True

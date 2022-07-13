@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
-    from ..Namespaces import ParsedNamespace, ScopeFlag, VisibilityModifier
+    from ..Namespaces import ParsedNamespace, VisibilityModifier
 
     from ...Common import MiniLanguageHelpers
     from ...Error import CreateError, ErrorException
@@ -67,6 +67,9 @@ class StatementsMixin(BaseMixin):
     ):
         if parser_info.templates is None or parser_info.templates.is_default_initializable:
             self.CreateConcreteType(parser_info, None)
+
+            yield VisitResult.SkipAll
+            return
 
         yield
 
@@ -126,5 +129,8 @@ class StatementsMixin(BaseMixin):
     ):
         if parser_info.templates is None or parser_info.templates.is_default_initializable:
             self.CreateConcreteType(parser_info, None)
+
+            yield VisitResult.SkipAll
+            return
 
         yield

@@ -320,6 +320,16 @@ class ResolvedTemplateArguments(object):
         ],
     ]
 
+    cache_key: Tuple[Any, ...]              = field(init=False)
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        # BugBug: Types
+
+        cache_key = tuple(decorator[1].value for decorator in self.decorators)
+
+        object.__setattr__(self, "cache_key", cache_key)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)

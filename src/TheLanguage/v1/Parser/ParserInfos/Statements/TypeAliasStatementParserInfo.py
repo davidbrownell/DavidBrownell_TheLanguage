@@ -51,7 +51,7 @@ with InitRelativeImports():
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
     from ..Traits.NamedTrait import NamedTrait
-    from ..Types import ConcreteClassType, ConcreteTypeAliasType, Type
+    from ..Types import ClassType, TypeAliasType, Type
 
     from ...Error import Error, ErrorException
 
@@ -179,15 +179,16 @@ class TypeAliasStatementParserInfo(
         template_arguments: Optional[TemplateArgumentsParserInfo],
         entity_resolver: EntityResolver,
     ) -> TemplatedStatementTrait.GetOrCreateConcreteEntityFactoryResultType:
-        # BugBug: I don't think that this works, as the template types aren't available yet.
-        # Need a scenario to exercise this functionality.
-        resolved_type = entity_resolver.ResolveType(self.type)
+        # ----------------------------------------------------------------------
+        def CreateConcreteType() -> Type:
+            return TypeAliasType(self, entity_resolver.ResolveType(self.type))
+
+        # ----------------------------------------------------------------------
 
         return self._GetOrCreateConcreteEntityFactoryImpl(
             template_arguments,
             entity_resolver,
-            lambda: ConcreteTypeAliasType(self, resolved_type),
-            parser_info=resolved_type.parser_info,
+            CreateConcreteType,
         )
 
     # ----------------------------------------------------------------------

@@ -31,13 +31,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
-    from ..Namespaces import ParsedNamespace, ScopeFlag, VisibilityModifier
-
-    from ...Common import MiniLanguageHelpers
-    from ...Error import CreateError, Error, ErrorException
-
-    from ...ParserInfos.ParserInfo import ParserInfoType, VisitResult
-
     from ...ParserInfos.Common.CapturedVariablesParserInfo import CapturedVariablesParserInfo
     from ...ParserInfos.Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
     from ...ParserInfos.Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo, ConstraintParameterParserInfo
@@ -49,18 +42,6 @@ with InitRelativeImports():
     from ...ParserInfos.Expressions.Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
     from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
-
-
-# ----------------------------------------------------------------------
-InvalidCompileTimeTypeError                 = CreateError(
-    "'{type}' is not a valid compile-time type",
-)
-
-InvalidDefaultTypeError                     = CreateError(
-    "Invalid default expression; '{this_type}' was found but '{type}' was expected",
-    type=str,
-    this_type=str,
-)
 
 
 # ----------------------------------------------------------------------

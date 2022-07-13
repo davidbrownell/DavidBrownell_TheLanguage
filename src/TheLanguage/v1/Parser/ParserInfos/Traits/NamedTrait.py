@@ -51,6 +51,8 @@ class NamedTrait(object):
 
     allow_name_to_be_duplicated__: bool     = field(init=False, default=False)
 
+    _namespace: Any                         = field(init=False, default=None)
+
     # ----------------------------------------------------------------------
     def __post_init__(self, visibility_param):
         object.__setattr__(self, "visibility", visibility_param)
@@ -67,6 +69,7 @@ class NamedTrait(object):
     def ObjectReprImplBaseInitKwargs() -> Dict[str, Any]:
         return {
             "allow_name_to_be_duplicated__": None,
+            "namespace__": None,
         }
 
     # ----------------------------------------------------------------------
@@ -77,6 +80,23 @@ class NamedTrait(object):
     ) -> bool:
         """Returns True if the name is ordered (meaning that is isn't available until it is defined); any statements that attempt to use the name before it is defined will fail"""
         raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    # The following methods are used during Validation
+    def InitNamespace(
+        self,
+        namespace: Any,
+    ) -> None:
+        assert self._namespace is None, self._namespace
+        assert namespace is not None
+
+        object.__setattr__(self, "_namespace", namespace)
+
+    # ----------------------------------------------------------------------
+    @property
+    def namespace__(self) -> Any:
+        assert self._namespace is not None
+        return self._namespace
 
     # ----------------------------------------------------------------------
     # |

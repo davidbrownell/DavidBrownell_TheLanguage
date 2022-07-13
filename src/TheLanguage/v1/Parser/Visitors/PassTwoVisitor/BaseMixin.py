@@ -24,6 +24,8 @@ from contextlib import contextmanager, ExitStack
 from enum import auto, Enum
 from typing import Callable, cast, Dict, List, Optional, Set, Tuple, Union
 
+from dataclasses import dataclass
+
 import CommonEnvironment
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -63,7 +65,8 @@ with InitRelativeImports():
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo, ScopeFlag
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
-    # BugBug from ...ParserInfos.Statements import HierarchyInfo
+
+    from ...ParserInfos.Statements.ConcreteInfo.ConcreteClass import ConcreteClass
 
     from ...ParserInfos.Statements.Traits.ScopedStatementTrait import ScopedStatementTrait
     from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
@@ -136,21 +139,15 @@ class BaseMixin(ParserInfoVisitorHelper):
         self,
         configuration_info: Dict[str, CompileTimeInfo],
         fundamental_types_namespace: Optional[Namespace],
-        this_namespace: ParsedNamespace,
     ):
-        namespace_stack: List[Namespace] = []
+        self._configuration_info                        = configuration_info
+        self._fundamental_types_namespace               = fundamental_types_namespace
 
-        if fundamental_types_namespace is not None:
-            namespace_stack.append(fundamental_types_namespace)
+        self._context_stack: List[BaseMixin._Context]   = []
 
         self._errors: List[Error]           = []
 
         self._all_postprocess_funcs: List[List[Callable[[], None]]]         = [[] for _ in range(len(BaseMixin.PostprocessType))]
-
-        self._namespaces_stack                                              = [namespace_stack, ]
-        self._compile_time_stack                                            = [configuration_info, ]
-
-        self._root_namespace                = this_namespace
 
     # ----------------------------------------------------------------------
     @contextmanager
@@ -159,53 +156,18 @@ class BaseMixin(ParserInfoVisitorHelper):
         parser_info: ParserInfo,
     ):
         try:
-            with ExitStack() as exit_stack:
-                if isinstance(parser_info, NamedTrait):
-                    assert self._namespaces_stack
-                    namespace_stack = self._namespaces_stack[-1]
+            if isinstance(parser_info, RootStatementParserInfo):
+                assert not self._context_stack
+                self._context_stack.append(
+                    self.__class__._Context(
+                        parser_info,
+                        [self._configuration_info],
+                    ),
+                )
 
-                    # BugBug if not isinstance(parser_info, RootStatementParserInfo):
-                    # BugBug     assert namespace_stack
-                    # BugBug     namespace = namespace_stack[-1]
-                    # BugBug
-                    # BugBug     assert isinstance(namespace, ParsedNamespace), namespace
-                    # BugBug
-                    # BugBug     if isinstance(namespace.parser_info, RootStatementParserInfo):
-                    # BugBug         scope_flag = ScopeFlag.Root
-                    # BugBug     else:
-                    # BugBug         assert isinstance(namespace.parent, ParsedNamespace), namespace.parent
-                    # BugBug         scope_flag = namespace.parent.scope_flag
+            assert self._context_stack
 
-                    if isinstance(parser_info, ScopedStatementTrait):
-                        if isinstance(parser_info, RootStatementParserInfo):
-                            namespace = self._root_namespace
-                        else:
-                            assert self._namespaces_stack
-                            namespace_stack = self._namespaces_stack[-1]
-
-                            assert namespace_stack
-                            namespace = namespace_stack[-1]
-
-                            namespace = namespace.GetChild(parser_info.name)
-                            assert namespace is not None
-
-                            if isinstance(namespace, list):
-                                for potential_namespace in namespace:
-                                    assert isinstance(potential_namespace, ParsedNamespace), potential_namespace
-
-                                    if potential_namespace.parser_info is parser_info:
-                                        namespace = potential_namespace
-                                        break
-
-                        assert isinstance(namespace, Namespace)
-
-                        assert self._namespaces_stack
-                        namespace_stack = self._namespaces_stack[-1]
-
-                        namespace_stack.append(namespace)
-                        exit_stack.callback(namespace_stack.pop)
-
-                yield
+            yield
 
         except ErrorException as ex:
             if isinstance(parser_info, StatementParserInfo):
@@ -215,51 +177,66 @@ class BaseMixin(ParserInfoVisitorHelper):
 
     # ----------------------------------------------------------------------
     # |
+    # |  Protected Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class _Context(object):
+        # ----------------------------------------------------------------------
+        parser_info: ParserInfo
+        compile_time_info: List[Dict[str, CompileTimeInfo]]
+
+        # ----------------------------------------------------------------------
+        def __post_init__(self):
+            assert isinstance(self.parser_info, NamedTrait), self.parser_info
+
+    # ----------------------------------------------------------------------
+    # |
     # |  Private Methods
     # |
     # ----------------------------------------------------------------------
-    @staticmethod
-    def _NestedTypeResolver(
-        type_name: str,
-        region: TranslationUnitRegion,
-        concrete_type_info, # BugBug : ConcreteTypeInfo,
-    ) -> Optional[
-        Tuple[
-            VisibilityModifier,
-            Union[
-                ClassStatementParserInfo,
-                TemplateTypeParameterParserInfo,
-                TypeAliasStatementParserInfo,
-            ],
-            bool,
-        ]
-    ]:
-        for dependency in concrete_type_info.types.Enum():
-            hierarchy_info = dependency.ResolveHierarchy()
-
-            if hierarchy_info.statement.name == type_name:
-                if hierarchy_info.visibility is None:
-                    raise ErrorException(
-                        InvalidTypeVisibilityError.Create(
-                            region=region,
-                            name=type_name,
-                            dependency_enumerations=list(dependency.EnumHierarchy()),
-                        ),
-                    )
-
-                assert isinstance(
-                    hierarchy_info.statement,
-                    (
-                        ClassStatementParserInfo,
-                        TemplateTypeParameterParserInfo,
-                        TypeAliasStatementParserInfo,
-                    ),
-                ), hierarchy_info.statement
-
-                return (
-                    hierarchy_info.visibility,
-                    hierarchy_info.statement,
-                    True,
-                )
-
-        return None
+    # BugBug @staticmethod
+    # BugBug def _NestedTypeResolver(
+    # BugBug     type_name: str,
+    # BugBug     region: TranslationUnitRegion,
+    # BugBug     concrete_type_info, # BugBug : ConcreteTypeInfo,
+    # BugBug ) -> Optional[
+    # BugBug     Tuple[
+    # BugBug         VisibilityModifier,
+    # BugBug         Union[
+    # BugBug             ClassStatementParserInfo,
+    # BugBug             TemplateTypeParameterParserInfo,
+    # BugBug             TypeAliasStatementParserInfo,
+    # BugBug         ],
+    # BugBug         bool,
+    # BugBug     ]
+    # BugBug ]:
+    # BugBug     for dependency in concrete_type_info.types.Enum():
+    # BugBug         hierarchy_info = dependency.ResolveHierarchy()
+    # BugBug
+    # BugBug         if hierarchy_info.statement.name == type_name:
+    # BugBug             if hierarchy_info.visibility is None:
+    # BugBug                 raise ErrorException(
+    # BugBug                     InvalidTypeVisibilityError.Create(
+    # BugBug                         region=region,
+    # BugBug                         name=type_name,
+    # BugBug                         dependency_enumerations=list(dependency.EnumHierarchy()),
+    # BugBug                     ),
+    # BugBug                 )
+    # BugBug
+    # BugBug             assert isinstance(
+    # BugBug                 hierarchy_info.statement,
+    # BugBug                 (
+    # BugBug                     ClassStatementParserInfo,
+    # BugBug                     TemplateTypeParameterParserInfo,
+    # BugBug                     TypeAliasStatementParserInfo,
+    # BugBug                 ),
+    # BugBug             ), hierarchy_info.statement
+    # BugBug
+    # BugBug             return (
+    # BugBug                 hierarchy_info.visibility,
+    # BugBug                 hierarchy_info.statement,
+    # BugBug                 True,
+    # BugBug             )
+    # BugBug
+    # BugBug     return None

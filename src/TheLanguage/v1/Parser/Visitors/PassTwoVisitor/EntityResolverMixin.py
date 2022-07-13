@@ -19,8 +19,7 @@ import os
 
 from contextlib import ExitStack
 from enum import auto, Flag
-
-from typing import Dict, Optional, Union
+from typing import Dict, Generator, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -35,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
-    from ..Namespaces import ParsedNamespace
+    from ..Namespaces import Namespace, ParsedNamespace
 
     from ...ParserInfos.ParserInfo import CompileTimeInfo
 
@@ -56,13 +55,17 @@ with InitRelativeImports():
     from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
     from ...ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodType
+    from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
 
+    from ...ParserInfos.Statements.ConcreteInfo.ConcreteClass import ConcreteClass
     from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
-    from ...ParserInfos.Types import ConcreteClassType, NoneType, Type, TupleType, VariantType
+    from ...ParserInfos.Traits.NamedTrait import NamedTrait
+    from ...ParserInfos.Types import ClassType, NoneType, Type, TupleType, VariantType
 
     from ...Common import MiniLanguageHelpers
     from ...Error import CreateError, ErrorException
+    from ...TranslationUnitRegion import TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -77,6 +80,12 @@ UnexpectedMiniLanguageTypeError             = CreateError(
 InvalidNamedTypeError                       = CreateError(
     "'{name}' is not a recognized type",
     name=str,
+)
+
+InvalidTypeReferenceError                   = CreateError(
+    "'{name}' is defined via an ordered statement; it can only be used after it is defined",
+    name=str,
+    defined_region=TranslationUnitRegion,
 )
 
 
@@ -97,9 +106,11 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
         self,
         parser_info: ExpressionParserInfo,
     ) -> MiniLanguageHelpers.MiniLanguageType:
+        assert self._context_stack
+
         mini_language_type = MiniLanguageHelpers.EvalTypeExpression(
             parser_info,
-            self._compile_time_stack,
+            self._context_stack[-1].compile_time_info,
             self._TypeCheckHelper,
         )
 
@@ -118,9 +129,11 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
         self,
         parser_info: ExpressionParserInfo,
     ) -> MiniLanguageHelpers.MiniLanguageExpression.EvalResult:
+        assert self._context_stack
+
         return MiniLanguageHelpers.EvalExpression(
             parser_info,
-            self._compile_time_stack,
+            self._context_stack[-1].compile_time_info,
             self._TypeCheckHelper,
         )
 
@@ -130,12 +143,14 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
         self,
         parser_info: ExpressionParserInfo,
         *,
-        resolve_flag: StandardResolveFlag=StandardResolveFlag.All,
         resolve_aliases: bool=False,
+        resolve_flag: StandardResolveFlag=StandardResolveFlag.All,
     ) -> Type:
+        assert self._context_stack
+
         type_expression = MiniLanguageHelpers.EvalTypeExpression(
             parser_info,
-            self._compile_time_stack,
+            self._context_stack[-1].compile_time_info,
             self._TypeCheckHelper,
         )
 
@@ -146,10 +161,7 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
                 ),
             )
 
-        if isinstance(type_expression, FuncOrTypeExpressionParserInfo):
-            # BugBug: Is it a template? If so, get the value from the compile time stack
-            # and return early.
-
+        elif isinstance(type_expression, FuncOrTypeExpressionParserInfo):
             assert isinstance(type_expression.value, str), type_expression.value
 
             resolved_parser_info: Union[
@@ -158,20 +170,11 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
                 TypeAliasStatementParserInfo,
             ] = None
 
-            resolved_visibility: Optional[VisibilityModifier] = None
-            resolved_is_class_member: Optional[bool] = None
-
-            if resolved_parser_info is None and resolve_flag & StandardResolveFlag.CompileTimeInfo:
-                pass # BugBug
-
             if resolved_parser_info is None and resolve_flag & StandardResolveFlag.Nested:
-                pass # BugBug
+                resolved_parser_info = self._ResolveByNested(type_expression)
 
             if resolved_parser_info is None and resolve_flag & StandardResolveFlag.Namespace:
-                resolved_parser_info = self._ResolveNameByNamespace(type_expression.value)
-
-                resolved_visibility = VisibilityModifier.public
-                resolved_is_class_member = False
+                resolved_parser_info = self._ResolveByNamespace(type_expression)
 
             if resolved_parser_info is None:
                 raise ErrorException(
@@ -180,9 +183,6 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
                         name=type_expression.value,
                     ),
                 )
-
-            assert resolved_visibility is not None
-            assert resolved_is_class_member is not None
 
             result = self.CreateConcreteType(
                 resolved_parser_info,
@@ -220,56 +220,78 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
                 ],
             )
 
-        assert False, type_expression  # pragma: no cover
+        else:
+            assert False, type_expression  # pragma: no cover
 
     # ----------------------------------------------------------------------
     def CreateConcreteType(
         self,
-        parser_info: TemplatedStatementTrait,
+        parser_info: Union[ClassStatementParserInfo, TypeAliasStatementParserInfo],
         template_arguments: Optional[TemplateArgumentsParserInfo],
     ) -> Type:
-        is_cached_result, get_or_create_result = parser_info.GetOrCreateConcreteEntityFactory(
+        assert self._context_stack
+
+        was_cached, get_or_create_result = parser_info.GetOrCreateConcreteEntityFactory(
             template_arguments,
             self,
         )
 
-        if is_cached_result:
+        if was_cached:
             assert isinstance(get_or_create_result, Type), get_or_create_result
             return get_or_create_result
 
-        assert isinstance(get_or_create_result, tuple), get_or_create_result
-        assert len(get_or_create_result) == 2, get_or_create_result
+        assert (
+            isinstance(get_or_create_result, tuple)
+            and len(get_or_create_result) == 2
+        ), get_or_create_result
 
         resolved_template_arguments, init_concrete_entity = get_or_create_result
 
+        # Determine the foundational set of compile time information to use
+        if parser_info.translation_unit__ != self._context_stack[-1].parser_info.translation_unit__:
+            compile_time_info = [self._configuration_info, ]
+        else:
+            compile_time_info = self._context_stack[-1].compile_time_info
+
+        # Add the template arguments (if necessary)
+        if resolved_template_arguments is not None:
+            new_compile_time_info: Dict[str, CompileTimeInfo] = {}
+
+            # Add the types
+            # BugBug
+
+            # Add the decorators
+            for decorator_param, decorator_arg in resolved_template_arguments.decorators:
+                assert decorator_param.name not in new_compile_time_info, decorator_param.name
+
+                new_compile_time_info[decorator_param.name] = CompileTimeInfo(
+                    decorator_arg.type,
+                    decorator_arg.value,
+                )
+
+            compile_time_info = compile_time_info + [new_compile_time_info, ]
+
+        # Update the context and create the type
         result: Optional[Type] = None
 
         with ExitStack() as exit_stack:
-            if resolved_template_arguments is not None:
-                new_compile_time_info: Dict[str, CompileTimeInfo] = {}
+            self._context_stack.append(
+                self.__class__._Context(  # pylint: disable=protected-access
+                    parser_info,
+                    compile_time_info,
+                ),
+            )
 
-                # Add the types
-                # BugBug
-
-                # Add the decorators
-                for decorator_parameter, decorator_result in resolved_template_arguments.decorators:
-                    assert decorator_parameter.name not in new_compile_time_info, decorator_parameter.name
-
-                    new_compile_time_info[decorator_parameter.name] = CompileTimeInfo(
-                        decorator_result.type,
-                        decorator_result.value,
-                    )
-
-                self._compile_time_stack.append(new_compile_time_info)
-                exit_stack.callback(self._compile_time_stack.pop)
+            exit_stack.callback(self._context_stack.pop)
 
             entity = init_concrete_entity()
-
             assert isinstance(entity, Type), entity
+
             result = entity
 
+            # Evaluate the template if there is a corresponding method
             if (
-                isinstance(result, ConcreteClassType)
+                isinstance(result, ClassType)
                 and SpecialMethodType.EvalTemplates in result.concrete_class.special_methods
             ):
                 statements = result.concrete_class.special_methods[SpecialMethodType.EvalTemplates].statements
@@ -283,14 +305,95 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
 
                     eval_result = MiniLanguageHelpers.EvalExpression(
                         statement.expression,
-                        self._compile_time_stack,
+                        compile_time_info,
                         self._TypeCheckHelper,
                     )
 
-                    assert isinstance(eval_result.type, MiniLanguageHelpers.NoneType), eval_result.type
+                    assert isinstance(eval_result.type, MiniLanguageHelpers.NoneType), eval_result
 
         assert result is not None
         return result
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    def _ResolveByNested(
+        self,
+        parser_info: FuncOrTypeExpressionParserInfo,
+    ) -> Union[
+        None,
+        ClassStatementParserInfo,
+        TypeAliasStatementParserInfo,
+    ]:
+        assert isinstance(parser_info.value, str), parser_info.value
+        return None # BugBug
+
+    # ----------------------------------------------------------------------
+    def _ResolveByNamespace(
+        self,
+        parser_info: FuncOrTypeExpressionParserInfo,
+    ) -> Union[
+        None,
+        ClassStatementParserInfo,
+        TypeAliasStatementParserInfo,
+    ]:
+        assert isinstance(parser_info.value, str), parser_info.value
+
+        assert self._context_stack
+        context_parser_info = self._context_stack[-1].parser_info
+        assert isinstance(context_parser_info, NamedTrait), context_parser_info
+
+        # ----------------------------------------------------------------------
+        def EnumNamespaces() -> Generator[Namespace, None, None]:
+            namespace = context_parser_info.namespace__
+
+            while True:
+                assert namespace is not None
+
+                if namespace.name is None:
+                    break
+
+                yield namespace
+                namespace = namespace.parent
+
+            if self._fundamental_types_namespace:
+                yield self._fundamental_types_namespace
+
+        # ----------------------------------------------------------------------
+
+        for namespace in EnumNamespaces():
+            namespace = namespace.GetChild(parser_info.value)
+            if namespace is None:
+                continue
+
+            assert isinstance(namespace, ParsedNamespace), namespace
+
+            if (
+                namespace.parser_info.translation_unit__ == context_parser_info.translation_unit__
+                and namespace.parser_info.IsNameOrdered(context_parser_info.namespace__.scope_flag)
+                and namespace.ordered_id > context_parser_info.namespace__.ordered_id
+            ):
+                raise ErrorException(
+                    InvalidTypeReferenceError.Create(
+                        region=parser_info.regions__.value,
+                        name=parser_info.value,
+                        defined_region=namespace.parser_info.regions__.self__,
+                    ),
+                )
+
+            namespace = namespace.ResolveImports()
+
+            assert isinstance(
+                namespace.parser_info,
+                (
+                    ClassStatementParserInfo,
+                    TypeAliasStatementParserInfo,
+                ),
+            ), namespace.parser_info
+
+            return namespace.parser_info
+
+        return None
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -303,37 +406,3 @@ class EntityResolverMixin(EntityResolver, BaseMixin):
     ) -> bool:
         assert False, "BugBug: TODO"
         return False
-
-    # ----------------------------------------------------------------------
-    def _ResolveNameByNamespace(
-        self,
-        type_name: str,
-    ) -> Union[
-        None,
-        ClassStatementParserInfo,
-        TypeAliasStatementParserInfo,
-    ]:
-        assert self._namespaces_stack
-        namespace_stack = self._namespaces_stack[-1]
-
-        assert namespace_stack
-
-        for namespace in reversed(namespace_stack):
-            potential_namespace = namespace.GetChild(type_name)
-            if potential_namespace is None:
-                continue
-
-            assert isinstance(potential_namespace, ParsedNamespace), potential_namespace
-            resolved_namespace = potential_namespace.ResolveNamespace()
-
-            assert isinstance(
-                resolved_namespace.parser_info,
-                (
-                    ClassStatementParserInfo,
-                    TypeAliasStatementParserInfo,
-                ),
-            ), resolved_namespace.parser_info
-
-            return resolved_namespace.parser_info
-
-        return None

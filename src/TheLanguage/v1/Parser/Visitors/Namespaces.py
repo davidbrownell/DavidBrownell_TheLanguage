@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, Generator, List, Optional, TYPE_CHECKING, Union
+from typing import Dict, Generator, List, Optional, Tuple, TYPE_CHECKING, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -39,6 +39,8 @@ with InitRelativeImports():
 
     if TYPE_CHECKING:
         from ..ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo  # pylint: disable=unused-import
+        from ..ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
+        from ..ParserInfos.Statements.StatementParserInfo import ScopeFlag
 
 
 # ----------------------------------------------------------------------
@@ -160,7 +162,7 @@ class Namespace(ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     def Flatten(self) -> "Namespace":
-        result = Namespace(None, None)
+        result = Namespace("{} (Flattened)".format(self.name), self.parent)
 
         for value in self._FlattenImpl():
             assert value.name is not None
@@ -203,18 +205,16 @@ class ParsedNamespace(Namespace):
     def __init__(
         self,
         parser_info: ParserInfo,
+        parent: Namespace,
+        scope_flag: "ScopeFlag",
         ordered_id: int,
-        *args,
-        name: Optional[str]=None,
-        **kwargs,
     ):
-        if name is None:
-            assert isinstance(parser_info, NamedTrait), parser_info
-            name = parser_info.name
+        assert isinstance(parser_info, NamedTrait), parser_info
 
-        super(ParsedNamespace, self).__init__(name, *args, **kwargs)
+        super(ParsedNamespace, self).__init__(parser_info.name, parent)
 
         self.parser_info                    = parser_info
+        self.scope_flag                     = scope_flag
         self.ordered_id                     = ordered_id
 
     # ----------------------------------------------------------------------
@@ -234,12 +234,12 @@ class ParsedNamespace(Namespace):
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def EnumNamespaces(self) -> Generator["ParsedNamespace", None, None]:
+    def EnumImports(self) -> Generator["ParsedNamespace", None, None]:
         yield self
 
     # ----------------------------------------------------------------------
-    def ResolveNamespace(self) -> "ParsedNamespace":
-        *_, last = self.EnumNamespaces()
+    def ResolveImports(self) -> "ParsedNamespace":
+        *_, last = self.EnumImports()
         return last
 
     # ----------------------------------------------------------------------
@@ -286,19 +286,21 @@ class ImportNamespace(ParsedNamespace):
         self,
         parser_info: "ImportStatementParserInfo",
         parent: Namespace,
-        imported_namespace: ParsedNamespace,
+        scope_flag: "ScopeFlag",
         ordered_id: int,
+        imported_namespace: ParsedNamespace,
     ):
         super(ImportNamespace, self).__init__(
             parser_info,
+            parent,
+            scope_flag,
             ordered_id,
-            parent=parent,
         )
 
         self.imported_namespace             = imported_namespace
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def EnumNamespaces(self) -> Generator["ParsedNamespace", None, None]:
+    def EnumImports(self) -> Generator["ParsedNamespace", None, None]:
         yield self
-        yield from self.imported_namespace.EnumNamespaces()
+        yield from self.imported_namespace.EnumImports()

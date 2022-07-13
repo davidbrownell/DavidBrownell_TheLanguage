@@ -65,7 +65,7 @@ with InitRelativeImports():
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
-    from ..Types import ConcreteClassType, Type
+    from ..Types import ClassType, Type
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -332,11 +332,6 @@ class ClassStatementParserInfo(
         }
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def GenerateDynamicTypeNames(self) -> Generator[str, None, None]:
-        yield "ThisType"
-
-    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
     def IsNameOrdered(
@@ -354,9 +349,9 @@ class ClassStatementParserInfo(
         return self._GetOrCreateConcreteEntityFactoryImpl(
             template_arguments,
             entity_resolver,
-            lambda: ConcreteClassType(
+            lambda: ClassType(
                 self,
-                ConcreteClass.Create(entity_resolver, self),
+                ConcreteClass.Create(self, entity_resolver),
             ),
         )
 

@@ -18,11 +18,12 @@
 import itertools
 import os
 
-from typing import cast, Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
+from typing import cast, Dict, Generator, List, Optional, Tuple, TYPE_CHECKING, Union
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -41,18 +42,20 @@ with InitRelativeImports():
     from ..SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo, SpecialMethodType
     from ..TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
-    from ..Traits.TemplatedStatementTrait import ConcreteEntity
-
-    from ...EntityResolver import EntityResolver
-    from ...ParserInfo import ParserInfo
-    from ...Types import ConcreteClassType, NoneType, Type
-
     from ...Common.ClassModifier import ClassModifier
     from ...Common.MethodHierarchyModifier import MethodHierarchyModifier
     from ...Common.MutabilityModifier import MutabilityModifier
+    from ...Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
+
+    from ...Expressions.ExpressionParserInfo import ExpressionParserInfo
+
+    from ...EntityResolver import EntityResolver
+    from ...ParserInfo import CompileTimeInfo
+    from ...Types import ClassType, NoneType
 
     from ....Error import CreateError, Error, ErrorException
     from ....TranslationUnitRegion import TranslationUnitRegion
+    from ....Visitors.Namespaces import Namespace
 
     if TYPE_CHECKING:
         from ..ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo
@@ -114,7 +117,7 @@ DuplicateSpecialMethodError                 = CreateError(
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class ConcreteClass(ConcreteEntity):
+class ConcreteClass(object):
     # ----------------------------------------------------------------------
     parser_info: "ClassStatementParserInfo"
 
@@ -132,8 +135,8 @@ class ConcreteClass(ConcreteEntity):
     @classmethod
     def Create(
         cls,
-        entity_resolver: EntityResolver,
         class_statement_parser_info: "ClassStatementParserInfo",
+        entity_resolver: EntityResolver,
     ):
         errors: List[Error] = []
 
@@ -514,7 +517,7 @@ class ConcreteClass(ConcreteEntity):
     ) -> Generator[
         Tuple[
             "ClassStatementDependencyParserInfo",
-            ConcreteClassType,
+            ClassType,
         ],
         None,
         None,
@@ -559,7 +562,7 @@ class ConcreteClass(ConcreteEntity):
                     errors += ex.errors
                     continue
 
-                assert isinstance(resolved_entity, ConcreteClassType), resolved_entity
+                assert isinstance(resolved_entity, ClassType), resolved_entity
                 yield dependency, resolved_entity
 
         if errors:

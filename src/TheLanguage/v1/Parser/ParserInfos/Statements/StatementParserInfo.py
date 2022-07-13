@@ -85,10 +85,3 @@ class StatementParserInfo(ParserInfo):
     def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
         """Returns the scopes in which the statement can be considered valid"""
         raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @Interface.extensionmethod
-    def GenerateDynamicTypeNames(self) -> Generator[str, None, None]:
-        # By default, no dynamic types are generated
-        if False:
-            yield ""

@@ -885,7 +885,7 @@ class ClassCapabilities(ObjectReprImplBase):
         valid_type_names: List[str],
         desc: str,
     ) -> None:
-        if resolved_type.__class__.__name__ != "ConcreteClassType":
+        if resolved_type.__class__.__name__ != "ClassType":
             raise ErrorException(
                 InvalidResolvedDependencyError.Create(
                     region=dependency.type.regions__.self__,

@@ -69,30 +69,26 @@ class Type(object):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class ConcreteClassType(Type):
+class ClassType(Type):
     # ----------------------------------------------------------------------
-    _concrete_class: Any
+    concrete_class: "ConcreteClass"
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
         assert self._parser_info.__class__.__name__ == "ClassStatementParserInfo", self.parser_info
-        assert self._concrete_class.__class__.__name__ == "ConcreteClass", self._concrete_class
+        assert self.concrete_class.__class__.__name__ == "ConcreteClass", self.concrete_class
 
     # ----------------------------------------------------------------------
     @property
     def parser_info(self) -> "ClassStatementParserInfo":
         return self._parser_info  # type: ignore
 
-    @property
-    def concrete_class(self) -> "ConcreteClass":
-        return self._concrete_class  # type: ignore
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class ConcreteTypeAliasType(Type):
+class TypeAliasType(Type):
     # ----------------------------------------------------------------------
-    resolved_type: Union[ConcreteClassType, "ConcreteTypeAliasType"]
+    resolved_type: Type
 
     # ----------------------------------------------------------------------
     def __post_init__(self):

@@ -36,6 +36,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+# BugBug: Is it possible to move this class?
 @dataclass(frozen=True)
 class TypeDependencies(object):
     # ----------------------------------------------------------------------

@@ -16,8 +16,9 @@
 """Contains the TemplatedStatementTrait object"""
 
 import os
+import threading
 
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, cast, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -35,6 +36,7 @@ with InitRelativeImports():
     from ...Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
     from ...Common.TemplateParametersParserInfo import ResolvedTemplateArguments, TemplateParametersParserInfo
 
+    from ...ParserInfo import ParserInfo
     from ...Statements.StatementParserInfo import StatementParserInfo
 
     from ...EntityResolver import EntityResolver
@@ -78,7 +80,10 @@ class TemplatedStatementTrait(Interface.Interface):
     templates_param: InitVar[Optional[TemplateParametersParserInfo]]
     templates: Optional[TemplateParametersParserInfo]   = field(init=False, default=None)
 
-    is_default_initializable: bool          = field(init=False, default=False)
+    is_default_initializable: bool                      = field(init=False, default=False)
+
+    _cache_lock: threading.Lock                         = field(init=False, default_factory=threading.Lock)
+    _cache: Dict[Any, Union[Type, ConcreteEntity]]      = field(init=False, default_factory=dict)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -122,40 +127,40 @@ class TemplatedStatementTrait(Interface.Interface):
         template_arguments: Optional[TemplateArgumentsParserInfo],
         entity_resolver: EntityResolver,
         create_entity_func: Callable[[], Union[Type, ConcreteEntity]],
-        *,
-        parser_info: Optional[StatementParserInfo]=None,
     ) -> "TemplatedStatementTrait.GetOrCreateConcreteEntityFactoryResultType":
-        # BugBug: Create Cache key
-        cache_key = None
-
-        # BugBug: Look for the item in the cache
-
-        # BugBug: Return the cached value directly, meaning this is an odd return value
-
-        parser_info = parser_info or self  # type: ignore
-
         if self.templates is None:
             if template_arguments:
                 raise Exception("BugBug: Template arguments where templates are not expected")
 
             resolved_template_arguments = None
+            cache_key = None
 
         else:
-            assert isinstance(parser_info, NamedTrait)
+            assert isinstance(self, NamedTrait), self
+            assert isinstance(self, ParserInfo), self
 
             resolved_template_arguments = self.templates.MatchCall(  # pylint: disable=no-member
-                parser_info.name,
-                parser_info.regions__.name,
-                parser_info.regions__.self__,
+                self.name,                  # pylint: disable=no-member
+                self.regions__.name,        # pylint: disable=no-member
+                self.regions__.self__,      # pylint: disable=no-member
                 template_arguments,
                 entity_resolver,
             )
+
+            cache_key = resolved_template_arguments.cache_key
+
+        with self._cache_lock:  # pylint: disable=not-context-manager
+            result = self._cache.get(cache_key, None)  # pylint: disable=no-member
+            if result is not None:
+                return True, result
 
         # ----------------------------------------------------------------------
         def CreateEntityWrapper() -> Union[Type, ConcreteEntity]:
             result = create_entity_func()
 
-            # BugBug: Add the result to the cache
+            with self._cache_lock:  # pylint: disable=not-context-manager
+                self._cache[cache_key] = result
+
             return result
 
         # ----------------------------------------------------------------------

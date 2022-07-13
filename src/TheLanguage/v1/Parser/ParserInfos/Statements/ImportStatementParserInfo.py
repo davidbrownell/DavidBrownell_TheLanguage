@@ -66,6 +66,7 @@ class ImportStatementParserInfo(
     # ----------------------------------------------------------------------
     source_parts: List[str]
     importing_name: str
+
     import_type: ImportType
 
     # ----------------------------------------------------------------------
