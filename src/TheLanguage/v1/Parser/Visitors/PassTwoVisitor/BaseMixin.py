@@ -76,13 +76,6 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-
-# BugBug InvalidTypeVisibilityError                  = CreateError(
-# BugBug     "'{name}' is a recognized type, but not visible in this context",
-# BugBug     name=str,
-# BugBug     dependency_enumerations=List[HierarchyInfo.Dependency.EnumResult],
-# BugBug )
-
 InvalidTypeReferenceError                   = CreateError(
     "'{name}' is not a valid type reference; types must be class-like or aliases to class-like types",
     name=str,
@@ -113,22 +106,13 @@ class BaseMixin(ParserInfoVisitorHelper):
     # |  Public Types
     # |
     # ----------------------------------------------------------------------
-    class ProcessType(Enum):
-        ClassesParallel                     = 0
-        AllTypesParallel                    = auto()
-
-    # BugBug: Remove this
     class PostprocessType(Enum):
-        ResolveDependenciesParallel         = 0
-        ResolveDependenciesSequential       = 1
-        ResolveNestedClassTypes             = 2
-        # BugBug?: ResolveFunctionTypes                = 3
+        FinalizeConcreteTypes               = 0
+        ValidateDefaultConcreteTypes        = auto()
+        MethodResolution                    = auto()
 
-    # BugBug: Remove this
     sequential_postprocess_steps: Set[PostprocessType]  = set(
-        [
-            PostprocessType.ResolveDependenciesSequential,
-        ],
+        [],
     )
 
     # ----------------------------------------------------------------------
@@ -141,13 +125,14 @@ class BaseMixin(ParserInfoVisitorHelper):
         configuration_info: Dict[str, CompileTimeInfo],
         fundamental_types_namespace: Optional[Namespace],
     ):
-        self._configuration_info                        = configuration_info
+        self._compile_time_info                         = [configuration_info, ]
         self._fundamental_types_namespace               = fundamental_types_namespace
+
+        self._is_initial_pass               = True
 
         self._root_statement_parser_info: Optional[RootStatementParserInfo] = None
 
         self._errors: List[Error]           = []
-
         self._all_postprocess_funcs: List[List[Callable[[], None]]]         = [[] for _ in range(len(BaseMixin.PostprocessType))]
 
     # ----------------------------------------------------------------------
@@ -163,10 +148,8 @@ class BaseMixin(ParserInfoVisitorHelper):
 
             if isinstance(parser_info, TemplatedStatementTrait):
                 try:
-                    # BugBug: This isn't implemented yet
-                    if not isinstance(parser_info, FuncDefinitionStatementParserInfo):
-                        concrete_factory = self.CreateConcreteFactory(parser_info)
-                        # BugBug: What do we do with the factory?
+                    concrete_factory = self.CreateConcreteTypeFactory(parser_info)
+                    # BugBug: What do we do with the factory?
 
                 except ErrorException as ex:
                     self._errors += ex.errors
@@ -181,54 +164,3 @@ class BaseMixin(ParserInfoVisitorHelper):
                 self._errors += ex.errors
             else:
                 raise
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Methods
-    # |
-    # ----------------------------------------------------------------------
-    # BugBug @staticmethod
-    # BugBug def _NestedTypeResolver(
-    # BugBug     type_name: str,
-    # BugBug     region: TranslationUnitRegion,
-    # BugBug     concrete_type_info, # BugBug : ConcreteTypeInfo,
-    # BugBug ) -> Optional[
-    # BugBug     Tuple[
-    # BugBug         VisibilityModifier,
-    # BugBug         Union[
-    # BugBug             ClassStatementParserInfo,
-    # BugBug             TemplateTypeParameterParserInfo,
-    # BugBug             TypeAliasStatementParserInfo,
-    # BugBug         ],
-    # BugBug         bool,
-    # BugBug     ]
-    # BugBug ]:
-    # BugBug     for dependency in concrete_type_info.types.Enum():
-    # BugBug         hierarchy_info = dependency.ResolveHierarchy()
-    # BugBug
-    # BugBug         if hierarchy_info.statement.name == type_name:
-    # BugBug             if hierarchy_info.visibility is None:
-    # BugBug                 raise ErrorException(
-    # BugBug                     InvalidTypeVisibilityError.Create(
-    # BugBug                         region=region,
-    # BugBug                         name=type_name,
-    # BugBug                         dependency_enumerations=list(dependency.EnumHierarchy()),
-    # BugBug                     ),
-    # BugBug                 )
-    # BugBug
-    # BugBug             assert isinstance(
-    # BugBug                 hierarchy_info.statement,
-    # BugBug                 (
-    # BugBug                     ClassStatementParserInfo,
-    # BugBug                     TemplateTypeParameterParserInfo,
-    # BugBug                     TypeAliasStatementParserInfo,
-    # BugBug                 ),
-    # BugBug             ), hierarchy_info.statement
-    # BugBug
-    # BugBug             return (
-    # BugBug                 hierarchy_info.visibility,
-    # BugBug                 hierarchy_info.statement,
-    # BugBug                 True,
-    # BugBug             )
-    # BugBug
-    # BugBug     return None

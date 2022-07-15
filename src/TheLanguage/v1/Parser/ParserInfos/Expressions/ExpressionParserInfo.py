@@ -35,8 +35,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeIdentifier import TypeIdentifier, StandardTypeIdentifier
-
     from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
     from ..Common.VisibilityModifier import VisibilityModifier
 

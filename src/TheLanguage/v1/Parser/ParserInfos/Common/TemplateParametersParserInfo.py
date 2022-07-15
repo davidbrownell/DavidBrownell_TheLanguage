@@ -324,7 +324,7 @@ class ResolvedTemplateArguments(object):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        # BugBug: Types
+        # BugBug: Types with cache_key
 
         cache_key = tuple(decorator[1].value for decorator in self.decorators)
 

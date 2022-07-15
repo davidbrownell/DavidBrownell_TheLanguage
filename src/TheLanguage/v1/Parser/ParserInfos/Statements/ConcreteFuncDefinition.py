@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TypeIdentifier.py
+# |  ConcreteFuncDefinition.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-07-01 09:57:12
+# |      2022-07-13 13:22:59
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,16 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains functionality used to identify if types are the same or compatible"""
+"""Contains the ConcreteFuncDefinition object"""
 
 import os
 
-from typing import Tuple
+from typing import TYPE_CHECKING
 
 from dataclasses import dataclass
 
 import CommonEnvironment
-from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,43 +31,34 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    pass # BugBug
+    from ..EntityResolver import EntityResolver
+
+    if TYPE_CHECKING:
+        from .FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TypeIdentifier(object):
+class ConcreteFuncDefinition(object):
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def Matches(
-        other: "TypeIdentifier",
-        *,
-        strict: bool=False,
-    ) -> bool:
-        """Returns True if the other type matches this type"""
-        raise Exception("Abstract method")  # pragma: no cover
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class StandardTypeIdentifier(TypeIdentifier):
-    # ----------------------------------------------------------------------
-    id: Tuple
+    parser_info: "FuncDefinitionStatementParserInfo"
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def Matches(
-        self,
-        other: TypeIdentifier,
-        *,
-        strict: bool=False,
-    ) -> bool:
-        return (
-            isinstance(other, StandardTypeIdentifier)
-            and len(self.id) == len(other.id)
-            and all(
-                this_item.Matches(other_item, strict=strict)
-                for this_item, other_item in zip(self.id, other.id)
-            )
+    @classmethod
+    def Create(
+        cls,
+        func_parser_info: "FuncDefinitionStatementParserInfo",
+        entity_resolver: EntityResolver,
+    ):
+        # BugBug
+
+        return cls(
+            func_parser_info,
         )
+
+    # ----------------------------------------------------------------------
+    def Finalize(
+        self,
+        entity_resolver: EntityResolver,
+    ) -> None:
+        pass # BugBug

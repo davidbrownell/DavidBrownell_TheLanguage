@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Generator, Optional, Tuple, TYPE_CHECKING, Union
+from typing import Generator, Generic, Optional, Tuple, TypeVar, TYPE_CHECKING, Union
 
 from dataclasses import dataclass
 
@@ -32,74 +32,64 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ...StatementParserInfo import StatementParserInfo
+
     from ....Common.VisibilityModifier import VisibilityModifier
+    from ....Traits.NamedTrait import NamedTrait
 
     if TYPE_CHECKING:
-        from ...ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo  # pylint: disable=unused-import
         from ...ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo  # pylint: disable=unused-import
-        from ...FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo  # pylint: disable=unused-import
-        from ...TypeAliasStatementParserInfo import TypeAliasStatementParserInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
-class Dependency(Interface.Interface):
-    """Abstract base class for DependencyNode and DependencyLeaf objects"""
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    StatementParserInfoType                 = Union[
-        "ClassAttributeStatementParserInfo",
-        "ClassStatementParserInfo",
-        "FuncDefinitionStatementParserInfo",
-        "TypeAliasStatementParserInfo",
-    ]
-
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class EnumResult(object):
-        visibility: Optional[VisibilityModifier] # None indicates that it isn't visible
-        statement: "Dependency.StatementParserInfoType"
-        dependency_info: Union["ClassStatementParserInfo", "ClassStatementDependencyParserInfo"]
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def EnumDependencies() -> Generator["Dependency.EnumResult", None, None]:
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    def ResolveDependencies(self) -> Tuple[
-        Optional[VisibilityModifier],
-        "Dependency.StatementParserInfoType",
-    ]:
-        *_, last = self.EnumDependencies()
-
-        return last.visibility, last.statement
+DependencyValueT                            = TypeVar("DependencyValueT")
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class DependencyNode(Dependency):
+class DependencyEnumResult(Generic[DependencyValueT]):
+    # ----------------------------------------------------------------------
+    visibility: Optional[VisibilityModifier]            # None indicates that it isn't visible
+    value: Union[DependencyValueT, "ClassStatementDependencyParserInfo"]
+
+
+# ----------------------------------------------------------------------
+class Dependency(Interface.Interface, Generic[DependencyValueT]):
+    """Abstract base class for DependencyNode and DependencyLeaf objects"""
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def EnumDependencies() -> Generator[DependencyEnumResult[DependencyValueT], None, None]:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    def ResolveDependencies(self) -> Tuple[Optional[VisibilityModifier], DependencyValueT]:
+        *_, last = self.EnumDependencies()
+
+        assert last.value.__class__.__name__ != "ClassStatementDependencyParserInfo", last.value
+        return last.visibility, last.value  # type: ignore
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class DependencyNode(Dependency[DependencyValueT]):
     # ----------------------------------------------------------------------
     dependency: "ClassStatementDependencyParserInfo"
-    next: Dependency
+    next: Dependency[DependencyValueT]
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def EnumDependencies(self) -> Generator[Dependency.EnumResult, None, None]:
-        last_result: Optional[Dependency.EnumResult] = None
+    def EnumDependencies(self) -> Generator[DependencyEnumResult[DependencyValueT], None, None]:
+        last_result: Optional[DependencyEnumResult] = None
 
         for last_result in self.next.EnumDependencies():
             yield last_result
 
         assert last_result is not None
+
+        yield DependencyEnumResult(last_result.visibility, self.dependency)
+
         assert self.dependency.visibility is not None
 
         if last_result.visibility is None or last_result.visibility == VisibilityModifier.private:
@@ -109,25 +99,16 @@ class DependencyNode(Dependency):
                 min(last_result.visibility.value, self.dependency.visibility.value),
             )
 
-        yield Dependency.EnumResult(
-            visibility,
-            last_result.statement,
-            self.dependency,
-        )
+        yield DependencyEnumResult(visibility, last_result.value)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class DependencyLeaf(Dependency):
+class DependencyLeaf(Dependency[DependencyValueT]):
     # ----------------------------------------------------------------------
-    class_statement: "ClassStatementParserInfo"
-    statement: Dependency.StatementParserInfoType
+    value: DependencyValueT
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def EnumDependencies(self) -> Generator[Dependency.EnumResult, None, None]:
-        yield Dependency.EnumResult(
-            self.statement.visibility,
-            self.statement,
-            self.class_statement,
-        )
+    def EnumDependencies(self) -> Generator[DependencyEnumResult[DependencyValueT], None, None]:
+        yield DependencyEnumResult(VisibilityModifier.public, self.value)

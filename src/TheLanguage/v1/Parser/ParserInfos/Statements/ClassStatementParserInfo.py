@@ -36,6 +36,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .ConcreteClass import ConcreteClass
+
     from .StatementParserInfo import (
         ParserInfo,
         ParserInfoType,
@@ -44,10 +46,8 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
-    from .ConcreteClass import ConcreteClass
-
     from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
-    from .Traits.TemplatedStatementTrait import ConcreteEntity, TemplatedStatementTrait
+    from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
@@ -65,7 +65,7 @@ with InitRelativeImports():
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
-    from ..Types import ClassType, Type
+    from ..Types import ClassType, ConcreteType
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -340,22 +340,6 @@ class ClassStatementParserInfo(
         return bool(scope_flag & ScopeFlag.Function)
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def GetOrCreateConcreteEntityFactory(
-        self,
-        template_arguments: Optional[TemplateArgumentsParserInfo],
-        entity_resolver: EntityResolver,
-    ) -> TemplatedStatementTrait.GetOrCreateConcreteEntityFactoryResultType:
-        return self._GetOrCreateConcreteEntityFactoryImpl(
-            template_arguments,
-            entity_resolver,
-            lambda: ClassType(
-                self,
-                ConcreteClass.Create(self, entity_resolver),
-            ),
-        )
-
-    # ----------------------------------------------------------------------
     # |
     # |  Private Methods
     # |
@@ -376,3 +360,11 @@ class ClassStatementParserInfo(
 
         if self.uses:
             yield "uses", self.uses  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateConcreteType(
+        self,
+        entity_resolver: EntityResolver,
+    ) -> ConcreteType:
+        return ClassType(self, ConcreteClass())

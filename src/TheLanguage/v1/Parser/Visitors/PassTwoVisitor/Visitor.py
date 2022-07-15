@@ -163,4 +163,6 @@ class Visitor(
             with self._execute_results_lock:
                 self._execute_results[translation_unit] = execute_result
 
+            visitor._is_initial_pass = False  # pylint: disable=protected-access
+
             return True

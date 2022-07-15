@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import Any, Callable, Generator, List, Optional, Set, Tuple
+from typing import Any, Callable, Generator, Generic, List, Optional, Set, Tuple, TypeVar
 
 from dataclasses import dataclass
 
@@ -36,32 +36,36 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+ClassContentT                               = TypeVar("ClassContentT")
+
+
+# ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class ClassContent(object):
+class ClassContent(Generic[ClassContentT]):
     # ----------------------------------------------------------------------
-    local: List[Dependency]                 # Items defined within the class
-    augmented: List[Dependency]             # Items defined in a Concept or Mixin
-    inherited: List[Dependency]             # Items defined in a base or Interface
+    local: List[Dependency[ClassContentT]]              # Items defined within the class
+    augmented: List[Dependency[ClassContentT]]          # Items defined in a Concept or Mixin
+    inherited: List[Dependency[ClassContentT]]          # Items defined in a base or Interface
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
-        local: List[Dependency],
-        augmented: List[Dependency],
-        inherited: List[Dependency],
-        get_key_func: Callable[[Dependency], Any],
+        local: List[Dependency[ClassContentT]],
+        augmented: List[Dependency[ClassContentT]],
+        inherited: List[Dependency[ClassContentT]],
+        get_key_func: Callable[[ClassContentT], Any],
         postprocess_func: Optional[
             Callable[
                 [
-                    List[Dependency],
-                    List[Dependency],
-                    List[Dependency],
+                    List[Dependency[ClassContentT]],
+                    List[Dependency[ClassContentT]],
+                    List[Dependency[ClassContentT]],
                 ],
                 Tuple[
-                    List[Dependency],
-                    List[Dependency],
-                    List[Dependency],
+                    List[Dependency[ClassContentT]],
+                    List[Dependency[ClassContentT]],
+                    List[Dependency[ClassContentT]],
                 ],
             ]
         ]=None,
@@ -86,20 +90,22 @@ class ClassContent(object):
     # ----------------------------------------------------------------------
     @staticmethod
     def _FilterList(
-        items: List[Dependency],
-        get_key_func: Callable[[Dependency], Any],
+        dependencies: List[Dependency[ClassContentT]],
+        get_key_func: Callable[[ClassContentT], Any],
         lookup: Set[Any],
-    ) -> List[Dependency]:
-        results: List[Dependency] = []
+    ) -> List[Dependency[ClassContentT]]:
+        results: List[Dependency[ClassContentT]] = []
 
-        for item in items:
-            key = get_key_func(item)
+        for dependency in dependencies:
+            resolved_info = dependency.ResolveDependencies()[1]
+
+            key = get_key_func(resolved_info)
 
             if key in lookup:
                 continue
 
             lookup.add(key)
 
-            results.append(item)
+            results.append(dependency)
 
         return results

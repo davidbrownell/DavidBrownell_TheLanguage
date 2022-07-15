@@ -40,7 +40,7 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
-    from .Traits.TemplatedStatementTrait import ConcreteEntity, TemplatedStatementTrait
+    from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
@@ -51,7 +51,7 @@ with InitRelativeImports():
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
     from ..Traits.NamedTrait import NamedTrait
-    from ..Types import ClassType, TypeAliasType, Type
+    from ..Types import ConcreteType, TypeAliasType
 
     from ...Error import Error, ErrorException
 
@@ -173,25 +173,6 @@ class TypeAliasStatementParserInfo(
         return bool(scope_flag & ScopeFlag.Function)
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def GetOrCreateConcreteEntityFactory(
-        self,
-        template_arguments: Optional[TemplateArgumentsParserInfo],
-        entity_resolver: EntityResolver,
-    ) -> TemplatedStatementTrait.GetOrCreateConcreteEntityFactoryResultType:
-        # ----------------------------------------------------------------------
-        def CreateConcreteType() -> Type:
-            return TypeAliasType(self, entity_resolver.ResolveType(self.type))
-
-        # ----------------------------------------------------------------------
-
-        return self._GetOrCreateConcreteEntityFactoryImpl(
-            template_arguments,
-            entity_resolver,
-            CreateConcreteType,
-        )
-
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
@@ -203,3 +184,11 @@ class TypeAliasStatementParserInfo(
 
         if self.constraints:
             yield "constraints", self.constraints  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateConcreteType(
+        self,
+        entity_resolver: EntityResolver,
+    ) -> ConcreteType:
+        return TypeAliasType(self, entity_resolver.ResolveType(self.type))

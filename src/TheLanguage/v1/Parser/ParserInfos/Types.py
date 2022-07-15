@@ -35,19 +35,23 @@ with InitRelativeImports():
     from .ParserInfo import ParserInfo
 
     if TYPE_CHECKING:
-        from .Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo          # pylint: disable=unused-import
-        from .Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo        # pylint: disable=unused-import
-        from .Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo    # pylint: disable=unused-import
+        from .EntityResolver import EntityResolver                                                  # pylint: disable=unused-import
 
-        from .Statements.ClassStatementParserInfo import ClassStatementParserInfo           # pylint: disable=unused-import
-        from .Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo   # pylint: disable=unused-import
+        from .Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo                  # pylint: disable=unused-import
+        from .Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo                # pylint: disable=unused-import
+        from .Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo            # pylint: disable=unused-import
 
-        from .Statements.ConcreteClass import ConcreteClass                 # pylint: disable=unused-import
+        from .Statements.ClassStatementParserInfo import ClassStatementParserInfo                   # pylint: disable=unused-import
+        from .Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo # pylint: disable=unused-import
+        from .Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo           # pylint: disable=unused-import
+
+        from .Statements.ConcreteClass import ConcreteClass                                         # pylint: disable=unused-import
+        from .Statements.ConcreteFuncDefinition import ConcreteFuncDefinition                       # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class Type(object):
+class Type(Interface.Interface):
     # ----------------------------------------------------------------------
     _parser_info: ParserInfo
 
@@ -69,7 +73,19 @@ class Type(object):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class ClassType(Type):
+class ConcreteType(Type):
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def Finalize(
+        entity_resolver: "EntityResolver",
+    ) -> None:
+        raise Exception("Abstract method")  # pragma: no cover
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class ClassType(ConcreteType):
     # ----------------------------------------------------------------------
     concrete_class: "ConcreteClass"
 
@@ -83,10 +99,43 @@ class ClassType(Type):
     def parser_info(self) -> "ClassStatementParserInfo":
         return self._parser_info  # type: ignore
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Finalize(
+        self,
+        entity_resolver: "EntityResolver",
+    ) -> None:
+        self.concrete_class.Finalize(self.parser_info, entity_resolver)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TypeAliasType(Type):
+class FuncDefinitionType(ConcreteType):
+    # ----------------------------------------------------------------------
+    concrete_func_definition: "ConcreteFuncDefinition"
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert self._parser_info.__class__.__name__ == "FuncDefinitionStatementParserInfo", self.parser_info
+        assert self.concrete_func_definition.__class__.__name__ == "ConcreteFuncDefinition", self.concrete_func_definition
+
+    # ----------------------------------------------------------------------
+    @property
+    def parser_info(self) -> "FuncDefinitionStatementParserInfo":
+        return self._parser_info  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Finalize(
+        self,
+        entity_resolver: "EntityResolver",
+    ) -> None:
+        self.concrete_func_definition.Finalize(entity_resolver)
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True)
+class TypeAliasType(ConcreteType):
     # ----------------------------------------------------------------------
     resolved_type: Type
 
@@ -104,6 +153,15 @@ class TypeAliasType(Type):
     def EnumAliases(self) -> Generator["Type", None, None]:
         yield self
         yield from self.resolved_type.EnumAliases()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Finalize(
+        self,
+        entity_resolver: "EntityResolver",
+    ) -> None:
+        if isinstance(self.resolved_type, ConcreteType):
+            self.resolved_type.Finalize(entity_resolver)
 
 
 # ----------------------------------------------------------------------

@@ -16,10 +16,11 @@
 """Contains the EntityResolverMixin object"""
 
 import os
+import threading
 
 from contextlib import ExitStack
 from enum import auto, Flag
-from typing import Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Callable, cast, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -41,6 +42,8 @@ with InitRelativeImports():
     from ...ParserInfos.ParserInfo import CompileTimeInfo
 
     from ...ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
+    from ...ParserInfos.Common.TemplateParametersParserInfo import ResolvedTemplateArguments
+
     from ...ParserInfos.Common.VisibilityModifier import VisibilityModifier
 
     from ...ParserInfos.EntityResolver import EntityResolver
@@ -56,6 +59,7 @@ with InitRelativeImports():
     from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
     from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
+    from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ...ParserInfos.Statements.SpecialMethodStatementParserInfo import SpecialMethodType
     from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
 
@@ -63,7 +67,7 @@ with InitRelativeImports():
     from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from ...ParserInfos.Traits.NamedTrait import NamedTrait
-    from ...ParserInfos.Types import ClassType, NoneType, Type, TupleType, VariantType
+    from ...ParserInfos.Types import ClassType, ConcreteType, NoneType, Type, TupleType, VariantType
 
     from ...Common import MiniLanguageHelpers
     from ...Error import CreateError, ErrorException
@@ -103,52 +107,53 @@ class StandardResolveFlag(Flag):
 # ----------------------------------------------------------------------
 class EntityResolverMixin(BaseMixin):
     # ----------------------------------------------------------------------
-    def CreateConcreteFactory(
+    def CreateConcreteTypeFactory(
         self,
         parser_info: StatementParserInfo,
     ) -> Callable[
         [
-            TemplateArgumentsParserInfo,
+            Optional[TemplateArgumentsParserInfo],
         ],
-        Type,
+        ConcreteType,
     ]:
+        assert isinstance(parser_info, TemplatedStatementTrait), parser_info
         assert self._root_statement_parser_info is not None
 
-        # TODO: This doesn't need to be its own function
-
         resolver = _EntityResolver(
-            self._fundamental_types_namespace,
             self._root_statement_parser_info,
-            [self._configuration_info],
+            self._compile_time_info,
+            self._compile_time_info,
+            self._fundamental_types_namespace,
         )
 
-        return resolver.CreateConcreteTypeFactory(parser_info)
+        return parser_info.CreateConcreteTypeFactory(resolver)
 
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 class _EntityResolver(EntityResolver):
-    """Instance that is able to resolve root-level contents across different translation units"""
-
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        fundamental_types_namespace: Optional[Namespace],
         parser_info: StatementParserInfo,
         compile_time_info: List[Dict[str, CompileTimeInfo]],
+        original_compile_time_info: List[Dict[str, CompileTimeInfo]],
+        fundamental_types_namespace: Optional[Namespace],
     ):
+        self._parser_info                   = parser_info
+        self._compile_time_info             = compile_time_info
+        self._original_compile_time_info    = original_compile_time_info
         self._fundamental_types_namespace   = fundamental_types_namespace
-        self._context_stack                 = [
-            _EntityResolver._Context(parser_info, compile_time_info),
-        ]
 
     # ----------------------------------------------------------------------
-    def Clone(self) -> "_EntityResolver":
+    @Interface.override
+    def Clone(self) -> EntityResolver:
         return self.__class__(
+            self._parser_info,
+            self._compile_time_info,
+            self._original_compile_time_info,
             self._fundamental_types_namespace,
-            self._context_stack[-1].parser_info,
-            self._context_stack[-1].compile_time_info,
         )
 
     # ----------------------------------------------------------------------
@@ -159,7 +164,7 @@ class _EntityResolver(EntityResolver):
     ) -> MiniLanguageHelpers.MiniLanguageType:
         mini_language_type = MiniLanguageHelpers.EvalTypeExpression(
             parser_info,
-            self._context_stack[-1].compile_time_info,
+            self._compile_time_info,
             self._TypeCheckHelper,
         )
 
@@ -180,7 +185,7 @@ class _EntityResolver(EntityResolver):
     ) -> MiniLanguageHelpers.MiniLanguageExpression.EvalResult:
         return MiniLanguageHelpers.EvalExpression(
             parser_info,
-            self._context_stack[-1].compile_time_info,
+            self._compile_time_info,
             self._TypeCheckHelper,
         )
 
@@ -195,7 +200,7 @@ class _EntityResolver(EntityResolver):
     ) -> Type:
         type_expression = MiniLanguageHelpers.EvalTypeExpression(
             parser_info,
-            self._context_stack[-1].compile_time_info,
+            self._compile_time_info,
             self._TypeCheckHelper,
         )
 
@@ -209,11 +214,7 @@ class _EntityResolver(EntityResolver):
         elif isinstance(type_expression, FuncOrTypeExpressionParserInfo):
             assert isinstance(type_expression.value, str), type_expression.value
 
-            resolved_parser_info: Union[
-                None,
-                ClassStatementParserInfo,
-                TypeAliasStatementParserInfo,
-            ] = None
+            resolved_parser_info: Optional[ParserInfo] = None
 
             if resolved_parser_info is None and resolve_flag & StandardResolveFlag.Nested:
                 resolved_parser_info = self._ResolveByNested(type_expression)
@@ -229,9 +230,18 @@ class _EntityResolver(EntityResolver):
                     ),
                 )
 
-            result = self.CreateConcreteTypeFactory(resolved_parser_info)(type_expression.templates)
+            if isinstance(resolved_parser_info, TemplatedStatementTrait):
+                concrete_type_factory = resolved_parser_info.CreateConcreteTypeFactory(self)
 
-            # BugBug: Process the constraints
+                result = concrete_type_factory(type_expression.templates)
+
+                # BugBug: Process the constraints
+
+            else:
+                assert False, "BugBug"
+
+                # TODO: Error if templates
+                # TODO: Error if constraints
 
             if resolve_aliases:
                 result = result.ResolveAliases()
@@ -267,106 +277,42 @@ class _EntityResolver(EntityResolver):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def CreateConcreteTypeFactory(
+    def CreateConcreteType(
         self,
         parser_info: StatementParserInfo,
-    ) -> Callable[
-        [
-            Optional[TemplateArgumentsParserInfo],
-        ],
-        Type,
-    ]:
-        assert isinstance(parser_info, TemplatedStatementTrait), parser_info
+        resolved_template_arguments: Optional[ResolvedTemplateArguments],
+        create_type_func: Callable[[EntityResolver], ConcreteType],
+    ) -> ConcreteType:
+        if parser_info.translation_unit__ == self._parser_info.translation_unit__:
+            compile_time_info = self._compile_time_info
+        else:
+            compile_time_info = self._original_compile_time_info
 
-        # Create a dedicated resolve so that the creation function can be invoked
-        # long after this resolver is gone.
-        dedicated_resolver = self.Clone()
+        if resolved_template_arguments is not None:
+            new_compile_time_info_item: Dict[str, CompileTimeInfo] = {}
 
-        # ----------------------------------------------------------------------
-        def CreateConcreteType(
-            template_arguments: Optional[TemplateArgumentsParserInfo],
-        ) -> Type:
-            was_cached, get_or_create_result = parser_info.GetOrCreateConcreteEntityFactory(
-                template_arguments,
-                dedicated_resolver,
-            )
+            # Add the types
+            # BugBug
 
-            if was_cached:
-                assert isinstance(get_or_create_result, Type), get_or_create_result
-                return get_or_create_result
+            # Add the decorators
+            for decorator_param, decorator_arg in resolved_template_arguments.decorators:
+                assert decorator_param.name not in new_compile_time_info_item, decorator_param.name
 
-            assert (
-                isinstance(get_or_create_result, tuple)
-                and len(get_or_create_result) == 2
-            ), get_or_create_result
+                new_compile_time_info_item[decorator_param.name] = CompileTimeInfo(
+                    decorator_arg.type,
+                    decorator_arg.value,
+                )
 
-            resolved_template_arguments, init_concrete_entity = get_or_create_result
+            compile_time_info = compile_time_info + [new_compile_time_info_item, ]
 
-            # Add the template arguments (if any)
-            compile_time_info = dedicated_resolver._context_stack[-1].compile_time_info  # pylint: disable=protected-access
+        updated_resolver = self.__class__(
+            parser_info,
+            compile_time_info,
+            self._original_compile_time_info,
+            self._fundamental_types_namespace,
+        )
 
-            if resolved_template_arguments is not None:
-                new_compile_time_info: Dict[str, CompileTimeInfo] = {}
-
-                # Add the types
-                # BugBug
-
-                # Add the decorators
-                for decorator_param, decorator_arg in resolved_template_arguments.decorators:
-                    assert decorator_param.name not in new_compile_time_info, decorator_param.name
-
-                    new_compile_time_info[decorator_param.name] = CompileTimeInfo(
-                        decorator_arg.type,
-                        decorator_arg.value,
-                    )
-
-                compile_time_info = compile_time_info + [new_compile_time_info, ]
-
-            # Update the compile time info and return the result
-            result: Optional[Type] = None
-
-            with ExitStack() as exit_stack:
-                dedicated_resolver._context_stack.append(_EntityResolver._Context(parser_info, compile_time_info))  # pylint: disable=protected-access
-                exit_stack.callback(dedicated_resolver._context_stack.pop) # pylint: disable=protected-access
-
-                entity = init_concrete_entity()
-                assert isinstance(entity, Type), entity
-
-                result = entity
-
-                # Evaluate the template if there is a corresponding method
-                if (
-                    isinstance(result, ClassType)
-                    and SpecialMethodType.EvalTemplates in result.concrete_class.special_methods
-                ):
-                    statements = result.concrete_class.special_methods[SpecialMethodType.EvalTemplates].statements
-                    assert statements is not None
-
-                    for statement in statements:
-                        if statement.is_disabled__:
-                            continue
-
-                        assert isinstance(statement, FuncInvocationStatementParserInfo), statement
-
-                        eval_result = MiniLanguageHelpers.EvalExpression(
-                            statement.expression,
-                            compile_time_info,
-                            self._TypeCheckHelper,
-                        )
-
-                        assert isinstance(eval_result.type, MiniLanguageHelpers.NoneType), eval_result.type
-
-            assert result is not None
-            return result
-
-        # ----------------------------------------------------------------------
-
-        if parser_info.templates is None or parser_info.templates.is_default_initializable:
-            # Exercise it now so that any errors are raised immediately rather than when the
-            # type is used.
-            CreateConcreteType(None)
-
-        return CreateConcreteType
+        return create_type_func(updated_resolver)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -392,16 +338,14 @@ class _EntityResolver(EntityResolver):
         TypeAliasStatementParserInfo,
     ]:
         assert isinstance(parser_info.value, str), parser_info.value
-
-        assert self._context_stack
-        context_parser_info = self._context_stack[-1].parser_info
-        assert isinstance(context_parser_info, NamedTrait), context_parser_info
+        assert isinstance(self._parser_info, NamedTrait), self._parser_info
 
         # ----------------------------------------------------------------------
         def EnumNamespaces() -> Generator[Namespace, None, None]:
-            assert isinstance(context_parser_info, NamedTrait), context_parser_info
-            namespace = context_parser_info.namespace__
+            assert isinstance(self._parser_info, NamedTrait), self._parser_info
+            namespace = self._parser_info.namespace__
 
+            # BugBUg: Clean up this loop once the quirks have been worked out
             while True:
                 assert namespace is not None
 
@@ -409,6 +353,7 @@ class _EntityResolver(EntityResolver):
                     break
 
                 yield namespace
+
                 namespace = namespace.parent
 
             if self._fundamental_types_namespace:
@@ -422,11 +367,13 @@ class _EntityResolver(EntityResolver):
                 continue
 
             assert isinstance(namespace, ParsedNamespace), namespace
+            if isinstance(namespace.parser_info, RootStatementParserInfo):
+                continue
 
             if (
-                namespace.parser_info.translation_unit__ == context_parser_info.translation_unit__
-                and namespace.parser_info.IsNameOrdered(context_parser_info.namespace__.scope_flag)
-                and namespace.ordered_id > context_parser_info.namespace__.ordered_id
+                namespace.parser_info.translation_unit__ == self._parser_info.translation_unit__
+                and namespace.parser_info.IsNameOrdered(self._parser_info.namespace__.scope_flag)
+                and namespace.ordered_id > self._parser_info.namespace__.ordered_id
             ):
                 raise ErrorException(
                     InvalidTypeReferenceError.Create(
@@ -450,28 +397,6 @@ class _EntityResolver(EntityResolver):
 
         return None
 
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True)
-    class _Context(object):
-        # ----------------------------------------------------------------------
-        parser_info: StatementParserInfo
-        compile_time_info: List[Dict[str, CompileTimeInfo]]
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            assert (
-                self.parser_info is None
-                or isinstance(self.parser_info, NamedTrait)
-            ), self.parser_info
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Private Methods
-    # |
     # ----------------------------------------------------------------------
     def _TypeCheckHelper(
         self,

@@ -18,7 +18,8 @@
 import itertools
 import os
 
-from typing import Any, Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
+from enum import auto, Enum
+from typing import Any, Callable, cast, Dict, Generator, Iterable, List, Optional, Tuple, TYPE_CHECKING, Union
 
 from dataclasses import dataclass, field
 
@@ -39,15 +40,21 @@ with InitRelativeImports():
     from ..ClassUsingStatementParserInfo import ClassUsingStatementParserInfo
     from ..FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
     from ..SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo, SpecialMethodType
+    from ..StatementParserInfo import StatementParserInfo
     from ..TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
     from ...EntityResolver import EntityResolver
-    from ...Types import ClassType, NoneType
+    from ...Types import ClassType, ConcreteType, FuncDefinitionType, NoneType, Type, TypeAliasType
 
     from ...Common.ClassModifier import ClassModifier
     from ...Common.MethodHierarchyModifier import MethodHierarchyModifier
     from ...Common.MutabilityModifier import MutabilityModifier
     from ...Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
+    from ...Common.VisibilityModifier import VisibilityModifier
+
+    from ...Expressions.BinaryExpressionParserInfo import BinaryExpressionParserInfo, OperatorType as BinaryExpressionOperatorType
+
+    from ...Traits.NamedTrait import NamedTrait
 
     from ....Error import CreateError, Error, ErrorException
     from ....TranslationUnitRegion import TranslationUnitRegion
@@ -57,6 +64,11 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+CircularDependencyError                     = CreateError(
+    "A circular dependency was detected with '{name}'",
+    name=str,
+)
+
 FinalDependencyError                        = CreateError(
     "The class '{name}' is final and cannot be extended",
     name=str,
@@ -111,135 +123,238 @@ DuplicateSpecialMethodError                 = CreateError(
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
 class ConcreteClass(object):
     # ----------------------------------------------------------------------
-    parser_info: "ClassStatementParserInfo"
-
-    base: Optional[DependencyNode]
-    special_methods: Dict[SpecialMethodType, SpecialMethodStatementParserInfo]
-
-    interfaces: ClassContent
-    concepts: ClassContent
-    types: ClassContent
-    attributes: ClassContent
-    abstract_methods: ClassContent
-    methods: ClassContent
+    # |
+    # |  Public Types
+    # |
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class TypeInfo(object):
+        # ----------------------------------------------------------------------
+        statement: Union["ClassStatementParserInfo", FuncDefinitionStatementParserInfo, TypeAliasStatementParserInfo]
+        concrete_type_factory_func: Callable[[Optional[TemplateArgumentsParserInfo]], ConcreteType]
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        class_statement_parser_info: "ClassStatementParserInfo",
+    @dataclass(frozen=True)
+    class AttributeInfo(object):
+        # ----------------------------------------------------------------------
+        statement: ClassAttributeStatementParserInfo
+        type: Type
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        self._state                         = _InternalState.PreFinalize
+
+        self._base: Optional[ClassType]                                                              = None
+        self._special_methods: Optional[Dict[SpecialMethodType, SpecialMethodStatementParserInfo]]   = None
+
+        self._interfaces: Optional[ClassContent[ClassType]]                     = None
+        self._concepts: Optional[ClassContent[ClassType]]                       = None
+
+        self._types: Optional[ClassContent[ConcreteClass.TypeInfo]]             = None
+        self._attributes: Optional[ClassContent[ConcreteClass.AttributeInfo]]   = None
+
+        self._abstract_methods: Optional[ClassContent[ConcreteClass.TypeInfo]]  = None
+        self._methods: Optional[ClassContent[ConcreteClass.TypeInfo]]           = None
+
+    # ----------------------------------------------------------------------
+    @property
+    def base(self) -> Optional[ClassType]:
+        assert self._state == _InternalState.Finalized
+        return self._base
+
+    @property
+    def special_methods(self) -> Dict[SpecialMethodType, SpecialMethodStatementParserInfo]:
+        assert self._state == _InternalState.Finalized
+        assert self._special_methods is not None
+        return self._special_methods
+
+    @property
+    def interfaces(self) -> ClassContent[ClassType]:
+        assert self._state == _InternalState.Finalized
+        assert self._interfaces is not None
+        return self._interfaces
+
+    @property
+    def concepts(self) -> ClassContent[ClassType]:
+        assert self._state == _InternalState.Finalized
+        assert self._concepts is not None
+        return self._concepts
+
+    @property
+    def types(self) -> ClassContent["ConcreteClass.TypeInfo"]:
+        assert self._state == _InternalState.Finalized
+        assert self._types is not None
+        return self._types
+
+    @property
+    def attributes(self) -> ClassContent["ConcreteClass.AttributeInfo"]:
+        assert self._state == _InternalState.Finalized
+        assert self._attributes is not None
+        return self._attributes
+
+    @property
+    def abstract_methods(self) -> ClassContent["ConcreteClass.TypeInfo"]:
+        assert self._state == _InternalState.Finalized
+        assert self._abstract_methods is not None
+        return self._abstract_methods
+
+    @property
+    def methods(self) -> ClassContent["ConcreteClass.TypeInfo"]:
+        assert self._state == _InternalState.Finalized
+        assert self._methods is not None
+        return self._methods
+
+    # ----------------------------------------------------------------------
+    def Finalize(
+        self,
+        class_parser_info: "ClassStatementParserInfo",
         entity_resolver: EntityResolver,
-    ):
+    ) -> None:
+        if self._state == _InternalState.Finalized:
+            return
+        elif self._state == _InternalState.FinalizingLocalContent:
+            # It isn't a problem if items in a class reference itself
+            return
+        elif self._state == _InternalState.FinalizingDependencies:
+            raise ErrorException(
+                CircularDependencyError.Create(
+                    region=class_parser_info.regions__.self__,
+                    name=class_parser_info.name,
+                ),
+            )
+
+        assert self._state == _InternalState.PreFinalize
+
         errors: List[Error] = []
 
-        base: Optional[DependencyNode] = None
+        # Organize dependencies
+        self._state = _InternalState.FinalizingDependencies
 
-        local_contents = _PartialContents()
-        augmented_contents = _PartialContents()
-        dependency_contents = _PartialContents()
+        initial_base: Optional[Tuple["ClassStatementDependencyParserInfo", ClassType]] = None
+        initial_mixins: List[Tuple["ClassStatementDependencyParserInfo", ClassType]] = []
+        initial_concepts: List[Tuple["ClassStatementDependencyParserInfo", ClassType]] = []
+        initial_interfaces: List[Tuple["ClassStatementDependencyParserInfo", ClassType]] = []
 
-        # Extract information from the dependencies
-        for dependency_parser_info, resolved_entity in _EnumDependencies(
-            class_statement_parser_info,
-            entity_resolver,
-        ):
-            if resolved_entity.parser_info.is_final:
-                errors.append(
-                    FinalDependencyError.Create(
-                        region=dependency_parser_info.regions__.self__,
-                        name=resolved_entity.parser_info.name,
-                        final_class_region=resolved_entity.parser_info.regions__.self__,
-                    ),
-                )
-                continue
-
-            assert dependency_parser_info.visibility is not None
-
-            hierarchy_methods_are_polymorphic: Optional[bool] = None
-            target_contents: Optional[_PartialContents] = None
-
-            if (
-                resolved_entity.parser_info.class_capabilities.name == "Mixin"
-                or resolved_entity.parser_info.class_capabilities.name == "Concept"
+        try:
+            for dependency_parser_info, class_type in _EnumDependencies(
+                class_parser_info,
+                entity_resolver,
             ):
-                hierarchy_methods_are_polymorphic = False
-                target_contents = augmented_contents
-
-                if resolved_entity.parser_info.class_capabilities.name == "Concept":
-                    local_contents.concepts.append(  # pylint: disable=no-member
-                        DependencyNode(
-                            dependency_parser_info,
-                            DependencyLeaf(
-                                resolved_entity.parser_info,
-                                resolved_entity.parser_info,
-                            ),
+                if class_type.parser_info.is_final:
+                    errors.append(
+                        FinalDependencyError.Create(
+                            region=dependency_parser_info.regions__.self__,
+                            name=class_type.parser_info.name,
+                            final_class_region=class_type.parser_info.regions__.is_final,
                         ),
                     )
 
-            else:
-                hierarchy_methods_are_polymorphic = True
-                target_contents = dependency_contents
+                    continue
 
-                if resolved_entity.parser_info.class_capabilities.name == "Interface":
-                    local_contents.interfaces.append(  # pylint: disable=no-member
-                        DependencyNode(
-                            dependency_parser_info,
-                            DependencyLeaf(
-                                resolved_entity.parser_info,
-                                resolved_entity.parser_info,
-                            ),
-                        ),
-                    )
-
+                if class_type.parser_info.class_capabilities.name == "Mixin":
+                    initial_mixins.append((dependency_parser_info, class_type))
+                elif class_type.parser_info.class_capabilities.name == "Concept":
+                    initial_concepts.append((dependency_parser_info, class_type))
+                elif class_type.parser_info.class_capabilities.name == "Interface":
+                    initial_interfaces.append((dependency_parser_info, class_type))
                 else:
-                    if base is not None:
+                    if initial_base is not None:
                         errors.append(
                             MultipleBasesError.Create(
                                 region=dependency_parser_info.regions__.self__,
-                                prev_region=base.dependency.regions__.self__,
+                                prev_region=initial_base[0].regions__.self__,  # pylint: disable=unsubscriptable-object
                             ),
                         )
 
-                        continue
+                    initial_base = (dependency_parser_info, class_type)
 
-                    base = DependencyNode(
-                        dependency_parser_info,
-                        DependencyLeaf(
-                            resolved_entity.parser_info,
-                            resolved_entity.parser_info,
-                        ),
-                    )
+                try:
+                    class_type.Finalize(entity_resolver)
+                except ErrorException as ex:
+                    errors += ex.errors
 
-            assert hierarchy_methods_are_polymorphic is not None
-            assert target_contents is not None
+        except ErrorException as ex:
+            errors += ex.errors
 
-            target_contents.Merge(dependency_parser_info, resolved_entity.concrete_class)
+        if errors:
+            raise ErrorException(*errors)
 
-        # Extract information from the class
+        # Extract dependency content
+        local_content = _BasicContent()
+        augmented_content = _BasicContent()
+        dependency_content = _BasicContent()
+
+        for dependency_items, attribute_name in [
+            (initial_interfaces, "interfaces"),
+            (initial_concepts, "concepts"),
+        ]:
+            if not dependency_items:
+                continue
+
+            for dependency_parser_info, class_type in dependency_items:
+                local_content.MergeDependencies(
+                    dependency_parser_info,
+                    getattr(class_type.concrete_class, attribute_name).EnumDependencies(),
+                    attribute_name,
+                )
+
+        # Augment our data with the data in the dependencies
+        for dependency_items, target_content in [
+            ([initial_base, ] if initial_base else [], dependency_content),
+            (initial_interfaces, dependency_content),
+            (initial_concepts, augmented_content),
+            (initial_mixins, augmented_content),
+        ]:
+            if not dependency_items:
+                continue
+
+            target_content.Merge(dependency_items)
+
+        # Extract local content
+        self._state = _InternalState.FinalizingLocalContent
+
         special_methods: Dict[SpecialMethodType, SpecialMethodStatementParserInfo] = {}
+        using_statements: List[
+            Tuple[
+                VisibilityModifier,
+                ClassType,
+                FuncDefinitionStatementParserInfo,
+            ],
+        ] = []
 
         # ----------------------------------------------------------------------
         def ProcessAttribute(
             statement: ClassAttributeStatementParserInfo,
         ) -> None:
-            # BugBug: Validate is_override
-            local_contents.attributes.append(DependencyLeaf(class_statement_parser_info, statement))  # pylint: disable=no-member
+            # BugBug: process 'is_override'
+
+            local_content.attributes.append(
+                DependencyLeaf(
+                    ConcreteClass.AttributeInfo(
+                        statement,
+                        entity_resolver.ResolveType(statement.type),
+                    ),
+                ),
+            )
 
         # ----------------------------------------------------------------------
         def ProcessClass(
             statement: "ClassStatementParserInfo",
         ) -> None:
-            # BugBug: Need to create this type?
-            local_contents.types.append(DependencyLeaf(class_statement_parser_info, statement))  # pylint: disable=no-member
-
-        # ----------------------------------------------------------------------
-        def ProcessUsing(
-            statement: ClassUsingStatementParserInfo,
-        ) -> None:
-            raise NotImplementedError("TODO: ClassUsingStatementParserInfo")
+            local_content.types.append(
+                DependencyLeaf(
+                    ConcreteClass.TypeInfo(
+                        statement,
+                        statement.CreateConcreteTypeFactory(entity_resolver),
+                    ),
+                ),
+            )
 
         # ----------------------------------------------------------------------
         def ProcessMethod(
@@ -248,7 +363,7 @@ class ConcreteClass(object):
             # Ensure that the method's mutability agrees with the class's mutability
             if (
                 statement.mutability is not None
-                and class_statement_parser_info.class_modifier == ClassModifier.immutable
+                and class_parser_info.class_modifier == ClassModifier.immutable
                 and MutabilityModifier.IsMutable(statement.mutability)
             ):
                 errors.append(
@@ -256,44 +371,51 @@ class ConcreteClass(object):
                         region=statement.regions__.mutability,
                         mutability=statement.mutability,
                         mutability_str=statement.mutability.name,
-                        class_region=class_statement_parser_info.regions__.class_modifier,
+                        class_region=class_parser_info.regions__.class_modifier,
                     ),
                 )
 
                 return
 
-            # Ensure that the hierarchy modifiers agree with the methods defined in the base classes
+            # Ensure that the hierarchy modifiers agree with the derived methods
             if (
                 statement.method_hierarchy_modifier is not None
                 and statement.method_hierarchy_modifier != MethodHierarchyModifier.standard
             ):
                 pass # BugBug: Do this
 
+            dependency_leaf = DependencyLeaf(
+                ConcreteClass.TypeInfo(
+                    statement,
+                    statement.CreateConcreteTypeFactory(entity_resolver),
+                ),
+            )
+
             if statement.method_hierarchy_modifier == MethodHierarchyModifier.abstract:
-                local_contents.abstract_methods.append(DependencyLeaf(class_statement_parser_info, statement))  # pylint: disable=no-member
+                local_content.abstract_methods.append(dependency_leaf)
             else:
-                local_contents.methods.append(DependencyLeaf(class_statement_parser_info, statement))  # pylint: disable=no-member
+                local_content.methods.append(dependency_leaf)
 
         # ----------------------------------------------------------------------
         def ProcessSpecialMethod(
             statement: SpecialMethodStatementParserInfo,
         ) -> None:
             # Determine if the special method is valid for the class
-            if (
-                statement.special_method_type == SpecialMethodType.EvalTemplates
-                and not class_statement_parser_info.templates
-            ):
-                errors.append(
-                    InvalidEvalTemplatesMethodError.Create(
-                        region=statement.regions__.special_method_type,
-                    ),
-                )
+            if statement.special_method_type == SpecialMethodType.EvalTemplates:
+                if not class_parser_info.templates:
+                    errors.append(
+                        InvalidEvalTemplatesMethodError.Create(
+                            region=statement.regions__.special_method_type,
+                        ),
+                    )
 
-                return
+                    return
+
+                entity_resolver.EvalStatements(statement.statements)
 
             if (
                 statement.special_method_type == SpecialMethodType.EvalConstraints
-                and not class_statement_parser_info.constraints
+                and not class_parser_info.constraints
             ):
                 errors.append(
                     InvalidEvalConstraintsMethodError.Create(
@@ -308,7 +430,7 @@ class ConcreteClass(object):
                     statement.special_method_type == SpecialMethodType.PrepareFinalize
                     or statement.special_method_type == SpecialMethodType.Finalize
                 )
-                and class_statement_parser_info.class_modifier != ClassModifier.mutable
+                and class_parser_info.class_modifier != ClassModifier.mutable
             ):
                 errors.append(
                     InvalidFinalizeMethodError.Create(
@@ -333,11 +455,28 @@ class ConcreteClass(object):
             special_methods[statement.special_method_type] = statement
 
         # ----------------------------------------------------------------------
-        def ProcessAlias(
+        def ProcessTypeAlias(
             statement: TypeAliasStatementParserInfo,
         ) -> None:
-            # BugBug: Need to create this type?
-            local_contents.types.append(DependencyLeaf(class_statement_parser_info, statement))  # pylint: disable=no-member
+            local_content.types.append(
+                DependencyLeaf(
+                    ConcreteClass.TypeInfo(
+                        statement,
+                        statement.CreateConcreteTypeFactory(entity_resolver),
+                    ),
+                ),
+            )
+
+        # ----------------------------------------------------------------------
+        def ProcessUsing(
+            statement: ClassUsingStatementParserInfo,
+        ) -> None:
+            assert isinstance(statement.type, BinaryExpressionParserInfo), statement.type
+            assert statement.type.operator == BinaryExpressionOperatorType.Access, statement.type.operator
+
+            resolved_left = entity_resolver.ResolveType(statement.type.left_expression)
+
+            # BugBug: Finish this
 
         # ----------------------------------------------------------------------
 
@@ -347,11 +486,12 @@ class ConcreteClass(object):
             "ClassUsingStatementParserInfo": ProcessUsing,
             "FuncDefinitionStatementParserInfo": ProcessMethod,
             "SpecialMethodStatementParserInfo": ProcessSpecialMethod,
-            "TypeAliasStatementParserInfo": ProcessAlias,
+            "TypeAliasStatementParserInfo": ProcessTypeAlias,
         }
 
-        assert class_statement_parser_info.statements is not None
-        for statement in class_statement_parser_info.statements:
+        assert class_parser_info.statements is not None
+
+        for statement in class_parser_info.statements:
             if statement.is_disabled__:
                 continue
 
@@ -362,52 +502,54 @@ class ConcreteClass(object):
 
         # Issue an error if the class was declared as abstract but no abstract methods were found
         if (
-            class_statement_parser_info.is_abstract
+            class_parser_info.is_abstract
             and not (
-                local_contents.abstract_methods
-                or augmented_contents.abstract_methods
-                or dependency_contents.abstract_methods
+                local_content.abstract_methods
+                or augmented_content.abstract_methods
+                or dependency_content.abstract_methods
             )
         ):
             errors.append(
                 InvalidAbstractDecorationError.Create(
-                    region=class_statement_parser_info.regions__.is_abstract,
+                    region=class_parser_info.regions__.is_abstract,
                 ),
             )
 
         # Issue an error if the class was declared as final but there are abstract methods
         if (
-            class_statement_parser_info.is_final
+            class_parser_info.is_final
             and (
-                local_contents.abstract_methods
-                or augmented_contents.abstract_methods
-                or dependency_contents.abstract_methods
+                local_content.abstract_methods
+                or augmented_content.abstract_methods
+                or dependency_content.abstract_methods
             )
         ):
             errors.append(
                 InvalidFinalDecorationError.Create(
-                    region=class_statement_parser_info.regions__.is_final,
+                    region=class_parser_info.regions__.is_final,
                 ),
             )
 
         # Issue an error if the class was declared as mutable but no mutable methods were found
-        if class_statement_parser_info.class_modifier == ClassModifier.mutable:
+        if class_parser_info.class_modifier == ClassModifier.mutable:
             has_mutable_method = False
 
             for dependency in itertools.chain(
-                local_contents.methods,
-                local_contents.abstract_methods,
-                augmented_contents.methods,
-                augmented_contents.abstract_methods,
-                dependency_contents.methods,
-                dependency_contents.abstract_methods,
+                local_content.methods,
+                local_content.abstract_methods,
+                augmented_content.methods,
+                augmented_content.abstract_methods,
+                dependency_content.methods,
+                dependency_content.abstract_methods,
             ):
-                method_statement = dependency.ResolveDependencies()[1]
-                assert isinstance(method_statement, FuncDefinitionStatementParserInfo), method_statement
+                method_info = dependency.ResolveDependencies()[1]
+                assert isinstance(method_info, ConcreteClass.TypeInfo), method_info
+
+                assert isinstance(method_info.statement, FuncDefinitionStatementParserInfo), method_info.statement
 
                 if (
-                    method_statement.mutability is not None
-                    and MutabilityModifier.IsMutable(method_statement.mutability)
+                    method_info.statement.mutability is not None
+                    and MutabilityModifier.IsMutable(method_info.statement.mutability)
                 ):
                     has_mutable_method = True
                     break
@@ -415,135 +557,146 @@ class ConcreteClass(object):
             if not has_mutable_method:
                 errors.append(
                     InvalidMutableDecorationError.Create(
-                        region=class_statement_parser_info.regions__.class_modifier,
+                        region=class_parser_info.regions__.class_modifier,
                     ),
                 )
 
         if errors:
             raise ErrorException(*errors)
 
-        # Organize the data
+        # Commit the data
+        if initial_base:
+            base = DependencyNode(initial_base[0], DependencyLeaf(initial_base[1]))
+        else:
+            base = None
+
+        interfaces = ClassContent.Create(
+            local_content.interfaces,
+            augmented_content.interfaces,
+            dependency_content.interfaces,
+            lambda class_type: class_type.parser_info.name,
+        )
+
+        concepts = ClassContent.Create(
+            local_content.concepts,
+            augmented_content.concepts,
+            dependency_content.concepts,
+            lambda class_type: class_type.parser_info.name,
+        )
+
+        types = ClassContent.Create(
+            local_content.types,
+            augmented_content.types,
+            dependency_content.types,
+            lambda type_info: type_info.statement.name,
+        )
+
+        attributes = ClassContent.Create(
+            local_content.attributes,
+            augmented_content.attributes,
+            dependency_content.attributes,
+            lambda attribute_info: attribute_info.statement.name,
+        )
 
         # ----------------------------------------------------------------------
-        def StandardKeyExtractor(
-            dependency: Dependency,
-        ) -> str:
-            return dependency.ResolveDependencies()[1].name
-
-        # ----------------------------------------------------------------------
-        def MethodKeyExtractor(
-            dependency: Dependency,
+        def MethodIdExtractor(
+            type_info: ConcreteClass.TypeInfo,
         ) -> Any:
-            method_parser_info = dependency.ResolveDependencies()[1]
-            assert isinstance(method_parser_info, FuncDefinitionStatementParserInfo), method_parser_info
-
-            return id(method_parser_info) # BugBug
-
-        # ----------------------------------------------------------------------
-        def PostprocessMethodDependencies(
-            local: List[Dependency],
-            augmented: List[Dependency],
-            inherited: List[Dependency],
-        ) -> Tuple[
-            List[Dependency],
-            List[Dependency],
-            List[Dependency],
-        ]:
             # BugBug
-            return local, augmented, inherited
+            return id(type_info.statement)
 
         # ----------------------------------------------------------------------
 
         abstract_methods = ClassContent.Create(
-            local_contents.abstract_methods,
-            augmented_contents.abstract_methods,
-            dependency_contents.abstract_methods,
-            MethodKeyExtractor,
+            local_content.abstract_methods,
+            augmented_content.abstract_methods,
+            dependency_content.abstract_methods,
+            MethodIdExtractor,
         )
 
         methods = ClassContent.Create(
-            local_contents.methods,
-            augmented_contents.methods,
-            dependency_contents.methods,
-            MethodKeyExtractor,
-            PostprocessMethodDependencies,
+            local_content.methods,
+            augmented_content.methods,
+            dependency_content.methods,
+            MethodIdExtractor,
+            _PostprocessMethodCreateClassContent,
         )
 
-        return cls(
-            class_statement_parser_info,
-            base,
-            special_methods,
-            ClassContent.Create(
-                local_contents.interfaces,
-                augmented_contents.interfaces,
-                dependency_contents.interfaces,
-                StandardKeyExtractor,
-            ),
-            ClassContent.Create(
-                local_contents.concepts,
-                augmented_contents.concepts,
-                dependency_contents.concepts,
-                StandardKeyExtractor,
-            ),
-            ClassContent.Create(
-                local_contents.types,
-                augmented_contents.types,
-                dependency_contents.types,
-                StandardKeyExtractor,
-            ),
-            ClassContent.Create(
-                local_contents.attributes,
-                augmented_contents.attributes,
-                dependency_contents.attributes,
-                StandardKeyExtractor,
-            ),
-            abstract_methods,
-            methods,
-        )
+        self._base = base
+        self._special_methods = special_methods
+        self._interfaces = interfaces
+        self._concepts = concepts
+        self._types = types
+        self._attributes = attributes
+        self._abstract_methods = abstract_methods
+        self._methods = methods
+
+        # We're done
+        self._state = _InternalState.Finalized
+
 
 # ----------------------------------------------------------------------
-# |
-# |  Private Types
-# |
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class _PartialContents(object):
+# ----------------------------------------------------------------------
+class _InternalState(Enum):
+    PreFinalize                             = auto()
+    FinalizingDependencies                  = auto()
+    FinalizingLocalContent                  = auto()
+    Finalized                               = auto()
+
+
+# ----------------------------------------------------------------------
+class _BasicContent(object):
     # ----------------------------------------------------------------------
-    interfaces: List[Dependency]            = field(init=False, default_factory=list)
-    concepts: List[Dependency]              = field(init=False, default_factory=list)
-    types: List[Dependency]                 = field(init=False, default_factory=list)
-    attributes: List[Dependency]            = field(init=False, default_factory=list)
-    abstract_methods: List[Dependency]      = field(init=False, default_factory=list)
-    methods: List[Dependency]               = field(init=False, default_factory=list)
+    def __init__(self):
+        self.interfaces: List[Dependency[ClassType]]                        = []
+        self.concepts: List[Dependency[ClassType]]                          = []
+        self.types: List[Dependency["ConcreteClass.TypeInfo"]]              = []
+        self.attributes: List[Dependency["ConcreteClass.AttributeInfo"]]    = []
+        self.abstract_methods: List[Dependency["ConcreteClass.TypeInfo"]]   = []
+        self.methods: List[Dependency["ConcreteClass.TypeInfo"]]            = []
+
+    # ----------------------------------------------------------------------
+    def MergeDependencies(
+        self,
+        dependency_parser_info: "ClassStatementDependencyParserInfo",
+        source_items: Iterable[Any],
+        dest_attribute_name: str,
+    ) -> None:
+        dest = getattr(self, dest_attribute_name)
+
+        for source_item in source_items:
+            dest.append(DependencyNode(dependency_parser_info, source_item))
 
     # ----------------------------------------------------------------------
     def Merge(
         self,
-        dependency_parser_info: "ClassStatementDependencyParserInfo",
-        source_class: ConcreteClass,
+        source_items: List[Tuple["ClassStatementDependencyParserInfo", ClassType]],
     ) -> None:
-        for attribute_name in [
-            "interfaces",
-            "concepts",
-            "types",
-            "attributes",
-            "abstract_methods",
-            "methods",
-        ]:
-            source = getattr(source_class, attribute_name)
-            dest = getattr(self, attribute_name)
+        if not source_items:
+            return
 
-            for dependency in source.EnumDependencies():
-                dest.append(DependencyNode(dependency_parser_info, dependency))  # pylint: disable=no-member
+        for dependency_parser_info, class_type in source_items:
+            for attribute_name in [
+                "interfaces",
+                "concepts",
+                "types",
+                "attributes",
+                "abstract_methods",
+                "methods",
+            ]:
+                self.MergeDependencies(
+                    dependency_parser_info,
+                    getattr(class_type.concrete_class, attribute_name).EnumDependencies(),
+                    attribute_name,
+                )
 
 
 # ----------------------------------------------------------------------
-# |
-# |  Private Functions
-# |
+# ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 def _EnumDependencies(
-    class_statement_parser_info: "ClassStatementParserInfo",
+    class_parser_info: "ClassStatementParserInfo",
     entity_resolver: EntityResolver,
 ) -> Generator[
     Tuple[
@@ -557,16 +710,16 @@ def _EnumDependencies(
 
     for dependencies, dependency_validation_func in [
         (
-            class_statement_parser_info.implements,
-            class_statement_parser_info.class_capabilities.ValidateImplementsDependency,
+            class_parser_info.implements,
+            class_parser_info.class_capabilities.ValidateImplementsDependency,
         ),
         (
-            class_statement_parser_info.uses,
-            class_statement_parser_info.class_capabilities.ValidateUsesDependency,
+            class_parser_info.uses,
+            class_parser_info.class_capabilities.ValidateUsesDependency,
         ),
         (
-            class_statement_parser_info.extends,
-            class_statement_parser_info.class_capabilities.ValidateExtendsDependency,
+            class_parser_info.extends,
+            class_parser_info.class_capabilities.ValidateExtendsDependency,
         ),
     ]:
         if dependencies is None:
@@ -595,3 +748,17 @@ def _EnumDependencies(
 
     if errors:
         raise ErrorException(*errors)
+
+
+# ----------------------------------------------------------------------
+def _PostprocessMethodCreateClassContent(
+    local: List[Dependency[ConcreteClass.TypeInfo]],
+    augmented: List[Dependency[ConcreteClass.TypeInfo]],
+    inherited: List[Dependency[ConcreteClass.TypeInfo]],
+) -> Tuple[
+    List[Dependency[ConcreteClass.TypeInfo]],
+    List[Dependency[ConcreteClass.TypeInfo]],
+    List[Dependency[ConcreteClass.TypeInfo]],
+]:
+    # BugBug
+    return local, augmented, inherited

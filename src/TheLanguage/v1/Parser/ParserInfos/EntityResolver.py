@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, Optional, TYPE_CHECKING, Union
+from typing import Callable, List, Optional, TYPE_CHECKING
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,22 +30,29 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Types import Type
+    from .Types import ConcreteType, Type
 
     from .Expressions.ExpressionParserInfo import ExpressionParserInfo
 
     from ..Common import MiniLanguageHelpers
 
     if TYPE_CHECKING:
-        from .Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo  # pylint: disable=unused-import
-
-        from .Statements.ClassStatementParserInfo import ClassStatementParserInfo  # pylint: disable=unused-import
-        from .Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo  # pylint: disable=unused-import
-
+        from .Common.TemplateParametersParserInfo import ResolvedTemplateArguments      # pylint: disable=unused-import
+        from .Statements.StatementParserInfo import StatementParserInfo                 # pylint: disable=unused-import
 
 # ----------------------------------------------------------------------
 class EntityResolver(Interface.Interface):
     """Abstract interface for object that is able to resolve entities"""
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def Clone() -> "EntityResolver":
+        raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -76,12 +83,25 @@ class EntityResolver(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def CreateConcreteTypeFactory(
-        parser_info: Union["ClassStatementParserInfo", "TypeAliasStatementParserInfo"],
-    ) -> Callable[
-        [
-            Optional["TemplateArgumentsParserInfo"]
-        ],
-        Type
-    ]:
+    def CreateConcreteType(
+        parser_info: "StatementParserInfo",
+        resolved_template_arguments: Optional["ResolvedTemplateArguments"],
+        create_type_func: Callable[["EntityResolver"], ConcreteType],
+    ) -> ConcreteType:
         raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    def EvalStatements(
+        self,
+        statements: Optional[List["StatementParserInfo"]],
+    ) -> None:
+        assert statements is not None
+
+        for statement in statements:
+            if statement.is_disabled__:
+                continue
+
+            assert statement.__class__.__name__ == "FuncInvocationStatementParserInfo", statement
+
+            eval_result = self.ResolveMiniLanguageExpression(statement.expression)  # type: ignore
+            assert isinstance(eval_result.type, MiniLanguageHelpers.NoneType), eval_result

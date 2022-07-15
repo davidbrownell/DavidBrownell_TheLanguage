@@ -47,8 +47,6 @@ with InitRelativeImports():
         MutabilityModifierRequiredError,
     )
 
-    from .TypeIdentifier import TypeIdentifier, StandardTypeIdentifier
-
     from ..Common.MutabilityModifier import MutabilityModifier
 
     from ...Error import CreateError, Error, ErrorException

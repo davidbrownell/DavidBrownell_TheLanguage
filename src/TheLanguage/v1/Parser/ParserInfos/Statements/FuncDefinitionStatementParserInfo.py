@@ -35,6 +35,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from .ConcreteFuncDefinition import ConcreteFuncDefinition
+
     from .StatementParserInfo import (
         ParserInfo,
         ParserInfoType,
@@ -44,7 +46,7 @@ with InitRelativeImports():
     )
 
     from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
-    from .Traits.TemplatedStatementTrait import ConcreteEntity, TemplatedStatementTrait
+    from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
@@ -75,7 +77,7 @@ with InitRelativeImports():
         VariableExpressionParserInfo,
     )
 
-    from ..Types import Type
+    from ..Types import ConcreteType, FuncDefinitionType
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -519,15 +521,6 @@ class FuncDefinitionStatementParserInfo(
         return bool(scope_flag & ScopeFlag.Function)
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def GetOrCreateConcreteEntityFactory(
-        self,
-        template_arguments: Optional[TemplateArgumentsParserInfo],
-        entity_resolver: EntityResolver,
-    ) -> TemplatedStatementTrait.GetOrCreateConcreteEntityFactoryResultType:
-        assert False, "BugBug: Not implemented"
-
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
@@ -543,3 +536,11 @@ class FuncDefinitionStatementParserInfo(
 
         if not isinstance(self.parameters, bool):
             yield "parameters", self.parameters  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateConcreteType(
+        self,
+        entity_resolver: EntityResolver,
+    ) -> ConcreteType:
+        return FuncDefinitionType(self, ConcreteFuncDefinition.Create(self, entity_resolver))
