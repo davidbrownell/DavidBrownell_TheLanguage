@@ -65,7 +65,8 @@ with InitRelativeImports():
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
-    from ..Types import ClassType, ConcreteType
+    from ..Traits.NamedTrait import NamedTrait
+    from ..Types import ClassType, Type
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -78,6 +79,11 @@ CycleDetectedError                          = CreateError(
 
 StatementsRequiredError                     = CreateError(
     "Statements are required",
+)
+
+InvalidReservedNameError                    = CreateError(
+    "The name '{name}' is reserved",
+    name=str,
 )
 
 # TODO: Use this
@@ -178,6 +184,8 @@ class ClassStatementParserInfo(
     is_abstract: Optional[bool]
     is_final: Optional[bool]
 
+    self_referencing_type_names: Optional[List[str]]
+
     # Values set after calls to `Initialize`
     _initialize_result: Union[
         DoesNotExist,                       # Not initialized
@@ -227,6 +235,7 @@ class ClassStatementParserInfo(
                 "parent_class_capabilities",
                 "class_capabilities",
                 "constraints",
+                "self_referencing_type_names",
             ]
                 + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
                 + TemplatedStatementTrait.RegionlessAttributesArgs()
@@ -317,6 +326,21 @@ class ClassStatementParserInfo(
                 ),
             )
 
+        else:
+            # Ensure that the class or any of its named statements are the same as the self-referencing type names
+            if self.self_referencing_type_names is not None:
+                for statement in itertools.chain([self, ], self.statements):
+                    if not isinstance(statement, NamedTrait):
+                        continue
+
+                    if statement.name in self.self_referencing_type_names:
+                        errors.append(
+                            InvalidReservedNameError.Create(
+                                region=statement.regions__.name,
+                                name=statement.name,
+                            ),
+                        )
+
         # TODO: Create default special methods as necessary
         # TODO: Create a static 'Create' method if one does not already exist
 
@@ -366,5 +390,5 @@ class ClassStatementParserInfo(
     def _CreateConcreteType(
         self,
         entity_resolver: EntityResolver,
-    ) -> ConcreteType:
-        return ClassType(self, ConcreteClass())
+    ) -> ClassType:
+        return ClassType(self, ConcreteClass.Create(self, entity_resolver))

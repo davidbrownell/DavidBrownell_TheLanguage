@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConcreteFuncDefinition.py
+# |  __init__.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-07-13 13:22:59
@@ -17,7 +17,7 @@
 
 import os
 
-from typing import TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING, Union
 
 from dataclasses import dataclass
 
@@ -31,17 +31,21 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..EntityResolver import EntityResolver
+    from ...EntityResolver import EntityResolver
+    from ...Types import ClassType, FuncDefinitionType, Type
+
+    from ...Common.FuncParametersParserInfo import FuncParametersParserInfo
 
     if TYPE_CHECKING:
-        from .FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+        from ..FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
 class ConcreteFuncDefinition(object):
     # ----------------------------------------------------------------------
-    parser_info: "FuncDefinitionStatementParserInfo"
+    return_type: Optional[Type]
+    parameters: Optional[List[Type]]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -50,15 +54,27 @@ class ConcreteFuncDefinition(object):
         func_parser_info: "FuncDefinitionStatementParserInfo",
         entity_resolver: EntityResolver,
     ):
-        # BugBug
+        if func_parser_info.return_type is None:
+            return_type = None
+        else:
+            return_type = entity_resolver.ResolveType(func_parser_info.return_type)
 
-        return cls(
-            func_parser_info,
-        )
+        if isinstance(func_parser_info.parameters, FuncParametersParserInfo):
+            parameters = [
+                entity_resolver.ResolveType(parameter_parser_info.type)
+                for parameter_parser_info in func_parser_info.parameters.EnumParameters()
+            ]
+        else:
+            parameters = None
+
+        # TODO: Error when visibility of types/parameters < visibility of method
+
+        return cls(return_type, parameters)
 
     # ----------------------------------------------------------------------
     def Finalize(
         self,
-        entity_resolver: EntityResolver,
+        func_definition_type: FuncDefinitionType,
     ) -> None:
-        pass # BugBug
+        # Nothing to to finalize
+        pass

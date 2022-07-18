@@ -2489,6 +2489,7 @@ statement_000173 = ClassStatementParserInfo.Create(
     constructor_visibility_param=VisibilityModifier.public,
     is_abstract=None,
     is_final=None,
+    self_referencing_type_names=[r"ThisType", ],
 )
 
 statement_000174 = IntegerExpressionParserInfo.Create(

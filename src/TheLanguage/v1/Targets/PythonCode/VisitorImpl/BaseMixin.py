@@ -179,6 +179,7 @@ class BaseMixin(object):
             TranslationUnitRegion,
             ParserInfo,
             List[ParserInfo],
+            List[str],
         ],
     ) -> str:
         if value is None:
@@ -217,6 +218,9 @@ class BaseMixin(object):
         elif isinstance(value, ParserInfo):
             return self._CreateStatementName(value)
         elif isinstance(value, list):
+            if value and isinstance(value, str):
+                return "[{}, ]".format(", ".join('"{}"'.format(item) for item in value))
+
             return "[{}, ]".format(", ".join(self._ToString(item) for item in value))
 
         assert False, value  # pragma: no cover

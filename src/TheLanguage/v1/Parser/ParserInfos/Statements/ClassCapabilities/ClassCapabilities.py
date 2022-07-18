@@ -276,11 +276,6 @@ InvalidUsingVisibilityError                 = CreateError(
 )
 
 # TODO: Should be Type-based error
-InvalidResolvedDependencyError              = CreateError(
-    "Invalid dependency",
-)
-
-# TODO: Should be Type-based error
 InvalidDependencyTypeError                  = CreateError(
     "'{dependency_type}' is not a valid dependency type for '{desc}' dependencies of '{type}' types; valid values are {valid_types_str}",
     type=str,
@@ -840,11 +835,11 @@ class ClassCapabilities(ObjectReprImplBase):
     def ValidateImplementsDependency(
         self,
         dependency: "ClassStatementDependencyParserInfo",
-        resolved_type: "Type",
+        resolved_parser_info: "ClassStatementParserInfo",
     ) -> None:
         self._ValidateDependencyImpl(
             dependency,
-            resolved_type,
+            resolved_parser_info,
             self.valid_implements_types,
             "implement",
         )
@@ -853,11 +848,11 @@ class ClassCapabilities(ObjectReprImplBase):
     def ValidateUsesDependency(
         self,
         dependency: "ClassStatementDependencyParserInfo",
-        resolved_type: "Type",
+        resolved_parser_info: "ClassStatementParserInfo",
     ) -> None:
         self._ValidateDependencyImpl(
             dependency,
-            resolved_type,
+            resolved_parser_info,
             self.valid_uses_types,
             "use",
         )
@@ -866,11 +861,11 @@ class ClassCapabilities(ObjectReprImplBase):
     def ValidateExtendsDependency(
         self,
         dependency: "ClassStatementDependencyParserInfo",
-        resolved_type: "Type",
+        resolved_parser_info: "ClassStatementParserInfo",
     ) -> None:
         self._ValidateDependencyImpl(
             dependency,
-            resolved_type,
+            resolved_parser_info,
             [self.name, ],
             "extend",
         )
@@ -881,19 +876,11 @@ class ClassCapabilities(ObjectReprImplBase):
     def _ValidateDependencyImpl(
         self,
         dependency: "ClassStatementDependencyParserInfo",
-        resolved_type: "Type",
+        resolved_parser_info: "ClassStatementParserInfo",
         valid_type_names: List[str],
         desc: str,
     ) -> None:
-        if resolved_type.__class__.__name__ != "ClassType":
-            raise ErrorException(
-                InvalidResolvedDependencyError.Create(
-                    region=dependency.type.regions__.self__,
-                ),
-            )
-
         errors: List[Error] = []
-        resolved_parser_info = cast("ClassStatementParserInfo", resolved_type.parser_info)
 
         if resolved_parser_info.class_capabilities.name not in valid_type_names:
             errors.append(

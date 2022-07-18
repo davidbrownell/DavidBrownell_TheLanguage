@@ -51,7 +51,7 @@ with InitRelativeImports():
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
     from ..Traits.NamedTrait import NamedTrait
-    from ..Types import ConcreteType, TypeAliasType
+    from ..Types import TypeAliasType
 
     from ...Error import Error, ErrorException
 
@@ -190,5 +190,5 @@ class TypeAliasStatementParserInfo(
     def _CreateConcreteType(
         self,
         entity_resolver: EntityResolver,
-    ) -> ConcreteType:
+    ) -> TypeAliasType:
         return TypeAliasType(self, entity_resolver.ResolveType(self.type))

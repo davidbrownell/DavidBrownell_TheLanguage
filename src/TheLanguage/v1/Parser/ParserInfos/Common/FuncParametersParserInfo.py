@@ -18,7 +18,7 @@
 import itertools
 import os
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Generator, List, Optional, Tuple
 
 from dataclasses import dataclass, field, InitVar
 
@@ -193,6 +193,14 @@ class FuncParametersParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    def EnumParameters(self) -> Generator[FuncParameterParserInfo, None, None]:
+        yield from itertools.chain(
+            self.positional or [],
+            self.any or [],
+            self.keyword or [],
+        )
 
     # ----------------------------------------------------------------------
     def GetOverrideId(self) -> Tuple:

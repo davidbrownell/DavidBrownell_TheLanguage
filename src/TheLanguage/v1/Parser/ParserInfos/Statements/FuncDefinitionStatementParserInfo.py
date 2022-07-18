@@ -77,7 +77,7 @@ with InitRelativeImports():
         VariableExpressionParserInfo,
     )
 
-    from ..Types import ConcreteType, FuncDefinitionType
+    from ..Types import FuncDefinitionType
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -542,5 +542,5 @@ class FuncDefinitionStatementParserInfo(
     def _CreateConcreteType(
         self,
         entity_resolver: EntityResolver,
-    ) -> ConcreteType:
+    ) -> FuncDefinitionType:
         return FuncDefinitionType(self, ConcreteFuncDefinition.Create(self, entity_resolver))

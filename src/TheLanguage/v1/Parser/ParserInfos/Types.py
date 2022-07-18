@@ -17,9 +17,9 @@
 
 import os
 
-from typing import Any, List, Generator, TYPE_CHECKING, Union
+from typing import Any, List, Generator, Optional, TYPE_CHECKING
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -55,10 +55,42 @@ class Type(Interface.Interface):
     # ----------------------------------------------------------------------
     _parser_info: ParserInfo
 
+    _entity_resolver: Optional["EntityResolver"]        = field(init=False, default=None)
+    _instantiated_class: Optional["ClassType"]          = field(init=False, default=None)
+
+    _is_initialized: bool                               = field(init=False, default=False)
+
+    # ----------------------------------------------------------------------
+    def Init(
+        self,
+        entity_resolver: "EntityResolver",
+        instantiated_class: Optional["ClassType"],
+    ) -> None:
+        # There is a chicken and egg problem here, which results in the need for 2-phase
+        # construction (yuck!). The EntityResolver needs the created type to set its context,
+        # and this type needs that entity resolver.
+        assert self._is_initialized is False
+
+        object.__setattr__(self, "_entity_resolver", entity_resolver)
+        object.__setattr__(self, "_instantiated_class", instantiated_class)
+
+        object.__setattr__(self, "_is_initialized", True)
+
     # ----------------------------------------------------------------------
     @property
     def parser_info(self) -> ParserInfo:
         return self._parser_info
+
+    @property
+    def entity_resolver(self) -> "EntityResolver":
+        assert self._is_initialized
+        assert self._entity_resolver is not None
+        return self._entity_resolver
+
+    @property
+    def instantiated_class(self) -> Optional["ClassType"]:
+        assert self._is_initialized
+        return self._instantiated_class
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
@@ -70,22 +102,16 @@ class Type(Interface.Interface):
         *_, last = self.EnumAliases()
         return last
 
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ConcreteType(Type):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def Finalize(
-        entity_resolver: "EntityResolver",
-    ) -> None:
+    def Finalize() -> None:
         raise Exception("Abstract method")  # pragma: no cover
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class ClassType(ConcreteType):
+class ClassType(Type):
     # ----------------------------------------------------------------------
     concrete_class: "ConcreteClass"
 
@@ -101,16 +127,24 @@ class ClassType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Finalize(
-        self,
-        entity_resolver: "EntityResolver",
-    ) -> None:
-        self.concrete_class.Finalize(self.parser_info, entity_resolver)
+    def Finalize(self) -> None:
+        self.FinalizePass1()
+        self.FinalizePass2()
+
+    # ----------------------------------------------------------------------
+    def FinalizePass1(self) -> None:
+        assert self.instantiated_class is not None
+        self.concrete_class.FinalizePass1(self)
+
+    # ----------------------------------------------------------------------
+    def FinalizePass2(self) -> None:
+        assert self.instantiated_class is not None
+        self.concrete_class.FinalizePass2(self)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class FuncDefinitionType(ConcreteType):
+class FuncDefinitionType(Type):
     # ----------------------------------------------------------------------
     concrete_func_definition: "ConcreteFuncDefinition"
 
@@ -126,16 +160,13 @@ class FuncDefinitionType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Finalize(
-        self,
-        entity_resolver: "EntityResolver",
-    ) -> None:
-        self.concrete_func_definition.Finalize(entity_resolver)
+    def Finalize(self) -> None:
+        self.concrete_func_definition.Finalize(self)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
-class TypeAliasType(ConcreteType):
+class TypeAliasType(Type):
     # ----------------------------------------------------------------------
     resolved_type: Type
 
@@ -156,12 +187,8 @@ class TypeAliasType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Finalize(
-        self,
-        entity_resolver: "EntityResolver",
-    ) -> None:
-        if isinstance(self.resolved_type, ConcreteType):
-            self.resolved_type.Finalize(entity_resolver)
+    def Finalize(self) -> None:
+        self.resolved_type.Finalize()
 
 
 # ----------------------------------------------------------------------
@@ -175,6 +202,13 @@ class NoneType(Type):
     @property
     def parser_info(self) -> "NoneExpressionParserInfo":
         return self._parser_info  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def Finalize() -> None:
+        # Nothing to do here
+        pass
 
 
 # ----------------------------------------------------------------------
@@ -192,6 +226,12 @@ class TupleType(Type):
     def parser_info(self) -> "TupleExpressionParserInfo":
         return self._parser_info  # type: ignore
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Finalize(self) -> None:
+        for the_type in self.types:
+            the_type.Finalize()
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -207,3 +247,9 @@ class VariantType(Type):
     @property
     def parser_info(self) -> "VariantExpressionParserInfo":
         return self._parser_info  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def Finalize(self) -> None:
+        for the_type in self.types:
+            the_type.Finalize()

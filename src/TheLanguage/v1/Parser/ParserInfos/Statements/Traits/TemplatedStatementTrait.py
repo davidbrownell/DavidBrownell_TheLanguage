@@ -42,7 +42,7 @@ with InitRelativeImports():
 
     from ...EntityResolver import EntityResolver
     from ...Traits.NamedTrait import NamedTrait
-    from ...Types import ConcreteType
+    from ...Types import ClassType, Type
 
 
 # ----------------------------------------------------------------------
@@ -54,18 +54,12 @@ class TemplatedStatementTrait(Interface.Interface):
 
     # ----------------------------------------------------------------------
     # |  Public Types
-    GetOrCreateConcreteTypeFactoryResultType            = Tuple[
-        bool,                                           # is_cached_result
-        Union[
-            ConcreteType,                               # is_cached_result == True
-            Tuple[                                      # is_cached_result == False
-                Optional[ResolvedTemplateArguments],
-                Callable[
-                    [],
-                    ConcreteType,
-                ],
-            ],
+    CreateConcreteTypeFactoryResultType     = Callable[
+        [
+            Optional[TemplateArgumentsParserInfo],
+            Optional[ClassType],
         ],
+        Type,
     ]
 
     # ----------------------------------------------------------------------
@@ -108,41 +102,42 @@ class TemplatedStatementTrait(Interface.Interface):
     def CreateConcreteTypeFactory(
         self,
         entity_resolver: EntityResolver,
-    ) -> Callable[
-        [
-            Optional[TemplateArgumentsParserInfo],
-        ],
-        ConcreteType,
-    ]:
-        dedicated_resolver = entity_resolver.Clone()
-
+    ) -> "TemplatedStatementTrait.CreateConcreteTypeFactoryResultType":
         # ----------------------------------------------------------------------
-        def ConcreteTypeFactory(
+        def CreateConcreteType(
             template_arguments: Optional[TemplateArgumentsParserInfo],
-        ) -> ConcreteType:
+            instantiated_class: Optional[ClassType],
+        ) -> Type:
             if self.templates is None:
                 if template_arguments:
                     raise Exception("BugBug: Templates where none were expected")
 
                 resolved_template_arguments = None
-                cache_key = None
+                template_cache_key = None
             else:
                 resolved_template_arguments = self.templates.MatchCall(  # pylint: disable=no-member
                     self.name,              # type: ignore # pylint: disable=no-member
                     self.regions__.name,    # type: ignore # pylint: disable=no-member
                     self.regions__.self__,  # type: ignore # pylint: disable=no-member
                     template_arguments,
-                    dedicated_resolver,
+                    entity_resolver,
                 )
 
-                cache_key = resolved_template_arguments.cache_key
+                template_cache_key = resolved_template_arguments.cache_key
+
+            if instantiated_class is None:
+                class_cache_key = None
+            else:
+                class_cache_key = id(instantiated_class)
+
+            cache_key = (template_cache_key, class_cache_key)
 
             # Is the concrete type cached?
             event: Optional[threading.Event] = None
             should_wait: Optional[bool] = None
 
             with self._cache_lock:  # pylint: disable=not-context-manager
-                result = self._cache_info.values.get(cache_key, None)  # pylint: disable=no-member
+                result = self._cache_info.values.get(cache_key, None)  # type: ignore # pylint: disable=no-member
 
                 if result is None:
                     event = threading.Event()
@@ -166,50 +161,45 @@ class TemplatedStatementTrait(Interface.Interface):
                 while self._cache_lock:
                     result = self._cache_info.values[cache_key]  # type: ignore # pylint: disable=no-member
 
-                assert isinstance(result, ConcreteType), result
+                if result is None:
+                    raise Exception("BugBug: bad type")
+
+                # TODO: There are issue here:
+                #   - In some cases, need to wait until finalization is complete.
+                #   - In some cases, finalization will fail
+
+                assert isinstance(result, Type), result
                 return result
 
-            # Create the ConcreteType
-            result: Optional[ConcreteType] = None
-            updated_entity_resolver: Optional[EntityResolver] = None
+            # Create the Type
+            concrete_type: Optional[Type] = None
 
             with ExitStack() as exit_stack:
                 # ----------------------------------------------------------------------
                 def SetResult():
                     with self._cache_lock:  # pylint: disable=not-context-manager
-                        self._cache_info.values[cache_key] = result # type: ignore # pylint: disable=no-member
+                        self._cache_info.values[cache_key] = concrete_type # type: ignore # pylint: disable=no-member
 
                 # ----------------------------------------------------------------------
 
                 exit_stack.callback(SetResult)
                 exit_stack.callback(event.set)
 
-                # ----------------------------------------------------------------------
-                def Impl(
-                    new_entity_resolver: EntityResolver,
-                ):
-                    nonlocal updated_entity_resolver
-
-                    updated_entity_resolver = new_entity_resolver
-                    return self._CreateConcreteType(new_entity_resolver)
-
-                # ----------------------------------------------------------------------
-
-                result = dedicated_resolver.CreateConcreteType(
+                concrete_type = entity_resolver.CreateConcreteTypeImpl(
                     self,  # type: ignore
                     resolved_template_arguments,
-                    Impl,
+                    instantiated_class,
+                    self._CreateConcreteType,
                 )
 
-            assert result is not None
-            assert updated_entity_resolver is not None
+            assert concrete_type is not None
 
             # Finalize must be called after the result is cached, as circular references
             # will attempt to create the concrete type again if we attempt to finalize before
             # the concrete type has been cached.
-            result.Finalize(updated_entity_resolver)
+            concrete_type.Finalize()
 
-            return result
+            return concrete_type
 
         # ----------------------------------------------------------------------
 
@@ -225,9 +215,9 @@ class TemplatedStatementTrait(Interface.Interface):
                     self._cache_info.default_initialized = True  # pylint: disable=assigning-non-slot
 
             if should_initialize:
-                ConcreteTypeFactory(None)
+                CreateConcreteType(None, None)
 
-        return ConcreteTypeFactory
+        return CreateConcreteType
 
     # ----------------------------------------------------------------------
     # |
@@ -236,8 +226,8 @@ class TemplatedStatementTrait(Interface.Interface):
     # ----------------------------------------------------------------------
     @dataclass
     class _CacheInfo(object):
-        values: Dict[Any, Union[threading.Event, ConcreteType]]             = field(init=False, default_factory=dict)
-        default_initialized: bool                                           = field(init=False, default=False)
+        values: Dict[Any, Union[threading.Event, Type]] = field(init=False, default_factory=dict)
+        default_initialized: bool                       = field(init=False, default=False)
 
     # ----------------------------------------------------------------------
     # |
@@ -248,5 +238,5 @@ class TemplatedStatementTrait(Interface.Interface):
     @Interface.abstractmethod
     def _CreateConcreteType(
         entity_resolver: EntityResolver,
-    ) -> ConcreteType:
+    ) -> Type:
         raise Exception("Abstract method")  # pragma: no cover

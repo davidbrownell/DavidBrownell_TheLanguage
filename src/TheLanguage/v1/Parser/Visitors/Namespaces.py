@@ -215,7 +215,7 @@ class ParsedNamespace(Namespace):
 
         self.parser_info                    = parser_info
         self.scope_flag                     = scope_flag
-        self.ordered_id                     = ordered_id
+        self.ordered_id                     = ordered_id # BugBug: This probably isn't necessary
 
     # ----------------------------------------------------------------------
     @property

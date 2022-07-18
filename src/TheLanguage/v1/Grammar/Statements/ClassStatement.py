@@ -524,6 +524,7 @@ class ClassStatement(GrammarPhrase):
                 constructor_visibility_info,
                 is_abstract_info,
                 is_final_info,
+                self_referencing_type_names=["ThisType", ],
             )
 
         # ----------------------------------------------------------------------

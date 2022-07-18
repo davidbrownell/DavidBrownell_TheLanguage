@@ -125,8 +125,8 @@ class BaseMixin(ParserInfoVisitorHelper):
         configuration_info: Dict[str, CompileTimeInfo],
         fundamental_types_namespace: Optional[Namespace],
     ):
-        self._compile_time_info                         = [configuration_info, ]
-        self._fundamental_types_namespace               = fundamental_types_namespace
+        self._configuration_info            = configuration_info
+        self._fundamental_types_namespace   = fundamental_types_namespace
 
         self._is_initial_pass               = True
 

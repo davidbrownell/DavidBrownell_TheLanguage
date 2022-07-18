@@ -17,7 +17,9 @@
 
 import os
 
-from typing import Callable, List, Optional, TYPE_CHECKING
+from typing import Callable, List, Optional, Tuple, TYPE_CHECKING
+
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Types import ConcreteType, Type
+    from .Types import ClassType, Type
 
     from .Expressions.ExpressionParserInfo import ExpressionParserInfo
 
@@ -43,16 +45,6 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class EntityResolver(Interface.Interface):
     """Abstract interface for object that is able to resolve entities"""
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Methods
-    # |
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def Clone() -> "EntityResolver":
-        raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
@@ -78,16 +70,18 @@ class EntityResolver(Interface.Interface):
         *,
         resolve_aliases: bool=False,
     ) -> Type:
+        # TODO: This should return visibility as well
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def CreateConcreteType(
+    def CreateConcreteTypeImpl(
         parser_info: "StatementParserInfo",
         resolved_template_arguments: Optional["ResolvedTemplateArguments"],
-        create_type_func: Callable[["EntityResolver"], ConcreteType],
-    ) -> ConcreteType:
+        instantiated_class: Optional[ClassType],
+        create_type_func: Callable[["EntityResolver"], Type],
+    ) -> Type:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
