@@ -207,7 +207,6 @@ class ParsedNamespace(Namespace):
         parser_info: ParserInfo,
         parent: Namespace,
         scope_flag: "ScopeFlag",
-        ordered_id: int,
     ):
         assert isinstance(parser_info, NamedTrait), parser_info
 
@@ -215,7 +214,6 @@ class ParsedNamespace(Namespace):
 
         self.parser_info                    = parser_info
         self.scope_flag                     = scope_flag
-        self.ordered_id                     = ordered_id # BugBug: This probably isn't necessary
 
     # ----------------------------------------------------------------------
     @property
@@ -287,14 +285,12 @@ class ImportNamespace(ParsedNamespace):
         parser_info: "ImportStatementParserInfo",
         parent: Namespace,
         scope_flag: "ScopeFlag",
-        ordered_id: int,
         imported_namespace: ParsedNamespace,
     ):
         super(ImportNamespace, self).__init__(
             parser_info,
             parent,
             scope_flag,
-            ordered_id,
         )
 
         self.imported_namespace             = imported_namespace

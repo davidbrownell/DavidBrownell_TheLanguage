@@ -266,8 +266,6 @@ class PassOneVisitor(ParserInfoVisitorHelper):
         self._root_namespace: Optional[ParsedNamespace]                     = None
         self._namespace_stack: List[ParsedNamespace]                        = []
 
-        self._next_ordered_id               = 1
-
         self._errors: List[Error]                                           = []
         self._postprocess_funcs: List[Callable[[], None]]                   = []
 
@@ -313,7 +311,6 @@ class PassOneVisitor(ParserInfoVisitorHelper):
                             parser_info,
                             self._global_namespace if not self._namespace_stack else self._namespace_stack[-1],
                             scope_flag,
-                            self._GetOrderedId(),
                         )
 
                         self._AddNamespaceItem(new_namespace)
@@ -438,13 +435,6 @@ class PassOneVisitor(ParserInfoVisitorHelper):
     # |
     # |  Private Methods
     # |
-    # ----------------------------------------------------------------------
-    def _GetOrderedId(self) -> int:
-        ordered_id = self._next_ordered_id
-        self._next_ordered_id += 1
-
-        return ordered_id
-
     # ----------------------------------------------------------------------
     def _AddNamespaceItem(
         self,
@@ -647,7 +637,6 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             import_parser_info,
             parent_namespace,
             placeholder_namespace.scope_flag,
-            placeholder_namespace.ordered_id,
             imported_namespace_item,
         )
 
