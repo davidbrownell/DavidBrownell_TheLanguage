@@ -15,7 +15,6 @@
 # ----------------------------------------------------------------------
 """Contains the VariantExpressionParserInfo object"""
 
-import itertools
 import os
 
 from contextlib import contextmanager
@@ -86,8 +85,12 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(VariantExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=["types", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": ["types", ],
+                },
+            },
         )
 
         # TODO: flatten
@@ -159,6 +162,6 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
     @staticmethod
     @contextmanager
     @Interface.override
-    def _InitConfigurationImpl(*args, **kwargs):
+    def _InitConfigurationImpl(*args, **kwargs):  # pylint: disable=unused-argument
         # Nothing to do here
         yield

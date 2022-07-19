@@ -64,6 +64,20 @@ class Type(Interface.Interface, ObjectReprImplBase):
         ObjectReprImplBase.__init__(self)
 
     # ----------------------------------------------------------------------
+    def __eq__(
+        self,
+        other: "Type",
+    ) -> bool:
+        return self.name == other.name
+
+    # ----------------------------------------------------------------------
+    def __ne__(
+        self,
+        other: "Type",
+    ) -> bool:
+        return not self.__eq__(other)
+
+    # ----------------------------------------------------------------------
     @Interface.abstractproperty
     def name(self) -> str:
         raise Exception("Abstract property")  # pragma: no cover

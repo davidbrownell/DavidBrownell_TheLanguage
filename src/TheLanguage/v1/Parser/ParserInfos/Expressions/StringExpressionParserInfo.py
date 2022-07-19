@@ -17,11 +17,12 @@
 
 import os
 
-from typing import List, Optional
+from typing import Any, List, Optional, Tuple
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -64,8 +65,19 @@ class StringExpressionParserInfo(
         ExpressionParserInfo.__post_init__(
             self,
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "value",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "value",
+                    ],
+                },
+            },
         )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        return (self.value, )

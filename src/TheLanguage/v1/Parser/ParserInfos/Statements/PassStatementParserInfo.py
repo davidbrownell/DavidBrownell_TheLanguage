@@ -18,7 +18,7 @@
 import os
 
 from contextlib import contextmanager
-from typing import Dict, List, Optional
+from typing import Any, Dict, Tuple
 
 from dataclasses import dataclass
 
@@ -69,3 +69,9 @@ class PassStatementParserInfo(StatementParserInfo):
         # This statement is not interesting
         self.Disable()
         yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def _GetUniqueId() -> Tuple[Any, ...]:
+        return ()

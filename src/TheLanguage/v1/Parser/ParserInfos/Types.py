@@ -33,6 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ParserInfo import ParserInfo
+    from .Traits.NamedTrait import NamedTrait
 
     if TYPE_CHECKING:
         from .EntityResolver import EntityResolver                                                  # pylint: disable=unused-import
@@ -50,7 +51,7 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class Type(Interface.Interface):
     # ----------------------------------------------------------------------
     _parser_info: ParserInfo
@@ -59,6 +60,10 @@ class Type(Interface.Interface):
     _instantiated_class: Optional["ClassType"]          = field(init=False, default=None)
 
     _is_initialized: bool                               = field(init=False, default=False)
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert isinstance(self._parser_info, NamedTrait), self._parser_info
 
     # ----------------------------------------------------------------------
     def Init(
@@ -75,6 +80,26 @@ class Type(Interface.Interface):
         object.__setattr__(self, "_instantiated_class", instantiated_class)
 
         object.__setattr__(self, "_is_initialized", True)
+
+    # ----------------------------------------------------------------------
+    def __eq__(
+        self,
+        other: "Type",
+    ) -> bool:
+        assert isinstance(self._parser_info, NamedTrait), self._parser_info
+        assert isinstance(other._parser_info, NamedTrait), other._parser_info  # pylint: disable=protected-access
+
+        return (
+            self._parser_info.name == other._parser_info.name  # pylint: disable=protected-access
+            and self._parser_info.translation_unit__ == other._parser_info.translation_unit__  # pylint: disable=protected-access
+        )
+
+    # ----------------------------------------------------------------------
+    def __ne__(
+        self,
+        other: "Type",
+    ) -> bool:
+        return not self == other
 
     # ----------------------------------------------------------------------
     @property
@@ -110,7 +135,7 @@ class Type(Interface.Interface):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class ClassType(Type):
     # ----------------------------------------------------------------------
     concrete_class: "ConcreteClass"
@@ -143,7 +168,7 @@ class ClassType(Type):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class FuncDefinitionType(Type):
     # ----------------------------------------------------------------------
     concrete_func_definition: "ConcreteFuncDefinition"
@@ -165,7 +190,7 @@ class FuncDefinitionType(Type):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class TypeAliasType(Type):
     # ----------------------------------------------------------------------
     resolved_type: Type
@@ -192,7 +217,7 @@ class TypeAliasType(Type):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class NoneType(Type):
     # ----------------------------------------------------------------------
     def __post_init__(self):
@@ -212,7 +237,7 @@ class NoneType(Type):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class TupleType(Type):
     # ----------------------------------------------------------------------
     types: List[Type]
@@ -234,7 +259,7 @@ class TupleType(Type):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class VariantType(Type):
     # ----------------------------------------------------------------------
     types: List[Type]

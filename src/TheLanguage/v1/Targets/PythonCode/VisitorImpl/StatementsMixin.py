@@ -160,11 +160,11 @@ class StatementsMixin(BaseMixin):
                     visibility_param={visibility},
                     statements={statements},
                     templates_param={templates},
+                    constraints_param={constraints},
                     parent_class_capabilities={parent_class_capabilities},
                     class_capabilities={class_capabilities},
                     class_modifier_param={class_modifier},
                     documentation={documentation},
-                    constraints={constraints},
                     extends={extends},
                     implements={implements},
                     uses={uses},
@@ -652,8 +652,8 @@ class StatementsMixin(BaseMixin):
                     name={name},
                     visibility_param={visibility},
                     templates_param={templates},
+                    constraints_param={constraints},
                     parent_class_capabilities={parent_class_capabilities},
-                    constraints={constraints},
                     type={type},
                 )
 

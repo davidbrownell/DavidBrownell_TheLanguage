@@ -46,6 +46,7 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
+    from .Traits.ConstrainedStatementTrait import ConstrainedStatementTrait
     from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
     from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
@@ -125,7 +126,9 @@ class ClassStatementDependencyParserInfo(ParserInfo):
         super(ClassStatementDependencyParserInfo, self).__init__(
             ParserInfoType.Standard,
             regions,
-            regionless_attributes=["type", ],
+            **{
+                "regionless_attributes": ["type", ],
+            },
         )
 
         # Validate
@@ -153,6 +156,7 @@ class ClassStatementDependencyParserInfo(ParserInfo):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ClassStatementParserInfo(
+    ConstrainedStatementTrait,
     TemplatedStatementTrait,
     NewNamespaceScopedStatementTrait,
     StatementParserInfo,
@@ -172,8 +176,6 @@ class ClassStatementParserInfo(
 
     documentation: Optional[str]
 
-    constraints: Optional[ConstraintParameterParserInfo]
-
     extends: Optional[List[ClassStatementDependencyParserInfo]]
     implements: Optional[List[ClassStatementDependencyParserInfo]]
     uses: Optional[List[ClassStatementDependencyParserInfo]]
@@ -185,21 +187,6 @@ class ClassStatementParserInfo(
     is_final: Optional[bool]
 
     self_referencing_type_names: Optional[List[str]]
-
-    # Values set after calls to `Initialize`
-    _initialize_result: Union[
-        DoesNotExist,                       # Not initialized
-        None,                               # In the process of initializing
-        bool,                               # Successful/Unsuccessful initialization
-    ]                                       = field(init=False, default=DoesNotExist.instance)
-
-    _concrete_types_lock: threading.Lock    = field(init=False, default_factory=threading.Lock)
-    _concrete_types: List[
-        Tuple[
-            Optional[TemplateArgumentsParserInfo],
-            "ConcreteClass",
-        ]
-    ]                                                   = field(init=False, default_factory=list)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -223,6 +210,7 @@ class ClassStatementParserInfo(
         regions,
         visibility_param,
         templates_param,
+        constraints_param,
         class_modifier_param,
         constructor_visibility_param,
     ):
@@ -230,23 +218,28 @@ class ClassStatementParserInfo(
             self,
             parser_info_type,
             regions,
-            validate=False,
-            regionless_attributes=[
-                "parent_class_capabilities",
-                "class_capabilities",
-                "constraints",
-                "self_referencing_type_names",
-            ]
-                + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
-                + TemplatedStatementTrait.RegionlessAttributesArgs()
-            ,
             **{
                 **{
-                    "parent_class_capabilities": lambda value: None if value is None else value.name,
-                    "class_capabilities": lambda value: value.name,
+                    **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                    **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                    **ConstrainedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                    **{
+                        "parent_class_capabilities": lambda value: None if value is None else value.name,
+                        "class_capabilities": lambda value: value.name,
+                    },
                 },
-                **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
-                **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "regionless_attributes": [
+                        "parent_class_capabilities",
+                        "class_capabilities",
+                        "self_referencing_type_names",
+                    ]
+                        + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
+                        + TemplatedStatementTrait.RegionlessAttributesArgs()
+                        + ConstrainedStatementTrait.RegionlessAttributesArgs()
+                    ,
+                    "finalize": False,
+                },
             },
         )
 
@@ -266,6 +259,7 @@ class ClassStatementParserInfo(
 
         NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
         TemplatedStatementTrait.__post_init__(self, templates_param)
+        ConstrainedStatementTrait.__post_init__(self, constraints_param)
 
         if class_modifier_param is None:
             class_modifier_param = self.class_capabilities.default_class_modifier
@@ -292,7 +286,7 @@ class ClassStatementParserInfo(
                     object.__setattr__(dependency, "visibility", default_visibility)
                     object.__setattr__(dependency.regions__, "visibility", dependency.regions__.self__)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         # Validate
         errors: List[Error] = []
@@ -370,6 +364,7 @@ class ClassStatementParserInfo(
     # ----------------------------------------------------------------------
     @Interface.override
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        # TODO: The functionality for templates and constraints should eventually live in the traits class
         if self.templates:
             yield "templates", self.templates  # type: ignore
 
@@ -392,3 +387,14 @@ class ClassStatementParserInfo(
         entity_resolver: EntityResolver,
     ) -> ClassType:
         return ClassType(self, ConcreteClass.Create(self, entity_resolver))
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        assert self.templates is None
+        assert self.constraints is None
+        assert self.extends is None
+        assert self.implements is None
+        assert self.uses is None
+
+        return ()

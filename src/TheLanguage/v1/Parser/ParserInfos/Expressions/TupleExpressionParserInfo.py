@@ -15,10 +15,9 @@
 # ----------------------------------------------------------------------
 """Contains the TupleExpressionParserInfo object"""
 
-import itertools
 import os
 
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -78,8 +77,12 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(TupleExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=["types", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": ["types", ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------

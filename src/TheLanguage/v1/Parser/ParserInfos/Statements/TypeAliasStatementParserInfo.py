@@ -40,6 +40,7 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
+    from .Traits.ConstrainedStatementTrait import ConstrainedStatementTrait
     from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
@@ -59,6 +60,7 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TypeAliasStatementParserInfo(
+    ConstrainedStatementTrait,
     TemplatedStatementTrait,
     NamedTrait,
     StatementParserInfo,
@@ -70,7 +72,6 @@ class TypeAliasStatementParserInfo(
     # ----------------------------------------------------------------------
     parent_class_capabilities: Optional[ClassCapabilities]
 
-    constraints: Optional[ConstraintParametersParserInfo]
     type: ExpressionParserInfo
 
     # ----------------------------------------------------------------------
@@ -93,27 +94,35 @@ class TypeAliasStatementParserInfo(
         )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, parser_info_type, regions, visibility_param, templates_param):
+    def __post_init__(
+        self,
+        parser_info_type,
+        regions,
+        visibility_param,
+        templates_param,
+        constraints_param,
+    ):
         StatementParserInfo.__post_init__(
             self,
             parser_info_type,
             regions,
-            regionless_attributes=[
-                "parent_class_capabilities",
-                "templates",
-                "constraints",
-                "type",
-            ]
-                + NamedTrait.RegionlessAttributesArgs()
-                + TemplatedStatementTrait.RegionlessAttributesArgs()
-            ,
-            validate=False,
             **{
-                **{
-                    "parent_class_capabilities": lambda value: None if value is None else value.name,
-                },
                 **NamedTrait.ObjectReprImplBaseInitKwargs(),
                 **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **ConstrainedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "regionless_attributes": [
+                        "parent_class_capabilities",
+                        "templates",
+                        "type",
+                    ]
+                        + NamedTrait.RegionlessAttributesArgs()
+                        + TemplatedStatementTrait.RegionlessAttributesArgs()
+                        + ConstrainedStatementTrait.RegionlessAttributesArgs()
+                    ,
+                    "finalize": False,
+                    "parent_class_capabilities": lambda value: None if value is None else value.name,
+                },
             },
         )
 
@@ -129,8 +138,9 @@ class TypeAliasStatementParserInfo(
 
         NamedTrait.__post_init__(self, visibility_param)
         TemplatedStatementTrait.__post_init__(self, templates_param)
+        ConstrainedStatementTrait.__post_init__(self, constraints_param)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         # Validate
         errors: List[Error] = []

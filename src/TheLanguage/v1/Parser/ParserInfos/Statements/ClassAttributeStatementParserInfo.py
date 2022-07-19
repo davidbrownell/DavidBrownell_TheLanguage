@@ -19,7 +19,7 @@ import os
 
 from typing import Dict, List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,11 +32,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
-    from ..Common.VisibilityModifier import VisibilityModifier
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Traits.NamedTrait import NamedTrait
 
@@ -87,19 +86,23 @@ class ClassAttributeStatementParserInfo(
             self,
             parser_info_type,
             regions,
-            regionless_attributes=[
-                "class_capabilities",
-                "type",
-                "initialized_value",
-            ]
-                + NamedTrait.RegionlessAttributesArgs()
-            ,
-            validate=False,
             **{
                 **{
-                    "class_capabilities": lambda value: value.name,
+                    **NamedTrait.ObjectReprImplBaseInitKwargs(),
+                    **{
+                        "class_capabilities": lambda value: value.name,
+                    },
                 },
-                **NamedTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "regionless_attributes": [
+                        "class_capabilities",
+                        "type",
+                        "initialized_value",
+                    ]
+                        + NamedTrait.RegionlessAttributesArgs()
+                    ,
+                    "finalize": False,
+                },
             },
         )
 
@@ -110,7 +113,7 @@ class ClassAttributeStatementParserInfo(
 
         object.__setattr__(self, "visibility", visibility_param)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         # Validate
         errors: List[Error] = []
@@ -139,12 +142,15 @@ class ClassAttributeStatementParserInfo(
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def IsNameOrdered(*args, **kwargs) -> bool:
+    def IsNameOrdered(*args, **kwargs) -> bool:  # pylint: disable=unused-argument
         return False
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
     # ----------------------------------------------------------------------
-    _TYPE_ATTRIBUTE_NAME                    = "_type"
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "type", self.type
+
+        if self.initialized_value is not None:
+            yield "initialized_value", self.initialized_value

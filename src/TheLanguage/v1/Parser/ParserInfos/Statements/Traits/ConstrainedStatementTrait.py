@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  CharacterExpressionParserInfo.py
+# |  ConstrainedStatementTrait.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-04-14 12:00:17
+# |      2022-07-19 08:06:15
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the CharacterExpressionParserInfo object"""
+"""Contains the ConstrainedStatementTrait object"""
 
 import os
 
-from typing import Any, Tuple
+from typing import Any, Dict, List, Optional
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,50 +32,32 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
-    from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
+    from ...Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class CharacterExpressionParserInfo(
-    SimpleExpressionTrait,
-    ExpressionParserInfo,
-):
-    # ----------------------------------------------------------------------
-    value: int
+class ConstrainedStatementTrait(Interface.Interface):
+    """Apply to statements that can have constraints"""
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        *args,
-        **kwargs,
-    ):
-        return cls(
-            ParserInfoType.Unknown,         # type: ignore
-            *args,
-            **kwargs,
-        )
+    # |  Public Data
+    constraints_param: InitVar[Optional[ConstraintParametersParserInfo]]
+    constraints: Optional[ConstraintParametersParserInfo]                   = field(init=False, default=None)
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
-        ExpressionParserInfo.__post_init__(
-            self,
-            *args,
-            **{
-                **kwargs,
-                **{
-                    "regionless_attributes": [
-                        "value",
-                    ],
-                },
-            },
-        )
+    # |  Public Methods
+    def __post_init__(self, constraints_param):
+        object.__setattr__(self, "constraints", constraints_param)
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    def RegionlessAttributesArgs() -> List[str]:
+        return [
+            "constraints",
+        ]
+
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GetUniqueId(self) -> Tuple[Any, ...]:
-        return (self.value, )
+    @staticmethod
+    def ObjectReprImplBaseInitKwargs() -> Dict[str, Any]:
+        return {}

@@ -3762,11 +3762,11 @@ statement_000239 = ClassStatementParserInfo.Create(
     visibility_param=VisibilityModifier.public,
     statements=[statement_000045, statement_000053, statement_000060, statement_000066, statement_000072, statement_000078, statement_000084, statement_000086, statement_000088, statement_000090, statement_000097, statement_000102, statement_000107, statement_000112, statement_000117, statement_000122, statement_000127, statement_000129, statement_000131, statement_000133, statement_000138, statement_000143, statement_000148, statement_000153, statement_000158, statement_000163, statement_000168, statement_000173, statement_000178, statement_000183, statement_000188, statement_000193, statement_000194, statement_000198, statement_000202, statement_000206, statement_000210, statement_000214, statement_000218, statement_000222, statement_000226, statement_000230, statement_000234, statement_000238, ],
     templates_param=statement_000008,
+    constraints_param=statement_000013,
     parent_class_capabilities=None,
     class_capabilities=StandardCapabilities,
     class_modifier_param=ClassModifier.mutable,
     documentation=None,
-    constraints=statement_000013,
     extends=None,
     implements=[statement_000020, ],
     uses=None,
@@ -3930,8 +3930,8 @@ statement_000264 = TypeAliasStatementParserInfo.Create(
     name=r"Int8",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000263,
     parent_class_capabilities=None,
-    constraints=statement_000263,
     type=statement_000252,
 )
 
@@ -4089,8 +4089,8 @@ statement_000289 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedInt8",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000288,
     parent_class_capabilities=None,
-    constraints=statement_000288,
     type=statement_000277,
 )
 
@@ -4248,8 +4248,8 @@ statement_000314 = TypeAliasStatementParserInfo.Create(
     name=r"UInt8",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000313,
     parent_class_capabilities=None,
-    constraints=statement_000313,
     type=statement_000302,
 )
 
@@ -4407,8 +4407,8 @@ statement_000339 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedUInt8",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000338,
     parent_class_capabilities=None,
-    constraints=statement_000338,
     type=statement_000327,
 )
 
@@ -4566,8 +4566,8 @@ statement_000364 = TypeAliasStatementParserInfo.Create(
     name=r"Int16",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000363,
     parent_class_capabilities=None,
-    constraints=statement_000363,
     type=statement_000352,
 )
 
@@ -4725,8 +4725,8 @@ statement_000389 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedInt16",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000388,
     parent_class_capabilities=None,
-    constraints=statement_000388,
     type=statement_000377,
 )
 
@@ -4884,8 +4884,8 @@ statement_000414 = TypeAliasStatementParserInfo.Create(
     name=r"UInt16",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000413,
     parent_class_capabilities=None,
-    constraints=statement_000413,
     type=statement_000402,
 )
 
@@ -5043,8 +5043,8 @@ statement_000439 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedUInt16",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000438,
     parent_class_capabilities=None,
-    constraints=statement_000438,
     type=statement_000427,
 )
 
@@ -5202,8 +5202,8 @@ statement_000464 = TypeAliasStatementParserInfo.Create(
     name=r"Int32",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000463,
     parent_class_capabilities=None,
-    constraints=statement_000463,
     type=statement_000452,
 )
 
@@ -5361,8 +5361,8 @@ statement_000489 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedInt32",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000488,
     parent_class_capabilities=None,
-    constraints=statement_000488,
     type=statement_000477,
 )
 
@@ -5520,8 +5520,8 @@ statement_000514 = TypeAliasStatementParserInfo.Create(
     name=r"UInt32",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000513,
     parent_class_capabilities=None,
-    constraints=statement_000513,
     type=statement_000502,
 )
 
@@ -5679,8 +5679,8 @@ statement_000539 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedUInt32",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000538,
     parent_class_capabilities=None,
-    constraints=statement_000538,
     type=statement_000527,
 )
 
@@ -5838,8 +5838,8 @@ statement_000564 = TypeAliasStatementParserInfo.Create(
     name=r"Int64",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000563,
     parent_class_capabilities=None,
-    constraints=statement_000563,
     type=statement_000552,
 )
 
@@ -5997,8 +5997,8 @@ statement_000589 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedInt64",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000588,
     parent_class_capabilities=None,
-    constraints=statement_000588,
     type=statement_000577,
 )
 
@@ -6156,8 +6156,8 @@ statement_000614 = TypeAliasStatementParserInfo.Create(
     name=r"UInt64",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000613,
     parent_class_capabilities=None,
-    constraints=statement_000613,
     type=statement_000602,
 )
 
@@ -6315,8 +6315,8 @@ statement_000639 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedUInt64",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000638,
     parent_class_capabilities=None,
-    constraints=statement_000638,
     type=statement_000627,
 )
 
@@ -6474,8 +6474,8 @@ statement_000664 = TypeAliasStatementParserInfo.Create(
     name=r"Int128",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000663,
     parent_class_capabilities=None,
-    constraints=statement_000663,
     type=statement_000652,
 )
 
@@ -6633,8 +6633,8 @@ statement_000689 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedInt128",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000688,
     parent_class_capabilities=None,
-    constraints=statement_000688,
     type=statement_000677,
 )
 
@@ -6763,8 +6763,8 @@ statement_000709 = TypeAliasStatementParserInfo.Create(
     name=r"UInt128",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000708,
     parent_class_capabilities=None,
-    constraints=statement_000708,
     type=statement_000697,
 )
 
@@ -6893,8 +6893,8 @@ statement_000729 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedUInt128",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=statement_000728,
     parent_class_capabilities=None,
-    constraints=statement_000728,
     type=statement_000717,
 )
 
@@ -6930,8 +6930,8 @@ statement_000734 = TypeAliasStatementParserInfo.Create(
     name=r"ArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=None,
     parent_class_capabilities=None,
-    constraints=None,
     type=statement_000733,
 )
 
@@ -6949,8 +6949,8 @@ statement_000736 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=None,
     parent_class_capabilities=None,
-    constraints=None,
     type=statement_000735,
 )
 
@@ -6968,8 +6968,8 @@ statement_000738 = TypeAliasStatementParserInfo.Create(
     name=r"UArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=None,
     parent_class_capabilities=None,
-    constraints=None,
     type=statement_000737,
 )
 
@@ -6987,8 +6987,8 @@ statement_000740 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedUArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=None,
     parent_class_capabilities=None,
-    constraints=None,
     type=statement_000739,
 )
 
@@ -7031,8 +7031,8 @@ statement_000746 = TypeAliasStatementParserInfo.Create(
     name=r"ArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=None,
     parent_class_capabilities=None,
-    constraints=None,
     type=statement_000745,
 )
 
@@ -7050,8 +7050,8 @@ statement_000748 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=None,
     parent_class_capabilities=None,
-    constraints=None,
     type=statement_000747,
 )
 
@@ -7069,8 +7069,8 @@ statement_000750 = TypeAliasStatementParserInfo.Create(
     name=r"UArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=None,
     parent_class_capabilities=None,
-    constraints=None,
     type=statement_000749,
 )
 
@@ -7088,8 +7088,8 @@ statement_000752 = TypeAliasStatementParserInfo.Create(
     name=r"CheckedUArchInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=None,
     parent_class_capabilities=None,
-    constraints=None,
     type=statement_000751,
 )
 

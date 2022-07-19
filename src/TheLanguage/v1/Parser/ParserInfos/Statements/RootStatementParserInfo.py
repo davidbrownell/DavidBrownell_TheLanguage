@@ -90,12 +90,14 @@ class RootStatementParserInfo(
             self,
             parser_info_type,
             regions,
-            validate=False,
-            regionless_attributes=NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
             *args,
             **{
                 **kwargs,
                 **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "finalize": False,
+                    "regionless_attributes": NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
+                },
             },
         )
 
@@ -106,7 +108,7 @@ class RootStatementParserInfo(
 
         NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
 
-        self.ValidateRegions()
+        self._Finalize()
 
     # ----------------------------------------------------------------------
     @staticmethod

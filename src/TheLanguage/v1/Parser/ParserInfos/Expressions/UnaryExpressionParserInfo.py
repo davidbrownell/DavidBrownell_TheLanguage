@@ -67,8 +67,12 @@ class UnaryExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(UnaryExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=["expression", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": ["expression", ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------
@@ -82,6 +86,6 @@ class UnaryExpressionParserInfo(ExpressionParserInfo):
     @staticmethod
     @contextmanager
     @Interface.override
-    def _InitConfigurationImpl(*args, **kwargs):
+    def _InitConfigurationImpl(*args, **kwargs):  # pylint: disable=unused-argument
         # Nothing to do here
         yield

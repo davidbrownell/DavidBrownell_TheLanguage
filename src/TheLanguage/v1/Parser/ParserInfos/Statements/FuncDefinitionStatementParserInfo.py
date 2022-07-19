@@ -328,23 +328,23 @@ class FuncDefinitionStatementParserInfo(
             self,
             parser_info_type,
             regions,
-            regionless_attributes=[
-                "parent_class_capabilities",
-                "operator_type",
-                "return_type",
-                "templates",
-            ]
-                + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
-                + TemplatedStatementTrait.RegionlessAttributesArgs()
-            ,
-            validate=False,
             **{
+                **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
                 **{
+                    "regionless_attributes": [
+                        "parent_class_capabilities",
+                        "operator_type",
+                        "return_type",
+                        "templates",
+                    ]
+                        + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
+                        + TemplatedStatementTrait.RegionlessAttributesArgs()
+                    ,
+                    "finalize": False,
                     "parent_class_capabilities": lambda value: None if value is None else value.name,
                     "operator_type": None,
                 },
-                **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
-                **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
         )
 
@@ -388,7 +388,7 @@ class FuncDefinitionStatementParserInfo(
         object.__setattr__(self, "mutability", mutability_param)
         object.__setattr__(self, "method_hierarchy_modifier", method_hierarchy_modifier_param)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         # Validate
         errors: List[Error] = []
@@ -544,3 +544,13 @@ class FuncDefinitionStatementParserInfo(
         entity_resolver: EntityResolver,
     ) -> FuncDefinitionType:
         return FuncDefinitionType(self, ConcreteFuncDefinition.Create(self, entity_resolver))
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        assert self.return_type is None
+        assert self.templates is None
+        assert self.captured_variables is None
+        assert isinstance(self.parameters, bool)
+
+        return ()

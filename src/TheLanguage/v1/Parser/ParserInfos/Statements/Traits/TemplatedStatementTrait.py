@@ -19,7 +19,7 @@ import os
 import threading
 
 from contextlib import ExitStack
-from typing import Any, Callable, cast, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -35,13 +35,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ...Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
-    from ...Common.TemplateParametersParserInfo import ResolvedTemplateArguments, TemplateParametersParserInfo
-
-    from ...ParserInfo import ParserInfo
-    from ...Statements.StatementParserInfo import StatementParserInfo
+    from ...Common.TemplateParametersParserInfo import TemplateParametersParserInfo
 
     from ...EntityResolver import EntityResolver
-    from ...Traits.NamedTrait import NamedTrait
     from ...Types import ClassType, Type
 
 
@@ -50,7 +46,7 @@ with InitRelativeImports():
 
 @dataclass(frozen=True, repr=False)
 class TemplatedStatementTrait(Interface.Interface):
-    """Apply to statements that may have templates"""
+    """Apply to statements that can have templates"""
 
     # ----------------------------------------------------------------------
     # |  Public Types
@@ -108,13 +104,7 @@ class TemplatedStatementTrait(Interface.Interface):
             template_arguments: Optional[TemplateArgumentsParserInfo],
             instantiated_class: Optional[ClassType],
         ) -> Type:
-            if self.templates is None:
-                if template_arguments:
-                    raise Exception("BugBug: Templates where none were expected")
-
-                resolved_template_arguments = None
-                template_cache_key = None
-            else:
+            if self.templates is not None:
                 resolved_template_arguments = self.templates.MatchCall(  # pylint: disable=no-member
                     self.name,              # type: ignore # pylint: disable=no-member
                     self.regions__.name,    # type: ignore # pylint: disable=no-member
@@ -124,6 +114,13 @@ class TemplatedStatementTrait(Interface.Interface):
                 )
 
                 template_cache_key = resolved_template_arguments.cache_key
+
+            else:
+                if template_arguments:
+                    raise Exception("BugBug: Templates where none were expected")
+
+                resolved_template_arguments = None
+                template_cache_key = None
 
             if instantiated_class is None:
                 class_cache_key = None

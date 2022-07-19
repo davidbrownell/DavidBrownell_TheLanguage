@@ -117,10 +117,12 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         self,
         parser_info_type: ParserInfoType,
         regions: List[Optional[TranslationUnitRegion]],
+        *,
         regionless_attributes: Optional[List[str]]=None,
-        validate=True,
+        finalize=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
+        object.__setattr__(self, "_unique_id", None)
         object.__setattr__(self, "_disabled", False)
         object.__setattr__(self, "_parser_info_type", parser_info_type)
         object.__setattr__(self, "_translation_unit", None)
@@ -170,14 +172,15 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         # Create the dynamic validate func
         object.__setattr__(
             self,
-            "_validate_regions_func",
-            ParserInfo._ValidateRegionsFuncFactory(self, all_fields, regionless_attributes_set),
+            "_finalize_func",
+            ParserInfo._FinalizeFuncFactory(self, all_fields, regionless_attributes_set),
         )
 
         ObjectReprImplBase.__init__(
             self,
             **{
                 **{
+                    "unique_id__": None,
                     "is_compile_time__": None,
                     "is_disabled__": None,
                     "translation_unit__": None,
@@ -188,10 +191,29 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         )
 
         # Validate the instance
-        if validate:
-            self.ValidateRegions()
+        if finalize:
+            self._Finalize()
 
     # ----------------------------------------------------------------------
+    def __eq__(
+        self,
+        other: "ParserInfo",
+    ) -> bool:
+        return self.unique_id__ == other.unique_id__
+
+    # ----------------------------------------------------------------------
+    def __ne__(
+        self,
+        other: "ParserInfo",
+    ) -> bool:
+        return not self.__eq__(other)
+
+    # ----------------------------------------------------------------------
+    @property
+    def unique_id__(self) -> Tuple[Any, ...]:
+        assert self._unique_id is not None  # type: ignore  # pylint: disable=no-member
+        return self._unique_id  # type: ignore  # pylint: disable=no-member
+
     @property
     def is_compile_time__(self) -> bool:
         return ParserInfoType.IsCompileTime(self.parser_info_type__)
@@ -216,10 +238,6 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     @property
     def regions__(self) -> Any:
         return self._regions  # type: ignore  # pylint: disable=no-member
-
-    # ----------------------------------------------------------------------
-    def ValidateRegions(self) -> None:
-        self._validate_regions_func()  # type: ignore  # pylint: disable=no-member
 
     # ----------------------------------------------------------------------
     def Disable(self) -> None:
@@ -378,6 +396,10 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     # |  Protected Methods
     # |
     # ----------------------------------------------------------------------
+    def _Finalize(self) -> None:
+        self._finalize_func()  # type: ignore  # pylint: disable=no-member
+
+    # ----------------------------------------------------------------------
     @Interface.extensionmethod
     def _GenerateAcceptDetails(self) -> "ParserInfo._GenerateAcceptDetailsResultType":
         # Nothing by default
@@ -397,13 +419,15 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
     # |
     # ----------------------------------------------------------------------
     @staticmethod
-    def _ValidateRegionsFuncFactory(
+    def _FinalizeFuncFactory(
         parser_info: "ParserInfo",
         all_fields: Dict[str, Any],
         regionless_attributes_set: Set[str],
     ) -> Callable[[], None]:
         # ----------------------------------------------------------------------
         def Func():
+            assert parser_info._unique_id is None  # type: ignore  # pylint: disable=protected-access
+
             # Ensure that the regions in the new instance are valid based on the state of the ParserInfo
 
             # ----------------------------------------------------------------------
@@ -440,6 +464,13 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
                     # Ensure that the region value falls within self__
                     assert region_value in parser_info.regions__.self__, (attribute_name, region_value, parser_info.regions__.self__)  # type: ignore
 
+            # Instantiate the unique id
+            visitor = _UniqueIdVisitor(parser_info)
+
+            parser_info.Accept(visitor)
+
+            object.__setattr__(parser_info, "_unique_id", visitor.unique_id)
+
         # ----------------------------------------------------------------------
 
         return Func
@@ -459,3 +490,53 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         configuration_data: Dict[str, CompileTimeInfo], # pylint: disable=unused-argument
     ):
         raise Exception("This functionality should be implemented by derived classes when applicable ({})".format(cls))
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.extensionmethod
+    def _GetUniqueId(cls) -> Tuple[Any, ...]:
+        raise Exception("This functionality should be implemented by derived classes when applicable ({})".format(cls))
+
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+class _UniqueIdVisitor(ParserInfoVisitorHelper):
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        target_parser_info: ParserInfo,
+    ):
+        self._target_parser_info                        = target_parser_info
+
+        self._child_unique_ids: List[Tuple[Any, ...]]   = []
+        self._result: Optional[Tuple[Any, ...]]         = None
+
+    # ----------------------------------------------------------------------
+    @property
+    def unique_id(self) -> Tuple[Any, ...]:
+        assert self._result is not None
+        return self._result
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnPhrase(
+        self,
+        parser_info: ParserInfo,
+    ):
+        if parser_info is self._target_parser_info:
+            yield VisitResult.Continue
+
+            if not self._child_unique_ids:
+                # If here, we are looking at a terminal parser_info that needs to provide its own unique_id
+                result = parser_info._GetUniqueId()  # pylint: disable=protected-access
+            else:
+                result = tuple(self._child_unique_ids)
+
+            assert self._result is None
+            self._result = (type(parser_info).__name__, ) + result
+
+            return
+
+        self._child_unique_ids.append(parser_info.unique_id__)
+        yield VisitResult.SkipAll

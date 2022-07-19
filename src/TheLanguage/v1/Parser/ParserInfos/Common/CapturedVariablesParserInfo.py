@@ -53,7 +53,11 @@ class CapturedVariablesParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(CapturedVariablesParserInfo, self).__init__(ParserInfoType.Standard, *args, **kwargs)
+        super(CapturedVariablesParserInfo, self).__init__(
+            ParserInfoType.Standard,
+            *args,
+            **kwargs,
+        )
 
         # Validate
         errors: List[Error] = []

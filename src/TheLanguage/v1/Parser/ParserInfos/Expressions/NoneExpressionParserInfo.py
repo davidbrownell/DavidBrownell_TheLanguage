@@ -18,7 +18,7 @@
 import os
 
 from contextlib import contextmanager
-from typing import Optional
+from typing import Any, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -54,6 +54,12 @@ class NoneExpressionParserInfo(
     @staticmethod
     @contextmanager
     @Interface.override
-    def _InitConfigurationImpl(*args, **kwargs):
+    def _InitConfigurationImpl(*args, **kwargs):  # pylint: disable=unused-argument
         # Nothing to do here
         yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def _GetUniqueId() -> Tuple[Any, ...]:
+        return ()

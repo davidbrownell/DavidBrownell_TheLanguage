@@ -85,11 +85,15 @@ class FuncParameterParserInfo(ParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(FuncParameterParserInfo, self).__init__(
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "type",
-                "default_value",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "type",
+                        "default_value",
+                    ],
+                },
+            },
         )
 
         # Validate
@@ -200,16 +204,6 @@ class FuncParametersParserInfo(ParserInfo):
             self.positional or [],
             self.any or [],
             self.keyword or [],
-        )
-
-    # ----------------------------------------------------------------------
-    def GetOverrideId(self) -> Tuple:
-        """Returns information that can be used to determine if these parameters match another set of parameters associated with a different function"""
-
-        return (
-            tuple(parameter.GetOverrideId() for parameter in (self.positional or [])),
-            tuple(parameter.GetOverrideId() for parameter in (self.any or [])),
-            tuple(parameter.GetOverrideId() for parameter in (self.keyword or [])),
         )
 
     # ----------------------------------------------------------------------

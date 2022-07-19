@@ -66,10 +66,14 @@ class NestedTypeExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(NestedTypeExpressionParserInfo, self).__post_init__(
             *args,
-            regionless_attributes=[
-                "types",
-            ],
-            **kwargs,
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "types",
+                    ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------

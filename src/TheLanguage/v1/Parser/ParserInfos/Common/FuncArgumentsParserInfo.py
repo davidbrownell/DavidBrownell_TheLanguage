@@ -73,8 +73,12 @@ class FuncArgumentParserInfo(ParserInfo):
         super(FuncArgumentParserInfo, self).__init__(
             self.expression.parser_info_type__,
             *args,
-            **kwargs,
-            regionless_attributes=["expression", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": ["expression", ],
+                },
+            },
         )
 
         # Validate

@@ -154,8 +154,8 @@ class TypeAliasStatement(GrammarPhrase):
                 name_info,
                 visibility_info,
                 templates_info,
-                ClassStatement.GetParentClassCapabilities(node),
                 constraints_info,
+                ClassStatement.GetParentClassCapabilities(node),
                 type_info,
             )
 

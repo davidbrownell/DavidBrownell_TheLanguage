@@ -144,8 +144,8 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
         **kwargs,
     ):
         return cls(  # pylint: disable=too-many-function-args
-            ParserInfoType.GetDominantType(left_expression, right_expression),  # type: ignore
-            regions,                                                            # type: ignore
+            ParserInfoType.GetDominantType(left_expression, right_expression),      # type: ignore
+            regions,                                                                # type: ignore
             left_expression,
             operator,
             right_expression,
@@ -157,11 +157,15 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):  # type: ignore
         super(BinaryExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "left_expression",
-                "right_expression",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "left_expression",
+                        "right_expression",
+                    ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------

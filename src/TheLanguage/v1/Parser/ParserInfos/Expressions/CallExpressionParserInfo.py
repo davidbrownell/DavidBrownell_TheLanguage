@@ -74,8 +74,12 @@ class CallExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(CallExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=["expression", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": ["expression", ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------

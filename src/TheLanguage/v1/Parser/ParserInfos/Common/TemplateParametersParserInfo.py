@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
+    from .TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateArgumentParserInfo
 
     from ..Common.VisibilityModifier import VisibilityModifier
 
@@ -128,18 +128,22 @@ class TemplateTypeParameterParserInfo(
             self,
             ParserInfoType.TypeCustomization,
             regions,
-            regionless_attributes=[
-                "default_type",
-            ]
-                + NamedTrait.RegionlessAttributesArgs()
-            ,
-            validate=False,
-            **NamedTrait.ObjectReprImplBaseInitKwargs(),
+            **{
+                **NamedTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "regionless_attributes": [
+                        "default_type",
+                    ]
+                        + NamedTrait.RegionlessAttributesArgs()
+                    ,
+                    "finalize": False,
+                },
+            },
         )
 
         NamedTrait.__post_init__(self, visibility_param)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         # Validate
         errors: List[Error] = []
@@ -160,7 +164,7 @@ class TemplateTypeParameterParserInfo(
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def IsNameOrdered(*args, **kwargs) -> bool:
+    def IsNameOrdered(*args, **kwargs) -> bool:  # pylint: disable=unused-argument
         return True
 
     # ----------------------------------------------------------------------
@@ -178,6 +182,12 @@ class TemplateTypeParameterParserInfo(
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         if self.default_type is not None:
             yield "default_type", self.default_type  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        assert self.default_type is None
+        return (None, )
 
 
 # ----------------------------------------------------------------------
@@ -206,16 +216,16 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
         super(TemplateDecoratorParameterParserInfo, self).__init__(
             ParserInfoType.TypeCustomization,
             *args,
-            regionless_attributes=[
-                "type",
-                "default_value",
-                "is_simple_expression__",
-            ],
             **{
+                **kwargs,
                 **{
+                    "regionless_attributes": [
+                        "type",
+                        "default_value",
+                        "is_simple_expression__",
+                    ],
                     "is_simple_expression__": None,
                 },
-                **kwargs,
             },
         )
 
@@ -376,20 +386,20 @@ class TemplateParametersParserInfo(ParserInfo):
                 ),
             ),
             *args,
-            regionless_attributes=[
-                "is_default_initializable",
-                "call_helpers_positional",
-                "call_helpers_any",
-                "call_helpers_keyword",
-            ],
             **{
+                **kwargs,
                 **{
+                    "regionless_attributes": [
+                        "is_default_initializable",
+                        "call_helpers_positional",
+                        "call_helpers_any",
+                        "call_helpers_keyword",
+                    ],
                     "is_default_initializable": None,
                     "call_helpers_positional": None,
                     "call_helpers_any": None,
                     "call_helpers_keyword": None,
                 },
-                **kwargs,
             },
         )
 
@@ -490,8 +500,8 @@ class TemplateParametersParserInfo(ParserInfo):
         destination: str,
         destination_region: TranslationUnitRegion,
         invocation_region: TranslationUnitRegion,
-        template_arguments: Optional["TemplateArgumentsParserInfo"],
-        entity_resolver: "EntityResolver",
+        template_arguments: Optional[TemplateArgumentsParserInfo],
+        entity_resolver: EntityResolver,
     ) -> ResolvedTemplateArguments:
         if template_arguments is None:
             args = []
@@ -526,7 +536,7 @@ class TemplateParametersParserInfo(ParserInfo):
             argument_parser_info: Optional[ExpressionParserInfo] = None
 
             if argument_parser_info_value is not None:
-                assert argument_parser_info_value.__class__.__name__ == "TemplateArgumentParserInfo", argument_parser_info_value.__class__
+                assert isinstance(argument_parser_info_value, TemplateArgumentParserInfo), argument_parser_info_value
                 argument_parser_info = argument_parser_info_value.type_or_expression  # type: ignore
 
             if isinstance(parameter_parser_info, TemplateTypeParameterParserInfo):

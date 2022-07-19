@@ -18,7 +18,7 @@
 import os
 
 from contextlib import contextmanager
-from typing import Callable, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -74,12 +74,16 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(TernaryExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "condition_expression",
-                "true_expression",
-                "false_expression",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "condition_expression",
+                        "true_expression",
+                        "false_expression",
+                    ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------

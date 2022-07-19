@@ -18,6 +18,7 @@
 import os
 
 from contextlib import contextmanager
+from typing import Any, Tuple
 
 from dataclasses import dataclass
 
@@ -50,10 +51,14 @@ class BooleanExpressionParserInfo(
         ExpressionParserInfo.__post_init__(
             self,
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "value",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "value",
+                    ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------
@@ -65,3 +70,8 @@ class BooleanExpressionParserInfo(
     def _InitConfigurationImpl(*args, **kwargs):
         # Nothing to do here
         yield
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        return (self.value, )

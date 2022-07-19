@@ -155,18 +155,21 @@ class SpecialMethodStatementParserInfo(
             self,
             parser_info_type,
             regions,
-            validate=False,
-            regionless_attributes=[
-                "visibility",               # Value is hard coded during creation
-                "parent_class_capabilities",
-                "special_method_type",      # Value is calculated
-            ] + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
             **{
+                **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
                 **{
+                    "finalize": False,
+                    "regionless_attributes": [
+                        "visibility",               # Value is hard coded during creation
+                        "parent_class_capabilities",
+                        "special_method_type",      # Value is calculated
+                    ]
+                        + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
+                    ,
                     "parent_class_capabilities": lambda value: value.name,
                     "special_method_type": None,
                 },
-                **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+
             },
         )
 
@@ -177,7 +180,7 @@ class SpecialMethodStatementParserInfo(
 
         NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         # Validate
         errors: List[Error] = []

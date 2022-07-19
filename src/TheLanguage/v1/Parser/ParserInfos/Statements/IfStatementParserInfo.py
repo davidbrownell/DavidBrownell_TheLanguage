@@ -18,7 +18,7 @@
 import os
 
 from contextlib import contextmanager
-from typing import Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass, InitVar
 
@@ -96,19 +96,23 @@ class IfStatementClauseParserInfo(
             parser_info_type,
             regions,
             *args,
-            validate=False,
-            regionless_attributes=[
-                "expression",
-            ] + ScopedStatementTrait.RegionlessAttributesArgs(),
             **{
                 **kwargs,
                 **ScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "finalize": False,
+                    "regionless_attributes": [
+                        "expression",
+                    ]
+                        + ScopedStatementTrait.RegionlessAttributesArgs()
+                    ,
+                },
             },
         )
 
         ScopedStatementTrait.__post_init__(self, visibility_param)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         self._InitTraits(
             allow_name_to_be_duplicated=False,
@@ -180,18 +184,20 @@ class IfStatementElseClauseParserInfo(
             self,
             parser_info_type,
             regions,
-            regionless_attributes=ScopedStatementTrait.RegionlessAttributesArgs(),
-            validate=False,
             *args,
             **{
                 **kwargs,
                 **ScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "regionless_attributes": ScopedStatementTrait.RegionlessAttributesArgs(),
+                    "finalize": False,
+                },
             },
         )
 
         ScopedStatementTrait.__post_init__(self, visibility_param)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         self._InitTraits(
             allow_name_to_be_duplicated=False,
@@ -212,6 +218,12 @@ class IfStatementElseClauseParserInfo(
     def _InitConfigurationImpl(*args, **kwargs):
         # Nothing to do here
         yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def _GetUniqueId() -> Tuple[Any, ...]:
+        return ()
 
 
 # ----------------------------------------------------------------------
@@ -242,11 +254,15 @@ class IfStatementParserInfo(StatementParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(IfStatementParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "clauses",
-                "else_clause",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "clauses",
+                        "else_clause",
+                    ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------

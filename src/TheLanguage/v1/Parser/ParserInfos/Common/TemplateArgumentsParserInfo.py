@@ -80,10 +80,14 @@ class TemplateArgumentParserInfo(ParserInfo):
         super(TemplateArgumentParserInfo, self).__init__(
             ParserInfoType.TypeCustomization,
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "type_or_expression",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "type_or_expression",
+                    ],
+                },
+            },
         )
 
         # Validate
@@ -145,16 +149,16 @@ class TemplateArgumentsParserInfo(ParserInfo):
             ParserInfoType.GetDominantType(*self.arguments),
             regions,
             *args,
-            regionless_attributes=[
-                "call_helpers_args",
-                "call_helpers_kwargs",
-            ],
             **{
+                **kwargs,
                 **{
+                    "regionless_attributes": [
+                        "call_helpers_args",
+                        "call_helpers_kwargs",
+                    ],
                     "call_helpers_args": None,
                     "call_helpers_kwargs": None,
                 },
-                **kwargs,
             },
         )
 

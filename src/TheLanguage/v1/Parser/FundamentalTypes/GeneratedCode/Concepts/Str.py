@@ -923,8 +923,8 @@ statement_000008 = TypeAliasStatementParserInfo.Create(
     name=r"PosInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=None,
     parent_class_capabilities=ConceptCapabilities,
-    constraints=None,
     type=statement_000007,
 )
 
@@ -958,8 +958,8 @@ statement_000013 = TypeAliasStatementParserInfo.Create(
     name=r"NonZeroInt",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=None,
     parent_class_capabilities=ConceptCapabilities,
-    constraints=None,
     type=statement_000012,
 )
 
@@ -994,8 +994,8 @@ statement_000018 = TypeAliasStatementParserInfo.Create(
     name=r"NonEmptyStr",
     visibility_param=VisibilityModifier.public,
     templates_param=None,
+    constraints_param=None,
     parent_class_capabilities=ConceptCapabilities,
-    constraints=None,
     type=statement_000017,
 )
 
@@ -4197,11 +4197,11 @@ statement_000341 = ClassStatementParserInfo.Create(
     visibility_param=VisibilityModifier.public,
     statements=[statement_000008, statement_000013, statement_000018, statement_000025, statement_000031, statement_000037, statement_000039, statement_000041, statement_000043, statement_000050, statement_000055, statement_000060, statement_000065, statement_000070, statement_000075, statement_000080, statement_000087, statement_000094, statement_000099, statement_000104, statement_000109, statement_000114, statement_000116, statement_000118, statement_000120, statement_000122, statement_000124, statement_000126, statement_000128, statement_000130, statement_000132, statement_000134, statement_000136, statement_000138, statement_000143, statement_000148, statement_000153, statement_000158, statement_000163, statement_000168, statement_000185, statement_000202, statement_000214, statement_000226, statement_000238, statement_000250, statement_000262, statement_000274, statement_000276, statement_000278, statement_000280, statement_000282, statement_000284, statement_000286, statement_000294, statement_000302, statement_000310, statement_000312, statement_000314, statement_000316, statement_000328, statement_000340, ],
     templates_param=None,
+    constraints_param=statement_000003,
     parent_class_capabilities=None,
     class_capabilities=ConceptCapabilities,
     class_modifier_param=ClassModifier.immutable,
     documentation=None,
-    constraints=statement_000003,
     extends=None,
     implements=None,
     uses=None,

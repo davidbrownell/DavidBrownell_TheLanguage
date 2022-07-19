@@ -18,9 +18,9 @@
 import os
 
 from contextlib import contextmanager
-from typing import Callable, List, Optional, Type, Union
+from typing import Any, List, Optional, Tuple, Type, Union, TYPE_CHECKING
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -46,6 +46,7 @@ with InitRelativeImports():
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
 
     from ..Statements.StatementParserInfo import StatementParserInfo
+    from ..Types import Type
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -65,6 +66,9 @@ with InitRelativeImports():
     from ...MiniLanguage.Types.NumberType import NumberType                 # pylint: disable=unused-import
     from ...MiniLanguage.Types.StringType import StringType                 # pylint: disable=unused-import
     from ...MiniLanguage.Types.VariantType import VariantType               # pylint: disable=unused-import
+
+    if TYPE_CHECKING:
+        from ..Common.ConstraintParametersParserInfo import ResolvedConstraintArguments  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -107,7 +111,7 @@ class FuncOrTypeExpressionParserInfo(
     # ----------------------------------------------------------------------
     value: Union[
         MiniLanguageType,
-        Type[MiniLanguageExpression],
+        MiniLanguageExpression,
         str,
     ]
 
@@ -115,22 +119,61 @@ class FuncOrTypeExpressionParserInfo(
     constraints: Optional[ConstraintArgumentsParserInfo]
     mutability_modifier: Optional[MutabilityModifier]
 
+    # Values set during resolution
+    _is_resolved: bool                                                      = field(init=False, default=False)
+
+    _resolved_constraint_arguments: Optional["ResolvedConstraintArguments"] = field(init=False, default=None)
+    _resolved_type: Optional[Type]                                          = field(init=False, default=None)
+
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         ExpressionParserInfo.__post_init__(
             self,
             *args,
-            regionless_attributes=[
-                "templates",
-                "constraints",
-            ],
-            **kwargs,
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "templates",
+                        "constraints",
+                    ],
+                },
+            },
         )
+
+    # ----------------------------------------------------------------------
+    @property
+    def resolved_constraint_arguments(self) -> Optional["ResolvedConstraintArguments"]:
+        assert self._is_resolved
+        return self._resolved_constraint_arguments
+
+    @property
+    def resolved_type(self) -> Type:
+        assert self._is_resolved
+        assert self._resolved_type is not None
+        return self._resolved_type
 
     # ----------------------------------------------------------------------
     @Interface.override
     def IsType(self) -> Optional[bool]:
         return isinstance(self.value, (str, MiniLanguageType))
+
+    # ----------------------------------------------------------------------
+    def IsResolved(self) -> bool:
+        return self._is_resolved
+
+    # ----------------------------------------------------------------------
+    def Resolve(
+        self,
+        resolved_constraint_arguments: Optional["ResolvedConstraintArguments"],
+        resolved_type: Type,
+    ) -> None:
+        assert self._is_resolved is False
+
+        object.__setattr__(self, "_resolved_constraint_arguments", resolved_constraint_arguments)
+        object.__setattr__(self, "_resolved_type", resolved_type)
+
+        object.__setattr__(self, "_is_resolved", True)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -224,3 +267,11 @@ class FuncOrTypeExpressionParserInfo(
     def _InitConfigurationImpl(*args, **kwargs):
         # Nothing to do here
         yield
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        assert self.templates is None
+        assert self.constraints is None
+
+        return (None, None, )

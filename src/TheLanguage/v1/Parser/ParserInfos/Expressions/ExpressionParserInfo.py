@@ -17,15 +17,12 @@
 
 import os
 
-from typing import Any, Callable, Generator, List, Optional, Tuple, Union
+from typing import Any, Callable, List, Optional, Tuple
 
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
-from CommonEnvironment.DataclassDecorators import ComparisonOperators
-from CommonEnvironment.DoesNotExist import DoesNotExist
 from CommonEnvironment import Interface
-from CommonEnvironment.YamlRepr import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -36,14 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
-    from ..Common.VisibilityModifier import VisibilityModifier
 
     from ...Error import CreateError, ErrorException
-
-    from ...MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
-
-    from ...MiniLanguage.Types.NoneType import NoneType as MiniLanguageNoneType
-    from ...MiniLanguage.Types.Type import Type as MiniLanguageType
 
     # Convenience imports
     from ..ParserInfo import CompileTimeInfo            # pylint: disable=unused-import
@@ -63,46 +54,6 @@ InvalidExpressionError                      = CreateError(
 @dataclass(frozen=True, repr=False)
 class ExpressionParserInfo(ParserInfo):
     """Abstract base class for all expressions"""
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Public Types
-    # |
-    # ----------------------------------------------------------------------
-    @dataclass(frozen=True, repr=False)
-    class ResolvedType(ObjectReprImplBase):
-        # ----------------------------------------------------------------------
-        visibility: VisibilityModifier
-        parser_info: ParserInfo
-        is_class_member: bool
-
-        # ----------------------------------------------------------------------
-        @classmethod
-        def Create(cls, *args, **kwargs):
-            """\
-            This hack avoids pylint warnings associated with invoking dynamically
-            generated constructors with too many methods.
-            """
-            return cls(*args, **kwargs)
-
-        # ----------------------------------------------------------------------
-        def __post_init__(self):
-            ObjectReprImplBase.__init__(
-                self,
-                parser_info=lambda value: value.__class__.__name__,
-            )
-
-        # ----------------------------------------------------------------------
-        @Interface.extensionmethod
-        def EnumAliases(self) -> Generator["ExpressionParserInfo.ResolvedType", None, None]:
-            yield self
-
-        # ----------------------------------------------------------------------
-        @Interface.extensionmethod
-        def ResolveAliases(self) -> "ExpressionParserInfo.ResolvedType":
-            *_, last = self.EnumAliases()
-
-            return last
 
     # ----------------------------------------------------------------------
     # |
@@ -130,21 +81,27 @@ class ExpressionParserInfo(ParserInfo):
         self,
         parser_info_type,
         regions,
+        *,
         regionless_attributes: Optional[List[str]]=None,
-        validate=True,
+        finalize=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
         super(ExpressionParserInfo, self).__init__(
             parser_info_type,
             regions,
-            regionless_attributes,
-            validate,
-            **custom_display_funcs,
+            **{
+                **custom_display_funcs,
+                **{
+                    "finalize": finalize,
+                    "regionless_attributes": regionless_attributes,
+                },
+            },
         )
 
     # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.extensionmethod
-    def IsType(self) -> Optional[bool]:
+    def IsType() -> Optional[bool]:
         # Most expressions are not types.
         return False
 

@@ -65,8 +65,12 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(FuncInvocationStatementParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=["expression", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": ["expression", ],
+                },
+            },
         )
 
         # Validate

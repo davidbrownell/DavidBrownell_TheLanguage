@@ -65,8 +65,9 @@ class StatementParserInfo(ParserInfo):
         self,
         parser_info_type,
         regions,
+        *,
         regionless_attributes: Optional[List[str]]=None,
-        validate=True,
+        finalize=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
         assert parser_info_type != ParserInfoType.Unknown
@@ -74,9 +75,13 @@ class StatementParserInfo(ParserInfo):
         super(StatementParserInfo, self).__init__(
             parser_info_type,
             regions,
-            regionless_attributes or [],
-            validate,
-            **custom_display_funcs,
+            **{
+                **custom_display_funcs,
+                **{
+                    "regionless_attributes": regionless_attributes or [],
+                    "finalize": finalize,
+                },
+            },
         )
 
     # ----------------------------------------------------------------------

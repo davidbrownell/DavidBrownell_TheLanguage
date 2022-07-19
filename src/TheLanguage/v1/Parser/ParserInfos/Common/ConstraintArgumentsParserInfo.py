@@ -122,7 +122,7 @@ class ConstraintArgumentsParserInfo(ParserInfo):
     arguments: List[ConstraintArgumentParserInfo]
 
     call_helpers_args: List[CallHelpers.ArgumentInfo]                       = field(init=False, default_factory=list)
-    call_helpers_kwargs: List[CallHelpers.ArgumentInfo]                     = field(init=False, default_factory=dict)
+    call_helpers_kwargs: Dict[str, CallHelpers.ArgumentInfo]                = field(init=False, default_factory=dict)
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -139,16 +139,16 @@ class ConstraintArgumentsParserInfo(ParserInfo):
             ParserInfoType.GetDominantType(*self.arguments),
             regions,
             *args,
-            regionless_attributes=[
-                "call_helpers_args",
-                "call_helpers_kwargs",
-            ],
             **{
+                **kwargs,
                 **{
+                    "regionless_attributes": [
+                        "call_helpers_args",
+                        "call_helpers_kwargs",
+                    ],
                     "call_helpers_args": None,
                     "call_helpers_kwargs": None,
                 },
-                **kwargs,
             },
         )
 

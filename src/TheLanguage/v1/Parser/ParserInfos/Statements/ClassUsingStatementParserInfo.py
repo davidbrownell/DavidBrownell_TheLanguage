@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
     from ..Common.VisibilityModifier import VisibilityModifier
@@ -82,12 +82,12 @@ class ClassUsingStatementParserInfo(StatementParserInfo):
         super(ClassUsingStatementParserInfo, self).__post_init__(
             parser_info_type,
             regions,
-            regionless_attributes=[
-                "class_capabilities",
-                "type",
-            ],
-            validate=False,
             **{
+                "regionless_attributes": [
+                    "class_capabilities",
+                    "type",
+                ],
+                "finalize": False,
                 "class_capabilities": lambda value: value.name,
             },
         )
@@ -99,7 +99,7 @@ class ClassUsingStatementParserInfo(StatementParserInfo):
 
         object.__setattr__(self, "visibility", visibility_param)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         # Validate
         self.class_capabilities.ValidateUsingStatementCapabilities(self)
@@ -128,29 +128,8 @@ class ClassUsingStatementParserInfo(StatementParserInfo):
         }
 
     # ----------------------------------------------------------------------
-    def GetNames(self) -> Tuple[str, str]:
-        left_parser_info = self.type.left_expression.GetResolvedType()
-
-        if (
-            not isinstance(left_parser_info, FuncOrTypeExpressionParserInfo)
-            or not isinstance(left_parser_info.value, str)
-        ):
-            raise ErrorException(
-                InvalidUsingExpressionError.Create(
-                    region=left_parser_info.regions__.self,
-                ),
-            )
-
-        right_parser_info = self.type.right_expression.GetResolvedType()
-
-        if (
-            not isinstance(right_parser_info, FuncOrTypeExpressionParserInfo)
-            or not isinstance(right_parser_info.value, str)
-        ):
-            raise ErrorException(
-                InvalidUsingExpressionError.Create(
-                    region=right_parser_info.regions__.self,
-                ),
-            )
-
-        return left_parser_info.value, right_parser_info.value
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "type", self.type

@@ -41,6 +41,7 @@ with InitRelativeImports():
 
     from ...ParserInfos.ParserInfo import CompileTimeInfo
 
+    from ...ParserInfos.Common.ConstraintParametersParserInfo import ResolvedConstraintArguments
     from ...ParserInfos.Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
     from ...ParserInfos.Common.TemplateParametersParserInfo import ResolvedTemplateArguments
 
@@ -64,6 +65,8 @@ with InitRelativeImports():
     from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
 
     from ...ParserInfos.Statements.ConcreteClass import ConcreteClass
+
+    from ...ParserInfos.Statements.Traits.ConstrainedStatementTrait import ConstrainedStatementTrait
     from ...ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from ...ParserInfos.Traits.NamedTrait import NamedTrait
@@ -220,20 +223,23 @@ class _EntityResolver(EntityResolver):
             )
 
         elif isinstance(type_expression, FuncOrTypeExpressionParserInfo):
+            if type_expression.IsResolved():
+                return type_expression.resolved_type
+
             assert isinstance(type_expression.value, str), type_expression.value
 
-            result: Optional[Type] = None
+            resolved_type: Optional[Type] = None
 
             for resolve_algo in [self._ResolveByNested, self._ResolveByNamespace]:
                 create_concrete_type_func = resolve_algo(type_expression)
                 if create_concrete_type_func is not None:
-                    result = create_concrete_type_func(
+                    resolved_type = create_concrete_type_func(
                         type_expression.templates,
                         self._instantiated_class,
                     )
                     break
 
-            if result is None:
+            if resolved_type is None:
                 raise ErrorException(
                     InvalidNamedTypeError.Create(
                         region=type_expression.regions__.value,
@@ -241,12 +247,70 @@ class _EntityResolver(EntityResolver):
                     ),
                 )
 
-            # BugBug: Process the constraints
+            # Process the constraints
+            if (
+                isinstance(resolved_type.parser_info, ConstrainedStatementTrait)
+                and resolved_type.parser_info.constraints is not None
+            ):
+                assert isinstance(resolved_type.parser_info, NamedTrait), resolved_type.parser_info
+
+                resolved_constraint_arguments = resolved_type.parser_info.constraints.MatchCall(
+                    resolved_type.parser_info.name,
+                    resolved_type.parser_info.regions__.name,
+                    type_expression.regions__.self__,
+                    type_expression.constraints,
+                    self,
+                )
+
+                # BugBug new_compile_time_info_item: Dict[str, CompileTimeInfo] = {}
+                # BugBug
+                # BugBug for constraint_param, constraint_arg in resolved_constraint_arguments.decorators:
+                # BugBug     assert constraint_param.name not in new_compile_time_info_item, constraint_param.name
+                # BugBug
+                # BugBug     new_compile_time_info_item[constraint_param.name] = CompileTimeInfo(
+                # BugBug         constraint_arg.type,
+                # BugBug         constraint_arg.value,
+                # BugBug     )
+                # BugBug
+                # BugBug
+                # BugBug
+                # BugBug # TODO:
+                # BugBug # Note that constraints can only be validated once the class is fully formed.
+                # BugBug # This means that they need to be validated when instances are instantiated.
+                # BugBug #
+                # BugBug # Move this code that that location once it is available.
+                # BugBug
+                # BugBug # Ensure that the constraints are valid (if necessary)
+                # BugBug if (
+                # BugBug     isinstance(resolved_type, ClassType)
+                # BugBug     and SpecialMethodType.EvalConstraints in resolved_type.concrete_class.special_methods
+                # BugBug ):
+                # BugBug     # Temporarily add this to the compile time infos and validate
+                # BugBug     with ExitStack() as exit_stack:
+                # BugBug         self._context_stack[-1].compile_time_info.append(new_compile_time_info_item)
+                # BugBug         exit_stack.callback(self._context_stack[-1].compile_time_info.pop)
+                # BugBug
+                # BugBug         self.EvalStatements(resolved_type.concrete_class.special_methods[SpecialMethodType.EvalConstraints].statement)
+
+            else:
+                if type_expression.constraints:
+                    raise Exception("BugBug: Constraints where none were expected")
+
+                resolved_constraint_arguments = None
+
+            # We check to see if the expression is resolved above, but it is possible
+            # that the resolution of its contained types resulted in the resolution of
+            # itself (this is especially common with fundamental types).
+            if type_expression.IsResolved():
+                assert resolved_constraint_arguments == type_expression.resolved_constraint_arguments
+                assert resolved_type == type_expression.resolved_type
+            else:
+                type_expression.Resolve(resolved_constraint_arguments, resolved_type)
 
             if resolve_aliases:
-                result = result.ResolveAliases()
+                resolved_type = resolved_type.ResolveAliases()
 
-            return result
+            return resolved_type
 
         elif isinstance(type_expression, NestedTypeExpressionParserInfo):
             raise NotImplementedError("TODO: NestedTypeExpressionParserInfo")

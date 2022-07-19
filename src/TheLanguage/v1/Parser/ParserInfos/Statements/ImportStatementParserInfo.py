@@ -19,7 +19,7 @@ import os
 
 from contextlib import contextmanager
 from enum import auto, Enum
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -94,13 +94,17 @@ class ImportStatementParserInfo(
             self,
             parser_info_type,
             regions,
-            regionless_attributes=[
-                "import_type",
-            ]
-                + NamedTrait.RegionlessAttributesArgs()
-            ,
-            validate=False,
-            **NamedTrait.ObjectReprImplBaseInitKwargs(),
+            **{
+                **NamedTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "regionless_attributes": [
+                        "import_type",
+                    ]
+                        + NamedTrait.RegionlessAttributesArgs()
+                    ,
+                    "finalize": False,
+                },
+            },
         )
 
         # Set defaults
@@ -110,9 +114,9 @@ class ImportStatementParserInfo(
 
         NamedTrait.__post_init__(self, visibility_param)
 
-        # Validate
-        self.ValidateRegions()
+        self._Finalize()
 
+        # Validate
         errors: List[Error] = []
 
         if self.visibility == VisibilityModifier.protected:
@@ -148,3 +152,12 @@ class ImportStatementParserInfo(
     def _InitConfigurationImpl(*args, **kwargs):  # pylint: disable=unused-argument
         # Nothing to do here
         yield
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        return (
+            self.source_parts,
+            self.importing_name,
+            self.import_type,
+        )
