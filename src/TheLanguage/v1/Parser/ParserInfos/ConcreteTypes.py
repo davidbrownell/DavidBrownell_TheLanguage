@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Types.py
+# |  ConcreteTypes.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-07-07 14:28:53
@@ -13,13 +13,13 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Functionality used to define types"""
+"""Functionality used to define concrete types"""
 
 import os
 
-from typing import Any, List, Generator, Optional, TYPE_CHECKING
+from typing import List, Generator, TYPE_CHECKING
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -36,8 +36,6 @@ with InitRelativeImports():
     from .Traits.NamedTrait import NamedTrait
 
     if TYPE_CHECKING:
-        from .EntityResolver import EntityResolver                                                  # pylint: disable=unused-import
-
         from .Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo                  # pylint: disable=unused-import
         from .Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo                # pylint: disable=unused-import
         from .Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo            # pylint: disable=unused-import
@@ -52,39 +50,22 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, eq=False)
-class Type(Interface.Interface):
+class ConcreteType(Interface.Interface):
+    # TODO: Create a wrapper, where the actual type can only be used within a generator, where
+    #       any exceptions are decorated with all of the aliases. Should be impossible to use the
+    #       underlying type outside of that generator.
+
     # ----------------------------------------------------------------------
     _parser_info: ParserInfo
-
-    _entity_resolver: Optional["EntityResolver"]        = field(init=False, default=None)
-    _instantiated_class: Optional["ClassType"]          = field(init=False, default=None)
-
-    _is_initialized: bool                               = field(init=False, default=False)
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
         assert isinstance(self._parser_info, NamedTrait), self._parser_info
 
     # ----------------------------------------------------------------------
-    def Init(
-        self,
-        entity_resolver: "EntityResolver",
-        instantiated_class: Optional["ClassType"],
-    ) -> None:
-        # There is a chicken and egg problem here, which results in the need for 2-phase
-        # construction (yuck!). The EntityResolver needs the created type to set its context,
-        # and this type needs that entity resolver.
-        assert self._is_initialized is False
-
-        object.__setattr__(self, "_entity_resolver", entity_resolver)
-        object.__setattr__(self, "_instantiated_class", instantiated_class)
-
-        object.__setattr__(self, "_is_initialized", True)
-
-    # ----------------------------------------------------------------------
     def __eq__(
         self,
-        other: "Type",
+        other: "ConcreteType",
     ) -> bool:
         assert isinstance(self._parser_info, NamedTrait), self._parser_info
         assert isinstance(other._parser_info, NamedTrait), other._parser_info  # pylint: disable=protected-access
@@ -97,7 +78,7 @@ class Type(Interface.Interface):
     # ----------------------------------------------------------------------
     def __ne__(
         self,
-        other: "Type",
+        other: "ConcreteType",
     ) -> bool:
         return not self == other
 
@@ -106,37 +87,36 @@ class Type(Interface.Interface):
     def parser_info(self) -> ParserInfo:
         return self._parser_info
 
-    @property
-    def entity_resolver(self) -> "EntityResolver":
-        assert self._is_initialized
-        assert self._entity_resolver is not None
-        return self._entity_resolver
-
-    @property
-    def instantiated_class(self) -> Optional["ClassType"]:
-        assert self._is_initialized
-        return self._instantiated_class
-
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
-    def EnumAliases(self) -> Generator["Type", None, None]:
+    def EnumAliases(self) -> Generator["ConcreteType", None, None]:
         yield self
 
     # ----------------------------------------------------------------------
-    def ResolveAliases(self) -> "Type":
+    def ResolveAliases(self) -> "ConcreteType":
         *_, last = self.EnumAliases()
         return last
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def Finalize() -> None:
+    def FinalizePass1() -> None:
+        """Finalization for types"""
         raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def FinalizePass2() -> None:
+        """Finalization for functions and methods"""
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # BugBug: CreateConstrainedType
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, eq=False)
-class ClassType(Type):
+class ConcreteClassType(ConcreteType):
     # ----------------------------------------------------------------------
     concrete_class: "ConcreteClass"
 
@@ -151,25 +131,17 @@ class ClassType(Type):
         return self._parser_info  # type: ignore
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def Finalize(self) -> None:
-        self.FinalizePass1()
-        self.FinalizePass2()
-
-    # ----------------------------------------------------------------------
     def FinalizePass1(self) -> None:
-        assert self.instantiated_class is not None
         self.concrete_class.FinalizePass1(self)
 
     # ----------------------------------------------------------------------
     def FinalizePass2(self) -> None:
-        assert self.instantiated_class is not None
         self.concrete_class.FinalizePass2(self)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, eq=False)
-class FuncDefinitionType(Type):
+class ConcreteFuncDefinitionType(ConcreteType):
     # ----------------------------------------------------------------------
     concrete_func_definition: "ConcreteFuncDefinition"
 
@@ -185,15 +157,20 @@ class FuncDefinitionType(Type):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Finalize(self) -> None:
-        self.concrete_func_definition.Finalize(self)
+    def FinalizePass1(self) -> None:
+        self.concrete_func_definition.FinalizePass1(self)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def FinalizePass2(self) -> None:
+        self.concrete_func_definition.FinalizePass2(self)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, eq=False)
-class TypeAliasType(Type):
+class ConcreteTypeAliasType(ConcreteType):
     # ----------------------------------------------------------------------
-    resolved_type: Type
+    resolved_type: ConcreteType
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
@@ -206,19 +183,24 @@ class TypeAliasType(Type):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def EnumAliases(self) -> Generator["Type", None, None]:
+    def EnumAliases(self) -> Generator["ConcreteType", None, None]:
         yield self
         yield from self.resolved_type.EnumAliases()
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Finalize(self) -> None:
-        self.resolved_type.Finalize()
+    def FinalizePass1(self) -> None:
+        self.resolved_type.FinalizePass1()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def FinalizePass2(self) -> None:
+        self.resolved_type.FinalizePass2()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, eq=False)
-class NoneType(Type):
+class ConcreteNoneType(ConcreteType):
     # ----------------------------------------------------------------------
     def __post_init__(self):
         assert self._parser_info.__class__.__name__ == "NoneExpressionParserInfo", self.parser_info
@@ -231,16 +213,23 @@ class NoneType(Type):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def Finalize() -> None:
+    def FinalizePass1() -> None:
+        # Nothing to do here
+        pass
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def FinalizePass2() -> None:
         # Nothing to do here
         pass
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, eq=False)
-class TupleType(Type):
+class ConcreteTupleType(ConcreteType):
     # ----------------------------------------------------------------------
-    types: List[Type]
+    types: List[ConcreteType]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
@@ -253,16 +242,22 @@ class TupleType(Type):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Finalize(self) -> None:
+    def FinalizePass1(self) -> None:
         for the_type in self.types:
-            the_type.Finalize()
+            the_type.FinalizePass1()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def FinalizePass2(self) -> None:
+        for the_type in self.types:
+            the_type.FinalizePass2()
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, eq=False)
-class VariantType(Type):
+class ConcreteVariantType(ConcreteType):
     # ----------------------------------------------------------------------
-    types: List[Type]
+    types: List[ConcreteType]
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
@@ -275,6 +270,12 @@ class VariantType(Type):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def Finalize(self) -> None:
+    def FinalizePass1(self) -> None:
         for the_type in self.types:
-            the_type.Finalize()
+            the_type.FinalizePass1()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def FinalizePass2(self) -> None:
+        for the_type in self.types:
+            the_type.FinalizePass2()

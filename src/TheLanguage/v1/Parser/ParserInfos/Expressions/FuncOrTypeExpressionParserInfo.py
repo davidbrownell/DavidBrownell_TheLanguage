@@ -159,23 +159,6 @@ class FuncOrTypeExpressionParserInfo(
         return isinstance(self.value, (str, MiniLanguageType))
 
     # ----------------------------------------------------------------------
-    def IsResolved(self) -> bool:
-        return self._is_resolved
-
-    # ----------------------------------------------------------------------
-    def Resolve(
-        self,
-        resolved_constraint_arguments: Optional["ResolvedConstraintArguments"],
-        resolved_type: Type,
-    ) -> None:
-        assert self._is_resolved is False
-
-        object.__setattr__(self, "_resolved_constraint_arguments", resolved_constraint_arguments)
-        object.__setattr__(self, "_resolved_type", resolved_type)
-
-        object.__setattr__(self, "_is_resolved", True)
-
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override

@@ -3,7 +3,7 @@
 # |  Namespaces.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-05-06 09:28:00
+# |      2022-07-20 16:51:55
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,15 +13,15 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains various namespaces types, each of which have information used to lookup type names"""
+"""Contains various objects that help when working with namespaces"""
 
 import os
 
-from typing import Dict, Generator, List, Optional, Tuple, TYPE_CHECKING, Union
+from typing import Dict, Generator, List, Optional, Union, TYPE_CHECKING
 
 import CommonEnvironment
 from CommonEnvironment import Interface
-from CommonEnvironment.YamlRepr import ObjectReprImplBase
+from CommonEnvironment import ObjectReprImplBase
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -33,33 +33,29 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..ParserInfos.Common.VisibilityModifier import VisibilityModifier
 
-    from ..ParserInfos.ParserInfo import ParserInfo
+    from ..ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo
+    from ..ParserInfos.Statements.StatementParserInfo import ParserInfo, ScopeFlag
 
     from ..ParserInfos.Traits.NamedTrait import NamedTrait
 
     if TYPE_CHECKING:
-        from ..ParserInfos.Statements.ImportStatementParserInfo import ImportStatementParserInfo  # pylint: disable=unused-import
-        from ..ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
-        from ..ParserInfos.Statements.StatementParserInfo import ScopeFlag
+        from .TypeResolvers import GenericTypeResolver  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
-class Namespace(ObjectReprImplBase):
+class Namespace(Interface.Interface, ObjectReprImplBase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         name: Optional[str],
-        parent: Optional["Namespace"],
     ):
         super(Namespace, self).__init__()
 
-        assert (
-            (name is not None and parent is not None)
-            or (name is None and parent is None)
-        ), (name, parent)
-
+        # Make this a private attribute with a corresponding property so that derived classes
+        # can override it if necessary.
         self._name                          = name
-        self.parent                         = parent
+
+        self.parent: Optional[Namespace]    = None
 
         self._children: Dict[
             str,
@@ -76,10 +72,14 @@ class Namespace(ObjectReprImplBase):
         self,
         new_name_value: str,
     ) -> None:
+        assert self._name is not None
         self._name = new_name_value
 
     # ----------------------------------------------------------------------
-    @Interface.extensionmethod
+    def HasChildren(self) -> bool:
+        return bool(self._children)
+
+    # ----------------------------------------------------------------------
     def AddChild(
         self,
         namespace: "Namespace",
@@ -90,8 +90,6 @@ class Namespace(ObjectReprImplBase):
 
         if isinstance(existing_value, list):
             existing_value.append(namespace)
-
-            value = existing_value
         else:
             if existing_value is None:
                 value = namespace
@@ -100,42 +98,55 @@ class Namespace(ObjectReprImplBase):
 
             self._children[namespace.name] = value
 
+        assert namespace.parent is None, namespace.parent
         object.__setattr__(namespace, "parent", self)
 
-        assert (
-            not isinstance(value, list)
-            or all(
-                (
-                    isinstance(v, ParsedNamespace)
-                    and isinstance(v.parser_info, NamedTrait)
-                    and v.parser_info.allow_name_to_be_duplicated__
-                )
-                for v in value
-            )
-        ), value
-
     # ----------------------------------------------------------------------
-    @Interface.extensionmethod
-    def ReplaceChild(
+    def MoveChild(
         self,
         namespace: "Namespace",
     ) -> None:
-        assert namespace.name is not None
-        self._children.pop(namespace.name, None)
+        assert namespace.parent is not None
+        object.__setattr__(namespace, "parent", None)
 
         self.AddChild(namespace)
 
     # ----------------------------------------------------------------------
-    def HasChildren(self) -> bool:
-        return bool(self._children)
+    def ReplaceChild(
+        self,
+        namespace: "Namespace",
+        *,
+        is_move: bool=False,
+    ) -> None:
+        assert namespace.name is not None
+        self._children.pop(namespace.name, None)
+
+        if is_move:
+            self.MoveChild(namespace)
+        else:
+            self.AddChild(namespace)
 
     # ----------------------------------------------------------------------
-    @Interface.extensionmethod
+    def RemoveChild(
+        self,
+        namespace,
+    ) -> None:
+        del self._children[namespace.name]
+
+    # ----------------------------------------------------------------------
     def GetChild(
         self,
         name: str,
     ) -> Union[None, "Namespace", List["Namespace"]]:
         return self._children.get(name, None)
+
+    # ----------------------------------------------------------------------
+    def EnumChildren(self) -> Generator[
+        Union["Namespace", List["Namespace"]],
+        None,
+        None,
+    ]:
+        yield from self._children.values()
 
     # ----------------------------------------------------------------------
     def GetOrAddChild(
@@ -146,23 +157,14 @@ class Namespace(ObjectReprImplBase):
         if result is not None:
             return result
 
-        new_namespace = Namespace(name, self)
+        new_namespace = Namespace(name)
         self.AddChild(new_namespace)
 
         return new_namespace
 
     # ----------------------------------------------------------------------
-    @Interface.extensionmethod
-    def EnumChildren(self) -> Generator[
-        Union["Namespace", List["Namespace"]],
-        None,
-        None,
-    ]:
-        yield from self._children.values()
-
-    # ----------------------------------------------------------------------
     def Flatten(self) -> "Namespace":
-        result = Namespace("{} (Flattened)".format(self.name), self.parent)
+        result = Namespace("{} (Flattened)".format(self.name))
 
         for value in self._FlattenImpl():
             assert value.name is not None
@@ -174,18 +176,20 @@ class Namespace(ObjectReprImplBase):
 
                 if existing_value.parser_info != value.parser_info:
                     if isinstance(existing_value, ImportNamespace):
-                        # Replace the existing value with the actual value
                         if not isinstance(value, ImportNamespace):
-                            result.ReplaceChild(value)
-                    elif isinstance(value, ImportNamespace):
-                        # Nothing to do here
-                        pass
-                    else:
-                        assert False, (existing_value, value)  # pragma: no cover
+                            result.ReplaceChild(
+                                value,
+                                is_move=True,
+                            )
+                        elif isinstance(value, ImportNamespace):
+                            # Nothing to do here
+                            pass
+                        else:
+                            assert False, (existing_value, value)  # pragma: no cover
 
                 continue
 
-            result.AddChild(value)
+            result.MoveChild(value)
 
         return result
 
@@ -201,16 +205,19 @@ class Namespace(ObjectReprImplBase):
 
 # ----------------------------------------------------------------------
 class ParsedNamespace(Namespace):
+    # TODO: Create a wrapper, where the actual namespace can only be used within a generator, where
+    #       any exceptions are decorated with all of the imports. Should be impossible to use the
+    #       underlying namespace outside of that generator.
+
     # ----------------------------------------------------------------------
     def __init__(
         self,
         parser_info: ParserInfo,
-        parent: Namespace,
-        scope_flag: "ScopeFlag",
+        scope_flag: ScopeFlag,
     ):
         assert isinstance(parser_info, NamedTrait), parser_info
 
-        super(ParsedNamespace, self).__init__(parser_info.name, parent)
+        super(ParsedNamespace, self).__init__(parser_info.name)
 
         self.parser_info                    = parser_info
         self.scope_flag                     = scope_flag
@@ -223,7 +230,6 @@ class ParsedNamespace(Namespace):
         assert name is not None
         return name
 
-    # ----------------------------------------------------------------------
     @property
     @Interface.extensionmethod
     def visibility(self) -> VisibilityModifier:
@@ -239,24 +245,6 @@ class ParsedNamespace(Namespace):
     def ResolveImports(self) -> "ParsedNamespace":
         *_, last = self.EnumImports()
         return last
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Methods
-    # |
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _ShouldFlatten(
-        value: "ParsedNamespace",
-    ) -> bool:
-        # Don't flatten things without a first-class name
-        if not isinstance(value.parser_info, NamedTrait):
-            return False
-
-        if value.parser_info.visibility != VisibilityModifier.public:
-            return False
-
-        return True
 
     # ----------------------------------------------------------------------
     # |
@@ -276,27 +264,36 @@ class ParsedNamespace(Namespace):
             else:
                 yield from value._FlattenImpl()  # pylint: disable=protected-access
 
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _ShouldFlatten(
+        value: "ParsedNamespace",
+    ) -> bool:
+        # Don't flatten things without a first-class name
+        if not isinstance(value.parser_info, NamedTrait):
+            return False
+
+        if value.parser_info.visibility != VisibilityModifier.public:
+            return False
+
+        return True
+
 
 # ----------------------------------------------------------------------
 class ImportNamespace(ParsedNamespace):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        parser_info: "ImportStatementParserInfo",
-        parent: Namespace,
-        scope_flag: "ScopeFlag",
+        parser_info: ImportStatementParserInfo,
+        scope_flag: ScopeFlag,
         imported_namespace: ParsedNamespace,
     ):
-        super(ImportNamespace, self).__init__(
-            parser_info,
-            parent,
-            scope_flag,
-        )
+        super(ImportNamespace, self).__init__(parser_info, scope_flag)
 
         self.imported_namespace             = imported_namespace
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def EnumImports(self) -> Generator["ParsedNamespace", None, None]:
+    def EnumImports(self) -> Generator[ParsedNamespace, None, None]:
         yield self
         yield from self.imported_namespace.EnumImports()

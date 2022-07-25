@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Generator, Generic, Optional, Tuple, TypeVar, TYPE_CHECKING, Union
+from typing import Generator, Generic, Optional, Tuple, TypeVar, Union
 
 from dataclasses import dataclass
 
@@ -32,13 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...StatementParserInfo import StatementParserInfo
-
     from ....Common.VisibilityModifier import VisibilityModifier
-    from ....Traits.NamedTrait import NamedTrait
-
-    if TYPE_CHECKING:
-        from ...ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo  # pylint: disable=unused-import
+    from ....Statements.ClassStatementParserInfo import ClassStatementDependencyParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -56,6 +51,10 @@ class DependencyEnumResult(Generic[DependencyValueT]):
 # ----------------------------------------------------------------------
 class Dependency(Interface.Interface, Generic[DependencyValueT]):
     """Abstract base class for DependencyNode and DependencyLeaf objects"""
+
+    # TODO: Create a wrapper, where the actual dependency can only be used within a generator, where
+    #       any exceptions are decorated with all of the dependencies. Should be impossible to use the
+    #       underlying dependency outside of that generator.
 
     # ----------------------------------------------------------------------
     @staticmethod

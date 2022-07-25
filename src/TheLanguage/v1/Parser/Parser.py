@@ -51,7 +51,7 @@ with InitRelativeImports():
     from .ParserInfos.Statements.RootStatementParserInfo import StatementParserInfo, RootStatementParserInfo
 
     from .Visitors.PassOneVisitor import PassOneVisitor
-    from .Visitors.PassTwoVisitor.Visitor import Visitor as PassTwoVisitor
+    from .Visitors.PassTwoVisitor import PassTwoVisitor
 
     from ..Lexer.Lexer import AST, Phrase as LexPhrase
 
@@ -237,7 +237,7 @@ def Parse(
 
 
 # ----------------------------------------------------------------------
-def ResolveExpressionTypes(
+def ValidateExpressionTypes(
     workspaces: Dict[
         str,                                # workspace root
         Dict[
@@ -323,6 +323,7 @@ def ResolveExpressionTypes(
                 return error_data  # type: ignore
 
         global_namespace = executor.global_namespace
+        translation_unit_namespaces = executor.translation_unit_namespaces
 
         fundamental_types_namespace = global_namespace.GetChild(_FUNDAMENTAL_TYPES_NAMESPACE_NAME)
         assert not isinstance(fundamental_types_namespace, list)
@@ -330,7 +331,7 @@ def ResolveExpressionTypes(
         # Pass 2
         executor = PassTwoVisitor.Executor(
             mini_language_configuration_values,
-            global_namespace,
+            translation_unit_namespaces,
             fundamental_types_namespace,
         )
 

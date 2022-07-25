@@ -104,7 +104,10 @@ class PassOneVisitor(ParserInfoVisitorHelper):
         ):
             self._mini_language_configuration_values    = mini_language_configuration_values
 
-            self._global_namespace          = Namespace(None, None)
+            self._is_complete               = False
+
+            self._global_namespace                                                                  = Namespace(None)
+            self._translation_unit_namespaces: Optional[Dict[Tuple[str, str], ParsedNamespace]]     = None
 
             self._execute_results_lock      = threading.Lock()
             self._execute_results: Dict[
@@ -115,7 +118,14 @@ class PassOneVisitor(ParserInfoVisitorHelper):
         # ----------------------------------------------------------------------
         @property
         def global_namespace(self) -> Namespace:
+            assert self._is_complete
             return self._global_namespace
+
+        @property
+        def translation_unit_namespaces(self) -> Dict[Tuple[str, str], ParsedNamespace]:
+            assert self._is_complete
+            assert self._translation_unit_namespaces
+            return self._translation_unit_namespaces
 
         # ----------------------------------------------------------------------
         def GenerateFuncs(self) -> Generator[
@@ -135,10 +145,17 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             None,
             None,
         ]:
-            yield True, self._ExecuteParallel
+            yield True, self._ExecuteVisitation
 
             # Create a complete namespace
+            translation_unit_namespaces: Dict[Tuple[str, str], ParsedNamespace] = {}
+
             for translation_unit, execute_result in self._execute_results.items():
+                # Add this namespace to the collection of translation unit namespaces
+                assert isinstance(execute_result.namespace, ParsedNamespace), execute_result.namespace
+                translation_unit_namespaces[translation_unit] = execute_result.namespace
+
+                # Add this namespace to the global namespaces hierarchy
                 workspace_name, relative_path = translation_unit
 
                 namespace = self._global_namespace.GetOrAddChild(workspace_name)
@@ -182,6 +199,9 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             ]:
                 yield False, lambda names, root: self._ExecuteSequential(funcs_attribute, names, root)  # pylint: disable=cell-var-from-loop
 
+            self._translation_unit_namespaces = translation_unit_namespaces
+            self._is_complete = True
+
         # ----------------------------------------------------------------------
         # |  Private Types
         @dataclass(frozen=True)
@@ -192,7 +212,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
 
         # ----------------------------------------------------------------------
         # |  Private Methods
-        def _ExecuteParallel(
+        def _ExecuteVisitation(
             self,
             translation_unit: Tuple[str, str],
             root: RootStatementParserInfo,
@@ -307,15 +327,9 @@ class PassOneVisitor(ParserInfoVisitorHelper):
                         scope_flag = parent_scope_flag
 
                     try:
-                        new_namespace = ParsedNamespace(
-                            parser_info,
-                            self._global_namespace if not self._namespace_stack else self._namespace_stack[-1],
-                            scope_flag,
-                        )
+                        new_namespace = ParsedNamespace(parser_info, scope_flag)
 
                         self._AddNamespaceItem(new_namespace)
-
-                        parser_info.InitNamespace(new_namespace)
 
                     except ErrorException as ex:
                         self._errors += ex.errors
@@ -392,9 +406,11 @@ class PassOneVisitor(ParserInfoVisitorHelper):
             for clause_namespace_item in clause_namespace.EnumChildren():
                 assert isinstance(clause_namespace_item, ParsedNamespace), clause_namespace_item
                 assert isinstance(clause_namespace_item.parser_info, NamedTrait), clause_namespace_item.parser_info
-                assert namespace.GetChild(clause_namespace_item.parser_info.name) is None
 
-                namespace.AddChild(clause_namespace_item)
+                assert namespace.GetChild(clause_namespace_item.parser_info.name) is None
+                namespace.MoveChild(clause_namespace_item)
+
+            namespace.RemoveChild(clause_namespace)
 
     # ----------------------------------------------------------------------
     @contextmanager
@@ -568,7 +584,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
         assert isinstance(imported_item_namespace, ParsedNamespace), imported_item_namespace
 
         # ----------------------------------------------------------------------
-        def ResolveNamespaceItem(
+        def PopulateNamespaceItem(
             item: ParsedNamespace,
             parent: ParsedNamespace,
         ) -> ParsedNamespace:
@@ -595,7 +611,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
                     ),
                 )
 
-            imported_namespace_item = ResolveNamespaceItem(imported_item_namespace, parent_namespace)
+            imported_namespace_item = PopulateNamespaceItem(imported_item_namespace, parent_namespace)
 
         elif import_parser_info.import_type == ImportType.source_is_directory:
             # If here, we are importing all types from a module
@@ -603,11 +619,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
 
             child_namespace = ParsedNamespace(
                 module_namespace.parser_info,
-                # This value isn't correct, but it will be updated when this
-                # namespace replaces the placeholder namespace in the code below.
-                parent_namespace,
                 placeholder_namespace.scope_flag,
-                placeholder_namespace.ordered_id,
             )
 
             for module_item_namespace in module_namespace.EnumChildren():
@@ -618,7 +630,7 @@ class PassOneVisitor(ParserInfoVisitorHelper):
                         # TODO: Internal
                     )
                 ):
-                    child_namespace.AddChild(ResolveNamespaceItem(module_item_namespace, module_namespace))
+                    child_namespace.AddChild(PopulateNamespaceItem(module_item_namespace, module_namespace))
 
             if not child_namespace.HasChildren():
                 raise ErrorException(
@@ -635,7 +647,6 @@ class PassOneVisitor(ParserInfoVisitorHelper):
 
         new_namespace = ImportNamespace(
             import_parser_info,
-            parent_namespace,
             placeholder_namespace.scope_flag,
             imported_namespace_item,
         )

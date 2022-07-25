@@ -45,10 +45,8 @@ with InitRelativeImports():
 
     from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
-    from ..Common.TemplateParametersParserInfo import ResolvedTemplateArguments
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
-    from ..EntityResolver import EntityResolver
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
     from ..Traits.NamedTrait import NamedTrait
@@ -194,11 +192,3 @@ class TypeAliasStatementParserInfo(
 
         if self.constraints:
             yield "constraints", self.constraints  # type: ignore
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _CreateConcreteType(
-        self,
-        entity_resolver: EntityResolver,
-    ) -> TypeAliasType:
-        return TypeAliasType(self, entity_resolver.ResolveType(self.type))

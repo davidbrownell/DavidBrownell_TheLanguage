@@ -33,11 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TemplateArgumentsParserInfo import TemplateArgumentsParserInfo, TemplateArgumentParserInfo
-
     from ..Common.VisibilityModifier import VisibilityModifier
-
-    from ..EntityResolver import EntityResolver
 
     from ..Expressions.ExpressionParserInfo import (
         ExpressionParserInfo,
@@ -49,8 +45,6 @@ with InitRelativeImports():
     from ..Expressions.Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
     from ..Traits.NamedTrait import NamedTrait
-
-    from ..Types import Type
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -166,14 +160,6 @@ class TemplateTypeParameterParserInfo(
     @Interface.override
     def IsNameOrdered(*args, **kwargs) -> bool:  # pylint: disable=unused-argument
         return True
-
-    # ----------------------------------------------------------------------
-    def Resolve(
-        self,
-        template_arguments: Any,
-    ) -> None:
-        # Nothing to do here
-        pass
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -310,35 +296,6 @@ class TemplateDecoratorParameterParserInfo(ParserInfo):
 
         if self.default_value is not None:
             yield "default_value", self.default_value  # type: ignore
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ResolvedTemplateArguments(object):
-    # ----------------------------------------------------------------------
-    types: List[
-        Tuple[
-            TemplateTypeParameterParserInfo,
-            Union["Type", List["Type"]],
-        ],
-    ]
-
-    decorators: List[
-        Tuple[
-            TemplateDecoratorParameterParserInfo,
-            MiniLanguageHelpers.MiniLanguageExpression.EvalResult,
-        ],
-    ]
-
-    cache_key: Tuple[Any, ...]              = field(init=False)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        # BugBug: Types with cache_key
-
-        cache_key = tuple(decorator[1].value for decorator in self.decorators)
-
-        object.__setattr__(self, "cache_key", cache_key)
 
 
 # ----------------------------------------------------------------------
@@ -493,100 +450,6 @@ class TemplateParametersParserInfo(ParserInfo):
                 )
 
             object.__setattr__(self, destination_attribute_name, call_helpers_parameters)
-
-    # ----------------------------------------------------------------------
-    def MatchCall(
-        self,
-        destination: str,
-        destination_region: TranslationUnitRegion,
-        invocation_region: TranslationUnitRegion,
-        template_arguments: Optional[TemplateArgumentsParserInfo],
-        entity_resolver: EntityResolver,
-    ) -> ResolvedTemplateArguments:
-        if template_arguments is None:
-            args = []
-            kwargs = {}
-        else:
-            args = template_arguments.call_helpers_args
-            kwargs = template_arguments.call_helpers_kwargs
-
-        argument_map = CallHelpers.CreateArgumentMap(
-            destination,
-            destination_region,
-            invocation_region,
-            self.call_helpers_positional,
-            self.call_helpers_any,
-            self.call_helpers_keyword,
-            args,
-            kwargs,
-        )
-
-        # If here, we know that the arguments match up in terms of number, defaults, names, etc.
-        # Match types as necessary and generate the results.
-        types: List[
-            Tuple[
-                TemplateTypeParameterParserInfo,
-                Union[Type, List[Type]]
-            ]
-        ] = []
-        decorators: List[Tuple[TemplateDecoratorParameterParserInfo, MiniLanguageHelpers.MiniLanguageExpression.EvalResult]] = []
-        errors: List[Error] = []
-
-        for parameter_parser_info, argument_parser_info_value in argument_map.values():
-            argument_parser_info: Optional[ExpressionParserInfo] = None
-
-            if argument_parser_info_value is not None:
-                assert isinstance(argument_parser_info_value, TemplateArgumentParserInfo), argument_parser_info_value
-                argument_parser_info = argument_parser_info_value.type_or_expression  # type: ignore
-
-            if isinstance(parameter_parser_info, TemplateTypeParameterParserInfo):
-                if argument_parser_info is None:
-                    argument_parser_info = parameter_parser_info.default_type
-
-                assert argument_parser_info is not None
-
-                if isinstance(argument_parser_info, list):
-                    argument_result_or_results = [
-                        entity_resolver.ResolveType(argument)
-                        for argument in argument_parser_info
-                    ]
-                else:
-                    argument_result_or_results = entity_resolver.ResolveType(argument_parser_info)
-
-                types.append((parameter_parser_info, argument_result_or_results))
-
-            elif isinstance(parameter_parser_info, TemplateDecoratorParameterParserInfo):
-                if argument_parser_info is None:
-                    assert parameter_parser_info.default_value is not None
-                    argument_parser_info = parameter_parser_info.default_value
-
-                assert argument_parser_info is not None
-                assert not isinstance(argument_parser_info, list), argument_parser_info
-
-                resolved_type = entity_resolver.ResolveMiniLanguageType(parameter_parser_info.type)
-                resolved_value = entity_resolver.ResolveMiniLanguageExpression(argument_parser_info)
-
-                if not resolved_type.IsSupportedValue(resolved_value.value):
-                    errors.append(
-                        InvalidTypeError.Create(
-                            region=argument_parser_info.regions__.self__,
-                            expected_type=resolved_type.name,
-                            expected_region=parameter_parser_info.type.regions__.self__,
-                            actual_type=resolved_value.type.name,
-                        ),
-                    )
-
-                    continue
-
-                decorators.append((parameter_parser_info, resolved_value))
-
-            else:
-                assert False, parameter_parser_info  # pragma: no cover
-
-        if errors:
-            raise ErrorException(*errors)
-
-        return ResolvedTemplateArguments(types, decorators)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

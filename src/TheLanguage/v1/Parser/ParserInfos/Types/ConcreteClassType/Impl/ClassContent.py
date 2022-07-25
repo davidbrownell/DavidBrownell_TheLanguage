@@ -82,7 +82,7 @@ class ClassContent(Generic[ClassContentT]):
         return cls(local, augmented, inherited)
 
     # ----------------------------------------------------------------------
-    def EnumDependencies(self) -> Generator[Dependency, None, None]:
+    def EnumContent(self) -> Generator[Dependency, None, None]:
         yield from itertools.chain(self.local, self.augmented, self.inherited)
 
     # ----------------------------------------------------------------------

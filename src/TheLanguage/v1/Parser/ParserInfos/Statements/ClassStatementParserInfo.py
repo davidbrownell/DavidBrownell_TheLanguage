@@ -58,10 +58,7 @@ with InitRelativeImports():
     from ..Common.MethodHierarchyModifier import MethodHierarchyModifier
     from ..Common.MutabilityModifier import MutabilityModifier
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
-    from ..Common.TemplateParametersParserInfo import ResolvedTemplateArguments
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
-
-    from ..EntityResolver import EntityResolver
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
@@ -379,14 +376,6 @@ class ClassStatementParserInfo(
 
         if self.uses:
             yield "uses", self.uses  # type: ignore
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _CreateConcreteType(
-        self,
-        entity_resolver: EntityResolver,
-    ) -> ClassType:
-        return ClassType(self, ConcreteClass.Create(self, entity_resolver))
 
     # ----------------------------------------------------------------------
     @Interface.override

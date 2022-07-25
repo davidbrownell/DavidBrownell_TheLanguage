@@ -15,6 +15,7 @@
 # ----------------------------------------------------------------------
 """Contains functionality that helps when extracting MiniLanguage information"""
 
+import itertools
 import os
 
 from typing import (
@@ -22,6 +23,7 @@ from typing import (
     Callable,
     cast,
     Dict,
+    Iterable,
     List,
     Optional,
     Set,
@@ -172,7 +174,7 @@ TypeCheckCallbackType                       = Callable[
 # ----------------------------------------------------------------------
 def EvalExpression(
     parser_info: ExpressionParserInfo,
-    compile_time_info_items: List[Dict[str, CompileTimeInfo]],
+    compile_time_info_items: Iterable[Dict[str, CompileTimeInfo]],
     type_check_callback: Optional[TypeCheckCallbackType]=None,
 ) -> MiniLanguageExpression.EvalResult:
     helper = _Helper.Create(compile_time_info_items, type_check_callback)
@@ -185,7 +187,7 @@ def EvalExpression(
 # TODO: MiniLanguageType should include a region for better error support
 def EvalTypeExpression(
     parser_info: ExpressionParserInfo,
-    compile_time_info_items: List[Dict[str, CompileTimeInfo]],
+    compile_time_info_items: Iterable[Dict[str, CompileTimeInfo]],
     type_check_callback: Optional[TypeCheckCallbackType]=None,
 ) -> Union[
     MiniLanguageType,
@@ -204,12 +206,14 @@ class _Helper(object):
     @classmethod
     def Create(
         cls,
-        compile_time_info_items: List[Dict[str, CompileTimeInfo]],
+        compile_time_info_items: Iterable[Dict[str, CompileTimeInfo]],
         type_check_callback: Optional[TypeCheckCallbackType],
     ) -> "_Helper":
+        values_iter, types_iter = itertools.tee(compile_time_info_items)
+
         return cls(
-            cls._CreateLazyValuesDict(compile_time_info_items),
-            cls._CreateLazyTypesDict(compile_time_info_items),
+            cls._CreateLazyValuesDict(values_iter),
+            cls._CreateLazyTypesDict(types_iter),
             type_check_callback,
             set(),
         )

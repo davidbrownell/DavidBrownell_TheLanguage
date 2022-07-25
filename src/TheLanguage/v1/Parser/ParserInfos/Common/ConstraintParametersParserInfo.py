@@ -33,12 +33,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo, ConstraintArgumentParserInfo
-
-    from ..EntityResolver import EntityResolver
-
-    from ..Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
-
     from ..Expressions.ExpressionParserInfo import (
         ExpressionParserInfo,
         ParserInfo,
@@ -48,15 +42,10 @@ with InitRelativeImports():
 
     from ..Expressions.Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
-    from ..Statements.StatementParserInfo import StatementParserInfo
-
     from ...Common import CallHelpers
     from ...Common import MiniLanguageHelpers
 
     from ...Error import CreateError, Error, ErrorException
-
-    if TYPE_CHECKING:
-        from .TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
 
 
 # ----------------------------------------------------------------------
@@ -204,18 +193,6 @@ class ConstraintParameterParserInfo(ParserInfo):
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ResolvedConstraintArguments(object):
-    # ----------------------------------------------------------------------
-    decorators: List[
-        Tuple[
-            ConstraintParameterParserInfo,
-            MiniLanguageHelpers.MiniLanguageExpression.EvalResult,
-        ],
-    ]
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
 class ConstraintParametersParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
@@ -224,7 +201,7 @@ class ConstraintParametersParserInfo(ParserInfo):
     any: Optional[List[ConstraintParameterParserInfo]]
     keyword: Optional[List[ConstraintParameterParserInfo]]
 
-    default_initializable: bool             = field(init=False, default=False)
+    is_default_initializable: bool          = field(init=False, default=False)
 
     call_helpers_positional: List[CallHelpers.ParameterInfo]                = field(init=False, default_factory=list)
     call_helpers_any: List[CallHelpers.ParameterInfo]                       = field(init=False, default_factory=list)
@@ -253,12 +230,12 @@ class ConstraintParametersParserInfo(ParserInfo):
             **{
                 **kwargs,
                 "regionless_attributes": [
-                    "default_initializable",
+                    "is_default_initializable",
                     "call_helpers_positional",
                     "call_helpers_any",
                     "call_helpers_keyword",
                 ],
-                "default_initializable": None,
+                "is_default_initializable": None,
                 "call_helpers_positional": None,
                 "call_helpers_any": None,
                 "call_helpers_keyword": None,
@@ -267,7 +244,7 @@ class ConstraintParametersParserInfo(ParserInfo):
 
         assert self.positional or self.any or self.keyword
 
-        default_initializable = True
+        is_default_initializable = True
 
         for constraint in itertools.chain(
             (self.positional or []),
@@ -275,10 +252,10 @@ class ConstraintParametersParserInfo(ParserInfo):
             (self.keyword or []),
         ):
             if constraint.default_value is None:
-                default_initializable = False
+                is_default_initializable = False
                 break
 
-        object.__setattr__(self, "default_initializable", default_initializable)
+        object.__setattr__(self, "is_default_initializable", is_default_initializable)
 
         # Validate
         errors: List[Error] = []
@@ -307,7 +284,6 @@ class ConstraintParametersParserInfo(ParserInfo):
             raise ErrorException(*errors)
 
         # Initialize the call helpers info
-        # Initialize the call helpers info
         for source_parameters, destination_attribute_name in [
             (self.positional, "call_helpers_positional"),
             (self.any, "call_helpers_any"),
@@ -329,80 +305,15 @@ class ConstraintParametersParserInfo(ParserInfo):
             object.__setattr__(self, destination_attribute_name, call_helpers_parameters)
 
     # ----------------------------------------------------------------------
-    def MatchCall(
-        self,
-        destination: str,
-        destination_region: TranslationUnitRegion,
-        invocation_region: TranslationUnitRegion,
-        constraint_arguments: Optional["ConstraintArgumentsParserInfo"],
-        entity_resolver: "EntityResolver",
-    ) -> ResolvedConstraintArguments:
-        if constraint_arguments is None:
-            args = []
-            kwargs = {}
-        else:
-            args = constraint_arguments.call_helpers_args
-            kwargs = constraint_arguments.call_helpers_kwargs
-
-        argument_map = CallHelpers.CreateArgumentMap(
-            destination,
-            destination_region,
-            invocation_region,
-            self.call_helpers_positional,
-            self.call_helpers_any,
-            self.call_helpers_keyword,
-            args,
-            kwargs,
-        )
-
-        # If here, we know that the arguments match up in terms of number, defaults, names, etc.
-        # Match types as necessary and generate results.
-        decorators: List[Tuple[ConstraintParameterParserInfo, MiniLanguageHelpers.MiniLanguageExpression.EvalResult]] = []
-        errors: List[Error] = []
-
-        for parameter_parser_info, argument_parser_info_value in argument_map.values():
-            argument_parser_info: Optional[ExpressionParserInfo] = None
-
-            if argument_parser_info_value is not None:
-                assert isinstance(argument_parser_info_value, ConstraintArgumentParserInfo), argument_parser_info_value
-                argument_parser_info = argument_parser_info_value.expression
-
-            if argument_parser_info is None:
-                assert parameter_parser_info.default_value is not None
-                argument_parser_info = parameter_parser_info.default_value
-
-            assert argument_parser_info is not None
-
-            resolved_type = entity_resolver.ResolveMiniLanguageType(parameter_parser_info.type)
-            resolved_value = entity_resolver.ResolveMiniLanguageExpression(argument_parser_info)
-
-            if not resolved_type.IsSupportedValue(resolved_value.value):
-                errors.append(
-                    InvalidTypeError.Create(
-                        region=argument_parser_info.regions__.self__,
-                        expected_type=resolved_type.name,
-                        expected_region=parameter_parser_info.type.regions__.self__,
-                        actual_type=resolved_value.type.name,
-                    ),
-                )
-
-                continue
-
-            decorators.append((parameter_parser_info, resolved_value))
-
-        if errors:
-            raise ErrorException(*errors)
-
-        return ResolvedConstraintArguments(decorators)
-
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         if self.positional:
             yield "positional", self.positional  # type: ignore
+
         if self.any:
             yield "any", self.any  # type: ignore
+
         if self.keyword:
             yield "keyword", self.keyword  # type: ignore

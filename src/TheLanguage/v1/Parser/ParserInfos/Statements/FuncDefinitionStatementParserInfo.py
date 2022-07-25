@@ -62,15 +62,12 @@ with InitRelativeImports():
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
 
     from ..Common.TemplateParametersParserInfo import (  # pylint: disable=unused-import
-        ResolvedTemplateArguments,
         TemplateDecoratorParameterParserInfo,           # Convenience import
         TemplateParametersParserInfo,
         TemplateTypeParameterParserInfo,                # Convenience import
     )
 
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
-
-    from ..EntityResolver import EntityResolver
 
     from ..Expressions.VariableExpressionParserInfo import (
         ExpressionParserInfo,
@@ -536,14 +533,6 @@ class FuncDefinitionStatementParserInfo(
 
         if not isinstance(self.parameters, bool):
             yield "parameters", self.parameters  # type: ignore
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _CreateConcreteType(
-        self,
-        entity_resolver: EntityResolver,
-    ) -> FuncDefinitionType:
-        return FuncDefinitionType(self, ConcreteFuncDefinition.Create(self, entity_resolver))
 
     # ----------------------------------------------------------------------
     @Interface.override
