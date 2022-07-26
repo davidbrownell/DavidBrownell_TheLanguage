@@ -19,7 +19,7 @@ import os
 
 from contextlib import ExitStack
 from enum import auto, Enum
-from typing import Generator, TYPE_CHECKING
+from typing import Generator, Optional, TYPE_CHECKING
 
 from dataclasses import dataclass, field
 
@@ -34,7 +34,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .GenericType import GenericType
+    from ..ParserInfo import ParserInfo
 
     from ..Traits.NamedTrait import NamedTrait
 
@@ -52,7 +52,7 @@ CircularDependencyError                     = CreateError(
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, eq=False)
+@dataclass(frozen=True)
 class ConcreteType(Interface.Interface):
     """Type with a specific set of template parameters (if required)"""
 
@@ -77,7 +77,7 @@ class ConcreteType(Interface.Interface):
         Finalized                           = auto()
 
     # ----------------------------------------------------------------------
-    generic_type: GenericType
+    parser_info: ParserInfo
 
     state: State                            = field(init=False, default_factory=lambda: ConcreteType.State.Created)  # pylint: disable=undefined-variable
 
@@ -93,16 +93,16 @@ class ConcreteType(Interface.Interface):
 
     # ----------------------------------------------------------------------
     def FinalizePass1(self) -> None:
-        if self.state.value > ConcreteType.State.FinalizingPass1:  # pylint: disable=no-member
+        if self.state.value > ConcreteType.State.FinalizingPass1.value:  # pylint: disable=no-member
             return
 
         if self.state == ConcreteType.State.FinalizingPass1:
-            assert isinstance(self.generic_type.definition_parser_info, NamedTrait), self.generic_type.definition_parser_info
+            assert isinstance(self.parser_info, NamedTrait), self.parser_info
 
             raise ErrorException(
                 CircularDependencyError.Create(
-                    region=self.generic_type.definition_parser_info.regions__.self__,
-                    name=self.generic_type.definition_parser_info.name,
+                    region=self.parser_info.regions__.self__,
+                    name=self.parser_info.name,
                 ),
             )
 
@@ -128,7 +128,7 @@ class ConcreteType(Interface.Interface):
 
     # ----------------------------------------------------------------------
     def FinalizePass2(self) -> None:
-        if self.state.value >= ConcreteType.State.FinalizingPass2:  # pylint: disable=no-member
+        if self.state.value >= ConcreteType.State.FinalizingPass2.value:  # pylint: disable=no-member
             return
 
         object.__setattr__(self, "_state", ConcreteType.State.FinalizingPass2)
@@ -156,6 +156,9 @@ class ConcreteType(Interface.Interface):
 
     # ----------------------------------------------------------------------
     def CreateConstrainedType(self) -> "ConstrainedType":
+        if self.state != ConcreteType.State.Finalized:
+            BugBug = 10
+
         assert self.state == ConcreteType.State.Finalized, self.state
         return self._CreateConstrainedTypeImpl()
 

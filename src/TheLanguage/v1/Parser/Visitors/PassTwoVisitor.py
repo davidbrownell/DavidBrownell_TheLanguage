@@ -33,7 +33,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Namespaces import ImportNamespace, Namespace, ParsedNamespace
-    from .TypeResolvers import ConcreteTypeResolver
+    from .TypeResolvers.Impl.Resolvers.RootTypeResolver import RootTypeResolver
 
     from ..Error import Error, ErrorException
 
@@ -67,23 +67,23 @@ class PassTwoVisitor(object):
                 fundamental_types_namespace = fundamental_types_namespace.Flatten()
 
             # Create a concrete resolver for each translation unit
-            translation_unit_resolvers: Dict[Tuple[str, str], ConcreteTypeResolver] = {}
+            root_resolvers: Dict[Tuple[str, str], RootTypeResolver] = {}
 
             for translation_unit, namespace in translation_unit_namespaces.items():
-                resolver = ConcreteTypeResolver(
+                resolver = RootTypeResolver(
                     namespace,
                     fundamental_types_namespace,
                     [mini_language_configuration_values, ],
                     None,
                 )
 
-                translation_unit_resolvers[translation_unit] = resolver
+                root_resolvers[translation_unit] = resolver
 
-            for resolver in translation_unit_resolvers.values():
-                resolver.Finalize(translation_unit_resolvers)
+            for resolver in root_resolvers.values():
+                resolver.Finalize(root_resolvers)
 
-            # Add generic children to the resolvers now that they have been finalized
-            for translation_unit_resolver in translation_unit_resolvers.values():
+            # Add children to the resolvers now that they have been finalized
+            for translation_unit_resolver in root_resolvers.values():
                 for child_namespace_or_namespaces in translation_unit_resolver.namespace.EnumChildren():
                     if isinstance(child_namespace_or_namespaces, list):
                         child_namespaces = child_namespace_or_namespaces
@@ -95,10 +95,10 @@ class PassTwoVisitor(object):
                             continue
 
                         assert isinstance(child_namespace, ParsedNamespace), child_namespace
-                        translation_unit_resolver.GetOrCreateChild(child_namespace)
+                        translation_unit_resolver.GetOrCreateNestedResolver(child_namespace)
 
             self._translation_unit_namespaces           = translation_unit_namespaces
-            self._translation_unit_resolvers            = translation_unit_resolvers
+            self._root_resolvers                        = root_resolvers
 
             self._execute_results_lock      = threading.Lock()
             self._execute_results: Dict[
@@ -142,7 +142,7 @@ class PassTwoVisitor(object):
             errors: List[Error] = []
 
             translation_unit_namespace = self._translation_unit_namespaces[translation_unit]
-            translation_unit_resolver = self._translation_unit_resolvers[translation_unit]
+            root_resolver = self._root_resolvers[translation_unit]
 
             for namespace_or_namespaces in translation_unit_namespace.EnumChildren():
                 if isinstance(namespace_or_namespaces, list):
@@ -156,10 +156,10 @@ class PassTwoVisitor(object):
                     if isinstance(namespace, ImportNamespace):
                         continue
 
-                    resolver = translation_unit_resolver.GetOrCreateChild(namespace)[1]
+                    resolver = root_resolver.GetOrCreateNestedResolver(namespace)
 
                     try:
-                        resolver.DefaultInitializationValidation()
+                        resolver.ValidateDefaultInitialization()
                     except ErrorException as ex:
                         errors += ex.errors
 

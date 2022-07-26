@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleTypes.py
+# |  ClassType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-07-22 14:01:53
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains tuple-related types"""
+"""Contains class-related types"""
 
 import os
 
-from typing import List
+from typing import Optional
 
 from dataclasses import dataclass
 
@@ -32,78 +32,68 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .....Error import Error, ErrorException
-
-    from .....ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
+    from ....Namespaces import ParsedNamespace
 
     from .....ParserInfos.Types.ConcreteType import ConcreteType
     from .....ParserInfos.Types.ConstrainedType import ConstrainedType
+    from .....ParserInfos.Types.GenericType import GenericType
+
+    from .....ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
+    from .....ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from .....ParserInfos.Statements.BugBug___ConcreteClass import ConcreteClass, TypeResolver
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ConcreteTupleType(ConcreteType):
+@dataclass(frozen=True, eq=False)
+class GenericClassType(GenericType):
     # ----------------------------------------------------------------------
-    concrete_types: List[ConcreteType]
+    _namespace: ParsedNamespace
+    _type_resolver: TypeResolver
+
+    # ----------------------------------------------------------------------
+    def __post_init__(self):
+        assert isinstance(self._namespace.parser_info, ClassStatementParserInfo), self._namespace.parser_info
 
     # ----------------------------------------------------------------------
     @property
-    def parser_info(self) -> TupleExpressionParserInfo:
-        result = super(ConcreteTupleType, self).parser_info
-        assert isinstance(result, TupleExpressionParserInfo), result
+    def parser_info(self) -> FuncOrTypeExpressionParserInfo:
+        result = super(GenericClassType, self).parser_info
+        assert isinstance(result, FuncOrTypeExpressionParserInfo), result
 
         return result
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def CreateConcreteType(self) -> "ConcreteClassType":
+        assert isinstance(self._namespace.parser_info, ClassStatementParserInfo)
+        return ConcreteClassType(self, ConcreteClass.Create(self._namespace.parser_info, self._type_resolver))
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, eq=False)
+class ConcreteClassType(ConcreteType):
+    # ----------------------------------------------------------------------
+    concrete_class: ConcreteClass
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass1Impl(self) -> None:
-        errors: List[Error] = []
-
-        for concrete_type in self.concrete_types:
-            try:
-                concrete_type.FinalizePass1()
-            except ErrorException as ex:
-                errors += ex.errors
-
-        if errors:
-            raise ErrorException(*errors)
+        self.concrete_class.FinalizePass1(self)
 
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass2Impl(self) -> None:
-        errors: List[Error] = []
-
-        for concrete_type in self.concrete_types:
-            try:
-                concrete_type.FinalizePass2()
-            except ErrorException as ex:
-                errors += ex.errors
-
-        if errors:
-            raise ErrorException(*errors)
+        self.concrete_class.FinalizePass2(self)
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConstrainedTypeImpl(self) -> "ConstrainedTupleType":
-        constrained_types: List[ConstrainedType] = []
-        errors: List[Error] = []
-
-        for concrete_type in self.concrete_types:
-            try:
-                constrained_types.append(concrete_type.CreateConstrainedType())
-            except ErrorException as ex:
-                errors += ex.errors
-
-        if errors:
-            raise ErrorException(*errors)
-
-        return ConstrainedTupleType(self, constrained_types)
+    def _CreateConstrainedTypeImpl(self) -> "ConstrainedClassType":
+        return ConstrainedClassType(self)
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ConstrainedTupleType(ConstrainedType):
-    # ----------------------------------------------------------------------
-    constrained_types: List[ConstrainedType]
+@dataclass(frozen=True, eq=False)
+class ConstrainedClassType(ConstrainedType):
+    pass

@@ -35,7 +35,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ConcreteFuncDefinition import ConcreteFuncDefinition
+    # BugBug from .ConcreteFuncDefinition import ConcreteFuncDefinition
 
     from .StatementParserInfo import (
         ParserInfo,
@@ -74,7 +74,7 @@ with InitRelativeImports():
         VariableExpressionParserInfo,
     )
 
-    from ..Types import FuncDefinitionType
+    # BugBug from ..Types import FuncDefinitionType
 
     from ...Error import CreateError, Error, ErrorException
 

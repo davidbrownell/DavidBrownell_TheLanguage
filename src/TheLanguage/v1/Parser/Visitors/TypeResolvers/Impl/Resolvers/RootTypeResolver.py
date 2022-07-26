@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoneTypes.py
+# |  RootTypeResolver.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-07-22 14:01:53
+# |      2022-07-25 09:48:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains None-related types"""
+"""Contains the RootTypeResolver"""
 
 import os
 
-from typing import Optional
-
-from dataclasses import dataclass
+from typing import Dict, List
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,42 +30,30 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .....ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
+    from ...StatementTypeResolver import CompileTimeInfo, StatementTypeResolver
 
     from .....ParserInfos.Types.ConcreteType import ConcreteType
-    from .....ParserInfos.Types.ConstrainedType import ConstrainedType
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ConcreteNoneType(ConcreteType):
-    # ----------------------------------------------------------------------
-    @property
-    def parser_info(self) -> NoneExpressionParserInfo:
-        result = super(ConcreteNoneType, self).parser_info
-        assert isinstance(result, NoneExpressionParserInfo)
-
-        return result
-
+class RootTypeResolver(StatementTypeResolver):
     # ----------------------------------------------------------------------
     @Interface.override
-    def _FinalizePass1Impl(self) -> None:
-        # Nothing to do here
-        pass
+    def Clone(
+        self,
+        compile_time_info: List[Dict[str, CompileTimeInfo]],
+    ) -> "RootTypeResolver":
+        return RootTypeResolver(
+            self.namespace,
+            self.fundamental_namespace,
+            compile_time_info,
+            self.root_resolvers,
+        )
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def _FinalizePass2Impl(self) -> None:
-        # Nothing to do here
-        pass
-
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
-    def _CreateConstrainedTypeImpl(self) -> "ConstrainedNoneType":
-        return ConstrainedNoneType(self)
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ConstrainedNoneType(ConstrainedType):
-    pass
+    def _CreateConcreteTypeImpl(*args, **kwargs) -> ConcreteType:
+        raise Exception("This method should never be invoked on RootTypeResolver types")

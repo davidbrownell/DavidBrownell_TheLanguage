@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ClassType.py
+# |  NoneTypes.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-07-22 14:01:53
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains class-related types"""
+"""Contains None-related types"""
 
 import os
-
-from typing import Optional
 
 from dataclasses import dataclass
 
@@ -32,68 +30,60 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ....Namespaces import ParsedNamespace
+    from .....ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
 
     from .....ParserInfos.Types.ConcreteType import ConcreteType
     from .....ParserInfos.Types.ConstrainedType import ConstrainedType
     from .....ParserInfos.Types.GenericType import GenericType
 
-    from .....ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
-    from .....ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
-    from .....ParserInfos.Statements.ConcreteClass import ConcreteClass, TypeResolver
-
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, eq=False)
-class GenericClassType(GenericType):
+class GenericNoneType(GenericType):
     # ----------------------------------------------------------------------
-    _namespace: ParsedNamespace
-    _type_resolver: TypeResolver
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self):
-        assert isinstance(self._namespace.parser_info, ClassStatementParserInfo), self._namespace.parser_info
+    @classmethod
+    def Create(
+        cls,
+        parser_info: NoneExpressionParserInfo,
+    ):
+        return cls(parser_info)
 
     # ----------------------------------------------------------------------
     @property
-    def parser_info(self) -> FuncOrTypeExpressionParserInfo:
-        result = super(GenericClassType, self).parser_info
-        assert isinstance(result, FuncOrTypeExpressionParserInfo), result
+    def parser_info(self) -> NoneExpressionParserInfo:
+        result = super(GenericNoneType, self).parser_info
+        assert isinstance(result, NoneExpressionParserInfo), result
 
         return result
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def CreateConcreteType(self) -> "ConcreteClassType":
-        assert isinstance(self._namespace.parser_info, ClassStatementParserInfo)
-        return ConcreteClassType(self, ConcreteClass.Create(self._namespace.parser_info, self._type_resolver))
+    def CreateConcreteType(self) -> "ConcreteNoneType":
+        return ConcreteNoneType(self)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, eq=False)
-class ConcreteClassType(ConcreteType):
-    # ----------------------------------------------------------------------
-    concrete_class: ConcreteClass
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
+class ConcreteNoneType(ConcreteType):
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass1Impl(self) -> None:
-        self.concrete_class.FinalizePass1(self)
+        # Nothing to do here
+        pass
 
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass2Impl(self) -> None:
-        self.concrete_class.FinalizePass2(self)
+        # Nothing to do here
+        pass
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConstrainedTypeImpl(self) -> "ConstrainedClassType":
-        return ConstrainedClassType(self)
+    def _CreateConstrainedTypeImpl(self) -> "ConstrainedNoneType":
+        return ConstrainedNoneType(self)
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, eq=False)
-class ConstrainedClassType(ConstrainedType):
+class ConstrainedNoneType(ConstrainedType):
     pass

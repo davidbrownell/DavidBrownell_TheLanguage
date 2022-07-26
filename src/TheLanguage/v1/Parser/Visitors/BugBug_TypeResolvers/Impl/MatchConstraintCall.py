@@ -49,7 +49,7 @@ with InitRelativeImports():
     from ....TranslationUnitRegion import TranslationUnitRegion
 
     if TYPE_CHECKING:
-        from .. import TypeResolver  # pylint: disable=unused-import
+        from .. import TypeResolverBase  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -78,7 +78,7 @@ def Match(
     destination: str,
     destination_region: TranslationUnitRegion,
     invocation_region: TranslationUnitRegion,
-    type_resolver: "TypeResolver",
+    type_resolver: "TypeResolverBase",
 ) -> ResolvedArguments:
     if constraint_arguments is None:
         args = []

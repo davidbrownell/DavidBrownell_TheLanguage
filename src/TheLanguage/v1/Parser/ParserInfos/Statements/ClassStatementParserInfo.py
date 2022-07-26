@@ -36,7 +36,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ConcreteClass import ConcreteClass
+    #from .BugBug___ConcreteClass import ConcreteClass
 
     from .StatementParserInfo import (
         ParserInfo,
@@ -64,7 +64,7 @@ with InitRelativeImports():
     from ..Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
     from ..Traits.NamedTrait import NamedTrait
-    from ..Types import ClassType, Type
+    # BugBug from ..Types import ClassType, Type
 
     from ...Error import CreateError, Error, ErrorException
 

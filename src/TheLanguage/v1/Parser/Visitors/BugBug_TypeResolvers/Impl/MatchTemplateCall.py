@@ -47,12 +47,12 @@ with InitRelativeImports():
 
     from ....ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
 
-    from ....ParserInfos.Types.ConcreteType import ConcreteType
+    from ....ParserInfos.Types import Type
 
     from ....TranslationUnitRegion import TranslationUnitRegion
 
     if TYPE_CHECKING:
-        from ..TypeResolver import TypeResolver  # pylint: disable=unused-import
+        from .. import TypeResolverBase  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -61,7 +61,7 @@ class ResolvedArguments(object):
     types: List[
         Tuple[
             TemplateTypeParameterParserInfo,
-            Union[ConcreteType, List[ConcreteType]],
+            Union[Type, List[Type]],
         ],
     ]
 
@@ -93,7 +93,7 @@ def Match(
     destination: str,
     destination_region: TranslationUnitRegion,
     invocation_region: TranslationUnitRegion,
-    type_resolver: "TypeResolver",
+    type_resolver: "TypeResolverBase",
 ) -> ResolvedArguments:
     if template_arguments is None:
         args = []

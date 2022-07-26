@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import List
 
 from dataclasses import dataclass
 
@@ -38,48 +38,21 @@ with InitRelativeImports():
 
     from .....ParserInfos.Types.ConcreteType import ConcreteType
     from .....ParserInfos.Types.ConstrainedType import ConstrainedType
-    from .....ParserInfos.Types.GenericType import GenericType
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, eq=False)
-class GenericVariantType(GenericType):
+@dataclass(frozen=True)
+class ConcreteVariantType(ConcreteType):
     # ----------------------------------------------------------------------
-    generic_types: List[GenericType]
+    concrete_types: List[ConcreteType]
 
     # ----------------------------------------------------------------------
     @property
     def parser_info(self) -> VariantExpressionParserInfo:
-        result = super(GenericVariantType, self).parser_info
+        result = super(ConcreteVariantType, self).parser_info
         assert isinstance(result, VariantExpressionParserInfo), result
 
         return result
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def CreateConcreteType(
-        self,
-    ) -> "ConcreteVariantType":
-        concrete_types: List[ConcreteType] = []
-        errors: List[Error] = []
-
-        for generic_type in self.generic_types:
-            try:
-                concrete_types.append(generic_type.CreateConcreteType())
-            except ErrorException as ex:
-                errors += ex.errors
-
-        if errors:
-            raise ErrorException(*errors)
-
-        return ConcreteVariantType(self, concrete_types)
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, eq=False)
-class ConcreteVariantType(ConcreteType):
-    # ----------------------------------------------------------------------
-    concrete_types: List[ConcreteType]
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -132,7 +105,7 @@ class ConcreteVariantType(ConcreteType):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, eq=False)
+@dataclass(frozen=True)
 class ConstrainedVariantType(ConstrainedType):
     # ----------------------------------------------------------------------
     constrained_types: List[ConstrainedType]

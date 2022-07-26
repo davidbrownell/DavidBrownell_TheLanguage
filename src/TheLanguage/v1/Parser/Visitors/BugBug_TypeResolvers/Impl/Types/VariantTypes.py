@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  TupleTypes.py
+# |  VariantTypes.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-07-22 14:01:53
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains tuple-related types"""
+"""Contains variant-related types"""
 
 import os
 
-from typing import List
+from typing import List, Optional
 
 from dataclasses import dataclass
 
@@ -34,25 +34,52 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .....Error import Error, ErrorException
 
-    from .....ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
+    from .....ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
     from .....ParserInfos.Types.ConcreteType import ConcreteType
     from .....ParserInfos.Types.ConstrainedType import ConstrainedType
+    from .....ParserInfos.Types.GenericType import GenericType
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ConcreteTupleType(ConcreteType):
+@dataclass(frozen=True, eq=False)
+class GenericVariantType(GenericType):
     # ----------------------------------------------------------------------
-    concrete_types: List[ConcreteType]
+    generic_types: List[GenericType]
 
     # ----------------------------------------------------------------------
     @property
-    def parser_info(self) -> TupleExpressionParserInfo:
-        result = super(ConcreteTupleType, self).parser_info
-        assert isinstance(result, TupleExpressionParserInfo), result
+    def parser_info(self) -> VariantExpressionParserInfo:
+        result = super(GenericVariantType, self).parser_info
+        assert isinstance(result, VariantExpressionParserInfo), result
 
         return result
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def CreateConcreteType(
+        self,
+    ) -> "ConcreteVariantType":
+        concrete_types: List[ConcreteType] = []
+        errors: List[Error] = []
+
+        for generic_type in self.generic_types:
+            try:
+                concrete_types.append(generic_type.CreateConcreteType())
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
+
+        return ConcreteVariantType(self, concrete_types)
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, eq=False)
+class ConcreteVariantType(ConcreteType):
+    # ----------------------------------------------------------------------
+    concrete_types: List[ConcreteType]
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -86,7 +113,9 @@ class ConcreteTupleType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConstrainedTypeImpl(self) -> "ConstrainedTupleType":
+    def _CreateConstrainedTypeImpl(
+        self,
+    ) -> "ConstrainedVariantType":
         constrained_types: List[ConstrainedType] = []
         errors: List[Error] = []
 
@@ -99,11 +128,11 @@ class ConcreteTupleType(ConcreteType):
         if errors:
             raise ErrorException(*errors)
 
-        return ConstrainedTupleType(self, constrained_types)
+        return ConstrainedVariantType(self, constrained_types)
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ConstrainedTupleType(ConstrainedType):
+@dataclass(frozen=True, eq=False)
+class ConstrainedVariantType(ConstrainedType):
     # ----------------------------------------------------------------------
     constrained_types: List[ConstrainedType]

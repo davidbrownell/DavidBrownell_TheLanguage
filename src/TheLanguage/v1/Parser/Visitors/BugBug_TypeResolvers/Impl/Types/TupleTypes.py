@@ -38,21 +38,46 @@ with InitRelativeImports():
 
     from .....ParserInfos.Types.ConcreteType import ConcreteType
     from .....ParserInfos.Types.ConstrainedType import ConstrainedType
+    from .....ParserInfos.Types.GenericType import GenericType
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class ConcreteTupleType(ConcreteType):
+@dataclass(frozen=True, eq=False)
+class GenericTupleType(GenericType):
     # ----------------------------------------------------------------------
-    concrete_types: List[ConcreteType]
+    generic_types: List[GenericType]
 
     # ----------------------------------------------------------------------
     @property
     def parser_info(self) -> TupleExpressionParserInfo:
-        result = super(ConcreteTupleType, self).parser_info
+        result = super(GenericTupleType, self).parser_info
         assert isinstance(result, TupleExpressionParserInfo), result
 
         return result
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def CreateConcreteType(self) -> "ConcreteTupleType":
+        concrete_types: List[ConcreteType] = []
+        errors: List[Error] = []
+
+        for generic_type in self.generic_types:
+            try:
+                concrete_types.append(generic_type.CreateConcreteType())
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
+
+        return ConcreteTupleType(self, concrete_types)
+
+
+# ----------------------------------------------------------------------
+@dataclass(frozen=True, eq=False)
+class ConcreteTupleType(ConcreteType):
+    # ----------------------------------------------------------------------
+    concrete_types: List[ConcreteType]
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -103,7 +128,7 @@ class ConcreteTupleType(ConcreteType):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class ConstrainedTupleType(ConstrainedType):
     # ----------------------------------------------------------------------
     constrained_types: List[ConstrainedType]

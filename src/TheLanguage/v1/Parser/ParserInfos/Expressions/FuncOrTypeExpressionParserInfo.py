@@ -46,7 +46,7 @@ with InitRelativeImports():
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
 
     from ..Statements.StatementParserInfo import StatementParserInfo
-    from ..Types import Type
+    # BugBug from ..Types import Type
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -68,7 +68,7 @@ with InitRelativeImports():
     from ...MiniLanguage.Types.VariantType import VariantType               # pylint: disable=unused-import
 
     if TYPE_CHECKING:
-        from ..Common.ConstraintParametersParserInfo import ResolvedConstraintArguments  # pylint: disable=unused-import
+        pass # BugBug from ..Common.ConstraintParametersParserInfo import ResolvedConstraintArguments  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------

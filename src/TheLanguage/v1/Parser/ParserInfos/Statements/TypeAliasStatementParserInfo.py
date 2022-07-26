@@ -50,7 +50,7 @@ with InitRelativeImports():
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
     from ..Traits.NamedTrait import NamedTrait
-    from ..Types import TypeAliasType
+    # BugBug from ..Types import TypeAliasType
 
     from ...Error import Error, ErrorException
 
