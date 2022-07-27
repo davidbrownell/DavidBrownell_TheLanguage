@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  NoneTypes.py
+# |  __init__.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-07-22 14:01:53
+# |      2022-07-26 16:59:16
 # |
 # ----------------------------------------------------------------------
 # |
@@ -17,8 +17,6 @@
 
 import os
 
-from dataclasses import dataclass
-
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -30,41 +28,43 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .....ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
+    from ..GenericType import GenericType
 
-    from .....ParserInfos.Types.ConcreteType import ConcreteType
-    from .....ParserInfos.Types.ConstrainedType import ConstrainedType
-    from .....ParserInfos.Types.GenericType import GenericType
+    from ...Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
+
+    from ...Types.ConcreteType import ConcreteType
+    from ...Types.ConstrainedType import ConstrainedType
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, eq=False)
 class GenericNoneType(GenericType):
     # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        parser_info: NoneExpressionParserInfo,
-    ):
-        return cls(parser_info)
-
-    # ----------------------------------------------------------------------
     @property
+    @Interface.override
     def parser_info(self) -> NoneExpressionParserInfo:
-        result = super(GenericNoneType, self).parser_info
-        assert isinstance(result, NoneExpressionParserInfo), result
-
-        return result
+        assert isinstance(self._parser_info, NoneExpressionParserInfo), self._parser_info
+        return self._parser_info
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def CreateConcreteType(self) -> "ConcreteNoneType":
-        return ConcreteNoneType(self)
+    def IsSameType(
+        self,
+        other: GenericType,
+    ) -> bool:
+        return isinstance(other, GenericNoneType)
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, eq=False)
 class ConcreteNoneType(ConcreteType):
+    # ----------------------------------------------------------------------
+    @property
+    @Interface.override
+    def parser_info(self) -> NoneExpressionParserInfo:
+        assert isinstance(self._parser_info, NoneExpressionParserInfo), self._parser_info
+        return self._parser_info
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass1Impl(self) -> None:
@@ -84,6 +84,5 @@ class ConcreteNoneType(ConcreteType):
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, eq=False)
 class ConstrainedNoneType(ConstrainedType):
     pass

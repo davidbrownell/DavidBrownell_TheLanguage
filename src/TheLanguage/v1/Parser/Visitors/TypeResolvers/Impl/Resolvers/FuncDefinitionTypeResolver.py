@@ -19,6 +19,8 @@ import os
 
 from typing import Dict, List, Optional
 
+from dataclasses import dataclass
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -37,6 +39,9 @@ with InitRelativeImports():
 
     from .....ParserInfos.ParserInfo import CompileTimeInfo
 
+    from .....ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+
+    from .....ParserInfos.Types.FuncDefinitionTypes.ConcreteFuncDefinitionType import ConcreteFuncDefinitionType, TypeResolver as ConcreteFuncDefinitionTypeResolver
     from .....ParserInfos.Types.ConcreteType import ConcreteType
 
 
@@ -63,4 +68,12 @@ class FuncDefinitionTypeResolver(StatementTypeResolver):
         self,
         updated_type_resolver: StatementTypeResolver,
     ) -> ConcreteType:
-        pass # BugBug
+        # ----------------------------------------------------------------------
+        class ResolverAdapter(ConcreteFuncDefinitionTypeResolver):
+            pass
+
+        # ----------------------------------------------------------------------
+
+        assert isinstance(self.namespace.parser_info, FuncDefinitionStatementParserInfo), self.namespace.parser_info
+
+        return ConcreteFuncDefinitionType(self.namespace.parser_info, ResolverAdapter())

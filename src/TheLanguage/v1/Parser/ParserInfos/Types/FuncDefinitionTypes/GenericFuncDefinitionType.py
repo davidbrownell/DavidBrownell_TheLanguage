@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConstrainedType.py
+# |  GenericFuncDefinitionType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-07-22 13:48:41
+# |      2022-07-26 16:37:46
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ConstrainedType object"""
+"""Contains the GenericFuncDefinitionTypeMixin object"""
 
 import os
 
@@ -28,16 +28,25 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ConcreteType import ConcreteType
+    from ..GenericType import GenericType
+
+    from ...Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
 
 
 # ----------------------------------------------------------------------
-class ConstrainedType(Interface.Interface):
-    """Type with a specific set of constraint parameters (if required)"""
+class GenericFuncDefinitionType(GenericType):
+    # ----------------------------------------------------------------------
+    @property
+    @Interface.override
+    def parser_info(self) -> FuncDefinitionStatementParserInfo:
+        assert isinstance(self._parser_info, FuncDefinitionStatementParserInfo), self._parser_info
+        return self._parser_info
 
     # ----------------------------------------------------------------------
-    def __init__(
+    @Interface.override
+    def IsSameType(
         self,
-        concrete_type: ConcreteType,
-    ):
-        self.concrete_type                  = concrete_type
+        other: GenericType,
+    ) -> bool:
+        # BugBug: Do this
+        return False

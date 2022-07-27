@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, Generator, List, Optional, Union, TYPE_CHECKING
+from typing import Dict, Generator, List, Optional, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -37,9 +37,6 @@ with InitRelativeImports():
     from ..ParserInfos.Statements.StatementParserInfo import ParserInfo, ScopeFlag
 
     from ..ParserInfos.Traits.NamedTrait import NamedTrait
-
-    if TYPE_CHECKING:
-        from .TypeResolvers import GenericTypeResolver  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------

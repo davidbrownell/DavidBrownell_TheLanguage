@@ -29,10 +29,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Impl.Types.NoneTypes import ConcreteNoneType
-    from .Impl.Types.TupleTypes import ConcreteTupleType
-    from .Impl.Types.VariantTypes import ConcreteVariantType
-
     from ..Namespaces import Namespace, ParsedNamespace
 
     from ...Common import MiniLanguageHelpers
@@ -48,9 +44,14 @@ with InitRelativeImports():
     from ...ParserInfos.Expressions.TypeCheckExpressionParserInfo import OperatorType as TypeCheckExpressionOperatorType
     from ...ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
+    from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
+    from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
 
     from ...ParserInfos.Types.ConcreteType import ConcreteType
+    from ...ParserInfos.Types.NoneTypes import ConcreteNoneType
+    from ...ParserInfos.Types.TupleTypes import ConcreteTupleType
+    from ...ParserInfos.Types.VariantTypes import ConcreteVariantType
 
     if TYPE_CHECKING:
         from .Impl.Resolvers.RootTypeResolver import RootTypeResolver  # pylint: disable=unused-import
@@ -165,6 +166,8 @@ class TypeResolver(object):
                 ),
             )
 
+        result: Optional[ConcreteType] = None
+
         if isinstance(type_expression, FuncOrTypeExpressionParserInfo):
             assert isinstance(type_expression.value, str), type_expression.value
 
@@ -176,12 +179,13 @@ class TypeResolver(object):
                 if result is not None:
                     break
 
-            raise ErrorException(
-                InvalidNamedTypeError.Create(
-                    region=type_expression.regions__.value,
-                    name=type_expression.value,
-                ),
-            )
+            if result is None:
+                raise ErrorException(
+                    InvalidNamedTypeError.Create(
+                        region=type_expression.regions__.value,
+                        name=type_expression.value,
+                    ),
+                )
 
         elif isinstance(type_expression, NestedTypeExpressionParserInfo):
             raise NotImplementedError("TODO: NestedTypeExpressionParserInfo")
@@ -204,11 +208,27 @@ class TypeResolver(object):
         else:
             assert False, type_expression  # pragma: no cover
 
+        assert result is not None
+
         if not no_finalize:
             result.FinalizePass1()
             result.FinalizePass2()
 
         return result
+
+    # ----------------------------------------------------------------------
+    def EvalStatements(
+        self,
+        statements: List[StatementParserInfo],
+    ) -> None:
+        for statement in statements:
+            if statement.is_disabled__:
+                continue
+
+            assert isinstance(statement, FuncInvocationStatementParserInfo), statement
+
+            eval_result = self.EvalMiniLanguageExpression(statement.expression)
+            assert isinstance(eval_result.type, MiniLanguageHelpers.NoneType), eval_result
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

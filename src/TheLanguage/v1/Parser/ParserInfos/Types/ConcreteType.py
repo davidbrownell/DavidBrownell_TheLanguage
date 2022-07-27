@@ -19,9 +19,7 @@ import os
 
 from contextlib import ExitStack
 from enum import auto, Enum
-from typing import Generator, Optional, TYPE_CHECKING
-
-from dataclasses import dataclass, field
+from typing import Generator, TYPE_CHECKING
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -52,7 +50,6 @@ CircularDependencyError                     = CreateError(
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
 class ConcreteType(Interface.Interface):
     """Type with a specific set of template parameters (if required)"""
 
@@ -77,9 +74,18 @@ class ConcreteType(Interface.Interface):
         Finalized                           = auto()
 
     # ----------------------------------------------------------------------
-    parser_info: ParserInfo
+    def __init__(
+        self,
+        parser_info: ParserInfo,
+    ):
+        self._parser_info                   = parser_info
+        self.state                          = ConcreteType.State.Created
 
-    state: State                            = field(init=False, default_factory=lambda: ConcreteType.State.Created)  # pylint: disable=undefined-variable
+    # ----------------------------------------------------------------------
+    @Interface.abstractproperty
+    def parser_info(self):
+        """Returns the parser info with the correct type"""
+        raise Exception("Abstract property")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
@@ -97,23 +103,23 @@ class ConcreteType(Interface.Interface):
             return
 
         if self.state == ConcreteType.State.FinalizingPass1:
-            assert isinstance(self.parser_info, NamedTrait), self.parser_info
+            assert isinstance(self._parser_info, NamedTrait), self._parser_info
 
             raise ErrorException(
                 CircularDependencyError.Create(
-                    region=self.parser_info.regions__.self__,
-                    name=self.parser_info.name,
+                    region=self._parser_info.regions__.self__,
+                    name=self._parser_info.name,
                 ),
             )
 
-        object.__setattr__(self, "_state", ConcreteType.State.FinalizingPass1)
+        object.__setattr__(self, "state", ConcreteType.State.FinalizingPass1)
 
         # ----------------------------------------------------------------------
         def RestorePrevStateOnError():
             if self.state != ConcreteType.State.FinalizedPass1:
                 object.__setattr__(
                     self,
-                    "_state",
+                    "state",
                     ConcreteType.State(ConcreteType.State.FinalizingPass1.value - 1),
                 )
 
@@ -124,21 +130,21 @@ class ConcreteType(Interface.Interface):
 
             self._FinalizePass1Impl()
 
-            object.__setattr__(self, "_state", ConcreteType.State.FinalizedPass1)
+            object.__setattr__(self, "state", ConcreteType.State.FinalizedPass1)
 
     # ----------------------------------------------------------------------
     def FinalizePass2(self) -> None:
         if self.state.value >= ConcreteType.State.FinalizingPass2.value:  # pylint: disable=no-member
             return
 
-        object.__setattr__(self, "_state", ConcreteType.State.FinalizingPass2)
+        object.__setattr__(self, "state", ConcreteType.State.FinalizingPass2)
 
         # ----------------------------------------------------------------------
         def RestorePrevStateOnError():
             if self.state != ConcreteType.State.FinalizedPass2:
                 object.__setattr__(
                     self,
-                    "_state",
+                    "state",
                     ConcreteType.State(ConcreteType.State.FinalizingPass2.value - 1),
                 )
 
@@ -149,16 +155,13 @@ class ConcreteType(Interface.Interface):
 
             self._FinalizePass2Impl()
 
-            object.__setattr__(self, "_state", ConcreteType.State.FinalizedPass2)
+            object.__setattr__(self, "state", ConcreteType.State.FinalizedPass2)
 
         # We are done
-        object.__setattr__(self, "_state", ConcreteType.State.Finalized)
+        object.__setattr__(self, "state", ConcreteType.State.Finalized)
 
     # ----------------------------------------------------------------------
     def CreateConstrainedType(self) -> "ConstrainedType":
-        if self.state != ConcreteType.State.Finalized:
-            BugBug = 10
-
         assert self.state == ConcreteType.State.Finalized, self.state
         return self._CreateConstrainedTypeImpl()
 

@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  TypeAliasType.py
+# |  ConcreteFuncDefinitionType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-07-22 14:01:53
+# |      2022-07-26 15:19:40
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,13 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains alias-related types"""
+"""Contains the ConcreteFuncDefinition object"""
 
 import os
-
-from typing import Optional
-
-from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,44 +28,49 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ConcreteType import ConcreteType
-    from .ConstrainedType import ConstrainedType
+    from ..ConcreteType import ConcreteType
+    from ..ConstrainedType import ConstrainedType
 
-    from ..Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
+    from ...Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True, eq=False)
-class ConcreteTypeAliasType(ConcreteType):
+class TypeResolver(Interface.Interface):
+    pass # BugBug
+
+
+# ----------------------------------------------------------------------
+class ConcreteFuncDefinitionType(ConcreteType):
     # ----------------------------------------------------------------------
-    concrete_reference: ConcreteType
+    def __init__(
+        self,
+        parser_info: FuncDefinitionStatementParserInfo,
+        type_resolver: TypeResolver,
+    ):
+        super(ConcreteFuncDefinitionType, self).__init__(parser_info)
+
+        self._type_resolver                 = type_resolver
+
+    # ----------------------------------------------------------------------
+    @property
+    @Interface.override
+    def parser_info(self) -> FuncDefinitionStatementParserInfo:
+        assert isinstance(self._parser_info, FuncDefinitionStatementParserInfo), self._parser_info
+        return self._parser_info
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass1Impl(self) -> None:
-        self.concrete_reference.FinalizePass1()
+        pass # BugBug
 
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass2Impl(self) -> None:
-        self.concrete_reference.FinalizePass2()
+        pass # BugBug
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConstrainedTypeImpl(
-        self,
-        constraint_arguments_parser_info: Optional[ConstraintArgumentsParserInfo],
-    ) -> "ConstrainedTypeAliasType":
-        return ConstrainedTypeAliasType(
-            self,
-            self.concrete_reference.CreateConstrainedType(constraint_arguments_parser_info),
-        )
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, eq=False)
-class ConstrainedTypeAliasType(ConstrainedType):
-    # ----------------------------------------------------------------------
-    concrete_reference: ConstrainedType
+    def _CreateConstrainedTypeImpl(self) -> ConstrainedType:
+        assert False, "BugBug: CreateConstrainedType (ConcreteFuncDefinition)"

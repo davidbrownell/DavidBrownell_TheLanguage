@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Dict, List, Optional
+from typing import Dict, Generator, List
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -31,15 +31,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ...StatementTypeResolver import StatementTypeResolver
-    from ...TypeResolver import TypeResolver
-
-    from ...Impl import MatchTemplateCall
-
-    from .....ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
     from .....ParserInfos.ParserInfo import CompileTimeInfo
 
+    from .....ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
+
     from .....ParserInfos.Types.ConcreteType import ConcreteType
+    from .....ParserInfos.Types.ConstrainedType import ConstrainedType
 
 
 # ----------------------------------------------------------------------
@@ -65,4 +63,54 @@ class TypeAliasTypeResolver(StatementTypeResolver):
         self,
         updated_type_resolver: StatementTypeResolver,
     ) -> ConcreteType:
-        pass # BugBug
+        assert isinstance(self.namespace.parser_info, TypeAliasStatementParserInfo), self.namespace.parser_info
+
+        return _ConcreteType(
+            self.namespace.parser_info,
+            updated_type_resolver.EvalConcreteType(self.namespace.parser_info.type),
+        )
+
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+class _ConcreteType(ConcreteType):
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        parser_info: TypeAliasStatementParserInfo,
+        concrete_type: ConcreteType,
+    ):
+        super(_ConcreteType, self).__init__(parser_info)
+
+        self._concrete_type                 = concrete_type
+
+    # ----------------------------------------------------------------------
+    @property
+    @Interface.override
+    def parser_info(self) -> TypeAliasStatementParserInfo:
+        assert isinstance(self._parser_info, TypeAliasStatementParserInfo), self._parser_info
+        return self._parser_info
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def EnumAliases(self) -> Generator[ConcreteType, None, None]:
+        yield self
+        yield from self._concrete_type.EnumAliases()
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _FinalizePass1Impl(self) -> None:
+        self._concrete_type.FinalizePass1()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _FinalizePass2Impl(self) -> None:
+        self._concrete_type.FinalizePass2()
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateConstrainedTypeImpl(self) -> ConstrainedType:
+        return self._concrete_type.CreateConstrainedType()

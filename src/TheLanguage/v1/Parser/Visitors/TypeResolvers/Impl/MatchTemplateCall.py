@@ -118,7 +118,7 @@ def Match(
     types: List[
         Tuple[
             TemplateTypeParameterParserInfo,
-            Union[Type, List[Type]],
+            Union[ConcreteType, List[ConcreteType]],
         ]
     ] = []
     decorators: List[Tuple[TemplateDecoratorParameterParserInfo, MiniLanguageHelpers.MiniLanguageExpression.EvalResult]] = []
@@ -130,7 +130,7 @@ def Match(
                 assert all(isinstance(argument, ExpressionParserInfo) for argument in argument_value), argument_value
 
                 argument_result_or_results = [
-                    type_resolver.EvalType(argument.type_or_expression).CreateType()
+                    type_resolver.EvalConcreteType(argument.type_or_expression)
                     for argument in argument_value
                 ]
             else:
@@ -142,7 +142,7 @@ def Match(
                     argument_value = argument_value.type_or_expression
 
                 assert isinstance(argument_value, ExpressionParserInfo), argument_value
-                argument_result_or_results = type_resolver.EvalType(argument_value).CreateType()
+                argument_result_or_results = type_resolver.EvalConcreteType(argument_value)
 
             types.append((parameter_parser_info, argument_result_or_results))
 

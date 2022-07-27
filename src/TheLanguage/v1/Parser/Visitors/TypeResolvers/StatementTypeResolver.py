@@ -129,9 +129,6 @@ class StatementTypeResolver(TypeResolver, Interface.Interface):
     ) -> ConcreteType:
         assert isinstance(self.namespace.parser_info, TemplatedStatementTrait), self.namespace.parser_info
 
-        if parser_info.value == "Internal":
-            BugBug = 10
-
         # Resolve the template arguments
         resolved_template_arguments: Optional[MatchTemplateCall.ResolvedArguments] = None
 
@@ -175,7 +172,6 @@ class StatementTypeResolver(TypeResolver, Interface.Interface):
 
             resolved_constraint_arguments = None # BugBug
 
-            # BugBug: This part isn't right
             updated_resolver = self.Clone(compile_time_info)
 
             result = self._CreateConcreteTypeImpl(updated_resolver)
@@ -200,6 +196,8 @@ class StatementTypeResolver(TypeResolver, Interface.Interface):
 
     # ----------------------------------------------------------------------
     def ValidateDefaultInitialization(self) -> None:
+        return # BugBug
+
         if (
             not isinstance(self.namespace.parser_info, TemplatedStatementTrait)
             or (
@@ -229,7 +227,7 @@ class StatementTypeResolver(TypeResolver, Interface.Interface):
                     or self.namespace.parser_info.constraints.is_default_initializable
                 )
             ):
-                concrete_type.CreateConstrainedType()
+                pass # BugBug concrete_type.CreateConstrainedType()
 
     # ----------------------------------------------------------------------
     # |

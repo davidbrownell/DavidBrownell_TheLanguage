@@ -17,7 +17,7 @@
 
 import os
 
-from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,17 +30,41 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ConcreteType import ConcreteType
-
     from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
-    from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
+    from ...ParserInfos.ParserInfo import ParserInfo
+
+    if TYPE_CHECKING:
+        from .ConcreteType import ConcreteType  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
-@dataclass(frozen=True)
-class GenericType(object):
+class GenericType(Interface.Interface):
     # ----------------------------------------------------------------------
-    parser_info: StatementParserInfo
+    def __init__(
+        self,
+        parser_info: ParserInfo,
+    ):
+        self._parser_info                    = parser_info
+
+    # ----------------------------------------------------------------------
+    @Interface.abstractproperty
+    def parser_info(self):
+        """Returns the parser info with the correct type"""
+        raise Exception("Abstract property")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def IsSameType(
+        other: "GenericType",
+    ) -> bool:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def IsDefaultInitializable() -> bool:
+        raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @staticmethod
