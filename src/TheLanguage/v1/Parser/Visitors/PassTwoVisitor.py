@@ -18,7 +18,7 @@
 import os
 
 from enum import auto, Enum
-from typing import Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import Callable, cast, Dict, Generator, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -32,8 +32,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Namespaces import ImportNamespace, Namespace, ParsedNamespace
-    from .TypeResolvers.Impl.Resolvers.RootTypeResolver import RootTypeResolver
+    from .Namespaces import Namespace, ParsedNamespace
+
+    from .Resolvers.RootResolvers import RootConcreteTypeResolver
+    from .Resolvers.Impl.ConcreteTypeResolver import ConcreteTypeResolver
 
     from ..Error import Error, ErrorException
 
@@ -67,36 +69,20 @@ class PassTwoVisitor(object):
             if fundamental_types_namespace:
                 fundamental_types_namespace = fundamental_types_namespace.Flatten()
 
-            # Create a concrete resolver for each translation unit
-            root_resolvers: Dict[Tuple[str, str], RootTypeResolver] = {}
+            compile_time_info: List[Dict[str, CompileTimeInfo]] = [mini_language_configuration_values, ]
+
+            # Create a concrete root resolvers for each translation unit
+            root_resolvers: Dict[Tuple[str, str], RootConcreteTypeResolver] = {}
 
             for translation_unit, namespace in translation_unit_namespaces.items():
-                resolver = RootTypeResolver(
+                root_resolvers[translation_unit] = RootConcreteTypeResolver(
                     namespace,
                     fundamental_types_namespace,
-                    [mini_language_configuration_values, ],
-                    None,
+                    compile_time_info,
                 )
 
-                root_resolvers[translation_unit] = resolver
-
-            for resolver in root_resolvers.values():
-                resolver.Finalize(root_resolvers)
-
-            # Add children to the resolvers now that they have been finalized
-            for translation_unit_resolver in root_resolvers.values():
-                for child_namespace_or_namespaces in translation_unit_resolver.namespace.EnumChildren():
-                    if isinstance(child_namespace_or_namespaces, list):
-                        child_namespaces = child_namespace_or_namespaces
-                    else:
-                        child_namespaces = [child_namespace_or_namespaces, ]
-
-                    for child_namespace in child_namespaces:
-                        if isinstance(child_namespace, ImportNamespace):
-                            continue
-
-                        assert isinstance(child_namespace, ParsedNamespace), child_namespace
-                        translation_unit_resolver.GetOrCreateNestedResolver(child_namespace)
+            for root_resolver in root_resolvers.values():
+                root_resolver.Finalize(cast(Dict[Tuple[str, str], ConcreteTypeResolver], root_resolvers))
 
             # Pre-populate the execute results so that we don't need to update via a lock
             execute_results: Dict[
@@ -129,7 +115,7 @@ class PassTwoVisitor(object):
         ]:
             yield True, self._ProcessRootElements
 
-            for postprocess_step in PassTwoVisitor.Executor._PostprocessStep:  # pylint: disable=protected-access
+            for postprocess_step in PassTwoVisitor.Executor._PostprocessStep:  # pylint: disable=unused-variable,protected-access
                 yield (
                     True,
                     lambda *args, postprocess_step=postprocess_step, **kwargs: self._ExecutePostprocessSteps(
@@ -168,75 +154,41 @@ class PassTwoVisitor(object):
             translation_unit_namespace = self._translation_unit_namespaces[translation_unit]
             root_resolver = self._root_resolvers[translation_unit]
 
+            # Prepopulate the postprocess funcs
             postprocess_funcs: List[List[Callable[[], None]]] = []
-            added_postprocess_func = False
 
             for _ in range(len(PassTwoVisitor.Executor._PostprocessStep)):  # pylint: disable=protected-access
                 postprocess_funcs.append([])
 
-            for namespace_or_namespaces in translation_unit_namespace.EnumChildren():
-                if isinstance(namespace_or_namespaces, list):
-                    namespaces = namespace_or_namespaces
-                else:
-                    namespaces = [namespace_or_namespaces, ]
+            # Process all of the top-level types that are default initializable
+            added_postprocess_func = False
 
-                for namespace in namespaces:
-                    assert isinstance(namespace, ParsedNamespace), namespace
+            for generic_type in root_resolver.EnumGenericTypes():
+                if not generic_type.is_default_initializable:
+                    continue
 
-                    if isinstance(namespace, ImportNamespace):
-                        continue
+                try:
+                    concrete_type = generic_type.CreateDefaultConcreteType()
 
-                    resolver = root_resolver.GetOrCreateNestedResolver(namespace)
+                    PostprocessStep = PassTwoVisitor.Executor._PostprocessStep  # pylint: disable=protected-access
 
-                    if (
-                        not isinstance(namespace.parser_info, TemplatedStatementTrait)
-                        or (
-                            namespace.parser_info.templates is None
-                            or namespace.parser_info.templates.is_default_initializable
-                        )
+                    postprocess_funcs[PostprocessStep.RootFinalizePass1.value].append(concrete_type.FinalizePass1)
+                    postprocess_funcs[PostprocessStep.RootFinalizePass2.value].append(concrete_type.FinalizePass2)
+
+                    # ----------------------------------------------------------------------
+                    def NoneWrapper(
+                        concrete_type=concrete_type,
                     ):
-                        try:
-                            concrete_type = resolver.CreateConcreteType(
-                                FuncOrTypeExpressionParserInfo.Create(
-                                    parser_info_type=ParserInfoType.Standard,
-                                    regions=[
-                                        namespace.parser_info.regions__.self__,
-                                        namespace.parser_info.regions__.name,
-                                        None,
-                                    ],
-                                    value=namespace.parser_info.name,
-                                    templates=None,
-                                    constraints=None,
-                                    mutability_modifier=None,
-                                ),
-                            )
+                        concrete_type.CreateConstrainedType()
 
-                            PostprocessStep = PassTwoVisitor.Executor._PostprocessStep  # pylint: disable=protected-access
+                    # ----------------------------------------------------------------------
 
-                            postprocess_funcs[PostprocessStep.RootFinalizePass1.value].append(concrete_type.FinalizePass1)
-                            postprocess_funcs[PostprocessStep.RootFinalizePass2.value].append(concrete_type.FinalizePass2)
+                    postprocess_funcs[PostprocessStep.RootCreateConstrainedType.value].append(NoneWrapper)
 
-                            if (
-                                not isinstance(namespace.parser_info, ConstrainedStatementTrait)
-                                or (
-                                    namespace.parser_info.constraints is None
-                                    or namespace.parser_info.constraints.is_default_initializable
-                                )
-                            ):
-                                # ----------------------------------------------------------------------
-                                def NoneWrapper(
-                                    concrete_type=concrete_type,
-                                ):
-                                    concrete_type.CreateConstrainedType()
+                    added_postprocess_func = True
 
-                                # ----------------------------------------------------------------------
-
-                                pass # BugBug postprocess_funcs[PostprocessStep.RootCreateConstrainedType.value].append(NoneWrapper)
-
-                            added_postprocess_func = True
-
-                        except ErrorException as ex:
-                            errors += ex.errors
+                except ErrorException as ex:
+                    errors += ex.errors
 
             if errors:
                 return errors

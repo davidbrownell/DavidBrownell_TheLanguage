@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List
+from typing import List, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GenericType import GenericType
+    from ..GenericTypes import GenericExpressionType, GenericType
 
     from ...Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
 
@@ -41,14 +41,17 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class GenericTupleType(GenericType):
+class GenericTupleType(GenericExpressionType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         parser_info: TupleExpressionParserInfo,
         generic_types: List[GenericType],
     ):
-        super(GenericTupleType, self).__init__(parser_info)
+        super(GenericTupleType, self).__init__(
+            parser_info,
+            all(generic_type.is_default_initializable for generic_type in generic_types),
+        )
 
         self.generic_types                  = generic_types
 
@@ -72,6 +75,19 @@ class GenericTupleType(GenericType):
                 this_type.IsSameType(that_type)
                 for this_type, that_type in zip(self.generic_types, other.generic_types)
             )
+        )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateConcreteTypeImpl(self) -> ConcreteType:
+        return ConcreteTupleType(
+            self.parser_info,
+            [
+                generic_type.CreateConcreteType(parser_info)
+                for generic_type, parser_info in zip(self.generic_types, self.parser_info.types)
+            ],
         )
 
 

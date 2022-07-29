@@ -119,11 +119,7 @@ class FuncOrTypeExpressionParserInfo(
     constraints: Optional[ConstraintArgumentsParserInfo]
     mutability_modifier: Optional[MutabilityModifier]
 
-    # Values set during resolution
-    _is_resolved: bool                                                      = field(init=False, default=False)
-
-    _resolved_constraint_arguments: Optional["ResolvedConstraintArguments"] = field(init=False, default=None)
-    _resolved_type: Optional[Type]                                          = field(init=False, default=None)
+    # TODO: Add functionality to indicate that we should not attempt to resolve the type as nested, but instead use global resolution
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
@@ -140,18 +136,6 @@ class FuncOrTypeExpressionParserInfo(
                 },
             },
         )
-
-    # ----------------------------------------------------------------------
-    @property
-    def resolved_constraint_arguments(self) -> Optional["ResolvedConstraintArguments"]:
-        assert self._is_resolved
-        return self._resolved_constraint_arguments
-
-    @property
-    def resolved_type(self) -> Type:
-        assert self._is_resolved
-        assert self._resolved_type is not None
-        return self._resolved_type
 
     # ----------------------------------------------------------------------
     @Interface.override

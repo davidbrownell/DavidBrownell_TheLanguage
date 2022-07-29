@@ -20,7 +20,7 @@ import os
 
 from typing import Any, Callable, Dict, Generator, Iterator, List, Optional, Tuple, Union
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -38,10 +38,12 @@ with InitRelativeImports():
 
     from ..ConcreteType import ConcreteType
     from ..ConstrainedType import ConstrainedType
-    from ..GenericType import GenericType
+    from ..GenericTypes import GenericStatementType, GenericType
+    from ..TypeResolvers import ConcreteTypeResolver
 
     from ...Common.ClassModifier import ClassModifier
     from ...Common.MethodHierarchyModifier import MethodHierarchyModifier
+    from ...Common.MutabilityModifier import MutabilityModifier
 
     from ...Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ...Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
@@ -66,6 +68,12 @@ InvalidResolvedDependencyError              = CreateError(
     "Invalid dependency",
 )
 
+FinalDependencyError                        = CreateError(
+    "The class '{name}' is final and cannot be extended",
+    name=str,
+    final_class_region=TranslationUnitRegion,
+)
+
 MultipleBasesError                          = CreateError(
     "A base has already been provided",
     prev_region=TranslationUnitRegion,
@@ -88,42 +96,31 @@ InvalidFinalizeMethodError                  = CreateError(
     "Finalize methods are not valid for classes that are not mutable",
 )
 
+InvalidAbstractDecorationError              = CreateError(
+    "The class is marked as abstract, but no abstract methods were encountered",
+)
+
+InvalidFinalDecorationError                 = CreateError(
+    "The class is marked as final, but abstract methods were encountered",
+)
+
+InvalidMutableDecorationError               = CreateError(
+    "The class is marked as mutable, but no mutable methods were found",
+)
+
 
 # ----------------------------------------------------------------------
-class TypeResolver(Interface.Interface):
+@dataclass(frozen=True)
+class TypeInfo(object):
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def EvalConcreteType(
-        parser_info: ExpressionParserInfo,
-        *,
-        no_finalize=False,
-    ) -> ConcreteType:
-        raise Exception("Abstract method")  # pragma: no cover
+    generic_type: GenericStatementType
+    name_override: Optional[str]            = field(default=None)
 
     # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def CreateGenericType(
-        parser_info: StatementParserInfo,
-    ) -> GenericType:
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def EvalStatements(
-        statements: List[StatementParserInfo],
-    ) -> None:
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def ValidateDefaultInitialization(
-        generic_type: GenericType,
-    ) -> None:
-        raise Exception("Abstract method")  # pragma: no cover
+    @property
+    def name(self) -> str:
+        assert isinstance(self.generic_type.parser_info, NamedTrait), self.generic_type.parser_info
+        return self.name_override or self.generic_type.parser_info.name
 
 
 # ----------------------------------------------------------------------
@@ -131,7 +128,7 @@ class TypeResolver(Interface.Interface):
 class AttributeInfo(object):
     # ----------------------------------------------------------------------
     statement: ClassAttributeStatementParserInfo
-    concrete_type: ConcreteType
+    constrained_type: ConstrainedType
 
 
 # ----------------------------------------------------------------------
@@ -139,12 +136,13 @@ class ConcreteClassType(ConcreteType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        parser_info: ClassStatementParserInfo,
-        type_resolver: TypeResolver,
+        type_resolver: ConcreteTypeResolver,
+        generic_class_type: GenericStatementType,
     ):
-        super(ConcreteClassType, self).__init__(parser_info)
+        super(ConcreteClassType, self).__init__(generic_class_type.parser_info)
 
         self._type_resolver                 = type_resolver
+        self._generic_class_type            = generic_class_type
 
         # The following values are initialized upon creation and are permanent
         self.base_dependency: Optional[DependencyNode[ConcreteType]]        = None
@@ -158,12 +156,12 @@ class ConcreteClassType(ConcreteType):
         self._concepts: Optional[ClassContent[ConcreteType]]                = None
         self._interfaces: Optional[ClassContent[ConcreteType]]              = None
         self._mixins: Optional[ClassContent[ConcreteType]]                  = None
-        self._types: Optional[ClassContent[GenericType]]                    = None
+        self._types: Optional[ClassContent[TypeInfo]]                       = None
 
         # The following values are created during FinalizePass2 and exposed via properties
-        self._attributes: Optional[ClassContent[AttributeInfo]]             = None
-        self._methods: Optional[ClassContent[GenericType]]                  = None
-        self._abstract_methods: Optional[ClassContent[GenericType]]         = None
+        self._attributes: Optional[ClassContent[AttributeInfo]]                 = None
+        self._methods: Optional[ClassContent[GenericStatementType]]             = None
+        self._abstract_methods: Optional[ClassContent[GenericStatementType]]    = None
 
         # The following values are initialized upon creation and destroyed after Finalization
         self._attribute_statements: List[ClassAttributeStatementParserInfo]                         = []
@@ -200,7 +198,7 @@ class ConcreteClassType(ConcreteType):
         return self._mixins
 
     @property
-    def types(self) -> ClassContent[GenericType]:
+    def types(self) -> ClassContent[TypeInfo]:
         assert self.state.value >= ConcreteType.State.FinalizedPass1.value
         assert self._types is not None
         return self._types
@@ -213,13 +211,13 @@ class ConcreteClassType(ConcreteType):
         return self._attributes
 
     @property
-    def methods(self) -> ClassContent[GenericType]:
+    def methods(self) -> ClassContent[GenericStatementType]:
         assert self.state.value >= ConcreteType.State.FinalizedPass2.value
         assert self._methods is not None
         return self._methods
 
     @property
-    def abstract_methods(self) -> ClassContent[GenericType]:
+    def abstract_methods(self) -> ClassContent[GenericStatementType]:
         assert self.state.value >= ConcreteType.State.FinalizedPass2.value
         assert self._abstract_methods is not None
         return self._abstract_methods
@@ -267,6 +265,17 @@ class ConcreteClassType(ConcreteType):
                         errors.append(
                             InvalidResolvedDependencyError.Create(
                                 region=dependency_parser_info.type.regions__.self__,
+                            ),
+                        )
+
+                        continue
+
+                    if resolved_parser_info.is_final:
+                        errors.append(
+                            FinalDependencyError.Create(
+                                region=dependency_parser_info.regions__.self__,
+                                name=resolved_parser_info.name,  # type: ignore
+                                final_class_region=resolved_parser_info.regions__.is_final,
                             ),
                         )
 
@@ -449,7 +458,17 @@ class ConcreteClassType(ConcreteType):
 
         for statement in self._type_statements:
             local_info.types.append(
-                DependencyLeaf(self._type_resolver.CreateGenericType(statement)),
+                DependencyLeaf(TypeInfo(self._type_resolver.GetOrCreateNestedGenericType(statement))),
+            )
+
+        for name in (self.parser_info.self_referencing_type_names or []):
+            local_info.types.append(
+                DependencyLeaf(
+                    TypeInfo(
+                        self._generic_class_type,
+                        name_override=name,
+                    ),
+                ),
             )
 
         # Prepare the final results
@@ -474,20 +493,11 @@ class ConcreteClassType(ConcreteType):
             lambda concrete_type: concrete_type.parser_info.name,
         )
 
-        # ----------------------------------------------------------------------
-        def ExtractGenericTypeKey(
-            generic_type: GenericType,
-        ) -> str:
-            assert isinstance(generic_type.parser_info, NamedTrait), generic_type.parser_info
-            return generic_type.parser_info.name
-
-        # ----------------------------------------------------------------------
-
         types = ClassContent.Create(
             local_info.types,
             augmented_info.types,
             dependency_info.types,
-            ExtractGenericTypeKey,
+            lambda type_info: type_info.name,
         )
 
         # Commit the results
@@ -516,14 +526,7 @@ class ConcreteClassType(ConcreteType):
         # Validate the local types
         for dependency in self.types.local:
             try:
-                generic_type = dependency.ResolveDependencies()[1]
-
-                print("BugBug", generic_type.parser_info.name)
-
-                if generic_type.parser_info.name == "NonEmptyStr":
-                    BugBug = 10
-
-                self._type_resolver.ValidateDefaultInitialization(generic_type)
+                self._ValidateGenericType(dependency.ResolveDependencies()[1].generic_type)
             except ErrorException as ex:
                 errors += ex.errors
 
@@ -553,37 +556,44 @@ class ConcreteClassType(ConcreteType):
 
         # Attributes
         for attribute_statement in self._attribute_statements:
-            # BugBug: Handle 'is_override'
+            try:
+                # BugBug: Handle 'is_override'
 
-            # BugBug: Validate type
+                concrete_type = self._type_resolver.EvalConcreteType(attribute_statement.type)
 
-            local_info.attributes.append(
-                DependencyLeaf(
-                    AttributeInfo(
-                        attribute_statement,
-                        self._type_resolver.EvalConcreteType(attribute_statement.type),
+                concrete_type.FinalizePass1()
+                concrete_type.FinalizePass2()
+
+                constrained_type = concrete_type.CreateConstrainedType()
+
+                local_info.attributes.append(
+                    DependencyLeaf(
+                        AttributeInfo(attribute_statement, constrained_type),
                     ),
-                ),
-            )
+                )
+
+            except ErrorException as ex:
+                errors += ex.errors
 
         # Methods
         for method_statement in self._method_statements:
-            generic_type = self._type_resolver.CreateGenericType(method_statement)
-
-            # BugBug: Handle hierarchy
-
             try:
-                self._type_resolver.ValidateDefaultInitialization(generic_type)
+                generic_type = self._type_resolver.GetOrCreateNestedGenericType(method_statement)
+
+                # BugBug: Handle hierarchy
+
+                self._ValidateGenericType(generic_type)
+
+                dependency_leaf = DependencyLeaf(generic_type)
+
+                if method_statement.method_hierarchy_modifier == MethodHierarchyModifier.abstract:
+                    local_info.abstract_methods.append(dependency_leaf)
+                else:
+                    local_info.methods.append(dependency_leaf)
+
             except ErrorException as ex:
                 errors += ex.errors
                 continue
-
-            dependency_leaf = DependencyLeaf(generic_type)
-
-            if method_statement.method_hierarchy_modifier == MethodHierarchyModifier.abstract:
-                local_info.abstract_methods.append(dependency_leaf)
-            else:
-                local_info.methods.append(dependency_leaf)
 
         # Using
         if self._using_statements:
@@ -591,6 +601,66 @@ class ConcreteClassType(ConcreteType):
 
         if errors:
             raise ErrorException(*errors)
+
+        # Issue an error if the class was declared as abstract but no abstract methods were found
+        if (
+            self.parser_info.is_abstract
+            and not (
+                local_info.abstract_methods
+                or augmented_info.abstract_methods
+                or dependency_info.abstract_methods
+            )
+        ):
+            errors.append(
+                InvalidAbstractDecorationError.Create(
+                    region=self.parser_info.regions__.is_abstract,
+                ),
+            )
+
+        # Issue an error if the class was declared as final but there are abstract methods
+        if (
+            self.parser_info.is_final
+            and (
+                local_info.abstract_methods
+                or augmented_info.abstract_methods
+                or dependency_info.abstract_methods
+            )
+        ):
+            errors.append(
+                InvalidFinalDecorationError.Create(
+                    region=self.parser_info.regions__.is_final,
+                ),
+            )
+
+        # Issue an error if the class was declared as mutable but no mutable methods were found
+        if self.parser_info.class_modifier == ClassModifier.mutable:
+            has_mutable_method = False
+
+            for dependency in itertools.chain(
+                local_info.methods,
+                local_info.abstract_methods,
+                augmented_info.methods,
+                augmented_info.abstract_methods,
+                dependency_info.methods,
+                dependency_info.abstract_methods,
+            ):
+                generic_statement_type = dependency.ResolveDependencies()[1]
+
+                assert isinstance(generic_statement_type.parser_info, FuncDefinitionStatementParserInfo), generic_statement_type.parser_info
+
+                if (
+                    generic_statement_type.parser_info.mutability is not None
+                    and MutabilityModifier.IsMutable(generic_statement_type.parser_info.mutability)
+                ):
+                    has_mutable_method = True
+                    break
+
+            if not has_mutable_method:
+                errors.append(
+                    InvalidMutableDecorationError.Create(
+                        region=self.parser_info.regions__.class_modifier,
+                    ),
+                )
 
         # Prepare the final results
 
@@ -603,19 +673,19 @@ class ConcreteClassType(ConcreteType):
 
         # ----------------------------------------------------------------------
         def ExtractMethodKey(
-            generic_type: GenericType,
+            generic_type: GenericStatementType,
         ) -> Any:
             pass # BugBug
 
         # ----------------------------------------------------------------------
         def PostprocessMethods(
-            local: List[Dependency[GenericType]],
-            augmented: List[Dependency[GenericType]],
-            inherited: List[Dependency[GenericType]],
+            local: List[Dependency[GenericStatementType]],
+            augmented: List[Dependency[GenericStatementType]],
+            inherited: List[Dependency[GenericStatementType]],
         ) -> Tuple[
-            List[Dependency[GenericType]],
-            List[Dependency[GenericType]],
-            List[Dependency[GenericType]],
+            List[Dependency[GenericStatementType]],
+            List[Dependency[GenericStatementType]],
+            List[Dependency[GenericStatementType]],
         ]:
             # BugBug
             return local, augmented, inherited
@@ -647,7 +717,6 @@ class ConcreteClassType(ConcreteType):
     # ----------------------------------------------------------------------
     @Interface.override
     def _CreateConstrainedTypeImpl(self) -> ConstrainedType:
-        assert False, "BugBug: CreateConstrainedType (ConcreteClass)"
         pass # BugBug
 
     # ----------------------------------------------------------------------
@@ -656,6 +725,17 @@ class ConcreteClassType(ConcreteType):
         del self._method_statements
         del self._type_statements
         del self._using_statements
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def _ValidateGenericType(
+        generic_type: GenericType,
+    ) -> None:
+        if generic_type.is_default_initializable:
+            concrete_type = generic_type.CreateDefaultConcreteType()
+
+            concrete_type.FinalizePass1()
+            concrete_type.FinalizePass2()
 
 
 # ----------------------------------------------------------------------
@@ -698,10 +778,10 @@ class _InfoBase(object):
 class _Pass1Info(_InfoBase):
     # ----------------------------------------------------------------------
     def __init__(self):
-        self.concepts: List[Dependency[ConcreteType]]   = []
-        self.interfaces: List[Dependency[ConcreteType]] = []
-        self.mixins: List[Dependency[ConcreteType]]     = []
-        self.types: List[Dependency[GenericType]]       = []
+        self.concepts: List[Dependency[ConcreteType]]                       = []
+        self.interfaces: List[Dependency[ConcreteType]]                     = []
+        self.mixins: List[Dependency[ConcreteType]]                         = []
+        self.types: List[Dependency[TypeInfo]]                              = []
 
     # ----------------------------------------------------------------------
     def Merge(
@@ -724,8 +804,8 @@ class _Pass2Info(_InfoBase):
     # ----------------------------------------------------------------------
     def __init__(self):
         self.attributes: List[Dependency[AttributeInfo]]                    = []
-        self.methods: List[Dependency[GenericType]]                         = []
-        self.abstract_methods: List[Dependency[GenericType]]                = []
+        self.methods: List[Dependency[GenericStatementType]]                = []
+        self.abstract_methods: List[Dependency[GenericStatementType]]       = []
 
     # ----------------------------------------------------------------------
     def Merge(

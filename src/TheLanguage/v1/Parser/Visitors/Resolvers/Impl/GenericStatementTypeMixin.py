@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------
 # |
-# |  RootTypeResolver.py
+# |  GenericStatementTypeMixin.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-07-25 09:48:41
+# |      2022-07-29 09:12:15
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the RootTypeResolver"""
+"""Contains the GenericStatementTypeMixin object"""
 
 import os
 
-from typing import Dict, List
+from typing import Generic, TypeVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,30 +30,37 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...StatementTypeResolver import CompileTimeInfo, StatementTypeResolver
+    from .GenericTypeResolver import GenericTypeResolver
 
-    from .....ParserInfos.Types.ConcreteType import ConcreteType
+    from ....ParserInfos.Types.ConcreteType import ConcreteType
+    from ....ParserInfos.Types.GenericTypes import GenericStatementType
 
 
 # ----------------------------------------------------------------------
-class RootTypeResolver(StatementTypeResolver):
+MixinT                                      = TypeVar("MixinT")
+
+class GenericStatementTypeMixin(GenericStatementType, Generic[MixinT]):  # pylint: disable=abstract-method
     # ----------------------------------------------------------------------
-    @Interface.override
-    def Clone(
+    def __init__(
         self,
-        compile_time_info: List[Dict[str, CompileTimeInfo]],
-    ) -> "RootTypeResolver":
-        return RootTypeResolver(
-            self.namespace,
-            self.fundamental_namespace,
-            compile_time_info,
-            self.root_resolvers,
-        )
+        type_resolver: GenericTypeResolver,
+    ):
+        GenericStatementType.__init__(self, type_resolver.namespace.parser_info)  # type: ignore
+
+        self._type_resolver                 = type_resolver
+
+    # ----------------------------------------------------------------------
+    @property
+    @Interface.override
+    def parser_info(self) -> MixinT:
+        return self._parser_info  # type: ignore
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
-    @staticmethod
     @Interface.override
-    def _CreateConcreteTypeImpl(*args, **kwargs) -> ConcreteType:
-        raise Exception("This method should never be invoked on RootTypeResolver types")
+    def _CreateConcreteTypeImpl(
+        self,
+        parser_info: MixinT,
+    ) -> ConcreteType:
+        return self._type_resolver.CreateConcreteType(parser_info)  # type: ignore

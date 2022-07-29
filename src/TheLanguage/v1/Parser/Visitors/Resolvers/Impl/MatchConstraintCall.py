@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, List, Optional, Tuple
 
 from dataclasses import dataclass, field
 
@@ -46,10 +46,9 @@ with InitRelativeImports():
 
     from ....ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
 
-    from ....TranslationUnitRegion import TranslationUnitRegion
+    from ....ParserInfos.Types.TypeResolvers import TypeResolver
 
-    if TYPE_CHECKING:
-        from .. import TypeResolver  # pylint: disable=unused-import
+    from ....TranslationUnitRegion import TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -78,7 +77,7 @@ def Match(
     destination: str,
     destination_region: TranslationUnitRegion,
     invocation_region: TranslationUnitRegion,
-    type_resolver: "TypeResolver",
+    type_resolver: TypeResolver,
 ) -> ResolvedArguments:
     if constraint_arguments is None:
         args = []

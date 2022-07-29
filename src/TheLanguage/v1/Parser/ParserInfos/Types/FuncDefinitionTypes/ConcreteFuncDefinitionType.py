@@ -17,6 +17,8 @@
 
 import os
 
+from typing import Callable, List, Optional
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -30,13 +32,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..ConcreteType import ConcreteType
     from ..ConstrainedType import ConstrainedType
+    from ..TypeResolvers import ConcreteTypeResolver
 
     from ...Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
 
-
-# ----------------------------------------------------------------------
-class TypeResolver(Interface.Interface):
-    pass # BugBug
+    from ....Error import Error, ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -44,12 +44,24 @@ class ConcreteFuncDefinitionType(ConcreteType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
+        type_resolver: ConcreteTypeResolver,
         parser_info: FuncDefinitionStatementParserInfo,
-        type_resolver: TypeResolver,
     ):
         super(ConcreteFuncDefinitionType, self).__init__(parser_info)
 
+        concrete_return_type: Optional[ConcreteType] = None
+        concrete_parameters: List[ConcreteType] = []
+
+        if parser_info.return_type is not None:
+            concrete_return_type = type_resolver.EvalConcreteType(parser_info.return_type)
+
+        if not isinstance(parser_info.parameters, bool):
+            pass # BugBug
+
         self._type_resolver                 = type_resolver
+
+        self._concrete_return_type          = concrete_return_type
+        self._concrete_parameters           = concrete_parameters
 
     # ----------------------------------------------------------------------
     @property
@@ -63,14 +75,36 @@ class ConcreteFuncDefinitionType(ConcreteType):
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass1Impl(self) -> None:
-        pass # BugBug
+        self._FinalizeImpl(lambda concrete_type: concrete_type.FinalizePass1())
 
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass2Impl(self) -> None:
-        pass # BugBug
+        self._FinalizeImpl(lambda concrete_type: concrete_type.FinalizePass2())
 
     # ----------------------------------------------------------------------
     @Interface.override
     def _CreateConstrainedTypeImpl(self) -> ConstrainedType:
-        assert False, "BugBug: CreateConstrainedType (ConcreteFuncDefinition)"
+        pass # BugBug
+
+    # ----------------------------------------------------------------------
+    def _FinalizeImpl(
+        self,
+        finalize_func: Callable[[ConcreteType], None],
+    ) -> None:
+        errors: List[Error] = []
+
+        if self._concrete_return_type is not None:
+            try:
+                finalize_func(self._concrete_return_type)
+            except ErrorException as ex:
+                errors += ex.errors
+
+        for concrete_parameter in self._concrete_parameters:
+            try:
+                finalize_func(concrete_parameter)
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)

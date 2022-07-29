@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List
+from typing import List, Optional
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GenericType import GenericType
+    from ..GenericTypes import GenericExpressionType, GenericType
 
     from ...Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
@@ -41,14 +41,17 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class GenericVariantType(GenericType):
+class GenericVariantType(GenericExpressionType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         parser_info: VariantExpressionParserInfo,
         generic_types: List[GenericType],
     ):
-        super(GenericVariantType, self).__init__(parser_info)
+        super(GenericVariantType, self).__init__(
+            parser_info,
+            all(generic_type.is_default_initializable for generic_type in generic_types),
+        )
 
         self.generic_types                  = generic_types
 
@@ -72,6 +75,19 @@ class GenericVariantType(GenericType):
                 this_type.IsSameType(that_type)
                 for this_type, that_type in zip(self.generic_types, other.generic_types)
             )
+        )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateConcreteTypeImpl(self) -> ConcreteType:
+        return ConcreteVariantType(
+            self.parser_info,
+            [
+                generic_type.CreateConcreteType(parser_info)
+                for generic_type, parser_info in zip(self.generic_types, self.parser_info.types)
+            ],
         )
 
 

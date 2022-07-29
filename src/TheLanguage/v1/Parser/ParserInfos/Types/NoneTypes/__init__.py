@@ -17,6 +17,8 @@
 
 import os
 
+from typing import Optional
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -28,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GenericType import GenericType
+    from ..GenericTypes import GenericExpressionType, GenericType
 
     from ...Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
 
@@ -37,7 +39,14 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class GenericNoneType(GenericType):
+class GenericNoneType(GenericExpressionType):
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        parser_info: NoneExpressionParserInfo,
+    ):
+        super(GenericNoneType, self).__init__(parser_info, True)
+
     # ----------------------------------------------------------------------
     @property
     @Interface.override
@@ -52,6 +61,13 @@ class GenericNoneType(GenericType):
         other: GenericType,
     ) -> bool:
         return isinstance(other, GenericNoneType)
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateConcreteTypeImpl(self) -> ConcreteType:
+        return ConcreteNoneType(self.parser_info)
 
 
 # ----------------------------------------------------------------------

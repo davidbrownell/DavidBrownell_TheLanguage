@@ -3,7 +3,7 @@
 # |  TypeResolver.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-07-25 11:53:16
+# |      2022-07-28 12:52:57
 # |
 # ----------------------------------------------------------------------
 # |
@@ -20,6 +20,7 @@ import os
 from typing import Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,32 +30,40 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Namespaces import Namespace, ParsedNamespace
+    from ....ParserInfos.Types.TypeResolvers import TypeResolver as TypeResolverBase
 
-    from ...Common import MiniLanguageHelpers
-    from ...Error import CreateError, ErrorException
+    from ...Namespaces import Namespace, ParsedNamespace
 
-    from ...ParserInfos.ParserInfo import CompileTimeInfo
+    from ....Common import MiniLanguageHelpers
+    from ....Error import CreateError, ErrorException
 
-    from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
-    from ...ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo
-    from ...ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
-    from ...ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
-    from ...ParserInfos.Expressions.TypeCheckExpressionParserInfo import OperatorType as TypeCheckExpressionOperatorType
-    from ...ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
+    from ....ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ....ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
+    from ....ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo
+    from ....ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
+    from ....ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
+    from ....ParserInfos.Expressions.TypeCheckExpressionParserInfo import OperatorType as TypeCheckExpressionOperatorType
+    from ....ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
-    from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
-    from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
-    from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
+    from ....ParserInfos.ParserInfo import CompileTimeInfo
 
-    from ...ParserInfos.Types.ConcreteType import ConcreteType
-    from ...ParserInfos.Types.NoneTypes import ConcreteNoneType
-    from ...ParserInfos.Types.TupleTypes import ConcreteTupleType
-    from ...ParserInfos.Types.VariantTypes import ConcreteVariantType
+    from ....ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ....ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
+    from ....ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
+    from ....ParserInfos.Statements.StatementParserInfo import StatementParserInfo
+
+    from ....ParserInfos.Traits.NamedTrait import NamedTrait
+
+    from ....ParserInfos.Types.ClassTypes.ConcreteClassType import ConcreteClassType
+
+    from ....ParserInfos.Types.ConcreteType import ConcreteType
+    from ....ParserInfos.Types.GenericTypes import GenericStatementType
+    from ....ParserInfos.Types.NoneTypes import ConcreteNoneType
+    from ....ParserInfos.Types.TupleTypes import ConcreteTupleType
+    from ....ParserInfos.Types.VariantTypes import ConcreteVariantType
 
     if TYPE_CHECKING:
-        from .Impl.Resolvers.RootTypeResolver import RootTypeResolver  # pylint: disable=unused-import
+        from .ConcreteTypeResolver import ConcreteTypeResolver  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -71,51 +80,66 @@ InvalidNamedTypeError                       = CreateError(
     name=str,
 )
 
+InvisibleNestedTypeError                    = CreateError(
+    "The type '{type}' is valid but not visible in the current context",
+    type=str,
+)
+
 
 # ----------------------------------------------------------------------
-class TypeResolver(object):
+class TypeResolver(TypeResolverBase):
     # ----------------------------------------------------------------------
     def __init__(
         self,
+        parent: Optional["ConcreteTypeResolver"],
         namespace: ParsedNamespace,
         fundamental_namespace: Optional[Namespace],
         compile_time_info: List[Dict[str, CompileTimeInfo]],
-        root_resolvers: Optional[Dict[Tuple[str, str], "RootTypeResolver"]],
+        root_type_resolvers: Optional[Dict[Tuple[str, str], "ConcreteTypeResolver"]],
     ):
+        assert (
+            parent is not None
+            or isinstance(namespace.parser_info, RootStatementParserInfo)
+            or not isinstance(namespace.parent, ParsedNamespace)
+            or isinstance(namespace.parent.parser_info, RootStatementParserInfo)
+        ), (parent, namespace)
+
+        self.parent                         = parent
         self.namespace                      = namespace
         self.fundamental_namespace          = fundamental_namespace
         self.compile_time_info              = compile_time_info
 
-        self._is_finalized                                                          = False
-        self._root_resolvers: Optional[Dict[Tuple[str, str], "RootTypeResolver"]]   = None
+        self.is_finalized                                                                           = False
+        self._root_type_resolvers: Optional[Dict[Tuple[str, str], ConcreteTypeResolver]]     = None
 
-        if root_resolvers is not None:
-            self.Finalize(root_resolvers)
+        if root_type_resolvers is not None:
+            self.Finalize(root_type_resolvers)
 
     # ----------------------------------------------------------------------
     def Finalize(
         self,
-        root_resolvers: Dict[Tuple[str, str], "RootTypeResolver"],
+        root_type_resolvers: Dict[Tuple[str, str], "ConcreteTypeResolver"],
     ) -> None:
-        assert self._is_finalized is False
-        assert self._root_resolvers is None
+        assert self.is_finalized is False
+        assert self._root_type_resolvers is None
 
-        self._root_resolvers = root_resolvers
-        self._is_finalized = True
+        self._root_type_resolvers = root_type_resolvers
+        self.is_finalized = True
 
     # ----------------------------------------------------------------------
     @property
-    def root_resolvers(self) -> Dict[Tuple[str, str], "RootTypeResolver"]:
-        assert self._is_finalized is True
-        assert self._root_resolvers is not None
-        return self._root_resolvers
+    def root_type_resolvers(self) -> Dict[Tuple[str, str], "ConcreteTypeResolver"]:
+        assert self.is_finalized is True
+        assert self._root_type_resolvers is not None
+        return self._root_type_resolvers
 
     # ----------------------------------------------------------------------
+    @Interface.override
     def EvalMiniLanguageType(
         self,
         parser_info: ExpressionParserInfo,
     ) -> MiniLanguageHelpers.MiniLanguageType:
-        assert self._is_finalized
+        assert self.is_finalized is True
 
         result = MiniLanguageHelpers.EvalTypeExpression(
             parser_info,
@@ -134,11 +158,12 @@ class TypeResolver(object):
         return result
 
     # ----------------------------------------------------------------------
+    @Interface.override
     def EvalMiniLanguageExpression(
         self,
         parser_info: ExpressionParserInfo,
     ) -> MiniLanguageHelpers.MiniLanguageExpression.EvalResult:
-        assert self._is_finalized
+        assert self.is_finalized is True
 
         return MiniLanguageHelpers.EvalExpression(
             parser_info,
@@ -147,12 +172,13 @@ class TypeResolver(object):
         )
 
     # ----------------------------------------------------------------------
+    @Interface.override
     def EvalConcreteType(
         self,
         parser_info: ExpressionParserInfo,
-        *,
-        no_finalize=False,
     ) -> ConcreteType:
+        assert self.is_finalized is True
+
         type_expression = MiniLanguageHelpers.EvalTypeExpression(
             parser_info,
             self.compile_time_info,
@@ -172,10 +198,12 @@ class TypeResolver(object):
             assert isinstance(type_expression.value, str), type_expression.value
 
             for resolution_algorithm in [
-                self._ResolveByNested,
+                # BugBug: Order should be Nested then Namespace. Reversed while testing.
                 self._ResolveByNamespace,
+                self._ResolveByNested,
             ]:
                 result = resolution_algorithm(type_expression)
+
                 if result is not None:
                     break
 
@@ -209,18 +237,16 @@ class TypeResolver(object):
             assert False, type_expression  # pragma: no cover
 
         assert result is not None
-
-        if not no_finalize:
-            result.FinalizePass1()
-            result.FinalizePass2()
-
         return result
 
     # ----------------------------------------------------------------------
+    @Interface.override
     def EvalStatements(
         self,
         statements: List[StatementParserInfo],
     ) -> None:
+        assert self.is_finalized is True
+
         for statement in statements:
             if statement.is_disabled__:
                 continue
@@ -248,7 +274,31 @@ class TypeResolver(object):
         parser_info: FuncOrTypeExpressionParserInfo,
     ) -> Optional[ConcreteType]:
         assert isinstance(parser_info.value, str), parser_info.value
-        return None # BugBug
+
+        resolver = self
+
+        while resolver is not None:
+            if isinstance(resolver.namespace.parser_info, ClassStatementParserInfo):
+                concrete_class = resolver.concrete_type  # type: ignore  # pylint: disable=no-member
+                assert isinstance(concrete_class, ConcreteClassType), concrete_class
+
+                for type_dependency in concrete_class.types.EnumContent():
+                    visibility, type_info = type_dependency.ResolveDependencies()
+
+                    if type_info.name == parser_info.value:
+                        if visibility is None:
+                            raise ErrorException(
+                                InvisibleNestedTypeError.Create(
+                                    region=parser_info.regions__.self__,
+                                    type=type_info.name,
+                                ),
+                            )
+
+                        return type_info.generic_type.CreateConcreteType(parser_info)
+
+            resolver = resolver.parent
+
+        return None
 
     # ----------------------------------------------------------------------
     def _ResolveByNamespace(
@@ -286,11 +336,11 @@ class TypeResolver(object):
 
             resolved_namespace = namespace.ResolveImports()
 
-            root_resolver = self.root_resolvers.get(resolved_namespace.parser_info.translation_unit__, None)
-            assert root_resolver is not None
+            root_type_resolver = self.root_type_resolvers.get(resolved_namespace.parser_info.translation_unit__, None)
+            assert root_type_resolver is not None
 
-            return (
-                root_resolver
-                    .GetOrCreateNestedResolver(resolved_namespace)
-                    .CreateConcreteType(parser_info)
-            )
+            # BugBug: Error on invalid order
+
+            generic_type = root_type_resolver.GetOrCreateNestedGenericTypeViaNamespace(resolved_namespace)
+
+            return generic_type.CreateConcreteType(parser_info)
