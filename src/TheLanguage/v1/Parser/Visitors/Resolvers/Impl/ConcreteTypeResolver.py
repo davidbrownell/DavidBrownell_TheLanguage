@@ -67,6 +67,10 @@ class ConcreteTypeResolver(ConcreteTypeResolverInterface, TypeResolver):
 
     # ----------------------------------------------------------------------
     @property
+    def has_concrete_type(self) -> bool:
+        return self._concrete_type is not None
+
+    @property
     def concrete_type(self) -> ConcreteType:
         assert self._concrete_type
         return self._concrete_type

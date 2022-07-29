@@ -19,12 +19,11 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
-from CommonEnvironment.Compare import Compare as CompareImpl
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -35,8 +34,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    # BugBug from .ConcreteFuncDefinition import ConcreteFuncDefinition
-
     from .StatementParserInfo import (
         ParserInfo,
         ParserInfoType,
@@ -73,8 +70,6 @@ with InitRelativeImports():
         ExpressionParserInfo,
         VariableExpressionParserInfo,
     )
-
-    # BugBug from ..Types import FuncDefinitionType
 
     from ...Error import CreateError, Error, ErrorException
 

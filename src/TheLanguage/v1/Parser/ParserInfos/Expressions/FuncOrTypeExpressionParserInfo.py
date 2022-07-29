@@ -18,9 +18,9 @@
 import os
 
 from contextlib import contextmanager
-from typing import Any, List, Optional, Tuple, Type, Union, TYPE_CHECKING
+from typing import Any, List, Optional, Tuple, Union
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -45,9 +45,6 @@ with InitRelativeImports():
     from ..Common.MutabilityModifier import MutabilityModifier
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
 
-    from ..Statements.StatementParserInfo import StatementParserInfo
-    # BugBug from ..Types import Type
-
     from ...Error import CreateError, Error, ErrorException
 
     from ...MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
@@ -66,9 +63,6 @@ with InitRelativeImports():
     from ...MiniLanguage.Types.NumberType import NumberType                 # pylint: disable=unused-import
     from ...MiniLanguage.Types.StringType import StringType                 # pylint: disable=unused-import
     from ...MiniLanguage.Types.VariantType import VariantType               # pylint: disable=unused-import
-
-    if TYPE_CHECKING:
-        pass # BugBug from ..Common.ConstraintParametersParserInfo import ResolvedConstraintArguments  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -231,7 +225,7 @@ class FuncOrTypeExpressionParserInfo(
     @staticmethod
     @contextmanager
     @Interface.override
-    def _InitConfigurationImpl(*args, **kwargs):
+    def _InitConfigurationImpl(*args, **kwargs):  # pylint: disable=unused-argument
         # Nothing to do here
         yield
 

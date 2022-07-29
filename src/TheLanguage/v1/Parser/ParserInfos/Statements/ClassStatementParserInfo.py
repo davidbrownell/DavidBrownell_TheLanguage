@@ -15,12 +15,9 @@
 # ----------------------------------------------------------------------
 """Contains the ClassStatementParserInfo object"""
 
-import itertools
 import os
-import threading
 
-from enum import auto, Enum, Flag
-from typing import Any, Callable, cast, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass, field, InitVar
 
@@ -36,8 +33,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    #from .BugBug___ConcreteClass import ConcreteClass
-
     from .StatementParserInfo import (
         ParserInfo,
         ParserInfoType,
@@ -53,18 +48,9 @@ with InitRelativeImports():
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
     from ..Common.ClassModifier import ClassModifier
-    from ..Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
-    from ..Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo
-    from ..Common.MethodHierarchyModifier import MethodHierarchyModifier
-    from ..Common.MutabilityModifier import MutabilityModifier
-    from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ..Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
-
-    from ..Traits.NamedTrait import NamedTrait
-    # BugBug from ..Types import ClassType, Type
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -183,8 +169,6 @@ class ClassStatementParserInfo(
     is_abstract: Optional[bool]
     is_final: Optional[bool]
 
-    self_referencing_type_names: Optional[List[str]]
-
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
@@ -229,7 +213,6 @@ class ClassStatementParserInfo(
                     "regionless_attributes": [
                         "parent_class_capabilities",
                         "class_capabilities",
-                        "self_referencing_type_names",
                     ]
                         + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
                         + TemplatedStatementTrait.RegionlessAttributesArgs()
@@ -316,21 +299,6 @@ class ClassStatementParserInfo(
                     region=self.regions__.self__,
                 ),
             )
-
-        else:
-            # Ensure that the class or any of its named statements are the same as the self-referencing type names
-            if self.self_referencing_type_names is not None:
-                for statement in itertools.chain([self, ], self.statements):
-                    if not isinstance(statement, NamedTrait):
-                        continue
-
-                    if statement.name in self.self_referencing_type_names:
-                        errors.append(
-                            InvalidReservedNameError.Create(
-                                region=statement.regions__.name,
-                                name=statement.name,
-                            ),
-                        )
 
         # TODO: Create default special methods as necessary
         # TODO: Create a static 'Create' method if one does not already exist

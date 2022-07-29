@@ -57,7 +57,8 @@ class ClassGenericTypeResolver(GenericTypeResolver):
         self,
         updated_resolver: ConcreteTypeResolver,
     ) -> ConcreteType:
-        return ConcreteClassType(updated_resolver, self.generic_type)
+        assert isinstance(self.namespace.parser_info, ClassStatementParserInfo), self.namespace.parser_info
+        return ConcreteClassType(updated_resolver, self.namespace.parser_info)
 
 
 # ----------------------------------------------------------------------

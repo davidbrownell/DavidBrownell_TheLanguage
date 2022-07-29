@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -43,14 +43,11 @@ with InitRelativeImports():
     from .Traits.ConstrainedStatementTrait import ConstrainedStatementTrait
     from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
-    from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
-    from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
     from ..Traits.NamedTrait import NamedTrait
-    # BugBug from ..Types import TypeAliasType
 
     from ...Error import Error, ErrorException
 

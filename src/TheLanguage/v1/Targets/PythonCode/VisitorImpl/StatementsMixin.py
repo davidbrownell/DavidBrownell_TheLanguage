@@ -171,7 +171,6 @@ class StatementsMixin(BaseMixin):
                     constructor_visibility_param={constructor_visibility},
                     is_abstract={is_abstract},
                     is_final={is_final},
-                    self_referencing_type_names={self_referencing_type_names},
                 )
 
                 """,
@@ -204,7 +203,6 @@ class StatementsMixin(BaseMixin):
                 constructor_visibility=self._ToString(parser_info.constructor_visibility),
                 is_abstract=self._ToString(parser_info.is_abstract),
                 is_final=self._ToString(parser_info.is_final),
-                self_referencing_type_names=self._ToString(parser_info.self_referencing_type_names),
             ),
         )
 

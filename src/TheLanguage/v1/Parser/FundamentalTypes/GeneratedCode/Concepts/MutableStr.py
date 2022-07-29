@@ -507,7 +507,6 @@ statement_000026 = ClassStatementParserInfo.Create(
     constructor_visibility_param=VisibilityModifier.public,
     is_abstract=None,
     is_final=None,
-    self_referencing_type_names=[r"ThisType", ],
 )
 
 statement_000027 = FuncOrTypeExpressionParserInfo.Create(
@@ -1095,7 +1094,6 @@ statement_000085 = ClassStatementParserInfo.Create(
     constructor_visibility_param=VisibilityModifier.public,
     is_abstract=None,
     is_final=None,
-    self_referencing_type_names=[r"ThisType", ],
 )
 
 root_parser_info = RootStatementParserInfo.Create(

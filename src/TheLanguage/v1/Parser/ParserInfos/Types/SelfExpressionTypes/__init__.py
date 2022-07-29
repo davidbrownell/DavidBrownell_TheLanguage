@@ -3,7 +3,7 @@
 # |  __init__.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2022-07-26 16:59:16
+# |      2022-07-29 14:03:41
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains None-related types"""
+"""Contains SelfExpression-related types"""
 
 import os
 
@@ -30,26 +30,26 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..GenericTypes import GenericExpressionType, GenericType
 
-    from ...Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
+    from ...Expressions.SelfReferenceExpressionParserInfo import SelfReferenceExpressionParserInfo
 
     from ...Types.ConcreteType import ConcreteType
     from ...Types.ConstrainedType import ConstrainedType
 
 
 # ----------------------------------------------------------------------
-class GenericNoneType(GenericExpressionType):
+class GenericSelfExpressionType(GenericExpressionType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        parser_info: NoneExpressionParserInfo,
+        parser_info: SelfReferenceExpressionParserInfo,
     ):
-        super(GenericNoneType, self).__init__(parser_info, True)
+        super(GenericSelfExpressionType, self).__init__(parser_info, True)
 
     # ----------------------------------------------------------------------
     @property
     @Interface.override
-    def parser_info(self) -> NoneExpressionParserInfo:
-        assert isinstance(self._parser_info, NoneExpressionParserInfo), self._parser_info
+    def parser_info(self) -> SelfReferenceExpressionParserInfo:
+        assert isinstance(self._parser_info, SelfReferenceExpressionParserInfo), self._parser_info
         return self._parser_info
 
     # ----------------------------------------------------------------------
@@ -58,27 +58,25 @@ class GenericNoneType(GenericExpressionType):
         self,
         other: GenericType,
     ) -> bool:
-        return isinstance(other, GenericNoneType)
+        return False # BugBug
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _CreateConcreteTypeImpl(self) -> ConcreteType:
-        return ConcreteNoneType(self.parser_info)
+        return ConcreteSelfReferenceType(self.parser_info)
 
 
 # ----------------------------------------------------------------------
-class ConcreteNoneType(ConcreteType):
+class ConcreteSelfReferenceType(ConcreteType):
     # ----------------------------------------------------------------------
     @property
     @Interface.override
-    def parser_info(self) -> NoneExpressionParserInfo:
-        assert isinstance(self._parser_info, NoneExpressionParserInfo), self._parser_info
+    def parser_info(self) -> SelfReferenceExpressionParserInfo:
+        assert isinstance(self._parser_info, SelfReferenceExpressionParserInfo), self._parser_info
         return self._parser_info
 
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass1Impl(self) -> None:
@@ -93,10 +91,10 @@ class ConcreteNoneType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConstrainedTypeImpl(self) -> "ConstrainedNoneType":
-        return ConstrainedNoneType(self)
+    def _CreateConstrainedTypeImpl(self) -> "ConstrainedSelfReferenceType":
+        return ConstrainedSelfReferenceType(self)
 
 
 # ----------------------------------------------------------------------
-class ConstrainedNoneType(ConstrainedType):
+class ConstrainedSelfReferenceType(ConstrainedType):
     pass

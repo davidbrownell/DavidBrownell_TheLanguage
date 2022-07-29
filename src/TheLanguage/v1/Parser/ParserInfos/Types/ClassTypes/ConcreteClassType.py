@@ -137,12 +137,11 @@ class ConcreteClassType(ConcreteType):
     def __init__(
         self,
         type_resolver: ConcreteTypeResolver,
-        generic_class_type: GenericStatementType,
+        parser_info: ClassStatementParserInfo,
     ):
-        super(ConcreteClassType, self).__init__(generic_class_type.parser_info)
+        super(ConcreteClassType, self).__init__(parser_info)
 
         self._type_resolver                 = type_resolver
-        self._generic_class_type            = generic_class_type
 
         # The following values are initialized upon creation and are permanent
         self.base_dependency: Optional[DependencyNode[ConcreteType]]        = None
@@ -461,16 +460,6 @@ class ConcreteClassType(ConcreteType):
                 DependencyLeaf(TypeInfo(self._type_resolver.GetOrCreateNestedGenericType(statement))),
             )
 
-        for name in (self.parser_info.self_referencing_type_names or []):
-            local_info.types.append(
-                DependencyLeaf(
-                    TypeInfo(
-                        self._generic_class_type,
-                        name_override=name,
-                    ),
-                ),
-            )
-
         # Prepare the final results
         concepts = ClassContent.Create(
             local_info.concepts,
@@ -526,7 +515,14 @@ class ConcreteClassType(ConcreteType):
         # Validate the local types
         for dependency in self.types.local:
             try:
-                self._ValidateGenericType(dependency.ResolveDependencies()[1].generic_type)
+                generic_type = dependency.ResolveDependencies()[1].generic_type
+
+                if generic_type.is_default_initializable:
+                    concrete_type = generic_type.CreateDefaultConcreteType()
+
+                    concrete_type.FinalizePass1()
+                    concrete_type.FinalizePass2()
+
             except ErrorException as ex:
                 errors += ex.errors
 
@@ -581,8 +577,6 @@ class ConcreteClassType(ConcreteType):
                 generic_type = self._type_resolver.GetOrCreateNestedGenericType(method_statement)
 
                 # BugBug: Handle hierarchy
-
-                self._ValidateGenericType(generic_type)
 
                 dependency_leaf = DependencyLeaf(generic_type)
 
@@ -726,17 +720,6 @@ class ConcreteClassType(ConcreteType):
         del self._type_statements
         del self._using_statements
 
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def _ValidateGenericType(
-        generic_type: GenericType,
-    ) -> None:
-        if generic_type.is_default_initializable:
-            concrete_type = generic_type.CreateDefaultConcreteType()
-
-            concrete_type.FinalizePass1()
-            concrete_type.FinalizePass2()
-
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
@@ -761,12 +744,12 @@ class _InfoBase(object):
 
             for attribute_name in attribute_names:
                 dest_items = getattr(self, attribute_name)
-                source_content = getattr(self, attribute_name)
+                source_content = getattr(resolved_type, attribute_name)
 
                 if isinstance(source_content, list):
                     source_items = source_content
                 elif isinstance(source_content, ClassContent):
-                    source_items = source_content.EnumContent
+                    source_items = source_content.EnumContent()
                 else:
                     assert False, source_content  # pragma: no cover
 

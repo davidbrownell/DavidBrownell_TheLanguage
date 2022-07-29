@@ -47,6 +47,7 @@ with InitRelativeImports():
     from ....Parser.ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.NumberExpressionParserInfo import NumberExpressionParserInfo
+    from ....Parser.ParserInfos.Expressions.SelfReferenceExpressionParserInfo import SelfReferenceExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.StringExpressionParserInfo import StringExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
@@ -361,6 +362,35 @@ class ExpressionsMixin(BaseMixin):
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 value=parser_info.value,
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    # |  SelfReferenceExpressionParserInfo
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnSelfReferenceExpressionParserInfo(
+        self,
+        parser_info: SelfReferenceExpressionParserInfo,
+    ):
+        yield
+
+        self._imports.add("from v1.Parser.ParserInfos.Expressions.SelfReferenceExpressionParserInfo import SelfReferenceExpressionParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                {statement_name} = SelfReferenceExpressionParserInfo.Create(
+                    regions=[{self_region}, {mutability_modifier_region}],
+                    mutability_modifier={mutability_modifier},
+                )
+
+                """,
+            ).format(
+                statement_name=self._CreateStatementName(parser_info),
+                self_region=self._ToString(parser_info.regions__.self__),
+                mutability_modifier_region=self._ToString(parser_info.regions__.mutability_modifier),
+                mutability_modifier=self._ToString(parser_info.mutability_modifier),
             ),
         )
 

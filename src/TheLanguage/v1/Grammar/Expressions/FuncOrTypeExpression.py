@@ -62,11 +62,21 @@ with InitRelativeImports():
         StringType,
     )
 
+    from ...Parser.ParserInfos.Expressions.SelfReferenceExpressionParserInfo import SelfReferenceExpressionParserInfo
+
 
 # ----------------------------------------------------------------------
 InvalidCompileTimeTypeError                 = CreateError(
     "'{name}' is not a valid compile-time type or function",
     name=str,
+)
+
+InvalidSelfReferenceTemplatesError          = CreateError(
+    "Self-reference types may not include templates",
+)
+
+InvalidSelfReferenceConstraintsError        = CreateError(
+    "Self-reference types may not include constraints",
 )
 
 
@@ -89,6 +99,10 @@ class FuncOrTypeExpression(GrammarPhrase):
         "Num!" : NumberType(),
         "Str!" : StringType(),
     }
+
+    SELF_REFERENCE_TYPE_NAMES               = [
+        "ThisType",
+    ]
 
     # ----------------------------------------------------------------------
     def __init__(self):
@@ -125,9 +139,15 @@ class FuncOrTypeExpression(GrammarPhrase):
             nodes = ExtractSequence(node)
             assert len(nodes) == 4
 
+            is_self_reference_type = False
+
             # <name>
             name_leaf = cast(AST.Leaf, nodes[0])
             name_info = CommonTokens.FuncOrTypeName.Extract(name_leaf)  # type: ignore
+
+            # Assume that we don't have enough information to know if this is a configuration or
+            # type customization expression.
+            parser_info_type = ParserInfoType.Unknown
 
             if CommonTokens.FuncOrTypeName.IsCompileTime(name_info):  # type: ignore
                 potential_mini_language_type_or_expression = cls.MINILANGUAGE_TYPE_MAP.get(name_info, None)
@@ -144,12 +164,10 @@ class FuncOrTypeExpression(GrammarPhrase):
                 if isinstance(potential_mini_language_type_or_expression, MiniLanguageType):
                     parser_info_type = ParserInfoType.TypeCustomization
                 else:
-                    # We don't have enough information to know if this is a configuration or type customization
-                    # expression.
                     parser_info_type = ParserInfoType.CompileTimeTemporary
 
-            else:
-                parser_info_type = ParserInfoType.Unknown
+            elif name_info in cls.SELF_REFERENCE_TYPE_NAMES:
+                is_self_reference_type = True
 
             # <template_arguments>?
             template_arguments_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[1])))
@@ -171,6 +189,26 @@ class FuncOrTypeExpression(GrammarPhrase):
                 mutability_modifier_info = None
             else:
                 mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
+
+            if is_self_reference_type:
+                if template_arguments_node is not None:
+                    raise ErrorException(
+                        InvalidSelfReferenceTemplatesError.Create(
+                            region=CreateRegion(template_arguments_node),
+                        ),
+                    )
+
+                if constraint_arguments_node is not None:
+                    raise ErrorException(
+                        InvalidSelfReferenceConstraintsError.Create(
+                            region=CreateRegion(constraint_arguments_node),
+                        ),
+                    )
+
+                return SelfReferenceExpressionParserInfo.Create(
+                    CreateRegions(node, mutability_modifier_node),
+                    mutability_modifier_info,
+                )
 
             return FuncOrTypeExpressionParserInfo.Create(
                 parser_info_type,

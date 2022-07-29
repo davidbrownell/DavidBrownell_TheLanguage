@@ -56,7 +56,8 @@ class ConcreteFuncDefinitionType(ConcreteType):
             concrete_return_type = type_resolver.EvalConcreteType(parser_info.return_type)
 
         if not isinstance(parser_info.parameters, bool):
-            pass # BugBug
+            for parameter in parser_info.parameters.EnumParameters():
+                concrete_parameters.append(type_resolver.EvalConcreteType(parameter.type))
 
         self._type_resolver                 = type_resolver
 

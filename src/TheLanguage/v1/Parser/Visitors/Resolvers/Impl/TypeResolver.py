@@ -41,6 +41,7 @@ with InitRelativeImports():
     from ....ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
     from ....ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo
     from ....ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
+    from ....ParserInfos.Expressions.SelfReferenceExpressionParserInfo import SelfReferenceExpressionParserInfo
     from ....ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
     from ....ParserInfos.Expressions.TypeCheckExpressionParserInfo import OperatorType as TypeCheckExpressionOperatorType
     from ....ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
@@ -52,15 +53,15 @@ with InitRelativeImports():
     from ....ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ....ParserInfos.Statements.StatementParserInfo import StatementParserInfo
 
-    from ....ParserInfos.Traits.NamedTrait import NamedTrait
-
     from ....ParserInfos.Types.ClassTypes.ConcreteClassType import ConcreteClassType
 
     from ....ParserInfos.Types.ConcreteType import ConcreteType
-    from ....ParserInfos.Types.GenericTypes import GenericStatementType
     from ....ParserInfos.Types.NoneTypes import ConcreteNoneType
+    from ....ParserInfos.Types.SelfExpressionTypes import ConcreteSelfReferenceType
     from ....ParserInfos.Types.TupleTypes import ConcreteTupleType
     from ....ParserInfos.Types.VariantTypes import ConcreteVariantType
+
+    from ....TranslationUnitRegion import TranslationUnitRegion
 
     if TYPE_CHECKING:
         from .ConcreteTypeResolver import ConcreteTypeResolver  # pylint: disable=unused-import
@@ -83,6 +84,12 @@ InvalidNamedTypeError                       = CreateError(
 InvisibleNestedTypeError                    = CreateError(
     "The type '{type}' is valid but not visible in the current context",
     type=str,
+)
+
+InvalidTypeReferenceError                   = CreateError(
+    "'{name}' is defined via an ordered statement; it can only be used after it is defined",
+    name=str,
+    defined_region=TranslationUnitRegion,
 )
 
 
@@ -198,9 +205,8 @@ class TypeResolver(TypeResolverBase):
             assert isinstance(type_expression.value, str), type_expression.value
 
             for resolution_algorithm in [
-                # BugBug: Order should be Nested then Namespace. Reversed while testing.
-                self._ResolveByNamespace,
                 self._ResolveByNested,
+                self._ResolveByNamespace,
             ]:
                 result = resolution_algorithm(type_expression)
 
@@ -220,6 +226,9 @@ class TypeResolver(TypeResolverBase):
 
         elif isinstance(type_expression, NoneExpressionParserInfo):
             result = ConcreteNoneType(type_expression)
+
+        elif isinstance(type_expression, SelfReferenceExpressionParserInfo):
+            result = ConcreteSelfReferenceType(type_expression)
 
         elif isinstance(type_expression, TupleExpressionParserInfo):
             result = ConcreteTupleType(
@@ -278,7 +287,11 @@ class TypeResolver(TypeResolverBase):
         resolver = self
 
         while resolver is not None:
-            if isinstance(resolver.namespace.parser_info, ClassStatementParserInfo):
+            if (
+                isinstance(resolver.namespace.parser_info, ClassStatementParserInfo)
+                and type(resolver).__name__ == "ConcreteTypeResolver"
+                and resolver.has_concrete_type  # type: ignore  # pylint: disable=no-member
+            ):
                 concrete_class = resolver.concrete_type  # type: ignore  # pylint: disable=no-member
                 assert isinstance(concrete_class, ConcreteClassType), concrete_class
 
@@ -334,12 +347,23 @@ class TypeResolver(TypeResolverBase):
             if isinstance(namespace.parser_info, RootStatementParserInfo):
                 continue
 
+            if (
+                namespace.parser_info.translation_unit__ == parser_info.translation_unit__
+                and namespace.parser_info.IsNameOrdered(self.namespace.scope_flag)
+                and namespace.parser_info.regions__.self__ > parser_info.regions__.self__
+            ):
+                raise ErrorException(
+                    InvalidTypeReferenceError.Create(
+                        region=parser_info.regions__.value,
+                        name=parser_info.value,
+                        defined_region=namespace.parser_info.regions__.self__,
+                    ),
+                )
+
             resolved_namespace = namespace.ResolveImports()
 
             root_type_resolver = self.root_type_resolvers.get(resolved_namespace.parser_info.translation_unit__, None)
             assert root_type_resolver is not None
-
-            # BugBug: Error on invalid order
 
             generic_type = root_type_resolver.GetOrCreateNestedGenericTypeViaNamespace(resolved_namespace)
 

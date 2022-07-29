@@ -88,6 +88,7 @@ with InitRelativeImports():
     from ..ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo
     from ..ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
     from ..ParserInfos.Expressions.NumberExpressionParserInfo import NumberExpressionParserInfo
+    from ..ParserInfos.Expressions.SelfReferenceExpressionParserInfo import SelfReferenceExpressionParserInfo
     from ..ParserInfos.Expressions.StringExpressionParserInfo import StringExpressionParserInfo
     from ..ParserInfos.Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo
     from ..ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
@@ -390,6 +391,9 @@ class _Helper(object):
 
                 return parser_info
 
+            elif isinstance(parser_info, SelfReferenceExpressionParserInfo):
+                return parser_info
+
             elif isinstance(parser_info, TernaryExpressionParserInfo):
                 condition_result = self.Eval(self.ToExpression(parser_info.condition_expression))
                 condition_result = condition_result.type.ToBoolValue(condition_result.value)
@@ -456,7 +460,7 @@ class _Helper(object):
     # ----------------------------------------------------------------------
     @staticmethod
     def _CreateLazyDictImpl(
-        compile_time_info_items: List[Dict[str, CompileTimeInfo]],
+        compile_time_info_items: Iterable[Dict[str, CompileTimeInfo]],
         get_value_func: Callable[[CompileTimeInfo], _LazyDictValueT],
     ) -> Callable[[], Dict[str, "_LazyDictValueT"]]:
         # We are splitting the values here rather than taking the types and values as input parameters,
@@ -481,7 +485,7 @@ class _Helper(object):
     @classmethod
     def _CreateLazyValuesDict(
         cls,
-        compile_time_info_items: List[Dict[str, CompileTimeInfo]],
+        compile_time_info_items: Iterable[Dict[str, CompileTimeInfo]],
     ) -> LazyContainer[Dict[str, Any]]:
         return LazyContainer(cls._CreateLazyDictImpl(compile_time_info_items, lambda info_item: info_item.value))
 
@@ -489,7 +493,7 @@ class _Helper(object):
     @classmethod
     def _CreateLazyTypesDict(
         cls,
-        compile_time_info_items: List[Dict[str, CompileTimeInfo]],
+        compile_time_info_items: Iterable[Dict[str, CompileTimeInfo]],
     ) -> LazyContainer[Dict[str, MiniLanguageType]]:
         return LazyContainer(cls._CreateLazyDictImpl(compile_time_info_items, lambda info_item: info_item.type))
 
