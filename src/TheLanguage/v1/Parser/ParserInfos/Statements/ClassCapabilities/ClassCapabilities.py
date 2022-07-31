@@ -612,7 +612,7 @@ class ClassCapabilities(ObjectReprImplBase):
                 ),
             )
 
-        # mutability
+        # mutability_modifier
         if parser_info.type.mutability_modifier is None:
             errors.append(
                 MutabilityModifierRequiredError.Create(
@@ -768,8 +768,8 @@ class ClassCapabilities(ObjectReprImplBase):
                     ),
                 )
         else:
-            # mutability
-            if parser_info.mutability is None:
+            # mutability_modifier
+            if parser_info.mutability_modifier is None:
                 if self.valid_method_mutabilities:
                     errors.append(
                         FuncDefinitionMutabilityRequiredError.Create(
@@ -786,19 +786,13 @@ class ClassCapabilities(ObjectReprImplBase):
                         type=self.name,
                     ),
                 )
-            elif parser_info.mutability == MutabilityModifier.new:
-                errors.append(
-                    InvalidNewMutabilityModifierError.Create(
-                        region=parser_info.regions__.mutability,
-                    ),
-                )
-            elif parser_info.mutability not in self.valid_method_mutabilities:
+            elif parser_info.mutability_modifier not in self.valid_method_mutabilities:
                 errors.append(
                     InvalidFuncDefinitionMutabilityError.Create(
-                        region=parser_info.mutability,
+                        region=parser_info.regions__.mutability_modifier,
                         type=self.name,
-                        mutability=parser_info.mutability,
-                        mutability_str=parser_info.mutability.name,
+                        mutability=parser_info.mutability_modifier,
+                        mutability_str=parser_info.mutability_modifier.name,
                         valid_mutabilities=self.valid_attribute_mutabilities,
                         valid_mutabilities_str=", ".join("'{}'".format(v.name) for v in self.valid_method_mutabilities),
                     ),

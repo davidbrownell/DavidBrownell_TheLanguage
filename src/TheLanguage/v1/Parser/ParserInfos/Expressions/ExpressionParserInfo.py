@@ -108,9 +108,9 @@ class ExpressionParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     def InitializeAsType(
         self,
-        parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
+        parser_info_type: ParserInfoType,   # pylint: disable=unused-argument
         *,
-        is_instantiated_type: Optional[bool]=True,      # pylint: disable=unused-argument
+        is_instantiated_type: bool=True,    # pylint: disable=unused-argument
     ) -> None:
         is_type_result = self.IsType()
 
@@ -151,7 +151,7 @@ class ExpressionParserInfo(ParserInfo):
         self,
         parser_info_type: ParserInfoType,
         *,
-        is_instantiated_type: Optional[bool]=True,
+        is_instantiated_type: bool=True,
     ) -> None:
         # Nothing to do here by default
         pass

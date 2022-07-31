@@ -34,11 +34,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
 
-    from .FuncOrTypeExpressionParserInfo import (
-        MutabilityModifierRequiredError,
-        InvalidStandardMutabilityModifierError,
-    )
-
     from ..Common.MutabilityModifier import MutabilityModifier
 
     from ...Error import CreateError, Error, ErrorException
@@ -107,9 +102,9 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
     @Interface.override
     def _InitializeAsTypeImpl(
         self,
-        parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
+        parser_info_type: ParserInfoType,   # pylint: disable=unused-argument
         *,
-        is_instantiated_type: Optional[bool]=True,      # pylint: disable=unused-argument
+        is_instantiated_type: bool=True,    # pylint: disable=unused-argument
     ):
         errors: List[Error] = []
 
@@ -124,6 +119,11 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
             parser_info_type == ParserInfoType.Standard
             or parser_info_type == ParserInfoType.Unknown
         ):
+            try:
+                MutabilityModifier.Validate(self, parser_info_type, is_instantiated_type)
+            except ErrorException as ex:
+                errors += ex.errors
+
             for the_type in self.types:
                 try:
                     the_type.InitializeAsType(
@@ -132,19 +132,6 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
                     )
                 except ErrorException as ex:
                     errors += ex.errors
-
-            if is_instantiated_type and self.mutability_modifier is None:
-                errors.append(
-                    MutabilityModifierRequiredError.Create(
-                        region=self.regions__.self__,
-                    ),
-                )
-            elif not is_instantiated_type and self.mutability_modifier is not None:
-                errors.append(
-                    InvalidStandardMutabilityModifierError.Create(
-                        region=self.regions__.mutability_modifier,
-                    ),
-                )
 
         else:
             assert False, parser_info_type  # pragma: no cover

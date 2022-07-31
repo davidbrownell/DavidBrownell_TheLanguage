@@ -35,6 +35,7 @@ with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
     from ..Common import AttributesFragment
+    from ..Common import MutabilityModifier
     from ..Common.Errors import InvalidCompileTimeNameError
     from ..Common import Tokens as CommonTokens
     from ..Common import VisibilityModifier
@@ -95,6 +96,12 @@ class ClassAttributeStatement(GrammarPhrase):
                 # <name>
                 CommonTokens.VariableName,
 
+                # <mutability_modifier>?
+                OptionalPhraseItem(
+                    name="Mutability Modifier",
+                    item=MutabilityModifier.CreatePhraseItem(),
+                ),
+
                 # ('=' <expression>)?
                 OptionalPhraseItem(
                     name="Initializer",
@@ -119,7 +126,7 @@ class ClassAttributeStatement(GrammarPhrase):
         # ----------------------------------------------------------------------
         def Callback():
             nodes = ExtractSequence(node)
-            assert len(nodes) == 6
+            assert len(nodes) == 7
 
             errors: List[Error] = []
 
@@ -203,8 +210,15 @@ class ClassAttributeStatement(GrammarPhrase):
 
             # TODO: Get visibility information from name
 
+            # <mutability_modifier>?
+            mutability_modifier_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[10])))
+            if mutability_modifier_node is None:
+                mutability_modifier_info = None
+            else:
+                mutability_modifier_info = MutabilityModifier.Extract(mutability_modifier_node)
+
             # ('=' <expression>)?
-            initializer_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[4])))
+            initializer_node = cast(Optional[AST.Node], ExtractOptional(cast(AST.Node, nodes[5])))
             if initializer_node is None:
                 initializer_info = None
             else:
@@ -232,6 +246,7 @@ class ClassAttributeStatement(GrammarPhrase):
                     name_node,
                     visibility_node,
                     None, # documentation
+                    mutability_modifier_node,
                     keyword_initialization_node,
                     no_initialization_node,
                     no_serialize_node,
@@ -244,6 +259,7 @@ class ClassAttributeStatement(GrammarPhrase):
                 type_info,
                 None, # documentation
                 initializer_info,
+                mutability_modifier_info,
                 keyword_initialization_info,
                 no_initialization_info,
                 no_serialize_info,

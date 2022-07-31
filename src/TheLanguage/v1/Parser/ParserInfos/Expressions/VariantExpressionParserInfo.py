@@ -40,21 +40,9 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
-    from .FuncOrTypeExpressionParserInfo import (
-        InvalidCompileTimeMutabilityModifierError,
-        InvalidStandardMutabilityModifierError,
-        MutabilityModifierRequiredError,
-    )
-
     from ..Common.MutabilityModifier import MutabilityModifier
 
-    from ...Error import CreateError, Error, ErrorException
-
-
-# ----------------------------------------------------------------------
-InvalidCompileTimeMutabilityError           = CreateError(
-    "Compile-time types may not have a mutability modifier",
-)
+    from ...Error import Error, ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -114,9 +102,14 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
         self,
         parser_info_type: ParserInfoType,
         *,
-        is_instantiated_type: Optional[bool]=True,
+        is_instantiated_type: bool=True,
     ) -> None:
         errors: List[Error] = []
+
+        try:
+            MutabilityModifier.Validate(self, parser_info_type, is_instantiated_type)
+        except ErrorException as ex:
+            errors += ex.errors
 
         for the_type in self.types:
             try:
@@ -126,34 +119,6 @@ class VariantExpressionParserInfo(ExpressionParserInfo):
                 )
             except ErrorException as ex:
                 errors += ex.errors
-
-        if ParserInfoType.IsCompileTime(parser_info_type):
-            if self.mutability_modifier is not None:
-                errors.append(
-                    InvalidCompileTimeMutabilityModifierError.Create(
-                        region=self.regions__.mutability_modifier,
-                    ),
-                )
-
-        elif (
-            parser_info_type == ParserInfoType.Standard
-            or parser_info_type == ParserInfoType.Unknown
-        ):
-            if is_instantiated_type and self.mutability_modifier is None:
-                errors.append(
-                    MutabilityModifierRequiredError.Create(
-                        region=self.regions__.self__,
-                    ),
-                )
-            elif not is_instantiated_type and self.mutability_modifier is not None:
-                errors.append(
-                    InvalidStandardMutabilityModifierError.Create(
-                        region=self.regions__.mutability_modifier,
-                    ),
-                )
-
-        else:
-            assert False, parser_info_type  # pragma: no cover
 
         if errors:
             raise ErrorException(*errors)

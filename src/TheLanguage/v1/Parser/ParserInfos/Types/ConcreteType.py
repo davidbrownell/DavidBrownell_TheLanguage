@@ -19,7 +19,7 @@ import os
 
 from contextlib import ExitStack
 from enum import auto, Enum
-from typing import Generator, Optional, TYPE_CHECKING
+from typing import Callable, Generator, TYPE_CHECKING
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,8 +33,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ..ParserInfo import ParserInfo
-
-    from ..Statements.Traits.ConstrainedStatementTrait import ConstrainedStatementTrait
 
     from ..Traits.NamedTrait import NamedTrait
 
@@ -100,10 +98,12 @@ class ConcreteType(Interface.Interface):
         return last
 
     # ----------------------------------------------------------------------
-    def FinalizePass1(self) -> None:
-        if self.state.value > ConcreteType.State.FinalizingPass1.value:  # pylint: disable=no-member
-            return
+    def Finalize(self) -> None:
+        self.FinalizePass1()
+        self.FinalizePass2()
 
+    # ----------------------------------------------------------------------
+    def FinalizePass1(self) -> None:
         if self.state == ConcreteType.State.FinalizingPass1:
             assert isinstance(self._parser_info, NamedTrait), self._parser_info
 
@@ -114,50 +114,19 @@ class ConcreteType(Interface.Interface):
                 ),
             )
 
-        object.__setattr__(self, "state", ConcreteType.State.FinalizingPass1)
-
-        # ----------------------------------------------------------------------
-        def RestorePrevStateOnError():
-            if self.state != ConcreteType.State.FinalizedPass1:
-                object.__setattr__(
-                    self,
-                    "state",
-                    ConcreteType.State(ConcreteType.State.FinalizingPass1.value - 1),
-                )
-
-        # ----------------------------------------------------------------------
-
-        with ExitStack() as exit_stack:
-            exit_stack.callback(RestorePrevStateOnError)
-
-            self._FinalizePass1Impl()
-
-            object.__setattr__(self, "state", ConcreteType.State.FinalizedPass1)
+        self._FinalizeImpl(
+            ConcreteType.State.FinalizingPass1,
+            ConcreteType.State.FinalizedPass1,
+            self._FinalizePass1Impl,
+        )
 
     # ----------------------------------------------------------------------
     def FinalizePass2(self) -> None:
-        if self.state.value >= ConcreteType.State.FinalizingPass2.value:  # pylint: disable=no-member
-            return
-
-        object.__setattr__(self, "state", ConcreteType.State.FinalizingPass2)
-
-        # ----------------------------------------------------------------------
-        def RestorePrevStateOnError():
-            if self.state != ConcreteType.State.FinalizedPass2:
-                object.__setattr__(
-                    self,
-                    "state",
-                    ConcreteType.State(ConcreteType.State.FinalizingPass2.value - 1),
-                )
-
-        # ----------------------------------------------------------------------
-
-        with ExitStack() as exit_stack:
-            exit_stack.callback(RestorePrevStateOnError)
-
-            self._FinalizePass2Impl()
-
-            object.__setattr__(self, "state", ConcreteType.State.FinalizedPass2)
+        self._FinalizeImpl(
+            ConcreteType.State.FinalizingPass2,
+            ConcreteType.State.FinalizedPass2,
+            self._FinalizePass2Impl,
+        )
 
         # We are done
         object.__setattr__(self, "state", ConcreteType.State.Finalized)
@@ -188,3 +157,33 @@ class ConcreteType(Interface.Interface):
     @Interface.abstractmethod
     def _CreateConstrainedTypeImpl() -> "ConstrainedType":
         raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    def _FinalizeImpl(
+        self,
+        in_process_state: "ConcreteType.State",
+        completed_state: "ConcreteType.State",
+        impl_func: Callable[[], None],
+    ) -> None:
+        if self.state.value >= in_process_state.value:
+            return
+
+        object.__setattr__(self, "state", in_process_state)
+
+        # ----------------------------------------------------------------------
+        def RestorePrevStateOnError():
+            if self.state != completed_state:
+                object.__setattr__(
+                    self,
+                    "state",
+                    ConcreteType.State(in_process_state.value - 1),
+                )
+
+        # ----------------------------------------------------------------------
+
+        with ExitStack() as exit_stack:
+            exit_stack.callback(RestorePrevStateOnError)
+
+            impl_func()
+
+            object.__setattr__(self, "state", completed_state)

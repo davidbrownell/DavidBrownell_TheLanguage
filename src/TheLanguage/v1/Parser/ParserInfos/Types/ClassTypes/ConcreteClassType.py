@@ -328,12 +328,14 @@ class ConcreteClassType(ConcreteType):
 
             try:
                 if isinstance(statement, ClassAttributeStatementParserInfo):
+                    # BugBug: Check for mutable on immutable class
                     attribute_statements.append(statement)
                 elif isinstance(statement, ClassStatementParserInfo):
                     type_statements.append(statement)
                 elif isinstance(statement, ClassUsingStatementParserInfo):
                     using_statements.append(statement)
                 elif isinstance(statement, FuncDefinitionStatementParserInfo):
+                    # BugBug: Check for mutable on immutable class
                     method_statements.append(statement)
                 elif isinstance(statement, TypeAliasStatementParserInfo):
                     type_statements.append(statement)
@@ -518,10 +520,7 @@ class ConcreteClassType(ConcreteType):
                 generic_type = dependency.ResolveDependencies()[1].generic_type
 
                 if generic_type.is_default_initializable:
-                    concrete_type = generic_type.CreateDefaultConcreteType()
-
-                    concrete_type.FinalizePass1()
-                    concrete_type.FinalizePass2()
+                    generic_type.CreateDefaultConcreteType().Finalize()
 
             except ErrorException as ex:
                 errors += ex.errors
@@ -557,8 +556,7 @@ class ConcreteClassType(ConcreteType):
 
                 concrete_type = self._type_resolver.EvalConcreteType(attribute_statement.type)
 
-                concrete_type.FinalizePass1()
-                concrete_type.FinalizePass2()
+                concrete_type.Finalize()
 
                 constrained_type = concrete_type.CreateConstrainedType()
 
@@ -643,8 +641,8 @@ class ConcreteClassType(ConcreteType):
                 assert isinstance(generic_statement_type.parser_info, FuncDefinitionStatementParserInfo), generic_statement_type.parser_info
 
                 if (
-                    generic_statement_type.parser_info.mutability is not None
-                    and MutabilityModifier.IsMutable(generic_statement_type.parser_info.mutability)
+                    generic_statement_type.parser_info.mutability_modifier is not None
+                    and MutabilityModifier.IsMutable(generic_statement_type.parser_info.mutability_modifier)
                 ):
                     has_mutable_method = True
                     break

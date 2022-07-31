@@ -110,7 +110,7 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
         self,
         parser_info_type: ParserInfoType,
         *,
-        is_instantiated_type: Optional[bool]=True,
+        is_instantiated_type: bool=True,
     ) -> None:
         self.condition_expression.InitializeAsExpression()
 

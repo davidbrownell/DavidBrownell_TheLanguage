@@ -80,13 +80,14 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = ClassAttributeStatementParserInfo.Create(
-                    regions=[{self_region}, {name_region}, {visibility_region}, {documentation_region}, {keyword_initialization_region}, {no_initialization_region}, {no_serialize_region}, {no_compare_region}, {is_override_region}],
+                    regions=[{self_region}, {name_region}, {visibility_region}, {documentation_region}, {mutability_modifier_region}, {keyword_initialization_region}, {no_initialization_region}, {no_serialize_region}, {no_compare_region}, {is_override_region}],
                     name={name},
                     visibility_param={visibility},
                     class_capabilities={class_capabilities},
                     type={type},
                     documentation={documentation},
                     initialized_value={initialized_value},
+                    mutability_modifier={class_modifier},
                     keyword_initialization={keyword_initialization},
                     no_initialization={no_initialization},
                     no_serialize={no_serialize},
@@ -101,6 +102,7 @@ class StatementsMixin(BaseMixin):
                 visibility_region=self._ToString(parser_info.regions__.visibility),
                 name_region=self._ToString(parser_info.regions__.name),
                 documentation_region=self._ToString(parser_info.regions__.documentation),
+                mutability_modifier_region=self._ToString(parser_info.regions__.mutability_modifier),
                 keyword_initialization_region=self._ToString(parser_info.regions__.keyword_initialization),
                 no_initialization_region=self._ToString(parser_info.regions__.no_initialization),
                 no_serialize_region=self._ToString(parser_info.regions__.no_serialize),
@@ -112,6 +114,7 @@ class StatementsMixin(BaseMixin):
                 name=self._ToString(parser_info.name),
                 documentation=self._ToString(parser_info.documentation),
                 initialized_value=self._ToString(parser_info.initialized_value),
+                mutability_modifier=self._ToString(parser_info.mutability_modifier),
                 keyword_initialization=self._ToString(parser_info.keyword_initialization),
                 no_initialization=self._ToString(parser_info.no_initialization),
                 no_serialize=self._ToString(parser_info.no_serialize),
@@ -296,7 +299,7 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = FuncDefinitionStatementParserInfo.Create(
-                    regions=[{self_region}, {name_region}, {visibility_region}, {statements_region}, {function_modifier_region}, {parameters_region}, {mutability_region}, {method_hierarchy_modifier_region}, {documentation_region}, {captured_variables_region}, {is_deferred_region}, {is_exceptional_region}, {is_static_region}],
+                    regions=[{self_region}, {name_region}, {visibility_region}, {statements_region}, {function_modifier_region}, {parameters_region}, {mutability_modifier_region}, {method_hierarchy_modifier_region}, {documentation_region}, {captured_variables_region}, {is_deferred_region}, {is_exceptional_region}, {is_static_region}],
                     name={name},
                     visibility_param={visibility},
                     statements={statements},
@@ -304,7 +307,7 @@ class StatementsMixin(BaseMixin):
                     parent_class_capabilities={parent_class_capabilities},
                     function_modifier_param={function_modifier},
                     parameters={parameters},
-                    mutability_param={mutability},
+                    mutability_modifier_param={mutability},
                     method_hierarchy_modifier_param={method_hierarchy_modifier},
                     return_type={return_type},
                     documentation={documentation},
@@ -319,7 +322,7 @@ class StatementsMixin(BaseMixin):
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 visibility_region=self._ToString(parser_info.regions__.visibility),
-                mutability_region=self._ToString(parser_info.regions__.mutability),
+                mutability_modifier_region=self._ToString(parser_info.regions__.mutability_modifier),
                 method_hierarchy_modifier_region=self._ToString(parser_info.regions__.method_hierarchy_modifier),
                 name_region=self._ToString(parser_info.regions__.name),
                 documentation_region=self._ToString(parser_info.regions__.documentation),
@@ -332,7 +335,7 @@ class StatementsMixin(BaseMixin):
                 is_static_region=self._ToString(parser_info.regions__.is_static),
                 parent_class_capabilities=parent_class_capabilities,
                 visibility=self._ToString(parser_info.visibility),
-                mutability=self._ToString(parser_info.mutability),
+                mutability=self._ToString(parser_info.mutability_modifier),
                 method_hierarchy_modifier=self._ToString(parser_info.method_hierarchy_modifier),
                 return_type=self._ToString(parser_info.return_type),
                 name=self._ToString(parser_info.name) if isinstance(parser_info.name, str) else "FuncDefinitionStatementParserInfoOperatorType.{}".format(parser_info.name.name),

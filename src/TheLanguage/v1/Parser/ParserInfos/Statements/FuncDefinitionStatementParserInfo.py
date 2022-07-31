@@ -55,7 +55,7 @@ with InitRelativeImports():
     from ..Common.FunctionModifier import FunctionModifier
     from ..Common.MethodHierarchyModifier import MethodHierarchyModifier
 
-    from ..Common.MutabilityModifier import MutabilityModifier
+    from ..Common.MutabilityModifier import MutabilityModifier, InvalidMutableMutabilityModifierError
     from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
 
     from ..Common.TemplateParametersParserInfo import (  # pylint: disable=unused-import
@@ -226,10 +226,6 @@ InvalidVisibilityError                      = CreateError(
     valid_visibilities_str=str,
 )
 
-MutabilityRequiredError                     = CreateError(
-    "A mutability modifier is required",
-)
-
 StatementsRequiredError                     = CreateError(
     "{type} statements are required",
 )
@@ -253,8 +249,8 @@ class FuncDefinitionStatementParserInfo(
 
     parameters: Union[bool, FuncParametersParserInfo]
 
-    mutability_param: InitVar[Optional[MutabilityModifier]]
-    mutability: Optional[MutabilityModifier]            = field(init=False)
+    mutability_modifier_param: InitVar[Optional[MutabilityModifier]]
+    mutability_modifier: Optional[MutabilityModifier]   = field(init=False)
 
     method_hierarchy_modifier_param: InitVar[Optional[MethodHierarchyModifier]]
     method_hierarchy_modifier: Optional[MethodHierarchyModifier]  = field(init=False)
@@ -313,7 +309,7 @@ class FuncDefinitionStatementParserInfo(
         visibility_param,
         templates_param,
         function_modifier_param,
-        mutability_param,
+        mutability_modifier_param,
         method_hierarchy_modifier_param,
     ):
         StatementParserInfo.__post_init__(
@@ -363,9 +359,9 @@ class FuncDefinitionStatementParserInfo(
                 visibility_param = self.parent_class_capabilities.default_method_visibility
                 object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
-            if not self.is_static and mutability_param is None and self.parent_class_capabilities.default_method_mutability is not None:
-                mutability_param = self.parent_class_capabilities.default_method_mutability
-                object.__setattr__(self.regions__, "mutability", self.regions__.self__)
+            if not self.is_static and mutability_modifier_param is None and self.parent_class_capabilities.default_method_mutability is not None:
+                mutability_modifier_param = self.parent_class_capabilities.default_method_mutability
+                object.__setattr__(self.regions__, "mutability_modifier", self.regions__.self__)
 
             if method_hierarchy_modifier_param is None and self.parent_class_capabilities.default_method_hierarchy_modifier is not None:
                 method_hierarchy_modifier_param = self.parent_class_capabilities.default_method_hierarchy_modifier
@@ -377,7 +373,7 @@ class FuncDefinitionStatementParserInfo(
         TemplatedStatementTrait.__post_init__(self, templates_param)
 
         object.__setattr__(self, "function_modifier", function_modifier_param)
-        object.__setattr__(self, "mutability", mutability_param)
+        object.__setattr__(self, "mutability_modifier", mutability_modifier_param)
         object.__setattr__(self, "method_hierarchy_modifier", method_hierarchy_modifier_param)
 
         self._Finalize()
@@ -393,10 +389,10 @@ class FuncDefinitionStatementParserInfo(
                     ),
                 )
 
-            if self.mutability is not None:
+            if self.mutability_modifier is not None:
                 errors.append(
                     InvalidFunctionMutabilityError.Create(
-                        region=self.regions__.mutability,
+                        region=self.regions__.mutability_modifier,
                     ),
                 )
 
@@ -432,19 +428,21 @@ class FuncDefinitionStatementParserInfo(
                 )
 
             if self.is_static:
-                if self.mutability is not None:
+                if self.mutability_modifier is not None:
                     errors.append(
                         InvalidStaticMethodMutabilityError.Create(
-                            region=self.regions__.mutability,
+                            region=self.regions__.mutability_modifier,
                         ),
                     )
             else:
-                if self.mutability is None:
-                    errors.append(
-                        MutabilityRequiredError.Create(
-                            region=self.regions__.self__,
-                        ),
+                try:
+                    MutabilityModifier.Validate(
+                        self,
+                        ParserInfoType.Standard,
+                        is_instantiated_type=True,
                     )
+                except ErrorException as ex:
+                    errors += ex.errors
 
                 # 'this' and 'self' can't be used as parameter names
                 if isinstance(self.parameters, FuncParametersParserInfo):

@@ -33,13 +33,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
-    from .FuncOrTypeExpressionParserInfo import InvalidCompileTimeMutabilityModifierError, InvalidStandardMutabilityModifierError, MutabilityModifierRequiredError
 
     from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
     from ..Common.MutabilityModifier import MutabilityModifier
-
-    from ...Error import Error, ErrorException
 
 
 # ----------------------------------------------------------------------
@@ -78,21 +75,9 @@ class SelfReferenceExpressionParserInfo(
         self,
         parser_info_type: ParserInfoType,
         *,
-        is_instantiated_type: Optional[bool]=True,
+        is_instantiated_type: bool=True,
     ) -> None:
-        # Validate
-
-        errors: List[Error] = []
-
-        if is_instantiated_type and self.mutability_modifier is None:
-            errors.append(
-                MutabilityModifierRequiredError.Create(
-                    regions=self.regions__.self__,
-                ),
-            )
-
-        if errors:
-            raise ErrorException(*errors)
+        MutabilityModifier.Validate(self, parser_info_type, is_instantiated_type)
 
     # ----------------------------------------------------------------------
     @staticmethod
