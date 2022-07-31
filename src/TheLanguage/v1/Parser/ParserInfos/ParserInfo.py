@@ -85,20 +85,12 @@ class ParserInfoType(Enum):
         return dominant_expression.parser_info_type__ if dominant_expression else cls.Unknown
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def IsConfiguration(
-        cls,
-        value: "ParserInfoType",
-    ) -> bool:
-        return value == cls.Configuration or value == cls.Unknown
+    def IsConfiguration(self) -> bool:
+        return self == ParserInfoType.Configuration or self == ParserInfoType.Unknown
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def IsCompileTime(
-        cls,
-        value: "ParserInfoType",
-    ) -> bool:
-        return value != cls.Standard and value != cls.Unknown
+    def IsCompileTime(self) -> bool:
+        return self != ParserInfoType.Standard and self != ParserInfoType.Unknown
 
 
 # ----------------------------------------------------------------------
@@ -216,7 +208,7 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
 
     @property
     def is_compile_time__(self) -> bool:
-        return ParserInfoType.IsCompileTime(self.parser_info_type__)
+        return self.parser_info_type__.IsCompileTime()
 
     @property
     def is_disabled__(self) -> bool:

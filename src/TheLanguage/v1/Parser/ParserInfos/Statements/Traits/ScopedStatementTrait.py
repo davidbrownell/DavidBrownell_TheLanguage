@@ -51,7 +51,7 @@ class ScopedStatementTrait(NamedTrait):
         if self.statements:
             parser_info_type = self.parser_info_type__  # type: ignore  # pylint: disable=no-member
 
-            if ParserInfoType.IsCompileTime(parser_info_type):
+            if parser_info_type.IsCompileTime():
                 for statement in self.statements:
                     if statement.parser_info_type__ == ParserInfoType.CompileTimeTemporary:
                         statement.OverrideParserInfoType(parser_info_type)

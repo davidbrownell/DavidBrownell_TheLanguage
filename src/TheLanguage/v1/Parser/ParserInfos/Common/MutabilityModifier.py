@@ -18,7 +18,6 @@
 import os
 
 from enum import auto, Enum
-from typing import Optional
 
 import CommonEnvironment
 
@@ -108,7 +107,7 @@ class MutabilityModifier(Enum):
             )
         ), parser_info
 
-        if ParserInfoType.IsCompileTime(parser_info_type):
+        if parser_info_type.IsCompileTime():
             if modifier is not None:
                 raise ErrorException(
                     InvalidCompileTimeMutabilityModifierError.Create(
@@ -167,21 +166,13 @@ class MutabilityModifier(Enum):
         #     )
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def IsMutable(
-        cls,
-        value: "MutabilityModifier",
-    ) -> bool:
+    def IsMutable(self) -> bool:
         return (
-            value == cls.var
-            or value == cls.ref
-            or value == cls.mutable
+            self == MutabilityModifier.var
+            or self == MutabilityModifier.ref
+            or self == MutabilityModifier.mutable
         )
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def IsImmutable(
-        cls,
-        value: "MutabilityModifier",
-    ) -> bool:
-        return not cls.IsMutable(value)
+    def IsImmutable(self) -> bool:
+        return not self.IsMutable()

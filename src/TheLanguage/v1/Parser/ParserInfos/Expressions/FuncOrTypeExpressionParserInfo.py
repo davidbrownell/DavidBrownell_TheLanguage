@@ -162,7 +162,7 @@ class FuncOrTypeExpressionParserInfo(
                 )
 
         # Checks for all compile-time values
-        if ParserInfoType.IsCompileTime(parser_info_type):
+        if parser_info_type.IsCompileTime():
             if self.templates is not None:
                 errors.append(
                     InvalidCompileTimeTemplatesError.Create(

@@ -101,12 +101,11 @@ class SpecialMethodType(Enum):
     Finalize                    = auto()                    # Called when an instance is being finalized        Impl based on attr flags        No              __Finalize__()
 
     # ----------------------------------------------------------------------
-    @classmethod
-    def IsCompileTimeMethod(cls, special_method_type):
-        return special_method_type in [
-            cls.EvalTemplates,
-            cls.EvalConstraints,
-            cls.Convert,
+    def IsCompileTimeMethod(self) -> bool:
+        return self in [
+            SpecialMethodType.EvalTemplates,
+            SpecialMethodType.EvalConstraints,
+            SpecialMethodType.Convert,
         ]
 
 
@@ -132,7 +131,7 @@ class SpecialMethodStatementParserInfo(
         *args,
         **kwargs,
     ):
-        if SpecialMethodType.IsCompileTimeMethod(name):
+        if name.IsCompileTimeMethod():
             parser_info_type = ParserInfoType.TypeCustomization
         else:
             parser_info_type = ParserInfoType.Standard
@@ -198,9 +197,9 @@ class SpecialMethodStatementParserInfo(
                     region=self.regions__.self__,
                 ),
             )
-        elif ParserInfoType.IsCompileTime(self.parser_info_type__):
+        elif self.parser_info_type__.IsCompileTime():
             for statement in self.statements:
-                if not ParserInfoType.IsCompileTime(statement.parser_info_type__):
+                if not statement.parser_info_type__.IsCompileTime():
                     errors.append(
                         InvalidCompileTimeStatementError.Create(
                             region=statement.regions__.self__,

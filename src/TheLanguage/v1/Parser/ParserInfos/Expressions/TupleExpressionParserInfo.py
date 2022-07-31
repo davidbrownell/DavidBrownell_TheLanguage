@@ -108,7 +108,7 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
     ):
         errors: List[Error] = []
 
-        if ParserInfoType.IsCompileTime(parser_info_type):
+        if parser_info_type.IsCompileTime():
             errors.append(
                 CompileTimeTupleError.Create(
                     region=self.regions__.self__,

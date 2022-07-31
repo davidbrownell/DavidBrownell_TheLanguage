@@ -58,7 +58,7 @@ class CallExpressionParserInfo(ExpressionParserInfo):
         else:
             parser_info_type = ParserInfoType.GetDominantType(expression, arguments)
 
-        if ParserInfoType.IsCompileTime(parser_info_type):
+        if parser_info_type.IsCompileTime():
             expression.OverrideParserInfoType(parser_info_type)
 
         return cls(
