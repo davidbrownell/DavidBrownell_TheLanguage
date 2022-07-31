@@ -1431,7 +1431,7 @@ statement_000118 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000119 = ClassStatementParserInfo.Create(
-    regions=[tu_region_000268, tu_region_000269, tu_region_000272, tu_region_000270, tu_region_000271, None, None, None, None, tu_region_000268, None, None],
+    regions=[tu_region_000268, tu_region_000269, tu_region_000272, tu_region_000270, tu_region_000271, None, None, None, None, tu_region_000268, None, None, None],
     name=r"Num",
     visibility_param=VisibilityModifier.public,
     statements=[statement_000027, statement_000034, statement_000040, statement_000046, statement_000048, statement_000050, statement_000052, statement_000059, statement_000064, statement_000069, statement_000074, statement_000079, statement_000084, statement_000089, statement_000091, statement_000093, statement_000098, statement_000103, statement_000108, statement_000113, statement_000118, ],
@@ -1445,6 +1445,7 @@ statement_000119 = ClassStatementParserInfo.Create(
     implements=None,
     uses=None,
     constructor_visibility_param=VisibilityModifier.public,
+    is_fundamental=None,
     is_abstract=None,
     is_final=None,
 )

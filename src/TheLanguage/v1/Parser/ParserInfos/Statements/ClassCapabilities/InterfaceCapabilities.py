@@ -40,6 +40,7 @@ with InitRelativeImports():
 InterfaceCapabilities                       = _ClassCapabilities(
     name="Interface",
     is_instantiable=False,
+    allow_fundamental=False,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,

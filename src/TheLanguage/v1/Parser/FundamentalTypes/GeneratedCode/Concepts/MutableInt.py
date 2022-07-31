@@ -952,7 +952,7 @@ statement_000076 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000077 = ClassStatementParserInfo.Create(
-    regions=[tu_region_000161, tu_region_000162, tu_region_000165, tu_region_000163, tu_region_000164, None, tu_region_000020, None, None, tu_region_000161, None, None],
+    regions=[tu_region_000161, tu_region_000162, tu_region_000165, tu_region_000163, tu_region_000164, None, tu_region_000020, None, None, tu_region_000161, None, None, None],
     name=r"MutableInt",
     visibility_param=VisibilityModifier.public,
     statements=[statement_000025, statement_000031, statement_000032, statement_000036, statement_000040, statement_000044, statement_000048, statement_000052, statement_000056, statement_000060, statement_000064, statement_000068, statement_000072, statement_000076, ],
@@ -966,6 +966,7 @@ statement_000077 = ClassStatementParserInfo.Create(
     implements=None,
     uses=None,
     constructor_visibility_param=VisibilityModifier.public,
+    is_fundamental=None,
     is_abstract=None,
     is_final=None,
 )

@@ -166,6 +166,7 @@ class ClassStatementParserInfo(
     constructor_visibility_param: InitVar[Optional[VisibilityModifier]]
     constructor_visibility: VisibilityModifier          = field(init=False)
 
+    is_fundamental: Optional[bool]
     is_abstract: Optional[bool]
     is_final: Optional[bool]
 

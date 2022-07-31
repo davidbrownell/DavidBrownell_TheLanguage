@@ -40,6 +40,7 @@ with InitRelativeImports():
 ConceptCapabilities                         = _ClassCapabilities(
     name="Concept",
     is_instantiable=False,
+    allow_fundamental=False,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,

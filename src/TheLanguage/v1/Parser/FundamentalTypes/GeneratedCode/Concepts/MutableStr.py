@@ -491,7 +491,7 @@ statement_000025 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000026 = ClassStatementParserInfo.Create(
-    regions=[tu_region_000053, tu_region_000054, tu_region_000058, tu_region_000055, tu_region_000056, tu_region_000057, tu_region_000012, None, None, tu_region_000053, None, None],
+    regions=[tu_region_000053, tu_region_000054, tu_region_000058, tu_region_000055, tu_region_000056, tu_region_000057, tu_region_000012, None, None, tu_region_000053, None, None, None],
     name=r"FixedSizeMutableStr",
     visibility_param=VisibilityModifier.public,
     statements=[statement_000016, statement_000022, statement_000023, statement_000024, statement_000025, ],
@@ -505,6 +505,7 @@ statement_000026 = ClassStatementParserInfo.Create(
     implements=None,
     uses=None,
     constructor_visibility_param=VisibilityModifier.public,
+    is_fundamental=None,
     is_abstract=None,
     is_final=None,
 )
@@ -1078,7 +1079,7 @@ statement_000084 = FuncDefinitionStatementParserInfo.Create(
 )
 
 statement_000085 = ClassStatementParserInfo.Create(
-    regions=[tu_region_000197, tu_region_000198, tu_region_000202, tu_region_000199, tu_region_000200, tu_region_000201, tu_region_000068, None, None, tu_region_000197, None, None],
+    regions=[tu_region_000197, tu_region_000198, tu_region_000202, tu_region_000199, tu_region_000200, tu_region_000201, tu_region_000068, None, None, tu_region_000197, None, None, None],
     name=r"MutableStr",
     visibility_param=VisibilityModifier.public,
     statements=[statement_000036, statement_000037, statement_000038, statement_000039, statement_000040, statement_000041, statement_000048, statement_000055, statement_000062, statement_000073, statement_000084, ],
@@ -1092,6 +1093,7 @@ statement_000085 = ClassStatementParserInfo.Create(
     implements=None,
     uses=None,
     constructor_visibility_param=VisibilityModifier.public,
+    is_fundamental=None,
     is_abstract=None,
     is_final=None,
 )

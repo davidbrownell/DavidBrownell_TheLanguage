@@ -51,6 +51,11 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
+InvalidFundamentalError                     = CreateError(
+    "'{type}' types may not be declared as fundamental",
+    type=str,
+)
+
 VisibilityRequiredError                     = CreateError(
     "A visibility value is required for '{type}' types; valid values are {valid_visibilities_str}",
     type=str,
@@ -301,6 +306,8 @@ class ClassCapabilities(ObjectReprImplBase):
     name: str
     is_instantiable: bool
 
+    allow_fundamental: bool
+
     valid_visibilities: List[VisibilityModifier]
     default_visibility: Optional[VisibilityModifier]
 
@@ -385,6 +392,15 @@ class ClassCapabilities(ObjectReprImplBase):
         has_parent_class: bool,
     ) -> None:
         errors: List[Error] = []
+
+        # Class Traits
+        if parser_info.is_fundamental and not self.allow_fundamental:
+            errors.append(
+                InvalidFundamentalError.Create(
+                    region=parser_info.regions__.is_fundamental,
+                    type=self.name,
+                ),
+            )
 
         # visibility
         if parser_info.visibility is None:

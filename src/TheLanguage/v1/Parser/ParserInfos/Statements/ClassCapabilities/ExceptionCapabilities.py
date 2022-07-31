@@ -40,6 +40,7 @@ with InitRelativeImports():
 ExceptionCapabilities                       = _ClassCapabilities(
     name="Exception",
     is_instantiable=True,
+    allow_fundamental=False,
     valid_visibilities=[
         VisibilityModifier.public,
     ],

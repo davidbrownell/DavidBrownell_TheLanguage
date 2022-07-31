@@ -18,6 +18,7 @@ from .Concepts.MutableStr import FixedSizeMutableStr
 # TODO: Use perfect forwarding
 
 # ----------------------------------------------------------------------
+[Fundamental]
 public mutable class FixedSizeStr {
     Bool! allow_empty! = False!
 }

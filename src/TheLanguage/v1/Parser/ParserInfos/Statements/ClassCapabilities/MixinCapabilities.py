@@ -40,6 +40,7 @@ with InitRelativeImports():
 MixinCapabilities                           = _ClassCapabilities(
     name="Mixin",
     is_instantiable=False,
+    allow_fundamental=False,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,

@@ -17,6 +17,7 @@ from .Concepts.MutableNum import MutableNum
 
 
 # ----------------------------------------------------------------------
+[Fundamental]
 public mutable class FixedNum <TEMPLATE
     pos:
         Int! num_bytes!,                    # 2, 4, 8, 16, 32

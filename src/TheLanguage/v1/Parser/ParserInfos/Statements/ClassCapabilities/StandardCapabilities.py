@@ -43,6 +43,7 @@ with InitRelativeImports():
 StandardCapabilities                        = _ClassCapabilities(
     name="Standard",
     is_instantiable=True,
+    allow_fundamental=True,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,

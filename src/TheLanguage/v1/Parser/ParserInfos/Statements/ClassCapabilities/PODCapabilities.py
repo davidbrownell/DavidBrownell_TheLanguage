@@ -40,6 +40,7 @@ with InitRelativeImports():
 PODCapabilities                             = _ClassCapabilities(
     name="POD",
     is_instantiable=True,
+    allow_fundamental=False,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,

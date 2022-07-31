@@ -17,6 +17,7 @@
 # TODO: Min val/Max val
 
 # ----------------------------------------------------------------------
+[Fundamental]
 public immutable class Char:
     [Deferred] public ArchInt val GetBytes() immutable
 

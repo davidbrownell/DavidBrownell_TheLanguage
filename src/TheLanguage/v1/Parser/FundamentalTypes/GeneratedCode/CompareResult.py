@@ -32,7 +32,7 @@ statement_000000 = PassStatementParserInfo.Create(
     regions=[tu_region_000000],
 )
 statement_000001 = ClassStatementParserInfo.Create(
-    regions=[tu_region_000001, tu_region_000002, tu_region_000004, tu_region_000001, tu_region_000003, None, None, None, None, tu_region_000001, None, None],
+    regions=[tu_region_000001, tu_region_000002, tu_region_000004, tu_region_000001, tu_region_000003, None, None, None, None, tu_region_000001, None, None, None],
     name=r"CompareResult",
     visibility_param=VisibilityModifier.public,
     statements=[statement_000000, ],
@@ -46,6 +46,7 @@ statement_000001 = ClassStatementParserInfo.Create(
     implements=None,
     uses=None,
     constructor_visibility_param=VisibilityModifier.public,
+    is_fundamental=None,
     is_abstract=None,
     is_final=None,
 )

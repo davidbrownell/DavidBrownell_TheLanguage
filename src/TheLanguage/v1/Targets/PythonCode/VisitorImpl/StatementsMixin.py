@@ -155,7 +155,7 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = ClassStatementParserInfo.Create(
-                    regions=[{self_region}, {visibility_region}, {statements_region}, {class_modifier_region}, {name_region}, {documentation_region}, {extends_region}, {implements_region}, {uses_region}, {constructor_visibility_region}, {is_abstract_region}, {is_final_region}],
+                    regions=[{self_region}, {visibility_region}, {statements_region}, {class_modifier_region}, {name_region}, {documentation_region}, {extends_region}, {implements_region}, {uses_region}, {constructor_visibility_region}, {is_fundamental_region}, {is_abstract_region}, {is_final_region}],
                     name={name},
                     visibility_param={visibility},
                     statements={statements},
@@ -169,6 +169,7 @@ class StatementsMixin(BaseMixin):
                     implements={implements},
                     uses={uses},
                     constructor_visibility_param={constructor_visibility},
+                    is_fundamental={is_fundamental},
                     is_abstract={is_abstract},
                     is_final={is_final},
                 )
@@ -186,6 +187,7 @@ class StatementsMixin(BaseMixin):
                 uses_region=self._ToString(parser_info.regions__.uses),
                 statements_region=self._ToString(parser_info.regions__.statements),
                 constructor_visibility_region=self._ToString(parser_info.regions__.constructor_visibility),
+                is_fundamental_region=self._ToString(parser_info.regions__.is_fundamental),
                 is_abstract_region=self._ToString(parser_info.regions__.is_abstract),
                 is_final_region=self._ToString(parser_info.regions__.is_final),
                 parent_class_capabilities=parent_class_capabilities,
@@ -201,6 +203,7 @@ class StatementsMixin(BaseMixin):
                 uses=self._ToString(parser_info.uses),                      # type: ignore
                 statements=self._ToString(parser_info.statements),          # type: ignore
                 constructor_visibility=self._ToString(parser_info.constructor_visibility),
+                is_fundamental=self._ToString(parser_info.is_fundamental),
                 is_abstract=self._ToString(parser_info.is_abstract),
                 is_final=self._ToString(parser_info.is_final),
             ),

@@ -16,6 +16,7 @@
 
 
 # ----------------------------------------------------------------------
+[Fundamental]
 public immutable class None:
     [Deferred] public ArchInt val GetBytes() immutable
 
