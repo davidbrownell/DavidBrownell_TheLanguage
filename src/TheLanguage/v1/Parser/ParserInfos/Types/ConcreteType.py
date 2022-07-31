@@ -114,7 +114,7 @@ class ConcreteType(Interface.Interface):
                 ),
             )
 
-        self._FinalizeImpl(
+        self._FinalizePassImpl(
             ConcreteType.State.FinalizingPass1,
             ConcreteType.State.FinalizedPass1,
             self._FinalizePass1Impl,
@@ -122,7 +122,7 @@ class ConcreteType(Interface.Interface):
 
     # ----------------------------------------------------------------------
     def FinalizePass2(self) -> None:
-        self._FinalizeImpl(
+        self._FinalizePassImpl(
             ConcreteType.State.FinalizingPass2,
             ConcreteType.State.FinalizedPass2,
             self._FinalizePass2Impl,
@@ -159,7 +159,7 @@ class ConcreteType(Interface.Interface):
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
-    def _FinalizeImpl(
+    def _FinalizePassImpl(
         self,
         in_process_state: "ConcreteType.State",
         completed_state: "ConcreteType.State",
