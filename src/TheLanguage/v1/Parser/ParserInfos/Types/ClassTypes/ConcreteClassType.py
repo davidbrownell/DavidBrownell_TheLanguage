@@ -557,6 +557,7 @@ class ConcreteClassType(ConcreteType):
             augmented_info.attributes,
             dependency_info.attributes,
             lambda attribute_info: attribute_info.statement.name,
+            key_collisions_is_error=True,
         )
 
         # Commit the results

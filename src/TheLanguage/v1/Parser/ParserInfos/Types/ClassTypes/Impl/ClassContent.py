@@ -34,6 +34,17 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Dependency import Dependency
 
+    from .....Error import CreateError, ErrorException
+    from .....TranslationUnitRegion import TranslationUnitRegion
+
+
+# ----------------------------------------------------------------------
+KeyCollisionError                           = CreateError(
+    "'{key}' has already been defined",
+    key=str,
+    prev_region=TranslationUnitRegion,
+)
+
 
 # ----------------------------------------------------------------------
 ClassContentT                               = TypeVar("ClassContentT")
@@ -69,12 +80,14 @@ class ClassContent(Generic[ClassContentT]):
                 ],
             ]
         ]=None,
+        *,
+        key_collisions_is_error: bool=False,
     ):
         lookup = set()
 
-        local = cls._FilterList(local, get_key_func, lookup)
-        augmented = cls._FilterList(augmented, get_key_func, lookup)
-        inherited = cls._FilterList(inherited, get_key_func, lookup)
+        local = cls._FilterList(local, get_key_func, lookup, key_collisions_is_error=key_collisions_is_error)
+        augmented = cls._FilterList(augmented, get_key_func, lookup, key_collisions_is_error=key_collisions_is_error)
+        inherited = cls._FilterList(inherited, get_key_func, lookup, key_collisions_is_error=key_collisions_is_error)
 
         if postprocess_func:
             local, augmented, inherited = postprocess_func(local, augmented, inherited)
@@ -93,6 +106,8 @@ class ClassContent(Generic[ClassContentT]):
         dependencies: List[Dependency[ClassContentT]],
         get_key_func: Callable[[ClassContentT], Any],
         lookup: Set[Any],
+        *,
+        key_collisions_is_error: bool,
     ) -> List[Dependency[ClassContentT]]:
         results: List[Dependency[ClassContentT]] = []
 
@@ -102,6 +117,10 @@ class ClassContent(Generic[ClassContentT]):
             key = get_key_func(resolved_info)
 
             if key in lookup:
+                if key_collisions_is_error:
+                    # TODO: Not sure how to format this error message
+                    raise Exception("Duplicate key: '{}'".format(key))
+
                 continue
 
             lookup.add(key)
