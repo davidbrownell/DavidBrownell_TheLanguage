@@ -31,10 +31,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ConcreteType import ConcreteType
-    from .GenericTypes import BoundGenericType, GenericType
+    from .GenericType import GenericType
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ..Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
     from ..Statements.StatementParserInfo import StatementParserInfo
 

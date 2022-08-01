@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  FuncDefinitionResolvers.py
+# |  FuncDefinitionTypes.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-07-28 13:29:34
@@ -13,11 +13,9 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains Resolvers that have knowledge of function definitions"""
+"""Contains types that have knowledge of function definitions"""
 
 import os
-
-from typing import Any
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,63 +28,35 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Impl.GenericTypeResolver import GenericType
-    from .Impl.TypeResolver import TypeResolver
+    from .TypeResolver import TypeResolver
+    from .Impl.GenericTypeImpl import GenericTypeImpl
 
+    from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
     from ...ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
 
     from ...ParserInfos.Types.ConcreteType import ConcreteType
-    from ...ParserInfos.Types.GenericTypes import BoundGenericType
 
     from ...ParserInfos.Types.FuncDefinitionTypes.ConcreteFuncDefinitionType import ConcreteFuncDefinitionType
 
 
 # ----------------------------------------------------------------------
-class FuncDefinitionGenericType(GenericType[FuncDefinitionStatementParserInfo]):
+class FuncDefinitionGenericType(GenericTypeImpl[FuncDefinitionStatementParserInfo]):
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def _CreateConcreteData(
+    def _CreateConcreteType(
         updated_resolver: TypeResolver,
-    ) -> Any:
+        expression_parser_info: ExpressionParserInfo,  # pylint: disable=unused-argument
+    ) -> ConcreteType:
         assert isinstance(updated_resolver.namespace.parser_info, FuncDefinitionStatementParserInfo), updated_resolver.namespace.parser_info
-        return ConcreteFuncDefinitionType(updated_resolver, updated_resolver.namespace.parser_info)
+        assert isinstance(expression_parser_info, FuncOrTypeExpressionParserInfo)
 
-    @Interface.override
-    def _CreateBoundGenericType(
-        self,
-        concrete_data: Any,
-        parser_info: FuncOrTypeExpressionParserInfo,
-    ) -> BoundGenericType:
-        return _FuncDefinitionBoundGenericType(concrete_data, self, parser_info)
-
-
-# ----------------------------------------------------------------------
-class _FuncDefinitionBoundGenericType(BoundGenericType):
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        concrete_data: Any,
-        generic_type: GenericType,
-        expression_parser_info: FuncOrTypeExpressionParserInfo,
-    ):
-        super(_FuncDefinitionBoundGenericType, self).__init__(generic_type, expression_parser_info)
-
-        self._concrete_data                 = concrete_data
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def CreateConcreteType(self) -> ConcreteType:
-        pass # BugBug
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def IsCovariant(
-        self,
-        other: BoundGenericType,
-    ) -> bool:
-        return False # BugBug
+        return ConcreteFuncDefinitionType(
+            updated_resolver,
+            updated_resolver.namespace.parser_info,
+            expression_parser_info,
+        )

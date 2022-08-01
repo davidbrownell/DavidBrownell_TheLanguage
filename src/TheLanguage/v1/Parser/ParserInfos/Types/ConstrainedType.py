@@ -30,6 +30,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ConcreteType import ConcreteType
 
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+
 
 # ----------------------------------------------------------------------
 class ConstrainedType(Interface.Interface):
@@ -39,5 +41,7 @@ class ConstrainedType(Interface.Interface):
     def __init__(
         self,
         concrete_type: ConcreteType,
+        expression_parser_info: ExpressionParserInfo,
     ):
         self.concrete_type                  = concrete_type
+        self.expression_parser_info         = expression_parser_info

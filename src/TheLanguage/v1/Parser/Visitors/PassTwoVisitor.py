@@ -34,8 +34,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Namespaces import Namespace, ParsedNamespace
 
-    from .Resolvers.RootResolvers import RootConcreteType
-    from .Resolvers.Impl.TypeResolver import TypeResolver # BugBug: Shouldn't reach into impl
+    from .Types.RootTypes import RootConcreteType
+    from .Types.TypeResolver import TypeResolver # BugBug: Shouldn't reach into impl
 
     from ..Error import Error, ErrorException
 

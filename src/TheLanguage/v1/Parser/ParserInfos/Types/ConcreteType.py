@@ -32,6 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+
     from ..ParserInfo import ParserInfo
 
     from ..Traits.NamedTrait import NamedTrait
@@ -87,8 +89,11 @@ class ConcreteType(Interface.Interface):
     def __init__(
         self,
         parser_info: ParserInfo,
+        expression_parser_info: ExpressionParserInfo,
     ):
         self._parser_info                   = parser_info
+        self.expression_parser_info         = expression_parser_info
+
         self.state                          = ConcreteType.State.Created
 
     # ----------------------------------------------------------------------
@@ -156,9 +161,12 @@ class ConcreteType(Interface.Interface):
             object.__setattr__(self, "state", ConcreteType.State.Finalized)
 
     # ----------------------------------------------------------------------
-    def CreateConstrainedType(self) -> "ConstrainedType":
+    def CreateConstrainedType(
+        self,
+        expression_parser_info: ExpressionParserInfo,
+    ) -> "ConstrainedType":
         assert self.state == ConcreteType.State.Finalized, self.state
-        return self._CreateConstrainedTypeImpl()
+        return self._CreateConstrainedTypeImpl(expression_parser_info)
 
     # ----------------------------------------------------------------------
     # |
@@ -191,7 +199,9 @@ class ConcreteType(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def _CreateConstrainedTypeImpl() -> "ConstrainedType":
+    def _CreateConstrainedTypeImpl(
+        expression_parser_info: ExpressionParserInfo,
+    ) -> "ConstrainedType":
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------

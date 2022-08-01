@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GenericTypes import BoundGenericType, GenericType
+    from ..GenericType import GenericType
 
     from ...Expressions.VariantExpressionParserInfo import ExpressionParserInfo, VariantExpressionParserInfo
 
@@ -64,79 +64,47 @@ class VariantGenericType(GenericType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def CreateBoundGenericType(
+    def CreateConcreteType(
         self,
-        parser_info: ExpressionParserInfo,
-    ) -> BoundGenericType:
-        assert parser_info is self.parser_info, (parser_info, self.parser_info)
-        return VariantBoundGenericType(self)
+        expression_parser_info: ExpressionParserInfo,
+    ) -> "VariantConcreteType":
+        assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
+        assert isinstance(expression_parser_info, VariantExpressionParserInfo)
+
+        concrete_types: List[ConcreteType] = []
+        errors: List[Error] = []
+
+        for generic_type, generic_parser_info in zip(
+            self.generic_types,
+            expression_parser_info.types,
+        ):
+            try:
+                concrete_types.append(generic_type.CreateConcreteType(generic_parser_info))
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
+
+        return VariantConcreteType(self.parser_info, concrete_types)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _CreateDefaultConcreteTypeImpl(self) -> ConcreteType:
-        return self.CreateBoundGenericType(self.parser_info).CreateConcreteType()
+        return self.CreateConcreteType(self.parser_info)
 
 
 # ----------------------------------------------------------------------
-class VariantBoundGenericType(BoundGenericType):
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        generic_type: VariantGenericType,
-    ):
-        super(VariantBoundGenericType, self).__init__(generic_type, generic_type.parser_info)
-
-        self.bound_generic_types            = [
-            generic_type.CreateBoundGenericType(parser_info)
-            for generic_type, parser_info in zip(
-                generic_type.generic_types,
-                generic_type.parser_info.types
-            )
-        ]
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def CreateConcreteType(self) -> ConcreteType:
-        return ConcreteVariantType(
-            self.generic_type.parser_info,
-            [
-                bound_generic_type.CreateConcreteType()
-                for bound_generic_type in self.bound_generic_types
-            ],
-        )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def IsCovariant(
-        self,
-        other: GenericType,
-    ) -> bool:
-        if not isinstance(other, VariantBoundGenericType):
-            return False
-
-        if len(self.bound_generic_types) != len(other.bound_generic_types):
-            return False
-
-        return (
-            all(
-                this.IsCovariant(that)
-                for this, that in zip(self.bound_generic_types, other.bound_generic_types)
-            )
-            and self.generic_type.parser_info.mutability_modifier == other.generic_type.parser_info.mutability_modifier
-        )
-
-
-# ----------------------------------------------------------------------
-class ConcreteVariantType(ConcreteType):
+class VariantConcreteType(ConcreteType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         parser_info: VariantExpressionParserInfo,
         concrete_types: List[ConcreteType],
     ):
-        super(ConcreteVariantType, self).__init__(parser_info)
+        super(VariantConcreteType, self).__init__(parser_info, parser_info)
 
         self.concrete_types                 = concrete_types
 
@@ -173,20 +141,10 @@ class ConcreteVariantType(ConcreteType):
     @Interface.override
     def _CreateConstrainedTypeImpl(
         self,
-    ) -> "ConstrainedVariantType":
-        constrained_types: List[ConstrainedType] = []
-        errors: List[Error] = []
-
-        for concrete_type in self.concrete_types:
-            try:
-                constrained_types.append(concrete_type.CreateConstrainedType())
-            except ErrorException as ex:
-                errors += ex.errors
-
-        if errors:
-            raise ErrorException(*errors)
-
-        return ConstrainedVariantType(self, constrained_types)
+        expression_parser_info: ExpressionParserInfo,
+    ) -> "VariantConstrainedType":
+        assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
+        return VariantConstrainedType(self, self.concrete_types)
 
     # ----------------------------------------------------------------------
     def _FinalizeImpl(
@@ -206,13 +164,28 @@ class ConcreteVariantType(ConcreteType):
 
 
 # ----------------------------------------------------------------------
-class ConstrainedVariantType(ConstrainedType):
+class VariantConstrainedType(ConstrainedType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        concrete_type: ConcreteVariantType,
-        constrained_types: List[ConstrainedType],
+        concrete_type: VariantConcreteType,
+        concrete_types: List[ConcreteType],
     ):
-        super(ConstrainedVariantType, self).__init__(concrete_type)
+        super(VariantConstrainedType, self).__init__(concrete_type, concrete_type.parser_info)
+
+        constrained_types: List[ConstrainedType] = []
+        errors: List[Error] = []
+
+        for child_concrete_type, type_parser_info in zip(
+            concrete_types,
+            concrete_type.parser_info.types,
+        ):
+            try:
+                constrained_types.append(child_concrete_type.CreateConstrainedType(type_parser_info))
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
 
         self.constrained_types              = constrained_types

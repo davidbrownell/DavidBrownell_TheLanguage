@@ -30,9 +30,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
-    from ...ParserInfos.ParserInfo import ParserInfo
+    from ..ParserInfo import ParserInfo
 
     if TYPE_CHECKING:
         from .ConcreteType import ConcreteType  # pylint: disable=unused-import
@@ -58,9 +58,9 @@ class GenericType(Interface.Interface):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
-    def CreateBoundGenericType(
-        parser_info: ExpressionParserInfo,
-    ) -> "BoundGenericType":
+    def CreateConcreteType(
+        expression_parser_info: ExpressionParserInfo,
+    ) -> "ConcreteType":
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
@@ -74,30 +74,4 @@ class GenericType(Interface.Interface):
     @staticmethod
     @Interface.extensionmethod
     def _CreateDefaultConcreteTypeImpl() -> "ConcreteType":
-        raise Exception("Abstract method")  # pragma: no cover
-
-
-# ----------------------------------------------------------------------
-class BoundGenericType(Interface.Interface):
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        generic_type: GenericType,
-        expression_parser_info: ExpressionParserInfo,
-    ):
-        self.generic_type                   = generic_type
-        self.expression_parser_info         = expression_parser_info
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def CreateConcreteType() -> "ConcreteType":
-        raise Exception("Abstract method")  # pragma: no cover
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def IsCovariant(
-        other: "BoundGenericType",
-    ) -> bool:
         raise Exception("Abstract method")  # pragma: no cover

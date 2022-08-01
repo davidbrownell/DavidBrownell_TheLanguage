@@ -34,6 +34,7 @@ with InitRelativeImports():
     from ..ConstrainedType import ConstrainedType
     from ..TypeResolver import TypeResolver
 
+    from ...Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
     from ...Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
 
     from ....Error import Error, ErrorException
@@ -46,8 +47,9 @@ class ConcreteFuncDefinitionType(ConcreteType):
         self,
         type_resolver: TypeResolver,
         parser_info: FuncDefinitionStatementParserInfo,
+        expression_parser_info: FuncOrTypeExpressionParserInfo,
     ):
-        super(ConcreteFuncDefinitionType, self).__init__(parser_info)
+        super(ConcreteFuncDefinitionType, self).__init__(parser_info, expression_parser_info)
 
         concrete_return_type: Optional[ConcreteType] = None
         concrete_parameters: List[ConcreteType] = []
@@ -95,7 +97,10 @@ class ConcreteFuncDefinitionType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConstrainedTypeImpl(self) -> ConstrainedType:
+    def _CreateConstrainedTypeImpl(
+        self,
+        expression_parser_info: FuncOrTypeExpressionParserInfo,
+    ) -> ConstrainedType:
         pass # BugBug
 
     # ----------------------------------------------------------------------

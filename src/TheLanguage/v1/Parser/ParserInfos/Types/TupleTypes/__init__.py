@@ -30,7 +30,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GenericTypes import BoundGenericType, GenericType
+    from ..GenericType import GenericType
 
     from ...Expressions.TupleExpressionParserInfo import ExpressionParserInfo, TupleExpressionParserInfo
 
@@ -64,79 +64,47 @@ class TupleGenericType(GenericType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def CreateBoundGenericType(
+    def CreateConcreteType(
         self,
-        parser_info: ExpressionParserInfo,
-    ) -> BoundGenericType:
-        assert parser_info is self.parser_info, (parser_info, self.parser_info)
-        return TupleBoundGenericType(self)
+        expression_parser_info: ExpressionParserInfo,
+    ) -> "TupleConcreteType":
+        assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
+        assert isinstance(expression_parser_info, TupleExpressionParserInfo)
+
+        concrete_types: List[ConcreteType] = []
+        errors: List[Error] = []
+
+        for generic_type, generic_parser_info in zip(
+            self.generic_types,
+            expression_parser_info.types,
+        ):
+            try:
+                concrete_types.append(generic_type.CreateConcreteType(generic_parser_info))
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
+
+        return TupleConcreteType(self.parser_info, concrete_types)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _CreateDefaultConcreteTypeImpl(self) -> ConcreteType:
-        return self.CreateBoundGenericType(self.parser_info).CreateConcreteType()
+        return self.CreateConcreteType(self.parser_info)
 
 
 # ----------------------------------------------------------------------
-class TupleBoundGenericType(BoundGenericType):
-    # ----------------------------------------------------------------------
-    def __init__(
-        self,
-        generic_type: TupleGenericType,
-    ):
-        super(TupleBoundGenericType, self).__init__(generic_type, generic_type.parser_info)
-
-        self.bound_generic_types            = [
-            generic_type.CreateBoundGenericType(parser_info)
-            for generic_type, parser_info in zip(
-                generic_type.generic_types,
-                generic_type.parser_info.types,
-            )
-        ]
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def CreateConcreteType(self) -> ConcreteType:
-        return ConcreteTupleType(
-            self.generic_type.parser_info,
-            [
-                bound_generic_type.CreateConcreteType()
-                for bound_generic_type in self.bound_generic_types
-            ]
-        )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def IsCovariant(
-        self,
-        other: BoundGenericType,
-    ) -> bool:
-        if not isinstance(other, TupleBoundGenericType):
-            return False
-
-        if len(self.bound_generic_types) != len(other.bound_generic_types):
-            return False
-
-        return (
-            all(
-                this.IsCovariant(that)
-                for this, that in zip(self.bound_generic_types, other.bound_generic_types)
-            )
-            and self.generic_type.parser_info.mutability_modifier == other.generic_type.parser_info.mutability_modifier
-        )
-
-
-# ----------------------------------------------------------------------
-class ConcreteTupleType(ConcreteType):
+class TupleConcreteType(ConcreteType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         parser_info: TupleExpressionParserInfo,
         concrete_types: List[ConcreteType],
     ):
-        super(ConcreteTupleType, self).__init__(parser_info)
+        super(TupleConcreteType, self).__init__(parser_info, parser_info)
 
         self.concrete_types                 = concrete_types
 
@@ -147,7 +115,6 @@ class ConcreteTupleType(ConcreteType):
         assert isinstance(self._parser_info, TupleExpressionParserInfo), self._parser_info
         return self._parser_info
 
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -172,20 +139,12 @@ class ConcreteTupleType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConstrainedTypeImpl(self) -> "ConstrainedTupleType":
-        constrained_types: List[ConstrainedType] = []
-        errors: List[Error] = []
-
-        for concrete_type in self.concrete_types:
-            try:
-                constrained_types.append(concrete_type.CreateConstrainedType())
-            except ErrorException as ex:
-                errors += ex.errors
-
-        if errors:
-            raise ErrorException(*errors)
-
-        return ConstrainedTupleType(self, constrained_types)
+    def _CreateConstrainedTypeImpl(
+        self,
+        expression_parser_info: ExpressionParserInfo,
+    ) -> "TupleConstrainedType":
+        assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
+        return TupleConstrainedType(self, self.concrete_types)
 
     # ----------------------------------------------------------------------
     def _FinalizeImpl(
@@ -205,13 +164,28 @@ class ConcreteTupleType(ConcreteType):
 
 
 # ----------------------------------------------------------------------
-class ConstrainedTupleType(ConstrainedType):
+class TupleConstrainedType(ConstrainedType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        concrete_type: ConcreteTupleType,
-        constrained_types: List[ConstrainedType],
+        concrete_type: TupleConcreteType,
+        concrete_types: List[ConcreteType],
     ):
-        super(ConstrainedTupleType, self).__init__(concrete_type)
+        super(TupleConstrainedType, self).__init__(concrete_type, concrete_type.parser_info)
+
+        constrained_types: List[ConstrainedType] = []
+        errors: List[Error] = []
+
+        for child_concrete_type, type_parser_info in zip(
+            concrete_types,
+            concrete_type.parser_info.types,
+        ):
+            try:
+                constrained_types.append(child_concrete_type.CreateConstrainedType(type_parser_info))
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
 
         self.constrained_types              = constrained_types

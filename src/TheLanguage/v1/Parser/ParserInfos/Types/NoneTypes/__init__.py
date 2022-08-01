@@ -28,7 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GenericTypes import BoundGenericType, GenericType
+    from ..GenericType import GenericType
 
     from ...Expressions.NoneExpressionParserInfo import ExpressionParserInfo, NoneExpressionParserInfo
 
@@ -54,46 +54,30 @@ class NoneGenericType(GenericType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def CreateBoundGenericType(
+    def CreateConcreteType(
         self,
-        parser_info: ExpressionParserInfo,
-    ) -> BoundGenericType:
-        assert parser_info is self.parser_info, (parser_info, self.parser_info)
-        return NoneBoundGenericType(self)
+        expression_parser_info: ExpressionParserInfo,
+    ) -> "NoneConcreteType":
+        assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
+        return NoneConcreteType(self.parser_info)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _CreateDefaultConcreteTypeImpl(self) -> ConcreteType:
-        return self.CreateBoundGenericType(self.parser_info).CreateConcreteType()
+        return self.CreateConcreteType(self.parser_info)
 
 
 # ----------------------------------------------------------------------
-class NoneBoundGenericType(BoundGenericType):
+class NoneConcreteType(ConcreteType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        generic_type: NoneGenericType,
+        parser_info: NoneExpressionParserInfo,
     ):
-        super(NoneBoundGenericType, self).__init__(generic_type, generic_type.parser_info)
+        super(NoneConcreteType, self).__init__(parser_info, parser_info)
 
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def CreateConcreteType(self) -> ConcreteType:
-        return ConcreteNoneType(self.generic_type.parser_info)
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def IsCovariant(
-        other: BoundGenericType,
-    ) -> bool:
-        return isinstance(other, NoneBoundGenericType)
-
-
-# ----------------------------------------------------------------------
-class ConcreteNoneType(ConcreteType):
     # ----------------------------------------------------------------------
     @property
     @Interface.override
@@ -129,10 +113,14 @@ class ConcreteNoneType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConstrainedTypeImpl(self) -> "ConstrainedNoneType":
-        return ConstrainedNoneType(self)
+    def _CreateConstrainedTypeImpl(
+        self,
+        expression_parser_info: ExpressionParserInfo,
+    ) -> "NoneConstrainedType":
+        assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
+        return NoneConstrainedType(self, expression_parser_info)
 
 
 # ----------------------------------------------------------------------
-class ConstrainedNoneType(ConstrainedType):
+class NoneConstrainedType(ConstrainedType):
     pass

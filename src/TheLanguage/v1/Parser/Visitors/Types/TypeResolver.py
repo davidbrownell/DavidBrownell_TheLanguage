@@ -31,43 +31,43 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .UpdateCacheImpl import UpdateCacheImpl
+    from .Impl.UpdateCacheImpl import UpdateCacheImpl
 
-    from ...Namespaces import Namespace, ParsedNamespace
+    from ..Namespaces import Namespace, ParsedNamespace
 
-    from ....Common import MiniLanguageHelpers
-    from ....Error import CreateError, ErrorException
+    from ...Common import MiniLanguageHelpers
+    from ...Error import CreateError, ErrorException
 
-    from ....ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ....ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
-    from ....ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo
-    from ....ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
-    from ....ParserInfos.Expressions.SelfReferenceExpressionParserInfo import SelfReferenceExpressionParserInfo
-    from ....ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
-    from ....ParserInfos.Expressions.TypeCheckExpressionParserInfo import OperatorType as TypeCheckExpressionOperatorType
-    from ....ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
+    from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
+    from ...ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo
+    from ...ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
+    from ...ParserInfos.Expressions.SelfReferenceExpressionParserInfo import SelfReferenceExpressionParserInfo
+    from ...ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
+    from ...ParserInfos.Expressions.TypeCheckExpressionParserInfo import OperatorType as TypeCheckExpressionOperatorType
+    from ...ParserInfos.Expressions.VariantExpressionParserInfo import VariantExpressionParserInfo
 
-    from ....ParserInfos.ParserInfo import CompileTimeInfo
+    from ...ParserInfos.ParserInfo import CompileTimeInfo
 
-    from ....ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
-    from ....ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
-    from ....ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
-    from ....ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
-    from ....ParserInfos.Statements.StatementParserInfo import StatementParserInfo
-    from ....ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
+    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ...ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
+    from ...ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
+    from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
+    from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
+    from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
-    from ....ParserInfos.Types.ClassTypes.ConcreteClassType import ConcreteClassType
+    from ...ParserInfos.Types.ClassTypes.ConcreteClassType import ConcreteClassType
 
-    from ....ParserInfos.Types.ConcreteType import ConcreteType
-    from ....ParserInfos.Types.GenericTypes import GenericType
-    from ....ParserInfos.Types.NoneTypes import ConcreteNoneType
-    from ....ParserInfos.Types.SelfExpressionTypes import ConcreteSelfReferenceType
-    from ....ParserInfos.Types.TupleTypes import ConcreteTupleType
-    from ....ParserInfos.Types.VariantTypes import ConcreteVariantType
+    from ...ParserInfos.Types.ConcreteType import ConcreteType
+    from ...ParserInfos.Types.GenericType import GenericType
+    from ...ParserInfos.Types.NoneTypes import NoneConcreteType
+    from ...ParserInfos.Types.SelfExpressionTypes import SelfReferenceConcreteType
+    from ...ParserInfos.Types.TupleTypes import TupleConcreteType
+    from ...ParserInfos.Types.VariantTypes import VariantConcreteType
 
-    from ....ParserInfos.Types.TypeResolver import TypeResolver as TypeResolverInterface
+    from ...ParserInfos.Types.TypeResolver import TypeResolver as TypeResolverInterface
 
-    from ....TranslationUnitRegion import TranslationUnitRegion
+    from ...TranslationUnitRegion import TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -119,7 +119,7 @@ class TypeResolver(TypeResolverInterface):
         self.fundamental_namespace          = fundamental_namespace
         self.compile_time_info              = compile_time_info
 
-        self._concrete_data: Any            = None
+        self._concrete_type: Any            = None
 
         self._generic_cache_lock                                                    = threading.Lock()
         self._generic_cache: Dict[int, Union[threading.Event, GenericType]]         = {}
@@ -149,12 +149,12 @@ class TypeResolver(TypeResolverInterface):
         return self._root_type_resolvers
 
     # ----------------------------------------------------------------------
-    def InitConcreteData(
+    def InitConcreteType(
         self,
-        concrete_data: Any,
+        concrete_type: ConcreteType,
     ) -> None:
-        assert self._concrete_data is None
-        self._concrete_data = concrete_data
+        assert self._concrete_type is None
+        self._concrete_type = concrete_type
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -241,19 +241,19 @@ class TypeResolver(TypeResolverInterface):
             raise NotImplementedError("TODO: NestedTypeExpressionParserInfo")
 
         elif isinstance(type_expression, NoneExpressionParserInfo):
-            result = ConcreteNoneType(type_expression)
+            result = NoneConcreteType(type_expression)
 
         elif isinstance(type_expression, SelfReferenceExpressionParserInfo):
-            result = ConcreteSelfReferenceType(type_expression)
+            result = SelfReferenceConcreteType(type_expression)
 
         elif isinstance(type_expression, TupleExpressionParserInfo):
-            result = ConcreteTupleType(
+            result = TupleConcreteType(
                 type_expression,
                 [self.EvalConcreteType(the_type) for the_type in type_expression.types],
             )
 
         elif isinstance(type_expression, VariantExpressionParserInfo):
-            result = ConcreteVariantType(
+            result = VariantConcreteType(
                 type_expression,
                 [self.EvalConcreteType(the_type) for the_type in type_expression.types],
             )
@@ -291,17 +291,17 @@ class TypeResolver(TypeResolverInterface):
         # ----------------------------------------------------------------------
         def CreateGenericType() -> GenericType:
             if isinstance(namespace.parser_info, ClassStatementParserInfo):
-                from ..ClassResolvers import ClassGenericType
+                from .ClassTypes import ClassGenericType
 
                 generic_type_class = ClassGenericType
 
             elif isinstance(namespace.parser_info, FuncDefinitionStatementParserInfo):
-                from ..FuncDefinitionResolvers import FuncDefinitionGenericType
+                from .FuncDefinitionTypes import FuncDefinitionGenericType
 
                 generic_type_class = FuncDefinitionGenericType
 
             elif isinstance(namespace.parser_info, TypeAliasStatementParserInfo):
-                from ..TypeAliasResolvers import TypeAliasGenericType
+                from .TypeAliasTypes import TypeAliasGenericType
 
                 generic_type_class = TypeAliasGenericType
 
@@ -317,16 +317,6 @@ class TypeResolver(TypeResolverInterface):
             )
 
             return generic_type_class(updated_resolver)
-
-            # BugBug generic_resolver = generic_type_class(
-            # BugBug     parent=self,
-            # BugBug     namespace=namespace,
-            # BugBug     fundamental_namespace=self.fundamental_namespace,
-            # BugBug     compile_time_info=self.compile_time_info,
-            # BugBug     root_type_resolvers=self.root_type_resolvers,
-            # BugBug )
-            # BugBug
-            # BugBug return generic_resolver.generic_type
 
         # ----------------------------------------------------------------------
 
@@ -388,9 +378,9 @@ class TypeResolver(TypeResolverInterface):
             if (
                 isinstance(resolver.namespace.parser_info, ClassStatementParserInfo)
                 and isinstance(resolver, TypeResolver)
-                and resolver._concrete_data is not None  # pylint: disable=protected-access
+                and resolver._concrete_type is not None  # pylint: disable=protected-access
             ):
-                concrete_class = resolver._concrete_data  # pylint: disable=protected-access
+                concrete_class = resolver._concrete_type  # pylint: disable=protected-access
                 assert isinstance(concrete_class, ConcreteClassType), concrete_class
 
                 for type_dependency in concrete_class.types.EnumContent():
@@ -405,7 +395,7 @@ class TypeResolver(TypeResolverInterface):
                                 ),
                             )
 
-                        return type_info.generic_type.CreateBoundGenericType(parser_info).CreateConcreteType()
+                        return type_info.generic_type.CreateConcreteType(parser_info)
 
             resolver = resolver.parent
 
@@ -465,4 +455,4 @@ class TypeResolver(TypeResolverInterface):
 
             generic_type = root_type_resolver.GetOrCreateNestedGenericTypeViaNamespace(resolved_namespace)
 
-            return generic_type.CreateBoundGenericType(parser_info).CreateConcreteType()
+            return generic_type.CreateConcreteType(parser_info)

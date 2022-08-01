@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  RootResolver.py
+# |  RootTypes.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-07-28 15:37:28
@@ -13,11 +13,11 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the RootResolver object"""
+"""Contains the root type objects"""
 
 import os
 
-from typing import Dict, Generator, List, Optional
+from typing import Generator
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,14 +30,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Impl.TypeResolver import TypeResolver
+    from .TypeResolver import TypeResolver
+    from .Impl.CreateDefaultExpressionParserInfo import CreateDefaultExpressionParserInfo
 
     from ..Namespaces import ImportNamespace, ParsedNamespace
 
     from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
 
     from ...ParserInfos.Types.ConcreteType import ConcreteType
-    from ...ParserInfos.Types.GenericTypes import GenericType
+    from ...ParserInfos.Types.GenericType import GenericType
 
 
 # ----------------------------------------------------------------------
@@ -48,7 +49,10 @@ class RootConcreteType(ConcreteType):
         type_resolver: TypeResolver,
         parser_info: RootStatementParserInfo,
     ):
-        super(RootConcreteType, self).__init__(parser_info)
+        super(RootConcreteType, self).__init__(
+            parser_info,
+            CreateDefaultExpressionParserInfo(parser_info),
+        )
 
         self._type_resolver                 = type_resolver
 
@@ -103,5 +107,5 @@ class RootConcreteType(ConcreteType):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def _CreateConstrainedTypeImpl() -> None:
+    def _CreateConstrainedTypeImpl(*args, **kwargs) -> None:  # pylint: disable=unused-argument
         raise Exception("This should never be invoked for this type")

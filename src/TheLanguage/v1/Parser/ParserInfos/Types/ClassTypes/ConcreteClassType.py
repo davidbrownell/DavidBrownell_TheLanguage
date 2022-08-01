@@ -38,14 +38,14 @@ with InitRelativeImports():
 
     from ..ConcreteType import ConcreteType
     from ..ConstrainedType import ConstrainedType
-    from ..GenericTypes import GenericType
+    from ..GenericType import GenericType
     from ..TypeResolver import TypeResolver
 
     from ...Common.ClassModifier import ClassModifier
     from ...Common.MethodHierarchyModifier import MethodHierarchyModifier
     from ...Common.MutabilityModifier import MutabilityModifier
 
-    from ...Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ...Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
     from ...Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
 
     from ...Statements.ClassAttributeStatementParserInfo import ClassAttributeStatementParserInfo
@@ -138,8 +138,9 @@ class ConcreteClassType(ConcreteType):
         self,
         type_resolver: TypeResolver,
         parser_info: ClassStatementParserInfo,
+        expression_parser_info: FuncOrTypeExpressionParserInfo,
     ):
-        super(ConcreteClassType, self).__init__(parser_info)
+        super(ConcreteClassType, self).__init__(parser_info, expression_parser_info)
 
         self._type_resolver                 = type_resolver
 
@@ -712,7 +713,10 @@ class ConcreteClassType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConstrainedTypeImpl(self) -> ConstrainedType:
+    def _CreateConstrainedTypeImpl(
+        self,
+        expression_parser_info: FuncOrTypeExpressionParserInfo,
+    ) -> ConstrainedType:
         pass # BugBug
 
     # ----------------------------------------------------------------------
