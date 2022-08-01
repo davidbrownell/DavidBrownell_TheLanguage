@@ -32,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..ConcreteType import ConcreteType
     from ..ConstrainedType import ConstrainedType
-    from ..TypeResolvers import ConcreteTypeResolver
+    from ..TypeResolver import TypeResolver
 
     from ...Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
 
@@ -44,7 +44,7 @@ class ConcreteFuncDefinitionType(ConcreteType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        type_resolver: ConcreteTypeResolver,
+        type_resolver: TypeResolver,
         parser_info: FuncDefinitionStatementParserInfo,
     ):
         super(ConcreteFuncDefinitionType, self).__init__(parser_info)

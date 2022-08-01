@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  TypeResolvers.py
+# |  TypeResolver.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-07-27 12:43:12
@@ -31,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ConcreteType import ConcreteType
-    from .GenericTypes import GenericStatementType
+    from .GenericTypes import BoundGenericType, GenericType
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
@@ -76,25 +76,10 @@ class TypeResolver(Interface.Interface):
     ) -> None:
         raise Exception("Abstract method")  # pragma: no cover
 
-
-# ----------------------------------------------------------------------
-class GenericTypeResolver(TypeResolver):
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.abstractmethod
-    def CreateConcreteType(
-        parser_info: FuncOrTypeExpressionParserInfo,
-    ) -> ConcreteType:
-        """Creates a concrete type for this current type"""
-        raise Exception("Abstract method")  # pragma: no cover
-
-
-# ----------------------------------------------------------------------
-class ConcreteTypeResolver(TypeResolver):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.abstractmethod
     def GetOrCreateNestedGenericType(
         parser_info: StatementParserInfo,
-    ) -> GenericStatementType:
+    ) -> GenericType:
         raise Exception("Abstract method")  # pragma: no cover

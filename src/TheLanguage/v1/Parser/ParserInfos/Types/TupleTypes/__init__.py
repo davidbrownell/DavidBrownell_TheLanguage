@@ -30,9 +30,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GenericTypes import GenericExpressionType, GenericType
+    from ..GenericTypes import BoundGenericType, GenericType
 
-    from ...Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
+    from ...Expressions.TupleExpressionParserInfo import ExpressionParserInfo, TupleExpressionParserInfo
 
     from ...Types.ConcreteType import ConcreteType
     from ...Types.ConstrainedType import ConstrainedType
@@ -41,14 +41,14 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class GenericTupleType(GenericExpressionType):
+class TupleGenericType(GenericType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         parser_info: TupleExpressionParserInfo,
         generic_types: List[GenericType],
     ):
-        super(GenericTupleType, self).__init__(
+        super(TupleGenericType, self).__init__(
             parser_info,
             all(generic_type.is_default_initializable for generic_type in generic_types),
         )
@@ -64,30 +64,67 @@ class GenericTupleType(GenericExpressionType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def IsSameType(
+    def CreateBoundGenericType(
         self,
-        other: GenericType,
-    ) -> bool:
-        return (
-            isinstance(other, GenericTupleType)
-            and len(self.generic_types) == len(other.generic_types)
-            and all(
-                this_type.IsSameType(that_type)
-                for this_type, that_type in zip(self.generic_types, other.generic_types)
-            )
-        )
+        parser_info: ExpressionParserInfo,
+    ) -> BoundGenericType:
+        assert parser_info is self.parser_info, (parser_info, self.parser_info)
+        return TupleBoundGenericType(self)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConcreteTypeImpl(self) -> ConcreteType:
+    def _CreateDefaultConcreteTypeImpl(self) -> ConcreteType:
+        return self.CreateBoundGenericType(self.parser_info).CreateConcreteType()
+
+
+# ----------------------------------------------------------------------
+class TupleBoundGenericType(BoundGenericType):
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        generic_type: TupleGenericType,
+    ):
+        super(TupleBoundGenericType, self).__init__(generic_type, generic_type.parser_info)
+
+        self.bound_generic_types            = [
+            generic_type.CreateBoundGenericType(parser_info)
+            for generic_type, parser_info in zip(
+                generic_type.generic_types,
+                generic_type.parser_info.types,
+            )
+        ]
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def CreateConcreteType(self) -> ConcreteType:
         return ConcreteTupleType(
-            self.parser_info,
+            self.generic_type.parser_info,
             [
-                generic_type.CreateConcreteType(parser_info)
-                for generic_type, parser_info in zip(self.generic_types, self.parser_info.types)
-            ],
+                bound_generic_type.CreateConcreteType()
+                for bound_generic_type in self.bound_generic_types
+            ]
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def IsCovariant(
+        self,
+        other: BoundGenericType,
+    ) -> bool:
+        if not isinstance(other, TupleBoundGenericType):
+            return False
+
+        if len(self.bound_generic_types) != len(other.bound_generic_types):
+            return False
+
+        return (
+            all(
+                this.IsCovariant(that)
+                for this, that in zip(self.bound_generic_types, other.bound_generic_types)
+            )
+            and self.generic_type.parser_info.mutability_modifier == other.generic_type.parser_info.mutability_modifier
         )
 
 

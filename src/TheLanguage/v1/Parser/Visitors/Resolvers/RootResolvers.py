@@ -20,6 +20,7 @@ import os
 from typing import Dict, Generator, List, Optional
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -29,37 +30,38 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Impl.ConcreteTypeResolver import ConcreteTypeResolver
+    from .Impl.TypeResolver import TypeResolver
 
-    from ..Namespaces import ImportNamespace, Namespace, ParsedNamespace
+    from ..Namespaces import ImportNamespace, ParsedNamespace
 
-    from ...ParserInfos.ParserInfo import CompileTimeInfo
+    from ...ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
 
-    from ...ParserInfos.Types.GenericTypes import GenericStatementType
+    from ...ParserInfos.Types.ConcreteType import ConcreteType
+    from ...ParserInfos.Types.GenericTypes import GenericType
 
 
 # ----------------------------------------------------------------------
-class RootConcreteTypeResolver(ConcreteTypeResolver):
+class RootConcreteType(ConcreteType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        namespace: ParsedNamespace,
-        fundamental_namespace: Optional[Namespace],
-        compile_time_info: List[Dict[str, CompileTimeInfo]],
+        type_resolver: TypeResolver,
+        parser_info: RootStatementParserInfo,
     ):
-        super(RootConcreteTypeResolver, self).__init__(
-            parent=None,
-            namespace=namespace,
-            fundamental_namespace=fundamental_namespace,
-            compile_time_info=compile_time_info,
-            root_type_resolvers=None,
-        )
+        super(RootConcreteType, self).__init__(parser_info)
+
+        self._type_resolver                 = type_resolver
 
     # ----------------------------------------------------------------------
-    def EnumGenericTypes(self) -> Generator[GenericStatementType, None, None]:
-        assert self.is_finalized
+    @property
+    @Interface.override
+    def parser_info(self) -> RootStatementParserInfo:
+        assert isinstance(self._parser_info, RootStatementParserInfo), self._parser_info
+        return self._parser_info
 
-        for namespace_or_namespaces in self.namespace.EnumChildren():
+    # ----------------------------------------------------------------------
+    def EnumGenericTypes(self) -> Generator[GenericType, None, None]:
+        for namespace_or_namespaces in self._type_resolver.namespace.EnumChildren():
             if isinstance(namespace_or_namespaces, list):
                 namespaces = namespace_or_namespaces
             else:
@@ -70,4 +72,36 @@ class RootConcreteTypeResolver(ConcreteTypeResolver):
                     continue
 
                 assert isinstance(namespace, ParsedNamespace), namespace
-                yield self.GetOrCreateNestedGenericTypeViaNamespace(namespace)
+                yield self._type_resolver.GetOrCreateNestedGenericTypeViaNamespace(namespace)
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def _FinalizePass1Impl() -> None:
+        raise Exception("This should never be invoked for this type")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def _FinalizePass2Impl() -> None:
+        raise Exception("This should never be invoked for this type")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def _FinalizePass3Impl() -> None:
+        raise Exception("This should never be invoked for this type")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def _FinalizePass4Impl() -> None:
+        raise Exception("This should never be invoked for this type")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def _CreateConstrainedTypeImpl() -> None:
+        raise Exception("This should never be invoked for this type")

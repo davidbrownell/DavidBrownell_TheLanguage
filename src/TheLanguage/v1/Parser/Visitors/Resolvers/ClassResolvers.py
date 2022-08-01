@@ -17,6 +17,8 @@
 
 import os
 
+from typing import Any
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -28,47 +30,66 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .Impl.ConcreteTypeResolver import ConcreteTypeResolver
-    from .Impl.GenericTypeResolver import GenericTypeResolver
-    from .Impl.GenericStatementTypeMixin import GenericStatementTypeMixin
+    from .Impl.GenericTypeResolver import GenericType
+    from .Impl.TypeResolver import TypeResolver
+
+    from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
     from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
 
-    from ...ParserInfos.Types.ClassTypes.ConcreteClassType import ConcreteClassType
     from ...ParserInfos.Types.ConcreteType import ConcreteType
-    from ...ParserInfos.Types.GenericTypes import GenericType
+    from ...ParserInfos.Types.GenericTypes import BoundGenericType
+
+    from ...ParserInfos.Types.ClassTypes.ConcreteClassType import ConcreteClassType
 
 
 # ----------------------------------------------------------------------
-class ClassGenericTypeResolver(GenericTypeResolver):
+class ClassGenericType(GenericType[ClassStatementParserInfo]):
     # ----------------------------------------------------------------------
-    def __init__(self, *args, **kwargs):
-        super(ClassGenericTypeResolver, self).__init__(
-            _ClassGenericStatementType,
-            *args,
-            **kwargs,
-        )
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def _CreateConcreteData(
+        updated_resolver: TypeResolver,
+    ) -> Any:
+        assert isinstance(updated_resolver.namespace.parser_info, ClassStatementParserInfo), updated_resolver.namespace.parser_info
+        return ConcreteClassType(updated_resolver, updated_resolver.namespace.parser_info)
 
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConcreteTypeImpl(
+    def _CreateBoundGenericType(
         self,
-        updated_resolver: ConcreteTypeResolver,
-    ) -> ConcreteType:
-        assert isinstance(self.namespace.parser_info, ClassStatementParserInfo), self.namespace.parser_info
-        return ConcreteClassType(updated_resolver, self.namespace.parser_info)
+        concrete_data: Any,
+        parser_info: FuncOrTypeExpressionParserInfo,
+    ) -> BoundGenericType:
+        return _ClassBoundGenericType(concrete_data, self, parser_info)
 
 
 # ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-class _ClassGenericStatementType(GenericStatementTypeMixin[ClassStatementParserInfo]):
+class _ClassBoundGenericType(BoundGenericType):
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        concrete_data: Any,
+        generic_type: GenericType,
+        expression_parser_info: FuncOrTypeExpressionParserInfo,
+    ):
+        super(_ClassBoundGenericType, self).__init__(generic_type, expression_parser_info)
+
+        self._concrete_data                 = concrete_data
+
     # ----------------------------------------------------------------------
     @Interface.override
-    def IsSameType(
+    def CreateConcreteType(self) -> ConcreteType:
+        pass # BugBug concrete_type = ConcreteClassType(self._type_resolver, self.generic_type.parser_info)
+        pass # BugBug
+        pass # BugBug return concrete_type
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def IsCovariant(
         self,
-        other: GenericType,
+        other: BoundGenericType,
     ) -> bool:
         return False # BugBug

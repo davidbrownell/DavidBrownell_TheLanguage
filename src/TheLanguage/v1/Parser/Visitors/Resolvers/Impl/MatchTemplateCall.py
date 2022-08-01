@@ -48,7 +48,7 @@ with InitRelativeImports():
     from ....ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
 
     from ....ParserInfos.Types.ConcreteType import ConcreteType
-    from ....ParserInfos.Types.TypeResolvers import TypeResolver
+    from ....ParserInfos.Types.TypeResolver import TypeResolver
 
     from ....TranslationUnitRegion import TranslationUnitRegion
 

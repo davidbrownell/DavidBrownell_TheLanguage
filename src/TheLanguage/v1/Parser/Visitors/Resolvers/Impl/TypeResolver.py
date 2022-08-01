@@ -16,8 +16,9 @@
 """Contains the TypeResolver object"""
 
 import os
+import threading
 
-from typing import Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Dict, Generator, List, Optional, Tuple, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -30,7 +31,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ....ParserInfos.Types.TypeResolvers import TypeResolver as TypeResolverBase
+    from .UpdateCacheImpl import UpdateCacheImpl
 
     from ...Namespaces import Namespace, ParsedNamespace
 
@@ -49,22 +50,24 @@ with InitRelativeImports():
     from ....ParserInfos.ParserInfo import CompileTimeInfo
 
     from ....ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ....ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
     from ....ParserInfos.Statements.FuncInvocationStatementParserInfo import FuncInvocationStatementParserInfo
     from ....ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
     from ....ParserInfos.Statements.StatementParserInfo import StatementParserInfo
+    from ....ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
     from ....ParserInfos.Types.ClassTypes.ConcreteClassType import ConcreteClassType
 
     from ....ParserInfos.Types.ConcreteType import ConcreteType
+    from ....ParserInfos.Types.GenericTypes import GenericType
     from ....ParserInfos.Types.NoneTypes import ConcreteNoneType
     from ....ParserInfos.Types.SelfExpressionTypes import ConcreteSelfReferenceType
     from ....ParserInfos.Types.TupleTypes import ConcreteTupleType
     from ....ParserInfos.Types.VariantTypes import ConcreteVariantType
 
-    from ....TranslationUnitRegion import TranslationUnitRegion
+    from ....ParserInfos.Types.TypeResolver import TypeResolver as TypeResolverInterface
 
-    if TYPE_CHECKING:
-        from .ConcreteTypeResolver import ConcreteTypeResolver  # pylint: disable=unused-import
+    from ....TranslationUnitRegion import TranslationUnitRegion
 
 
 # ----------------------------------------------------------------------
@@ -94,15 +97,15 @@ InvalidTypeReferenceError                   = CreateError(
 
 
 # ----------------------------------------------------------------------
-class TypeResolver(TypeResolverBase):
+class TypeResolver(TypeResolverInterface):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        parent: Optional["ConcreteTypeResolver"],
+        parent: Optional["TypeResolver"],
         namespace: ParsedNamespace,
         fundamental_namespace: Optional[Namespace],
         compile_time_info: List[Dict[str, CompileTimeInfo]],
-        root_type_resolvers: Optional[Dict[Tuple[str, str], "ConcreteTypeResolver"]],
+        root_type_resolvers: Optional[Dict[Tuple[str, str], "TypeResolver"]],
     ):
         assert (
             parent is not None
@@ -116,8 +119,13 @@ class TypeResolver(TypeResolverBase):
         self.fundamental_namespace          = fundamental_namespace
         self.compile_time_info              = compile_time_info
 
-        self.is_finalized                                                                           = False
-        self._root_type_resolvers: Optional[Dict[Tuple[str, str], ConcreteTypeResolver]]     = None
+        self._concrete_data: Any            = None
+
+        self._generic_cache_lock                                                    = threading.Lock()
+        self._generic_cache: Dict[int, Union[threading.Event, GenericType]]         = {}
+
+        self.is_finalized                                                           = False
+        self._root_type_resolvers: Optional[Dict[Tuple[str, str], TypeResolver]]    = None
 
         if root_type_resolvers is not None:
             self.Finalize(root_type_resolvers)
@@ -125,7 +133,7 @@ class TypeResolver(TypeResolverBase):
     # ----------------------------------------------------------------------
     def Finalize(
         self,
-        root_type_resolvers: Dict[Tuple[str, str], "ConcreteTypeResolver"],
+        root_type_resolvers: Dict[Tuple[str, str], "TypeResolver"],
     ) -> None:
         assert self.is_finalized is False
         assert self._root_type_resolvers is None
@@ -135,10 +143,18 @@ class TypeResolver(TypeResolverBase):
 
     # ----------------------------------------------------------------------
     @property
-    def root_type_resolvers(self) -> Dict[Tuple[str, str], "ConcreteTypeResolver"]:
+    def root_type_resolvers(self) -> Dict[Tuple[str, str], "TypeResolver"]:
         assert self.is_finalized is True
         assert self._root_type_resolvers is not None
         return self._root_type_resolvers
+
+    # ----------------------------------------------------------------------
+    def InitConcreteData(
+        self,
+        concrete_data: Any,
+    ) -> None:
+        assert self._concrete_data is None
+        self._concrete_data = concrete_data
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -266,6 +282,88 @@ class TypeResolver(TypeResolverBase):
             assert isinstance(eval_result.type, MiniLanguageHelpers.NoneType), eval_result
 
     # ----------------------------------------------------------------------
+    def GetOrCreateNestedGenericTypeViaNamespace(
+        self,
+        namespace: ParsedNamespace,
+    ) -> GenericType:
+        assert self.is_finalized is True
+
+        # ----------------------------------------------------------------------
+        def CreateGenericType() -> GenericType:
+            if isinstance(namespace.parser_info, ClassStatementParserInfo):
+                from ..ClassResolvers import ClassGenericType
+
+                generic_type_class = ClassGenericType
+
+            elif isinstance(namespace.parser_info, FuncDefinitionStatementParserInfo):
+                from ..FuncDefinitionResolvers import FuncDefinitionGenericType
+
+                generic_type_class = FuncDefinitionGenericType
+
+            elif isinstance(namespace.parser_info, TypeAliasStatementParserInfo):
+                from ..TypeAliasResolvers import TypeAliasGenericType
+
+                generic_type_class = TypeAliasGenericType
+
+            else:
+                assert False, namespace.parser_info  # pragma: no cover
+
+            updated_resolver = TypeResolver(
+                self,
+                namespace,
+                self.fundamental_namespace,
+                self.compile_time_info,
+                self.root_type_resolvers,
+            )
+
+            return generic_type_class(updated_resolver)
+
+            # BugBug generic_resolver = generic_type_class(
+            # BugBug     parent=self,
+            # BugBug     namespace=namespace,
+            # BugBug     fundamental_namespace=self.fundamental_namespace,
+            # BugBug     compile_time_info=self.compile_time_info,
+            # BugBug     root_type_resolvers=self.root_type_resolvers,
+            # BugBug )
+            # BugBug
+            # BugBug return generic_resolver.generic_type
+
+        # ----------------------------------------------------------------------
+
+        return UpdateCacheImpl(
+            self._generic_cache_lock,
+            self._generic_cache,
+            id(namespace),
+            CreateGenericType,
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def GetOrCreateNestedGenericType(
+        self,
+        parser_info: StatementParserInfo,
+    ) -> GenericType:
+        assert self.is_finalized is True
+
+        namespace: Optional[ParsedNamespace] = None
+
+        for namespace_or_namespaces in self.namespace.EnumChildren():
+            if isinstance(namespace_or_namespaces, list):
+                potential_namespaces = namespace_or_namespaces
+            else:
+                potential_namespaces = [namespace_or_namespaces, ]
+
+            for potential_namespace in potential_namespaces:
+                assert isinstance(potential_namespace, ParsedNamespace), potential_namespace
+
+                if potential_namespace.parser_info is parser_info:
+                    namespace = potential_namespace
+                    break
+
+        assert namespace is not None
+        return self.GetOrCreateNestedGenericTypeViaNamespace(namespace)
+
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     def _TypeCheckHelper(
@@ -289,10 +387,10 @@ class TypeResolver(TypeResolverBase):
         while resolver is not None:
             if (
                 isinstance(resolver.namespace.parser_info, ClassStatementParserInfo)
-                and type(resolver).__name__ == "ConcreteTypeResolver"
-                and resolver.has_concrete_type  # type: ignore  # pylint: disable=no-member
+                and isinstance(resolver, TypeResolver)
+                and resolver._concrete_data is not None  # pylint: disable=protected-access
             ):
-                concrete_class = resolver.concrete_type  # type: ignore  # pylint: disable=no-member
+                concrete_class = resolver._concrete_data  # pylint: disable=protected-access
                 assert isinstance(concrete_class, ConcreteClassType), concrete_class
 
                 for type_dependency in concrete_class.types.EnumContent():
@@ -307,7 +405,7 @@ class TypeResolver(TypeResolverBase):
                                 ),
                             )
 
-                        return type_info.generic_type.CreateConcreteType(parser_info)
+                        return type_info.generic_type.CreateBoundGenericType(parser_info).CreateConcreteType()
 
             resolver = resolver.parent
 
@@ -367,4 +465,4 @@ class TypeResolver(TypeResolverBase):
 
             generic_type = root_type_resolver.GetOrCreateNestedGenericTypeViaNamespace(resolved_namespace)
 
-            return generic_type.CreateConcreteType(parser_info)
+            return generic_type.CreateBoundGenericType(parser_info).CreateConcreteType()

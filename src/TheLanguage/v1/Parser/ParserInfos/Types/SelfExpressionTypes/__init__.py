@@ -28,7 +28,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..GenericTypes import GenericExpressionType, GenericType
+    from ..GenericTypes import BoundGenericType, GenericType
 
     from ...Expressions.SelfReferenceExpressionParserInfo import SelfReferenceExpressionParserInfo
 
@@ -37,13 +37,13 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class GenericSelfExpressionType(GenericExpressionType):
+class SelfExpressionGenericType(GenericType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         parser_info: SelfReferenceExpressionParserInfo,
     ):
-        super(GenericSelfExpressionType, self).__init__(parser_info, True)
+        super(SelfExpressionGenericType, self).__init__(parser_info, True)
 
     # ----------------------------------------------------------------------
     @property
@@ -54,18 +54,45 @@ class GenericSelfExpressionType(GenericExpressionType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def IsSameType(
+    def CreateBoundGenericType(
         self,
-        other: GenericType,
-    ) -> bool:
-        return False # BugBug
+        parser_info: SelfReferenceExpressionParserInfo,
+    ) -> BoundGenericType:
+        assert parser_info is self.parser_info, (parser_info, self.parser_info)
+        return SelfExpressionBoundGenericType(self)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateConcreteTypeImpl(self) -> ConcreteType:
-        return ConcreteSelfReferenceType(self.parser_info)
+    def _CreateDefaultConcreteTypeImpl(self) -> ConcreteType:
+        return self.CreateBoundGenericType(self.parser_info).CreateConcreteType()
+
+
+# ----------------------------------------------------------------------
+class SelfExpressionBoundGenericType(BoundGenericType):
+    # ----------------------------------------------------------------------
+    def __init__(
+        self,
+        generic_type: SelfExpressionGenericType,
+    ):
+        super(SelfExpressionBoundGenericType, self).__init__(generic_type, generic_type.parser_info)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def CreateConcreteType(self) -> ConcreteType:
+        return ConcreteSelfReferenceType(self.generic_type.parser_info)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def IsCovariant(
+        self,
+        other: GenericType,
+    ) -> bool:
+        return (
+            isinstance(other, SelfExpressionBoundGenericType)
+            and self.generic_type.parser_info.mutability_modifier == other.generic_type.parser_info.mutability_modifier
+        )
 
 
 # ----------------------------------------------------------------------

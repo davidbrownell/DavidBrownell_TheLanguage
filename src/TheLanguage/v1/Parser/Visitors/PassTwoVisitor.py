@@ -34,8 +34,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .Namespaces import Namespace, ParsedNamespace
 
-    from .Resolvers.RootResolvers import RootConcreteTypeResolver
-    from .Resolvers.Impl.ConcreteTypeResolver import ConcreteTypeResolver
+    from .Resolvers.RootResolvers import RootConcreteType
+    from .Resolvers.Impl.TypeResolver import TypeResolver # BugBug: Shouldn't reach into impl
 
     from ..Error import Error, ErrorException
 
@@ -74,17 +74,26 @@ class PassTwoVisitor(object):
             compile_time_info: List[Dict[str, CompileTimeInfo]] = [mini_language_configuration_values, ]
 
             # Create a concrete root resolvers for each translation unit
-            root_resolvers: Dict[Tuple[str, str], RootConcreteTypeResolver] = {}
+            root_resolvers: Dict[Tuple[str, str], TypeResolver] = {}
+            root_types: Dict[Tuple[str, str], RootConcreteType] = {}
 
             for translation_unit, namespace in translation_unit_namespaces.items():
-                root_resolvers[translation_unit] = RootConcreteTypeResolver(
+                type_resolver = TypeResolver(
+                    None,
                     namespace,
                     fundamental_types_namespace,
                     compile_time_info,
+                    None,
                 )
 
+                assert isinstance(namespace.parser_info, RootStatementParserInfo), namespace.parser_info
+                root_type = RootConcreteType(type_resolver, namespace.parser_info)
+
+                root_resolvers[translation_unit] = type_resolver
+                root_types[translation_unit] = root_type
+
             for root_resolver in root_resolvers.values():
-                root_resolver.Finalize(cast(Dict[Tuple[str, str], ConcreteTypeResolver], root_resolvers))
+                root_resolver.Finalize(root_resolvers)
 
             # Pre-populate the execute results so that we don't need to update via a lock
             execute_results: Dict[
@@ -92,9 +101,7 @@ class PassTwoVisitor(object):
                 Optional[PassTwoVisitor.Executor._ExecuteResult],  # pylint: disable=protected-access
             ] = {translation_unit: None for translation_unit in translation_unit_namespaces.keys()}
 
-            self._translation_unit_namespaces           = translation_unit_namespaces
-            self._root_resolvers                        = root_resolvers
-
+            self._root_types                            = root_types
             self._execute_results                       = execute_results
 
         # ----------------------------------------------------------------------
@@ -155,10 +162,9 @@ class PassTwoVisitor(object):
         ) -> Union[bool, List[Error]]:
             errors: List[Error] = []
 
-            translation_unit_namespace = self._translation_unit_namespaces[translation_unit]
-            root_resolver = self._root_resolvers[translation_unit]
+            root_type = self._root_types[translation_unit]
 
-            # Prepopulate the postprocess funcs
+            # Pre-populate the postprocess funcs
             postprocess_funcs: List[List[Callable[[], None]]] = []
 
             for _ in range(len(PassTwoVisitor.Executor._PostprocessStep)):  # pylint: disable=protected-access
@@ -167,7 +173,7 @@ class PassTwoVisitor(object):
             # Process all of the top-level types that are default initializable
             added_postprocess_func = False
 
-            for generic_type in root_resolver.EnumGenericTypes():
+            for generic_type in root_type.EnumGenericTypes():
                 if not generic_type.is_default_initializable:
                     continue
 

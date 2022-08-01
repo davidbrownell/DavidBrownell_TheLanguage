@@ -38,8 +38,8 @@ with InitRelativeImports():
 
     from ..ConcreteType import ConcreteType
     from ..ConstrainedType import ConstrainedType
-    from ..GenericTypes import GenericStatementType, GenericType
-    from ..TypeResolvers import ConcreteTypeResolver
+    from ..GenericTypes import GenericType
+    from ..TypeResolver import TypeResolver
 
     from ...Common.ClassModifier import ClassModifier
     from ...Common.MethodHierarchyModifier import MethodHierarchyModifier
@@ -113,7 +113,7 @@ InvalidMutableDecorationError               = CreateError(
 @dataclass(frozen=True)
 class TypeInfo(object):
     # ----------------------------------------------------------------------
-    generic_type: GenericStatementType
+    generic_type: GenericType
     name_override: Optional[str]            = field(default=None)
 
     # ----------------------------------------------------------------------
@@ -136,7 +136,7 @@ class ConcreteClassType(ConcreteType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        type_resolver: ConcreteTypeResolver,
+        type_resolver: TypeResolver,
         parser_info: ClassStatementParserInfo,
     ):
         super(ConcreteClassType, self).__init__(parser_info)
@@ -161,8 +161,8 @@ class ConcreteClassType(ConcreteType):
         self._attributes: Optional[ClassContent[AttributeInfo]]             = None
 
         # The following values are created during FinalizePass3 and exposed via properties
-        self._methods: Optional[ClassContent[GenericStatementType]]             = None
-        self._abstract_methods: Optional[ClassContent[GenericStatementType]]    = None
+        self._methods: Optional[ClassContent[GenericType]]                  = None
+        self._abstract_methods: Optional[ClassContent[GenericType]]         = None
 
         # The following values are initialized upon creation and destroyed after Finalization
         self._attribute_statements: List[ClassAttributeStatementParserInfo]                         = []
@@ -171,7 +171,7 @@ class ConcreteClassType(ConcreteType):
         self._using_statements: List[ClassUsingStatementParserInfo]                                 = []
 
         # The following values are initialized during FinalizePass1 and destroyed after Finalization
-        self._generic_methods: List[Tuple[FuncDefinitionStatementParserInfo, GenericStatementType]] = []
+        self._generic_methods: List[Tuple[FuncDefinitionStatementParserInfo, GenericType]]  = []
 
         self._Initialize()
 
@@ -216,13 +216,13 @@ class ConcreteClassType(ConcreteType):
 
     # Valid after FinalizePass3
     @property
-    def methods(self) -> ClassContent[GenericStatementType]:
+    def methods(self) -> ClassContent[GenericType]:
         assert self.state.value >= ConcreteType.State.FinalizedPass3.value
         assert self._methods is not None
         return self._methods
 
     @property
-    def abstract_methods(self) -> ClassContent[GenericStatementType]:
+    def abstract_methods(self) -> ClassContent[GenericType]:
         assert self.state.value >= ConcreteType.State.FinalizedPass3.value
         assert self._abstract_methods is not None
         return self._abstract_methods
@@ -535,7 +535,7 @@ class ConcreteClassType(ConcreteType):
                 errors += ex.errors
 
         # Methods
-        generic_methods: List[Tuple[FuncDefinitionStatementParserInfo, GenericStatementType]] = []
+        generic_methods: List[Tuple[FuncDefinitionStatementParserInfo, GenericType]] = []
 
         for method_statement in self._method_statements:
             try:
@@ -665,19 +665,19 @@ class ConcreteClassType(ConcreteType):
 
         # ----------------------------------------------------------------------
         def ExtractMethodKey(
-            generic_type: GenericStatementType,
+            generic_type: GenericType,
         ) -> Any:
             pass # BugBug
 
         # ----------------------------------------------------------------------
         def PostprocessMethods(
-            local: List[Dependency[GenericStatementType]],
-            augmented: List[Dependency[GenericStatementType]],
-            inherited: List[Dependency[GenericStatementType]],
+            local: List[Dependency[GenericType]],
+            augmented: List[Dependency[GenericType]],
+            inherited: List[Dependency[GenericType]],
         ) -> Tuple[
-            List[Dependency[GenericStatementType]],
-            List[Dependency[GenericStatementType]],
-            List[Dependency[GenericStatementType]],
+            List[Dependency[GenericType]],
+            List[Dependency[GenericType]],
+            List[Dependency[GenericType]],
         ]:
             # BugBug
             return local, augmented, inherited
@@ -862,8 +862,8 @@ class _Pass2Info(_InfoBase):
 class _Pass3Info(_InfoBase):
     # ----------------------------------------------------------------------
     def __init__(self):
-        self.methods: List[Dependency[GenericStatementType]]                = []
-        self.abstract_methods: List[Dependency[GenericStatementType]]       = []
+        self.methods: List[Dependency[GenericType]]                         = []
+        self.abstract_methods: List[Dependency[GenericType]]                = []
 
     # ----------------------------------------------------------------------
     def Merge(
