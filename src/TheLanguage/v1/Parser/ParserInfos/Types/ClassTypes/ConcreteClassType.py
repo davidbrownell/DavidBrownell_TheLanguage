@@ -128,7 +128,7 @@ class TypeInfo(object):
 class AttributeInfo(object):
     # ----------------------------------------------------------------------
     statement: ClassAttributeStatementParserInfo
-    constrained_type: ConstrainedType
+    concrete_type: ConcreteType
 
 
 # ----------------------------------------------------------------------
@@ -158,7 +158,9 @@ class ConcreteClassType(ConcreteType):
         self._types: Optional[ClassContent[TypeInfo]]                       = None
 
         # The following values are created during FinalizePass2 and exposed via properties
-        self._attributes: Optional[ClassContent[AttributeInfo]]                 = None
+        self._attributes: Optional[ClassContent[AttributeInfo]]             = None
+
+        # The following values are created during FinalizePass3 and exposed via properties
         self._methods: Optional[ClassContent[GenericStatementType]]             = None
         self._abstract_methods: Optional[ClassContent[GenericStatementType]]    = None
 
@@ -167,6 +169,9 @@ class ConcreteClassType(ConcreteType):
         self._method_statements: List[FuncDefinitionStatementParserInfo]                            = []
         self._type_statements: List[Union[ClassStatementParserInfo, TypeAliasStatementParserInfo]]  = []
         self._using_statements: List[ClassUsingStatementParserInfo]                                 = []
+
+        # The following values are initialized during FinalizePass1 and destroyed after Finalization
+        self._generic_methods: List[Tuple[FuncDefinitionStatementParserInfo, GenericStatementType]] = []
 
         self._Initialize()
 
@@ -209,15 +214,16 @@ class ConcreteClassType(ConcreteType):
         assert self._attributes is not None
         return self._attributes
 
+    # Valid after FinalizePass3
     @property
     def methods(self) -> ClassContent[GenericStatementType]:
-        assert self.state.value >= ConcreteType.State.FinalizedPass2.value
+        assert self.state.value >= ConcreteType.State.FinalizedPass3.value
         assert self._methods is not None
         return self._methods
 
     @property
     def abstract_methods(self) -> ClassContent[GenericStatementType]:
-        assert self.state.value >= ConcreteType.State.FinalizedPass2.value
+        assert self.state.value >= ConcreteType.State.FinalizedPass3.value
         assert self._abstract_methods is not None
         return self._abstract_methods
 
@@ -415,22 +421,7 @@ class ConcreteClassType(ConcreteType):
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass1Impl(self) -> None:
-        errors: List[Error] = []
-
-        # Finalize all dependencies
-        for dependency in itertools.chain(
-            [self.base_dependency, ] if self.base_dependency else [],
-            self.concept_dependencies,
-            self.interface_dependencies,
-            self.mixin_dependencies,
-        ):
-            try:
-                dependency.ResolveDependencies()[1].FinalizePass1()
-            except ErrorException as ex:
-                errors += ex.errors
-
-        if errors:
-            raise ErrorException(*errors)
+        self._FinalizeImpl(ConcreteType.State.FinalizedPass1)
 
         # Capture the dependency info
         augmented_info = _Pass1Info()
@@ -447,10 +438,9 @@ class ConcreteClassType(ConcreteType):
 
             target_info.Merge(dependencies)
 
-        if errors:
-            raise ErrorException(*errors)
-
         # Extract the local information
+        errors: List[Error] = []
+
         local_info = _Pass1Info()
 
         local_info.concepts += self.concept_dependencies
@@ -458,9 +448,15 @@ class ConcreteClassType(ConcreteType):
         local_info.mixins += self.mixin_dependencies
 
         for statement in self._type_statements:
-            local_info.types.append(
-                DependencyLeaf(TypeInfo(self._type_resolver.GetOrCreateNestedGenericType(statement))),
-            )
+            try:
+                local_info.types.append(
+                    DependencyLeaf(TypeInfo(self._type_resolver.GetOrCreateNestedGenericType(statement))),
+                )
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
 
         # Prepare the final results
         concepts = ClassContent.Create(
@@ -500,33 +496,9 @@ class ConcreteClassType(ConcreteType):
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass2Impl(self) -> None:
+        self._FinalizeImpl(ConcreteType.State.FinalizedPass2)
+
         errors: List[Error] = []
-
-        # Finalize all dependencies
-        for dependency in itertools.chain(
-            [self.base_dependency, ] if self.base_dependency else [],
-            self.concept_dependencies,
-            self.interface_dependencies,
-            self.mixin_dependencies,
-        ):
-            try:
-                dependency.ResolveDependencies()[1].FinalizePass2()
-            except ErrorException as ex:
-                errors += ex.errors
-
-        # Validate the local types
-        for dependency in self.types.local:
-            try:
-                generic_type = dependency.ResolveDependencies()[1].generic_type
-
-                if generic_type.is_default_initializable:
-                    generic_type.CreateDefaultConcreteType().Finalize()
-
-            except ErrorException as ex:
-                errors += ex.errors
-
-        if errors:
-            raise ErrorException(*errors)
 
         # Capture the dependency info
         augmented_info = _Pass2Info()
@@ -543,26 +515,19 @@ class ConcreteClassType(ConcreteType):
 
             target_info.Merge(dependencies)
 
-        if errors:
-            raise ErrorException(*errors)
-
         # Extract the local information
+        errors: List[Error] = []
+
         local_info = _Pass2Info()
 
         # Attributes
         for attribute_statement in self._attribute_statements:
             try:
-                # BugBug: Handle 'is_override'
-
                 concrete_type = self._type_resolver.EvalConcreteType(attribute_statement.type)
-
-                concrete_type.Finalize()
-
-                constrained_type = concrete_type.CreateConstrainedType()
 
                 local_info.attributes.append(
                     DependencyLeaf(
-                        AttributeInfo(attribute_statement, constrained_type),
+                        AttributeInfo(attribute_statement, concrete_type),
                     ),
                 )
 
@@ -570,29 +535,70 @@ class ConcreteClassType(ConcreteType):
                 errors += ex.errors
 
         # Methods
+        generic_methods: List[Tuple[FuncDefinitionStatementParserInfo, GenericStatementType]] = []
+
         for method_statement in self._method_statements:
             try:
                 generic_type = self._type_resolver.GetOrCreateNestedGenericType(method_statement)
 
                 # BugBug: Handle hierarchy
 
-                dependency_leaf = DependencyLeaf(generic_type)
-
-                if method_statement.method_hierarchy_modifier == MethodHierarchyModifier.abstract:
-                    local_info.abstract_methods.append(dependency_leaf)
-                else:
-                    local_info.methods.append(dependency_leaf)
+                generic_methods.append((method_statement, generic_type))
 
             except ErrorException as ex:
                 errors += ex.errors
-                continue
-
-        # Using
-        if self._using_statements:
-            raise NotImplementedError("Using statements are not implemented yet")
 
         if errors:
             raise ErrorException(*errors)
+
+        # Prepare the final results
+        attributes = ClassContent.Create(
+            local_info.attributes,
+            augmented_info.attributes,
+            dependency_info.attributes,
+            lambda attribute_info: attribute_info.statement.name,
+        )
+
+        # Commit the results
+        self._attributes = attributes
+        self._generic_methods = generic_methods
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _FinalizePass3Impl(self) -> None:
+        self._FinalizeImpl(ConcreteType.State.FinalizedPass3)
+
+        errors: List[Error] = []
+
+        # Capture the dependency info
+        augmented_info = _Pass3Info()
+        dependency_info = _Pass3Info()
+
+        for dependencies, target_info in [
+            ([self.base_dependency, ] if self.base_dependency else [], dependency_info),
+            (self.concept_dependencies, augmented_info),
+            (self.interface_dependencies, dependency_info),
+            (self.mixin_dependencies, augmented_info),
+        ]:
+            if not dependencies:
+                continue
+
+            target_info.Merge(dependencies)
+
+        local_info = _Pass3Info()
+
+        # Methods
+        for method_statement, generic_type in self._generic_methods:
+            dependency_leaf = DependencyLeaf(generic_type)
+
+            if method_statement.method_hierarchy_modifier == MethodHierarchyModifier.abstract:
+                local_info.abstract_methods.append(dependency_leaf)
+            else:
+                local_info.methods.append(dependency_leaf)
+
+        # Using statement
+        if self._using_statements:
+            raise NotImplementedError("Using statements are not implemented yet")
 
         # Issue an error if the class was declared as abstract but no abstract methods were found
         if (
@@ -656,13 +662,6 @@ class ConcreteClassType(ConcreteType):
 
         # Prepare the final results
 
-        attributes = ClassContent.Create(
-            local_info.attributes,
-            augmented_info.attributes,
-            dependency_info.attributes,
-            lambda attribute_info: attribute_info.statement.name,
-        )
-
         # ----------------------------------------------------------------------
         def ExtractMethodKey(
             generic_type: GenericStatementType,
@@ -700,21 +699,15 @@ class ConcreteClassType(ConcreteType):
         )
 
         # Commit the results
-        self._attributes = attributes
         self._methods = methods
         self._abstract_methods = abstract_methods
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _FinalizePass3Impl(self) -> None:
-        pass # BugBug
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     def _FinalizePass4Impl(self) -> None:
-        pass # BugBug
+        self._FinalizeImpl(ConcreteType.State.FinalizedPass4)
 
-        self._Finalize()
+        self._DestroyTemporaryFinalizationAttributes()
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -722,7 +715,62 @@ class ConcreteClassType(ConcreteType):
         pass # BugBug
 
     # ----------------------------------------------------------------------
-    def _Finalize(self):
+    def _FinalizeImpl(
+        self,
+        state: ConcreteType.State,
+    ) -> None:
+        errors: List[Error] = []
+
+        # Finalize all dependencies
+        for dependency in itertools.chain(
+            [self.base_dependency, ] if self.base_dependency else [],
+            self.concept_dependencies,
+            self.interface_dependencies,
+            self.mixin_dependencies,
+        ):
+            try:
+                dependency.ResolveDependencies()[1].Finalize(state)
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if state.value > state.FinalizedPass1.value:
+            # Finalize local types
+            for dependency in self.types.local:
+                try:
+                    generic_type = dependency.ResolveDependencies()[1].generic_type
+
+                    if generic_type.is_default_initializable:
+                        generic_type.CreateDefaultConcreteType().Finalize(state)
+
+                except ErrorException as ex:
+                    errors += ex.errors
+
+        if state.value > state.FinalizedPass2.value:
+            # Finalize local attributes
+            for dependency in self.attributes.local:
+                try:
+                    dependency.ResolveDependencies()[1].concrete_type.Finalize(state)
+                except ErrorException as ex:
+                    errors += ex.errors
+
+        if state.value > state.FinalizedPass3.value:
+            for dependency in itertools.chain(self.methods.local, self.abstract_methods.local):
+                try:
+                    generic_type = dependency.ResolveDependencies()[1]
+
+                    if generic_type.is_default_initializable:
+                        generic_type.CreateDefaultConcreteType().Finalize(state)
+
+                except ErrorException as ex:
+                    errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    def _DestroyTemporaryFinalizationAttributes(self):
+        del self._generic_methods
+
         del self._attribute_statements
         del self._method_statements
         del self._type_statements
@@ -795,6 +843,24 @@ class _Pass2Info(_InfoBase):
     # ----------------------------------------------------------------------
     def __init__(self):
         self.attributes: List[Dependency[AttributeInfo]]                    = []
+
+    # ----------------------------------------------------------------------
+    def Merge(
+        self,
+        dependency_nodes: List[DependencyNode[ConcreteType]],
+    ) -> None:
+        self._MergeImpl(
+            [
+                "attributes",
+            ],
+            dependency_nodes,
+        )
+
+
+# ----------------------------------------------------------------------
+class _Pass3Info(_InfoBase):
+    # ----------------------------------------------------------------------
+    def __init__(self):
         self.methods: List[Dependency[GenericStatementType]]                = []
         self.abstract_methods: List[Dependency[GenericStatementType]]       = []
 
@@ -805,7 +871,6 @@ class _Pass2Info(_InfoBase):
     ) -> None:
         self._MergeImpl(
             [
-                "attributes",
                 "methods",
                 "abstract_methods",
             ],

@@ -19,7 +19,7 @@ import os
 
 from contextlib import ExitStack
 from enum import auto, Enum
-from typing import Callable, Generator, TYPE_CHECKING
+from typing import Callable, Generator, Optional, TYPE_CHECKING
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -69,7 +69,7 @@ class ConcreteType(Interface.Interface):
         FinalizingPass1                     = auto()
         FinalizedPass1                      = auto()
 
-        # Pass 2 is used to establish types
+        # Pass 2 is used to establish types within a class
         FinalizingPass2                     = auto()
         FinalizedPass2                      = auto()
 
@@ -108,56 +108,52 @@ class ConcreteType(Interface.Interface):
         return last
 
     # ----------------------------------------------------------------------
-    def Finalize(self) -> None:
-        self.FinalizePass1()
-        self.FinalizePass2()
-        self.FinalizePass3()
-        self.FinalizePass4()
+    def Finalize(
+        self,
+        state: Optional["ConcreteType.State"]=None,
+    ) -> None:
+        state = state or ConcreteType.State.Finalized
 
-    # ----------------------------------------------------------------------
-    def FinalizePass1(self) -> None:
-        if self.state == ConcreteType.State.FinalizingPass1:
-            assert isinstance(self._parser_info, NamedTrait), self._parser_info
+        if state.value >= ConcreteType.State.FinalizedPass1.value:
+            if self.state == ConcreteType.State.FinalizingPass1:
+                assert isinstance(self._parser_info, NamedTrait), self._parser_info
 
-            raise ErrorException(
-                CircularDependencyError.Create(
-                    region=self._parser_info.regions__.self__,
-                    name=self._parser_info.name,
-                ),
+                raise ErrorException(
+                    CircularDependencyError.Create(
+                        region=self._parser_info.regions__.self__,
+                        name=self._parser_info.name,
+                    ),
+                )
+
+            self._InvokeFinalization(
+                ConcreteType.State.FinalizingPass1,
+                ConcreteType.State.FinalizedPass1,
+                self._FinalizePass1Impl,
             )
 
-        self._FinalizePassImpl(
-            ConcreteType.State.FinalizingPass1,
-            ConcreteType.State.FinalizedPass1,
-            self._FinalizePass1Impl,
-        )
+        if state.value >= ConcreteType.State.FinalizedPass2.value:
+            self._InvokeFinalization(
+                ConcreteType.State.FinalizingPass2,
+                ConcreteType.State.FinalizedPass2,
+                self._FinalizePass2Impl,
+            )
 
-    # ----------------------------------------------------------------------
-    def FinalizePass2(self) -> None:
-        self._FinalizePassImpl(
-            ConcreteType.State.FinalizingPass2,
-            ConcreteType.State.FinalizedPass2,
-            self._FinalizePass2Impl,
-        )
+        if state.value >= ConcreteType.State.FinalizedPass3.value:
+            self._InvokeFinalization(
+                ConcreteType.State.FinalizingPass3,
+                ConcreteType.State.FinalizedPass3,
+                self._FinalizePass3Impl,
+            )
 
-    # ----------------------------------------------------------------------
-    def FinalizePass3(self) -> None:
-        self._FinalizePassImpl(
-            ConcreteType.State.FinalizingPass3,
-            ConcreteType.State.FinalizedPass3,
-            self._FinalizePass3Impl,
-        )
+        if state.value >= ConcreteType.State.FinalizedPass4.value:
+            self._InvokeFinalization(
+                ConcreteType.State.FinalizingPass4,
+                ConcreteType.State.FinalizedPass4,
+                self._FinalizePass4Impl,
+            )
 
-    # ----------------------------------------------------------------------
-    def FinalizePass4(self) -> None:
-        self._FinalizePassImpl(
-            ConcreteType.State.FinalizingPass4,
-            ConcreteType.State.FinalizedPass4,
-            self._FinalizePass4Impl,
-        )
-
-        # We are done
-        object.__setattr__(self, "state", ConcreteType.State.Finalized)
+            # We are done
+            object.__setattr__(self, "state", ConcreteType.State.Finalized)
 
     # ----------------------------------------------------------------------
     def CreateConstrainedType(self) -> "ConstrainedType":
@@ -199,7 +195,7 @@ class ConcreteType(Interface.Interface):
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------
-    def _FinalizePassImpl(
+    def _InvokeFinalization(
         self,
         in_process_state: "ConcreteType.State",
         completed_state: "ConcreteType.State",

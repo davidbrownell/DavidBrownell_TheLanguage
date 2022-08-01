@@ -76,22 +76,22 @@ class ConcreteFuncDefinitionType(ConcreteType):
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass1Impl(self) -> None:
-        self._FuncDefinitionFinalizeImpl(lambda concrete_type: concrete_type.FinalizePass1())
+        self._FinalizeImpl(lambda concrete_type: concrete_type.Finalize(ConcreteType.State.FinalizedPass1))
 
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass2Impl(self) -> None:
-        self._FuncDefinitionFinalizeImpl(lambda concrete_type: concrete_type.FinalizePass2())
+        self._FinalizeImpl(lambda concrete_type: concrete_type.Finalize(ConcreteType.State.FinalizedPass2))
 
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass3Impl(self) -> None:
-        self._FuncDefinitionFinalizeImpl(lambda concrete_type: concrete_type.FinalizePass3())
+        self._FinalizeImpl(lambda concrete_type: concrete_type.Finalize(ConcreteType.State.FinalizedPass3))
 
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass4Impl(self) -> None:
-        self._FuncDefinitionFinalizeImpl(lambda concrete_type: concrete_type.FinalizePass4())
+        self._FinalizeImpl(lambda concrete_type: concrete_type.Finalize(ConcreteType.State.FinalizedPass4))
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -99,7 +99,7 @@ class ConcreteFuncDefinitionType(ConcreteType):
         pass # BugBug
 
     # ----------------------------------------------------------------------
-    def _FuncDefinitionFinalizeImpl(
+    def _FinalizeImpl(
         self,
         finalize_func: Callable[[ConcreteType], None],
     ) -> None:

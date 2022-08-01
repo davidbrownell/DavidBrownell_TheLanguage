@@ -143,9 +143,6 @@ class ClassAttributeStatement(GrammarPhrase):
             no_compare_node = None
             no_compare_info = None
 
-            is_override_node = None
-            is_override_info = None
-
             attributes_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
             if attributes_node is not None:
                 for attribute in AttributesFragment.Extract(attributes_node):
@@ -163,9 +160,6 @@ class ClassAttributeStatement(GrammarPhrase):
                     elif attribute.name == "NoCompare":
                         no_compare_node = attribute.leaf
                         no_compare_info = True
-                    elif attribute.name == "Override":
-                        is_override_node = attribute.leaf
-                        is_override_info = True
                     else:
                         errors.append(
                             AttributesFragment.UnsupportedAttributeError.Create(
@@ -251,7 +245,6 @@ class ClassAttributeStatement(GrammarPhrase):
                     no_initialization_node,
                     no_serialize_node,
                     no_compare_node,
-                    is_override_node,
                 ),
                 name_info,
                 visibility_info,
@@ -264,7 +257,6 @@ class ClassAttributeStatement(GrammarPhrase):
                 no_initialization_info,
                 no_serialize_info,
                 no_compare_info,
-                is_override_info,
             )
 
         # ----------------------------------------------------------------------

@@ -48,6 +48,8 @@ with InitRelativeImports():
     from ..ParserInfos.Statements.Traits.ConstrainedStatementTrait import ConstrainedStatementTrait
     from ..ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
+    from ..ParserInfos.Types.ConcreteType import ConcreteType
+
 
 # ----------------------------------------------------------------------
 class PassTwoVisitor(object):
@@ -172,12 +174,21 @@ class PassTwoVisitor(object):
                 try:
                     concrete_type = generic_type.CreateDefaultConcreteType()
 
+                    # ----------------------------------------------------------------------
+                    def FinalizeImpl(
+                        state: ConcreteType.State,
+                        concrete_type=concrete_type,
+                    ) -> None:
+                        concrete_type.Finalize(state)
+
+                    # ----------------------------------------------------------------------
+
                     PostprocessStep = PassTwoVisitor.Executor._PostprocessStep  # pylint: disable=protected-access
 
-                    postprocess_funcs[PostprocessStep.RootFinalizePass1.value].append(concrete_type.FinalizePass1)
-                    postprocess_funcs[PostprocessStep.RootFinalizePass2.value].append(concrete_type.FinalizePass2)
-                    postprocess_funcs[PostprocessStep.RootFinalizePass2.value].append(concrete_type.FinalizePass3)
-                    postprocess_funcs[PostprocessStep.RootFinalizePass2.value].append(concrete_type.FinalizePass4)
+                    postprocess_funcs[PostprocessStep.RootFinalizePass1.value].append(lambda: FinalizeImpl(ConcreteType.State.FinalizedPass1))
+                    postprocess_funcs[PostprocessStep.RootFinalizePass2.value].append(lambda: FinalizeImpl(ConcreteType.State.FinalizedPass2))
+                    postprocess_funcs[PostprocessStep.RootFinalizePass3.value].append(lambda: FinalizeImpl(ConcreteType.State.FinalizedPass3))
+                    postprocess_funcs[PostprocessStep.RootFinalizePass4.value].append(lambda: FinalizeImpl(ConcreteType.State.FinalizedPass4))
 
                     # ----------------------------------------------------------------------
                     def NoneWrappedCreateConstrainedType(
@@ -187,7 +198,7 @@ class PassTwoVisitor(object):
 
                     # ----------------------------------------------------------------------
 
-                    postprocess_funcs[PostprocessStep.RootCreateConstrainedType.value].append(NoneWrappedCreateConstrainedType)
+                    # BugBug postprocess_funcs[PostprocessStep.RootCreateConstrainedType.value].append(NoneWrappedCreateConstrainedType)
 
                     added_postprocess_func = True
 

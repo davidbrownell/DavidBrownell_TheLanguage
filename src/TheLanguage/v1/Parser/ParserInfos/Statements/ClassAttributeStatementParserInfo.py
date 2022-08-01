@@ -67,7 +67,6 @@ class ClassAttributeStatementParserInfo(
     no_initialization: Optional[bool]
     no_serialize: Optional[bool]
     no_compare: Optional[bool]
-    is_override: Optional[bool]
 
     # ----------------------------------------------------------------------
     @classmethod

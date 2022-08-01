@@ -80,7 +80,7 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = ClassAttributeStatementParserInfo.Create(
-                    regions=[{self_region}, {name_region}, {visibility_region}, {documentation_region}, {mutability_modifier_region}, {keyword_initialization_region}, {no_initialization_region}, {no_serialize_region}, {no_compare_region}, {is_override_region}],
+                    regions=[{self_region}, {name_region}, {visibility_region}, {documentation_region}, {mutability_modifier_region}, {keyword_initialization_region}, {no_initialization_region}, {no_serialize_region}, {no_compare_region}],
                     name={name},
                     visibility_param={visibility},
                     class_capabilities={class_capabilities},
@@ -92,7 +92,6 @@ class StatementsMixin(BaseMixin):
                     no_initialization={no_initialization},
                     no_serialize={no_serialize},
                     no_compare={no_compare},
-                    is_override={is_override},
                 )
 
                 """,
@@ -107,7 +106,6 @@ class StatementsMixin(BaseMixin):
                 no_initialization_region=self._ToString(parser_info.regions__.no_initialization),
                 no_serialize_region=self._ToString(parser_info.regions__.no_serialize),
                 no_compare_region=self._ToString(parser_info.regions__.no_compare),
-                is_override_region=self._ToString(parser_info.regions__.is_override),
                 class_capabilities=class_capabilities,
                 visibility=self._ToString(parser_info.visibility),
                 type=self._ToString(parser_info.type),
@@ -119,7 +117,6 @@ class StatementsMixin(BaseMixin):
                 no_initialization=self._ToString(parser_info.no_initialization),
                 no_serialize=self._ToString(parser_info.no_serialize),
                 no_compare=self._ToString(parser_info.no_compare),
-                is_override=self._ToString(parser_info.is_override),
             ),
         )
 
