@@ -704,6 +704,16 @@ class ConcreteClassType(ConcreteType):
         self._methods = methods
         self._abstract_methods = abstract_methods
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _FinalizePass3Impl(self) -> None:
+        pass # BugBug
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _FinalizePass4Impl(self) -> None:
+        pass # BugBug
+
         self._Finalize()
 
     # ----------------------------------------------------------------------

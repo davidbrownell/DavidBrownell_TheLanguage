@@ -65,11 +65,21 @@ class ConcreteType(Interface.Interface):
     class State(Enum):
         Created                             = auto()
 
+        # Pass 1 is used to establish class hierarchies
         FinalizingPass1                     = auto()
         FinalizedPass1                      = auto()
 
+        # Pass 2 is used to establish types
         FinalizingPass2                     = auto()
         FinalizedPass2                      = auto()
+
+        # Pass 3 is used to validate method types
+        FinalizingPass3                     = auto()
+        FinalizedPass3                      = auto()
+
+        # Pass 4 is used to validate method contents
+        FinalizingPass4                     = auto()
+        FinalizedPass4                      = auto()
 
         Finalized                           = auto()
 
@@ -101,6 +111,8 @@ class ConcreteType(Interface.Interface):
     def Finalize(self) -> None:
         self.FinalizePass1()
         self.FinalizePass2()
+        self.FinalizePass3()
+        self.FinalizePass4()
 
     # ----------------------------------------------------------------------
     def FinalizePass1(self) -> None:
@@ -128,6 +140,22 @@ class ConcreteType(Interface.Interface):
             self._FinalizePass2Impl,
         )
 
+    # ----------------------------------------------------------------------
+    def FinalizePass3(self) -> None:
+        self._FinalizePassImpl(
+            ConcreteType.State.FinalizingPass3,
+            ConcreteType.State.FinalizedPass3,
+            self._FinalizePass3Impl,
+        )
+
+    # ----------------------------------------------------------------------
+    def FinalizePass4(self) -> None:
+        self._FinalizePassImpl(
+            ConcreteType.State.FinalizingPass4,
+            ConcreteType.State.FinalizedPass4,
+            self._FinalizePass4Impl,
+        )
+
         # We are done
         object.__setattr__(self, "state", ConcreteType.State.Finalized)
 
@@ -150,6 +178,18 @@ class ConcreteType(Interface.Interface):
     @staticmethod
     @Interface.abstractmethod
     def _FinalizePass2Impl() -> None:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def _FinalizePass3Impl() -> None:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def _FinalizePass4Impl() -> None:
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------

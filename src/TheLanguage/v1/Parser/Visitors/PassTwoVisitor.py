@@ -135,6 +135,8 @@ class PassTwoVisitor(object):
             # ----------------------------------------------------------------------
             RootFinalizePass1               = 0
             RootFinalizePass2               = auto()
+            RootFinalizePass3               = auto()
+            RootFinalizePass4               = auto()
             RootCreateConstrainedType       = auto()
 
         # ----------------------------------------------------------------------
@@ -174,16 +176,18 @@ class PassTwoVisitor(object):
 
                     postprocess_funcs[PostprocessStep.RootFinalizePass1.value].append(concrete_type.FinalizePass1)
                     postprocess_funcs[PostprocessStep.RootFinalizePass2.value].append(concrete_type.FinalizePass2)
+                    postprocess_funcs[PostprocessStep.RootFinalizePass2.value].append(concrete_type.FinalizePass3)
+                    postprocess_funcs[PostprocessStep.RootFinalizePass2.value].append(concrete_type.FinalizePass4)
 
                     # ----------------------------------------------------------------------
-                    def NoneWrapper(
+                    def NoneWrappedCreateConstrainedType(
                         concrete_type=concrete_type,
                     ):
                         concrete_type.CreateConstrainedType()
 
                     # ----------------------------------------------------------------------
 
-                    postprocess_funcs[PostprocessStep.RootCreateConstrainedType.value].append(NoneWrapper)
+                    postprocess_funcs[PostprocessStep.RootCreateConstrainedType.value].append(NoneWrappedCreateConstrainedType)
 
                     added_postprocess_func = True
 

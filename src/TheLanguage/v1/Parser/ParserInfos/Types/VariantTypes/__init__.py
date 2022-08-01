@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List, Optional
+from typing import Callable, List
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -115,30 +115,22 @@ class ConcreteVariantType(ConcreteType):
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass1Impl(self) -> None:
-        errors: List[Error] = []
-
-        for concrete_type in self.concrete_types:
-            try:
-                concrete_type.FinalizePass1()
-            except ErrorException as ex:
-                errors += ex.errors
-
-        if errors:
-            raise ErrorException(*errors)
+        self._VariantFinalizePassImpl(lambda concrete_type: concrete_type.FinalizePass1())
 
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass2Impl(self) -> None:
-        errors: List[Error] = []
+        self._VariantFinalizePassImpl(lambda concrete_type: concrete_type.FinalizePass2())
 
-        for concrete_type in self.concrete_types:
-            try:
-                concrete_type.FinalizePass2()
-            except ErrorException as ex:
-                errors += ex.errors
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _FinalizePass3Impl(self) -> None:
+        self._VariantFinalizePassImpl(lambda concrete_type: concrete_type.FinalizePass3())
 
-        if errors:
-            raise ErrorException(*errors)
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _FinalizePass4Impl(self) -> None:
+        self._VariantFinalizePassImpl(lambda concrete_type: concrete_type.FinalizePass4())
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -158,6 +150,22 @@ class ConcreteVariantType(ConcreteType):
             raise ErrorException(*errors)
 
         return ConstrainedVariantType(self, constrained_types)
+
+    # ----------------------------------------------------------------------
+    def _VariantFinalizePassImpl(
+        self,
+        finalize_func: Callable[[ConcreteType], None],
+    ) -> None:
+        errors: List[Error] = []
+
+        for concrete_type in self.concrete_types:
+            try:
+                finalize_func(concrete_type)
+            except ErrorException as ex:
+                errors += ex.errors
+
+        if errors:
+            raise ErrorException(*errors)
 
 
 # ----------------------------------------------------------------------

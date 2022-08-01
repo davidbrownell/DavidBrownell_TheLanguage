@@ -91,6 +91,18 @@ class ConcreteSelfReferenceType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def _FinalizePass3Impl(self) -> None:
+        # Nothing to do here
+        pass
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _FinalizePass4Impl(self) -> None:
+        # Nothing to do here
+        pass
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def _CreateConstrainedTypeImpl(self) -> "ConstrainedSelfReferenceType":
         return ConstrainedSelfReferenceType(self)
 
