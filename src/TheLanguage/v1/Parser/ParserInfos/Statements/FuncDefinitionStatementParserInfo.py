@@ -494,6 +494,22 @@ class FuncDefinitionStatementParserInfo(
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    def AreAttributesEqual(
+        self,
+        other: "FuncDefinitionStatementParserInfo",
+    ) -> bool:
+        return (
+            self.name == other.name
+            and self.operator_type == other.operator_type
+            and self.function_modifier == other.function_modifier
+            and self.mutability_modifier == other.mutability_modifier
+            and self.method_hierarchy_modifier == other.method_hierarchy_modifier
+            and self.is_deferred == other.is_deferred
+            and self.is_exceptional == other.is_exceptional
+            and self.is_static == other.is_static
+        )
+
+    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
     def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:

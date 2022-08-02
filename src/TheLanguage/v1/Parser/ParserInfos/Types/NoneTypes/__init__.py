@@ -43,7 +43,7 @@ class NoneGenericType(GenericType):
         self,
         parser_info: NoneExpressionParserInfo,
     ):
-        super(NoneGenericType, self).__init__(parser_info, True)
+        super(NoneGenericType, self).__init__(parser_info, is_default_initializable=True)
 
     # ----------------------------------------------------------------------
     @property
@@ -76,7 +76,7 @@ class NoneConcreteType(ConcreteType):
         self,
         parser_info: NoneExpressionParserInfo,
     ):
-        super(NoneConcreteType, self).__init__(parser_info, parser_info)
+        super(NoneConcreteType, self).__init__(parser_info, is_default_initializable=True)
 
     # ----------------------------------------------------------------------
     @property
@@ -84,6 +84,14 @@ class NoneConcreteType(ConcreteType):
     def parser_info(self) -> NoneExpressionParserInfo:
         assert isinstance(self._parser_info, NoneExpressionParserInfo), self._parser_info
         return self._parser_info
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsCovariant(
+        other: ConcreteType,
+    ) -> bool:
+        return isinstance(other, NoneConcreteType)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -118,7 +126,12 @@ class NoneConcreteType(ConcreteType):
         expression_parser_info: ExpressionParserInfo,
     ) -> "NoneConstrainedType":
         assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
-        return NoneConstrainedType(self, expression_parser_info)
+        return NoneConstrainedType(self, None)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateDefaultConstrainedTypeImpl(self) -> "NoneConstrainedType":
+        return self._CreateConstrainedTypeImpl(self.parser_info)
 
 
 # ----------------------------------------------------------------------

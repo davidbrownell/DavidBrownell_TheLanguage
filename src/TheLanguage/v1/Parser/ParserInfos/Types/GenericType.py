@@ -44,6 +44,7 @@ class GenericType(Interface.Interface):
     def __init__(
         self,
         parser_info: ParserInfo,
+        *,
         is_default_initializable: bool,
     ):
         self._parser_info                   = parser_info

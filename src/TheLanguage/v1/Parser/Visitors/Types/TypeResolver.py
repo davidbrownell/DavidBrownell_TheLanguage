@@ -38,6 +38,8 @@ with InitRelativeImports():
     from ...Common import MiniLanguageHelpers
     from ...Error import CreateError, ErrorException
 
+    from ...ParserInfos.Common.MutabilityModifier import MutabilityModifier
+
     from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
     from ...ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo
@@ -60,10 +62,10 @@ with InitRelativeImports():
 
     from ...ParserInfos.Types.ConcreteType import ConcreteType
     from ...ParserInfos.Types.GenericType import GenericType
-    from ...ParserInfos.Types.NoneTypes import NoneConcreteType
-    from ...ParserInfos.Types.SelfExpressionTypes import SelfReferenceConcreteType
-    from ...ParserInfos.Types.TupleTypes import TupleConcreteType
-    from ...ParserInfos.Types.VariantTypes import VariantConcreteType
+    from ...ParserInfos.Types.NoneTypes import NoneGenericType
+    from ...ParserInfos.Types.SelfReferenceTypes import SelfReferenceGenericType
+    from ...ParserInfos.Types.TupleTypes import TupleGenericType
+    from ...ParserInfos.Types.VariantTypes import VariantGenericType
 
     from ...ParserInfos.Types.TypeResolver import TypeResolver as TypeResolverInterface
 
@@ -195,74 +197,21 @@ class TypeResolver(TypeResolverInterface):
         )
 
     # ----------------------------------------------------------------------
+    def EvalGenericType(
+        self,
+        parser_info: ExpressionParserInfo,
+    ) -> GenericType:
+        return self._EvalGenericTypeImpl(parser_info)[0]
+
+    # ----------------------------------------------------------------------
     @Interface.override
     def EvalConcreteType(
         self,
         parser_info: ExpressionParserInfo,
-    ) -> ConcreteType:
-        assert self.is_finalized is True
+    ) -> Tuple[ConcreteType, Optional[MutabilityModifier]]:
+        generic_type, type_expression, mutability_modifier = self._EvalGenericTypeImpl(parser_info)
 
-        type_expression = MiniLanguageHelpers.EvalTypeExpression(
-            parser_info,
-            self.compile_time_info,
-            self._TypeCheckHelper,
-        )
-
-        if isinstance(type_expression, MiniLanguageHelpers.MiniLanguageType):
-            raise ErrorException(
-                UnexpectedMiniLanguageTypeError.Create(
-                    region=parser_info.regions__.self__,
-                ),
-            )
-
-        result: Optional[ConcreteType] = None
-
-        if isinstance(type_expression, FuncOrTypeExpressionParserInfo):
-            assert isinstance(type_expression.value, str), type_expression.value
-
-            for resolution_algorithm in [
-                self._ResolveByNested,
-                self._ResolveByNamespace,
-            ]:
-                result = resolution_algorithm(type_expression)
-
-                if result is not None:
-                    break
-
-            if result is None:
-                raise ErrorException(
-                    InvalidNamedTypeError.Create(
-                        region=type_expression.regions__.value,
-                        name=type_expression.value,
-                    ),
-                )
-
-        elif isinstance(type_expression, NestedTypeExpressionParserInfo):
-            raise NotImplementedError("TODO: NestedTypeExpressionParserInfo")
-
-        elif isinstance(type_expression, NoneExpressionParserInfo):
-            result = NoneConcreteType(type_expression)
-
-        elif isinstance(type_expression, SelfReferenceExpressionParserInfo):
-            result = SelfReferenceConcreteType(type_expression)
-
-        elif isinstance(type_expression, TupleExpressionParserInfo):
-            result = TupleConcreteType(
-                type_expression,
-                [self.EvalConcreteType(the_type) for the_type in type_expression.types],
-            )
-
-        elif isinstance(type_expression, VariantExpressionParserInfo):
-            result = VariantConcreteType(
-                type_expression,
-                [self.EvalConcreteType(the_type) for the_type in type_expression.types],
-            )
-
-        else:
-            assert False, type_expression  # pragma: no cover
-
-        assert result is not None
-        return result
+        return generic_type.CreateConcreteType(type_expression), mutability_modifier
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -366,10 +315,80 @@ class TypeResolver(TypeResolverInterface):
         return False
 
     # ----------------------------------------------------------------------
+    def _EvalGenericTypeImpl(
+        self,
+        parser_info: ExpressionParserInfo,
+    ) -> Tuple[GenericType, ExpressionParserInfo, Optional[MutabilityModifier]]:
+        assert self.is_finalized is True
+
+        type_expression = MiniLanguageHelpers.EvalTypeExpression(
+            parser_info,
+            self.compile_time_info,
+            self._TypeCheckHelper,
+        )
+
+        if isinstance(type_expression, MiniLanguageHelpers.MiniLanguageType):
+            raise ErrorException(
+                UnexpectedMiniLanguageTypeError.Create(
+                    region=parser_info.regions__.self__,
+                ),
+            )
+
+        if isinstance(type_expression, FuncOrTypeExpressionParserInfo):
+            assert isinstance(type_expression.value, str), type_expression.value
+
+            for resolution_algorithm in [
+                self._ResolveByNested,
+                self._ResolveByNamespace,
+            ]:
+                generic_type = resolution_algorithm(type_expression)
+                if generic_type is not None:
+                    return generic_type, type_expression, type_expression.mutability_modifier
+
+            raise ErrorException(
+                InvalidNamedTypeError.Create(
+                    region=type_expression.regions__.value,
+                    name=type_expression.value,
+                ),
+            )
+
+        elif isinstance(type_expression, NestedTypeExpressionParserInfo):
+            raise NotImplementedError("TODO: NestedTypeExpressionParserInfo")
+
+        elif isinstance(type_expression, NoneExpressionParserInfo):
+            return NoneGenericType(type_expression), type_expression, None
+
+        elif isinstance(type_expression, SelfReferenceExpressionParserInfo):
+            return SelfReferenceGenericType(type_expression), type_expression, type_expression.mutability_modifier
+
+        elif isinstance(type_expression, TupleExpressionParserInfo):
+            return (
+                TupleGenericType(
+                    type_expression,
+                    [self.EvalGenericType(the_type) for the_type in type_expression.types],
+                ),
+                type_expression,
+                type_expression.mutability_modifier,
+            )
+
+        elif isinstance(type_expression, VariantExpressionParserInfo):
+            return (
+                VariantGenericType(
+                    type_expression,
+                    [self.EvalGenericType(the_type) for the_type in type_expression.types],
+                ),
+                type_expression,
+                type_expression.mutability_modifier,
+            )
+
+        else:
+            assert False, type_expression  # pragma: no cover
+
+    # ----------------------------------------------------------------------
     def _ResolveByNested(
         self,
         parser_info: FuncOrTypeExpressionParserInfo,
-    ) -> Optional[ConcreteType]:
+    ) -> Optional[GenericType]:
         assert isinstance(parser_info.value, str), parser_info.value
 
         resolver = self
@@ -395,7 +414,7 @@ class TypeResolver(TypeResolverInterface):
                                 ),
                             )
 
-                        return type_info.generic_type.CreateConcreteType(parser_info)
+                        return type_info.generic_type
 
             resolver = resolver.parent
 
@@ -405,7 +424,7 @@ class TypeResolver(TypeResolverInterface):
     def _ResolveByNamespace(
         self,
         parser_info: FuncOrTypeExpressionParserInfo,
-    ) -> Optional[ConcreteType]:
+    ) -> Optional[GenericType]:
         assert isinstance(parser_info.value, str), parser_info.value
 
         # ----------------------------------------------------------------------
@@ -455,4 +474,4 @@ class TypeResolver(TypeResolverInterface):
 
             generic_type = root_type_resolver.GetOrCreateNestedGenericTypeViaNamespace(resolved_namespace)
 
-            return generic_type.CreateConcreteType(parser_info)
+            return generic_type

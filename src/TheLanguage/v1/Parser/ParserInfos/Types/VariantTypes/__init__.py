@@ -50,7 +50,7 @@ class VariantGenericType(GenericType):
     ):
         super(VariantGenericType, self).__init__(
             parser_info,
-            all(generic_type.is_default_initializable for generic_type in generic_types),
+            is_default_initializable=all(generic_type.is_default_initializable for generic_type in generic_types),
         )
 
         self.generic_types                  = generic_types
@@ -104,7 +104,12 @@ class VariantConcreteType(ConcreteType):
         parser_info: VariantExpressionParserInfo,
         concrete_types: List[ConcreteType],
     ):
-        super(VariantConcreteType, self).__init__(parser_info, parser_info)
+        super(VariantConcreteType, self).__init__(
+            parser_info,
+            is_default_initializable=all(
+                concrete_type.is_default_initializable for concrete_type in concrete_types
+            ),
+        )
 
         self.concrete_types                 = concrete_types
 
@@ -114,6 +119,19 @@ class VariantConcreteType(ConcreteType):
     def parser_info(self) -> VariantExpressionParserInfo:
         assert isinstance(self._parser_info, VariantExpressionParserInfo), self._parser_info
         return self._parser_info
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def IsCovariant(
+        self,
+        other: ConcreteType,
+    ) -> bool:
+        return (
+            isinstance(other, VariantConcreteType)
+            and len(self.concrete_types) == len(other.concrete_types)
+            and all(this.IsCovariant(that) for this, that in zip(self.concrete_types, other.concrete_types))
+            and self.parser_info.mutability_modifier == other.parser_info.mutability_modifier
+        )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -147,6 +165,11 @@ class VariantConcreteType(ConcreteType):
         return VariantConstrainedType(self, self.concrete_types)
 
     # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateDefaultConstrainedTypeImpl(self) -> "VariantConstrainedType":
+        return self._CreateConstrainedTypeImpl(self.parser_info)
+
+    # ----------------------------------------------------------------------
     def _FinalizeImpl(
         self,
         finalize_func: Callable[[ConcreteType], None],
@@ -171,7 +194,7 @@ class VariantConstrainedType(ConstrainedType):
         concrete_type: VariantConcreteType,
         concrete_types: List[ConcreteType],
     ):
-        super(VariantConstrainedType, self).__init__(concrete_type, concrete_type.parser_info)
+        super(VariantConstrainedType, self).__init__(concrete_type, concrete_type.parser_info.mutability_modifier)
 
         constrained_types: List[ConstrainedType] = []
         errors: List[Error] = []

@@ -17,8 +17,6 @@
 
 import os
 
-from typing import Any
-
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -44,13 +42,12 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 class TypeAliasGenericType(GenericTypeImpl[TypeAliasStatementParserInfo]):
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
     def _CreateConcreteType(
         updated_resolver: TypeResolver,
         expression_parser_info: ExpressionParserInfo,
     ) -> ConcreteType:
+        # BugBug: This doesn't feel right; why not using expression_parser_info?
         assert isinstance(updated_resolver.namespace.parser_info, TypeAliasStatementParserInfo), updated_resolver.namespace.parser_info
-        return updated_resolver.EvalConcreteType(updated_resolver.namespace.parser_info.type)
+        return updated_resolver.EvalConcreteType(updated_resolver.namespace.parser_info.type)[0]

@@ -89,10 +89,11 @@ class ConcreteType(Interface.Interface):
     def __init__(
         self,
         parser_info: ParserInfo,
-        expression_parser_info: ExpressionParserInfo,
+        *,
+        is_default_initializable: bool,
     ):
         self._parser_info                   = parser_info
-        self.expression_parser_info         = expression_parser_info
+        self.is_default_initializable       = is_default_initializable
 
         self.state                          = ConcreteType.State.Created
 
@@ -169,6 +170,20 @@ class ConcreteType(Interface.Interface):
         return self._CreateConstrainedTypeImpl(expression_parser_info)
 
     # ----------------------------------------------------------------------
+    def CreateDefaultConstrainedType(self) -> "ConstrainedType":
+        assert self.is_default_initializable
+        assert self.state == ConcreteType.State.Finalized, self.state
+        return self._CreateDefaultConstrainedTypeImpl()
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def IsCovariant(
+        other: "ConcreteType",
+    ) -> bool:
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
     # |
     # |  Private Methods
     # |
@@ -202,6 +217,12 @@ class ConcreteType(Interface.Interface):
     def _CreateConstrainedTypeImpl(
         expression_parser_info: ExpressionParserInfo,
     ) -> "ConstrainedType":
+        raise Exception("Abstract method")  # pragma: no cover
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def _CreateDefaultConstrainedTypeImpl() -> "ConstrainedType":
         raise Exception("Abstract method")  # pragma: no cover
 
     # ----------------------------------------------------------------------

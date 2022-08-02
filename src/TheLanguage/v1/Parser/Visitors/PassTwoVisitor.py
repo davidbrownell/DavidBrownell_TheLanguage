@@ -196,15 +196,17 @@ class PassTwoVisitor(object):
                     postprocess_funcs[PostprocessStep.RootFinalizePass3.value].append(lambda: FinalizeImpl(ConcreteType.State.FinalizedPass3))
                     postprocess_funcs[PostprocessStep.RootFinalizePass4.value].append(lambda: FinalizeImpl(ConcreteType.State.FinalizedPass4))
 
-                    # ----------------------------------------------------------------------
-                    def NoneWrappedCreateConstrainedType(
-                        concrete_type=concrete_type,
-                    ):
-                        concrete_type.CreateConstrainedType()
+                    if concrete_type.is_default_initializable:
+                        # ----------------------------------------------------------------------
+                        def NoneWrappedCreateConstrainedType(
+                            concrete_type=concrete_type,
+                        ):
+                            concrete_type.CreateDefaultConstrainedType()
 
-                    # ----------------------------------------------------------------------
+                        # ----------------------------------------------------------------------
 
-                    # BugBug postprocess_funcs[PostprocessStep.RootCreateConstrainedType.value].append(NoneWrappedCreateConstrainedType)
+                        # Note that this must be a lambda so that the func properly captures `concrete_type`
+                        postprocess_funcs[PostprocessStep.RootCreateConstrainedType.value].append(lambda: NoneWrappedCreateConstrainedType())  # pylint: disable=unnecessary-lambda
 
                     added_postprocess_func = True
 

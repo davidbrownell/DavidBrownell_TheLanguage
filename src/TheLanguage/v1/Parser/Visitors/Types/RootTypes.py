@@ -31,7 +31,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .TypeResolver import TypeResolver
-    from .Impl.CreateDefaultExpressionParserInfo import CreateDefaultExpressionParserInfo
 
     from ..Namespaces import ImportNamespace, ParsedNamespace
 
@@ -51,7 +50,7 @@ class RootConcreteType(ConcreteType):
     ):
         super(RootConcreteType, self).__init__(
             parser_info,
-            CreateDefaultExpressionParserInfo(parser_info),
+            is_default_initializable=True,
         )
 
         self._type_resolver                 = type_resolver
@@ -62,6 +61,12 @@ class RootConcreteType(ConcreteType):
     def parser_info(self) -> RootStatementParserInfo:
         assert isinstance(self._parser_info, RootStatementParserInfo), self._parser_info
         return self._parser_info
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsCovariant(*args, **kwargs):
+        raise Exception("This should never be invoked for this type")
 
     # ----------------------------------------------------------------------
     def EnumGenericTypes(self) -> Generator[GenericType, None, None]:
@@ -108,4 +113,10 @@ class RootConcreteType(ConcreteType):
     @staticmethod
     @Interface.override
     def _CreateConstrainedTypeImpl(*args, **kwargs) -> None:  # pylint: disable=unused-argument
+        raise Exception("This should never be invoked for this type")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def _CreateDefaultConstrainedTypeImpl(*args, **kwargs) -> None:  # pylint: disable=unused-argument
         raise Exception("This should never be invoked for this type")

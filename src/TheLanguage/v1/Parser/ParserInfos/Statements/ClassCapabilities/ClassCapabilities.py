@@ -339,6 +339,7 @@ class ClassCapabilities(ObjectReprImplBase):
     valid_method_mutabilities: List[MutabilityModifier]
     default_method_mutability: Optional[MutabilityModifier]
     allow_static_methods: bool
+    # BugBug: Allow templated hierarchy modifiers
 
     valid_using_visibilities: List[VisibilityModifier]
     default_using_visibility: Optional[VisibilityModifier]

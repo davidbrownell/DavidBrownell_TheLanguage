@@ -17,7 +17,7 @@
 
 import os
 
-from typing import List
+from typing import List, Optional, Tuple
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -32,6 +32,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ConcreteType import ConcreteType
     from .GenericType import GenericType
+
+    from ..Common.MutabilityModifier import MutabilityModifier
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
@@ -63,7 +65,7 @@ class TypeResolver(Interface.Interface):
     @Interface.abstractmethod
     def EvalConcreteType(
         parser_info: ExpressionParserInfo,
-    ) -> ConcreteType:
+    ) -> Tuple[ConcreteType, Optional[MutabilityModifier]]:
         """Creates a concrete type for any valid expression"""
         raise Exception("Abstract method")  # pragma: no cover
 

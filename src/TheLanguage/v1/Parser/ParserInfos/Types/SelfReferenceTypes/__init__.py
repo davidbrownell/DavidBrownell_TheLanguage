@@ -37,13 +37,13 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-class SelfExpressionGenericType(GenericType):
+class SelfReferenceGenericType(GenericType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
         parser_info: SelfReferenceExpressionParserInfo,
     ):
-        super(SelfExpressionGenericType, self).__init__(parser_info, True)
+        super(SelfReferenceGenericType, self).__init__(parser_info, is_default_initializable=True)
 
     # ----------------------------------------------------------------------
     @property
@@ -76,7 +76,7 @@ class SelfReferenceConcreteType(ConcreteType):
         self,
         parser_info: SelfReferenceExpressionParserInfo,
     ):
-        super(SelfReferenceConcreteType, self).__init__(parser_info, parser_info)
+        super(SelfReferenceConcreteType, self).__init__(parser_info, is_default_initializable=True)
 
     # ----------------------------------------------------------------------
     @property
@@ -85,6 +85,19 @@ class SelfReferenceConcreteType(ConcreteType):
         assert isinstance(self._parser_info, SelfReferenceExpressionParserInfo), self._parser_info
         return self._parser_info
 
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def IsCovariant(
+        self,
+        other: ConcreteType,
+    ) -> bool:
+        return (
+            isinstance(other, SelfReferenceConcreteType)
+            and self.parser_info.mutability_modifier == other.parser_info.mutability_modifier
+        )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _FinalizePass1Impl(self) -> None:
@@ -114,11 +127,16 @@ class SelfReferenceConcreteType(ConcreteType):
     def _CreateConstrainedTypeImpl(
         self,
         expression_parser_info: ExpressionParserInfo,
-    ) -> "ConstrainedSelfReferenceType":
+    ) -> "SelfReferenceConstrainedType":
         assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
-        return ConstrainedSelfReferenceType(self, expression_parser_info)
+        return SelfReferenceConstrainedType(self, self.parser_info.mutability_modifier)
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateDefaultConstrainedTypeImpl(self) -> "SelfReferenceConstrainedType":
+        return self._CreateConstrainedTypeImpl(self.parser_info)
 
 
 # ----------------------------------------------------------------------
-class ConstrainedSelfReferenceType(ConstrainedType):
+class SelfReferenceConstrainedType(ConstrainedType):
     pass

@@ -43,8 +43,8 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class FuncDefinitionGenericType(GenericTypeImpl[FuncDefinitionStatementParserInfo]):
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
+    # BugBug: Add IsCovariant that matches the basics (name of func, func attributes, names of args)
+
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override

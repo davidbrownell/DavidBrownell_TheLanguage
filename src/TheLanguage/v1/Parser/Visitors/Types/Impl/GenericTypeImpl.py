@@ -62,7 +62,7 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
     ):
         super(GenericTypeImpl, self).__init__(
             type_resolver.namespace.parser_info,
-            (
+            is_default_initializable=(
                 not isinstance(type_resolver.namespace.parser_info, TemplatedStatementTrait)
                 or type_resolver.namespace.parser_info.templates is None
                 or type_resolver.namespace.parser_info.templates.is_default_initializable

@@ -44,6 +44,7 @@ with InitRelativeImports():
     from ...Common.ClassModifier import ClassModifier
     from ...Common.MethodHierarchyModifier import MethodHierarchyModifier
     from ...Common.MutabilityModifier import MutabilityModifier
+    from ...Common.VisibilityModifier import VisibilityModifier
 
     from ...Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
     from ...Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
@@ -55,6 +56,8 @@ with InitRelativeImports():
     from ...Statements.SpecialMethodStatementParserInfo import SpecialMethodStatementParserInfo, SpecialMethodType
     from ...Statements.StatementParserInfo import StatementParserInfo
     from ...Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
+
+    from ...Statements.Traits.ConstrainedStatementTrait import ConstrainedStatementTrait
 
     from ....Error import CreateError, Error, ErrorException
 
@@ -140,7 +143,16 @@ class ConcreteClassType(ConcreteType):
         parser_info: ClassStatementParserInfo,
         expression_parser_info: FuncOrTypeExpressionParserInfo,
     ):
-        super(ConcreteClassType, self).__init__(parser_info, expression_parser_info)
+        # BugBug: Is expression_parser_info really needed?
+
+        super(ConcreteClassType, self).__init__(
+            parser_info,
+            is_default_initializable=(
+                not isinstance(parser_info, ConstrainedStatementTrait)
+                or parser_info.constraints is None
+                or parser_info.constraints.is_default_initializable
+            ),
+        )
 
         self._type_resolver                 = type_resolver
 
@@ -229,6 +241,57 @@ class ConcreteClassType(ConcreteType):
         return self._abstract_methods
 
     # ----------------------------------------------------------------------
+    @Interface.override
+    def IsCovariant(
+        self,
+        other: ConcreteType,
+    ) -> bool:
+        if not isinstance(other, ConcreteClassType):
+            return False
+
+        # ----------------------------------------------------------------------
+        def EnumDependencies() -> Generator[ConcreteClassType, None, None]:
+            for dependencies in [
+                other.concepts,
+                other.interfaces,
+                other.mixins,
+            ]:
+                for dependency in dependencies.EnumContent():
+                    resolved_visibility, resolved_dependency = dependency.ResolveDependencies()
+                    if resolved_visibility != VisibilityModifier.public:
+                        continue
+
+                    yield resolved_dependency
+
+            # Walk the base hierarchy
+            base_dependency = other.base_dependency
+
+            while base_dependency is not None:
+                resolved_visibility, resolved_dependency = base_dependency.ResolveDependencies()
+
+                if resolved_visibility != VisibilityModifier.public:
+                    break
+
+                assert isinstance(resolved_dependency, ConcreteClassType), resolved_dependency
+
+                yield resolved_dependency
+
+                base_dependency = resolved_dependency.base_dependency
+
+        # ----------------------------------------------------------------------
+
+        for concrete_dependency in EnumDependencies():
+            if concrete_dependency is self:
+                return True
+
+            if concrete_dependency.parser_info is self.parser_info:
+                assert self.parser_info.templates is not None
+
+                # BugBug: Evaluate the resolved templates for covariance
+
+        return False
+
+    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     def _Initialize(self) -> None:
@@ -259,7 +322,7 @@ class ConcreteClassType(ConcreteType):
 
             for dependency_parser_info in dependencies:
                 try:
-                    concrete_type = self._type_resolver.EvalConcreteType(dependency_parser_info.type)
+                    concrete_type = self._type_resolver.EvalConcreteType(dependency_parser_info.type)[0]
                     resolved_concrete_type = concrete_type.ResolveAliases()
 
                     resolved_parser_info = resolved_concrete_type.parser_info
@@ -275,6 +338,8 @@ class ConcreteClassType(ConcreteType):
                         )
 
                         continue
+
+                    assert isinstance(resolved_parser_info, ClassStatementParserInfo), resolved_parser_info
 
                     if resolved_parser_info.is_final:
                         errors.append(
@@ -524,7 +589,7 @@ class ConcreteClassType(ConcreteType):
         # Attributes
         for attribute_statement in self._attribute_statements:
             try:
-                concrete_type = self._type_resolver.EvalConcreteType(attribute_statement.type)
+                concrete_type = self._type_resolver.EvalConcreteType(attribute_statement.type)[0]
 
                 local_info.attributes.append(
                     DependencyLeaf(
@@ -720,6 +785,11 @@ class ConcreteClassType(ConcreteType):
         pass # BugBug
 
     # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateDefaultConstrainedTypeImpl(self) -> ConstrainedType:
+        pass # BugBug
+
+    # ----------------------------------------------------------------------
     def _FinalizeImpl(
         self,
         state: ConcreteType.State,
@@ -786,8 +856,6 @@ class ConcreteClassType(ConcreteType):
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 class _InfoBase(object):
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     def _MergeImpl(
         self,

@@ -17,6 +17,8 @@
 
 import os
 
+from typing import Optional
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -30,7 +32,7 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ConcreteType import ConcreteType
 
-    from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..Common.MutabilityModifier import MutabilityModifier
 
 
 # ----------------------------------------------------------------------
@@ -41,7 +43,7 @@ class ConstrainedType(Interface.Interface):
     def __init__(
         self,
         concrete_type: ConcreteType,
-        expression_parser_info: ExpressionParserInfo,
+        mutability_modifier: Optional[MutabilityModifier],
     ):
         self.concrete_type                  = concrete_type
-        self.expression_parser_info         = expression_parser_info
+        self.mutability_modifier            = mutability_modifier
