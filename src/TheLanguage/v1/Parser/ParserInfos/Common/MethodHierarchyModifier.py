@@ -34,3 +34,7 @@ class MethodHierarchyModifier(Enum):
     override                                = auto()
     standard                                = auto()
     virtual                                 = auto()
+
+    # ----------------------------------------------------------------------
+    def IsVirtualRoot(self) -> bool:
+        return self == MethodHierarchyModifier.abstract or self == MethodHierarchyModifier.virtual

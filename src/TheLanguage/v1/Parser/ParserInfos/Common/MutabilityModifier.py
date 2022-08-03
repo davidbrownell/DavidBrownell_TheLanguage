@@ -154,16 +154,15 @@ class MutabilityModifier(Enum):
                 ),
             )
 
-        # TODO: We need to add a bit more context to lock down when new is acceptable to use
-        # if (
-        #     modifier == cls.new
-        #     and not isinstance(parser_info, SelfReferenceExpressionParserInfo)
-        # ):
-        #     raise ErrorException(
-        #         InvalidNewMutabilityModifierError.Create(
-        #             region=parser_info.regions__.mutability_modifier,
-        #         ),
-        #     )
+        if (
+            modifier == cls.new
+            and not isinstance(parser_info, (FuncOrTypeExpressionParserInfo, SelfReferenceExpressionParserInfo))
+        ):
+            raise ErrorException(
+                InvalidNewMutabilityModifierError.Create(
+                    region=parser_info.regions__.mutability_modifier,
+                ),
+            )
 
     # ----------------------------------------------------------------------
     def IsMutable(self) -> bool:

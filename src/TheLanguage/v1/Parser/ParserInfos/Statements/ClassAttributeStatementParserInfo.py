@@ -36,8 +36,6 @@ with InitRelativeImports():
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
-    from ..Common.MutabilityModifier import MutabilityModifier
-
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Traits.NamedTrait import NamedTrait
 
@@ -61,14 +59,12 @@ class ClassAttributeStatementParserInfo(
 
     initialized_value: Optional[ExpressionParserInfo]
 
-    mutability_modifier: Optional[MutabilityModifier]
-
     keyword_initialization: Optional[bool]
     no_initialization: Optional[bool]
     no_serialize: Optional[bool]
     no_compare: Optional[bool]
 
-    # BugBug: If 'is_override', but be covariant
+    # TODO: If 'is_override', but be covariant
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -132,15 +128,6 @@ class ClassAttributeStatementParserInfo(
                 func()
             except ErrorException as ex:
                 errors += ex.errors
-
-        try:
-            MutabilityModifier.Validate(
-                self,
-                ParserInfoType.Standard,
-                is_instantiated_type=True,
-            )
-        except ErrorException as ex:
-            errors += ex.errors
 
         if errors:
             raise ErrorException(*errors)

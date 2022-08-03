@@ -34,20 +34,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ...Common.ClassModifier import ClassModifier
     from ...Common.MethodHierarchyModifier import MethodHierarchyModifier
-
-    from ...Common.MutabilityModifier import (
-        InvalidNewMutabilityModifierError,
-        MutabilityModifier,
-        MutabilityModifierRequiredError,
-    )
-
+    from ...Common.MutabilityModifier import MutabilityModifier
     from ...Common.VisibilityModifier import VisibilityModifier
 
     from ....Parser import CreateError, Error, ErrorException
 
     if TYPE_CHECKING:
         from ..ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo     # pylint: disable=unused-import
-        from ...Types import Type                                                                               # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -209,6 +202,11 @@ InvalidFuncDefinitionMethodHierarchyModifierError       = CreateError(
     valid_method_hierarchy_modifiers_str=str,
 )
 
+InvalidTemplatedFuncDefinitionMethodHierarchyModifierError                  = CreateError(
+    "Methods with templates may not participate in hierarchies for '{type}' types",
+    type=str,
+)
+
 FuncDefinitionMutabilityRequiredError       = CreateError(
     "A mutability value is required for methods in '{type}' types; valid values are {valid_mutabilities_str}",
     type=str,
@@ -339,7 +337,7 @@ class ClassCapabilities(ObjectReprImplBase):
     valid_method_mutabilities: List[MutabilityModifier]
     default_method_mutability: Optional[MutabilityModifier]
     allow_static_methods: bool
-    # BugBug: Allow templated hierarchy modifiers
+    allow_virtual_root_methods_with_templates: bool
 
     valid_using_visibilities: List[VisibilityModifier]
     default_using_visibility: Optional[VisibilityModifier]
@@ -347,6 +345,7 @@ class ClassCapabilities(ObjectReprImplBase):
     valid_attribute_visibilities: List[VisibilityModifier]
     default_attribute_visibility: Optional[VisibilityModifier]
     valid_attribute_mutabilities: List[MutabilityModifier]
+
     allow_mutable_public_attributes: bool
 
     # ----------------------------------------------------------------------
@@ -614,19 +613,7 @@ class ClassCapabilities(ObjectReprImplBase):
             )
 
         # mutability_modifier
-        if parser_info.type.mutability_modifier is None:
-            errors.append(
-                MutabilityModifierRequiredError.Create(
-                    region=parser_info.type.regions__.self__,
-                ),
-            )
-        elif parser_info.type.mutability_modifier == MutabilityModifier.new:
-            errors.append(
-                InvalidNewMutabilityModifierError.Create(
-                    region=parser_info.type.regions__.mutability_modifier,
-                ),
-            )
-        else:
+        if parser_info.type.mutability_modifier is not None:
             if parser_info.type.mutability_modifier not in self.valid_attribute_mutabilities:
                 errors.append(
                     InvalidAttributeMutabilityModifierError.Create(
@@ -758,6 +745,17 @@ class ClassCapabilities(ObjectReprImplBase):
                     method_hierarchy_modifier_str=parser_info.method_hierarchy_modifier.name,
                     valid_method_hierarchy_modifiers=self.valid_method_hierarchy_modifiers,
                     valid_method_hierarchy_modifiers_str=", ".join("'{}'".format(v.name) for v in self.valid_method_hierarchy_modifiers),
+                ),
+            )
+        elif (
+            parser_info.method_hierarchy_modifier.IsVirtualRoot()
+            and parser_info.templates is not None
+            and not self.allow_virtual_root_methods_with_templates
+        ):
+            errors.append(
+                InvalidTemplatedFuncDefinitionMethodHierarchyModifierError.Create(
+                    region=parser_info.regions__.method_hierarchy_modifier,
+                    type=self.name,
                 ),
             )
 

@@ -118,6 +118,7 @@ MixinCapabilities                           = _ClassCapabilities(
     ],
     default_method_mutability=None,
     allow_static_methods=True,
+    allow_virtual_root_methods_with_templates=True,
     valid_using_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.protected,

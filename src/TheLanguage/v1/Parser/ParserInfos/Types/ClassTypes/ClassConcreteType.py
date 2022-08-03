@@ -117,6 +117,16 @@ InvalidOverrideDecorationError              = CreateError(
     "The method is marked as overridable, but no base method matched its signature",
 )
 
+InvalidMutableAttributeError                = CreateError(
+    "The attribute is marked as mutable but the class is immutable",
+    class_region=TranslationUnitRegion,
+)
+
+InvalidMutableMethodError                   = CreateError(
+    "The method is marked as mutable but the class is immutable",
+    class_region=TranslationUnitRegion,
+)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -271,7 +281,6 @@ class ClassConcreteType(ConcreteType):
 
             try:
                 if isinstance(statement, ClassAttributeStatementParserInfo):
-                    # BugBug: Check for mutable on immutable class
                     attributes.append(statement)
 
                 elif isinstance(statement, ClassStatementParserInfo):
@@ -284,10 +293,18 @@ class ClassConcreteType(ConcreteType):
 
                 elif isinstance(statement, FuncDefinitionStatementParserInfo):
                     if (
-                        statement.mutability_modifier == MutabilityModifier.mutable
-                        and self.parser_info.class_modifier != MutabilityModifier.mutable
+                        statement.mutability_modifier is not None
+                        and statement.mutability_modifier.IsMutable()
+                        and self.parser_info.class_modifier != ClassModifier.mutable
                     ):
-                        raise Exception("BugBug: Mutable method on immutable class")
+                        errors.append(
+                            InvalidMutableMethodError.Create(
+                                region=statement.regions__.mutability_modifier,
+                                class_region=self.parser_info.regions__.class_modifier,
+                            ),
+                        )
+
+                        continue
 
                     methods.append(self._type_resolver.GetOrCreateNestedGenericType(statement))
 
@@ -579,6 +596,18 @@ class ClassConcreteType(ConcreteType):
         for attribute_statement in self._local_attributes:
             try:
                 concrete_attribute, mutability_modifier = self._type_resolver.EvalConcreteType(attribute_statement.type)
+
+                assert mutability_modifier is not None
+                if (
+                    mutability_modifier.IsMutable()
+                    and not self.parser_info.class_modifier != ClassModifier.mutable
+                ):
+                    errors.append(
+                        InvalidMutableAttributeError.Create(
+                            region=attribute_statement.type.regions__.self__,
+                            class_region=self.parser_info.regions__.class_modifier,
+                        ),
+                    )
 
                 concrete_attribute.Finalize(ConcreteType.State.FinalizedPass2)
 
