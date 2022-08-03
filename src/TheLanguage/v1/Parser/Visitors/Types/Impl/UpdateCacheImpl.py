@@ -32,7 +32,14 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ....Error import CreateError, ErrorException # BugBug: Create errors
+    from ....Error import CreateError, ErrorException
+    from ....TranslationUnitRegion import Location, TranslationUnitRegion
+
+
+# ----------------------------------------------------------------------
+ExternalError                               = CreateError(
+    "An external error prevented processing from continuing",
+)
 
 
 # ----------------------------------------------------------------------
@@ -74,7 +81,14 @@ def UpdateCacheImpl(
             cache_result = cache.get(cache_key, DoesNotExist.instance)
 
             if isinstance(cache_result, DoesNotExist):
-                raise Exception("BugBug: Error somewhere else")
+                raise ErrorException(
+                    ExternalError.Create(
+                        region=TranslationUnitRegion(
+                            Location(0, 0),
+                            Location(0, 0),
+                        ),
+                    ),
+                )
 
             assert not isinstance(cache_result, threading.Event), cache_result
             return cache_result

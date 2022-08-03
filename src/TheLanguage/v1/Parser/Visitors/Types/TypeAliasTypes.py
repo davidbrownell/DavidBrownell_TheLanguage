@@ -33,6 +33,8 @@ with InitRelativeImports():
     from .TypeResolver import TypeResolver
     from .Impl.GenericTypeImpl import GenericTypeImpl
 
+    from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
+
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
     from ...ParserInfos.Types.ConcreteType import ConcreteType
@@ -45,6 +47,7 @@ class TypeAliasGenericType(GenericTypeImpl[TypeAliasStatementParserInfo]):
     @Interface.override
     def _CreateConcreteType(
         updated_resolver: TypeResolver,
+        expression_parser_info: FuncOrTypeExpressionParserInfo,
         resolved_template_arguments_id: Any,
     ) -> ConcreteType:
         assert isinstance(updated_resolver.namespace.parser_info, TypeAliasStatementParserInfo), updated_resolver.namespace.parser_info

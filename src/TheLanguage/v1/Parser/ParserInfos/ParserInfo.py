@@ -96,7 +96,7 @@ class ParserInfoType(Enum):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class CompileTimeInfo(object):
-    type: MiniLanguageType
+    type: Optional[MiniLanguageType]
     value: Any
 
 

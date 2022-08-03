@@ -229,6 +229,9 @@ class FuncDefinitionStatement(GrammarPhrase):
             is_static_node = None
             is_static_info = None
 
+            resets_hierarchy_node = None
+            resets_hierarchy_info = None
+
             attributes_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
             if attributes_node is not None:
                 for attribute in AttributesFragment.Extract(attributes_node):
@@ -243,6 +246,9 @@ class FuncDefinitionStatement(GrammarPhrase):
                     elif attribute.name == "Static":
                         is_static_node = attribute.leaf
                         is_static_info = True
+                    elif attribute.name == "ResetsHierarchy":
+                        resets_hierarchy_node = attribute.leaf
+                        resets_hierarchy_info = True
                     else:
                         errors.append(
                             AttributesFragment.UnsupportedAttributeError.Create(
@@ -378,6 +384,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                     is_deferred_node,
                     is_exceptional_node,
                     is_static_node,
+                    resets_hierarchy_node,
                 ),
                 name_info,
                 visibility_info,
@@ -394,6 +401,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                 is_deferred_info,
                 is_exceptional_info,
                 is_static_info,
+                resets_hierarchy_info,
             )
 
         # ----------------------------------------------------------------------

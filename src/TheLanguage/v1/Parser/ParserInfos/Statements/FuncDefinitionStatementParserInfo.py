@@ -267,6 +267,7 @@ class FuncDefinitionStatementParserInfo(
 
     # Valid only for methods
     is_static: Optional[bool]
+    resets_hierarchy: Optional[bool]
 
     # ----------------------------------------------------------------------
     @classmethod

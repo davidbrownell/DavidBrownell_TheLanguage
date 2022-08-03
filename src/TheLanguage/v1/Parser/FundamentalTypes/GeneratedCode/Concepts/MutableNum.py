@@ -307,7 +307,7 @@ statement_000024 = FuncParametersParserInfo.Create(
 )
 
 statement_000025 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000030, tu_region_000033, tu_region_000031, None, tu_region_000030, tu_region_000029, tu_region_000032, tu_region_000030, None, None, None, None, None],
+    regions=[tu_region_000030, tu_region_000033, tu_region_000031, None, tu_region_000030, tu_region_000029, tu_region_000032, tu_region_000030, None, None, None, None, None, None],
     name=r"OperatorType.Serialize",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -323,6 +323,7 @@ statement_000025 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000026 = TemplateTypeParameterParserInfo.Create(
@@ -365,7 +366,7 @@ statement_000030 = FuncParametersParserInfo.Create(
 )
 
 statement_000031 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000042, tu_region_000045, tu_region_000043, None, tu_region_000042, tu_region_000041, tu_region_000044, tu_region_000042, None, None, None, None, None],
+    regions=[tu_region_000042, tu_region_000045, tu_region_000043, None, tu_region_000042, tu_region_000041, tu_region_000044, tu_region_000042, None, None, None, None, None, None],
     name=r"OperatorType.Accept",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -381,6 +382,7 @@ statement_000031 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000032 = FuncOrTypeExpressionParserInfo.Create(
@@ -409,7 +411,7 @@ statement_000034 = FuncParametersParserInfo.Create(
 )
 
 statement_000035 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000052, tu_region_000055, tu_region_000053, None, tu_region_000052, tu_region_000051, tu_region_000054, tu_region_000052, None, None, None, None, None],
+    regions=[tu_region_000052, tu_region_000055, tu_region_000053, None, tu_region_000052, tu_region_000051, tu_region_000054, tu_region_000052, None, None, None, None, None, None],
     name=r"OperatorType.DivideInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -425,6 +427,7 @@ statement_000035 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000036 = FuncOrTypeExpressionParserInfo.Create(
@@ -453,7 +456,7 @@ statement_000038 = FuncParametersParserInfo.Create(
 )
 
 statement_000039 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000062, tu_region_000065, tu_region_000063, None, tu_region_000062, tu_region_000061, tu_region_000064, tu_region_000062, None, None, None, None, None],
+    regions=[tu_region_000062, tu_region_000065, tu_region_000063, None, tu_region_000062, tu_region_000061, tu_region_000064, tu_region_000062, None, None, None, None, None, None],
     name=r"OperatorType.MultiplyInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -469,6 +472,7 @@ statement_000039 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000040 = FuncOrTypeExpressionParserInfo.Create(
@@ -497,7 +501,7 @@ statement_000042 = FuncParametersParserInfo.Create(
 )
 
 statement_000043 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000072, tu_region_000075, tu_region_000073, None, tu_region_000072, tu_region_000071, tu_region_000074, tu_region_000072, None, None, None, None, None],
+    regions=[tu_region_000072, tu_region_000075, tu_region_000073, None, tu_region_000072, tu_region_000071, tu_region_000074, tu_region_000072, None, None, None, None, None, None],
     name=r"OperatorType.PowerInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -513,6 +517,7 @@ statement_000043 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000044 = FuncOrTypeExpressionParserInfo.Create(
@@ -541,7 +546,7 @@ statement_000046 = FuncParametersParserInfo.Create(
 )
 
 statement_000047 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000082, tu_region_000085, tu_region_000083, None, tu_region_000082, tu_region_000081, tu_region_000084, tu_region_000082, None, None, None, None, None],
+    regions=[tu_region_000082, tu_region_000085, tu_region_000083, None, tu_region_000082, tu_region_000081, tu_region_000084, tu_region_000082, None, None, None, None, None, None],
     name=r"OperatorType.AddInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -557,6 +562,7 @@ statement_000047 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000048 = FuncOrTypeExpressionParserInfo.Create(
@@ -585,7 +591,7 @@ statement_000050 = FuncParametersParserInfo.Create(
 )
 
 statement_000051 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000092, tu_region_000095, tu_region_000093, None, tu_region_000092, tu_region_000091, tu_region_000094, tu_region_000092, None, None, None, None, None],
+    regions=[tu_region_000092, tu_region_000095, tu_region_000093, None, tu_region_000092, tu_region_000091, tu_region_000094, tu_region_000092, None, None, None, None, None, None],
     name=r"OperatorType.SubtractInplace",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -601,6 +607,7 @@ statement_000051 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000052 = ClassStatementParserInfo.Create(

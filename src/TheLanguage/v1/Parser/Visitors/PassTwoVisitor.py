@@ -35,18 +35,13 @@ with InitRelativeImports():
     from .Namespaces import Namespace, ParsedNamespace
 
     from .Types.RootTypes import RootConcreteType
-    from .Types.TypeResolver import TypeResolver # BugBug: Shouldn't reach into impl
+    from .Types.TypeResolver import TypeResolver
 
     from ..Error import Error, ErrorException
 
-    from ..ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
-
-    from ..ParserInfos.ParserInfo import CompileTimeInfo, ParserInfoType
+    from ..ParserInfos.ParserInfo import CompileTimeInfo
 
     from ..ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
-
-    from ..ParserInfos.Statements.Traits.ConstrainedStatementTrait import ConstrainedStatementTrait
-    from ..ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from ..ParserInfos.Types.ConcreteType import ConcreteType
 

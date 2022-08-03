@@ -357,7 +357,7 @@ statement_000015 = FuncParametersParserInfo.Create(
 )
 
 statement_000016 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000022, tu_region_000025, tu_region_000023, None, tu_region_000022, tu_region_000021, tu_region_000024, tu_region_000022, None, None, None, None, None],
+    regions=[tu_region_000022, tu_region_000025, tu_region_000023, None, tu_region_000022, tu_region_000021, tu_region_000024, tu_region_000022, None, None, None, None, None, None],
     name=r"OperatorType.Serialize",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -373,6 +373,7 @@ statement_000016 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000017 = TemplateTypeParameterParserInfo.Create(
@@ -415,7 +416,7 @@ statement_000021 = FuncParametersParserInfo.Create(
 )
 
 statement_000022 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000034, tu_region_000037, tu_region_000035, None, tu_region_000034, tu_region_000033, tu_region_000036, tu_region_000034, None, None, None, None, None],
+    regions=[tu_region_000034, tu_region_000037, tu_region_000035, None, tu_region_000034, tu_region_000033, tu_region_000036, tu_region_000034, None, None, None, None, None, None],
     name=r"OperatorType.Accept",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -431,10 +432,11 @@ statement_000022 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000023 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000038, tu_region_000041, tu_region_000039, None, tu_region_000038, tu_region_000042, tu_region_000040, tu_region_000038, None, None, None, None, None],
+    regions=[tu_region_000038, tu_region_000041, tu_region_000039, None, tu_region_000038, tu_region_000042, tu_region_000040, tu_region_000038, None, None, None, None, None, None],
     name=r"LeftStripInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -450,10 +452,11 @@ statement_000023 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000024 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000043, tu_region_000046, tu_region_000044, None, tu_region_000043, tu_region_000047, tu_region_000045, tu_region_000043, None, None, None, None, None],
+    regions=[tu_region_000043, tu_region_000046, tu_region_000044, None, tu_region_000043, tu_region_000047, tu_region_000045, tu_region_000043, None, None, None, None, None, None],
     name=r"RightStripInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -469,10 +472,11 @@ statement_000024 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000025 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000048, tu_region_000051, tu_region_000049, None, tu_region_000048, tu_region_000052, tu_region_000050, tu_region_000048, None, None, None, None, None],
+    regions=[tu_region_000048, tu_region_000051, tu_region_000049, None, tu_region_000048, tu_region_000052, tu_region_000050, tu_region_000048, None, None, None, None, None, None],
     name=r"StripInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -488,6 +492,7 @@ statement_000025 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000026 = ClassStatementParserInfo.Create(
@@ -572,7 +577,7 @@ statement_000035 = ClassStatementDependencyParserInfo.Create(
 )
 
 statement_000036 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000070, tu_region_000073, tu_region_000071, None, tu_region_000070, tu_region_000074, tu_region_000072, tu_region_000070, None, None, None, None, None],
+    regions=[tu_region_000070, tu_region_000073, tu_region_000071, None, tu_region_000070, tu_region_000074, tu_region_000072, tu_region_000070, None, None, None, None, None, None],
     name=r"ToLowerInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -588,10 +593,11 @@ statement_000036 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000037 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000075, tu_region_000078, tu_region_000076, None, tu_region_000075, tu_region_000079, tu_region_000077, tu_region_000075, None, None, None, None, None],
+    regions=[tu_region_000075, tu_region_000078, tu_region_000076, None, tu_region_000075, tu_region_000079, tu_region_000077, tu_region_000075, None, None, None, None, None, None],
     name=r"ToCamelCaseInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -607,10 +613,11 @@ statement_000037 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000038 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000080, tu_region_000083, tu_region_000081, None, tu_region_000080, tu_region_000084, tu_region_000082, tu_region_000080, None, None, None, None, None],
+    regions=[tu_region_000080, tu_region_000083, tu_region_000081, None, tu_region_000080, tu_region_000084, tu_region_000082, tu_region_000080, None, None, None, None, None, None],
     name=r"ToPascalCaseInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -626,10 +633,11 @@ statement_000038 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000039 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000085, tu_region_000088, tu_region_000086, None, tu_region_000085, tu_region_000089, tu_region_000087, tu_region_000085, None, None, None, None, None],
+    regions=[tu_region_000085, tu_region_000088, tu_region_000086, None, tu_region_000085, tu_region_000089, tu_region_000087, tu_region_000085, None, None, None, None, None, None],
     name=r"ToSnakeCaseInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -645,10 +653,11 @@ statement_000039 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000040 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000090, tu_region_000093, tu_region_000091, None, tu_region_000090, tu_region_000094, tu_region_000092, tu_region_000090, None, None, None, None, None],
+    regions=[tu_region_000090, tu_region_000093, tu_region_000091, None, tu_region_000090, tu_region_000094, tu_region_000092, tu_region_000090, None, None, None, None, None, None],
     name=r"ToTitleInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -664,10 +673,11 @@ statement_000040 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000041 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000095, tu_region_000098, tu_region_000096, None, tu_region_000095, tu_region_000099, tu_region_000097, tu_region_000095, None, None, None, None, None],
+    regions=[tu_region_000095, tu_region_000098, tu_region_000096, None, tu_region_000095, tu_region_000099, tu_region_000097, tu_region_000095, None, None, None, None, None, None],
     name=r"ToUpperInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -683,6 +693,7 @@ statement_000041 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000042 = FuncOrTypeExpressionParserInfo.Create(
@@ -734,7 +745,7 @@ statement_000047 = FuncParametersParserInfo.Create(
 )
 
 statement_000048 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000113, tu_region_000116, tu_region_000114, None, tu_region_000113, tu_region_000111, tu_region_000115, tu_region_000113, None, None, None, None, None],
+    regions=[tu_region_000113, tu_region_000116, tu_region_000114, None, tu_region_000113, tu_region_000111, tu_region_000115, tu_region_000113, None, None, None, None, None, None],
     name=r"CenterInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -750,6 +761,7 @@ statement_000048 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000049 = FuncOrTypeExpressionParserInfo.Create(
@@ -801,7 +813,7 @@ statement_000054 = FuncParametersParserInfo.Create(
 )
 
 statement_000055 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000130, tu_region_000133, tu_region_000131, None, tu_region_000130, tu_region_000128, tu_region_000132, tu_region_000130, None, None, None, None, None],
+    regions=[tu_region_000130, tu_region_000133, tu_region_000131, None, tu_region_000130, tu_region_000128, tu_region_000132, tu_region_000130, None, None, None, None, None, None],
     name=r"LeftJustifyInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -817,6 +829,7 @@ statement_000055 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000056 = FuncOrTypeExpressionParserInfo.Create(
@@ -868,7 +881,7 @@ statement_000061 = FuncParametersParserInfo.Create(
 )
 
 statement_000062 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000147, tu_region_000150, tu_region_000148, None, tu_region_000147, tu_region_000145, tu_region_000149, tu_region_000147, None, None, None, None, None],
+    regions=[tu_region_000147, tu_region_000150, tu_region_000148, None, tu_region_000147, tu_region_000145, tu_region_000149, tu_region_000147, None, None, None, None, None, None],
     name=r"RightJustifyInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -884,6 +897,7 @@ statement_000062 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000063 = FuncOrTypeExpressionParserInfo.Create(
@@ -964,7 +978,7 @@ statement_000072 = FuncParametersParserInfo.Create(
 )
 
 statement_000073 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000170, tu_region_000173, tu_region_000171, None, tu_region_000170, tu_region_000168, tu_region_000172, tu_region_000170, None, None, None, None, None],
+    regions=[tu_region_000170, tu_region_000173, tu_region_000171, None, tu_region_000170, tu_region_000168, tu_region_000172, tu_region_000170, None, None, None, None, None, None],
     name=r"ReplaceInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -980,6 +994,7 @@ statement_000073 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000074 = FuncOrTypeExpressionParserInfo.Create(
@@ -1060,7 +1075,7 @@ statement_000083 = FuncParametersParserInfo.Create(
 )
 
 statement_000084 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000193, tu_region_000196, tu_region_000194, None, tu_region_000193, tu_region_000191, tu_region_000195, tu_region_000193, None, None, None, None, None],
+    regions=[tu_region_000193, tu_region_000196, tu_region_000194, None, tu_region_000193, tu_region_000191, tu_region_000195, tu_region_000193, None, None, None, None, None, None],
     name=r"ReplaceInplace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1076,6 +1091,7 @@ statement_000084 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000085 = ClassStatementParserInfo.Create(

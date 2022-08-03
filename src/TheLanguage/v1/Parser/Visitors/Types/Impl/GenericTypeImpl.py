@@ -39,7 +39,7 @@ with InitRelativeImports():
 
     from ....ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import ExpressionParserInfo, FuncOrTypeExpressionParserInfo
 
-    from ....ParserInfos.ParserInfo import CompileTimeInfo, ParserInfoType
+    from ....ParserInfos.ParserInfo import CompileTimeInfo
 
     from ....ParserInfos.Statements.StatementParserInfo import StatementParserInfo
     from ....ParserInfos.Statements.Traits.TemplatedStatementTrait import TemplatedStatementTrait
@@ -48,6 +48,14 @@ with InitRelativeImports():
 
     from ....ParserInfos.Types.ConcreteType import ConcreteType
     from ....ParserInfos.Types.GenericType import GenericType as GenericTypeInterface
+
+    from ....Error import CreateError, ErrorException
+
+
+# ----------------------------------------------------------------------
+InvalidTemplateArgumentsError               = CreateError(
+    "Template arguments were provided where none were expected",
+)
 
 
 # ----------------------------------------------------------------------
@@ -106,11 +114,14 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
                 self._type_resolver,
             )
 
-            cache_id = resolved_template_arguments.cache_key
+            cache_key = resolved_template_arguments.cache_key
 
         elif expression_parser_info.templates:
-            raise Exception("Error: Templates where none were expected")
-
+            raise ErrorException(
+                InvalidTemplateArgumentsError.Create(
+                    region=expression_parser_info.templates.regions__.self__,
+                ),
+            )
 
         # ----------------------------------------------------------------------
         def CreateConcreteType() -> ConcreteType:
@@ -119,8 +130,13 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
             else:
                 new_compile_time_info_item: Dict[str, CompileTimeInfo] = {}
 
-                for parameter_parser_info, arg in resolved_template_arguments.types:
-                    pass # BugBug
+                for parameter_parser_info, concrete_type_or_types in resolved_template_arguments.types:
+                    assert parameter_parser_info.name not in new_compile_time_info_item, parameter_parser_info.name
+
+                    new_compile_time_info_item[parameter_parser_info.name] = CompileTimeInfo(
+                        None,
+                        concrete_type_or_types,
+                    )
 
                 for parameter_parser_info, arg in resolved_template_arguments.decorators:
                     assert parameter_parser_info.name not in new_compile_time_info_item, parameter_parser_info.name
@@ -140,7 +156,11 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
                 self._type_resolver.root_type_resolvers,
             )
 
-            concrete_type = self._CreateConcreteType(type_resolver, cache_key)
+            concrete_type = self._CreateConcreteType(
+                type_resolver,
+                expression_parser_info,
+                cache_key,
+            )
 
             type_resolver.InitConcreteType(concrete_type)
 
@@ -168,6 +188,7 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
     @Interface.abstractmethod
     def _CreateConcreteType(
         updated_resolver: TypeResolver,
+        expression_parser_info: FuncOrTypeExpressionParserInfo,
         resolved_template_arguments_id: Any,
     ) -> ConcreteType:
         raise Exception("Abstract method")  # pragma: no cover

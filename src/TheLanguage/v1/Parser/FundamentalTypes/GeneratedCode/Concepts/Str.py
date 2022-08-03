@@ -1028,7 +1028,7 @@ statement_000024 = FuncParametersParserInfo.Create(
 )
 
 statement_000025 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000043, tu_region_000045, tu_region_000044, None, tu_region_000043, tu_region_000042, None, tu_region_000043, None, None, None, None, tu_region_000046],
+    regions=[tu_region_000043, tu_region_000045, tu_region_000044, None, tu_region_000043, tu_region_000042, None, tu_region_000043, None, None, None, None, tu_region_000046, None],
     name=r"OperatorType.Deserialize",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1044,6 +1044,7 @@ statement_000025 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=True,
+    resets_hierarchy=None,
 )
 
 statement_000026 = TemplateTypeParameterParserInfo.Create(
@@ -1086,7 +1087,7 @@ statement_000030 = FuncParametersParserInfo.Create(
 )
 
 statement_000031 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000055, tu_region_000058, tu_region_000056, None, tu_region_000055, tu_region_000054, tu_region_000057, tu_region_000055, None, None, None, None, None],
+    regions=[tu_region_000055, tu_region_000058, tu_region_000056, None, tu_region_000055, tu_region_000054, tu_region_000057, tu_region_000055, None, None, None, None, None, None],
     name=r"OperatorType.Serialize",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1102,6 +1103,7 @@ statement_000031 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000032 = TemplateTypeParameterParserInfo.Create(
@@ -1144,7 +1146,7 @@ statement_000036 = FuncParametersParserInfo.Create(
 )
 
 statement_000037 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000067, tu_region_000070, tu_region_000068, None, tu_region_000067, tu_region_000066, tu_region_000069, tu_region_000067, None, None, None, None, None],
+    regions=[tu_region_000067, tu_region_000070, tu_region_000068, None, tu_region_000067, tu_region_000066, tu_region_000069, tu_region_000067, None, None, None, None, None, None],
     name=r"OperatorType.Accept",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1160,6 +1162,7 @@ statement_000037 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000038 = SelfReferenceExpressionParserInfo.Create(
@@ -1168,7 +1171,7 @@ statement_000038 = SelfReferenceExpressionParserInfo.Create(
 )
 
 statement_000039 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000073, tu_region_000076, tu_region_000074, None, tu_region_000073, tu_region_000077, tu_region_000075, tu_region_000073, None, None, None, None, None],
+    regions=[tu_region_000073, tu_region_000076, tu_region_000074, None, tu_region_000073, tu_region_000077, tu_region_000075, tu_region_000073, None, None, None, None, None, None],
     name=r"OperatorType.Clone",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1184,6 +1187,7 @@ statement_000039 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000040 = FuncOrTypeExpressionParserInfo.Create(
@@ -1196,7 +1200,7 @@ statement_000040 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000041 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000081, tu_region_000084, tu_region_000082, None, tu_region_000081, tu_region_000085, tu_region_000083, tu_region_000081, None, None, None, None, None],
+    regions=[tu_region_000081, tu_region_000084, tu_region_000082, None, tu_region_000081, tu_region_000085, tu_region_000083, tu_region_000081, None, None, None, None, None, None],
     name=r"OperatorType.ToBool",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1212,6 +1216,7 @@ statement_000041 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000042 = FuncOrTypeExpressionParserInfo.Create(
@@ -1224,7 +1229,7 @@ statement_000042 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000043 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000089, tu_region_000092, tu_region_000090, None, tu_region_000089, tu_region_000093, tu_region_000091, tu_region_000089, None, None, None, None, None],
+    regions=[tu_region_000089, tu_region_000092, tu_region_000090, None, tu_region_000089, tu_region_000093, tu_region_000091, tu_region_000089, None, None, None, None, None, None],
     name=r"OperatorType.ToString",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1240,6 +1245,7 @@ statement_000043 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000044 = FuncOrTypeExpressionParserInfo.Create(
@@ -1291,7 +1297,7 @@ statement_000049 = FuncParametersParserInfo.Create(
 )
 
 statement_000050 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000108, tu_region_000110, tu_region_000109, None, tu_region_000108, tu_region_000106, None, tu_region_000108, None, None, None, None, tu_region_000111],
+    regions=[tu_region_000108, tu_region_000110, tu_region_000109, None, tu_region_000108, tu_region_000106, None, tu_region_000108, None, None, None, None, tu_region_000111, None],
     name=r"OperatorType.Compare",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1307,6 +1313,7 @@ statement_000050 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=True,
+    resets_hierarchy=None,
 )
 
 statement_000051 = FuncOrTypeExpressionParserInfo.Create(
@@ -1344,7 +1351,7 @@ statement_000054 = FuncParametersParserInfo.Create(
 )
 
 statement_000055 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000121, tu_region_000124, tu_region_000122, None, tu_region_000121, tu_region_000120, tu_region_000123, tu_region_000121, None, None, None, None, None],
+    regions=[tu_region_000121, tu_region_000124, tu_region_000122, None, tu_region_000121, tu_region_000120, tu_region_000123, tu_region_000121, None, None, None, None, None, None],
     name=r"OperatorType.Equal",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1360,6 +1367,7 @@ statement_000055 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000056 = FuncOrTypeExpressionParserInfo.Create(
@@ -1397,7 +1405,7 @@ statement_000059 = FuncParametersParserInfo.Create(
 )
 
 statement_000060 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000134, tu_region_000137, tu_region_000135, None, tu_region_000134, tu_region_000133, tu_region_000136, tu_region_000134, None, None, None, None, None],
+    regions=[tu_region_000134, tu_region_000137, tu_region_000135, None, tu_region_000134, tu_region_000133, tu_region_000136, tu_region_000134, None, None, None, None, None, None],
     name=r"OperatorType.NotEqual",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1413,6 +1421,7 @@ statement_000060 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000061 = FuncOrTypeExpressionParserInfo.Create(
@@ -1450,7 +1459,7 @@ statement_000064 = FuncParametersParserInfo.Create(
 )
 
 statement_000065 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000147, tu_region_000150, tu_region_000148, None, tu_region_000147, tu_region_000146, tu_region_000149, tu_region_000147, None, None, None, None, None],
+    regions=[tu_region_000147, tu_region_000150, tu_region_000148, None, tu_region_000147, tu_region_000146, tu_region_000149, tu_region_000147, None, None, None, None, None, None],
     name=r"OperatorType.Less",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1466,6 +1475,7 @@ statement_000065 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000066 = FuncOrTypeExpressionParserInfo.Create(
@@ -1503,7 +1513,7 @@ statement_000069 = FuncParametersParserInfo.Create(
 )
 
 statement_000070 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000160, tu_region_000163, tu_region_000161, None, tu_region_000160, tu_region_000159, tu_region_000162, tu_region_000160, None, None, None, None, None],
+    regions=[tu_region_000160, tu_region_000163, tu_region_000161, None, tu_region_000160, tu_region_000159, tu_region_000162, tu_region_000160, None, None, None, None, None, None],
     name=r"OperatorType.LessEqual",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1519,6 +1529,7 @@ statement_000070 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000071 = FuncOrTypeExpressionParserInfo.Create(
@@ -1556,7 +1567,7 @@ statement_000074 = FuncParametersParserInfo.Create(
 )
 
 statement_000075 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000173, tu_region_000176, tu_region_000174, None, tu_region_000173, tu_region_000172, tu_region_000175, tu_region_000173, None, None, None, None, None],
+    regions=[tu_region_000173, tu_region_000176, tu_region_000174, None, tu_region_000173, tu_region_000172, tu_region_000175, tu_region_000173, None, None, None, None, None, None],
     name=r"OperatorType.Greater",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1572,6 +1583,7 @@ statement_000075 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000076 = FuncOrTypeExpressionParserInfo.Create(
@@ -1609,7 +1621,7 @@ statement_000079 = FuncParametersParserInfo.Create(
 )
 
 statement_000080 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000186, tu_region_000189, tu_region_000187, None, tu_region_000186, tu_region_000185, tu_region_000188, tu_region_000186, None, None, None, None, None],
+    regions=[tu_region_000186, tu_region_000189, tu_region_000187, None, tu_region_000186, tu_region_000185, tu_region_000188, tu_region_000186, None, None, None, None, None, None],
     name=r"OperatorType.GreaterEqual",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1625,6 +1637,7 @@ statement_000080 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000081 = FuncOrTypeExpressionParserInfo.Create(
@@ -1673,7 +1686,7 @@ statement_000086 = FuncParametersParserInfo.Create(
 )
 
 statement_000087 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000200, tu_region_000203, tu_region_000201, None, tu_region_000200, tu_region_000199, tu_region_000202, tu_region_000200, None, None, None, None, None],
+    regions=[tu_region_000200, tu_region_000203, tu_region_000201, None, tu_region_000200, tu_region_000199, tu_region_000202, tu_region_000200, None, None, None, None, None, None],
     name=r"OperatorType.Index",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1689,6 +1702,7 @@ statement_000087 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000088 = FuncOrTypeExpressionParserInfo.Create(
@@ -1737,7 +1751,7 @@ statement_000093 = FuncParametersParserInfo.Create(
 )
 
 statement_000094 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000214, tu_region_000217, tu_region_000215, None, tu_region_000214, tu_region_000213, tu_region_000216, tu_region_000214, None, None, None, None, None],
+    regions=[tu_region_000214, tu_region_000217, tu_region_000215, None, tu_region_000214, tu_region_000213, tu_region_000216, tu_region_000214, None, None, None, None, None, None],
     name=r"OperatorType.Index",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1753,6 +1767,7 @@ statement_000094 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000095 = FuncOrTypeExpressionParserInfo.Create(
@@ -1790,7 +1805,7 @@ statement_000098 = FuncParametersParserInfo.Create(
 )
 
 statement_000099 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000227, tu_region_000230, tu_region_000228, None, tu_region_000227, tu_region_000226, tu_region_000229, tu_region_000227, None, None, None, None, None],
+    regions=[tu_region_000227, tu_region_000230, tu_region_000228, None, tu_region_000227, tu_region_000226, tu_region_000229, tu_region_000227, None, None, None, None, None, None],
     name=r"OperatorType.Contains",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1806,6 +1821,7 @@ statement_000099 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000100 = FuncOrTypeExpressionParserInfo.Create(
@@ -1843,7 +1859,7 @@ statement_000103 = FuncParametersParserInfo.Create(
 )
 
 statement_000104 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000240, tu_region_000243, tu_region_000241, None, tu_region_000240, tu_region_000239, tu_region_000242, tu_region_000240, None, None, None, None, None],
+    regions=[tu_region_000240, tu_region_000243, tu_region_000241, None, tu_region_000240, tu_region_000239, tu_region_000242, tu_region_000240, None, None, None, None, None, None],
     name=r"OperatorType.Contains",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1859,6 +1875,7 @@ statement_000104 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000105 = FuncOrTypeExpressionParserInfo.Create(
@@ -1896,7 +1913,7 @@ statement_000108 = FuncParametersParserInfo.Create(
 )
 
 statement_000109 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000253, tu_region_000256, tu_region_000254, None, tu_region_000253, tu_region_000252, tu_region_000255, tu_region_000253, None, None, None, None, None],
+    regions=[tu_region_000253, tu_region_000256, tu_region_000254, None, tu_region_000253, tu_region_000252, tu_region_000255, tu_region_000253, None, None, None, None, None, None],
     name=r"OperatorType.NotContains",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1912,6 +1929,7 @@ statement_000109 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000110 = FuncOrTypeExpressionParserInfo.Create(
@@ -1949,7 +1967,7 @@ statement_000113 = FuncParametersParserInfo.Create(
 )
 
 statement_000114 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000266, tu_region_000269, tu_region_000267, None, tu_region_000266, tu_region_000265, tu_region_000268, tu_region_000266, None, None, None, None, None],
+    regions=[tu_region_000266, tu_region_000269, tu_region_000267, None, tu_region_000266, tu_region_000265, tu_region_000268, tu_region_000266, None, None, None, None, None, None],
     name=r"OperatorType.NotContains",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1965,6 +1983,7 @@ statement_000114 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000115 = FuncOrTypeExpressionParserInfo.Create(
@@ -1977,7 +1996,7 @@ statement_000115 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000116 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000273, tu_region_000276, tu_region_000274, None, tu_region_000273, tu_region_000277, tu_region_000275, tu_region_000273, None, None, None, None, None],
+    regions=[tu_region_000273, tu_region_000276, tu_region_000274, None, tu_region_000273, tu_region_000277, tu_region_000275, tu_region_000273, None, None, None, None, None, None],
     name=r"NumChars",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -1993,6 +2012,7 @@ statement_000116 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000117 = FuncOrTypeExpressionParserInfo.Create(
@@ -2005,7 +2025,7 @@ statement_000117 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000118 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000281, tu_region_000284, tu_region_000282, None, tu_region_000281, tu_region_000285, tu_region_000283, tu_region_000281, None, None, None, None, None],
+    regions=[tu_region_000281, tu_region_000284, tu_region_000282, None, tu_region_000281, tu_region_000285, tu_region_000283, tu_region_000281, None, None, None, None, None, None],
     name=r"NumBytes",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2021,6 +2041,7 @@ statement_000118 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000119 = FuncOrTypeExpressionParserInfo.Create(
@@ -2033,7 +2054,7 @@ statement_000119 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000120 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000289, tu_region_000292, tu_region_000290, None, tu_region_000289, tu_region_000293, tu_region_000291, tu_region_000289, None, None, None, None, None],
+    regions=[tu_region_000289, tu_region_000292, tu_region_000290, None, tu_region_000289, tu_region_000293, tu_region_000291, tu_region_000289, None, None, None, None, None, None],
     name=r"IsAlphanumeric",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2049,6 +2070,7 @@ statement_000120 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000121 = FuncOrTypeExpressionParserInfo.Create(
@@ -2061,7 +2083,7 @@ statement_000121 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000122 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000297, tu_region_000300, tu_region_000298, None, tu_region_000297, tu_region_000301, tu_region_000299, tu_region_000297, None, None, None, None, None],
+    regions=[tu_region_000297, tu_region_000300, tu_region_000298, None, tu_region_000297, tu_region_000301, tu_region_000299, tu_region_000297, None, None, None, None, None, None],
     name=r"IsAlpha",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2077,6 +2099,7 @@ statement_000122 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000123 = FuncOrTypeExpressionParserInfo.Create(
@@ -2089,7 +2112,7 @@ statement_000123 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000124 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000305, tu_region_000308, tu_region_000306, None, tu_region_000305, tu_region_000309, tu_region_000307, tu_region_000305, None, None, None, None, None],
+    regions=[tu_region_000305, tu_region_000308, tu_region_000306, None, tu_region_000305, tu_region_000309, tu_region_000307, tu_region_000305, None, None, None, None, None, None],
     name=r"IsAscii",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2105,6 +2128,7 @@ statement_000124 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000125 = FuncOrTypeExpressionParserInfo.Create(
@@ -2117,7 +2141,7 @@ statement_000125 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000126 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000313, tu_region_000316, tu_region_000314, None, tu_region_000313, tu_region_000317, tu_region_000315, tu_region_000313, None, None, None, None, None],
+    regions=[tu_region_000313, tu_region_000316, tu_region_000314, None, tu_region_000313, tu_region_000317, tu_region_000315, tu_region_000313, None, None, None, None, None, None],
     name=r"IsInt",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2133,6 +2157,7 @@ statement_000126 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000127 = FuncOrTypeExpressionParserInfo.Create(
@@ -2145,7 +2170,7 @@ statement_000127 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000128 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000321, tu_region_000324, tu_region_000322, None, tu_region_000321, tu_region_000325, tu_region_000323, tu_region_000321, None, None, None, None, None],
+    regions=[tu_region_000321, tu_region_000324, tu_region_000322, None, tu_region_000321, tu_region_000325, tu_region_000323, tu_region_000321, None, None, None, None, None, None],
     name=r"IsLower",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2161,6 +2186,7 @@ statement_000128 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000129 = FuncOrTypeExpressionParserInfo.Create(
@@ -2173,7 +2199,7 @@ statement_000129 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000130 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000329, tu_region_000332, tu_region_000330, None, tu_region_000329, tu_region_000333, tu_region_000331, tu_region_000329, None, None, None, None, None],
+    regions=[tu_region_000329, tu_region_000332, tu_region_000330, None, tu_region_000329, tu_region_000333, tu_region_000331, tu_region_000329, None, None, None, None, None, None],
     name=r"IsNum",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2189,6 +2215,7 @@ statement_000130 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000131 = FuncOrTypeExpressionParserInfo.Create(
@@ -2201,7 +2228,7 @@ statement_000131 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000132 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000337, tu_region_000340, tu_region_000338, None, tu_region_000337, tu_region_000341, tu_region_000339, tu_region_000337, None, None, None, None, None],
+    regions=[tu_region_000337, tu_region_000340, tu_region_000338, None, tu_region_000337, tu_region_000341, tu_region_000339, tu_region_000337, None, None, None, None, None, None],
     name=r"IsPrintable",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2217,6 +2244,7 @@ statement_000132 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000133 = FuncOrTypeExpressionParserInfo.Create(
@@ -2229,7 +2257,7 @@ statement_000133 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000134 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000345, tu_region_000348, tu_region_000346, None, tu_region_000345, tu_region_000349, tu_region_000347, tu_region_000345, None, None, None, None, None],
+    regions=[tu_region_000345, tu_region_000348, tu_region_000346, None, tu_region_000345, tu_region_000349, tu_region_000347, tu_region_000345, None, None, None, None, None, None],
     name=r"IsSpace",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2245,6 +2273,7 @@ statement_000134 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000135 = FuncOrTypeExpressionParserInfo.Create(
@@ -2257,7 +2286,7 @@ statement_000135 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000136 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000353, tu_region_000356, tu_region_000354, None, tu_region_000353, tu_region_000357, tu_region_000355, tu_region_000353, None, None, None, None, None],
+    regions=[tu_region_000353, tu_region_000356, tu_region_000354, None, tu_region_000353, tu_region_000357, tu_region_000355, tu_region_000353, None, None, None, None, None, None],
     name=r"IsTitle",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2273,6 +2302,7 @@ statement_000136 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000137 = FuncOrTypeExpressionParserInfo.Create(
@@ -2285,7 +2315,7 @@ statement_000137 = FuncOrTypeExpressionParserInfo.Create(
 )
 
 statement_000138 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000361, tu_region_000364, tu_region_000362, None, tu_region_000361, tu_region_000365, tu_region_000363, tu_region_000361, None, None, None, None, None],
+    regions=[tu_region_000361, tu_region_000364, tu_region_000362, None, tu_region_000361, tu_region_000365, tu_region_000363, tu_region_000361, None, None, None, None, None, None],
     name=r"IsUpper",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2301,6 +2331,7 @@ statement_000138 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000139 = FuncOrTypeExpressionParserInfo.Create(
@@ -2338,7 +2369,7 @@ statement_000142 = FuncParametersParserInfo.Create(
 )
 
 statement_000143 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000375, tu_region_000378, tu_region_000376, None, tu_region_000375, tu_region_000374, tu_region_000377, tu_region_000375, None, None, None, None, None],
+    regions=[tu_region_000375, tu_region_000378, tu_region_000376, None, tu_region_000375, tu_region_000374, tu_region_000377, tu_region_000375, None, None, None, None, None, None],
     name=r"Count",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2354,6 +2385,7 @@ statement_000143 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000144 = FuncOrTypeExpressionParserInfo.Create(
@@ -2391,7 +2423,7 @@ statement_000147 = FuncParametersParserInfo.Create(
 )
 
 statement_000148 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000388, tu_region_000391, tu_region_000389, None, tu_region_000388, tu_region_000387, tu_region_000390, tu_region_000388, None, None, None, None, None],
+    regions=[tu_region_000388, tu_region_000391, tu_region_000389, None, tu_region_000388, tu_region_000387, tu_region_000390, tu_region_000388, None, None, None, None, None, None],
     name=r"Count",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2407,6 +2439,7 @@ statement_000148 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000149 = FuncOrTypeExpressionParserInfo.Create(
@@ -2444,7 +2477,7 @@ statement_000152 = FuncParametersParserInfo.Create(
 )
 
 statement_000153 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000401, tu_region_000404, tu_region_000402, None, tu_region_000401, tu_region_000400, tu_region_000403, tu_region_000401, None, None, None, None, None],
+    regions=[tu_region_000401, tu_region_000404, tu_region_000402, None, tu_region_000401, tu_region_000400, tu_region_000403, tu_region_000401, None, None, None, None, None, None],
     name=r"StartsWith",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2460,6 +2493,7 @@ statement_000153 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000154 = FuncOrTypeExpressionParserInfo.Create(
@@ -2497,7 +2531,7 @@ statement_000157 = FuncParametersParserInfo.Create(
 )
 
 statement_000158 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000414, tu_region_000417, tu_region_000415, None, tu_region_000414, tu_region_000413, tu_region_000416, tu_region_000414, None, None, None, None, None],
+    regions=[tu_region_000414, tu_region_000417, tu_region_000415, None, tu_region_000414, tu_region_000413, tu_region_000416, tu_region_000414, None, None, None, None, None, None],
     name=r"StartsWith",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2513,6 +2547,7 @@ statement_000158 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000159 = FuncOrTypeExpressionParserInfo.Create(
@@ -2550,7 +2585,7 @@ statement_000162 = FuncParametersParserInfo.Create(
 )
 
 statement_000163 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000427, tu_region_000430, tu_region_000428, None, tu_region_000427, tu_region_000426, tu_region_000429, tu_region_000427, None, None, None, None, None],
+    regions=[tu_region_000427, tu_region_000430, tu_region_000428, None, tu_region_000427, tu_region_000426, tu_region_000429, tu_region_000427, None, None, None, None, None, None],
     name=r"EndsWith",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2566,6 +2601,7 @@ statement_000163 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000164 = FuncOrTypeExpressionParserInfo.Create(
@@ -2603,7 +2639,7 @@ statement_000167 = FuncParametersParserInfo.Create(
 )
 
 statement_000168 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000440, tu_region_000443, tu_region_000441, None, tu_region_000440, tu_region_000439, tu_region_000442, tu_region_000440, None, None, None, None, None],
+    regions=[tu_region_000440, tu_region_000443, tu_region_000441, None, tu_region_000440, tu_region_000439, tu_region_000442, tu_region_000440, None, None, None, None, None, None],
     name=r"EndsWith",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2619,6 +2655,7 @@ statement_000168 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000169 = FuncOrTypeExpressionParserInfo.Create(
@@ -2735,7 +2772,7 @@ statement_000184 = FuncParametersParserInfo.Create(
 )
 
 statement_000185 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000469, tu_region_000472, tu_region_000470, None, tu_region_000469, tu_region_000467, tu_region_000471, tu_region_000469, None, None, None, None, None],
+    regions=[tu_region_000469, tu_region_000472, tu_region_000470, None, tu_region_000469, tu_region_000467, tu_region_000471, tu_region_000469, None, None, None, None, None, None],
     name=r"Find",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2751,6 +2788,7 @@ statement_000185 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000186 = FuncOrTypeExpressionParserInfo.Create(
@@ -2867,7 +2905,7 @@ statement_000201 = FuncParametersParserInfo.Create(
 )
 
 statement_000202 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000498, tu_region_000501, tu_region_000499, None, tu_region_000498, tu_region_000496, tu_region_000500, tu_region_000498, None, None, None, None, None],
+    regions=[tu_region_000498, tu_region_000501, tu_region_000499, None, tu_region_000498, tu_region_000496, tu_region_000500, tu_region_000498, None, None, None, None, None, None],
     name=r"Find",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2883,6 +2921,7 @@ statement_000202 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000203 = FuncOrTypeExpressionParserInfo.Create(
@@ -2965,7 +3004,7 @@ statement_000213 = FuncParametersParserInfo.Create(
 )
 
 statement_000214 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000520, tu_region_000523, tu_region_000521, None, tu_region_000520, tu_region_000518, tu_region_000522, tu_region_000520, None, None, None, None, None],
+    regions=[tu_region_000520, tu_region_000523, tu_region_000521, None, tu_region_000520, tu_region_000518, tu_region_000522, tu_region_000520, None, None, None, None, None, None],
     name=r"ReverseFind",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -2981,6 +3020,7 @@ statement_000214 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000215 = FuncOrTypeExpressionParserInfo.Create(
@@ -3063,7 +3103,7 @@ statement_000225 = FuncParametersParserInfo.Create(
 )
 
 statement_000226 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000542, tu_region_000545, tu_region_000543, None, tu_region_000542, tu_region_000540, tu_region_000544, tu_region_000542, None, None, None, None, None],
+    regions=[tu_region_000542, tu_region_000545, tu_region_000543, None, tu_region_000542, tu_region_000540, tu_region_000544, tu_region_000542, None, None, None, None, None, None],
     name=r"ReverseFind",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3079,6 +3119,7 @@ statement_000226 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000227 = FuncOrTypeExpressionParserInfo.Create(
@@ -3161,7 +3202,7 @@ statement_000237 = FuncParametersParserInfo.Create(
 )
 
 statement_000238 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000564, tu_region_000567, tu_region_000565, None, tu_region_000564, tu_region_000562, tu_region_000566, tu_region_000564, None, None, None, None, None],
+    regions=[tu_region_000564, tu_region_000567, tu_region_000565, None, tu_region_000564, tu_region_000562, tu_region_000566, tu_region_000564, None, None, None, None, None, None],
     name=r"FindFirst",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3177,6 +3218,7 @@ statement_000238 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000239 = FuncOrTypeExpressionParserInfo.Create(
@@ -3259,7 +3301,7 @@ statement_000249 = FuncParametersParserInfo.Create(
 )
 
 statement_000250 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000586, tu_region_000589, tu_region_000587, None, tu_region_000586, tu_region_000584, tu_region_000588, tu_region_000586, None, None, None, None, None],
+    regions=[tu_region_000586, tu_region_000589, tu_region_000587, None, tu_region_000586, tu_region_000584, tu_region_000588, tu_region_000586, None, None, None, None, None, None],
     name=r"FindFirst",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3275,6 +3317,7 @@ statement_000250 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000251 = FuncOrTypeExpressionParserInfo.Create(
@@ -3357,7 +3400,7 @@ statement_000261 = FuncParametersParserInfo.Create(
 )
 
 statement_000262 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000608, tu_region_000611, tu_region_000609, None, tu_region_000608, tu_region_000606, tu_region_000610, tu_region_000608, None, None, None, None, None],
+    regions=[tu_region_000608, tu_region_000611, tu_region_000609, None, tu_region_000608, tu_region_000606, tu_region_000610, tu_region_000608, None, None, None, None, None, None],
     name=r"FindLast",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3373,6 +3416,7 @@ statement_000262 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000263 = FuncOrTypeExpressionParserInfo.Create(
@@ -3455,7 +3499,7 @@ statement_000273 = FuncParametersParserInfo.Create(
 )
 
 statement_000274 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000630, tu_region_000633, tu_region_000631, None, tu_region_000630, tu_region_000628, tu_region_000632, tu_region_000630, None, None, None, None, None],
+    regions=[tu_region_000630, tu_region_000633, tu_region_000631, None, tu_region_000630, tu_region_000628, tu_region_000632, tu_region_000630, None, None, None, None, None, None],
     name=r"FindLast",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3471,6 +3515,7 @@ statement_000274 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000275 = SelfReferenceExpressionParserInfo.Create(
@@ -3479,7 +3524,7 @@ statement_000275 = SelfReferenceExpressionParserInfo.Create(
 )
 
 statement_000276 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000636, tu_region_000639, tu_region_000637, None, tu_region_000636, tu_region_000640, tu_region_000638, tu_region_000636, None, None, None, None, None],
+    regions=[tu_region_000636, tu_region_000639, tu_region_000637, None, tu_region_000636, tu_region_000640, tu_region_000638, tu_region_000636, None, None, None, None, None, None],
     name=r"ToLower?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3495,6 +3540,7 @@ statement_000276 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000277 = SelfReferenceExpressionParserInfo.Create(
@@ -3503,7 +3549,7 @@ statement_000277 = SelfReferenceExpressionParserInfo.Create(
 )
 
 statement_000278 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000643, tu_region_000646, tu_region_000644, None, tu_region_000643, tu_region_000647, tu_region_000645, tu_region_000643, None, None, None, None, None],
+    regions=[tu_region_000643, tu_region_000646, tu_region_000644, None, tu_region_000643, tu_region_000647, tu_region_000645, tu_region_000643, None, None, None, None, None, None],
     name=r"ToCamelCase?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3519,6 +3565,7 @@ statement_000278 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000279 = SelfReferenceExpressionParserInfo.Create(
@@ -3527,7 +3574,7 @@ statement_000279 = SelfReferenceExpressionParserInfo.Create(
 )
 
 statement_000280 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000650, tu_region_000653, tu_region_000651, None, tu_region_000650, tu_region_000654, tu_region_000652, tu_region_000650, None, None, None, None, None],
+    regions=[tu_region_000650, tu_region_000653, tu_region_000651, None, tu_region_000650, tu_region_000654, tu_region_000652, tu_region_000650, None, None, None, None, None, None],
     name=r"ToPascalCase?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3543,6 +3590,7 @@ statement_000280 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000281 = SelfReferenceExpressionParserInfo.Create(
@@ -3551,7 +3599,7 @@ statement_000281 = SelfReferenceExpressionParserInfo.Create(
 )
 
 statement_000282 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000657, tu_region_000660, tu_region_000658, None, tu_region_000657, tu_region_000661, tu_region_000659, tu_region_000657, None, None, None, None, None],
+    regions=[tu_region_000657, tu_region_000660, tu_region_000658, None, tu_region_000657, tu_region_000661, tu_region_000659, tu_region_000657, None, None, None, None, None, None],
     name=r"ToSnakeCase?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3567,6 +3615,7 @@ statement_000282 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000283 = SelfReferenceExpressionParserInfo.Create(
@@ -3575,7 +3624,7 @@ statement_000283 = SelfReferenceExpressionParserInfo.Create(
 )
 
 statement_000284 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000664, tu_region_000667, tu_region_000665, None, tu_region_000664, tu_region_000668, tu_region_000666, tu_region_000664, None, None, None, None, None],
+    regions=[tu_region_000664, tu_region_000667, tu_region_000665, None, tu_region_000664, tu_region_000668, tu_region_000666, tu_region_000664, None, None, None, None, None, None],
     name=r"ToTitle?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3591,6 +3640,7 @@ statement_000284 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000285 = SelfReferenceExpressionParserInfo.Create(
@@ -3599,7 +3649,7 @@ statement_000285 = SelfReferenceExpressionParserInfo.Create(
 )
 
 statement_000286 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000671, tu_region_000674, tu_region_000672, None, tu_region_000671, tu_region_000675, tu_region_000673, tu_region_000671, None, None, None, None, None],
+    regions=[tu_region_000671, tu_region_000674, tu_region_000672, None, tu_region_000671, tu_region_000675, tu_region_000673, tu_region_000671, None, None, None, None, None, None],
     name=r"ToUpper?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3615,6 +3665,7 @@ statement_000286 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000287 = SelfReferenceExpressionParserInfo.Create(
@@ -3671,7 +3722,7 @@ statement_000293 = FuncParametersParserInfo.Create(
 )
 
 statement_000294 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000691, tu_region_000694, tu_region_000692, None, tu_region_000691, tu_region_000689, tu_region_000693, tu_region_000691, None, None, None, None, None],
+    regions=[tu_region_000691, tu_region_000694, tu_region_000692, None, tu_region_000691, tu_region_000689, tu_region_000693, tu_region_000691, None, None, None, None, None, None],
     name=r"Center?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3687,6 +3738,7 @@ statement_000294 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000295 = SelfReferenceExpressionParserInfo.Create(
@@ -3743,7 +3795,7 @@ statement_000301 = FuncParametersParserInfo.Create(
 )
 
 statement_000302 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000710, tu_region_000713, tu_region_000711, None, tu_region_000710, tu_region_000708, tu_region_000712, tu_region_000710, None, None, None, None, None],
+    regions=[tu_region_000710, tu_region_000713, tu_region_000711, None, tu_region_000710, tu_region_000708, tu_region_000712, tu_region_000710, None, None, None, None, None, None],
     name=r"LeftJustify?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3759,6 +3811,7 @@ statement_000302 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000303 = SelfReferenceExpressionParserInfo.Create(
@@ -3815,7 +3868,7 @@ statement_000309 = FuncParametersParserInfo.Create(
 )
 
 statement_000310 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000729, tu_region_000732, tu_region_000730, None, tu_region_000729, tu_region_000727, tu_region_000731, tu_region_000729, None, None, None, None, None],
+    regions=[tu_region_000729, tu_region_000732, tu_region_000730, None, tu_region_000729, tu_region_000727, tu_region_000731, tu_region_000729, None, None, None, None, None, None],
     name=r"RightJustify?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3831,6 +3884,7 @@ statement_000310 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000311 = SelfReferenceExpressionParserInfo.Create(
@@ -3839,7 +3893,7 @@ statement_000311 = SelfReferenceExpressionParserInfo.Create(
 )
 
 statement_000312 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000735, tu_region_000738, tu_region_000736, None, tu_region_000735, tu_region_000739, tu_region_000737, tu_region_000735, None, None, None, None, None],
+    regions=[tu_region_000735, tu_region_000738, tu_region_000736, None, tu_region_000735, tu_region_000739, tu_region_000737, tu_region_000735, None, None, None, None, None, None],
     name=r"LeftStrip?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3855,6 +3909,7 @@ statement_000312 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000313 = SelfReferenceExpressionParserInfo.Create(
@@ -3863,7 +3918,7 @@ statement_000313 = SelfReferenceExpressionParserInfo.Create(
 )
 
 statement_000314 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000742, tu_region_000745, tu_region_000743, None, tu_region_000742, tu_region_000746, tu_region_000744, tu_region_000742, None, None, None, None, None],
+    regions=[tu_region_000742, tu_region_000745, tu_region_000743, None, tu_region_000742, tu_region_000746, tu_region_000744, tu_region_000742, None, None, None, None, None, None],
     name=r"RightStrip?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3879,6 +3934,7 @@ statement_000314 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000315 = SelfReferenceExpressionParserInfo.Create(
@@ -3887,7 +3943,7 @@ statement_000315 = SelfReferenceExpressionParserInfo.Create(
 )
 
 statement_000316 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000749, tu_region_000752, tu_region_000750, None, tu_region_000749, tu_region_000753, tu_region_000751, tu_region_000749, None, None, None, None, None],
+    regions=[tu_region_000749, tu_region_000752, tu_region_000750, None, tu_region_000749, tu_region_000753, tu_region_000751, tu_region_000749, None, None, None, None, None, None],
     name=r"Strip?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -3903,6 +3959,7 @@ statement_000316 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000317 = SelfReferenceExpressionParserInfo.Create(
@@ -3988,7 +4045,7 @@ statement_000327 = FuncParametersParserInfo.Create(
 )
 
 statement_000328 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000775, tu_region_000778, tu_region_000776, None, tu_region_000775, tu_region_000773, tu_region_000777, tu_region_000775, None, None, None, None, None],
+    regions=[tu_region_000775, tu_region_000778, tu_region_000776, None, tu_region_000775, tu_region_000773, tu_region_000777, tu_region_000775, None, None, None, None, None, None],
     name=r"Replace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -4004,6 +4061,7 @@ statement_000328 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000329 = SelfReferenceExpressionParserInfo.Create(
@@ -4089,7 +4147,7 @@ statement_000339 = FuncParametersParserInfo.Create(
 )
 
 statement_000340 = FuncDefinitionStatementParserInfo.Create(
-    regions=[tu_region_000800, tu_region_000803, tu_region_000801, None, tu_region_000800, tu_region_000798, tu_region_000802, tu_region_000800, None, None, None, None, None],
+    regions=[tu_region_000800, tu_region_000803, tu_region_000801, None, tu_region_000800, tu_region_000798, tu_region_000802, tu_region_000800, None, None, None, None, None, None],
     name=r"Replace?",
     visibility_param=VisibilityModifier.public,
     statements=None,
@@ -4105,6 +4163,7 @@ statement_000340 = FuncDefinitionStatementParserInfo.Create(
     is_deferred=None,
     is_exceptional=None,
     is_static=None,
+    resets_hierarchy=None,
 )
 
 statement_000341 = ClassStatementParserInfo.Create(

@@ -74,11 +74,21 @@ class ResolvedArguments(object):
 
     # ----------------------------------------------------------------------
     def __post_init__(self):
-        # BugBug: Types with cache_key
-        types_cache_key = None
+        # types
+        types_cache_key = []
 
+        for parameter_parser_info, arg_info in self.types:
+            if isinstance(arg_info, list):
+                types_cache_key.append(tuple(id(concrete_type) for concrete_type in arg_info))
+            else:
+                types_cache_key.append(id(arg_info))
+
+        types_cache_key = tuple(types_cache_key)
+
+        # decorators
         decorators_cache_key = tuple(decorator[1].value for decorator in self.decorators)
 
+        # Create and preserve the cache key
         cache_key = (types_cache_key, decorators_cache_key)
 
         object.__setattr__(self, "cache_key", cache_key)
@@ -128,7 +138,7 @@ def Match(
                 assert all(isinstance(argument, ExpressionParserInfo) for argument in argument_value), argument_value
 
                 argument_result_or_results = [
-                    type_resolver.EvalConcreteType(argument.type_or_expression)
+                    type_resolver.EvalConcreteType(argument.type_or_expression)[0]
                     for argument in argument_value
                 ]
             else:
@@ -140,7 +150,7 @@ def Match(
                     argument_value = argument_value.type_or_expression
 
                 assert isinstance(argument_value, ExpressionParserInfo), argument_value
-                argument_result_or_results = type_resolver.EvalConcreteType(argument_value)
+                argument_result_or_results = type_resolver.EvalConcreteType(argument_value)[0]
 
             types.append((parameter_parser_info, argument_result_or_results))
 

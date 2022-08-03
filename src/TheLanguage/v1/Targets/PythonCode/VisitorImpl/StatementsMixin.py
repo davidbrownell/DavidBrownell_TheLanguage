@@ -296,7 +296,7 @@ class StatementsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = FuncDefinitionStatementParserInfo.Create(
-                    regions=[{self_region}, {name_region}, {visibility_region}, {statements_region}, {function_modifier_region}, {parameters_region}, {mutability_modifier_region}, {method_hierarchy_modifier_region}, {documentation_region}, {captured_variables_region}, {is_deferred_region}, {is_exceptional_region}, {is_static_region}],
+                    regions=[{self_region}, {name_region}, {visibility_region}, {statements_region}, {function_modifier_region}, {parameters_region}, {mutability_modifier_region}, {method_hierarchy_modifier_region}, {documentation_region}, {captured_variables_region}, {is_deferred_region}, {is_exceptional_region}, {is_static_region}, {resets_hierarchy_region}],
                     name={name},
                     visibility_param={visibility},
                     statements={statements},
@@ -312,6 +312,7 @@ class StatementsMixin(BaseMixin):
                     is_deferred={is_deferred},
                     is_exceptional={is_exceptional},
                     is_static={is_static},
+                    resets_hierarchy={resets_hierarchy},
                 )
 
                 """,
@@ -330,6 +331,7 @@ class StatementsMixin(BaseMixin):
                 is_deferred_region=self._ToString(parser_info.regions__.is_deferred),
                 is_exceptional_region=self._ToString(parser_info.regions__.is_exceptional),
                 is_static_region=self._ToString(parser_info.regions__.is_static),
+                resets_hierarchy_region=self._ToString(parser_info.regions__.resets_hierarchy),
                 parent_class_capabilities=parent_class_capabilities,
                 visibility=self._ToString(parser_info.visibility),
                 mutability=self._ToString(parser_info.mutability_modifier),
@@ -345,6 +347,7 @@ class StatementsMixin(BaseMixin):
                 is_deferred=self._ToString(parser_info.is_deferred),
                 is_exceptional=self._ToString(parser_info.is_exceptional),
                 is_static=self._ToString(parser_info.is_static),
+                resets_hierarchy=self._ToString(parser_info.resets_hierarchy),
             ),
         )
 

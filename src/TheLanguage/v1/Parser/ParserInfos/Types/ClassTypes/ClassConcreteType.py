@@ -127,6 +127,48 @@ InvalidMutableMethodError                   = CreateError(
     class_region=TranslationUnitRegion,
 )
 
+FinalMethodOverrideError                    = CreateError(
+    "The method '{name}' is marked as final and cannot be overridden",
+    name=str,
+    base_region=TranslationUnitRegion,
+)
+
+OverlappedVirtualRootMethodError            = CreateError(
+    "The method '{name}' has overridden an existing method",
+    name=str,
+    base_region=TranslationUnitRegion,
+)
+
+OverlappedWithStaticMethodError             = CreateError(
+    "The static method '{name}' has overridden a non-static method",
+    name=str,
+    base_region=TranslationUnitRegion,
+)
+
+OverlappedWithNonStaticMethodError          = CreateError(
+    "The non-static method '{name}' has overridden a static method",
+    name=str,
+    base_region=TranslationUnitRegion,
+)
+
+RootOverlappedHierarchyMethodError          = CreateError(
+    "The root method '{name}' has overridden a hierarchy method; did you mean 'override'?",
+    name=str,
+    base_region=TranslationUnitRegion,
+)
+
+OverlappedNonHierararchyMethodError         = CreateError(
+    "The hierarchy method '{name}' is attempting to override a non-hierarchy method",
+    name=str,
+    base_region=TranslationUnitRegion,
+)
+
+OverlappedHierarchyMethodError              = CreateError(
+    "The non-hierarchy method '{name}' is attempting to override a hierarchy method",
+    name=str,
+    base_region=TranslationUnitRegion,
+)
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -143,8 +185,9 @@ class ClassConcreteType(ConcreteType):
     def __init__(
         self,
         type_resolver: TypeResolver,
-        resolved_template_arguments_id: Any,
         parser_info: ClassStatementParserInfo,
+        expression_parser_info: FuncOrTypeExpressionParserInfo,
+        resolved_template_arguments_id: Any,
     ):
         super(ClassConcreteType, self).__init__(
             parser_info,
@@ -156,6 +199,7 @@ class ClassConcreteType(ConcreteType):
         )
 
         self._type_resolver                             = type_resolver
+        self._expression_parser_info                    = expression_parser_info if self.is_default_initializable else None
         self._resolved_template_arguments_id            = resolved_template_arguments_id
 
         errors: List[Error] = []
@@ -447,17 +491,19 @@ class ClassConcreteType(ConcreteType):
         self,
         other: ConcreteType,
     ) -> bool:
-        return (
-            isinstance(other, ClassConcreteType)
-            and (
-                self.parser_info is other.parser_info
+        if other is self:
+            return True
 
-                # Handle the corner case where this is a fundamental type and we are in the process
-                # of compiling fundamental types.
-                or self.parser_info.unique_id__ == other.parser_info.unique_id__
-            )
-            and self._resolved_template_arguments_id == other._resolved_template_arguments_id  # pylint: disable=unused-argument
-        )
+        # Handle the corner case where this is a fundamental type and we are in the process
+        # of compiling fundamental types.
+        if (
+            isinstance(other, ClassConcreteType)
+            and self.parser_info.unique_id__ == other.parser_info.unique_id__
+            and self._resolved_template_arguments_id == other._resolved_template_arguments_id  # pylint: disable=protected-access
+        ):
+            return True
+
+        return False
 
     # ----------------------------------------------------------------------
     @Interface.override
@@ -693,7 +739,8 @@ class ClassConcreteType(ConcreteType):
     # ----------------------------------------------------------------------
     @Interface.override
     def _CreateDefaultConstrainedTypeImpl(self) -> ConstrainedType:
-        pass # BugBug
+        assert self._expression_parser_info is not None
+        return self._CreateConstrainedTypeImpl(self._expression_parser_info)
 
     # ----------------------------------------------------------------------
     def _DestroyTemporaryFinalizationAttributes(self):
@@ -795,6 +842,8 @@ class _MethodOrganizer(object):
     ):
         self._using_statements              = using_statements
 
+        self._errors: List[Error]           = []
+
         self._is_complete                   = False
 
         self._has_abstract_methods          = False
@@ -803,8 +852,6 @@ class _MethodOrganizer(object):
         self._standard_method_lookup: Dict[str, List[_MethodOrganizer._LookupInfo[ConcreteType]]]   = {}
         self._template_method_lookup: Dict[str, List[_MethodOrganizer._LookupInfo[GenericType]]]    = {}
 
-        if self._using_statements:
-            raise NotImplementedError("Using statements are not implemented yet")
 
     # ----------------------------------------------------------------------
     @property
@@ -838,8 +885,6 @@ class _MethodOrganizer(object):
         List[Dependency[GenericType]],
         List[Dependency[GenericType]],
     ]:
-        errors: List[Error] = []
-
         # Identify methods marked as override but without anything to override
         for lookup_infos in itertools.chain(
             self._standard_method_lookup.values(),
@@ -850,17 +895,22 @@ class _MethodOrganizer(object):
                     lookup_info.method_type.parser_info.method_hierarchy_modifier == MethodHierarchyModifier.override
                     and lookup_info.was_matched is False
                 ):
-                    errors.append(
+                    self._errors.append(
                         InvalidOverrideDecorationError.Create(
                             region=lookup_info.method_type.parser_info.regions__.method_hierarchy_modifier,
                         ),
                     )
 
-        if errors:
-            raise ErrorException(*errors)
+        if self._errors:
+            raise ErrorException(*self._errors)
 
-        # BugBug: Group and use the using statements
+        # Group the methods using the using statements
+        if self._using_statements:
+            raise NotImplementedError("Using statements are not implemented yet")
 
+        # BugBug: Do this
+
+        # Check for final errors
         for dependency in itertools.chain(local, augmented, inherited):
             generic_type = dependency.ResolveDependencies()[1]
 
@@ -916,15 +966,86 @@ class _MethodOrganizer(object):
 
         for lookup_info_index, lookup_info in enumerate(lookup_infos):
             if concrete_type.IsMatch(lookup_info.method_type):
-                # BugBug: Errors if necessary
-                #
-                #   Base is final
-                #   Derived is abstract
-                #   Derived is poly, base is not
-                #   Base is poly, derived is not
-                #   Derived is virtual (should be override)
+                # Ensure that the hierarchy modifiers for both methods are valid
+                assert isinstance(lookup_info.method_type.parser_info, FuncDefinitionStatementParserInfo), lookup_info.method_type.parser_info
+                derived_parser_info = lookup_info.method_type.parser_info
+
+                if derived_parser_info.resets_hierarchy:
+                    assert isinstance(concrete_type.parser_info, FuncDefinitionStatementParserInfo), concrete_type.parser_info
+                    base_parser_info = concrete_type.parser_info
+
+                    if (
+                        derived_parser_info.method_hierarchy_modifier is not None
+                        or base_parser_info.method_hierarchy_modifier is not None
+                    ):
+                        if derived_parser_info.method_hierarchy_modifier is None:
+                            self._errors.append(
+                                OverlappedWithStaticMethodError.Create(
+                                    region=derived_parser_info.regions__.self__,
+                                    name=derived_parser_info.name,
+                                    base_region=base_parser_info.regions__.method_hierarchy_modifier,
+                                ),
+                            )
+                        elif base_parser_info.method_hierarchy_modifier is None:
+                            self._errors.append(
+                                OverlappedWithNonStaticMethodError.Create(
+                                    region=derived_parser_info.regions__.method_hierarchy_modifier,
+                                    name=derived_parser_info.name,
+                                    base_region=base_parser_info.regions__.self__,
+                                ),
+                            )
+                        elif base_parser_info.method_hierarchy_modifier == MethodHierarchyModifier.final:
+                            self._errors.append(
+                                FinalMethodOverrideError.Create(
+                                    region=derived_parser_info.regions__.self__,
+                                    name=derived_parser_info.name,
+                                    base_region=base_parser_info.regions__.method_hierarchy_modifier,
+                                ),
+                            )
+                        elif (
+                            derived_parser_info.method_hierarchy_modifier.IsVirtualRoot()
+                            and base_parser_info.method_hierarchy_modifier.IsHierarchy()
+                        ):
+                            self._errors.append(
+                                RootOverlappedHierarchyMethodError.Create(
+                                    region=derived_parser_info.regions__.method_hierarchy_modifier,
+                                    name=derived_parser_info.name,
+                                    base_region=base_parser_info.regions__.method_hierarchy_modifier,
+                                ),
+                            )
+                        elif derived_parser_info.method_hierarchy_modifier.IsVirtualRoot():
+                            self._errors.append(
+                                OverlappedVirtualRootMethodError.Create(
+                                    region=derived_parser_info.regions__.method_hierarchy_modifier,
+                                    name=derived_parser_info.name,
+                                    base_region=base_parser_info.regions__.self__,
+                                ),
+                            )
+                        elif (
+                            derived_parser_info.method_hierarchy_modifier.IsHierarchy()
+                            and not base_parser_info.method_hierarchy_modifier.IsHierarchy()
+                        ):
+                            self._errors.append(
+                                OverlappedNonHierararchyMethodError.Create(
+                                    region=derived_parser_info.regions__.method_hierarchy_modifier,
+                                    name=derived_parser_info.name,
+                                    base_region=base_parser_info.regions__.method_hierarchy_modifier,
+                                ),
+                            )
+                        elif (
+                            not derived_parser_info.method_hierarchy_modifier.IsHierarchy()
+                            and base_parser_info.method_hierarchy_modifier.IsHierarchy()
+                        ):
+                            self._errors.append(
+                                OverlappedHierarchyMethodError.Create(
+                                    region=derived_parser_info.regions__.self__,
+                                    name=derived_parser_info.name,
+                                    base_region=base_parser_info.regions__.method_hierarchy_modifier,
+                                ),
+                            )
 
                 lookup_info.was_matched = True
+
                 return concrete_type.parser_info.id, lookup_info_index
 
         lookup_infos.append(_MethodOrganizer._LookupInfo(concrete_type))
