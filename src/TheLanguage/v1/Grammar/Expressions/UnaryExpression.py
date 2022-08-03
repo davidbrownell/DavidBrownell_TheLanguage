@@ -59,6 +59,8 @@ class UnaryExpression(GrammarPhrase):
         "+": OperatorType.Positive,
         "-": OperatorType.Negative,
 
+        "~": OperatorType.Bitflip,
+
         "not": OperatorType.Not,
     }
 

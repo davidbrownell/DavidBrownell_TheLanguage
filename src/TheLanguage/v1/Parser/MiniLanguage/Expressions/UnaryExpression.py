@@ -45,7 +45,10 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
+    # Make sure to update `../../../../Grammar/PrecedenceFunc.py` when values are added.
     Not                                     = "not"
+
+    Bitflip                                 = "~"
 
     Positive                                = "+"
     Negative                                = "-"
@@ -54,6 +57,12 @@ class OperatorType(Enum):
 # ----------------------------------------------------------------------
 IntegerOrNumberRequiredError                = CreateError(
     "The operator '{operator}' can only be applied to integers or numbers; '{type}' was encountered",
+    operator=str,
+    type=str,
+)
+
+IntegerRequiredError                        = CreateError(
+    "The operator '{operator}' can only be applied to integers; '{type}' was encountered",
     operator=str,
     type=str,
 )
@@ -73,6 +82,8 @@ class UnaryExpression(Expression):
         if self.operator == OperatorType.Not:
             eval_type_impl = self._NotEvalTypeImpl
             eval_impl = self._NotEvalImpl
+        elif self.operator == OperatorType.Bitflip:
+            eval_type_impl, eval_impl = self._IntegerEvalImplFactory(lambda value: ~value)
         elif self.operator == OperatorType.Positive:
             eval_type_impl, eval_impl = self._IntegerOrNumberEvalImplFactory(lambda value: +value)
         elif self.operator == OperatorType.Negative:
@@ -149,6 +160,48 @@ class UnaryExpression(Expression):
             if not isinstance(result.type, (IntegerType, NumberType)):
                 raise ErrorException(
                     IntegerOrNumberRequiredError.Create(
+                        region=self.expression_region,
+                        operator=self.operator.value,
+                        type=result.type.name,
+                    ),
+                )
+
+            return Expression.EvalResult(eval_func(result.value), result.type, None)
+
+        # ----------------------------------------------------------------------
+
+        return (
+            types.MethodType(EvalType, self),
+            types.MethodType(Eval, self),
+        )
+
+    # ----------------------------------------------------------------------
+    def _IntegerEvalImplFactory(
+        self,
+        eval_func: Callable[[Any], Any],
+    ):
+        # ----------------------------------------------------------------------
+        def EvalType(self):
+            expression_type = self.expression.EvalType()
+
+            if not isinstance(expression_type, IntegerType):
+                raise ErrorException(
+                    IntegerRequiredError.Create(
+                        region=self.expression_region,
+                        operator=self.operator.value,
+                        type=expression_type.name,
+                    ),
+                )
+
+            return expression_type
+
+        # ----------------------------------------------------------------------
+        def Eval(self, args, type_overrides):
+            result = self.expression.Eval(args, type_overrides)
+
+            if not isinstance(result.type, IntegerType):
+                raise ErrorException(
+                    IntegerRequiredError.Create(
                         region=self.expression_region,
                         operator=self.operator.value,
                         type=result.type.name,

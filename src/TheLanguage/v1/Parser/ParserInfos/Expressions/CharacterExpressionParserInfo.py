@@ -17,11 +17,12 @@
 
 import os
 
-from typing import List, Optional
+from typing import Any, Tuple
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,12 +32,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, TranslationUnitRegion
+    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType
+    from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class CharacterExpressionParserInfo(ExpressionParserInfo):
+class CharacterExpressionParserInfo(
+    SimpleExpressionTrait,
+    ExpressionParserInfo,
+):
     # ----------------------------------------------------------------------
     value: int
 
@@ -44,21 +49,33 @@ class CharacterExpressionParserInfo(ExpressionParserInfo):
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[TranslationUnitRegion]],
         *args,
         **kwargs,
     ):
         return cls(
             ParserInfoType.Unknown,         # type: ignore
-            regions,                        # type: ignore
             *args,
             **kwargs,
         )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(CharacterExpressionParserInfo, self).__post_init__(
+        ExpressionParserInfo.__post_init__(
+            self,
             *args,
-            **kwargs,
-            regionless_attributes=["value", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "value",
+                    ],
+                },
+            },
         )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        return (self.value, )

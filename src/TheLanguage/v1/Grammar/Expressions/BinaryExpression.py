@@ -62,7 +62,7 @@ class BinaryExpression(GrammarPhrase):
         "*": OperatorType.Multiply,
         "/": OperatorType.Divide,
         "//": OperatorType.DivideFloor,
-        "%": OperatorType.Modulus,
+        "%": OperatorType.Modulo,
         "**": OperatorType.Power,
 
         "+": OperatorType.Add,
@@ -90,6 +90,10 @@ class BinaryExpression(GrammarPhrase):
 
         "or": OperatorType.LogicalOr,
 
+        "=": OperatorType.Assign,
+
+        "in": OperatorType.In,
+        "not in": OperatorType.NotIn,
     }
 
     assert len(OPERATOR_MAP) == len(OperatorType), (len(OPERATOR_MAP), len(OperatorType))

@@ -19,7 +19,7 @@ import itertools
 import os
 
 from enum import auto, Enum
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from dataclasses import dataclass, field, InitVar
 
@@ -35,13 +35,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
-        NewNamespaceScopedStatementTrait,
         ParserInfo,
         ParserInfoType,
         ScopeFlag,
         StatementParserInfo,
         TranslationUnitRegion,
     )
+
+    from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
+    from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
 
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
@@ -50,9 +52,11 @@ with InitRelativeImports():
         FuncParameterParserInfo,            # Convenience import
     )
 
-    from ..Common.MethodModifier import MethodModifier
+    from ..Common.FunctionModifier import FunctionModifier
+    from ..Common.MethodHierarchyModifier import MethodHierarchyModifier
 
-    from ..Common.MutabilityModifier import MutabilityModifier
+    from ..Common.MutabilityModifier import MutabilityModifier, InvalidMutableMutabilityModifierError
+    from ..Common.TemplateArgumentsParserInfo import TemplateArgumentsParserInfo
 
     from ..Common.TemplateParametersParserInfo import (  # pylint: disable=unused-import
         TemplateDecoratorParameterParserInfo,           # Convenience import
@@ -93,6 +97,10 @@ class OperatorType(Enum):
     Iter                        = auto()  #                                                     N/A                             No              <visibility> Iterator<type> __Iter__() <ref|val>
     Cast                        = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __Cast?__<OtherT>() TODO: This needs some work!
 
+    Assign                      = auto()  #                                                     Assign                          Yes             <visibility> None __Assign?__<ValueT>(ValueT val value) mutable # TODO: This needs some work!
+    # TODO: Contains
+    # TODO: NotContains
+
     Negative                    = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __Negative?__() immutable
     Positive                    = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __Positive?__() immutable
     BitFlip                     = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitFlip?__() immutable
@@ -117,11 +125,11 @@ class OperatorType(Enum):
     Equal                       = auto()  #                                                     Result based on Comapre         No              <visibility> Boolean __Equal__(<type> immutable value) immutable
     NotEqual                    = auto()  #                                                     Result based on Comapre         No              <visibility> Boolean __NotEqual__(<type> immutable value) immutable
 
-    BitAnd                      = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitAnd?__(<type> immutable value) immutable
+    BitwiseAnd                  = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitAnd?__(<type> immutable value) immutable
 
-    BitXor                      = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitXor?__(<type> immutable value) immutable
+    BitwiseXor                  = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitXor?__(<type> immutable value) immutable
 
-    BitOr                       = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitOr?__(<type> immutable value) immutable
+    BitwiseOr                   = auto()  #                                                     N/A                             Yes             <visibility> <return_type> __BitOr?__(<type> immutable value) immutable
 
     Contains                    = auto()  #                                                     N/A                             No              <visibility> Boolean __Contains__(<type> immutable value) immutable
     NotContains                 = auto()  #                                                     N/A                             No              <visibility> Boolean __NotContains__(<type> immutable value) immutable
@@ -146,11 +154,11 @@ class OperatorType(Enum):
     BitShiftLeftInplace         = auto()  #                                                     N/A                             Yes             <visibility> None __BitShiftLeftInplace?__(<type> immutable value) mutable
     BitShiftRightInplace        = auto()  #                                                     N/A                             Yes             <visibility> None __BitShiftRightInplace?__(<type> immutable value) mutable
 
-    BitAndInplace               = auto()  #                                                     N/A                             Yes             <visibility> None __BitAndInplace?__(<type> immutable value) mutable
+    BitwiseAndInplace           = auto()  #                                                     N/A                             Yes             <visibility> None __BitAndInplace?__(<type> immutable value) mutable
 
-    BitXorInplace               = auto()  #                                                     N/A                             Yes             <visibility> None __BitXorInplace?__(<type> immutable value) mutable
+    BitwiseXorInplace           = auto()  #                                                     N/A                             Yes             <visibility> None __BitXorInplace?__(<type> immutable value) mutable
 
-    BitOrInplace                = auto()  #                                                     N/A                             Yes             <visibility> None __BitOrInplace?__(<type> immutable value) mutable
+    BitwiseOrInplace            = auto()  #                                                     N/A                             Yes             <visibility> None __BitOrInplace?__(<type> immutable value) mutable
 
 
 # ----------------------------------------------------------------------
@@ -158,7 +166,7 @@ InvalidFunctionMutabilityError              = CreateError(
     "Mutability modifiers are not valid for functions",
 )
 
-InvalidFunctionMethodModifierError          = CreateError(
+InvalidFunctionMethodHierarchyModifierError = CreateError(
     "Method modifiers are not valid for functions",
 )
 
@@ -192,11 +200,11 @@ InvalidMethodParameterNameError             = CreateError(
     name=str,
 )
 
-InvalidMethodModifierError                  = CreateError(
+InvalidMethodHierarchyModifierError         = CreateError(
     "'{modifier_str}' is not a valid modifier for '{type}' types; valid modifiers are {valid_modifiers_str}",
     type=str,
-    modifier=MethodModifier,
-    valid_modifiers=List[MethodModifier],
+    modifier=MethodHierarchyModifier,
+    valid_modifiers=List[MethodHierarchyModifier],
     modifier_str=str,
     valid_modifiers_str=str,
 )
@@ -218,10 +226,6 @@ InvalidVisibilityError                      = CreateError(
     valid_visibilities_str=str,
 )
 
-MutabilityRequiredError                     = CreateError(
-    "A mutability modifier is required",
-)
-
 StatementsRequiredError                     = CreateError(
     "{type} statements are required",
 )
@@ -230,39 +234,40 @@ StatementsRequiredError                     = CreateError(
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class FuncDefinitionStatementParserInfo(
+    TemplatedStatementTrait,
     NewNamespaceScopedStatementTrait,
     StatementParserInfo,
 ):
     """Function or method definition"""
 
     # ----------------------------------------------------------------------
+    id: Tuple[Any, ...]                     = field(init=False)
+
     parent_class_capabilities: Optional[ClassCapabilities]
     operator_type: Optional[OperatorType]
 
+    function_modifier_param: InitVar[Optional[FunctionModifier]]
+    function_modifier: FunctionModifier     = field(init=False)
+
     parameters: Union[bool, FuncParametersParserInfo]
 
-    mutability_param: InitVar[Optional[MutabilityModifier]]
-    mutability: Optional[MutabilityModifier]            = field(init=False)
+    mutability_modifier_param: InitVar[Optional[MutabilityModifier]]
+    mutability_modifier: Optional[MutabilityModifier]   = field(init=False)
 
-    method_modifier_param: InitVar[Optional[MethodModifier]]
-    method_modifier: Optional[MethodModifier]           = field(init=False)
+    method_hierarchy_modifier_param: InitVar[Optional[MethodHierarchyModifier]]
+    method_hierarchy_modifier: Optional[MethodHierarchyModifier]  = field(init=False)
 
     return_type: Optional[ExpressionParserInfo]
     documentation: Optional[str]
 
-    templates: Optional[TemplateParametersParserInfo]
-
     captured_variables: Optional[List[VariableExpressionParserInfo]]
-    statements: Optional[List[StatementParserInfo]]
 
     is_deferred: Optional[bool]
     is_exceptional: Optional[bool]
-    is_generator: Optional[bool]
-    is_reentrant: Optional[bool]
-    is_scoped: Optional[bool]
 
     # Valid only for methods
     is_static: Optional[bool]
+    resets_hierarchy: Optional[bool]
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -271,7 +276,10 @@ class FuncDefinitionStatementParserInfo(
         regions: List[Optional[TranslationUnitRegion]],
         name: Union[str, OperatorType],
         visibility_param: Optional[VisibilityModifier],
+        statements: Optional[List[StatementParserInfo]],
+        templates_param: Optional[TemplateParametersParserInfo],
         parent_class_capabilities: Optional[ClassCapabilities],
+        function_modifier_param: Optional[FunctionModifier],
         parameters: Union[bool, FuncParametersParserInfo],
         *args,
         **kwargs,
@@ -282,14 +290,16 @@ class FuncDefinitionStatementParserInfo(
             parser_info_type = parameters.parser_info_type__
 
         return cls(  # pylint: disable=too-many-function-args
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             parser_info_type,               # type: ignore
             regions,                        # type: ignore
             str(name),
             visibility_param,               # type: ignore
+            statements,                     # type: ignore
+            templates_param,                # type: ignore
             parent_class_capabilities,
             name if isinstance(name, OperatorType) else None,
-            parameters,
+            function_modifier_param,        # type: ignore
+            parameters,                     # type: ignore
             *args,
             **kwargs,
         )
@@ -300,36 +310,47 @@ class FuncDefinitionStatementParserInfo(
         parser_info_type,
         regions,
         visibility_param,
-        mutability_param,
-        method_modifier_param,
+        templates_param,
+        function_modifier_param,
+        mutability_modifier_param,
+        method_hierarchy_modifier_param,
     ):
-        self._InitTraits(
-            allow_duplicate_names=False,
-            allow_name_to_be_duplicated=True,
-            name_is_ordered=False,
-        )
-
         StatementParserInfo.__post_init__(
             self,
             parser_info_type,
             regions,
-            regionless_attributes=[
-                "parent_class_capabilities",
-                "operator_type",
-                "return_type",
-                "templates",
-            ] + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
-            validate=False,
             **{
+                **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
                 **{
+                    "regionless_attributes": [
+                        "id",
+                        "parent_class_capabilities",
+                        "operator_type",
+                        "return_type",
+                        "templates",
+                    ]
+                        + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
+                        + TemplatedStatementTrait.RegionlessAttributesArgs()
+                    ,
                     "parent_class_capabilities": lambda value: None if value is None else value.name,
                     "operator_type": None,
+                    "unique_id": None,
+                    "finalize": False,
                 },
-                **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
         )
 
+        self._InitTraits(
+            allow_duplicate_names=False,
+            allow_name_to_be_duplicated=True,
+        )
+
         # Set defaults
+        if function_modifier_param is None:
+            function_modifier_param = FunctionModifier.standard
+            object.__setattr__(self.regions__, "function_modifier", self.regions__.self__)
+
         if self.parent_class_capabilities is None:
             # We are looking at a function
             if visibility_param is None:
@@ -343,22 +364,37 @@ class FuncDefinitionStatementParserInfo(
                 visibility_param = self.parent_class_capabilities.default_method_visibility
                 object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
-            if not self.is_static and mutability_param is None and self.parent_class_capabilities.default_method_mutability is not None:
-                mutability_param = self.parent_class_capabilities.default_method_mutability
-                object.__setattr__(self.regions__, "mutability", self.regions__.self__)
+            if not self.is_static and mutability_modifier_param is None and self.parent_class_capabilities.default_method_mutability is not None:
+                mutability_modifier_param = self.parent_class_capabilities.default_method_mutability
+                object.__setattr__(self.regions__, "mutability_modifier", self.regions__.self__)
 
-            if method_modifier_param is None and self.parent_class_capabilities.default_method_modifier is not None:
-                method_modifier_param = self.parent_class_capabilities.default_method_modifier
-                object.__setattr__(self.regions__, "method_modifier", self.regions__.self__)
+            if method_hierarchy_modifier_param is None and self.parent_class_capabilities.default_method_hierarchy_modifier is not None:
+                method_hierarchy_modifier_param = self.parent_class_capabilities.default_method_hierarchy_modifier
+                object.__setattr__(self.regions__, "method_hierarchy_modifier", self.regions__.self__)
 
             desc = "{} methods".format(self.parent_class_capabilities.name)
 
         NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
+        TemplatedStatementTrait.__post_init__(self, templates_param)
 
-        object.__setattr__(self, "mutability", mutability_param)
-        object.__setattr__(self, "method_modifier", method_modifier_param)
+        object.__setattr__(self, "function_modifier", function_modifier_param)
+        object.__setattr__(self, "mutability_modifier", mutability_modifier_param)
+        object.__setattr__(self, "method_hierarchy_modifier", method_hierarchy_modifier_param)
 
-        self.ValidateRegions()
+        object.__setattr__(
+            self,
+            "id",
+            (
+                self.name,
+                self.operator_type,
+                self.function_modifier,
+                self.mutability_modifier,
+                self.is_exceptional,
+                self.is_static,
+            ),
+        )
+
+        self._Finalize()
 
         # Validate
         errors: List[Error] = []
@@ -371,17 +407,17 @@ class FuncDefinitionStatementParserInfo(
                     ),
                 )
 
-            if self.mutability is not None:
+            if self.mutability_modifier is not None:
                 errors.append(
                     InvalidFunctionMutabilityError.Create(
-                        region=self.regions__.mutability,
+                        region=self.regions__.mutability_modifier,
                     ),
                 )
 
-            if self.method_modifier is not None:
+            if self.method_hierarchy_modifier is not None:
                 errors.append(
-                    InvalidFunctionMethodModifierError.Create(
-                        region=self.regions__.method_modifier,
+                    InvalidFunctionMethodHierarchyModifierError.Create(
+                        region=self.regions__.method_hierarchy_modifier,
                     ),
                 )
 
@@ -410,19 +446,21 @@ class FuncDefinitionStatementParserInfo(
                 )
 
             if self.is_static:
-                if self.mutability is not None:
+                if self.mutability_modifier is not None:
                     errors.append(
                         InvalidStaticMethodMutabilityError.Create(
-                            region=self.regions__.mutability,
+                            region=self.regions__.mutability_modifier,
                         ),
                     )
             else:
-                if self.mutability is None:
-                    errors.append(
-                        MutabilityRequiredError.Create(
-                            region=self.regions__.self__,
-                        ),
+                try:
+                    MutabilityModifier.Validate(
+                        self,
+                        ParserInfoType.Standard,
+                        is_instantiated_type=True,
                     )
+                except ErrorException as ex:
+                    errors += ex.errors
 
                 # 'this' and 'self' can't be used as parameter names
                 if isinstance(self.parameters, FuncParametersParserInfo):
@@ -439,15 +477,15 @@ class FuncDefinitionStatementParserInfo(
                                 ),
                             )
 
-            assert self.method_modifier is not None
+            assert self.method_hierarchy_modifier is not None
 
-            if self.method_modifier == MethodModifier.abstract and self.statements:
+            if self.method_hierarchy_modifier == MethodHierarchyModifier.abstract and self.statements:
                 errors.append(
                     InvalidMethodAbstractStatementsError.Create(
                         region=self.regions__.statements,
                     ),
                 )
-            elif self.method_modifier != MethodModifier.abstract and not self.is_deferred and not self.statements:
+            elif self.method_hierarchy_modifier != MethodHierarchyModifier.abstract and not self.is_deferred and not self.statements:
                 errors.append(
                     InvalidMethodStatementsRequiredError.Create(
                         region=self.regions__.self__,
@@ -466,12 +504,29 @@ class FuncDefinitionStatementParserInfo(
 
         if self.return_type is not None:
             try:
-                self.return_type.ValidateAsType(self.parser_info_type__)
+                self.return_type.InitializeAsType(self.parser_info_type__)
             except ErrorException as ex:
                 errors += ex.errors
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.TypeCustomization: ScopeFlag.Class,
+            ParserInfoType.Standard : ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+        }
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(
+        scope_flag: ScopeFlag,
+    ) -> bool:
+        return bool(scope_flag & ScopeFlag.Function)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -492,6 +547,10 @@ class FuncDefinitionStatementParserInfo(
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
-        if self.statements:
-            yield from self.statements  # type: ignore
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        assert self.return_type is None
+        assert self.templates is None
+        assert self.captured_variables is None
+        assert isinstance(self.parameters, bool)
+
+        return ()

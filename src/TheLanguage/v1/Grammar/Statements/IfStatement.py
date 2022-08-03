@@ -132,9 +132,9 @@ class IfStatement(GrammarPhrase):
 
                 clauses.append(
                     IfStatementClauseParserInfo.Create(
+                        statements_info,
                         CreateRegions(clause_node, statements_node, docstring_node),
                         expression_info,
-                        statements_info,
                         docstring_info,
                     ),
                 )
@@ -156,8 +156,8 @@ class IfStatement(GrammarPhrase):
                     docstring_node, docstring_info = docstring_info
 
                 else_clause_info = IfStatementElseClauseParserInfo.Create(
-                    CreateRegions(else_clause_node, statements_node, docstring_node),
                     statements_info,
+                    CreateRegions(else_clause_node, statements_node, docstring_node),
                     docstring_info,
                 )
 

@@ -54,6 +54,7 @@ class ErrorExpression(Expression):
     # ----------------------------------------------------------------------
     def __post_init__(self):
         super(ErrorExpression, self).__init__()
+        assert self.messages
 
     # ----------------------------------------------------------------------
     @staticmethod
