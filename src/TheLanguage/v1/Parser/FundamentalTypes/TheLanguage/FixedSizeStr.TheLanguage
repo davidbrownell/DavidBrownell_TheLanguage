@@ -25,14 +25,14 @@ public mutable class FixedSizeStr {
     # BugBug (this is correct) implements public FixedSizeMutableStr { allow_empty! = allow_empty! }
     implements private FixedSizeMutableStr { allow_empty! = allow_empty! } # BugBug (this is incorrect for testing)
 :
-    [Deferred, Static] public override ThisType var __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
+    [Deferred, Static] public override ThisType new __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
     [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) immutable
     [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) var
 
     [Deferred] public override None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) immutable
     [Deferred] public override None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) var
 
-    [Deferred] public override ThisType var __Clone?__() immutable
+    [Deferred] public override ThisType new __Clone?__() immutable
 
     [Deferred] public override Bool val __ToBool__() immutable   # value != ""
     [Deferred] public override Str val __ToString?__() immutable
@@ -131,45 +131,45 @@ public mutable class FixedSizeStr {
         (PosInt | None) immutable begin_char_index = None,
     ) immutable
 
-    [Deferred] public override ThisType val ToLower?() immutable
-    [Deferred] public override ThisType val ToCamelCase?() immutable
-    [Deferred] public override ThisType val ToPascalCase?() immutable
-    [Deferred] public override ThisType val ToSnakeCase?() immutable
-    [Deferred] public override ThisType val ToTitle?() immutable
-    [Deferred] public override ThisType val ToUpper?() immutable
+    [Deferred] public override ThisType new ToLower?() immutable
+    [Deferred] public override ThisType new ToCamelCase?() immutable
+    [Deferred] public override ThisType new ToPascalCase?() immutable
+    [Deferred] public override ThisType new ToSnakeCase?() immutable
+    [Deferred] public override ThisType new ToTitle?() immutable
+    [Deferred] public override ThisType new ToUpper?() immutable
 
     [Deferred]
-    public override ThisType val Center?(
+    public override ThisType new Center?(
         NonZeroInt immutable length,
         Char immutable fill_char = ' ',
     ) immutable
 
     [Deferred]
-    public override ThisType val LeftJustify?(
+    public override ThisType new LeftJustify?(
         NonZeroInt immutable length,
         Char immutable fill_char = ' ',
     ) immutable
 
     [Deferred]
-    public override ThisType val RightJustify?(
+    public override ThisType new RightJustify?(
         NonZeroInt immutable length,
         Char immutable fill_char = ' ',
     ) immutable
 
     # TODO: Pass in variadic chars to strip
-    [Deferred] public override ThisType val LeftStrip?() immutable
-    [Deferred] public override ThisType val RightStrip?() immutable
-    [Deferred] public override ThisType val Strip?() immutable
+    [Deferred] public override ThisType new LeftStrip?() immutable
+    [Deferred] public override ThisType new RightStrip?() immutable
+    [Deferred] public override ThisType new Strip?() immutable
 
     [Deferred]
-    public override ThisType val Replace?(
+    public override ThisType new Replace?(
         Char immutable source,
         Char immutable dest,
         (NonZeroInt | None) immutable count = None,
     ) immutable
 
     [Deferred]
-    public override ThisType val Replace?(
+    public override ThisType new Replace?(
         NonEmptyStr immutable source,
         Str immutable dest,
         (NonZeroInt | None) immutable count = None,
@@ -182,13 +182,6 @@ public mutable class FixedSizeStr {
     # TODO: RightSplit
 
     # TODO: Range concept for __Iter?__
-
-    [Deferred] public override None ToLowerInplace?() var
-    [Deferred] public override None ToCamelCaseInplace?() var
-    [Deferred] public override None ToPascalCaseInplace?() var
-    [Deferred] public override None ToSnakeCaseInplace?() var
-    [Deferred] public override None ToTitleInplace?() var
-    [Deferred] public override None ToUpperInplace?() var
 
     # TODO: Pass in variadic chars to strip
     [Deferred] public override None LeftStripInplace?() var

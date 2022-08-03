@@ -69,7 +69,7 @@ class OutputExpression(Expression):
 
         output = ", ".join(outputs)
 
-        print("BugBug", output)
+        print("TODO", output)
 
         return Expression.EvalResult(None, NoneType(), None)
 

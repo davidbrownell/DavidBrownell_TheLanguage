@@ -72,7 +72,6 @@ public mutable concept MutableStr {
         Char immutable fill_char = ' ',
     ) var
 
-
     public None ReplaceInplace?(
         Char immutable source,
         Char immutable dest,

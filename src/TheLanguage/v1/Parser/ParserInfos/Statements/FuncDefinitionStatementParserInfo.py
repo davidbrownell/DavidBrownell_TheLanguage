@@ -241,6 +241,8 @@ class FuncDefinitionStatementParserInfo(
     """Function or method definition"""
 
     # ----------------------------------------------------------------------
+    id: Tuple[Any, ...]                     = field(init=False)
+
     parent_class_capabilities: Optional[ClassCapabilities]
     operator_type: Optional[OperatorType]
 
@@ -321,6 +323,7 @@ class FuncDefinitionStatementParserInfo(
                 **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
                 **{
                     "regionless_attributes": [
+                        "id",
                         "parent_class_capabilities",
                         "operator_type",
                         "return_type",
@@ -329,9 +332,10 @@ class FuncDefinitionStatementParserInfo(
                         + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
                         + TemplatedStatementTrait.RegionlessAttributesArgs()
                     ,
-                    "finalize": False,
                     "parent_class_capabilities": lambda value: None if value is None else value.name,
                     "operator_type": None,
+                    "unique_id": None,
+                    "finalize": False,
                 },
             },
         )
@@ -375,6 +379,19 @@ class FuncDefinitionStatementParserInfo(
         object.__setattr__(self, "function_modifier", function_modifier_param)
         object.__setattr__(self, "mutability_modifier", mutability_modifier_param)
         object.__setattr__(self, "method_hierarchy_modifier", method_hierarchy_modifier_param)
+
+        object.__setattr__(
+            self,
+            "id",
+            (
+                self.name,
+                self.operator_type,
+                self.function_modifier,
+                self.mutability_modifier,
+                self.is_exceptional,
+                self.is_static,
+            ),
+        )
 
         self._Finalize()
 
@@ -492,22 +509,6 @@ class FuncDefinitionStatementParserInfo(
 
         if errors:
             raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    def AreAttributesEqual(
-        self,
-        other: "FuncDefinitionStatementParserInfo",
-    ) -> bool:
-        return (
-            self.name == other.name
-            and self.operator_type == other.operator_type
-            and self.function_modifier == other.function_modifier
-            and self.mutability_modifier == other.mutability_modifier
-            and self.method_hierarchy_modifier == other.method_hierarchy_modifier
-            and self.is_deferred == other.is_deferred
-            and self.is_exceptional == other.is_exceptional
-            and self.is_static == other.is_static
-        )
 
     # ----------------------------------------------------------------------
     @staticmethod

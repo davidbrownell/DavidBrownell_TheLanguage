@@ -144,8 +144,6 @@ class PassTwoVisitor(object):
             # ----------------------------------------------------------------------
             RootFinalizePass1               = 0
             RootFinalizePass2               = auto()
-            RootFinalizePass3               = auto()
-            RootFinalizePass4               = auto()
             RootCreateConstrainedType       = auto()
 
         # ----------------------------------------------------------------------
@@ -193,8 +191,6 @@ class PassTwoVisitor(object):
 
                     postprocess_funcs[PostprocessStep.RootFinalizePass1.value].append(lambda: FinalizeImpl(ConcreteType.State.FinalizedPass1))
                     postprocess_funcs[PostprocessStep.RootFinalizePass2.value].append(lambda: FinalizeImpl(ConcreteType.State.FinalizedPass2))
-                    postprocess_funcs[PostprocessStep.RootFinalizePass3.value].append(lambda: FinalizeImpl(ConcreteType.State.FinalizedPass3))
-                    postprocess_funcs[PostprocessStep.RootFinalizePass4.value].append(lambda: FinalizeImpl(ConcreteType.State.FinalizedPass4))
 
                     if concrete_type.is_default_initializable:
                         # ----------------------------------------------------------------------

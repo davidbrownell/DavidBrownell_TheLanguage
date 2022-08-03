@@ -65,7 +65,7 @@ class ClassContent(Generic[ClassContentT]):
         local: List[Dependency[ClassContentT]],
         augmented: List[Dependency[ClassContentT]],
         inherited: List[Dependency[ClassContentT]],
-        get_key_func: Callable[[ClassContentT], Any],
+        get_key_func: Optional[Callable[[ClassContentT], Any]],
         postprocess_func: Optional[
             Callable[
                 [
@@ -81,13 +81,32 @@ class ClassContent(Generic[ClassContentT]):
             ]
         ]=None,
         *,
-        key_collisions_is_error: bool=False,
+        key_collision_is_error: bool=False,
     ):
-        lookup = set()
+        if get_key_func is None:
+            add_key_func = lambda *args: False
+        else:
+            lookup = set()
 
-        local = cls._FilterList(local, get_key_func, lookup, key_collisions_is_error=key_collisions_is_error)
-        augmented = cls._FilterList(augmented, get_key_func, lookup, key_collisions_is_error=key_collisions_is_error)
-        inherited = cls._FilterList(inherited, get_key_func, lookup, key_collisions_is_error=key_collisions_is_error)
+            # ----------------------------------------------------------------------
+            def AddKeyFunc(
+                content: ClassContentT,
+            ) -> bool:
+                key = get_key_func(content)
+
+                if key in lookup:
+                    return True
+
+                lookup.add(key)
+                return False
+
+            # ----------------------------------------------------------------------
+
+            add_key_func = AddKeyFunc
+
+        local = cls._FilterList(local, add_key_func, key_collision_is_error=key_collision_is_error)
+        augmented = cls._FilterList(augmented, add_key_func, key_collision_is_error=key_collision_is_error)
+        inherited = cls._FilterList(inherited, add_key_func, key_collision_is_error=key_collision_is_error)
 
         if postprocess_func:
             local, augmented, inherited = postprocess_func(local, augmented, inherited)
@@ -104,26 +123,21 @@ class ClassContent(Generic[ClassContentT]):
     @staticmethod
     def _FilterList(
         dependencies: List[Dependency[ClassContentT]],
-        get_key_func: Callable[[ClassContentT], Any],
-        lookup: Set[Any],
+        add_key_func: Callable[[ClassContentT], bool],
         *,
-        key_collisions_is_error: bool,
+        key_collision_is_error: bool,
     ) -> List[Dependency[ClassContentT]]:
         results: List[Dependency[ClassContentT]] = []
 
         for dependency in dependencies:
             resolved_info = dependency.ResolveDependencies()[1]
 
-            key = get_key_func(resolved_info)
-
-            if key in lookup:
-                if key_collisions_is_error:
+            if add_key_func(resolved_info):
+                if key_collision_is_error:
                     # TODO: Not sure how to format this error message
-                    raise Exception("Duplicate key: '{}'".format(key))
+                    raise Exception("Duplicate key")
 
                 continue
-
-            lookup.add(key)
 
             results.append(dependency)
 

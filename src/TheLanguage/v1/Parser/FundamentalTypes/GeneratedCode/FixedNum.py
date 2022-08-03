@@ -1153,7 +1153,7 @@ statement_000049 = SpecialMethodStatementParserInfo.Create(
 
 statement_000050 = SelfReferenceExpressionParserInfo.Create(
     regions=[tu_region_000066, tu_region_000067],
-    mutability_modifier=MutabilityModifier.var,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000051 = TemplateTypeParameterParserInfo.Create(
@@ -1390,7 +1390,7 @@ statement_000074 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000075 = SelfReferenceExpressionParserInfo.Create(
     regions=[tu_region_000124, tu_region_000125],
-    mutability_modifier=MutabilityModifier.var,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000076 = FuncDefinitionStatementParserInfo.Create(
@@ -1855,7 +1855,7 @@ statement_000117 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000118 = SelfReferenceExpressionParserInfo.Create(
     regions=[tu_region_000263, tu_region_000264],
-    mutability_modifier=MutabilityModifier.var,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000119 = FuncDefinitionStatementParserInfo.Create(
@@ -1879,7 +1879,7 @@ statement_000119 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000120 = SelfReferenceExpressionParserInfo.Create(
     regions=[tu_region_000272, tu_region_000273],
-    mutability_modifier=MutabilityModifier.var,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000121 = FuncDefinitionStatementParserInfo.Create(
@@ -1903,7 +1903,7 @@ statement_000121 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000122 = SelfReferenceExpressionParserInfo.Create(
     regions=[tu_region_000281, tu_region_000282],
-    mutability_modifier=MutabilityModifier.var,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000123 = FuncOrTypeExpressionParserInfo.Create(
@@ -1952,7 +1952,7 @@ statement_000126 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000127 = SelfReferenceExpressionParserInfo.Create(
     regions=[tu_region_000295, tu_region_000296],
-    mutability_modifier=MutabilityModifier.var,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000128 = FuncOrTypeExpressionParserInfo.Create(
@@ -2001,7 +2001,7 @@ statement_000131 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000132 = SelfReferenceExpressionParserInfo.Create(
     regions=[tu_region_000309, tu_region_000310],
-    mutability_modifier=MutabilityModifier.var,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000133 = FuncOrTypeExpressionParserInfo.Create(
@@ -2050,7 +2050,7 @@ statement_000136 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000137 = SelfReferenceExpressionParserInfo.Create(
     regions=[tu_region_000323, tu_region_000324],
-    mutability_modifier=MutabilityModifier.var,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000138 = FuncOrTypeExpressionParserInfo.Create(
@@ -2099,7 +2099,7 @@ statement_000141 = FuncDefinitionStatementParserInfo.Create(
 
 statement_000142 = SelfReferenceExpressionParserInfo.Create(
     regions=[tu_region_000337, tu_region_000338],
-    mutability_modifier=MutabilityModifier.var,
+    mutability_modifier=MutabilityModifier.new,
 )
 
 statement_000143 = FuncOrTypeExpressionParserInfo.Create(

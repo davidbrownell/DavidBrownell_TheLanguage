@@ -69,16 +69,21 @@ class TupleGenericType(GenericType):
     def CreateConcreteType(
         self,
         expression_parser_info: ExpressionParserInfo,
-    ) -> "TupleConcreteType":
+    ) -> ConcreteType:
         assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
-        assert isinstance(expression_parser_info, TupleExpressionParserInfo)
+        return self._CreateDefaultConcreteTypeImpl()
 
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _CreateDefaultConcreteTypeImpl(self) -> ConcreteType:
         concrete_types: List[ConcreteType] = []
         errors: List[Error] = []
 
         for generic_type, generic_parser_info in zip(
             self.generic_types,
-            expression_parser_info.types,
+            self.parser_info.types,
         ):
             try:
                 concrete_types.append(generic_type.CreateConcreteType(generic_parser_info))
@@ -89,13 +94,6 @@ class TupleGenericType(GenericType):
             raise ErrorException(*errors)
 
         return TupleConcreteType(self.parser_info, concrete_types)
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _CreateDefaultConcreteTypeImpl(self) -> ConcreteType:
-        return self.CreateConcreteType(self.parser_info)
 
 
 # ----------------------------------------------------------------------
@@ -124,6 +122,19 @@ class TupleConcreteType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def IsMatch(
+        self,
+        other: ConcreteType,
+    ) -> bool:
+        return (
+            isinstance(other, TupleConcreteType)
+            and len(self.concrete_types) == len(other.concrete_types)
+            and all(this.IsMatch(that) for this, that in zip(self.concrete_types, other.concrete_types))
+            and self.parser_info.mutability_modifier == other.parser_info.mutability_modifier
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def IsCovariant(
         self,
         other: ConcreteType,
@@ -149,26 +160,16 @@ class TupleConcreteType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _FinalizePass3Impl(self) -> None:
-        self._FinalizeImpl(lambda concrete_type: concrete_type.Finalize(ConcreteType.State.FinalizedPass3))
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _FinalizePass4Impl(self) -> None:
-        self._FinalizeImpl(lambda concrete_type: concrete_type.Finalize(ConcreteType.State.FinalizedPass4))
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     def _CreateConstrainedTypeImpl(
         self,
         expression_parser_info: ExpressionParserInfo,
-    ) -> "TupleConstrainedType":
+    ) -> ConstrainedType:
         assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
-        return TupleConstrainedType(self, self.concrete_types)
+        return self._CreateDefaultConstrainedTypeImpl()
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateDefaultConstrainedTypeImpl(self) -> "TupleConstrainedType":
+    def _CreateDefaultConstrainedTypeImpl(self) -> ConstrainedType:
         return self._CreateConstrainedTypeImpl(self.parser_info)
 
     # ----------------------------------------------------------------------

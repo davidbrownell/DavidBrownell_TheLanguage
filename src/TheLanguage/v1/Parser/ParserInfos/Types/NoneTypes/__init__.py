@@ -57,16 +57,16 @@ class NoneGenericType(GenericType):
     def CreateConcreteType(
         self,
         expression_parser_info: ExpressionParserInfo,
-    ) -> "NoneConcreteType":
+    ) -> ConcreteType:
         assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
-        return NoneConcreteType(self.parser_info)
+        return self._CreateDefaultConcreteTypeImpl()
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _CreateDefaultConcreteTypeImpl(self) -> ConcreteType:
-        return self.CreateConcreteType(self.parser_info)
+        return NoneConcreteType(self.parser_info)
 
 
 # ----------------------------------------------------------------------
@@ -88,10 +88,19 @@ class NoneConcreteType(ConcreteType):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def IsCovariant(
+    def IsMatch(
         other: ConcreteType,
     ) -> bool:
         return isinstance(other, NoneConcreteType)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.override
+    def IsCovariant(
+        cls,
+        other: ConcreteType,
+    ) -> bool:
+        return cls.IsMatch(other)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -109,29 +118,17 @@ class NoneConcreteType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _FinalizePass3Impl(self) -> None:
-        # Nothing to do here
-        pass
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _FinalizePass4Impl(self) -> None:
-        # Nothing to do here
-        pass
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     def _CreateConstrainedTypeImpl(
         self,
         expression_parser_info: ExpressionParserInfo,
-    ) -> "NoneConstrainedType":
+    ) -> ConstrainedType:
         assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
-        return NoneConstrainedType(self, None)
+        return self._CreateDefaultConstrainedTypeImpl()
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateDefaultConstrainedTypeImpl(self) -> "NoneConstrainedType":
-        return self._CreateConstrainedTypeImpl(self.parser_info)
+    def _CreateDefaultConstrainedTypeImpl(self) -> ConstrainedType:
+        return NoneConstrainedType(self, None)
 
 
 # ----------------------------------------------------------------------

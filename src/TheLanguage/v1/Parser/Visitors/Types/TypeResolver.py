@@ -58,7 +58,7 @@ with InitRelativeImports():
     from ...ParserInfos.Statements.StatementParserInfo import StatementParserInfo
     from ...ParserInfos.Statements.TypeAliasStatementParserInfo import TypeAliasStatementParserInfo
 
-    from ...ParserInfos.Types.ClassTypes.ConcreteClassType import ConcreteClassType
+    from ...ParserInfos.Types.ClassTypes.ClassConcreteType import ClassConcreteType
 
     from ...ParserInfos.Types.ConcreteType import ConcreteType
     from ...ParserInfos.Types.GenericType import GenericType
@@ -400,21 +400,21 @@ class TypeResolver(TypeResolverInterface):
                 and resolver._concrete_type is not None  # pylint: disable=protected-access
             ):
                 concrete_class = resolver._concrete_type  # pylint: disable=protected-access
-                assert isinstance(concrete_class, ConcreteClassType), concrete_class
+                assert isinstance(concrete_class, ClassConcreteType), concrete_class
 
                 for type_dependency in concrete_class.types.EnumContent():
-                    visibility, type_info = type_dependency.ResolveDependencies()
+                    visibility, generic_type = type_dependency.ResolveDependencies()
 
-                    if type_info.name == parser_info.value:
+                    if generic_type.parser_info.name == parser_info.value:
                         if visibility is None:
                             raise ErrorException(
                                 InvisibleNestedTypeError.Create(
                                     region=parser_info.regions__.self__,
-                                    type=type_info.name,
+                                    type=generic_type.parser_info.name,
                                 ),
                             )
 
-                        return type_info.generic_type
+                        return generic_type
 
             resolver = resolver.parent
 

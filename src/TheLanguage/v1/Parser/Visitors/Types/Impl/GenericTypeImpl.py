@@ -18,7 +18,7 @@
 import os
 import threading
 
-from typing import Dict, Generic, Optional, TypeVar, Union
+from typing import Any, Dict, Generic, Optional, TypeVar, Union
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -93,6 +93,7 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
         assert isinstance(self.parser_info, NamedTrait), self.parser_info
 
         # Resolve the template arguments to get the concrete cache key
+        cache_key: Any = None
         resolved_template_arguments: Optional[MatchTemplateCall.ResolvedArguments] = None
 
         if self.parser_info.templates:
@@ -105,8 +106,11 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
                 self._type_resolver,
             )
 
+            cache_id = resolved_template_arguments.cache_key
+
         elif expression_parser_info.templates:
             raise Exception("Error: Templates where none were expected")
+
 
         # ----------------------------------------------------------------------
         def CreateConcreteType() -> ConcreteType:
@@ -136,7 +140,7 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
                 self._type_resolver.root_type_resolvers,
             )
 
-            concrete_type = self._CreateConcreteType(type_resolver, expression_parser_info)
+            concrete_type = self._CreateConcreteType(type_resolver, cache_key)
 
             type_resolver.InitConcreteType(concrete_type)
 
@@ -147,7 +151,7 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
         return UpdateCacheImpl(
             self._concrete_cache_lock,
             self._concrete_cache,
-            resolved_template_arguments.cache_key if resolved_template_arguments is not None else None,
+            cache_key,
             CreateConcreteType,
         )
 
@@ -164,6 +168,6 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
     @Interface.abstractmethod
     def _CreateConcreteType(
         updated_resolver: TypeResolver,
-        expression_parser_info: ExpressionParserInfo,
+        resolved_template_arguments_id: Any,
     ) -> ConcreteType:
         raise Exception("Abstract method")  # pragma: no cover

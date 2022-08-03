@@ -65,6 +65,12 @@ class RootConcreteType(ConcreteType):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
+    def IsMatch(*args, **kwargs):
+        raise Exception("This should never be invoked for this type")
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
     def IsCovariant(*args, **kwargs):
         raise Exception("This should never be invoked for this type")
 
@@ -95,18 +101,6 @@ class RootConcreteType(ConcreteType):
     @staticmethod
     @Interface.override
     def _FinalizePass2Impl() -> None:
-        raise Exception("This should never be invoked for this type")
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def _FinalizePass3Impl() -> None:
-        raise Exception("This should never be invoked for this type")
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    @Interface.override
-    def _FinalizePass4Impl() -> None:
         raise Exception("This should never be invoked for this type")
 
     # ----------------------------------------------------------------------

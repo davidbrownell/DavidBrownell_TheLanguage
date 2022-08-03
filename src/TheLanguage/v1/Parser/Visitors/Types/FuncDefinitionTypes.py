@@ -17,6 +17,8 @@
 
 import os
 
+from typing import Any
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -31,32 +33,21 @@ with InitRelativeImports():
     from .TypeResolver import TypeResolver
     from .Impl.GenericTypeImpl import GenericTypeImpl
 
-    from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
-
     from ...ParserInfos.Statements.FuncDefinitionStatementParserInfo import FuncDefinitionStatementParserInfo
 
     from ...ParserInfos.Types.ConcreteType import ConcreteType
 
-    from ...ParserInfos.Types.FuncDefinitionTypes.ConcreteFuncDefinitionType import ConcreteFuncDefinitionType
+    from ...ParserInfos.Types.FuncDefinitionTypes.FuncDefinitionConcreteType import FuncDefinitionConcreteType
 
 
 # ----------------------------------------------------------------------
 class FuncDefinitionGenericType(GenericTypeImpl[FuncDefinitionStatementParserInfo]):
-    # BugBug: Add IsCovariant that matches the basics (name of func, func attributes, names of args)
-
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
     def _CreateConcreteType(
         updated_resolver: TypeResolver,
-        expression_parser_info: ExpressionParserInfo,  # pylint: disable=unused-argument
+        resolved_template_arguments_id: Any,
     ) -> ConcreteType:
         assert isinstance(updated_resolver.namespace.parser_info, FuncDefinitionStatementParserInfo), updated_resolver.namespace.parser_info
-        assert isinstance(expression_parser_info, FuncOrTypeExpressionParserInfo)
-
-        return ConcreteFuncDefinitionType(
-            updated_resolver,
-            updated_resolver.namespace.parser_info,
-            expression_parser_info,
-        )
+        return FuncDefinitionConcreteType(updated_resolver, updated_resolver.namespace.parser_info)

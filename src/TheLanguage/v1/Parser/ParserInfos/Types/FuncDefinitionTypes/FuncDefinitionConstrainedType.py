@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  ConstrainedFuncDefinitionType.py
+# |  FuncDefinitionConstrainedType.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2022-08-02 08:23:10
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""Contains the ConstrainedFuncDefinitionType object"""
+"""Contains the FuncDefinitionConstrainedType object"""
 
 import os
 
@@ -36,17 +36,17 @@ with InitRelativeImports():
     from ....Error import Error, ErrorException
 
     if TYPE_CHECKING:
-        from .ConcreteFuncDefinitionType import ConcreteFuncDefinitionType  # pylint: disable=unused-import
+        from .FuncDefinitionConcreteType import FuncDefinitionConcreteType  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
-class ConstrainedFuncDefinitionType(ConstrainedType):
+class FuncDefinitionConstrainedType(ConstrainedType):
     # ----------------------------------------------------------------------
     def __init__(
         self,
-        concrete_type: "ConcreteFuncDefinitionType",
+        concrete_type: "FuncDefinitionConcreteType",
     ):
-        super(ConstrainedFuncDefinitionType, self).__init__(concrete_type, None)
+        super(FuncDefinitionConstrainedType, self).__init__(concrete_type, None)
 
         errors: List[Error] = []
 

@@ -46,7 +46,7 @@ class SelfReferenceExpressionParserInfo(
     ExpressionParserInfo,
 ):
     # ----------------------------------------------------------------------
-    mutability_modifier: Optional[MutabilityModifier] = None
+    mutability_modifier: Optional[MutabilityModifier]   # TODO: Should always be 'new' if return value, 'immutable' if parameter (I think)
 
     # ----------------------------------------------------------------------
     @classmethod

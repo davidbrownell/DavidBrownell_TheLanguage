@@ -41,13 +41,13 @@ TEMPLATE> {
             or num_bytes! == 32
         )
 
-    [Deferred, Static] public override ThisType var __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
+    [Deferred, Static] public override ThisType new __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
     [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) immutable
     [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) var
 
     [Deferred] public override None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) immutable
 
-    [Deferred] public override ThisType var __Clone?__() immutable
+    [Deferred] public override ThisType new __Clone?__() immutable
 
     [Deferred] public override Bool val __ToBool__() immutable              # value != 0.0
     [Deferred] public override Str val __ToString?__() immutable
@@ -61,15 +61,15 @@ TEMPLATE> {
     [Deferred] public override Bool val __Greater__(Num immutable that) immutable
     [Deferred] public override Bool val __GreaterEqual__(Num immutable that) immutable
 
-    [Deferred] public override ThisType var __Negative?__() immutable
-    [Deferred] public override ThisType var __Positive?__() immutable
+    [Deferred] public override ThisType new __Negative?__() immutable
+    [Deferred] public override ThisType new __Positive?__() immutable
 
-    [Deferred] public override ThisType var __Divide?__(Num immutable divisor) immutable
-    [Deferred] public override ThisType var __Multiply?__(Num immutable multiplier) immutable
-    [Deferred] public override ThisType var __Power?__(Num immutable exponent) immutable
+    [Deferred] public override ThisType new __Divide?__(Num immutable divisor) immutable
+    [Deferred] public override ThisType new __Multiply?__(Num immutable multiplier) immutable
+    [Deferred] public override ThisType new __Power?__(Num immutable exponent) immutable
 
-    [Deferred] public override ThisType var __Add?__(Num immutable value) immutable
-    [Deferred] public override ThisType var __Subtract?__(Num immutable value) immutable
+    [Deferred] public override ThisType new __Add?__(Num immutable value) immutable
+    [Deferred] public override ThisType new __Subtract?__(Num immutable value) immutable
 
     [Deferred] public override None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) var
 

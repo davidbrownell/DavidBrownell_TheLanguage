@@ -20,17 +20,17 @@
 public immutable class None:
     [Deferred] public ArchInt val GetBytes() immutable
 
-    [Deferred, Static] public override ThisType var __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
-    [Deferred] public override None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) immutable
+    [Deferred, Static] public ThisType new __Deserialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive)
+    [Deferred] public None __Serialize?__<TEMPLATE ArchiveT TEMPLATE>(ArchiveT ref archive) immutable
 
-    [Deferred] public override None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) immutable
+    [Deferred] public None __Accept?__<TEMPLATE VisitorT TEMPLATE>(VisitorT ref visitor) immutable
 
-    [Deferred] public override ThisType var __Clone?__() immutable
+    [Deferred] public ThisType new __Clone?__() immutable
 
-    [Deferred] public override Bool val __ToBool__() immutable              # False
-    [Deferred] public override Str val __ToString?__() immutable
+    [Deferred] public Bool val __ToBool__() immutable              # False
+    [Deferred] public Str val __ToString?__() immutable
 
-    [Deferred, Static] public override CompareResult val __Compare__(ThisType immutable this, ThisType immutable that)
+    [Deferred, Static] public CompareResult val __Compare__(ThisType immutable this, ThisType immutable that)
 
-    [Deferred] public override Bool val __Equal__(None immutable that) immutable
-    [Deferred] public override Bool val __NotEqual__(None immutable that) immutable
+    [Deferred] public Bool val __Equal__(None immutable that) immutable
+    [Deferred] public Bool val __NotEqual__(None immutable that) immutable

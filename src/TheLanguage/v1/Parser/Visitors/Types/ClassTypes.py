@@ -17,6 +17,8 @@
 
 import os
 
+from typing import Any
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -31,14 +33,11 @@ with InitRelativeImports():
     from .TypeResolver import TypeResolver
     from .Impl.GenericTypeImpl import GenericTypeImpl
 
-    from ...ParserInfos.Expressions.ExpressionParserInfo import ExpressionParserInfo
-    from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
-
     from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
 
     from ...ParserInfos.Types.ConcreteType import ConcreteType
 
-    from ...ParserInfos.Types.ClassTypes.ConcreteClassType import ConcreteClassType
+    from ...ParserInfos.Types.ClassTypes.ClassConcreteType import ClassConcreteType
 
 
 # ----------------------------------------------------------------------
@@ -48,13 +47,12 @@ class ClassGenericType(GenericTypeImpl[ClassStatementParserInfo]):
     @Interface.override
     def _CreateConcreteType(
         updated_resolver: TypeResolver,
-        expression_parser_info: ExpressionParserInfo,  # pylint: disable=unused-argument
+        resolved_template_arguments_id: Any,
     ) -> ConcreteType:
         assert isinstance(updated_resolver.namespace.parser_info, ClassStatementParserInfo), updated_resolver.namespace.parser_info
-        assert isinstance(expression_parser_info, FuncOrTypeExpressionParserInfo), expression_parser_info
 
-        return ConcreteClassType(
+        return ClassConcreteType(
             updated_resolver,
+            resolved_template_arguments_id,
             updated_resolver.namespace.parser_info,
-            expression_parser_info,
         )

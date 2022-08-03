@@ -68,6 +68,8 @@ class ClassAttributeStatementParserInfo(
     no_serialize: Optional[bool]
     no_compare: Optional[bool]
 
+    # BugBug: If 'is_override', but be covariant
+
     # ----------------------------------------------------------------------
     @classmethod
     def Create(

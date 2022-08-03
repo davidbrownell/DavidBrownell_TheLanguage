@@ -59,14 +59,14 @@ class SelfReferenceGenericType(GenericType):
         expression_parser_info: ExpressionParserInfo,
     ) -> ConcreteType:
         assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
-        return SelfReferenceConcreteType(self.parser_info)
+        return self._CreateDefaultConcreteTypeImpl()
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
     def _CreateDefaultConcreteTypeImpl(self) -> ConcreteType:
-        return self.CreateConcreteType(self.parser_info)
+        return SelfReferenceConcreteType(self.parser_info)
 
 
 # ----------------------------------------------------------------------
@@ -87,10 +87,23 @@ class SelfReferenceConcreteType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
+    def IsMatch(
+        self,
+        other: ConcreteType,
+    ) -> bool:
+        # TODO: This needs work, as it should be able to differentiate between self references associated with different types
+        return (
+            isinstance(other, SelfReferenceConcreteType)
+            and self.parser_info.mutability_modifier == other.parser_info.mutability_modifier
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
     def IsCovariant(
         self,
         other: ConcreteType,
     ) -> bool:
+        # TODO: This needs work, as it should be able to differentiate between self references associated with different types
         return (
             isinstance(other, SelfReferenceConcreteType)
             and self.parser_info.mutability_modifier == other.parser_info.mutability_modifier
@@ -112,29 +125,17 @@ class SelfReferenceConcreteType(ConcreteType):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _FinalizePass3Impl(self) -> None:
-        # Nothing to do here
-        pass
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _FinalizePass4Impl(self) -> None:
-        # Nothing to do here
-        pass
-
-    # ----------------------------------------------------------------------
-    @Interface.override
     def _CreateConstrainedTypeImpl(
         self,
         expression_parser_info: ExpressionParserInfo,
-    ) -> "SelfReferenceConstrainedType":
+    ) -> ConstrainedType:
         assert expression_parser_info is self.parser_info, (expression_parser_info, self.parser_info)
-        return SelfReferenceConstrainedType(self, self.parser_info.mutability_modifier)
+        return self._CreateDefaultConstrainedTypeImpl()
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _CreateDefaultConstrainedTypeImpl(self) -> "SelfReferenceConstrainedType":
-        return self._CreateConstrainedTypeImpl(self.parser_info)
+    def _CreateDefaultConstrainedTypeImpl(self) -> ConstrainedType:
+        return SelfReferenceConstrainedType(self, self.parser_info.mutability_modifier)
 
 
 # ----------------------------------------------------------------------
