@@ -69,7 +69,10 @@ class PythonTarget(Target):
                     indent_spaces=self._indent_spaces,
                 )
 
-                root.Accept(visitor)
+                root.Accept(
+                    visitor,
+                    include_disabled=True,
+                )
 
                 yield Target.EnumResult.Create(
                     os.path.join(workspace_name, relative_path),

@@ -17,7 +17,9 @@
 
 import os
 
+from contextlib import contextmanager
 from typing import List, Optional
+
 from dataclasses import dataclass
 
 import CommonEnvironment
@@ -51,28 +53,28 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
         operator: OperatorType,
         expression: ExpressionParserInfo,
         the_type: ExpressionParserInfo,
-        *args,
-        **kwargs,
     ):
         return cls(  # pylint: disable=too-many-function-args
-            ParserInfoType.GetDominantType(expression, the_type),           # type: ignore
-            regions,                                                        # type: ignore
+            ParserInfoType.TypeCustomization,           # type: ignore
+            regions,                                    # type: ignore
             operator,
             expression,
             the_type,
-            *args,
-            **kwargs,
         )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
         super(TypeCheckExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "expression",
-                "type",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "expression",
+                        "type",
+                    ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------
@@ -82,3 +84,11 @@ class TypeCheckExpressionParserInfo(ExpressionParserInfo):
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         yield "expression", self.expression  # type: ignore
         yield "type", self.type  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(*args, **kwargs):  # pylint: disable=unused-argument
+        # Nothing to do here
+        yield

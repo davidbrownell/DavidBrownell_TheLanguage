@@ -17,7 +17,8 @@
 
 import os
 
-from typing import List, Optional
+from contextlib import contextmanager
+from typing import Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -32,7 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
+    from .ExpressionParserInfo import CompileTimeInfo, ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
+    from ...Common import MiniLanguageHelpers
 
 
 # ----------------------------------------------------------------------
@@ -72,12 +74,16 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(TernaryExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "condition_expression",
-                "true_expression",
-                "false_expression",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "condition_expression",
+                        "true_expression",
+                        "false_expression",
+                    ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------
@@ -90,33 +96,6 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
         )
 
     # ----------------------------------------------------------------------
-    @Interface.override
-    def ValidateAsType(
-        self,
-        parser_info_type: ParserInfoType,
-        *,
-        is_instantiated_type: Optional[bool]=True,
-    ) -> None:
-        self.condition_expression.ValidateAsExpression()
-
-        self.true_expression.ValidateAsType(
-            parser_info_type,
-            is_instantiated_type=is_instantiated_type,
-        )
-
-        self.false_expression.ValidateAsType(
-            parser_info_type,
-            is_instantiated_type=is_instantiated_type,
-        )
-
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def ValidateAsExpression(self) -> None:
-        self.condition_expression.ValidateAsExpression()
-        self.true_expression.ValidateAsExpression()
-        self.false_expression.ValidateAsExpression()
-
-    # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     @Interface.override
@@ -124,3 +103,51 @@ class TernaryExpressionParserInfo(ExpressionParserInfo):
         yield "conditional_expression", self.condition_expression  # type: ignore
         yield "true_expression", self.true_expression  # type: ignore
         yield "false_expression", self.false_expression  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _InitializeAsTypeImpl(
+        self,
+        parser_info_type: ParserInfoType,
+        *,
+        is_instantiated_type: bool=True,
+    ) -> None:
+        self.condition_expression.InitializeAsExpression()
+
+        self.true_expression.InitializeAsType(
+            parser_info_type,
+            is_instantiated_type=is_instantiated_type,
+        )
+
+        self.false_expression.InitializeAsType(
+            parser_info_type,
+            is_instantiated_type=is_instantiated_type,
+        )
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _InitializeAsExpressionImpl(self) -> None:
+        self.condition_expression.InitializeAsExpression()
+        self.true_expression.InitializeAsExpression()
+        self.false_expression.InitializeAsExpression()
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(
+        self,
+        configuration_data: Dict[str, CompileTimeInfo],
+    ):
+        condition_result = MiniLanguageHelpers.EvalExpression(
+            self.condition_expression,
+            [configuration_data],
+        )
+
+        condition_result = condition_result.type.ToBoolValue(condition_result.value)
+
+        if condition_result:
+            self.false_expression.Disable()
+        else:
+            self.true_expression.Disable()
+
+        yield

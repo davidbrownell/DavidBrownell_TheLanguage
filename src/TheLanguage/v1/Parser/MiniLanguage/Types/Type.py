@@ -17,6 +17,7 @@
 
 import os
 
+from enum import auto, Enum
 from typing import Any, Optional
 
 from dataclasses import dataclass
@@ -29,8 +30,6 @@ from CommonEnvironment.YamlRepr import ObjectReprImplBase
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
-
-# TODO: Add alias type
 
 # ----------------------------------------------------------------------
 class Type(Interface.Interface, ObjectReprImplBase):
@@ -46,6 +45,11 @@ class Type(Interface.Interface, ObjectReprImplBase):
     # |  Public Types
     # |
     # ----------------------------------------------------------------------
+    class SameOrConvertibleResult(Enum):
+        Same                                = auto()
+        Convertible                         = auto()
+
+    # ----------------------------------------------------------------------
     @dataclass(frozen=True)
     class IsSupportedResult(object):
         result: bool
@@ -58,6 +62,20 @@ class Type(Interface.Interface, ObjectReprImplBase):
     # ----------------------------------------------------------------------
     def __init__(self):
         ObjectReprImplBase.__init__(self)
+
+    # ----------------------------------------------------------------------
+    def __eq__(
+        self,
+        other: "Type",
+    ) -> bool:
+        return self.name == other.name
+
+    # ----------------------------------------------------------------------
+    def __ne__(
+        self,
+        other: "Type",
+    ) -> bool:
+        return not self.__eq__(other)
 
     # ----------------------------------------------------------------------
     @Interface.abstractproperty
@@ -88,8 +106,34 @@ class Type(Interface.Interface, ObjectReprImplBase):
     def ToStringValue(
         value: Any,
     ) -> str:
-        """Convers the value to a string value"""
+        """Converts the value to a string value"""
         return str(value)
+
+    # ----------------------------------------------------------------------
+    @classmethod
+    @Interface.extensionmethod
+    def IsSameOrConvertible(
+        cls,
+        other: "Type",
+    ) -> Optional["Type.SameOrConvertibleResult"]:
+        # By default, check the class to see if the other type is the same. Derived
+        # Types can provide more exotic behavior if applicable.
+        if other.__class__ == cls:
+            return Type.SameOrConvertibleResult.Same
+
+        return None
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.extensionmethod
+    def ConvertValueOfType(
+        value: Any,                         # pylint: disable=unused-argument
+        other_type: "Type",                 # pylint: disable=unused-argument
+    ) -> Any:
+        """Converts the value from the other type to a value of the current type"""
+
+        # Convertible types are not supported by default
+        raise Exception("Not supported by default")  # pragma: no cover
 
     # ----------------------------------------------------------------------
     @Interface.extensionmethod
@@ -105,7 +149,7 @@ class Type(Interface.Interface, ObjectReprImplBase):
         based on this information.
         """
 
-        if query_type.__class__ == self.__class__ and self.IsSupportedValue(value):
+        if self.IsSameOrConvertible(query_type) and self.IsSupportedValue(value):
             return Type.IsSupportedResult(True, self)
 
         return Type.IsSupportedResult(False, None)
@@ -124,7 +168,7 @@ class Type(Interface.Interface, ObjectReprImplBase):
         based on this information.
         """
 
-        if query_type.__class__ != self.__class__ or not self.IsSupportedValue(value):
+        if not self.IsSameOrConvertible(query_type) or not self.IsSupportedValue(value):
             return Type.IsSupportedResult(True, self)
 
         return Type.IsSupportedResult(False, None)

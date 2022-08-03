@@ -19,7 +19,7 @@ import os
 import types
 
 from enum import Enum
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Optional
 
 from dataclasses import dataclass
 
@@ -59,7 +59,7 @@ class TypeCheckExpression(Expression):
         if self.operator == OperatorType.Is:
             eval_impl = lambda eval_result: eval_result.type.IsSupportedValueOfType
         elif self.operator == OperatorType.IsNot:
-            eval_impl = lambda eval_result: not eval_result.type.IsNotSupportedValueOfType
+            eval_impl = lambda eval_result: eval_result.type.IsNotSupportedValueOfType
         else:
             assert False, self.operator  # pragma: no cover
 

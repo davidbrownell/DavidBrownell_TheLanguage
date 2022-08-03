@@ -17,6 +17,8 @@
 
 import os
 
+from typing import cast
+
 import CommonEnvironment
 from CommonEnvironment import Interface
 
@@ -34,9 +36,15 @@ with InitRelativeImports():
 
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
+        ExtractSequence,
+        ExtractToken,
+        RegexToken,
     )
 
     from ...Parser.Parser import CreateRegions
+
+    from ...Parser.ParserInfos.ParserInfo import ParserInfoType
+
     from ...Parser.ParserInfos.Statements.PassStatementParserInfo import PassStatementParserInfo
 
 
@@ -54,7 +62,15 @@ class PassStatement(GrammarPhrase):
             DynamicPhrasesType.Statements,
             self.PHRASE_NAME,
             [
-                "pass",
+                CommonTokens.CreateRegexToken(
+                    "Pass",
+                    (
+                        "__pass!",
+                        "pass!",
+                        "pass",
+                    ),
+                ),
+
                 CommonTokens.Newline,
             ],
         )
@@ -65,6 +81,23 @@ class PassStatement(GrammarPhrase):
     def ExtractParserInfo(
         node: AST.Node,
     ) -> GrammarPhrase.ExtractParserInfoReturnType:
+        nodes = ExtractSequence(node)
+        assert len(nodes) == 2
+
+        value_node = cast(AST.Leaf, nodes[0])
+        value_info = ExtractToken(
+            value_node,
+            return_match_contents=True,
+        )
+
+        if value_info.startswith("__"):
+            parser_info_type = ParserInfoType.Configuration
+        if value_info.endswith("!"):
+            parser_info_type = ParserInfoType.TypeCustomization
+        else:
+            parser_info_type = ParserInfoType.Standard
+
         return PassStatementParserInfo.Create(
+            parser_info_type,
             CreateRegions(node),
         )

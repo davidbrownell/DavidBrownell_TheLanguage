@@ -17,7 +17,8 @@
 
 import os
 
-from typing import List, Optional
+from contextlib import contextmanager
+from typing import Any, Optional, Tuple
 
 from dataclasses import dataclass
 
@@ -32,27 +33,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, TranslationUnitRegion
-
+    from .ExpressionParserInfo import ExpressionParserInfo
+    from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class NoneExpressionParserInfo(ExpressionParserInfo):
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(
-        cls,
-        regions: List[Optional[TranslationUnitRegion]],
-        *args,
-        **kwargs,
-    ):
-        return cls(
-            ParserInfoType.Unknown,         # type: ignore
-            regions,                        # type: ignore
-            *args,
-            **kwargs,
-        )
-
+class NoneExpressionParserInfo(
+    SimpleExpressionTrait,
+    ExpressionParserInfo,
+):
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
@@ -60,19 +49,17 @@ class NoneExpressionParserInfo(ExpressionParserInfo):
         return None
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
     @Interface.override
-    def ValidateAsType(
-        self,
-        parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
-        *,
-        is_instantiated_type: Optional[bool]=True,      # pylint: disable=unused-argument
-    ) -> None:
-        # This can be an expression or a type
-        pass
+    def _InitConfigurationImpl(*args, **kwargs):  # pylint: disable=unused-argument
+        # Nothing to do here
+        yield
 
     # ----------------------------------------------------------------------
     @staticmethod
     @Interface.override
-    def ValidateAsExpression() -> None:
-        # This can be an expression or a type
-        pass
+    def _GetUniqueId() -> Tuple[Any, ...]:
+        return ()

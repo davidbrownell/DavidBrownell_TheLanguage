@@ -48,7 +48,7 @@ with StreamDecorator(
             IntegerType,
             MiniLanguageType,
             Parse,
-            Validate,
+            ValidateExpressionTypes,
         )
 
         from .Parser.ParserInfos.Statements.RootStatementParserInfo import RootStatementParserInfo
@@ -95,6 +95,7 @@ def Execute(
     input_directory_or_filename,
     configuration="Debug",
     max_num_threads=None,
+    no_generate=False,
     output_stream=sys.stdout,
 ):
     input_directory_or_filename_items = input_directory_or_filename
@@ -143,6 +144,8 @@ def Execute(
 
         if num_files == 0:
             return dm.result
+
+        # TODO: Comments have been removed, so no way to type check them
 
         dm.stream.write("\nLexing...\n\n")
         with dm.stream.DoneManager() as lex_dm:
@@ -205,21 +208,21 @@ def Execute(
 
             parse_result = cast(Dict[str, Dict[str, RootStatementParserInfo]], parse_result)
 
-        dm.stream.write("\nValidating...")
+        dm.stream.write("Resolving Expression Types...")
         with dm.stream.DoneManager() as validate_dm:
             configuration_values: Dict[str, Tuple[MiniLanguageType, Any]] = {
                 "__architecture_bytes!": (IntegerType(), 8),
             }
 
-            validate_result = Validate(
+            validate_expression_types_result = ValidateExpressionTypes(
                 parse_result,
                 configuration_values,
                 max_num_threads=max_num_threads,
             )
 
-            assert validate_result is not None
+            assert validate_expression_types_result is not None
 
-            for workspace, results in validate_result.items():
+            for workspace, results in validate_expression_types_result.items():
                 for relative_path, result in results.items():
                     if isinstance(result, list):
                         for error in result:
@@ -236,19 +239,20 @@ def Execute(
             if validate_dm.result != 0:
                 return validate_dm.result
 
-            validate_result = parse_result
+            validate_expression_types_result = parse_result
 
-        dm.stream.write("\nGenerating output...")
-        with dm.stream.DoneManager() as target_dm:
-            target = _TARGETS[target](validate_result, output_directory)
+        if not no_generate:
+            dm.stream.write("\nGenerating output...")
+            with dm.stream.DoneManager() as target_dm:
+                target = _TARGETS[target](validate_expression_types_result, output_directory)
 
-            for output in target.EnumOutputs():
-                target_dm.stream.write(
-                    "{:<130} -> {}\n".format(
-                        output.fully_qualified_name,
-                        output.output_name,
-                    ),
-                )
+                for output in target.EnumOutputs():
+                    target_dm.stream.write(
+                        "{:<130} -> {}\n".format(
+                            output.fully_qualified_name,
+                            output.output_name,
+                        ),
+                    )
 
         return dm.result
 

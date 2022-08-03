@@ -39,7 +39,6 @@ with InitRelativeImports():
         DynamicPhrasesType,
         ExtractDynamic,
         ExtractOptional,
-        ExtractOr,
         ExtractSequence,
         PhraseItem,
         OptionalPhraseItem,
@@ -54,8 +53,7 @@ with InitRelativeImports():
     from ...Parser.ParserInfos.Common.TemplateArgumentsParserInfo import (
         ExpressionParserInfo,
         TemplateArgumentsParserInfo,
-        TemplateDecoratorArgumentParserInfo,
-        TemplateTypeArgumentParserInfo,
+        TemplateArgumentParserInfo,
     )
 
 
@@ -63,45 +61,19 @@ with InitRelativeImports():
 def Create() -> PhraseItem:
     argument_element = PhraseItem(
         name="Template Argument",
-        item=(
-            # TODO: Can't tell the difference between a type and an expression anymore for arguments.
-
-            # (<parameter_name> '=')? <type>
-            PhraseItem(
-                name="Template Type",
+        item=[
+            # (<parameter_name> '=')?
+            OptionalPhraseItem(
+                name="Keyword",
                 item=[
-                    # (<parameter_name> '=')?
-                    OptionalPhraseItem(
-                        name="Keyword",
-                        item=[
-                            CommonTokens.TemplateTypeName,
-                            "=",
-                        ],
-                    ),
-
-                    # <type>
-                    DynamicPhrasesType.Expressions,
+                    CommonTokens.ParameterName,
+                    "=",
                 ],
             ),
 
-            # (<parameter_name> '=')? <template_expression>
-            PhraseItem(
-                name="Template Decorator",
-                item=[
-                    # (<parameter_name> '=')?
-                    OptionalPhraseItem(
-                        name="Keyword",
-                        item=[
-                            CommonTokens.ParameterName,
-                            "=",
-                        ],
-                    ),
-
-                    # <expression>
-                    DynamicPhrasesType.Expressions,
-                ],
-            ),
-        ),
+            # <expression>
+            DynamicPhrasesType.Expressions,
+        ],
     )
 
     return ArgumentsFragmentImpl.Create(
@@ -134,20 +106,6 @@ def Extract(
 def _ExtractElement(
     node: AST.Node,
 ) -> Tuple[ParserInfo, bool]:
-    node = cast(AST.Node, ExtractOr(node))
-    assert node.type is not None
-
-    if node.type.name == "Template Type":
-        keyword_regex_token = CommonTokens.TemplateTypeName
-        element_type = TemplateTypeArgumentParserInfo
-
-    elif node.type.name == "Template Decorator":
-        keyword_regex_token = CommonTokens.ParameterName
-        element_type = TemplateDecoratorArgumentParserInfo
-
-    else:
-        assert False, node.type  # pragma: no cover
-
     nodes = ExtractSequence(node)
     assert len(nodes) == 2
 
@@ -160,14 +118,14 @@ def _ExtractElement(
         assert len(keyword_nodes) == 2
 
         keyword_node = cast(AST.Leaf, keyword_nodes[0])
-        keyword_info = keyword_regex_token.Extract(keyword_node)  # type: ignore
+        keyword_info = CommonTokens.ParameterName.Extract(keyword_node)  # type: ignore
 
     # <type> | <template_expression>
     value_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[1])))
     value_info = cast(ExpressionParserInfo, GetParserInfo(value_node))
 
     return (
-        element_type.Create(
+        TemplateArgumentParserInfo.Create(
             CreateRegions(node, keyword_node),
             value_info,
             keyword_info,

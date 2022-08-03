@@ -30,7 +30,7 @@ with InitRelativeImports():
     from .ClassCapabilities import (
         ClassCapabilities as _ClassCapabilities,
         ClassModifier,
-        MethodModifier,
+        MethodHierarchyModifier,
         MutabilityModifier,
         VisibilityModifier,
     )
@@ -40,6 +40,7 @@ with InitRelativeImports():
 ConceptCapabilities                         = _ClassCapabilities(
     name="Concept",
     is_instantiable=False,
+    allow_fundamental=False,
     valid_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
@@ -75,10 +76,10 @@ ConceptCapabilities                         = _ClassCapabilities(
         VisibilityModifier.protected,
     ],
     default_nested_class_visibility=VisibilityModifier.public,
-    valid_method_modifiers=[
-        MethodModifier.abstract,
+    valid_method_hierarchy_modifiers=[
+        MethodHierarchyModifier.abstract,
     ],
-    default_method_modifier=MethodModifier.abstract,
+    default_method_hierarchy_modifier=MethodHierarchyModifier.abstract,
     valid_method_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.protected,
@@ -94,6 +95,13 @@ ConceptCapabilities                         = _ClassCapabilities(
     ],
     default_method_mutability=None,
     allow_static_methods=True,
+    allow_virtual_root_methods_with_templates=True,
+    valid_using_visibilities=[
+        VisibilityModifier.public,
+        VisibilityModifier.protected,
+        VisibilityModifier.private,
+    ],
+    default_using_visibility=VisibilityModifier.private,
     valid_attribute_visibilities=[],
     default_attribute_visibility=None,
     valid_attribute_mutabilities=[],

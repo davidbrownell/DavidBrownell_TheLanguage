@@ -67,10 +67,11 @@ def PrecedenceFunc(
             ]
         ),
 
-        ##### - Positive / Negative
+        ##### - Positive / Negative / Bitflip
         lambda: unary_operator in [
             UnaryOperatorType.Positive,
             UnaryOperatorType.Negative,
+            UnaryOperatorType.Bitflip,
         ],
 
         ##### - Multiplication / Division
@@ -78,7 +79,7 @@ def PrecedenceFunc(
             BinaryOperatorType.Multiply,
             BinaryOperatorType.Divide,
             BinaryOperatorType.DivideFloor,
-            BinaryOperatorType.Modulus,
+            BinaryOperatorType.Modulo,
             BinaryOperatorType.Power,
         ],
 
@@ -107,7 +108,7 @@ def PrecedenceFunc(
         ##### - Less / Less Equal / Greater / Greater Equal
         ##### - Equal / Not Equal
         ##### - is / is not
-        ##### - in / not in (TODO)
+        ##### - in / not in
         lambda: (
             binary_operator in [
                 BinaryOperatorType.Less,
@@ -116,6 +117,8 @@ def PrecedenceFunc(
                 BinaryOperatorType.GreaterEqual,
                 BinaryOperatorType.Equal,
                 BinaryOperatorType.NotEqual,
+                BinaryOperatorType.In,
+                BinaryOperatorType.NotIn,
             ] or data.phrase.name == TypeCheckExpression.PHRASE_NAME
         ),
 
@@ -132,6 +135,11 @@ def PrecedenceFunc(
         lambda: data.phrase.name == TernaryExpression.PHRASE_NAME,
 
         ##### - lambda (TODO)
+
+        ##### - Assignment
+        lambda: binary_operator in [
+            BinaryOperatorType.Assign,
+        ],
     ]:
         if condition_func():
             return return_value

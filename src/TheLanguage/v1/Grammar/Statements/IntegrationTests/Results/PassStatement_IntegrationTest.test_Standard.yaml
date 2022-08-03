@@ -41,6 +41,7 @@ statements:
     implements: null
     is_abstract: null
     is_final: null
+    is_fundamental: null
     name: "Class"
     regions__: # <class 'types.ClassStatementParserInfoRegions'>
       name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>

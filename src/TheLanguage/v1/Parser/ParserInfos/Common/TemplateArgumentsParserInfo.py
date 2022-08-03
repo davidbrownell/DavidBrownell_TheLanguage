@@ -17,9 +17,9 @@
 
 import os
 
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -37,6 +37,9 @@ with InitRelativeImports():
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
 
     from ...Error import CreateError, Error, ErrorException
+
+    from ...Common import CallHelpers
+
 
 # ----------------------------------------------------------------------
 DuplicateNameError                          = CreateError(
@@ -56,11 +59,11 @@ InvalidTemplateExpressionError              = CreateError(
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class TemplateTypeArgumentParserInfo(ParserInfo):
+class TemplateArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
-    type: ExpressionParserInfo
+    type_or_expression: ExpressionParserInfo
     keyword: Optional[str]
 
     # ----------------------------------------------------------------------
@@ -74,23 +77,35 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(TemplateTypeArgumentParserInfo, self).__init__(
+        super(TemplateArgumentParserInfo, self).__init__(
             ParserInfoType.TypeCustomization,
             *args,
-            **kwargs,
-            regionless_attributes=["type", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "type_or_expression",
+                    ],
+                },
+            },
         )
 
         # Validate
         errors: List[Error] = []
 
         try:
-            self.type.ValidateAsType(self.parser_info_type__)
+            if self.type_or_expression.IsType():
+                self.type_or_expression.InitializeAsType(self.parser_info_type__)
+            else:
+                self.type_or_expression.InitializeAsExpression()
 
-            if not ParserInfoType.IsCompileTime(self.type.parser_info_type__):
+            if (
+                not self.type_or_expression.is_compile_time__
+                and self.type_or_expression.parser_info_type__ != ParserInfoType.Unknown
+            ):
                 errors.append(
                     InvalidTemplateTypeError.Create(
-                        region=self.type.regions__.self__,
+                        region=self.type_or_expression.regions__.self__,
                     ),
                 )
         except ErrorException as ex:
@@ -104,79 +119,19 @@ class TemplateTypeArgumentParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
     @Interface.override
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        yield "type", self.type  # type: ignore
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class TemplateDecoratorArgumentParserInfo(ParserInfo):
-    # ----------------------------------------------------------------------
-    regions: InitVar[List[Optional[TranslationUnitRegion]]]
-
-    expression: ExpressionParserInfo
-    keyword: Optional[str]
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def Create(cls, *args, **kwargs):
-        """\
-        This hack avoids pylint warnings associated with invoking dynamically
-        generated constructors with too many methods.
-        """
-        return cls(*args, **kwargs)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, *args, **kwargs):
-        expression_parser_info_type = self.expression.parser_info_type__
-
-        super(TemplateDecoratorArgumentParserInfo, self).__init__(
-            expression_parser_info_type,
-            *args,
-            **kwargs,
-            regionless_attributes=["expression", ],
-        )
-
-        # Validate
-        errors: List[Error] = []
-
-        try:
-            self.expression.ValidateAsExpression()
-
-            if not ParserInfoType.IsCompileTime(expression_parser_info_type):
-                errors.append(
-                    InvalidTemplateExpressionError.Create(
-                        region=self.expression.regions__.self__,
-                    ),
-                )
-        except ErrorException as ex:
-            errors += ex.errors
-
-        if errors:
-            raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        yield "expression", self.expression  # type: ignore
+        yield "type_or_expression", self.type_or_expression  # type: ignore
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TemplateArgumentsParserInfo(ParserInfo):
     # ----------------------------------------------------------------------
-    # |  Public Types
-    ArgumentType                            = Union[
-        TemplateTypeArgumentParserInfo,
-        TemplateDecoratorArgumentParserInfo,
-    ]
-
-    # ----------------------------------------------------------------------
-    # |  Public Data
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
-    arguments: List["TemplateArgumentsParserInfo.ArgumentType"]
+    arguments: List[TemplateArgumentParserInfo]
+
+    call_helpers_args: List[CallHelpers.ArgumentInfo]                       = field(init=False, default_factory=list)
+    call_helpers_kwargs: Dict[str, CallHelpers.ArgumentInfo]                = field(init=False, default_factory=dict)
 
     # ----------------------------------------------------------------------
     # |  Public Methods
@@ -194,13 +149,23 @@ class TemplateArgumentsParserInfo(ParserInfo):
             ParserInfoType.GetDominantType(*self.arguments),
             regions,
             *args,
-            **kwargs,
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "call_helpers_args",
+                        "call_helpers_kwargs",
+                    ],
+                    "call_helpers_args": None,
+                    "call_helpers_kwargs": None,
+                },
+            },
         )
 
         # Validate
         errors: List[Error] = []
 
-        keyword_lookup: Dict[str, TemplateArgumentsParserInfo.ArgumentType] = {}
+        keyword_lookup: Dict[str, TemplateArgumentParserInfo] = {}
 
         for argument in self.arguments:
             if argument.keyword is not None:
@@ -218,6 +183,27 @@ class TemplateArgumentsParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+        # Initialize the call helpers info
+        call_helpers_args: List[CallHelpers.ArgumentInfo] = []
+        call_helpers_kwargs: Dict[str, CallHelpers.ArgumentInfo] = {}
+
+        for argument in self.arguments:
+            if argument.keyword is None:
+                call_helpers_args.append(
+                    CallHelpers.ArgumentInfo(
+                        argument.regions__.self__,
+                        context=argument,
+                    ),
+                )
+            else:
+                call_helpers_kwargs[argument.keyword] = CallHelpers.ArgumentInfo(
+                    argument.regions__.self__,
+                    context=argument,
+                )
+
+        object.__setattr__(self, "call_helpers_args", call_helpers_args)
+        object.__setattr__(self, "call_helpers_kwargs", call_helpers_kwargs)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

@@ -17,8 +17,9 @@
 
 import os
 
+from contextlib import contextmanager
 from enum import auto, Enum
-from typing import List, Optional
+from typing import Callable, Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -33,10 +34,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
+    from .ExpressionParserInfo import CompileTimeInfo, ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
+
     from .FuncOrTypeExpressionParserInfo import InvalidCompileTimeTypeError
 
-    from ...Error import Error, ErrorException
+    from ...Error import CreateError, Error, ErrorException
     from ...MiniLanguage.Expressions.BinaryExpression import OperatorType as MiniLanguageOperatorType
 
 
@@ -59,7 +61,7 @@ class OperatorType(Enum):
     Multiply                                = MiniLanguageOperatorType.Multiply
     Divide                                  = MiniLanguageOperatorType.Divide
     DivideFloor                             = MiniLanguageOperatorType.DivideFloor
-    Modulus                                 = MiniLanguageOperatorType.Modulus
+    Modulo                                  = MiniLanguageOperatorType.Modulo
     Power                                   = MiniLanguageOperatorType.Power
     Add                                     = MiniLanguageOperatorType.Add
     Subtract                                = MiniLanguageOperatorType.Subtract
@@ -78,8 +80,30 @@ class OperatorType(Enum):
     LogicalOr                               = MiniLanguageOperatorType.LogicalOr
 
     # Operators that are not valid within the MiniLanguage
+
+    # Make sure to update `../../../../Grammar/PrecedenceFunc.py` when values are added.
     Access                                  = auto()
     AccessReturnSelf                        = auto()
+
+    Assign                                  = auto()
+
+    In                                      = auto()
+    NotIn                                   = auto()
+
+    # TODO: Need a binary statement type for these
+    # BitflipInplace                          = auto()
+    # MultiplyInplace                         = auto()
+    # DivideInplace                           = auto()
+    # DivideFloorInplace                      = auto()
+    # ModuloInplace                           = auto()
+    # PowerInplace                            = auto()
+    # AddInplace                              = auto()
+    # SubtractInplace                         = auto()
+    # BitShiftLeftInplace                     = auto()
+    # BitShiftRightInplace                    = auto()
+    # BitwiseAndInplace                       = auto()
+    # BitwiseXorInplace                       = auto()
+    # BitwiseOrInplace                        = auto()
 
     # ----------------------------------------------------------------------
     def ToMiniLanguageOperatorType(self) -> Optional[MiniLanguageOperatorType]:
@@ -91,6 +115,13 @@ class OperatorType(Enum):
 
 assert _initial_num_mini_language_operator_types == len(MiniLanguageOperatorType)
 del _initial_num_mini_language_operator_types
+
+
+# ----------------------------------------------------------------------
+InvalidBinaryOperatorError                  = CreateError(
+    "'{operator}' is not a valid binary operator for compile-time expressions",
+    operator=str,
+)
 
 
 # ----------------------------------------------------------------------
@@ -113,8 +144,8 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
         **kwargs,
     ):
         return cls(  # pylint: disable=too-many-function-args
-            ParserInfoType.GetDominantType(left_expression, right_expression),  # type: ignore
-            regions,                                                            # type: ignore
+            ParserInfoType.GetDominantType(left_expression, right_expression),      # type: ignore
+            regions,                                                                # type: ignore
             left_expression,
             operator,
             right_expression,
@@ -126,33 +157,45 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):  # type: ignore
         super(BinaryExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "left_expression",
-                "right_expression",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "left_expression",
+                        "right_expression",
+                    ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------
     @Interface.override
     def IsType(self) -> Optional[bool]:
         return (
-            self.operator == OperatorType.Access
+            self.operator in [OperatorType.LogicalOr, OperatorType.Access]
             and self.left_expression.IsType() is not False
             and self.right_expression.IsType() is not False
         )
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsType(
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "left_expression", self.left_expression  # type: ignore
+        yield "right_expression", self.right_expression  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _InitializeAsTypeImpl(
         self,
         parser_info_type: ParserInfoType,
         *,
-        is_instantiated_type: Optional[bool]=True,
+        is_instantiated_type: bool=True,
     ) -> None:
         errors: List[Error] = []
 
-        if ParserInfoType.IsCompileTime(parser_info_type):
+        if parser_info_type.IsCompileTime():
             errors.append(
                 InvalidCompileTimeTypeError.Create(
                     region=self.regions__.self__,
@@ -171,12 +214,12 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
                 )
             else:
                 try:
-                    self.left_expression.ValidateAsType(
+                    self.left_expression.InitializeAsType(
                         parser_info_type,
                         is_instantiated_type=False,
                     )
 
-                    self.right_expression.ValidateAsType(
+                    self.right_expression.InitializeAsType(
                         parser_info_type,
                         is_instantiated_type=is_instantiated_type,
                     )
@@ -192,14 +235,23 @@ class BinaryExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsExpression(self) -> None:
-        self.left_expression.ValidateAsExpression()
-        self.right_expression.ValidateAsExpression()
+    def _InitializeAsExpressionImpl(self) -> None:
+        self.left_expression.InitializeAsExpression()
+        self.right_expression.InitializeAsExpression()
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
+    @contextmanager
     @Interface.override
-    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        yield "left_expression", self.left_expression  # type: ignore
-        yield "right_expression", self.right_expression  # type: ignore
+    def _InitConfigurationImpl(self, *args, **kwargs):
+        assert self.parser_info_type__ == ParserInfoType.Configuration, self.parser_info_type__
+
+        operator = self.operator.ToMiniLanguageOperatorType()
+        if operator is None:
+            raise ErrorException(
+                InvalidBinaryOperatorError.Create(
+                    region=self.regions__.operator,
+                    operator=self.operator.name,
+                ),
+            )
+
+        yield

@@ -17,7 +17,8 @@
 
 import os
 
-from typing import List, Optional
+from contextlib import contextmanager
+from typing import Callable, Dict, List, Optional
 
 from dataclasses import dataclass
 
@@ -32,8 +33,9 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfo, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+    from .StatementParserInfo import CompileTimeInfo, ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ...Common import MiniLanguageHelpers
 
 
 # ----------------------------------------------------------------------
@@ -52,7 +54,6 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             expression.parser_info_type__,  # type: ignore
             regions,                        # type: ignore
             expression,
@@ -64,12 +65,26 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(FuncInvocationStatementParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=["expression", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": ["expression", ],
+                },
+            },
         )
 
         # Validate
-        self.expression.ValidateAsExpression()
+        self.expression.InitializeAsExpression()
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Configuration: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+            ParserInfoType.TypeCustomization: ScopeFlag.Class | ScopeFlag.Function,
+            ParserInfoType.Standard: ScopeFlag.Function,
+        }
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -77,3 +92,13 @@ class FuncInvocationStatementParserInfo(StatementParserInfo):
     @Interface.override
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
         yield "expression", self.expression  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(
+        self,
+        configuration_data: Dict[str, CompileTimeInfo],
+    ):
+        MiniLanguageHelpers.EvalExpression(self.expression, [configuration_data])
+        yield

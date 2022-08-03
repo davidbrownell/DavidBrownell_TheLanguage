@@ -43,7 +43,8 @@ class IntegerType(Type):
     def IsSupportedValue(
         value: Any,
     ) -> bool:
-        return isinstance(value, int)
+        # `isinstance(1, bool)` resolves to True, so we need to be more strict than is normally necessary
+        return type(value).__name__ == "int"
 
     # ----------------------------------------------------------------------
     @staticmethod

@@ -17,7 +17,8 @@
 
 import os
 
-from typing import List, Optional
+from contextlib import contextmanager
+from typing import Any, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass, InitVar
 
@@ -33,16 +34,20 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
+        CompileTimeInfo,
         ParserInfo,
         ParserInfoType,
         ScopeFlag,
-        ScopedStatementTrait,
         StatementParserInfo,
         TranslationUnitRegion,
     )
 
+    from .Traits.ScopedStatementTrait import ScopedStatementTrait
+
     from ..Common.VisibilityModifier import VisibilityModifier
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+
+    from ...Common import MiniLanguageHelpers
 
 
 # ----------------------------------------------------------------------
@@ -56,69 +61,70 @@ class IfStatementClauseParserInfo(
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
     expression: ExpressionParserInfo
-    statements: List[StatementParserInfo]
     documentation: Optional[str]
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
+        statements: List[StatementParserInfo],
         regions: List[Optional[TranslationUnitRegion]],
         expression: ExpressionParserInfo,
-        statements: List[StatementParserInfo],
         *args,
         **kwargs,
     ):
-        parser_info_type = expression.parser_info_type__
-
-        # If the expression is ambiguous, see if we can get some context from the statements
-        if parser_info_type == ParserInfoType.Unknown:
-            for statement in statements:
-                if (
-                    parser_info_type == ParserInfoType.Unknown
-                    or statement.parser_info_type__.value < parser_info_type.value
-                ):
-                    parser_info_type = statement.parser_info_type__
-
         # Duplicate regions for items that we are generating automatically
         assert regions and regions[0] is not None
         regions.insert(0, regions[0])       # name
         regions.insert(0, regions[0])       # visibility
 
-        return cls(
+        return cls(  # pylint: disable=too-many-function-args
             "IfStatementClauseParserInfo ({})".format(regions[0].begin.line),
-            VisibilityModifier.private,                                         # type: ignore
-            parser_info_type,                                                   # type: ignore
-            regions,                                                            # type: ignore
+            VisibilityModifier.private,     # type: ignore
+            statements,                     # type: ignore
+            expression.parser_info_type__,  # type: ignore
+            regions,                        # type: ignore
             expression,
-            statements,
             *args,
             **kwargs,
         )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, visibility_param, parser_info_type, regions, *args, **kwargs):
-        ScopedStatementTrait.__post_init__(self, visibility_param)
-
-        self._InitTraits(
-            allow_name_to_be_duplicated=False,
-        )
-
         ParserInfo.__init__(
             self,
             parser_info_type,
             regions,
             *args,
-            regionless_attributes=[
-                "expression",
-            ] + ScopedStatementTrait.RegionlessAttributesArgs(),
             **{
                 **kwargs,
                 **ScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "finalize": False,
+                    "regionless_attributes": [
+                        "expression",
+                    ]
+                        + ScopedStatementTrait.RegionlessAttributesArgs()
+                    ,
+                },
             },
         )
 
-        self.expression.ValidateAsExpression()
+        ScopedStatementTrait.__post_init__(self, visibility_param)
+
+        self._Finalize()
+
+        self._InitTraits(
+            allow_name_to_be_duplicated=False,
+        )
+
+        self.expression.InitializeAsExpression()
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(*args, **kwargs) -> bool:
+        return True
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -128,9 +134,12 @@ class IfStatementClauseParserInfo(
         yield "expression", self.expression  # type: ignore
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
     @Interface.override
-    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
-        yield from self.statements
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield
 
 
 # ----------------------------------------------------------------------
@@ -143,68 +152,78 @@ class IfStatementElseClauseParserInfo(
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
-    statements: List[StatementParserInfo]
     documentation: Optional[str]
 
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
         cls,
-        regions: List[Optional[TranslationUnitRegion]],
         statements: List[StatementParserInfo],
+        regions: List[Optional[TranslationUnitRegion]],
         *args,
         **kwargs,
     ):
-        parser_info_type = ParserInfoType.Unknown
-
-        for statement in statements:
-            if (
-                parser_info_type == ParserInfoType.Unknown
-                or statement.parser_info_type__.value < parser_info_type.value
-            ):
-                parser_info_type = statement.parser_info_type__
-
         # Duplicate regions for items that we are generating automatically
         assert regions and regions[0] is not None
         regions.insert(0, regions[0])       # name
         regions.insert(0, regions[0])       # visibility
 
-        return cls(
+        return cls(  # pylint: disable=too-many-function-args
             "IfStatementElseClauseParserInfo ({})".format(regions[0].begin.line),
-            VisibilityModifier.private,                                             # type: ignore
-            parser_info_type,                                                       # type: ignore
-            regions,                                                                # type: ignore
-            statements,
+            VisibilityModifier.private,     # type: ignore
+            statements,                     # type: ignore
+            ParserInfoType.Unknown,         # type: ignore
+            regions,                        # type: ignore
             *args,
             **kwargs,
         )
 
     # ----------------------------------------------------------------------
     def __post_init__(self, visibility_param, parser_info_type, regions, *args, **kwargs):
-        self._InitTraits(
-            allow_name_to_be_duplicated=False,
-        )
-
-        ScopedStatementTrait.__post_init__(self, visibility_param)
-
         ParserInfo.__init__(
             self,
             parser_info_type,
             regions,
-            regionless_attributes=ScopedStatementTrait.RegionlessAttributesArgs(),
             *args,
             **{
                 **kwargs,
                 **ScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "regionless_attributes": ScopedStatementTrait.RegionlessAttributesArgs(),
+                    "finalize": False,
+                },
             },
         )
+
+        ScopedStatementTrait.__post_init__(self, visibility_param)
+
+        self._Finalize()
+
+        self._InitTraits(
+            allow_name_to_be_duplicated=False,
+        )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(*args, **kwargs) -> bool:
+        return True
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
     @Interface.override
-    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
-        yield from self.statements
+    def _InitConfigurationImpl(*args, **kwargs):
+        # Nothing to do here
+        yield
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def _GetUniqueId() -> Tuple[Any, ...]:
+        return ()
 
 
 # ----------------------------------------------------------------------
@@ -224,7 +243,6 @@ class IfStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             ParserInfoType.GetDominantType(*clauses),   # type: ignore
             regions,                                    # type: ignore
             clauses,
@@ -236,12 +254,26 @@ class IfStatementParserInfo(StatementParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(IfStatementParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "clauses",
-                "else_clause",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "clauses",
+                        "else_clause",
+                    ],
+                },
+            },
         )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Configuration: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+            ParserInfoType.TypeCustomization: ScopeFlag.Class | ScopeFlag.Function,
+            ParserInfoType.Standard: ScopeFlag.Function,
+        }
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
@@ -252,3 +284,36 @@ class IfStatementParserInfo(StatementParserInfo):
 
         if self.else_clause:
             yield self.else_clause  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(
+        self,
+        configuration_data: Dict[str, CompileTimeInfo],
+    ):
+        executed_clause = False
+
+        for clause in self.clauses:
+            execute_flag = False
+
+            if not executed_clause:
+                clause_result = MiniLanguageHelpers.EvalExpression(
+                    clause.expression,
+                    [configuration_data],
+                )
+
+                clause_result = clause_result.type.ToBoolValue(clause_result.value)
+                if clause_result:
+                    execute_flag = True
+
+            if execute_flag:
+                assert executed_clause is False
+                executed_clause = True
+            else:
+                clause.Disable()
+
+        if self.else_clause and executed_clause:
+            self.else_clause.Disable()
+
+        yield

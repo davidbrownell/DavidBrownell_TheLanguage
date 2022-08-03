@@ -56,6 +56,7 @@ class EnforceExpression(Expression):
     # ----------------------------------------------------------------------
     def __post_init__(self):
         super(EnforceExpression, self).__init__()
+        assert self.messages is None or self.messages
 
     # ----------------------------------------------------------------------
     @staticmethod
