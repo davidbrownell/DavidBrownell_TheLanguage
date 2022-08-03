@@ -18,9 +18,9 @@
 import itertools
 import os
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, Generator, List, Optional, Tuple
 
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,12 +33,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
+    from ..Common.TemplateParametersParserInfo import TemplateTypeParameterParserInfo
+
     from ..Expressions.ExpressionParserInfo import (
         ExpressionParserInfo,
         ParserInfo,
         ParserInfoType,
         TranslationUnitRegion,
     )
+
+    from ..Statements.StatementParserInfo import StatementParserInfo
 
     from ...Error import CreateError, Error, ErrorException
 
@@ -81,24 +85,28 @@ class FuncParameterParserInfo(ParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(FuncParameterParserInfo, self).__init__(
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "type",
-                "default_value",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "type",
+                        "default_value",
+                    ],
+                },
+            },
         )
 
         # Validate
         errors: List[Error] = []
 
         try:
-            self.type.ValidateAsType(self.parser_info_type__)
+            self.type.InitializeAsType(self.parser_info_type__)
         except ErrorException as ex:
             errors += ex.errors
 
         if self.default_value is not None:
             try:
-                self.default_value.ValidateAsExpression()
+                self.default_value.InitializeAsExpression()
             except ErrorException as ex:
                 errors += ex.errors
 
@@ -189,6 +197,14 @@ class FuncParametersParserInfo(ParserInfo):
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    def EnumParameters(self) -> Generator[FuncParameterParserInfo, None, None]:
+        yield from itertools.chain(
+            self.positional or [],
+            self.any or [],
+            self.keyword or [],
+        )
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

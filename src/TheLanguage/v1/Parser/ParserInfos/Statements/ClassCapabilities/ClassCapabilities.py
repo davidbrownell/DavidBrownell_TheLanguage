@@ -17,8 +17,9 @@
 
 import os
 
+from typing import cast, List, Optional, TYPE_CHECKING
+
 from dataclasses import dataclass
-from typing import List, Optional
 
 import CommonEnvironment
 from CommonEnvironment.YamlRepr import ObjectReprImplBase
@@ -32,20 +33,22 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from ...Common.ClassModifier import ClassModifier
-    from ...Common.MethodModifier import MethodModifier
-
-    from ...Common.MutabilityModifier import (
-        InvalidNewMutabilityModifierError,
-        MutabilityModifier,
-        MutabilityModifierRequiredError,
-    )
-
+    from ...Common.MethodHierarchyModifier import MethodHierarchyModifier
+    from ...Common.MutabilityModifier import MutabilityModifier
     from ...Common.VisibilityModifier import VisibilityModifier
 
     from ....Parser import CreateError, Error, ErrorException
 
+    if TYPE_CHECKING:
+        from ..ClassStatementParserInfo import ClassStatementParserInfo, ClassStatementDependencyParserInfo     # pylint: disable=unused-import
+
 
 # ----------------------------------------------------------------------
+InvalidFundamentalError                     = CreateError(
+    "'{type}' types may not be declared as fundamental",
+    type=str,
+)
+
 VisibilityRequiredError                     = CreateError(
     "A visibility value is required for '{type}' types; valid values are {valid_visibilities_str}",
     type=str,
@@ -183,20 +186,25 @@ InvalidFuncDefinitionVisibilityError        = CreateError(
     valid_visibilities_str=str,
 )
 
-FuncDefinitionMethodModifierRequiredError   = CreateError(
+FuncDefinitionMethodHierarchyModifierRequiredError      = CreateError(
     "A method modifier is required for methods in '{type}' types; valid values are {valid_modifiers_str}",
     type=str,
-    valid_modifiers=List[MethodModifier],
+    valid_modifiers=List[MethodHierarchyModifier],
     valid_modifiers_str=str,
 )
 
-InvalidFuncDefinitionMethodModifierError    = CreateError(
-    "'{method_modifier_str}' is not a valid modifier for methods of '{type}' types; valid values are {valid_method_modifiers_str}",
+InvalidFuncDefinitionMethodHierarchyModifierError       = CreateError(
+    "'{method_hierarchy_modifier_str}' is not a valid modifier for methods of '{type}' types; valid values are {valid_method_hierarchy_modifiers_str}",
     type=str,
-    method_modifier=MethodModifier,
-    method_modifier_str=str,
-    valid_method_modifiers=List[MethodModifier],
-    valid_method_modifiers_str=str,
+    method_hierarchy_modifier=MethodHierarchyModifier,
+    method_hierarchy_modifier_str=str,
+    valid_method_hierarchy_modifiers=List[MethodHierarchyModifier],
+    valid_method_hierarchy_modifiers_str=str,
+)
+
+InvalidTemplatedFuncDefinitionMethodHierarchyModifierError                  = CreateError(
+    "Methods with templates may not participate in hierarchies for '{type}' types",
+    type=str,
 )
 
 FuncDefinitionMutabilityRequiredError       = CreateError(
@@ -246,11 +254,44 @@ InvalidNestedClassVisibilityError           = CreateError(
     visibility=VisibilityModifier,
     visibility_str=str,
     valid_visibilities=List[VisibilityModifier],
-    valid_visibility_str=str,
+    valid_visibilities_str=str,
+)
+
+UsingVisibilityRequiredError                = CreateError(
+    "A visibility value is required for using statements in '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+InvalidUsingError                           = CreateError(
+    "'{type}' types do not support using statements",
+    type=str,
+)
+
+InvalidUsingVisibilityError                 = CreateError(
+    "'{visibility_str}' is not a valid visibility value for '{type}' types; valid values are {valid_visibilities_str}",
+    type=str,
+    visibility=VisibilityModifier,
+    visibility_str=str,
+    valid_visibilities=List[VisibilityModifier],
+    valid_visibilities_str=str,
+)
+
+# TODO: Should be Type-based error
+InvalidDependencyTypeError                  = CreateError(
+    "'{dependency_type}' is not a valid dependency type for '{desc}' dependencies of '{type}' types; valid values are {valid_types_str}",
+    type=str,
+    desc=str,
+    dependency_type=str,
+    valid_types=List[str],
+    valid_types_str=str,
 )
 
 
+# ----------------------------------------------------------------------
 # TODO: All of the capabilities need some TLC
+# TODO: Add fundamental type: is_final, methods are deferred, no constructor
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
@@ -262,6 +303,8 @@ class ClassCapabilities(ObjectReprImplBase):
 
     name: str
     is_instantiable: bool
+
+    allow_fundamental: bool
 
     valid_visibilities: List[VisibilityModifier]
     default_visibility: Optional[VisibilityModifier]
@@ -287,17 +330,22 @@ class ClassCapabilities(ObjectReprImplBase):
     valid_nested_class_visibilities: List[VisibilityModifier]
     default_nested_class_visibility: Optional[VisibilityModifier]
 
-    valid_method_modifiers: List[MethodModifier]
-    default_method_modifier: Optional[MethodModifier]
+    valid_method_hierarchy_modifiers: List[MethodHierarchyModifier]
+    default_method_hierarchy_modifier: Optional[MethodHierarchyModifier]
     valid_method_visibilities: List[VisibilityModifier]
     default_method_visibility: Optional[VisibilityModifier]
     valid_method_mutabilities: List[MutabilityModifier]
     default_method_mutability: Optional[MutabilityModifier]
     allow_static_methods: bool
+    allow_virtual_root_methods_with_templates: bool
+
+    valid_using_visibilities: List[VisibilityModifier]
+    default_using_visibility: Optional[VisibilityModifier]
 
     valid_attribute_visibilities: List[VisibilityModifier]
     default_attribute_visibility: Optional[VisibilityModifier]
     valid_attribute_mutabilities: List[MutabilityModifier]
+
     allow_mutable_public_attributes: bool
 
     # ----------------------------------------------------------------------
@@ -311,9 +359,11 @@ class ClassCapabilities(ObjectReprImplBase):
         assert self.default_extends_visibility is None or self.default_extends_visibility in self.valid_extends_visibilities
 
         assert (self.valid_implements_types and self.valid_implements_visibilities) or (not self.valid_implements_types and not self.valid_implements_visibilities)
+        assert all(implements_type in ["Concept", "Interface"] for implements_type in (self.valid_implements_types or []))
         assert self.default_implements_visibility is None or self.default_implements_visibility in self.valid_implements_visibilities
 
         assert (self.valid_uses_types and self.valid_uses_visibilities) or (not self.valid_uses_types and not self.valid_uses_visibilities)
+        assert all(uses_type in ["Mixin"] for uses_type in (self.valid_uses_types or []))
         assert self.default_uses_visibility is None or self.default_uses_visibility in self.valid_uses_visibilities
 
         assert self.default_type_alias_visibility is None or self.default_type_alias_visibility in self.valid_type_alias_visibilities
@@ -321,11 +371,13 @@ class ClassCapabilities(ObjectReprImplBase):
         assert (self.valid_nested_class_types and self.valid_nested_class_visibilities) or (not self.valid_nested_class_types and not self.valid_nested_class_visibilities)
         assert self.default_nested_class_visibility is None or self.default_nested_class_visibility in self.valid_nested_class_visibilities
 
-        assert (self.valid_method_modifiers and self.valid_method_visibilities and self.valid_method_mutabilities) or (not self.valid_method_modifiers and not self.valid_method_visibilities and not self.valid_method_mutabilities)
-        assert self.default_method_modifier is None or self.default_method_modifier in self.valid_method_modifiers
+        assert (self.valid_method_hierarchy_modifiers and self.valid_method_visibilities and self.valid_method_mutabilities) or (not self.valid_method_hierarchy_modifiers and not self.valid_method_visibilities and not self.valid_method_mutabilities)
+        assert self.default_method_hierarchy_modifier is None or self.default_method_hierarchy_modifier in self.valid_method_hierarchy_modifiers
         assert self.default_method_visibility is None or self.default_method_visibility in self.valid_method_visibilities
         assert self.default_method_mutability is None or self.default_method_mutability in self.valid_method_mutabilities
         assert not self.allow_static_methods or self.valid_method_visibilities
+
+        assert self.default_using_visibility is None or self.default_using_visibility in self.valid_using_visibilities
 
         assert (self.valid_attribute_visibilities and self.valid_attribute_mutabilities) or (not self.valid_attribute_visibilities and not self.valid_attribute_mutabilities)
         assert self.default_attribute_visibility is None or self.default_attribute_visibility in self.valid_attribute_visibilities
@@ -340,6 +392,15 @@ class ClassCapabilities(ObjectReprImplBase):
         has_parent_class: bool,
     ) -> None:
         errors: List[Error] = []
+
+        # Class Traits
+        if parser_info.is_fundamental and not self.allow_fundamental:
+            errors.append(
+                InvalidFundamentalError.Create(
+                    region=parser_info.regions__.is_fundamental,
+                    type=self.name,
+                ),
+            )
 
         # visibility
         if parser_info.visibility is None:
@@ -418,7 +479,7 @@ class ClassCapabilities(ObjectReprImplBase):
             if dependencies is None:
                 continue
 
-            if valid_visibilities is None:
+            if not valid_visibilities:
                 errors.append(
                     InvalidDependencyError.Create(
                         region=dependencies_region,
@@ -551,20 +612,8 @@ class ClassCapabilities(ObjectReprImplBase):
                 ),
             )
 
-        # mutability
-        if parser_info.type.mutability_modifier is None:
-            errors.append(
-                MutabilityModifierRequiredError.Create(
-                    region=parser_info.type.regions__.self__,
-                ),
-            )
-        elif parser_info.type.mutability_modifier == MutabilityModifier.new:
-            errors.append(
-                InvalidNewMutabilityModifierError.Create(
-                    region=parser_info.type.regions__.mutability_modifier,
-                ),
-            )
-        else:
+        # mutability_modifier
+        if parser_info.type.mutability_modifier is not None:
             if parser_info.type.mutability_modifier not in self.valid_attribute_mutabilities:
                 errors.append(
                     InvalidAttributeMutabilityModifierError.Create(
@@ -669,33 +718,44 @@ class ClassCapabilities(ObjectReprImplBase):
                 ),
             )
 
-        # method_modifier
-        if parser_info.method_modifier is None:
-            if self.valid_method_modifiers:
+        # method_hierarchy_modifier
+        if parser_info.method_hierarchy_modifier is None:
+            if self.valid_method_hierarchy_modifiers:
                 errors.append(
-                    FuncDefinitionMethodModifierRequiredError.Create(
+                    FuncDefinitionMethodHierarchyModifierRequiredError.Create(
                         region=parser_info.regions__.self__,
                         type=self.name,
-                        valid_modifiers=self.valid_method_modifiers,
-                        valid_modifiers_str=", ".join("'{}'".format(v.name) for v in self.valid_method_modifiers),
+                        valid_modifiers=self.valid_method_hierarchy_modifiers,
+                        valid_modifiers_str=", ".join("'{}'".format(v.name) for v in self.valid_method_hierarchy_modifiers),
                     ),
                 )
-        elif not self.valid_method_modifiers:
+        elif not self.valid_method_hierarchy_modifiers:
             errors.append(
                 InvalidFuncDefinitionError.Create(
                     region=parser_info.regions__.self__,
                     type=self.name,
                 ),
             )
-        elif parser_info.method_modifier not in self.valid_method_modifiers:
+        elif parser_info.method_hierarchy_modifier not in self.valid_method_hierarchy_modifiers:
             errors.append(
-                InvalidFuncDefinitionMethodModifierError.Create(
-                    region=parser_info.regions__.method_modifier,
+                InvalidFuncDefinitionMethodHierarchyModifierError.Create(
+                    region=parser_info.regions__.method_hierarchy_modifier,
                     type=self.name,
-                    method_modifier=parser_info.method_modifier,
-                    method_modifier_str=parser_info.method_modifier.name,
-                    valid_method_modifiers=self.valid_method_modifiers,
-                    valid_method_modifiers_str=", ".join("'{}'".format(v.name) for v in self.valid_method_modifiers),
+                    method_hierarchy_modifier=parser_info.method_hierarchy_modifier,
+                    method_hierarchy_modifier_str=parser_info.method_hierarchy_modifier.name,
+                    valid_method_hierarchy_modifiers=self.valid_method_hierarchy_modifiers,
+                    valid_method_hierarchy_modifiers_str=", ".join("'{}'".format(v.name) for v in self.valid_method_hierarchy_modifiers),
+                ),
+            )
+        elif (
+            parser_info.method_hierarchy_modifier.IsVirtualRoot()
+            and parser_info.templates is not None
+            and not self.allow_virtual_root_methods_with_templates
+        ):
+            errors.append(
+                InvalidTemplatedFuncDefinitionMethodHierarchyModifierError.Create(
+                    region=parser_info.regions__.method_hierarchy_modifier,
+                    type=self.name,
                 ),
             )
 
@@ -707,8 +767,8 @@ class ClassCapabilities(ObjectReprImplBase):
                     ),
                 )
         else:
-            # mutability
-            if parser_info.mutability is None:
+            # mutability_modifier
+            if parser_info.mutability_modifier is None:
                 if self.valid_method_mutabilities:
                     errors.append(
                         FuncDefinitionMutabilityRequiredError.Create(
@@ -725,23 +785,123 @@ class ClassCapabilities(ObjectReprImplBase):
                         type=self.name,
                     ),
                 )
-            elif parser_info.mutability == MutabilityModifier.new:
-                errors.append(
-                    InvalidNewMutabilityModifierError.Create(
-                        region=parser_info.regions__.mutability,
-                    ),
-                )
-            elif parser_info.mutability not in self.valid_method_mutabilities:
+            elif parser_info.mutability_modifier not in self.valid_method_mutabilities:
                 errors.append(
                     InvalidFuncDefinitionMutabilityError.Create(
-                        region=parser_info.mutability,
+                        region=parser_info.regions__.mutability_modifier,
                         type=self.name,
-                        mutability=parser_info.mutability,
-                        mutability_str=parser_info.mutability.name,
+                        mutability=parser_info.mutability_modifier,
+                        mutability_str=parser_info.mutability_modifier.name,
                         valid_mutabilities=self.valid_attribute_mutabilities,
                         valid_mutabilities_str=", ".join("'{}'".format(v.name) for v in self.valid_method_mutabilities),
                     ),
                 )
+
+        if errors:
+            raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    def ValidateUsingStatementCapabilities(
+        self,
+        parser_info, # ClassUsingStatementParserInfo
+    ) -> None:
+        errors: List[Error] = []
+
+        # visibility
+        if parser_info.visibility is None:
+            if self.valid_using_visibilities:
+                errors.append(
+                    UsingVisibilityRequiredError.Create(
+                        region=parser_info.regions__.self__,
+                        type=self.name,
+                        valid_visibilities=self.valid_using_visibilities,
+                        valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_using_visibilities),
+                    ),
+                )
+        elif not self.valid_using_visibilities:
+            errors.append(
+                InvalidUsingError.Create(
+                    region=parser_info.regions__.self__,
+                    type=self.name,
+                ),
+            )
+        elif parser_info.visibility not in self.valid_using_visibilities:
+            errors.append(
+                InvalidUsingVisibilityError.Create(
+                    region=parser_info.regions__.visibility,
+                    type=self.name,
+                    visibility=parser_info.visibility,
+                    visibility_str=parser_info.visibility.name,
+                    valid_visibilities=self.valid_using_visibilities,
+                    valid_visibilities_str=", ".join("'{}'".format(v.name) for v in self.valid_using_visibilities),
+                ),
+            )
+
+        if errors:
+            raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    def ValidateImplementsDependency(
+        self,
+        dependency: "ClassStatementDependencyParserInfo",
+        resolved_parser_info: "ClassStatementParserInfo",
+    ) -> None:
+        self._ValidateDependencyImpl(
+            dependency,
+            resolved_parser_info,
+            self.valid_implements_types,
+            "implement",
+        )
+
+    # ----------------------------------------------------------------------
+    def ValidateUsesDependency(
+        self,
+        dependency: "ClassStatementDependencyParserInfo",
+        resolved_parser_info: "ClassStatementParserInfo",
+    ) -> None:
+        self._ValidateDependencyImpl(
+            dependency,
+            resolved_parser_info,
+            self.valid_uses_types,
+            "use",
+        )
+
+    # ----------------------------------------------------------------------
+    def ValidateExtendsDependency(
+        self,
+        dependency: "ClassStatementDependencyParserInfo",
+        resolved_parser_info: "ClassStatementParserInfo",
+    ) -> None:
+        self._ValidateDependencyImpl(
+            dependency,
+            resolved_parser_info,
+            [self.name, ],
+            "extend",
+        )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    def _ValidateDependencyImpl(
+        self,
+        dependency: "ClassStatementDependencyParserInfo",
+        resolved_parser_info: "ClassStatementParserInfo",
+        valid_type_names: List[str],
+        desc: str,
+    ) -> None:
+        errors: List[Error] = []
+
+        if resolved_parser_info.class_capabilities.name not in valid_type_names:
+            errors.append(
+                InvalidDependencyTypeError.Create(
+                    region=dependency.type.regions__.self__,
+                    type=self.name,
+                    desc=desc,
+                    dependency_type=resolved_parser_info.class_capabilities.name,
+                    valid_types=valid_type_names,
+                    valid_types_str=", ".join("'{}'".format(type_name) for type_name in valid_type_names),
+                ),
+            )
 
         if errors:
             raise ErrorException(*errors)

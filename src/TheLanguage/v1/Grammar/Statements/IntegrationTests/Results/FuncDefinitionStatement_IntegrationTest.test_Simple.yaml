@@ -25,7 +25,7 @@ statements:
     is_reentrant: null
     is_scoped: null
     is_static: null
-    method_modifier: null
+    method_hierarchy_modifier: null
     mutability: null
     name: "Func1"
     parameters: true
@@ -107,7 +107,7 @@ statements:
     is_reentrant: null
     is_scoped: null
     is_static: null
-    method_modifier: null
+    method_hierarchy_modifier: null
     mutability: null
     name: "Func2"
     parameters: # <class 'v1.Parser.ParserInfos.Common.FuncParametersParserInfo.FuncParametersParserInfo'>

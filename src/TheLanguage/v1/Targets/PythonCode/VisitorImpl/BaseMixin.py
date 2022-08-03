@@ -41,7 +41,8 @@ with InitRelativeImports():
     from ....Parser.ParserInfos.AggregateParserInfo import AggregateParserInfo
 
     from ....Parser.ParserInfos.Common.ClassModifier import ClassModifier
-    from ....Parser.ParserInfos.Common.MethodModifier import MethodModifier
+    from ....Parser.ParserInfos.Common.FunctionModifier import FunctionModifier
+    from ....Parser.ParserInfos.Common.MethodHierarchyModifier import MethodHierarchyModifier
     from ....Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier
     from ....Parser.ParserInfos.Common.VisibilityModifier import VisibilityModifier
 
@@ -60,7 +61,8 @@ class BaseMixin(object):
 
         for common_import in [
             "ClassModifier",
-            "MethodModifier",
+            "FunctionModifier",
+            "MethodHierarchyModifier",
             "MutabilityModifier",
             "VisibilityModifier",
         ]:
@@ -169,13 +171,15 @@ class BaseMixin(object):
             str,
             bool,
             ClassModifier,
-            MethodModifier,
+            FunctionModifier,
+            MethodHierarchyModifier,
             MutabilityModifier,
             VisibilityModifier,
             Location,
             TranslationUnitRegion,
             ParserInfo,
             List[ParserInfo],
+            List[str],
         ],
     ) -> str:
         if value is None:
@@ -186,8 +190,10 @@ class BaseMixin(object):
             return str(value)
         elif isinstance(value, ClassModifier):
             return "ClassModifier.{}".format(value.name)
-        elif isinstance(value, MethodModifier):
-            return "MethodModifier.{}".format(value.name)
+        elif isinstance(value, FunctionModifier):
+            return "FunctionModifier.{}".format(value.name)
+        elif isinstance(value, MethodHierarchyModifier):
+            return "MethodHierarchyModifier.{}".format(value.name)
         elif isinstance(value, MutabilityModifier):
             return "MutabilityModifier.{}".format(value.name)
         elif isinstance(value, VisibilityModifier):
@@ -212,6 +218,9 @@ class BaseMixin(object):
         elif isinstance(value, ParserInfo):
             return self._CreateStatementName(value)
         elif isinstance(value, list):
+            if value and isinstance(value, str):
+                return "[{}, ]".format(", ".join('"{}"'.format(item) for item in value))
+
             return "[{}, ]".format(", ".join(self._ToString(item) for item in value))
 
         assert False, value  # pragma: no cover
@@ -221,9 +230,17 @@ class BaseMixin(object):
     def _DefaultDetailMethod(
         self,
         parser_info_or_infos: Union[ParserInfo, List[ParserInfo]],
+        *,
+        include_disabled: bool,
     ):
         if isinstance(parser_info_or_infos, list):
             for parser_info in parser_info_or_infos:
-                parser_info.Accept(self)
+                parser_info.Accept(
+                    self,
+                    include_disabled=include_disabled,
+                )
         else:
-            parser_info_or_infos.Accept(self)
+            parser_info_or_infos.Accept(
+                self,
+                include_disabled=include_disabled,
+            )

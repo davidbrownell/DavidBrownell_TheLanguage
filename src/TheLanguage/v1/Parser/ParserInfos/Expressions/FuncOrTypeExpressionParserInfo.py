@@ -17,7 +17,8 @@
 
 import os
 
-from typing import List, Optional
+from contextlib import contextmanager
+from typing import Any, List, Optional, Tuple, Union
 
 from dataclasses import dataclass
 
@@ -34,10 +35,11 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .ExpressionParserInfo import (  # pylint: disable=unused-import
         ExpressionParserInfo,
-        InvalidExpressionError,
         ParserInfo,
         ParserInfoType,
     )
+
+    from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
     from ..Common.ConstraintArgumentsParserInfo import ConstraintArgumentsParserInfo
     from ..Common.MutabilityModifier import MutabilityModifier
@@ -45,21 +47,28 @@ with InitRelativeImports():
 
     from ...Error import CreateError, Error, ErrorException
 
-    from ...MiniLanguage.Types.CustomType import CustomType
+    from ...MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
     from ...MiniLanguage.Types.Type import Type as MiniLanguageType
 
     # Convenience imports
+    from ...MiniLanguage.Expressions.EnforceExpression import EnforceExpression         # pylint: disable=unused-import
+    from ...MiniLanguage.Expressions.ErrorExpression import ErrorExpression             # pylint: disable=unused-import
+    from ...MiniLanguage.Expressions.IsDefinedExpression import IsDefinedExpression     # pylint: disable=unused-import
+    from ...MiniLanguage.Expressions.OutputExpression import OutputExpression           # pylint: disable=unused-import
+
     from ...MiniLanguage.Types.BooleanType import BooleanType               # pylint: disable=unused-import
     from ...MiniLanguage.Types.CharacterType import CharacterType           # pylint: disable=unused-import
     from ...MiniLanguage.Types.IntegerType import IntegerType               # pylint: disable=unused-import
     from ...MiniLanguage.Types.NoneType import NoneType                     # pylint: disable=unused-import
     from ...MiniLanguage.Types.NumberType import NumberType                 # pylint: disable=unused-import
     from ...MiniLanguage.Types.StringType import StringType                 # pylint: disable=unused-import
+    from ...MiniLanguage.Types.VariantType import VariantType               # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
 InvalidCompileTimeTypeError                 = CreateError(
-    "Invalid compile-time type",
+    "'{name}' is not a valid compile-time type",
+    name=str,
 )
 
 InvalidCompileTimeTemplatesError            = CreateError(
@@ -70,66 +79,90 @@ InvalidCompileTimeConstraintsError          = CreateError(
     "Compile-time types may not define constraint arguments",
 )
 
-InvalidCompileTimeMutabilityModifierError   = CreateError(
-    "Compile-time types may not have a mutability modifier",
-)
-
-MutabilityModifierRequiredError             = CreateError(
-    "A mutability modifier is required in this context",
-)
-
-InvalidStandardMutabilityModifierError      = CreateError(
-    "A mutability modifier is not allowed in this context",
+InvalidStandardTypeError                    = CreateError(
+    "Compile-time types are not allowed in this context",
 )
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
+class FuncOrTypeExpressionParserInfo(
+    SimpleExpressionTrait,
+    ExpressionParserInfo,
+):
     # ----------------------------------------------------------------------
-    value: MiniLanguageType
+    value: Union[
+        MiniLanguageType,
+        MiniLanguageExpression,
+        str,
+    ]
+
     templates: Optional[TemplateArgumentsParserInfo]
     constraints: Optional[ConstraintArgumentsParserInfo]
     mutability_modifier: Optional[MutabilityModifier]
 
+    # TODO: Add functionality to indicate that we should not attempt to resolve the type as nested, but instead use global resolution
+
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(FuncOrTypeExpressionParserInfo, self).__post_init__(
+        ExpressionParserInfo.__post_init__(
+            self,
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "templates",
-                "constraints",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "templates",
+                        "constraints",
+                    ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------
     @Interface.override
     def IsType(self) -> Optional[bool]:
-        return True
+        return isinstance(self.value, (str, MiniLanguageType))
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        if self.templates:
+            yield "templates", self.templates  # type: ignore
+
+        if self.constraints:
+            yield "constraints", self.constraints  # type: ignore
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsType(
+    def _InitializeAsTypeImpl(
         self,
         parser_info_type: ParserInfoType,
         *,
-        is_instantiated_type: Optional[bool]=True,
+        is_instantiated_type: bool=True,
     ) -> None:
         # Validate
         errors: List[Error] = []
 
+        try:
+            MutabilityModifier.Validate(self, parser_info_type, is_instantiated_type)
+        except ErrorException as ex:
+            errors += ex.errors
+
         # Checks just for configuration values
         if parser_info_type == ParserInfoType.Configuration:
-            if isinstance(self.value, CustomType):
+            if isinstance(self.value, str):
                 errors.append(
                     InvalidCompileTimeTypeError.Create(
                         region=self.regions__.value,
+                        name=self.value,
                     ),
                 )
 
         # Checks for all compile-time values
-        if ParserInfoType.IsCompileTime(parser_info_type):
+        if parser_info_type.IsCompileTime():
             if self.templates is not None:
                 errors.append(
                     InvalidCompileTimeTemplatesError.Create(
@@ -144,27 +177,14 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
                     ),
                 )
 
-            if self.mutability_modifier is not None:
-                errors.append(
-                    InvalidCompileTimeMutabilityModifierError.Create(
-                        region=self.regions__.mutability_modifier,
-                    ),
-                )
-
         elif (
             parser_info_type == ParserInfoType.Standard
             or parser_info_type == ParserInfoType.Unknown
         ):
-            if is_instantiated_type and self.mutability_modifier is None:
+            if not isinstance(self.value, str):
                 errors.append(
-                    MutabilityModifierRequiredError.Create(
-                        region=self.regions__.self__,
-                    ),
-                )
-            elif not is_instantiated_type and self.mutability_modifier is not None:
-                errors.append(
-                    InvalidStandardMutabilityModifierError.Create(
-                        region=self.regions__.mutability_modifier,
+                    InvalidStandardTypeError.Create(
+                        region=self.regions__.value,
                     ),
                 )
 
@@ -175,21 +195,17 @@ class FuncOrTypeExpressionParserInfo(ExpressionParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
     @Interface.override
-    def ValidateAsExpression(self) -> None:
-        raise ErrorException(
-            InvalidExpressionError.Create(
-                self.regions__.self__,
-            ),
-        )
+    def _InitConfigurationImpl(*args, **kwargs):  # pylint: disable=unused-argument
+        # Nothing to do here
+        yield
 
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
     @Interface.override
-    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        if self.templates:
-            yield "templates", self.templates  # type: ignore
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        assert self.templates is None
+        assert self.constraints is None
 
-        if self.constraints:
-            yield "constraints", self.constraints  # type: ignore
+        return (None, None, )

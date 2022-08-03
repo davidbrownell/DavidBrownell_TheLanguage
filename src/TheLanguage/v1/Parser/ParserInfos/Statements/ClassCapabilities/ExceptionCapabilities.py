@@ -30,7 +30,7 @@ with InitRelativeImports():
     from .ClassCapabilities import (
         ClassCapabilities as _ClassCapabilities,
         ClassModifier,
-        MethodModifier,
+        MethodHierarchyModifier,
         MutabilityModifier,
         VisibilityModifier,
     )
@@ -40,6 +40,7 @@ with InitRelativeImports():
 ExceptionCapabilities                       = _ClassCapabilities(
     name="Exception",
     is_instantiable=True,
+    allow_fundamental=False,
     valid_visibilities=[
         VisibilityModifier.public,
     ],
@@ -84,13 +85,13 @@ ExceptionCapabilities                       = _ClassCapabilities(
         VisibilityModifier.public,
     ],
     default_nested_class_visibility=VisibilityModifier.public,
-    valid_method_modifiers=[
-        MethodModifier.final,
-        MethodModifier.override,
-        MethodModifier.standard,
-        MethodModifier.virtual,
+    valid_method_hierarchy_modifiers=[
+        MethodHierarchyModifier.final,
+        MethodHierarchyModifier.override,
+        MethodHierarchyModifier.standard,
+        MethodHierarchyModifier.virtual,
     ],
-    default_method_modifier=MethodModifier.standard,
+    default_method_hierarchy_modifier=MethodHierarchyModifier.standard,
     valid_method_visibilities=[
         VisibilityModifier.public,
         VisibilityModifier.internal,
@@ -103,6 +104,9 @@ ExceptionCapabilities                       = _ClassCapabilities(
     ],
     default_method_mutability=MutabilityModifier.val,
     allow_static_methods=True,
+    allow_virtual_root_methods_with_templates=False,
+    valid_using_visibilities=[],
+    default_using_visibility=None,
     valid_attribute_visibilities=[
         VisibilityModifier.public,
     ],

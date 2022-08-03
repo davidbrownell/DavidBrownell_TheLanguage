@@ -18,11 +18,12 @@
 import os
 
 from enum import auto, Flag
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Generator, List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, InitVar
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,8 +33,10 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from ..Common.VisibilityModifier import VisibilityModifier
     from ..ParserInfo import ParserInfo, ParserInfoType, TranslationUnitRegion
+
+    # Convenience imports
+    from ..ParserInfo import CompileTimeInfo            # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -44,105 +47,8 @@ class ScopeFlag(Flag):
     Class                                   = auto()
     Function                                = auto()
 
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class NamedStatementTrait(object):
-    """Adds a name to the namespace"""
-
-    # ----------------------------------------------------------------------
-    name: str
-
-    visibility_param: InitVar[VisibilityModifier]
-    visibility: VisibilityModifier          = field(init=False)
-
-    allow_name_to_be_duplicated__: bool     = field(init=False, default=False)
-    name_is_ordered__: bool                 = field(init=False, default=True)
-
-    # ----------------------------------------------------------------------
-    def __post_init__(self, visibility_param):
-        object.__setattr__(self, "visibility", visibility_param)
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def RegionlessAttributesArgs() -> List[str]:
-        return [
-            "allow_name_to_be_duplicated__",
-            "name_is_ordered__",
-        ]
-
-    # ----------------------------------------------------------------------
-    @staticmethod
-    def ObjectReprImplBaseInitKwargs() -> Dict[str, Any]:
-        return {
-            "allow_name_to_be_duplicated__": None,
-            "name_is_ordered__": None,
-        }
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Methods
-    # |
-    # ----------------------------------------------------------------------
-    def _InitTraits(
-        self,
-        *,
-        allow_name_to_be_duplicated: Optional[bool]=None,
-        name_is_ordered: Optional[bool]=None,
-    ) -> None:
-        if allow_name_to_be_duplicated is not None:
-            object.__setattr__(self, "allow_name_to_be_duplicated__", allow_name_to_be_duplicated)
-        if name_is_ordered is not None:
-            object.__setattr__(self, "name_is_ordered__", name_is_ordered)
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class ScopedStatementTrait(NamedStatementTrait):
-    """Add to a statement when it introduces a new scope"""
-    pass
-
-
-# ----------------------------------------------------------------------
-@dataclass(frozen=True, repr=False)
-class NewNamespaceScopedStatementTrait(ScopedStatementTrait):
-    """Add to statements to introducing new scoping rules"""
-
-    # ----------------------------------------------------------------------
-    allow_duplicate_names__: bool            = field(init=False, default=False)
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def RegionlessAttributesArgs(cls) -> List[str]:
-        return [
-            "allow_duplicate_names__",
-        ] + super(NewNamespaceScopedStatementTrait, cls).RegionlessAttributesArgs()
-
-    # ----------------------------------------------------------------------
-    @classmethod
-    def ObjectReprImplBaseInitKwargs(cls) -> Dict[str, Any]:
-        return {
-            **{
-                "allow_duplicate_names__": None,
-            },
-            **super(NewNamespaceScopedStatementTrait, cls).ObjectReprImplBaseInitKwargs(),
-        }
-
-    # ----------------------------------------------------------------------
-    # |
-    # |  Protected Methods
-    # |
-    # ----------------------------------------------------------------------
-    def _InitTraits(
-        self,
-        *,
-        allow_duplicate_names: Optional[bool]=None,
-        **kwargs,
-    ) -> None:
-        if allow_duplicate_names is not None:
-            object.__setattr__(self, "allow_duplicate_names__", allow_duplicate_names)
-
-        super(NewNamespaceScopedStatementTrait, self)._InitTraits(**kwargs)
+    # This value should never be used directly
+    Empty                                   = auto()
 
 
 # ----------------------------------------------------------------------
@@ -151,8 +57,6 @@ class StatementParserInfo(ParserInfo):
     """Abstract base class for all statements"""
 
     # ----------------------------------------------------------------------
-    scope_flags: ScopeFlag
-
     parser_info_type: InitVar[ParserInfoType]
     regions: InitVar[List[Optional[TranslationUnitRegion]]]
 
@@ -161,8 +65,9 @@ class StatementParserInfo(ParserInfo):
         self,
         parser_info_type,
         regions,
+        *,
         regionless_attributes: Optional[List[str]]=None,
-        validate=True,
+        finalize=True,
         **custom_display_funcs: Callable[[Any], Optional[Any]],
     ):
         assert parser_info_type != ParserInfoType.Unknown
@@ -170,8 +75,18 @@ class StatementParserInfo(ParserInfo):
         super(StatementParserInfo, self).__init__(
             parser_info_type,
             regions,
-            (regionless_attributes or []) + ["scope_flags", ],
-            validate,
-            scope_flags=None,                           # type: ignore
-            **custom_display_funcs,
+            **{
+                **custom_display_funcs,
+                **{
+                    "regionless_attributes": regionless_attributes or [],
+                    "finalize": finalize,
+                },
+            },
         )
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.abstractmethod
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        """Returns the scopes in which the statement can be considered valid"""
+        raise Exception("Abstract method")  # pragma: no cover

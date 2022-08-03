@@ -17,7 +17,7 @@
 
 import os
 
-from typing import Generator, List, Optional
+from typing import Dict, Generator, List, Optional
 
 from dataclasses import dataclass, InitVar
 
@@ -33,13 +33,13 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
-        NewNamespaceScopedStatementTrait,
-        ParserInfo,
         ParserInfoType,
         ScopeFlag,
         StatementParserInfo,
         TranslationUnitRegion,
     )
+
+    from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
 
     from ..Common.VisibilityModifier import VisibilityModifier
 
@@ -51,7 +51,6 @@ class RootStatementParserInfo(
     StatementParserInfo,
 ):
     # ----------------------------------------------------------------------
-    statements: Optional[List[StatementParserInfo]]
     documentation: Optional[str]
 
     # ----------------------------------------------------------------------
@@ -60,6 +59,7 @@ class RootStatementParserInfo(
         cls,
         regions: List[Optional[TranslationUnitRegion]],
         name: str,
+        statements: List[StatementParserInfo],
         *args,
         **kwargs,
     ):
@@ -68,11 +68,11 @@ class RootStatementParserInfo(
         regions.insert(0, regions[0])       # visibility
 
         return cls(  # pylint: disable=too-many-function-args
-            ScopeFlag.Root,
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             name,
             VisibilityModifier.public,      # type: ignore
+            statements,
             *args,
             **kwargs,
         )
@@ -86,30 +86,40 @@ class RootStatementParserInfo(
         *args,
         **kwargs,
     ):
-        self._InitTraits(
-            allow_duplicate_names=False,
-            allow_name_to_be_duplicated=False,
-            name_is_ordered=False,
-        )
-
-        NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
-
         StatementParserInfo.__post_init__(
             self,
             parser_info_type,
             regions,
-            regionless_attributes=NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
             *args,
             **{
                 **kwargs,
                 **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "finalize": False,
+                    "regionless_attributes": NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
+                },
             },
         )
 
+        self._InitTraits(
+            allow_duplicate_names=False,
+            allow_name_to_be_duplicated=False,
+        )
+
+        NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
+
+        self._Finalize()
+
     # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
+    @staticmethod
     @Interface.override
-    def _GenerateAcceptChildren(self) -> Generator[ParserInfo, None, None]:
-        if self.statements:
-            yield from self.statements
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Standard: ScopeFlag.Root,
+        }
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(*args, **kwargs) -> bool:
+        return True

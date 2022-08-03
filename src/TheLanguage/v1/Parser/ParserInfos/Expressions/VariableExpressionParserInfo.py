@@ -17,9 +17,13 @@
 
 import os
 
+from contextlib import contextmanager
+from typing import Any, Tuple
+
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -34,9 +38,29 @@ with InitRelativeImports():
         ParserInfoType,                     # convenience import
     )
 
+    from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
+
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class VariableExpressionParserInfo(ExpressionParserInfo):
+class VariableExpressionParserInfo(
+    SimpleExpressionTrait,
+    ExpressionParserInfo,
+):
     # ----------------------------------------------------------------------
     name: str
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(*args, **kwargs):  # pylint: disable=unused-argument
+        # Nothing to do here
+        yield
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        return (self.name, )

@@ -46,10 +46,11 @@ with InitRelativeImports():
 
 # ----------------------------------------------------------------------
 class OperatorType(Enum):
+    # Make sure to update `../../../../Grammar/PrecedenceFunc.py` when values are added.
     Multiply                                = "*"
     Divide                                  = "/"
     DivideFloor                             = "//"
-    Modulus                                 = "%"
+    Modulo                                  = "%"
     Power                                   = "**"
 
     Add                                     = "+"
@@ -70,7 +71,7 @@ class OperatorType(Enum):
     GreaterEqual                            = ">="
 
     LogicalAnd                              = "and"
-    LogicalOr                                = "or"
+    LogicalOr                               = "or"
 
 
 # ----------------------------------------------------------------------
@@ -121,7 +122,7 @@ class BinaryExpression(Expression):
             eval_type_impl, eval_impl = self._IntegerOrNumberEvalImplFactory(lambda left, right: left / right)
         elif self.operator == OperatorType.DivideFloor:
             eval_type_impl, eval_impl = self._IntegerEvalImplFactory(lambda left, right: left // right)
-        elif self.operator == OperatorType.Modulus:
+        elif self.operator == OperatorType.Modulo:
             eval_type_impl, eval_impl = self._IntegerEvalImplFactory(lambda left, right: left % right)
         elif self.operator == OperatorType.Power:
             eval_type_impl, eval_impl = self._IntegerOrNumberEvalImplFactory(lambda left, right: left ** right)

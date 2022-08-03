@@ -17,11 +17,12 @@
 
 import os
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from dataclasses import dataclass, field, InitVar
 
 import CommonEnvironment
+from CommonEnvironment.DoesNotExist import DoesNotExist
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -33,7 +34,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
-        NewNamespaceScopedStatementTrait,
         ParserInfo,
         ParserInfoType,
         ScopeFlag,
@@ -41,11 +41,13 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
+    from .Traits.ConstrainedStatementTrait import ConstrainedStatementTrait
+    from .Traits.NewNamespaceScopedStatementTrait import NewNamespaceScopedStatementTrait
+    from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
+
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
     from ..Common.ClassModifier import ClassModifier
-    from ..Common.ConstraintParametersParserInfo import ConstraintParameterParserInfo
-    from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
@@ -54,12 +56,32 @@ with InitRelativeImports():
 
 
 # ----------------------------------------------------------------------
-MultipleExtendsError                        = CreateError(
-    "'{type}' types may only extend one other type",
-    type=str,
+CycleDetectedError                          = CreateError(
+    "An inheritance cycle was detected with '{name}'",
+    name=str,
 )
 
+StatementsRequiredError                     = CreateError(
+    "Statements are required",
+)
 
+InvalidReservedNameError                    = CreateError(
+    "The name '{name}' is reserved",
+    name=str,
+)
+
+# TODO: Use this
+DuplicateUsingStatementError                = CreateError(
+    "A using statement for '{class_name}' and '{type_name}' has already been defined",
+    class_name=str,
+    type_name=str,
+    prev_region=TranslationUnitRegion,
+)
+
+# ----------------------------------------------------------------------
+# |
+# |  Public Types
+# |
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ClassStatementDependencyParserInfo(ParserInfo):
@@ -87,14 +109,16 @@ class ClassStatementDependencyParserInfo(ParserInfo):
         super(ClassStatementDependencyParserInfo, self).__init__(
             ParserInfoType.Standard,
             regions,
-            regionless_attributes=["type", ],
+            **{
+                "regionless_attributes": ["type", ],
+            },
         )
 
         # Validate
         errors: List[Error] = []
 
         try:
-            self.type.ValidateAsType(
+            self.type.InitializeAsType(
                 self.parser_info_type__,
                 is_instantiated_type=False,
             )
@@ -115,6 +139,8 @@ class ClassStatementDependencyParserInfo(ParserInfo):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ClassStatementParserInfo(
+    ConstrainedStatementTrait,
+    TemplatedStatementTrait,
     NewNamespaceScopedStatementTrait,
     StatementParserInfo,
 ):
@@ -133,18 +159,14 @@ class ClassStatementParserInfo(
 
     documentation: Optional[str]
 
-    templates: Optional[TemplateParametersParserInfo]
-    constraints: Optional[ConstraintParameterParserInfo]
-
     extends: Optional[List[ClassStatementDependencyParserInfo]]
     implements: Optional[List[ClassStatementDependencyParserInfo]]
     uses: Optional[List[ClassStatementDependencyParserInfo]]
 
-    statements: List[StatementParserInfo]
-
     constructor_visibility_param: InitVar[Optional[VisibilityModifier]]
     constructor_visibility: VisibilityModifier          = field(init=False)
 
+    is_fundamental: Optional[bool]
     is_abstract: Optional[bool]
     is_final: Optional[bool]
 
@@ -157,7 +179,6 @@ class ClassStatementParserInfo(
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             *args,
@@ -170,33 +191,42 @@ class ClassStatementParserInfo(
         parser_info_type,
         regions,
         visibility_param,
+        templates_param,
+        constraints_param,
         class_modifier_param,
         constructor_visibility_param,
     ):
-        self._InitTraits(
-            allow_duplicate_names=True,
-            allow_name_to_be_duplicated=False,
-            name_is_ordered=False,
-        )
-
         StatementParserInfo.__post_init__(
             self,
             parser_info_type,
             regions,
-            regionless_attributes=[
-                "parent_class_capabilities",
-                "class_capabilities",
-                "templates",
-                "constraints",
-            ] + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs(),
-            validate=False,
             **{
                 **{
-                    "parent_class_capabilities": lambda value: None if value is None else value.name,
-                    "class_capabilities": lambda value: value.name,
+                    **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                    **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                    **ConstrainedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                    **{
+                        "parent_class_capabilities": lambda value: None if value is None else value.name,
+                        "class_capabilities": lambda value: value.name,
+                    },
                 },
-                **NewNamespaceScopedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **{
+                    "regionless_attributes": [
+                        "parent_class_capabilities",
+                        "class_capabilities",
+                    ]
+                        + NewNamespaceScopedStatementTrait.RegionlessAttributesArgs()
+                        + TemplatedStatementTrait.RegionlessAttributesArgs()
+                        + ConstrainedStatementTrait.RegionlessAttributesArgs()
+                    ,
+                    "finalize": False,
+                },
             },
+        )
+
+        self._InitTraits(
+            allow_duplicate_names=True,
+            allow_name_to_be_duplicated=False,
         )
 
         # Set defaults
@@ -209,6 +239,8 @@ class ClassStatementParserInfo(
             object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
         NewNamespaceScopedStatementTrait.__post_init__(self, visibility_param)
+        TemplatedStatementTrait.__post_init__(self, templates_param)
+        ConstrainedStatementTrait.__post_init__(self, constraints_param)
 
         if class_modifier_param is None:
             class_modifier_param = self.class_capabilities.default_class_modifier
@@ -235,21 +267,10 @@ class ClassStatementParserInfo(
                     object.__setattr__(dependency, "visibility", default_visibility)
                     object.__setattr__(dependency.regions__, "visibility", dependency.regions__.self__)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         # Validate
         errors: List[Error] = []
-
-        if self.extends and len(self.extends) > 1:
-            errors.append(
-                MultipleExtendsError.Create(
-                    region=TranslationUnitRegion.Create(
-                        self.extends[1].regions__.self__.begin,
-                        self.extends[-1].regions__.self__.end,
-                    ),
-                    type=self.class_capabilities.name,
-                ),
-            )
 
         try:
             self.class_capabilities.ValidateClassStatementCapabilities(
@@ -273,6 +294,13 @@ class ClassStatementParserInfo(
                     ),
                 )
 
+        if self.statements is None:
+            errors.append(
+                StatementsRequiredError.Create(
+                    region=self.regions__.self__,
+                ),
+            )
+
         # TODO: Create default special methods as necessary
         # TODO: Create a static 'Create' method if one does not already exist
 
@@ -280,10 +308,29 @@ class ClassStatementParserInfo(
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Standard: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+        }
+
     # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(
+        scope_flag: ScopeFlag,
+    ) -> bool:
+        return bool(scope_flag & ScopeFlag.Function)
+
+    # ----------------------------------------------------------------------
+    # |
+    # |  Private Methods
+    # |
     # ----------------------------------------------------------------------
     @Interface.override
     def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        # TODO: The functionality for templates and constraints should eventually live in the traits class
         if self.templates:
             yield "templates", self.templates  # type: ignore
 
@@ -301,9 +348,11 @@ class ClassStatementParserInfo(
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def _GenerateAcceptChildren(self) -> ParserInfo._GenerateAcceptChildrenResultType:  # pylint: disable=protected-access
-        yield from self.statements
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        assert self.templates is None
+        assert self.constraints is None
+        assert self.extends is None
+        assert self.implements is None
+        assert self.uses is None
 
-
-# TODO: Not valid to have a protected class without a class ancestor
-# TODO: Ensure that all contents have mutability values consistent with the class decoration
+        return ()

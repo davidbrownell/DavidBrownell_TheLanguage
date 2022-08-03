@@ -37,21 +37,27 @@ def test_AllDefaults():
     CompareResultsFromFile(str(ExecuteParserInfo(
         textwrap.dedent(
             """\
+            mixin Mixin:
+                pass
+
+            interface Interface:
+                pass
+
             class Simple:
                 pass
 
             class WithExtends
-                extends Extends1
+                extends Simple
             :
                 pass
 
             class WithUses
-                uses Uses1
+                uses Mixin
             :
                 pass
 
             class WithImplements
-                implements Implements1
+                implements Interface
             :
                 pass
             """,
@@ -65,9 +71,10 @@ def test_Visibility():
     CompareResultsFromFile(str(ExecuteParserInfo(
         textwrap.dedent(
             """\
-            public class PublicClass: pass
-            internal class InternalClass: pass
-            private class PrivateClass: pass
+            class Outer:
+                public class PublicClass: pass
+                protected class InternalClass: pass
+                private class PrivateClass: pass
             """,
         ),
         include_fundamental_types=False,
