@@ -172,7 +172,7 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
             self,
             **{
                 **{
-                    "unique_id__": None,
+                    "unique_id___": None,
                     "is_compile_time__": None,
                     "is_disabled__": None,
                     "translation_unit__": None,
@@ -191,7 +191,7 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
         self,
         other: "ParserInfo",
     ) -> bool:
-        return self.unique_id__ == other.unique_id__
+        return self.unique_id___ == other.unique_id___
 
     # ----------------------------------------------------------------------
     def __ne__(
@@ -202,7 +202,7 @@ class ParserInfo(Interface.Interface, ObjectReprImplBase):
 
     # ----------------------------------------------------------------------
     @property
-    def unique_id__(self) -> Tuple[Any, ...]:
+    def unique_id___(self) -> Tuple[Any, ...]:
         assert self._unique_id is not None  # type: ignore  # pylint: disable=no-member
         return self._unique_id  # type: ignore  # pylint: disable=no-member
 
@@ -530,5 +530,5 @@ class _UniqueIdVisitor(ParserInfoVisitorHelper):
 
             return
 
-        self._child_unique_ids.append(parser_info.unique_id__)
+        self._child_unique_ids.append(parser_info.unique_id___)
         yield VisitResult.SkipAll

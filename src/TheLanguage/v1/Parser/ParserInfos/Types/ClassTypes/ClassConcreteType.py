@@ -498,7 +498,7 @@ class ClassConcreteType(ConcreteType):
         # of compiling fundamental types.
         if (
             isinstance(other, ClassConcreteType)
-            and self.parser_info.unique_id__ == other.parser_info.unique_id__
+            and self.parser_info.unique_id___ == other.parser_info.unique_id___
             and self._resolved_template_arguments_id == other._resolved_template_arguments_id  # pylint: disable=protected-access
         ):
             return True

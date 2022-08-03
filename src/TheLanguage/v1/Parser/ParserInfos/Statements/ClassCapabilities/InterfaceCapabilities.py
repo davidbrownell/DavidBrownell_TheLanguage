@@ -45,10 +45,9 @@ InterfaceCapabilities                       = _ClassCapabilities(
         VisibilityModifier.public,
         VisibilityModifier.internal,
         VisibilityModifier.protected,
-        # No private, as what does it mean to be a private and support runtime polymorphism;
-        # probably looking for a "concept" instead.
+        VisibilityModifier.private,
     ],
-    default_visibility=VisibilityModifier.protected,
+    default_visibility=VisibilityModifier.private,
     valid_class_modifiers=[
         ClassModifier.immutable,
         ClassModifier.mutable,

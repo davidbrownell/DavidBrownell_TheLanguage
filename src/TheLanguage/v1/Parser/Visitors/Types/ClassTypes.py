@@ -30,17 +30,16 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .TypeResolver import TypeResolver
     from .Impl.GenericTypeImpl import GenericTypeImpl
 
     from ...ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
 
-    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo
+    from ...ParserInfos.Statements.ClassStatementParserInfo import ClassStatementParserInfo, StatementParserInfo
 
     from ...ParserInfos.Types.ConcreteType import ConcreteType
 
     from ...ParserInfos.Types.ClassTypes.ClassConcreteType import ClassConcreteType
-
+    from ...ParserInfos.Types.TypeResolver import TypeResolver
 
 # ----------------------------------------------------------------------
 class ClassGenericType(GenericTypeImpl[ClassStatementParserInfo]):
@@ -49,14 +48,15 @@ class ClassGenericType(GenericTypeImpl[ClassStatementParserInfo]):
     @Interface.override
     def _CreateConcreteType(
         updated_resolver: TypeResolver,
+        parser_info: StatementParserInfo,
         expression_parser_info: FuncOrTypeExpressionParserInfo,
         resolved_template_arguments_id: Any,
     ) -> ConcreteType:
-        assert isinstance(updated_resolver.namespace.parser_info, ClassStatementParserInfo), updated_resolver.namespace.parser_info
+        assert isinstance(parser_info, ClassStatementParserInfo), parser_info
 
         return ClassConcreteType(
             updated_resolver,
-            updated_resolver.namespace.parser_info,
+            parser_info,
             expression_parser_info,
             resolved_template_arguments_id,
         )

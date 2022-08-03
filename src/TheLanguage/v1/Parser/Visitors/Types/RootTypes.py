@@ -39,6 +39,11 @@ with InitRelativeImports():
     from ...ParserInfos.Types.ConcreteType import ConcreteType
     from ...ParserInfos.Types.GenericType import GenericType
 
+    # The following imports aren't used, but are necessary to work around wonkiness with circular dependencies
+    from . import ClassTypes                # pylint: disable=unused-import
+    from . import FuncDefinitionTypes       # pylint: disable=unused-import
+    from . import TypeAliasTypes            # pylint: disable=unused-import
+
 
 # ----------------------------------------------------------------------
 class RootConcreteType(ConcreteType):

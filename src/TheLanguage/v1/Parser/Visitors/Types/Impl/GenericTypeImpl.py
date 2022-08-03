@@ -156,8 +156,11 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
                 self._type_resolver.root_type_resolvers,
             )
 
+            assert isinstance(type_resolver.namespace.parser_info, StatementParserInfo), type_resolver.namespace.parser_info
+
             concrete_type = self._CreateConcreteType(
                 type_resolver,
+                type_resolver.namespace.parser_info,
                 expression_parser_info,
                 cache_key,
             )
@@ -188,6 +191,7 @@ class GenericTypeImpl(GenericTypeInterface, Generic[ParserInfoT]):
     @Interface.abstractmethod
     def _CreateConcreteType(
         updated_resolver: TypeResolver,
+        parser_info: StatementParserInfo,
         expression_parser_info: FuncOrTypeExpressionParserInfo,
         resolved_template_arguments_id: Any,
     ) -> ConcreteType:

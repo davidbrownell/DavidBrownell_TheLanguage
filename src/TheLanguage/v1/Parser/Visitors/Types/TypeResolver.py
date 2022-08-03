@@ -16,6 +16,7 @@
 """Contains the TypeResolver object"""
 
 import os
+import sys
 import threading
 
 from typing import Any, Dict, Generator, List, Optional, Tuple, Union
@@ -237,23 +238,19 @@ class TypeResolver(TypeResolverInterface):
     ) -> GenericType:
         assert self.is_finalized is True
 
+        # Working hard to avoid circular dependencies here. This is in need of a refactor.
+        ClassGenericType = sys.modules["v1.Parser.Visitors.Types.ClassTypes"].ClassGenericType
+        FuncDefinitionGenericType = sys.modules["v1.Parser.Visitors.Types.FuncDefinitionTypes"].FuncDefinitionGenericType
+        TypeAliasGenericType = sys.modules["v1.Parser.Visitors.Types.TypeAliasTypes"].TypeAliasGenericType
+
         # ----------------------------------------------------------------------
         def CreateGenericType() -> GenericType:
             if isinstance(namespace.parser_info, ClassStatementParserInfo):
-                from .ClassTypes import ClassGenericType
-
                 generic_type_class = ClassGenericType
-
             elif isinstance(namespace.parser_info, FuncDefinitionStatementParserInfo):
-                from .FuncDefinitionTypes import FuncDefinitionGenericType
-
                 generic_type_class = FuncDefinitionGenericType
-
             elif isinstance(namespace.parser_info, TypeAliasStatementParserInfo):
-                from .TypeAliasTypes import TypeAliasGenericType
-
                 generic_type_class = TypeAliasGenericType
-
             else:
                 assert False, namespace.parser_info  # pragma: no cover
 

@@ -305,4 +305,4 @@ class Visitor(object):
     def _GetStandardTypeName(
         parser_info,
     ) -> str:
-        return parser_info.value.name
+        return parser_info.value

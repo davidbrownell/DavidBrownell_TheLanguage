@@ -254,7 +254,7 @@ InvalidNestedClassVisibilityError           = CreateError(
     visibility=VisibilityModifier,
     visibility_str=str,
     valid_visibilities=List[VisibilityModifier],
-    valid_visibility_str=str,
+    valid_visibilities_str=str,
 )
 
 UsingVisibilityRequiredError                = CreateError(
