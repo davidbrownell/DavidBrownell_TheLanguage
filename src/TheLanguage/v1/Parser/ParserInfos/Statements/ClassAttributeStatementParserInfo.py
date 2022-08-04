@@ -17,11 +17,12 @@
 
 import os
 
-from typing import List, Optional, TYPE_CHECKING
+from typing import Dict, List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -31,34 +32,29 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
 
 with InitRelativeImports():
-    from .StatementParserInfo import ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+    from .StatementParserInfo import ParserInfo, ParserInfoType, ScopeFlag, StatementParserInfo, TranslationUnitRegion
+
     from .ClassCapabilities.ClassCapabilities import ClassCapabilities
 
-    from ..Common.VisibilityModifier import VisibilityModifier
-
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
+    from ..Traits.NamedTrait import NamedTrait
 
     from ...Error import Error, ErrorException
-
-    if TYPE_CHECKING:
-        # TODO: I'm not sure that this should be used
-        from ...Visitors.NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class ClassAttributeStatementParserInfo(StatementParserInfo):
+class ClassAttributeStatementParserInfo(
+    NamedTrait,
+    StatementParserInfo,
+):
     """Attribute of a class"""
 
     # ----------------------------------------------------------------------
     class_capabilities: ClassCapabilities
 
-    visibility_param: InitVar[Optional[VisibilityModifier]]
-    visibility: VisibilityModifier          = field(init=False)
-
     type: ExpressionParserInfo
 
-    name: str
     documentation: Optional[str]
 
     initialized_value: Optional[ExpressionParserInfo]
@@ -67,7 +63,8 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
     no_initialization: Optional[bool]
     no_serialize: Optional[bool]
     no_compare: Optional[bool]
-    is_override: Optional[bool]
+
+    # TODO: If 'is_override', but be covariant
 
     # ----------------------------------------------------------------------
     @classmethod
@@ -78,7 +75,6 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Class,
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             *args,
@@ -87,18 +83,28 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, parser_info_type, regions, visibility_param):
-        super(ClassAttributeStatementParserInfo, self).__post_init__(
+        StatementParserInfo.__post_init__(
+            self,
             parser_info_type,
             regions,
-            regionless_attributes=[
-                "class_capabilities",
-                "type",
-                "initialized_value",
-            ],
-            validate=False,
-            class_capabilities=lambda value: value.name,
-            type__=None,                    # type: ignore
-            is_type__initialized__=None,    # type: ignore
+            **{
+                **{
+                    **NamedTrait.ObjectReprImplBaseInitKwargs(),
+                    **{
+                        "class_capabilities": lambda value: value.name,
+                    },
+                },
+                **{
+                    "regionless_attributes": [
+                        "class_capabilities",
+                        "type",
+                        "initialized_value",
+                    ]
+                        + NamedTrait.RegionlessAttributesArgs()
+                    ,
+                    "finalize": False,
+                },
+            },
         )
 
         # Set defaults
@@ -108,15 +114,15 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
 
         object.__setattr__(self, "visibility", visibility_param)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         # Validate
         errors: List[Error] = []
 
         for func in [
-            # TODO: lambda: self.class_capabilities.ValidateClassAttributeStatementCapabilities(self),
-            lambda: self.type.ValidateAsType(self.parser_info_type__),
-            self.initialized_value.ValidateAsExpression if self.initialized_value is not None else lambda: None,
+            lambda: self.class_capabilities.ValidateClassAttributeStatementCapabilities(self),
+            lambda: self.type.InitializeAsType(self.parser_info_type__),
+            self.initialized_value.InitializeAsExpression if self.initialized_value is not None else lambda: None,
         ]:
             try:
                 func()
@@ -127,26 +133,25 @@ class ClassAttributeStatementParserInfo(StatementParserInfo):
             raise ErrorException(*errors)
 
     # ----------------------------------------------------------------------
-    # This method is invoked during validation
-    def InitType(
-        self,
-        value: "ParsedNamespaceInfo",
-    ) -> None:
-        assert not self.is_type__initialized__
-        object.__setattr__(self, self.__class__._TYPE_ATTRIBUTE_NAME, value)  # pylint: disable=protected-access
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Standard: ScopeFlag.Class,
+        }
 
     # ----------------------------------------------------------------------
-    @property
-    def type__(self) -> "ParsedNamespaceInfo":
-        return getattr(self, self.__class__._TYPE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
-
-    @property
-    def is_type__initialized__(self) -> bool:
-        return hasattr(self, self.__class__._TYPE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(*args, **kwargs) -> bool:  # pylint: disable=unused-argument
+        return False
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
     # ----------------------------------------------------------------------
-    _TYPE_ATTRIBUTE_NAME                    = "_type"
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "type", self.type
+
+        if self.initialized_value is not None:
+            yield "initialized_value", self.initialized_value

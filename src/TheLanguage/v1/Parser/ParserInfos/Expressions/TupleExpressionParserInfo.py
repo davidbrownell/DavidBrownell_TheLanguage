@@ -33,10 +33,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfo, ParserInfoType, TranslationUnitRegion
-    from .FuncOrTypeExpressionParserInfo import (
-        MutabilityModifierRequiredError,
-        InvalidStandardMutabilityModifierError,
-    )
 
     from ..Common.MutabilityModifier import MutabilityModifier
 
@@ -76,8 +72,12 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(TupleExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=["types", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": ["types", ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------
@@ -92,16 +92,23 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
         return True
 
     # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsType(
+    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
+        yield "types", self.types  # type: ignore
+
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _InitializeAsTypeImpl(
         self,
-        parser_info_type: ParserInfoType,               # pylint: disable=unused-argument
+        parser_info_type: ParserInfoType,   # pylint: disable=unused-argument
         *,
-        is_instantiated_type: Optional[bool]=True,      # pylint: disable=unused-argument
+        is_instantiated_type: bool=True,    # pylint: disable=unused-argument
     ):
         errors: List[Error] = []
 
-        if ParserInfoType.IsCompileTime(parser_info_type):
+        if parser_info_type.IsCompileTime():
             errors.append(
                 CompileTimeTupleError.Create(
                     region=self.regions__.self__,
@@ -112,27 +119,19 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
             parser_info_type == ParserInfoType.Standard
             or parser_info_type == ParserInfoType.Unknown
         ):
+            try:
+                MutabilityModifier.Validate(self, parser_info_type, is_instantiated_type)
+            except ErrorException as ex:
+                errors += ex.errors
+
             for the_type in self.types:
                 try:
-                    the_type.ValidateAsType(
+                    the_type.InitializeAsType(
                         parser_info_type,
                         is_instantiated_type=True,
                     )
                 except ErrorException as ex:
                     errors += ex.errors
-
-            if is_instantiated_type and self.mutability_modifier is None:
-                errors.append(
-                    MutabilityModifierRequiredError.Create(
-                        region=self.regions__.self__,
-                    ),
-                )
-            elif not is_instantiated_type and self.mutability_modifier is not None:
-                errors.append(
-                    InvalidStandardMutabilityModifierError.Create(
-                        region=self.regions__.mutability_modifier,
-                    ),
-                )
 
         else:
             assert False, parser_info_type  # pragma: no cover
@@ -142,12 +141,12 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     @Interface.override
-    def ValidateAsExpression(self) -> None:
+    def _InitializeAsExpressionImpl(self) -> None:
         errors: List[Error] = []
 
         for the_type in self.types:
             try:
-                the_type.ValidateAsExpression()
+                the_type.InitializeAsExpression()
             except ErrorException as ex:
                 errors += ex.errors
 
@@ -160,10 +159,3 @@ class TupleExpressionParserInfo(ExpressionParserInfo):
 
         if errors:
             raise ErrorException(*errors)
-
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    # ----------------------------------------------------------------------
-    @Interface.override
-    def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-        yield "types", self.types  # type: ignore

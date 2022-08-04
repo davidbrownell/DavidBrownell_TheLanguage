@@ -64,7 +64,8 @@ with InitRelativeImports():
         GetParserInfo,
     )
 
-    from ...Parser.ParserInfos.Common.MethodModifier import MethodModifier
+    from ...Parser.ParserInfos.Common.FunctionModifier import FunctionModifier
+    from ...Parser.ParserInfos.Common.MethodHierarchyModifier import MethodHierarchyModifier
     from ...Parser.ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
     from ...Parser.ParserInfos.Statements.FuncDefinitionStatementParserInfo import (
         ExpressionParserInfo,
@@ -99,6 +100,7 @@ class FuncDefinitionStatement(GrammarPhrase):
         "__Index__": OperatorType.Index,
         "__Iter__": OperatorType.Iter,
         "__Cast?__": OperatorType.Cast,
+        "__Assign?__": OperatorType.Assign,
         "__Negative?__": OperatorType.Negative,
         "__Positive?__": OperatorType.Positive,
         "__BitFlip?__": OperatorType.BitFlip,
@@ -117,9 +119,9 @@ class FuncDefinitionStatement(GrammarPhrase):
         "__LessEqual__": OperatorType.LessEqual,
         "__Equal__": OperatorType.Equal,
         "__NotEqual__": OperatorType.NotEqual,
-        "__BitAnd?__": OperatorType.BitAnd,
-        "__BitXOr?__": OperatorType.BitXor,
-        "__BitOr?__": OperatorType.BitOr,
+        "__BitAnd?__": OperatorType.BitwiseAnd,
+        "__BitXOr?__": OperatorType.BitwiseXor,
+        "__BitOr?__": OperatorType.BitwiseOr,
         "__Contains__": OperatorType.Contains,
         "__NotContains__": OperatorType.NotContains,
         "__Not__": OperatorType.Not,
@@ -135,9 +137,9 @@ class FuncDefinitionStatement(GrammarPhrase):
         "__SubtractInplace?__": OperatorType.SubtractInplace,
         "__BitShiftLeftInplace?__": OperatorType.BitShiftLeftInplace,
         "__BitShiftRightInplace?__": OperatorType.BitShiftRightInplace,
-        "__BitAndInplace?__": OperatorType.BitAndInplace,
-        "__BitXOrInplace?__": OperatorType.BitXorInplace,
-        "__BitOrInplace?__": OperatorType.BitOrInplace,
+        "__BitAndInplace?__": OperatorType.BitwiseAndInplace,
+        "__BitXOrInplace?__": OperatorType.BitwiseXorInplace,
+        "__BitOrInplace?__": OperatorType.BitwiseOrInplace,
     }
 
     assert len(OPERATOR_MAP) == len(OperatorType), (len(OPERATOR_MAP), len(OperatorType))
@@ -162,7 +164,7 @@ class FuncDefinitionStatement(GrammarPhrase):
                 # <method_type_modifier>?
                 OptionalPhraseItem(
                     name="Method Modifier",
-                    item=CreateMethodModifierPhraseItem(),
+                    item=CreateMethodHierarchyModifierPhraseItem(),
                 ),
 
                 # <return_type>
@@ -224,17 +226,11 @@ class FuncDefinitionStatement(GrammarPhrase):
             is_exceptional_node = None
             is_exceptional_info = None
 
-            is_generator_node = None
-            is_generator_info = None
-
-            is_reentrant_node = None
-            is_reentrant_info = None
-
-            is_scoped_node = None
-            is_scoped_info = None
-
             is_static_node = None
             is_static_info = None
+
+            resets_hierarchy_node = None
+            resets_hierarchy_info = None
 
             attributes_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[0])))
             if attributes_node is not None:
@@ -247,18 +243,12 @@ class FuncDefinitionStatement(GrammarPhrase):
                     elif attribute.name == "Exceptional":
                         is_exceptional_node = attribute.leaf
                         is_exceptional_info = True
-                    elif attribute.name == "Generator":
-                        is_generator_node = attribute.leaf
-                        is_generator_info = True
-                    elif attribute.name == "Reentrant":
-                        is_reentrant_node = attribute.leaf
-                        is_reentrant_info = True
-                    elif attribute.name == "Scoped":
-                        is_scoped_node = attribute.leaf
-                        is_scoped_info = True
                     elif attribute.name == "Static":
                         is_static_node = attribute.leaf
                         is_static_info = True
+                    elif attribute.name == "ResetsHierarchy":
+                        resets_hierarchy_node = attribute.leaf
+                        resets_hierarchy_info = True
                     else:
                         errors.append(
                             AttributesFragment.UnsupportedAttributeError.Create(
@@ -289,7 +279,7 @@ class FuncDefinitionStatement(GrammarPhrase):
             if method_type_modifier_node is None:
                 method_type_modifier_info = None
             else:
-                method_type_modifier_info = ExtractMethodModifier(method_type_modifier_node)
+                method_type_modifier_info = ExtractMethodHierarchyModifier(method_type_modifier_node)
 
             # <return_type>
             return_type_node = cast(AST.Node, ExtractDynamic(cast(AST.Node, nodes[3])))
@@ -327,6 +317,10 @@ class FuncDefinitionStatement(GrammarPhrase):
 
             # TODO: Get exceptional information from name
             # TODO: Get visibility information from name
+            # TODO: Get FunctionModifier value
+
+            function_modifier_node = None
+            function_modifier_info = None
 
             # <template_parameters>?
             template_parameters_node = cast(Optional[AST.Node], ExtractOptional(cast(Optional[AST.Node], nodes[6])))
@@ -380,36 +374,34 @@ class FuncDefinitionStatement(GrammarPhrase):
                     node,
                     name_leaf,
                     visibility_node,
+                    statements_node,
+                    function_modifier_node,
                     parameters_node,
                     mutability_modifier_node,
                     method_type_modifier_node,
                     docstring_leaf,
                     captured_variables_node,
-                    statements_node,
                     is_deferred_node,
                     is_exceptional_node,
-                    is_generator_node,
-                    is_reentrant_node,
-                    is_scoped_node,
                     is_static_node,
+                    resets_hierarchy_node,
                 ),
                 name_info,
                 visibility_info,
+                statements_info,
+                template_parameters_info,
                 ClassStatement.GetParentClassCapabilities(node),
+                function_modifier_info,
                 parameters_info,
                 mutability_modifier_info,
                 method_type_modifier_info,
                 return_type_info,
                 docstring_info,
-                template_parameters_info,
                 captured_variables_info,
-                statements_info,
                 is_deferred_info,
                 is_exceptional_info,
-                is_generator_info,
-                is_reentrant_info,
-                is_scoped_info,
                 is_static_info,
+                resets_hierarchy_info,
             )
 
         # ----------------------------------------------------------------------
@@ -418,5 +410,5 @@ class FuncDefinitionStatement(GrammarPhrase):
 
 
 # ----------------------------------------------------------------------
-CreateMethodModifierPhraseItem              = ModifierImpl.StandardCreatePhraseItemFuncFactory(MethodModifier)
-ExtractMethodModifier                       = ModifierImpl.StandardExtractFuncFactory(MethodModifier)
+CreateMethodHierarchyModifierPhraseItem     = ModifierImpl.StandardCreatePhraseItemFuncFactory(MethodHierarchyModifier)
+ExtractMethodHierarchyModifier              = ModifierImpl.StandardExtractFuncFactory(MethodHierarchyModifier)

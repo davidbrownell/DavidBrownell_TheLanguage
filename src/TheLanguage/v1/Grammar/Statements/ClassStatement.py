@@ -340,6 +340,9 @@ class ClassStatement(GrammarPhrase):
             constructor_visibility_node = None
             constructor_visibility_info = None
 
+            is_fundamental_node = None
+            is_fundamental_info = None
+
             is_abstract_node = None
             is_abstract_info = None
 
@@ -366,6 +369,9 @@ class ClassStatement(GrammarPhrase):
 
                         # TODO: Get the value (potentially generate InvalidArgumentError)
 
+                    elif attribute.name == "Fundamental":
+                        is_fundamental_node = attribute.leaf
+                        is_fundamental_info = True
                     elif attribute.name == "Abstract":
                         is_abstract_node = attribute.leaf
                         is_abstract_info = True
@@ -499,29 +505,31 @@ class ClassStatement(GrammarPhrase):
                     node,
                     name_node,
                     visibility_node,
+                    statements_node,
                     class_modifier_node,
                     docstring_node,
                     all_dependencies_info.get(DependencyType.extends, [None])[0],
                     all_dependencies_info.get(DependencyType.implements, [None])[0],
                     all_dependencies_info.get(DependencyType.uses, [None])[0],
-                    statements_node,
                     constructor_visibility_node,
+                    is_fundamental_node,
                     is_abstract_node,
                     is_final_node,
                 ),
                 name_info,
                 visibility_info,
+                statements_info,
+                templates_info,
+                constraints_info,
                 cls.GetParentClassCapabilities(node),
                 class_capabilities,
                 class_modifier_info,
                 docstring_info,
-                templates_info,
-                constraints_info,
                 all_dependencies_info.get(DependencyType.extends, [None, None])[1],
                 all_dependencies_info.get(DependencyType.implements, [None, None])[1],
                 all_dependencies_info.get(DependencyType.uses, [None, None])[1],
-                statements_info,
                 constructor_visibility_info,
+                is_fundamental_info,
                 is_abstract_info,
                 is_final_info,
             )

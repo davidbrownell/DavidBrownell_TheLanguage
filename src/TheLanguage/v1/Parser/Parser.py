@@ -15,13 +15,17 @@
 # ----------------------------------------------------------------------
 """Creates and extracts parser information from nodes"""
 
+import importlib
 import os
 import traceback
+import sys
 
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import ExitStack
 from typing import Any, Callable, cast, Dict, List, Optional, Tuple, TypeVar, Union
 
 import CommonEnvironment
+from CommonEnvironment import FileSystem
 from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
@@ -33,7 +37,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .Error import CreateError, Error, ErrorException, TranslationUnitRegion
-    from .Helpers import MiniLanguageHelpers
 
     from .MiniLanguage.Types.BooleanType import BooleanType                 # pylint: disable=unused-import
     from .MiniLanguage.Types.CharacterType import CharacterType             # pylint: disable=unused-import
@@ -44,10 +47,11 @@ with InitRelativeImports():
     from .MiniLanguage.Types.Type import Type as MiniLanguageType
     from .MiniLanguage.Types.VariantType import VariantType                 # pylint: disable=unused-import
 
-    from .ParserInfos.Statements.RootStatementParserInfo import ParserInfo, RootStatementParserInfo
+    from .ParserInfos.ParserInfo import CompileTimeInfo, ParserInfo
+    from .ParserInfos.Statements.RootStatementParserInfo import StatementParserInfo, RootStatementParserInfo
 
-    from .Visitors.PassOneVisitor.Visitor import Visitor as PassOneVisitor
-    from .Visitors.PassTwoVisitor.Visitor import Visitor as PassTwoVisitor
+    from .Visitors.PassOneVisitor import PassOneVisitor
+    from .Visitors.PassTwoVisitor import PassTwoVisitor
 
     from ..Lexer.Lexer import AST, Phrase as LexPhrase
 
@@ -216,8 +220,8 @@ def Parse(
 
             return RootStatementParserInfo.Create(
                 CreateRegions(root, statements_node, docstring_node),
-                names[1],
-                statements,
+                os.path.splitext(names[1])[0],
+                cast(List[StatementParserInfo], statements),
                 docstring_info,
             )
         except ErrorException as ex:
@@ -233,7 +237,7 @@ def Parse(
 
 
 # ----------------------------------------------------------------------
-def Validate(
+def ValidateExpressionTypes(
     workspaces: Dict[
         str,                                # workspace root
         Dict[
@@ -258,68 +262,95 @@ def Validate(
     ]
 ]:
     mini_language_configuration_values = {
-        k: MiniLanguageHelpers.CompileTimeInfo(v[0], v[1], None)
+        k: CompileTimeInfo(v[0], v[1])
         for k, v in configuration_values.items()
     }
 
-    # ----------------------------------------------------------------------
-    # |  Pass 1
-    with PassOneVisitor.ScopedExecutor(
-        workspaces,
-        mini_language_configuration_values,
-        include_fundamental_types=include_fundamental_types,
-    ) as executor:
-        results = _Execute(
-            workspaces,
-            executor.Execute,
-            max_num_threads=max_num_threads,
+    with ExitStack() as exit_stack:
+        # Add all of the fundamental types to the workspaces. This content will be used to validate
+        # types, then removed so that the caller isn't impacted.
+        if include_fundamental_types:
+            generated_code_directory = os.path.realpath(os.path.join(_script_dir, "FundamentalTypes", "GeneratedCode"))
+            assert os.path.isdir(generated_code_directory), generated_code_directory
+
+            fundamental_types: Dict[str, RootStatementParserInfo] = {}
+
+            for generated_filename in FileSystem.WalkFiles(
+                generated_code_directory,
+                include_file_extensions=[".py", ],
+                exclude_file_names=["__init__.py", ],
+            ):
+                dirname, basename = os.path.split(generated_filename)
+                basename = os.path.splitext(basename)[0]
+
+                with ExitStack() as mod_exit_stack:
+                    sys.path.insert(0, dirname)
+                    mod_exit_stack.callback(lambda: sys.path.pop(0))
+
+                    mod = importlib.import_module(basename)
+
+                    assert generated_filename.startswith(generated_code_directory), (generated_filename, generated_code_directory)
+
+                    relative_path = FileSystem.TrimPath(generated_filename, generated_code_directory)
+                    relative_path = relative_path.replace(os.path.sep, ".")
+
+                    fundamental_types[relative_path] = getattr(mod, "root_parser_info")
+
+            # Add the fundamental types to the workspaces collection
+            assert _FUNDAMENTAL_TYPES_NAMESPACE_NAME not in workspaces
+            workspaces[_FUNDAMENTAL_TYPES_NAMESPACE_NAME] = fundamental_types
+
+            exit_stack.callback(lambda: workspaces.pop(_FUNDAMENTAL_TYPES_NAMESPACE_NAME))
+
+        # Pass 1
+        executor = PassOneVisitor.Executor(
+            mini_language_configuration_values,
         )
 
-        if results is None:
-            return None
+        for is_parallel, func in executor.GenerateFuncs():
+            results = _Execute(
+                workspaces,
+                func,
+                max_num_threads=max_num_threads if is_parallel else 1,
+            )
 
-        # Check for errors
-        error_data = _ExtractErrorsFromResults(results)
-        if error_data is not None:
-            return error_data  # type: ignore
+            if results is None:
+                return None
 
-        results = executor.ExecutePostprocessFuncs()
-
-        if results is None:
-            return results
-
-        error_data = _ExtractErrorsFromResults(results)
-        if error_data is not None:
-            return error_data  # type: ignore
+            # Check for errors
+            error_data = _ExtractErrorsFromResults(results)
+            if error_data is not None:
+                return error_data  # type: ignore
 
         global_namespace = executor.global_namespace
-        fundamental_types_namespace = executor.fundamental_types_namespace
+        translation_unit_namespaces = executor.translation_unit_namespaces
 
-    # ----------------------------------------------------------------------
-    # |  Pass 2
-    pass2_state = PassTwoVisitor.CreateState(mini_language_configuration_values, fundamental_types_namespace)
+        fundamental_types_namespace = global_namespace.GetChild(_FUNDAMENTAL_TYPES_NAMESPACE_NAME)
+        assert not isinstance(fundamental_types_namespace, list)
 
-    results = _Execute(
-        workspaces,
-        (
-            lambda *args, **kwargs:
-                PassTwoVisitor.Execute(
-                    pass2_state,
-                    global_namespace,
-                    *args,
-                    **kwargs,
-                )
-        ),
-        max_num_threads=max_num_threads,
-    )
+        # Pass 2
+        executor = PassTwoVisitor.Executor(
+            mini_language_configuration_values,
+            translation_unit_namespaces,
+            fundamental_types_namespace,
+        )
 
-    if results is None:
-        return None
+        for is_parallel, func in executor.GenerateFuncs():
+            results = _Execute(
+                workspaces,
+                func,
+                max_num_threads=max_num_threads if is_parallel else 1,
+            )
 
-    # Check for errors
-    error_data = _ExtractErrorsFromResults(results)
-    if error_data is not None:
-        return error_data  # type: ignore
+            if results is None:
+                return None
+
+            error_data = _ExtractErrorsFromResults(results)
+            if error_data is not None:
+                return error_data  # type: ignore
+
+        # TODO: Pass 3
+        #       - Check for scenarios where the visibility of a type used by a class/function/etc. is lower than the visibility of the class/function/etc.
 
     return workspaces  # type: ignore
 
@@ -402,6 +433,8 @@ def CreateRegions(
 # ----------------------------------------------------------------------
 _PARSER_INFO_ATTRIBUTE_NAME                 = "parser_info"
 _PARSER_INFO_ERROR_ATTRIBUTE_NAME           = "_has_parser_info_errors"
+
+_FUNDAMENTAL_TYPES_NAMESPACE_NAME           = "__fundamental_types__"
 
 
 # ----------------------------------------------------------------------

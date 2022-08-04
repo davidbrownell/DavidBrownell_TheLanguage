@@ -65,11 +65,15 @@ class IndexExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(IndexExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=[
-                "lhs_expression",
-                "index_expression",
-            ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "lhs_expression",
+                        "index_expression",
+                    ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------

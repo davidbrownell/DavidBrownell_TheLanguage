@@ -8,28 +8,28 @@ regions__: # <class 'types.RootStatementParserInfoRegions'>
       line: 1
     end: # <class 'v1.Lexer.Location.Location'>
       column: 1
-      line: 4
+      line: 5
   self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
     end: # <class 'v1.Lexer.Location.Location'>
       column: 1
-      line: 4
+      line: 5
   statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
     end: # <class 'v1.Lexer.Location.Location'>
       column: 1
-      line: 4
+      line: 5
   visibility: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
     begin: # <class 'v1.Lexer.Location.Location'>
       column: 1
       line: 1
     end: # <class 'v1.Lexer.Location.Location'>
       column: 1
-      line: 4
+      line: 5
 statements:
   - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
     class_capabilities: "Standard"
@@ -41,152 +41,196 @@ statements:
     implements: null
     is_abstract: null
     is_final: null
-    name: "PublicClass"
+    is_fundamental: null
+    name: "Outer"
     regions__: # <class 'types.ClassStatementParserInfoRegions'>
       name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
-          column: 14
-          line: 1
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 25
-          line: 1
-      self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 1
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 2
-      statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 25
-          line: 1
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 2
-      visibility: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 1
-        end: # <class 'v1.Lexer.Location.Location'>
           column: 7
           line: 1
-    statements:
-      - # <class 'v1.Parser.ParserInfos.Statements.PassStatementParserInfo.PassStatementParserInfo'>
-        regions__: # <class 'types.PassStatementParserInfoRegions'>
-          self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
-            begin: # <class 'v1.Lexer.Location.Location'>
-              column: 27
-              line: 1
-            end: # <class 'v1.Lexer.Location.Location'>
-              column: 1
-              line: 2
-    templates: null
-    uses: null
-    visibility: "VisibilityModifier.public"
-  - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    class_capabilities: "Standard"
-    class_modifier: "ClassModifier.immutable"
-    constraints: null
-    constructor_visibility: "VisibilityModifier.public"
-    documentation: null
-    extends: null
-    implements: null
-    is_abstract: null
-    is_final: null
-    name: "InternalClass"
-    regions__: # <class 'types.ClassStatementParserInfoRegions'>
-      name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 16
-          line: 2
         end: # <class 'v1.Lexer.Location.Location'>
-          column: 29
-          line: 2
+          column: 12
+          line: 1
       self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
           column: 1
-          line: 2
+          line: 1
         end: # <class 'v1.Lexer.Location.Location'>
           column: 1
-          line: 3
+          line: 5
       statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
         begin: # <class 'v1.Lexer.Location.Location'>
-          column: 29
-          line: 2
+          column: 12
+          line: 1
         end: # <class 'v1.Lexer.Location.Location'>
           column: 1
-          line: 3
-      visibility: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 2
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 9
-          line: 2
+          line: 5
     statements:
-      - # <class 'v1.Parser.ParserInfos.Statements.PassStatementParserInfo.PassStatementParserInfo'>
-        regions__: # <class 'types.PassStatementParserInfoRegions'>
+      - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+        class_capabilities: "Standard"
+        class_modifier: "ClassModifier.immutable"
+        constraints: null
+        constructor_visibility: "VisibilityModifier.public"
+        documentation: null
+        extends: null
+        implements: null
+        is_abstract: null
+        is_final: null
+        is_fundamental: null
+        name: "PublicClass"
+        parent_class_capabilities: "Standard"
+        regions__: # <class 'types.ClassStatementParserInfoRegions'>
+          name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+            begin: # <class 'v1.Lexer.Location.Location'>
+              column: 18
+              line: 2
+            end: # <class 'v1.Lexer.Location.Location'>
+              column: 29
+              line: 2
           self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
             begin: # <class 'v1.Lexer.Location.Location'>
-              column: 31
+              column: 5
               line: 2
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 3
-    templates: null
-    uses: null
-    visibility: "VisibilityModifier.internal"
-  - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
-    class_capabilities: "Standard"
-    class_modifier: "ClassModifier.immutable"
-    constraints: null
-    constructor_visibility: "VisibilityModifier.public"
-    documentation: null
-    extends: null
-    implements: null
-    is_abstract: null
-    is_final: null
-    name: "PrivateClass"
-    regions__: # <class 'types.ClassStatementParserInfoRegions'>
-      name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 15
-          line: 3
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 27
-          line: 3
-      self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 3
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 4
-      statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 27
-          line: 3
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 4
-      visibility: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
-        begin: # <class 'v1.Lexer.Location.Location'>
-          column: 1
-          line: 3
-        end: # <class 'v1.Lexer.Location.Location'>
-          column: 8
-          line: 3
-    statements:
-      - # <class 'v1.Parser.ParserInfos.Statements.PassStatementParserInfo.PassStatementParserInfo'>
-        regions__: # <class 'types.PassStatementParserInfoRegions'>
-          self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+          statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
             begin: # <class 'v1.Lexer.Location.Location'>
               column: 29
+              line: 2
+            end: # <class 'v1.Lexer.Location.Location'>
+              column: 1
+              line: 3
+          visibility: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+            begin: # <class 'v1.Lexer.Location.Location'>
+              column: 5
+              line: 2
+            end: # <class 'v1.Lexer.Location.Location'>
+              column: 11
+              line: 2
+        statements:
+          - # <class 'v1.Parser.ParserInfos.Statements.PassStatementParserInfo.PassStatementParserInfo'>
+            regions__: # <class 'types.PassStatementParserInfoRegions'>
+              self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+                begin: # <class 'v1.Lexer.Location.Location'>
+                  column: 31
+                  line: 2
+                end: # <class 'v1.Lexer.Location.Location'>
+                  column: 1
+                  line: 3
+        templates: null
+        uses: null
+        visibility: "VisibilityModifier.public"
+      - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+        class_capabilities: "Standard"
+        class_modifier: "ClassModifier.immutable"
+        constraints: null
+        constructor_visibility: "VisibilityModifier.public"
+        documentation: null
+        extends: null
+        implements: null
+        is_abstract: null
+        is_final: null
+        is_fundamental: null
+        name: "InternalClass"
+        parent_class_capabilities: "Standard"
+        regions__: # <class 'types.ClassStatementParserInfoRegions'>
+          name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+            begin: # <class 'v1.Lexer.Location.Location'>
+              column: 21
+              line: 3
+            end: # <class 'v1.Lexer.Location.Location'>
+              column: 34
+              line: 3
+          self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+            begin: # <class 'v1.Lexer.Location.Location'>
+              column: 5
               line: 3
             end: # <class 'v1.Lexer.Location.Location'>
               column: 1
               line: 4
+          statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+            begin: # <class 'v1.Lexer.Location.Location'>
+              column: 34
+              line: 3
+            end: # <class 'v1.Lexer.Location.Location'>
+              column: 1
+              line: 4
+          visibility: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+            begin: # <class 'v1.Lexer.Location.Location'>
+              column: 5
+              line: 3
+            end: # <class 'v1.Lexer.Location.Location'>
+              column: 14
+              line: 3
+        statements:
+          - # <class 'v1.Parser.ParserInfos.Statements.PassStatementParserInfo.PassStatementParserInfo'>
+            regions__: # <class 'types.PassStatementParserInfoRegions'>
+              self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+                begin: # <class 'v1.Lexer.Location.Location'>
+                  column: 36
+                  line: 3
+                end: # <class 'v1.Lexer.Location.Location'>
+                  column: 1
+                  line: 4
+        templates: null
+        uses: null
+        visibility: "VisibilityModifier.protected"
+      - # <class 'v1.Parser.ParserInfos.Statements.ClassStatementParserInfo.ClassStatementParserInfo'>
+        class_capabilities: "Standard"
+        class_modifier: "ClassModifier.immutable"
+        constraints: null
+        constructor_visibility: "VisibilityModifier.public"
+        documentation: null
+        extends: null
+        implements: null
+        is_abstract: null
+        is_final: null
+        is_fundamental: null
+        name: "PrivateClass"
+        parent_class_capabilities: "Standard"
+        regions__: # <class 'types.ClassStatementParserInfoRegions'>
+          name: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+            begin: # <class 'v1.Lexer.Location.Location'>
+              column: 19
+              line: 4
+            end: # <class 'v1.Lexer.Location.Location'>
+              column: 31
+              line: 4
+          self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+            begin: # <class 'v1.Lexer.Location.Location'>
+              column: 5
+              line: 4
+            end: # <class 'v1.Lexer.Location.Location'>
+              column: 1
+              line: 5
+          statements: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+            begin: # <class 'v1.Lexer.Location.Location'>
+              column: 31
+              line: 4
+            end: # <class 'v1.Lexer.Location.Location'>
+              column: 1
+              line: 5
+          visibility: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+            begin: # <class 'v1.Lexer.Location.Location'>
+              column: 5
+              line: 4
+            end: # <class 'v1.Lexer.Location.Location'>
+              column: 12
+              line: 4
+        statements:
+          - # <class 'v1.Parser.ParserInfos.Statements.PassStatementParserInfo.PassStatementParserInfo'>
+            regions__: # <class 'types.PassStatementParserInfoRegions'>
+              self__: # <class 'v1.Parser.TranslationUnitRegion.TranslationUnitRegion'>
+                begin: # <class 'v1.Lexer.Location.Location'>
+                  column: 33
+                  line: 4
+                end: # <class 'v1.Lexer.Location.Location'>
+                  column: 1
+                  line: 5
+        templates: null
+        uses: null
+        visibility: "VisibilityModifier.private"
     templates: null
     uses: null
     visibility: "VisibilityModifier.private"

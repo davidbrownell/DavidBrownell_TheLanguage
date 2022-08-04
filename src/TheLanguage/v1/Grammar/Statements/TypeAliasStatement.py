@@ -153,9 +153,9 @@ class TypeAliasStatement(GrammarPhrase):
                 CreateRegions(node, name_leaf, visibility_node),
                 name_info,
                 visibility_info,
-                ClassStatement.GetParentClassCapabilities(node),
                 templates_info,
                 constraints_info,
+                ClassStatement.GetParentClassCapabilities(node),
                 type_info,
             )
 

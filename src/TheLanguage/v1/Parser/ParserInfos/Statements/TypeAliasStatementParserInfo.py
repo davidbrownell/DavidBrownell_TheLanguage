@@ -17,9 +17,9 @@
 
 import os
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -33,7 +33,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
-        NamedStatementTrait,
         ParserInfo,
         ParserInfoType,
         ScopeFlag,
@@ -41,12 +40,14 @@ with InitRelativeImports():
         TranslationUnitRegion,
     )
 
-    from ..Common.ConstraintParametersParserInfo import ConstraintParametersParserInfo
-    from ..Common.TemplateParametersParserInfo import TemplateParametersParserInfo
+    from .Traits.ConstrainedStatementTrait import ConstrainedStatementTrait
+    from .Traits.TemplatedStatementTrait import TemplatedStatementTrait
+
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
 
     from ..Expressions.ExpressionParserInfo import ExpressionParserInfo
     from ..Statements.ClassCapabilities.ClassCapabilities import ClassCapabilities
+    from ..Traits.NamedTrait import NamedTrait
 
     from ...Error import Error, ErrorException
 
@@ -54,16 +55,24 @@ with InitRelativeImports():
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class TypeAliasStatementParserInfo(
-    NamedStatementTrait,
+    ConstrainedStatementTrait,
+    TemplatedStatementTrait,
+    NamedTrait,
     StatementParserInfo,
 ):
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Data
+    # |
+    # ----------------------------------------------------------------------
     parent_class_capabilities: Optional[ClassCapabilities]
-
-    templates: Optional[TemplateParametersParserInfo]
-    constraints: Optional[ConstraintParametersParserInfo]
 
     type: ExpressionParserInfo
 
+    # ----------------------------------------------------------------------
+    # |
+    # |  Public Methods
+    # |
     # ----------------------------------------------------------------------
     @classmethod
     def Create(
@@ -73,7 +82,6 @@ class TypeAliasStatementParserInfo(
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
             ParserInfoType.Standard,        # type: ignore
             regions,                        # type: ignore
             *args,
@@ -81,25 +89,35 @@ class TypeAliasStatementParserInfo(
         )
 
     # ----------------------------------------------------------------------
-    def __post_init__(self, parser_info_type, regions, visibility_param):
+    def __post_init__(
+        self,
+        parser_info_type,
+        regions,
+        visibility_param,
+        templates_param,
+        constraints_param,
+    ):
         StatementParserInfo.__post_init__(
             self,
             parser_info_type,
             regions,
-            regionless_attributes=[
-                "parent_class_capabilities",
-                "templates",
-                "constraints",
-                "type",
-            ]
-                + NamedStatementTrait.RegionlessAttributesArgs()
-            ,
-            validate=False,
             **{
+                **NamedTrait.ObjectReprImplBaseInitKwargs(),
+                **TemplatedStatementTrait.ObjectReprImplBaseInitKwargs(),
+                **ConstrainedStatementTrait.ObjectReprImplBaseInitKwargs(),
                 **{
+                    "regionless_attributes": [
+                        "parent_class_capabilities",
+                        "templates",
+                        "type",
+                    ]
+                        + NamedTrait.RegionlessAttributesArgs()
+                        + TemplatedStatementTrait.RegionlessAttributesArgs()
+                        + ConstrainedStatementTrait.RegionlessAttributesArgs()
+                    ,
+                    "finalize": False,
                     "parent_class_capabilities": lambda value: None if value is None else value.name,
                 },
-                **NamedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
         )
 
@@ -113,9 +131,11 @@ class TypeAliasStatementParserInfo(
                 visibility_param = VisibilityModifier.private
                 object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
-        NamedStatementTrait.__post_init__(self, visibility_param)
+        NamedTrait.__post_init__(self, visibility_param)
+        TemplatedStatementTrait.__post_init__(self, templates_param)
+        ConstrainedStatementTrait.__post_init__(self, constraints_param)
 
-        self.ValidateRegions()
+        self._Finalize()
 
         # Validate
         errors: List[Error] = []
@@ -131,7 +151,7 @@ class TypeAliasStatementParserInfo(
                 )
 
         try:
-            self.type.ValidateAsType(
+            self.type.InitializeAsType(
                 self.parser_info_type__,
                 is_instantiated_type=False,
             )
@@ -140,6 +160,22 @@ class TypeAliasStatementParserInfo(
 
         if errors:
             raise ErrorException(*errors)
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Standard: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+        }
+
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(
+        scope_flag: ScopeFlag,
+    ) -> bool:
+        return bool(scope_flag & ScopeFlag.Function)
 
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------

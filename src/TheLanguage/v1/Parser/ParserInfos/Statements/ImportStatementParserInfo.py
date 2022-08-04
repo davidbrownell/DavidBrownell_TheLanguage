@@ -17,10 +17,11 @@
 
 import os
 
+from contextlib import contextmanager
 from enum import auto, Enum
-from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, Tuple
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass
 
 import CommonEnvironment
 from CommonEnvironment import Interface
@@ -34,8 +35,6 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .StatementParserInfo import (
-        NamedStatementTrait,
-        ParserInfo,
         ParserInfoType,
         ScopeFlag,
         StatementParserInfo,
@@ -43,11 +42,9 @@ with InitRelativeImports():
     )
 
     from ..Common.VisibilityModifier import VisibilityModifier, InvalidProtectedError
+    from ..Traits.NamedTrait import NamedTrait
 
     from ...Error import Error, ErrorException
-
-    if TYPE_CHECKING:
-        from ...Visitors.NamespaceInfo import ParsedNamespaceInfo  # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -59,7 +56,7 @@ class ImportType(Enum):
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
 class ImportStatementParserInfo(
-    NamedStatementTrait,
+    NamedTrait,
     StatementParserInfo,
 ):
     # ----------------------------------------------------------------------
@@ -69,6 +66,7 @@ class ImportStatementParserInfo(
     # ----------------------------------------------------------------------
     source_parts: List[str]
     importing_name: str
+
     import_type: ImportType
 
     # ----------------------------------------------------------------------
@@ -84,8 +82,7 @@ class ImportStatementParserInfo(
         **kwargs,
     ):
         return cls(
-            ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
-            ParserInfoType.Standard,        # type: ignore
+            ParserInfoType.Configuration,   # type: ignore
             regions,                        # type: ignore
             *args,
             **kwargs,
@@ -97,18 +94,16 @@ class ImportStatementParserInfo(
             self,
             parser_info_type,
             regions,
-            regionless_attributes=[
-                "import_type",
-            ]
-                + NamedStatementTrait.RegionlessAttributesArgs()
-            ,
-            validate=False,
             **{
+                **NamedTrait.ObjectReprImplBaseInitKwargs(),
                 **{
-                    "namespace__": None,
-                    "is_namespace_initialized__": None,
+                    "regionless_attributes": [
+                        "import_type",
+                    ]
+                        + NamedTrait.RegionlessAttributesArgs()
+                    ,
+                    "finalize": False,
                 },
-                **NamedStatementTrait.ObjectReprImplBaseInitKwargs(),
             },
         )
 
@@ -117,11 +112,11 @@ class ImportStatementParserInfo(
             visibility_param = VisibilityModifier.private
             object.__setattr__(self.regions__, "visibility", self.regions__.self__)
 
-        NamedStatementTrait.__post_init__(self, visibility_param)
+        NamedTrait.__post_init__(self, visibility_param)
+
+        self._Finalize()
 
         # Validate
-        self.ValidateRegions()
-
         errors: List[Error] = []
 
         if self.visibility == VisibilityModifier.protected:
@@ -134,37 +129,35 @@ class ImportStatementParserInfo(
         if errors:
             raise ErrorException(*errors)
 
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @Interface.override
+    def GetValidScopes() -> Dict[ParserInfoType, ScopeFlag]:
+        return {
+            ParserInfoType.Configuration: ScopeFlag.Root | ScopeFlag.Class | ScopeFlag.Function,
+        }
 
     # ----------------------------------------------------------------------
-    # This method is invoked during validation
-    def InitNamespace(
-        self,
-        value: "ParsedNamespaceInfo",
-    ) -> None:
-        assert not self.is_namespace_initialized__
-        object.__setattr__(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME, value)  # pylint: disable=protected-access
+    @staticmethod
+    @Interface.override
+    def IsNameOrdered(*args, **kwargs) -> bool:
+        return True
 
     # ----------------------------------------------------------------------
-    @property
-    def namespace__(self) -> "ParsedNamespaceInfo":
-        return getattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
-
-    @property
-    def is_namespace_initialized__(self) -> bool:
-        return hasattr(self, self.__class__._NAMESPACE_ATTRIBUTE_NAME)  # pylint: disable=protected-access
-
-    # BugBUg: # ----------------------------------------------------------------------
-    # BugBUg: # |
-    # BugBUg: # |  Protected Methods
-    # BugBUg: # |
-    # BugBUg: # ----------------------------------------------------------------------
-    # BugBUg: @Interface.override
-    # BugBUg: def _GenerateAcceptDetails(self) -> ParserInfo._GenerateAcceptDetailsResultType:  # pylint: disable=protected-access
-    # BugBUg:     yield "import_items", self.import_items  # type: ignore
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    @Interface.override
+    def _InitConfigurationImpl(*args, **kwargs):  # pylint: disable=unused-argument
+        # Nothing to do here
+        yield
 
     # ----------------------------------------------------------------------
-    # |
-    # |  Private Data
-    # |
-    # ----------------------------------------------------------------------
-    _NAMESPACE_ATTRIBUTE_NAME                 = "_imports"
+    @Interface.override
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        return (
+            self.source_parts,
+            self.importing_name,
+            self.import_type,
+        )

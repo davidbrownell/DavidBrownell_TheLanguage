@@ -34,6 +34,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from ..GrammarPhrase import AST, GrammarPhrase
 
+    from ..Common import Tokens as CommonTokens
+
     from ...Lexer.Phrases.DSL import (
         DynamicPhrasesType,
         ExtractOr,
@@ -66,19 +68,26 @@ class LiteralExpression(GrammarPhrase):
             (
                 # <Boolean>
                 PhraseItem(
-                    name="Boolean",
-                    item=(
-                        "__True!",
-                        "__False!",
-                        "True!",
-                        "False!",
-                        "True",
-                        "False",
+                    CommonTokens.CreateRegexToken(
+                        "Boolean",
+                        (
+                            # Configuration Values
+                            "__True!",
+                            "__False!",
+
+                            # Type Customization Values
+                            "True!",
+                            "False!",
+
+                            # Standard values
+                            "True",
+                            "False",
+                        ),
                     ),
                 ),
 
                 # <Character>
-                # TODO: Unicode support doesn't seem to be working: 😀
+                # TODO: Unicode support doesn't seem to be working: 😀  <-- test char
                 PhraseItem(
                     RegexToken(
                         "Character",
@@ -115,8 +124,19 @@ class LiteralExpression(GrammarPhrase):
 
                 # None
                 PhraseItem(
-                    name="None",
-                    item="None",
+                    CommonTokens.CreateRegexToken(
+                        "None",
+                        (
+                            # Configuration
+                            "__None!",
+
+                            # Type Customization
+                            "None!",
+
+                            # Standard
+                            "None",
+                        ),
+                    ),
                 ),
 
                 # <Number>
@@ -166,8 +186,7 @@ class LiteralExpression(GrammarPhrase):
         assert node.type is not None
 
         if node.type.name == "Boolean":
-            value_node = cast(AST.Leaf, ExtractOr(node))
-
+            value_node = cast(AST.Leaf, node)
             value_info = ExtractToken(
                 value_node,
                 return_match_contents=True,
@@ -185,6 +204,11 @@ class LiteralExpression(GrammarPhrase):
             elif value_info.endswith("!"):
                 parser_info_type = ParserInfoType.TypeCustomization
             else:
+                # Allow maximum flexibility and declare the type as unknown. Doing this means that
+                # the following are valid statement:
+                #
+                #   Bool! value! = True     # <- Not valid if the type is set to Standard, as this is a compile-time-statement
+                #
                 parser_info_type = ParserInfoType.Unknown
 
             return BooleanExpressionParserInfo.Create(
@@ -214,7 +238,25 @@ class LiteralExpression(GrammarPhrase):
             )
 
         elif node.type.name == "None":
-            return NoneExpressionParserInfo.Create(CreateRegions(node))
+            value_node = cast(AST.Leaf, node)
+            value_info = ExtractToken(
+                value_node,
+                return_match_contents=True,
+            )
+
+            if value_info.startswith("__"):
+                parser_info_type = ParserInfoType.Configuration
+            elif value_info.endswith("!"):
+                parser_info_type = ParserInfoType.TypeCustomization
+            else:
+                # Allow maximum flexibility and declare the type as unknown. Doing this means that
+                # the following are valid statement:
+                #
+                #   Bool! value! = True     # <- Not valid if the type is set to Standard, as this is a compile-time-statement
+                #
+                parser_info_type = ParserInfoType.Unknown
+
+            return NoneExpressionParserInfo.Create(parser_info_type, CreateRegions(node))
 
         elif node.type.name == "Number":
             value_node = cast(AST.Leaf, node)

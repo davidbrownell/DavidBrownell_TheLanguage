@@ -56,7 +56,10 @@ class CallExpressionParserInfo(ExpressionParserInfo):
         if isinstance(arguments, bool):
             parser_info_type = expression.parser_info_type__
         else:
-            parser_info_type = ParserInfoType.GetDominantType(expression, *arguments.arguments)
+            parser_info_type = ParserInfoType.GetDominantType(expression, arguments)
+
+        if parser_info_type.IsCompileTime():
+            expression.OverrideParserInfoType(parser_info_type)
 
         return cls(
             parser_info_type,               # type: ignore
@@ -71,8 +74,12 @@ class CallExpressionParserInfo(ExpressionParserInfo):
     def __post_init__(self, *args, **kwargs):
         super(CallExpressionParserInfo, self).__post_init__(
             *args,
-            **kwargs,
-            regionless_attributes=["expression", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": ["expression", ],
+                },
+            },
         )
 
     # ----------------------------------------------------------------------

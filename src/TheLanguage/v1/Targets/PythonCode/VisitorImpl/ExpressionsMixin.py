@@ -33,13 +33,8 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 with InitRelativeImports():
     from .BaseMixin import BaseMixin
 
-    from ....Parser.MiniLanguage.Types.BooleanType import BooleanType
-    from ....Parser.MiniLanguage.Types.CharacterType import CharacterType
-    from ....Parser.MiniLanguage.Types.CustomType import CustomType
-    from ....Parser.MiniLanguage.Types.IntegerType import IntegerType
-    from ....Parser.MiniLanguage.Types.NoneType import NoneType
-    from ....Parser.MiniLanguage.Types.NumberType import NumberType
-    from ....Parser.MiniLanguage.Types.StringType import StringType
+    from ....Parser.MiniLanguage.Expressions.Expression import Expression as MiniLanguageExpression
+    from ....Parser.MiniLanguage.Types.Type import Type as MiniLanguageType
 
     from ....Parser.ParserInfos.ParserInfo import ParserInfo
 
@@ -49,8 +44,10 @@ with InitRelativeImports():
     from ....Parser.ParserInfos.Expressions.CharacterExpressionParserInfo import CharacterExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.IntegerExpressionParserInfo import IntegerExpressionParserInfo
+    from ....Parser.ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.NoneExpressionParserInfo import NoneExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.NumberExpressionParserInfo import NumberExpressionParserInfo
+    from ....Parser.ParserInfos.Expressions.SelfReferenceExpressionParserInfo import SelfReferenceExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.StringExpressionParserInfo import StringExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.TernaryExpressionParserInfo import TernaryExpressionParserInfo
     from ....Parser.ParserInfos.Expressions.TupleExpressionParserInfo import TupleExpressionParserInfo
@@ -204,33 +201,28 @@ class ExpressionsMixin(BaseMixin):
         self._imports.add("from v1.Parser.ParserInfos.Expressions.FuncOrTypeExpressionParserInfo import FuncOrTypeExpressionParserInfo")
 
         # Get the type name
-        value_contents = None
+        if isinstance(parser_info.value, str):
+            value = '"{}"'.format(parser_info.value)
 
-        if isinstance(parser_info.value, BooleanType):
-            type_name = "BooleanType"
-        elif isinstance(parser_info.value, CharacterType):
-            type_name = "CharacterType"
-        elif isinstance(parser_info.value, CustomType):
-            type_name = "CustomType"
-            value_contents = '"{}"'.format(parser_info.value.name)
-        elif isinstance(parser_info.value, IntegerType):
-            type_name = "IntegerType"
-        elif isinstance(parser_info.value, NoneType):
-            type_name = "NoneType"
-        elif isinstance(parser_info.value, NumberType):
-            type_name = "NumberType"
-        elif isinstance(parser_info.value, StringType):
-            type_name = "StringType"
+        elif isinstance(parser_info.value, MiniLanguageType):
+            value = parser_info.value.__class__.__name__
+
+            self._imports.add(
+                "from v1.Parser.MiniLanguage.Types.{value} import {value}".format(
+                    value=value,
+                ),
+            )
+
+            value = "{}()".format(value)
+
         else:
-            assert False, parser_info.value  # pragma: no cover
+            value = parser_info.value.__name__
 
-        self._imports.add(
-            "from v1.Parser.MiniLanguage.Types.{type_name} import {type_name}".format(
-                type_name=type_name,
-            ),
-        )
-
-        value = "{}({})".format(type_name, value_contents or "")
+            self._imports.add(
+                "from v1.Parser.MiniLanguage.Expressions.{value} import {value}".format(
+                    value=value,
+                ),
+            )
 
         if parser_info.mutability_modifier is not None:
             self._imports.add("from v1.Parser.ParserInfos.Common.MutabilityModifier import MutabilityModifier")
@@ -290,6 +282,34 @@ class ExpressionsMixin(BaseMixin):
         )
 
     # ----------------------------------------------------------------------
+    # |  NestedTypeExpressionParserInfo
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnNestedTypeExpressionParserInfo(
+        self,
+        parser_info: NestedTypeExpressionParserInfo,
+    ):
+        yield
+
+        self._imports.add("from v1.Parser.ParserInfos.Expressions.NestedTypeExpressionParserInfo import NestedTypeExpressionParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                {statement_name} = NestedTypeExpressionParserInfo.Create(
+                    regions=[{self_region},],
+                    types={types},
+                )
+
+                """,
+            ).format(
+                statement_name=self._CreateStatementName(parser_info),
+                self_region=self._ToString(parser_info.regions__.self__),
+                types=self._ToString(cast(List[ParserInfo], parser_info.types)),
+            ),
+        )
+
+    # ----------------------------------------------------------------------
     # |  NoneExpressionParserInfo
     # ----------------------------------------------------------------------
     @contextmanager
@@ -305,12 +325,14 @@ class ExpressionsMixin(BaseMixin):
             textwrap.dedent(
                 """\
                 {statement_name} = NoneExpressionParserInfo.Create(
+                    parser_info_type={parser_info_type},
                     regions=[{self_region}],
                 )
 
                 """,
             ).format(
                 statement_name=self._CreateStatementName(parser_info),
+                parser_info_type=parser_info.parser_info_type__,
                 self_region=self._ToString(parser_info.regions__.self__),
             ),
         )
@@ -340,6 +362,35 @@ class ExpressionsMixin(BaseMixin):
                 statement_name=self._CreateStatementName(parser_info),
                 self_region=self._ToString(parser_info.regions__.self__),
                 value=parser_info.value,
+            ),
+        )
+
+    # ----------------------------------------------------------------------
+    # |  SelfReferenceExpressionParserInfo
+    # ----------------------------------------------------------------------
+    @contextmanager
+    def OnSelfReferenceExpressionParserInfo(
+        self,
+        parser_info: SelfReferenceExpressionParserInfo,
+    ):
+        yield
+
+        self._imports.add("from v1.Parser.ParserInfos.Expressions.SelfReferenceExpressionParserInfo import SelfReferenceExpressionParserInfo")
+
+        self._stream.write(
+            textwrap.dedent(
+                """\
+                {statement_name} = SelfReferenceExpressionParserInfo.Create(
+                    regions=[{self_region}, {mutability_modifier_region}],
+                    mutability_modifier={mutability_modifier},
+                )
+
+                """,
+            ).format(
+                statement_name=self._CreateStatementName(parser_info),
+                self_region=self._ToString(parser_info.regions__.self__),
+                mutability_modifier_region=self._ToString(parser_info.regions__.mutability_modifier),
+                mutability_modifier=self._ToString(parser_info.mutability_modifier),
             ),
         )
 

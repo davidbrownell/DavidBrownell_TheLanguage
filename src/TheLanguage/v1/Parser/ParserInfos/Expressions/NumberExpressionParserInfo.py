@@ -17,11 +17,12 @@
 
 import os
 
-from typing import List, Optional
+from typing import Any, List, Optional, Tuple
 
 from dataclasses import dataclass
 
 import CommonEnvironment
+from CommonEnvironment import Interface
 
 from CommonEnvironmentEx.Package import InitRelativeImports
 
@@ -32,11 +33,15 @@ _script_dir, _script_name                   = os.path.split(_script_fullpath)
 
 with InitRelativeImports():
     from .ExpressionParserInfo import ExpressionParserInfo, ParserInfoType, TranslationUnitRegion
+    from .Traits.SimpleExpressionTrait import SimpleExpressionTrait
 
 
 # ----------------------------------------------------------------------
 @dataclass(frozen=True, repr=False)
-class NumberExpressionParserInfo(ExpressionParserInfo):
+class NumberExpressionParserInfo(
+    SimpleExpressionTrait,
+    ExpressionParserInfo,
+):
     # ----------------------------------------------------------------------
     value: float
 
@@ -57,8 +62,22 @@ class NumberExpressionParserInfo(ExpressionParserInfo):
 
     # ----------------------------------------------------------------------
     def __post_init__(self, *args, **kwargs):
-        super(NumberExpressionParserInfo, self).__post_init__(
+        ExpressionParserInfo.__post_init__(
+            self,
             *args,
-            **kwargs,
-            regionless_attributes=["value", ],
+            **{
+                **kwargs,
+                **{
+                    "regionless_attributes": [
+                        "value",
+                    ],
+                },
+            },
         )
+
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+    @Interface.override
+    def _GetUniqueId(self) -> Tuple[Any, ...]:
+        return (self.value, )
